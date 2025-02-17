@@ -11,7 +11,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import EmployeeProtectedRoute from "./utils/protectedRoutes/EmployeeProtectedRoute";
 import EmployeeLayout from "./pages/employee/EmployeeLayout";
 import EmployeeDashboard from "./pages/employee/EmployeeDashboard";
-import EmployeeLogin from "./pages/guest/EmployeeLogin";
+import EmployeeLogin from "./pages/employee/EmployeeLogin";
 
 function App() {
   return (
