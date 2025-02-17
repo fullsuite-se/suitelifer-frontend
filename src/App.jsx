@@ -5,11 +5,13 @@ import Home from "./pages/guest/Home";
 // Admin Pages
 import AdminProtectedRoute from "./utils/protectedRoutes/AdminProtectedRoute";
 import AdminLayout from "./pages/admin/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+
 // Employee Pages
 import EmployeeProtectedRoute from "./utils/protectedRoutes/EmployeeProtectedRoute";
 import EmployeeLayout from "./pages/employee/EmployeeLayout";
 import EmployeeDashboard from "./pages/employee/EmployeeDashboard";
-import AdminDashboard from "./pages/admin/AdminDashboard";
+import EmployeeLogin from "./pages/guest/EmployeeLogin";
 
 function App() {
   return (
@@ -18,6 +20,7 @@ function App() {
         <Routes>
           {/* Routes that are publicly avaialable (guest) */}
           <Route path="/" element={<Home />} />
+          <Route path="/login-employee" element={<EmployeeLogin />} />
 
           {/* Admin Routes */}
           <Route element={<AdminProtectedRoute />}>
