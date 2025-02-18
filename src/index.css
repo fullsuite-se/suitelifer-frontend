@@ -1,7 +1,17 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Avenir-Black';
+  src: url('../src/assets/fonts/AvenirLTStd-Black.otf');
+}
+
+@font-face {
+  font-family: 'Avenir-Roman';
+  src: url('../src/assets/fonts/AvenirLTStd-Roman.otf');
+}
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Avenir-Roman, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -75,6 +85,8 @@ h6 {
   --color-light: #FFFFFF;
   --color-accent-1: #EEE3E3;
   --color-accent-2: #4A6E73;
+  --font-avenir-black: Avenir-Black, "sans-serif";
+  --font-avenir-roman: Avenir-Roman, "sans-serif";
 }
 
 .btn-primary {
