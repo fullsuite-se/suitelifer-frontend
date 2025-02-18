@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Guest Pages
 import Home from "./pages/guest/Home";
+import AboutUs from "./pages/guest/AboutUs";
+
 // Admin Pages
 import AdminProtectedRoute from "./utils/protectedRoutes/AdminProtectedRoute";
 import AdminLayout from "./pages/admin/AdminLayout";
@@ -23,6 +25,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login-employee" element={<EmployeeLogin />} />
           <Route path="/login-admin" element={<AdminLogin />} />
+
+          <Route path="/about-us" element={<AboutUs />} />
 
           {/* Admin Routes */}
           <Route element={<AdminProtectedRoute />}>
