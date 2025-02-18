@@ -67,16 +67,58 @@ h6 {
   margin: 1.67em 0;
 }
 
-button {
-  border-radius: 8px;
+/* Color Themes */
+@theme {
+  --color-primary: #0097B2;
+  --color-secondary: #BFD1A0;
+  --color-dark: #1A0202;
+  --color-light: #FFFFFF;
+  --color-accent-1: #EEE3E3;
+  --color-accent-2: #4A6E73;
+}
+
+.btn-primary {
+  border-radius: 18px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: blue;
+  background-color: var(--color-primary);
   cursor: pointer;
   transition: border-color 0.25s;
-  border: 1px solid blue;
   color: white;
+}
+
+.btn-light {
+  border-radius: 18px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: var(--color-light);
+  cursor: pointer;
+  transition: border-color 0.25s;
+  color: var(--color-primary);
+}
+
+.btn-dark {
+  border-radius: 18px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: var(--color-dark);
+  cursor: pointer;
+  transition: border-color 0.25s;
+  color: white;
+}
+
+.blue-thingy{
+    @media (width >= 10rem /* 640px */) {
+        border-top-right-radius: 250px;
+        border-bottom-right-radius: 250px;
+    }
 }
