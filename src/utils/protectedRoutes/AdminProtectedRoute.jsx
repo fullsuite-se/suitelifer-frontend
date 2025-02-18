@@ -7,23 +7,42 @@ const AdminProtectedRoute = () => {
   const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const refreshToken = async () => {
+    try {
+      const response = await axios.get(
+        `${config.apiBaseUrl}/api/refresh-token`,
+        { withCredentials: true }
+      );
+      const newToken = response.data.accessToken;
+      return newToken;
+    } catch (error) {
+      console.error("Failed to refresh token:", error);
+      return null;
+    }
+  };
+
+  const getUser = async () => {
+    const response = await axios.get(`${config.apiBaseUrl}/api/user-info`, {
+      withCredentials: true,
+    });
+
+    return response.data.user;
+  };
+
   useEffect(() => {
     const fetchUserRole = async () => {
       try {
-        // Make the request using axios
-        const response = await axios.get(`${config.apiBaseUrl}/api/user-info`, {
-          withCredentials: true, // Important: This sends the cookie (JWT) along with the request
-        });
-
-        // Assuming the backend returns the user's role
-        if (response.status === 200) {
-          setRole(response.data.role);
+        const user = await getUser();
+        setRole(user.role);
+      } catch (error) {
+        const newToken = await refreshToken();
+        if (newToken) {
+          const user = await getUser();
+          console.log(`User role: catch ${user.role}`);
+          setRole(user.role);
         } else {
           setRole(null);
         }
-      } catch (error) {
-        console.error("Failed to fetch user role", error);
-        setRole(null);
       } finally {
         setLoading(false);
       }
@@ -33,11 +52,10 @@ const AdminProtectedRoute = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>; // Optional loading state
+    return <div>Loading...</div>;
   }
 
-  // If the user doesn't have the 'admin' role, redirect to homepage
-  return role === "admin" ? <Outlet /> : <Navigate to="/" />;
+  return role === "admin" ? <Outlet /> : <Navigate to="/login-admin" />;
 };
 
 export default AdminProtectedRoute;

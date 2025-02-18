@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import config from "../../config";
 
-const EmployeeLogin = () => {
+const AdminLogin = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [accessToken, setAccessToken] = useState(null);
@@ -14,7 +14,7 @@ const EmployeeLogin = () => {
     try {
       const response = await axios.post(
         `${config.apiBaseUrl}/api/login`,
-        { username, password, role: "employee" },
+        { username, password, role: "admin" },
         { withCredentials: true }
       );
 
@@ -70,7 +70,7 @@ const EmployeeLogin = () => {
 
   return (
     <div>
-      <h2>Login Employee</h2>
+      <h2>Login Admin</h2>
       <form onSubmit={handleLogin}>
         <div>
           <label htmlFor="username">Username:</label>
@@ -102,4 +102,4 @@ const EmployeeLogin = () => {
   );
 };
 
-export default EmployeeLogin;
+export default AdminLogin;

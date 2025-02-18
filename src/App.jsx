@@ -6,6 +6,7 @@ import Home from "./pages/guest/Home";
 import AdminProtectedRoute from "./utils/protectedRoutes/AdminProtectedRoute";
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminLogin from "./pages/admin/AdminLogin";
 
 // Employee Pages
 import EmployeeProtectedRoute from "./utils/protectedRoutes/EmployeeProtectedRoute";
@@ -21,6 +22,7 @@ function App() {
           {/* Routes that are publicly avaialable (guest) */}
           <Route path="/" element={<Home />} />
           <Route path="/login-employee" element={<EmployeeLogin />} />
+          <Route path="/login-admin" element={<AdminLogin />} />
 
           {/* Admin Routes */}
           <Route element={<AdminProtectedRoute />}>
