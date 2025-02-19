@@ -1,17 +1,8 @@
 @import "tailwindcss";
 
-@font-face {
-  font-family: 'Avenir-Black';
-  src: url('../src/assets/fonts/AvenirLTStd-Black.otf');
-}
-
-@font-face {
-  font-family: 'Avenir-Roman';
-  src: url('../src/assets/fonts/AvenirLTStd-Roman.otf');
-}
-
 :root {
-  font-family: Avenir-Roman, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Avenir-Roman, Inter, system-ui, Avenir, Helvetica, Arial,
+    sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -79,12 +70,12 @@ h6 {
 
 /* Color Themes */
 @theme {
-  --color-primary: #0097B2;
-  --color-secondary: #BFD1A0;
-  --color-dark: #1A0202;
-  --color-light: #FFFFFF;
-  --color-accent-1: #EEE3E3;
-  --color-accent-2: #4A6E73;
+  --color-primary: #0097b2;
+  --color-secondary: #bfd1a0;
+  --color-dark: #1a0202;
+  --color-light: #ffffff;
+  --color-accent-1: #eee3e3;
+  --color-accent-2: #4a6e73;
   --font-avenir-black: Avenir-Black, "sans-serif";
   --font-avenir-roman: Avenir-Roman, "sans-serif";
 }
@@ -128,9 +119,9 @@ h6 {
   color: white;
 }
 
-.blue-thingy{
-    @media (width >= 10rem /* 640px */) {
-        border-top-right-radius: 250px;
-        border-bottom-right-radius: 250px;
-    }
+.blue-thingy {
+  @media (width >= 10rem /* 640px */) {
+    border-top-right-radius: 250px;
+    border-bottom-right-radius: 250px;
+  }
 }
