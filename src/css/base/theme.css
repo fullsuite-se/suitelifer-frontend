@@ -78,19 +78,40 @@ h6 {
   --color-accent-2: #4a6e73;
   --font-avenir-black: Avenir-Black, "sans-serif";
   --font-avenir-roman: Avenir-Roman, "sans-serif";
+
+  --animate-slideIn: fade 2s ease-in;
+  @keyframes slideIn {
+    0% {
+      transform: translateY(-90%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+}
+
+.animate-slide {
+  animation: slideIn 0.5s ease-out forwards;
 }
 
 .btn-primary {
   border-radius: 18px;
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
+  padding: 0.4em 1.2em;
   font-weight: 500;
   font-family: inherit;
   background-color: var(--color-primary);
   cursor: pointer;
   transition: border-color 0.25s;
   color: white;
+}
+
+.btn-primary:hover {
+  background-color: #007a8e;
+  transition: background-color 0.2s ease-in
 }
 
 .btn-light {
@@ -120,7 +141,7 @@ h6 {
 }
 
 .blue-thingy {
-  @media (width >= 10rem /* 640px */) {
+  @media (width >= 10rem) {
     border-top-right-radius: 250px;
     border-bottom-right-radius: 250px;
   }
