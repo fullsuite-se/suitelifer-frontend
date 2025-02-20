@@ -52,6 +52,7 @@ export default function MobileNav() {
 
             {/* Navigation Links */}
             <nav className="flex flex-col space-y-4 mt-5">
+              <div>
               <NavLink
                 to="/"
                 className={({ isActive }) =>
@@ -63,6 +64,8 @@ export default function MobileNav() {
               >
                 Home
               </NavLink>
+              </div>
+              <div>
               <NavLink
                 to="/about-us"
                 className={({ isActive }) =>
@@ -74,6 +77,8 @@ export default function MobileNav() {
               >
                 About
               </NavLink>
+              </div>
+              <div>
               <NavLink
                 to="/careers"
                 className={({ isActive }) =>
@@ -85,7 +90,9 @@ export default function MobileNav() {
               >
                 Careers
               </NavLink>
-              <NavLink
+              </div>
+              <div>
+                <NavLink
                 to="/news"
                 className={({ isActive }) =>
                   `!no-underline text-black text-lg font-medium hover:text-[#007a8e] ${
@@ -96,7 +103,10 @@ export default function MobileNav() {
               >
                 News
               </NavLink>
-              <NavLink
+              </div>
+              
+              <div>
+                <NavLink
                 to="/blogs"
                 className={({ isActive }) =>
                   `!no-underline text-black text-lg font-medium hover:text-[#007a8e] ${
@@ -107,6 +117,9 @@ export default function MobileNav() {
               >
                 Blogs
               </NavLink>
+              </div>
+              
+              <div>
               <NavLink
                 to="/contact"
                 className={({ isActive }) =>
@@ -118,6 +131,22 @@ export default function MobileNav() {
               >
                 Contact
               </NavLink>
+              </div>
+              
+              <div className="mt-8">
+                <NavLink
+                to="/login-employee"
+                className={({ isActive }) =>
+                  `!no-underline bg-[#E5F5F7] px-5 p-3 rounded-4xl text-primary text-lg font-medium hover:text-[#007a8e] ${
+                    isActive ? "active-class" : ""
+                  }`
+                }
+                onClick={handleClose}
+              >
+                Employee Login
+              </NavLink>
+              </div>
+              
             </nav>
           </div>
         </div>

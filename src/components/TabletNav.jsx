@@ -100,75 +100,108 @@ export default function TabletNav() {
                   />
                 </div>
 
-                {/* Navigation Links */}
-                <nav className="flex items-center flex-col space-y-4 mt-10">
-                  <NavLink
-                    to="/"
-                    className={({ isActive }) =>
-                      `!no-underline text-black text-lg font-medium hover:text-[#007a8e] ${
-                        isActive ? "active-class" : ""
-                      }`
-                    }
-                    onClick={handleClose}
-                  >
-                    Home
-                  </NavLink>
-                  <NavLink
-                    to="/about-us"
-                    className={({ isActive }) =>
-                      `!no-underline text-black text-lg font-medium hover:text-[#007a8e] ${
-                        isActive ? "active-class" : ""
-                      }`
-                    }
-                    onClick={handleClose}
-                  >
-                    About
-                  </NavLink>
-                  <NavLink
-                    to="/careers"
-                    className={({ isActive }) =>
-                      `!no-underline text-black text-lg font-medium hover:text-[#007a8e] ${
-                        isActive ? "active-class" : ""
-                      }`
-                    }
-                    onClick={handleClose}
-                  >
-                    Careers
-                  </NavLink>
-                  <NavLink
-                    to="/news"
-                    className={({ isActive }) =>
-                      `!no-underline text-black text-lg font-medium hover:text-[#007a8e] ${
-                        isActive ? "active-class" : ""
-                      }`
-                    }
-                    onClick={handleClose}
-                  >
-                    News
-                  </NavLink>
-                  <NavLink
-                    to="/blogs"
-                    className={({ isActive }) =>
-                      `!no-underline text-black text-lg font-medium hover:text-[#007a8e] ${
-                        isActive ? "active-class" : ""
-                      }`
-                    }
-                    onClick={handleClose}
-                  >
-                    Blogs
-                  </NavLink>
-                  <NavLink
-                    to="/contact"
-                    className={({ isActive }) =>
-                      `!no-underline text-black text-lg font-medium hover:text-[#007a8e] ${
-                        isActive ? "active-class" : ""
-                      }`
-                    }
-                    onClick={handleClose}
-                  >
-                    Contact
-                  </NavLink>
-                </nav>
+                {/* Navigation Links FIX SCROLLING*/} 
+                <div className="max-h-[calc(100vh-4rem)] overflow-y-auto"> 
+                  <nav className="flex items-center flex-col space-y-4 py-10">
+                    <div>
+                      <NavLink
+                        to="/"
+                        className={({ isActive }) =>
+                          `!no-underline text-black text-lg font-medium hover:text-[#007a8e] ${
+                            isActive ? "active-class" : ""
+                          }`
+                        }
+                        onClick={handleClose}
+                      >
+                        Home
+                      </NavLink>
+                    </div>
+
+                    <div>
+                      <NavLink
+                        to="/about-us"
+                        className={({ isActive }) =>
+                          `!no-underline text-black text-lg font-medium hover:text-[#007a8e] ${
+                            isActive ? "active-class" : ""
+                          }`
+                        }
+                        onClick={handleClose}
+                      >
+                        About
+                      </NavLink>
+                    </div>
+
+                    <div>
+                      <NavLink
+                        to="/careers"
+                        className={({ isActive }) =>
+                          `!no-underline text-black text-lg font-medium hover:text-[#007a8e] ${
+                            isActive ? "active-class" : ""
+                          }`
+                        }
+                        onClick={handleClose}
+                      >
+                        Careers
+                      </NavLink>
+                    </div>
+
+                    <div>
+                      <NavLink
+                        to="/news"
+                        className={({ isActive }) =>
+                          `!no-underline text-black text-lg font-medium hover:text-[#007a8e] ${
+                            isActive ? "active-class" : ""
+                          }`
+                        }
+                        onClick={handleClose}
+                      >
+                        News
+                      </NavLink>
+                    </div>
+
+                    <div>
+                      <NavLink
+                        to="/blogs"
+                        className={({ isActive }) =>
+                          `!no-underline text-black text-lg font-medium hover:text-[#007a8e] ${
+                            isActive ? "active-class" : ""
+                          }`
+                        }
+                        onClick={handleClose}
+                      >
+                        Blogs
+                      </NavLink>
+                    </div>
+
+                    <div>
+                      <NavLink
+                        to="/contact"
+                        className={({ isActive }) =>
+                          `!no-underline text-black text-lg font-medium hover:text-[#007a8e] ${
+                            isActive ? "active-class" : ""
+                          }`
+                        }
+                        onClick={handleClose}
+                      >
+                        Contact
+                      </NavLink>
+                    </div>
+
+                    <div className="mt-8">
+                      <NavLink
+                        to="/login-employee"
+                        className={({ isActive }) =>
+                          `!no-underline bg-[#E5F5F7] px-5 p-3 rounded-4xl text-primary text-lg font-medium hover:text-[#007a8e] ${
+                            isActive ? "active-class" : ""
+                          }`
+                        }
+                        onClick={handleClose}
+                      >
+                        Employee Login
+                      </NavLink>
+                    </div>
+                  </nav>
+                </div>
               </div>
             </div>
           )}
