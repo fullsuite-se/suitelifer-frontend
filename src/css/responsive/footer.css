@@ -1,0 +1,141 @@
+@media (min-width: 1138px) {
+  .footer-container {
+    background-image: url("../../assets/images/footer-bg-desktop-ultra.svg") !important;
+
+    font-size: 3rem;
+    display: flex;
+    padding: 0 3rem;
+    justify-content: space-between;
+  }
+
+  .footer-container > :first-child {
+    max-width: 40rem;
+  }
+
+  .footer-container > :last-child {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+  }
+
+  .footer-links {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .footer-links > div {
+    margin: 0 3rem;
+  }
+
+  p,
+  li,
+  span {
+    font-size: 1.05rem;
+  }
+  .logoFS {
+    width: calc(var(--spacing) * 15);
+  }
+  .logoFSTagline {
+    width: calc(var(--spacing) * 30);
+  }
+}
+
+@media (min-width: 850px) {
+  .footer-links {
+    gap: 1rem !important;
+    grid-template-columns: auto 1fr auto !important;
+  }
+}
+
+@media (min-width: 850px) {
+  .footer-links {
+    gap: 1rem !important;
+    grid-template-columns: auto 1fr auto !important;
+  }
+}
+
+@media (min-width: 580px) {
+  .footer-container {
+    background-image: url("../../assets/images/footer-bg-desktop.svg");
+    background-position: bottom;
+    background-repeat: no-repeat;
+    background-size: contain;
+    padding-bottom: 7rem;
+
+    display: flex;
+  }
+  .footer-bg-container,
+  .footer-social {
+    display: none;
+  }
+
+  .footer-social-container {
+    display: block;
+  }
+  /* .footer-social-head > div > p,
+  .footer-links > div > ul > li,
+  .footer-links > div > span {
+    color: black;
+  } */
+
+  .footer-text {
+    color: black !important;
+    text-decoration: none;
+  }
+
+  .footer-links {
+    display: grid;
+    gap: 0.2rem;
+    row-gap: 0.5rem;
+    padding: 0;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr;
+    align-items: top;
+  }
+
+  .footer-links > :last-child > span,
+  .footer-links > :last-child > ul > li {
+    color: var(--color-primary);
+  }
+
+  .footer-container > :first-child,
+  .footer-container > :nth-child(2) {
+    flex: 1;
+  }
+
+  .soc-logo-container {
+    display: block;
+    padding-inline: calc(var(--spacing) * 6);
+  }
+}
+
+@media (min-width: 431px) {
+  .footer-legal {
+    display: none;
+  }
+}
+
+@media (max-width: 430px) {
+  .footer-container {
+    background-image: url("../../assets/images/footer-bg-mobile-1.svg");
+    background-position: top;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .footer-container > :first-child {
+    padding: 1rem 0;
+    background-color: white;
+    padding-inline: calc(var(--spacing) * 4);
+  }
+
+  .footer-bg-container,
+  .footer-links > :last-child {
+    display: none;
+  }
+}
+
+.footer-text {
+  color: white;
+  text-decoration: none;
+}

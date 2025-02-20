@@ -4,63 +4,94 @@ import logoFS from "../assets/logos/logo-fs.svg";
 import logoSOC from "../assets/logos/logo-soc.svg";
 import logoTagline from "../assets/logos/logo-fs-tagline.svg";
 
-import facebook from "../assets/logos/facebook.svg";
-import instagram from "../assets/logos/instagram.svg";
-import linkedln from "../assets/logos/linkedln.svg";
+import FacebookIcon from "../assets/logos/Facebook.jsx";
+import InstagramIcon from "../assets/logos/Instagram.jsx";
+import LinkedlnIcon from "../assets/logos/Linkedln.jsx";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="relative">
-      <section className="flex px-4 my-3 gap-3">
-        <div className="w-10 h-auto">
-          <img
-            src={logoFS}
-            alt="SOC logo"
-            className="w-full object-contain h-full"
-          />
+    <footer className="relative pb-5 footer-container">
+      <section className="flex flex-col px-4 my-3 gap-3">
+        <div className="flex gap-3">
+          <div className="w-10 h-auto logoFS">
+            <img
+              src={logoFS}
+              alt="FullSuite"
+              className="w-full object-contain h-full"
+            />
+          </div>
+          <div className="w-32 h-auto logoFSTagline">
+            <img
+              src={logoTagline}
+              alt="FullSuite"
+              className="w-full object-contain h-full"
+            />
+          </div>
         </div>
-        <div className="w-32 h-auto">
-          <img
-            src={logoTagline}
-            alt="SOC logo"
-            className="w-full object-contain h-full"
-          />
+        <div className="footer-social-container hidden">
+          <section className="footer-social-head flex gap-3">
+            <div className="flex flex-col gap-3 px-3">
+              <p className="footer-text text-white text-sm">
+                FullSuite is the remote operations concierge of choice of
+                venture-backed startups in the US.
+              </p>
+
+              <p className="footer-text text-white text-sm">
+                We provide tailored and customized finance and operational
+                solutions for early stage and growth startups, supporting them
+                from pre-revenue stage to when they scale.
+              </p>
+
+              <p className="footer-text text-white text-sm">Let's chat.</p>
+
+              <div>
+                <ul className="flex items-center gap-4">
+                  <li>
+                    <FacebookIcon color={"#0097b2"} height="20" width="20" />
+                  </li>
+                  <li>
+                    <InstagramIcon color={"#0097b2"} height="20" width="20" />
+                  </li>
+                  <li>
+                    <LinkedlnIcon color={"#0097b2"} height="20" width="20" />
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </section>
         </div>
       </section>
 
-      <section className="absolute -z-10">
-        <img
-          src={footerBg}
-          alt="footer background"
-          className="min-w-2xs h-full"
-        />
+      <section className="footer-bg-container absolute -z-10">
+        <img src={footerBg} alt="footer background" className="w-full h-full" />
       </section>
 
-      <section className="flex gap-3">
+      <section className="footer-social flex gap-3">
         <div className="flex flex-col gap-3 pl-7 pt-8">
-          <p className="text-white text-sm">
+          <p className="footer-text text-white text-sm footdr-">
             FullSuite is the remote operations concierge of choice of
             venture-backed startups in the US.
           </p>
 
-          <p className="text-white text-sm">
+          <p className="footer-text text-white text-sm">
             We provide tailored and customized finance and operational solutions
             for early stage and growth startups, supporting them from
             pre-revenue stage to when they scale.
           </p>
 
-          <p className="text-white text-sm">Let's chat.</p>
+          <p className="footer-text text-white text-sm">Let's chat.</p>
 
           <div>
             <ul className="flex items-center gap-4">
-              <li className="text-white">
-                <img src={facebook} className="w-5 h-5" />
+              <li>
+                <FacebookIcon color={"white"} height="20" width="20" />
               </li>
-              <li className="text-white">
-                <img src={instagram} className="w-6 h-6" />
+              <li>
+                <InstagramIcon color={"white"} height="20" width="20" />
               </li>
-              <li className="text-white">
-                <img src={linkedln} className="w-5 h-5" />
+              <li>
+                <LinkedlnIcon color={"white "} height="20" width="20" />
               </li>
             </ul>
           </div>
@@ -74,32 +105,114 @@ const Footer = () => {
         </div>
       </section>
 
-      <section className="flex justify-between px-7 pt-4">
+      <section className="footer-links flex justify-between px-7 pt-4">
         <div>
-          <span className="text-sm text-white font-extrabold">About Us</span>
+          <span className="footer-text text-sm text-white font-avenir-black">
+            About Us
+          </span>
           <ul className="flex flex-wrap gap-1 flex-col mt-3">
-            <li className="text-sm text-white">Our Story</li>
-            <li className="text-sm text-white">Mission</li>
-            <li className="text-sm text-white">Vision</li>
-            <li className="text-sm text-white">CEO's message</li>
-            <li className="text-sm text-white">Testimonials</li>
+            <li className="text-sm text-white">
+              <Link to={""} className="footer-text">
+                Our Story
+              </Link>
+            </li>
+            <li className="text-sm text-white">
+              <Link to={""} className="footer-text">
+                Mission
+              </Link>
+            </li>
+            <li className="text-sm text-white">
+              <Link to={""} className="footer-text">
+                Vision
+              </Link>
+            </li>
+            <li className="text-sm text-white">
+              <Link to={""} className="footer-text">
+                CEO's message
+              </Link>
+            </li>
+            <li className="text-sm text-white">
+              <Link to={""} className="footer-text">
+                Testimonials
+              </Link>
+            </li>
           </ul>
         </div>
         <div>
-          <span className="text-sm text-white font-extrabold">Careers</span>
+          <span className="footer-text text-sm text-white font-avenir-black">
+            Careers
+          </span>
           <ul className="flex flex-wrap gap-1 flex-col mt-3">
-            <li className="text-sm text-white">Data Operations</li>
-            <li className="text-sm text-white">Finance Operations</li>
-            <li className="text-sm text-white">Administrative Operations</li>
-            <li className="text-sm text-white">CEO's message</li>
-            <li className="text-sm text-white">Testimonials</li>
+            <li className="text-sm text-white">
+              <Link to={""} className="footer-text">
+                Data Operations
+              </Link>
+            </li>
+            <li className="text-sm text-white">
+              <Link to={""} className="footer-text">
+                Finance Operations
+              </Link>
+            </li>
+            <li className="text-sm text-white">
+              <Link to={""} className="footer-text">
+                Administrative Operations
+              </Link>
+            </li>
+            <li className="text-sm text-white">
+              <Link to={""} className="footer-text">
+                CEO's message
+              </Link>
+            </li>
           </ul>
 
-          <ul className="flex-wrap flex gap-1 flex-col mt-5">
-            <li className="text-sm text-white">Privacy Policy</li>
-            <li className="text-sm text-white">Terms of Use</li>
-            <li className="text-sm text-white">FAQs</li>
+          <div className="footer-legal">
+            <ul className="flex-wrap flex gap-1 flex-col mt-5">
+              <li className="text-sm text-white">
+                <Link to={""} className="footer-text">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li className="text-sm text-white">
+                <Link to={""} className="footer-text">
+                  Terms of Use
+                </Link>
+              </li>
+              <li className="text-sm text-white">
+                <Link to={""} className="footer-text">
+                  FAQs
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <span className="text-sm text-white font-avenir-black">Legal</span>
+          <ul className="flex-wrap flex gap-1 mt-3 flex-col">
+            <li className="text-sm ">
+              <Link to={""} className="footer-text text-primary!">
+                Privacy Policy
+              </Link>
+            </li>
+            <li className="text-sm text-white">
+              <Link to={""} className="footer-text text-primary!">
+                Terms of Use
+              </Link>
+            </li>
+            <li className="text-sm text-white">
+              <Link to={""} className="footer-text text-primary!">
+                FAQs
+              </Link>
+            </li>
           </ul>
+        </div>
+      </section>
+      <section className="soc-logo-container hidden">
+        <div className="w-30 h-30">
+          <img
+            src={logoSOC}
+            alt="SOC logo"
+            className="w-full object-contain h-full"
+          />
         </div>
       </section>
     </footer>
