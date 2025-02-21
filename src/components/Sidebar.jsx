@@ -2,122 +2,127 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "tailwindcss";
 import image_01 from "../assets/images/image_01.svg";
+
 function Sidebar() {
   return (
     <>
-      <div className="flex flex-col w-90 h-screen gap-2 bg-primary p-2">
-        <div class="flex flex-col gap-2 p-2 sm:flex-row sm:items-center sm:gap-6 sm:py-4 ...">
+      <div className="flex flex-col sm:w-72 md:w-80 w-full h-screen bg-primary p-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6 sm:py-4">
           <img
-            class="mx-auto block rounded-full sm:mx-0 sm:shrink-0 w-40"
+            className="mx-auto block rounded-full sm:mx-0 sm:shrink-0 w-24 sm:w-26"
             src={image_01}
-            alt=""
+            alt="User Avatar"
           />
-          <div class="space-y-2 text-center text-2lg">
-            <div class="space-y-0.5">
+          <div className="space-y-2 text-center sm:text-left">
+            <div className="space-y-0.5">
               <p
-                className=""
+                className="text-white"
                 style={{
                   fontFamily: "Avenir-Black",
-                  color: "white",
-                  textDecoration: "none",
-                  padding: 7,
+                  fontSize: "20px",
                 }}
               >
-                User
+                Username
               </p>
               <p
-                className=""
+                className="text-white"
                 style={{
                   fontFamily: "Avenir-Black",
-                  color: "white",
-                  textDecoration: "none",
-                  padding: 7,
+                  fontSize: "20px",
                 }}
               >
-                Text
+                Job
               </p>
             </div>
             <div
+              className="text-white"
               style={{
-                fontFamily: "Avenir-Black",
-                color: "white",
-                textDecoration: "none",
-                padding: 7,
+                fontFamily: "Avenir-Roman",
+                fontSize: "16px",
               }}
             >
-              Message
+              Role/Position
             </div>
           </div>
         </div>
-        <div className="flex flex-col nav-links text-light font-family:Avenir-Roman text-left p-8 ">
+
+        <div className="flex flex-col text-light font-family:Avenir-Black text-left p-14 space-y-5">
+          
+
           <Link
             to="/"
+            className="group text-white text-lg font-bold hover:bg-white p-2 rounded-md no-underline"
             style={{
               fontFamily: "Avenir-Black",
-              color: "white",
+              fontSize: "20px",
               textDecoration: "none",
-              padding: 7,
             }}
           >
-            DASHBOARD
+            <span className="group-hover:text-primary">DASHBOARD</span>
           </Link>
+
           <Link
             to="/"
+            className="group text-white text-lg font-bold hover:bg-white p-2 rounded-md no-underline"
             style={{
               fontFamily: "Avenir-Black",
-              color: "white",
+              fontSize: "20px",
               textDecoration: "none",
-              padding: 7,
             }}
           >
-            JOB LISTINGS
+            <span className="group-hover:text-primary">JOB LISTINGS</span>
           </Link>
+
           <Link
             to="/"
+            className="group text-white text-lg font-bold hover:bg-white p-2 rounded-md no-underline"
             style={{
               fontFamily: "Avenir-Black",
-              color: "white",
+              fontSize: "20px",
               textDecoration: "none",
-              padding: 7,
             }}
           >
-            BLOG
+            <span className="group-hover:text-primary">BLOG</span>
           </Link>
+
           <Link
             to="/"
+            className="group text-white text-lg font-bold hover:bg-white p-2 rounded-md no-underline"
             style={{
               fontFamily: "Avenir-Black",
-              color: "white",
+              fontSize: "20px",
               textDecoration: "none",
-              padding: 7,
             }}
           >
-            EVENTS
+            <span className="group-hover:text-primary">EVENTS</span>
           </Link>
+
           <Link
             to="/"
+            className="group text-white text-lg font-bold hover:bg-white p-2 rounded-md no-underline"
             style={{
               fontFamily: "Avenir-Black",
-              color: "white",
+              fontSize: "20px",
               textDecoration: "none",
-              padding: 7,
             }}
           >
-            CONTENTS
+            <span className="group-hover:text-primary">CONTENTS</span>
           </Link>
         </div>
-        <div className="flex nav-links text-light font-family:Avenir-Roman text-left mt-50"></div>
-        <Link
-          to="/"
-          style={{
-            fontFamily: "Avenir-Black",
-            color: "white",
-            textDecoration: "none",
-            padding: 7,
-          }}
-        >
-          LOGOUT
-        </Link>
+
+        <div className="flex flex-col text-light font-family:Avenir-Black text-left mt-auto w-auto">
+          <Link
+            to="/"
+            className="group text-white text-lg font-bold  hover:bg-white p-2 rounded-md no-underline justify-center"
+            style={{
+              fontFamily: "Avenir-Black",
+              fontSize: "20px",
+              textDecoration: "none",
+            }}
+          >
+            <span className="group-hover:text-primary">LOGOUT</span>
+          </Link>
+        </div>
       </div>
     </>
   );
