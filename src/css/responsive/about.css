@@ -1,0 +1,95 @@
+@media (min-width: 1400px) {
+  .about-container > :nth-child(3),
+  .about-container > :nth-child(4),
+  .about-container > :nth-child(5),
+  .about-container > :nth-child(6) {
+    padding: 0 4rem;
+  }
+}
+
+@media (min-width: 873px) {
+  .about-text-banner {
+    font-size: 4rem;
+    padding-top: 2rem;
+  }
+
+  .about-container > :nth-child(3),
+  .about-container > :nth-child(4),
+  .about-container > :nth-child(5),
+  .about-container > :nth-child(6) {
+    margin-right: calc(var(--spacing) * 8);
+  }
+}
+
+@media (min-width: 650px) {
+  .about-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 8rem 8rem 8rem auto auto auto;
+    /* 2 x 7 */
+
+    gap: 2rem;
+  }
+  .about-container > * {
+    margin: 0;
+  }
+  .about-container > :first-child {
+    height: 100% !important;
+    width: 100% !important;
+    /* background-color: red; */
+
+    grid-column: 1 / 2;
+    grid-row: 1 / 4;
+  }
+
+  .about-text-banner {
+    font-size: 2rem;
+  }
+
+  .about-container > :nth-child(2) {
+    /* background-color: blue; */
+    grid-column: 2 / 3;
+    grid-row: 1 / 3;
+  }
+
+  .about-container > :nth-child(3) {
+    /* background-color: green; */
+    grid-column: 2 / 3;
+    grid-row: 3 / 5;
+    margin-right: calc(var(--spacing) * 8);
+  }
+  .about-container > :nth-child(4) {
+    /* background-color: rgb(101, 255, 237); */
+    grid-column: 1 / 2;
+    grid-row: 4 / 5;
+    margin-left: calc(var(--spacing) * 8);
+  }
+
+  .about-container > :nth-child(5) {
+    /* background-color: yellow; */
+    grid-column: 1 / 2;
+    grid-row: 5 / 6;
+    margin: 0;
+  }
+  .about-container > :nth-child(5) > :last-child {
+    margin: 0;
+    margin-left: calc(var(--spacing) * 8);
+  }
+  .about-container > :nth-child(6) {
+    /* background-color: rgb(82, 82, 82); */
+    grid-column: 2 / 3;
+    grid-row: 5 / 6;
+    margin-right: calc(var(--spacing) * 8);
+  }
+  .about-container > :nth-child(7) {
+    grid-column: 1 / 3;
+    grid-row: 6 / 7;
+  }
+}
+
+@media (min-width: 480px) {
+  .about-container > :first-child {
+    height: calc(var(--spacing) * 76);
+    width: calc(var(--spacing) * 102);
+  }
+}
