@@ -14,6 +14,7 @@ const Facebook = ({ color, height, width }) => {
         fill={`${color}`}
       />
     </svg>
+    
   );
 };
 
