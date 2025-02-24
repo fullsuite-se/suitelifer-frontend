@@ -41,7 +41,7 @@ export default function TabletNav() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [lastScrollY]);
-  // `flex justify-between items-center h-16 text-center mb-5 fixed top-0 left-0 right-0 z-20 transition-transform duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"}`
+  
   return (
     <>
       <div className="h-16 mb-2">
