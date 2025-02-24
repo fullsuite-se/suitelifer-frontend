@@ -1,0 +1,30 @@
+.tablet-nav{
+    @media (width <= 40rem /* 640px */) {
+        display: none;
+    }
+    @media (width > 1023px /* 1024px */) {
+        display: none;
+    }
+}
+
+.desktop-nav{
+  @media (width <= 40rem /* 1024px */) {
+      display: none;
+  }
+  @media (width <= 1023px /* 1024px */) {
+      display: none;
+  }
+}
+
+.active-class {
+    color: var(--color-primary);
+  }
+
+
+.blue-thingy {
+    @media (width >= 10rem) {
+      border-top-right-radius: 250px;
+      border-bottom-right-radius: 250px;
+    }
+  }
+  
