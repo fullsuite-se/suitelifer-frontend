@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 /* Animation Themes */
 @theme {
   /* Slide In from Top */
@@ -89,6 +91,7 @@
       transform: rotate(360deg);
     }
   }
+ 
 }
 
 .animate-slideOut {
@@ -121,4 +124,8 @@
 
 .animate-spinCW {
   animation: spinCW 0.5s linear;
+}
+
+.careers{
+  background-color: red;
 }

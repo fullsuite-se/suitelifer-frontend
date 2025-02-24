@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 .tablet-nav{
     @media (width <= 40rem /* 640px */) {
         display: none;
