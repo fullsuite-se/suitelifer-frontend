@@ -8,6 +8,7 @@ import "./css/base/typography.css";
 // responsive folder contains the responsive styles
 import "./css/responsive/footer.css";
 import "./css/responsive/home.css";
+import "./css/responsive/about.css";
 
 // animations folder contains the animations styles
 import "./css/animation/animation.css";
