@@ -73,6 +73,7 @@
   }
 
   /* Spin counter-clockwise for opening */
+  --animate-spinCCW: fade 2s ease-out;
   @keyframes spinCCW {
     from {
       transform: rotate(0deg);
@@ -83,6 +84,7 @@
   }
 
   /* Spin clockwise for closing */
+  --animate-spinCW: fade 2s ease-out;
   @keyframes spinCW {
     from {
       transform: rotate(0deg);
@@ -91,7 +93,55 @@
       transform: rotate(360deg);
     }
   }
+
+  --animate-fadeInUp: fade 2s ease-out;
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  --animate-fadeOutUp: fade 2s ease-out;
+  @keyframes fadeOutUp {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+
+  --animate-fadeInDown: fade 2s ease-out;
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }  
  
+}
+
+.animate-fadeInDown {
+  animation: fadeInDown 0.3s ease-in-out forwards;
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.3s ease-in-out forwards;
+}
+
+.animate-fadeOutUp {
+  animation: fadeOutUp 0.3s ease-in-out forwards;
 }
 
 .animate-slideOut {
@@ -124,8 +174,4 @@
 
 .animate-spinCW {
   animation: spinCW 0.5s linear;
-}
-
-.careers{
-  background-color: red;
 }
