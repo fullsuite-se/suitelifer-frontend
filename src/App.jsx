@@ -5,6 +5,9 @@ import Home from "./pages/guest/Home";
 import AboutUs from "./pages/guest/AboutUs";
 import Careers from "./pages/guest/Careers";
 import News from "./pages/guest/News";
+import Contact from "./pages/guest/Contact";
+import Blog from "./pages/guest/Blog";
+import Legal from "./pages/guest/Legal";
 
 // Admin Pages
 import AdminProtectedRoute from "./utils/protectedRoutes/AdminProtectedRoute";
@@ -31,6 +34,9 @@ function App() {
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/news" element={<News />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/legal" element={<Legal />} />
 
           {/* Admin Routes */}
           <Route element={<AdminProtectedRoute />}>
