@@ -14,6 +14,7 @@ import AdminProtectedRoute from "./utils/protectedRoutes/AdminProtectedRoute";
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminLogin from "./pages/admin/AdminLogin";
+import JobListing from "./pages/admin/JobListing";
 
 // Employee Pages
 import EmployeeProtectedRoute from "./utils/protectedRoutes/EmployeeProtectedRoute";
@@ -43,6 +44,7 @@ function App() {
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
               <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="joblisting" element={<JobListing />} />
             </Route>
           </Route>
 
