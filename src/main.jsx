@@ -9,6 +9,7 @@ import "./css/base/typography.css";
 import "./css/responsive/footer.css";
 import "./css/responsive/home.css";
 import "./css/responsive/about.css";
+import "./css/responsive/careers.css";
 
 // animations folder contains the animations styles
 import "./css/animation/animation.css";

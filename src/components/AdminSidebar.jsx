@@ -18,7 +18,7 @@ import iconLogout from "../assets/icons/icon-logout.svg";
 import iconLogoutHover from "../assets/icons/icon-logout-hover.svg";
 import { Logout } from "../modals/Logout";
 
-function Sidebar() {
+function AdminSidebar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleCloseModal = () => {
@@ -210,4 +210,4 @@ function Sidebar() {
   );
 }
 
-export default Sidebar;
+export default AdminSidebar;
