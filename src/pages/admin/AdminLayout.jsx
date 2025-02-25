@@ -7,6 +7,9 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import { Line } from "react-chartjs-2";
+import { Link } from "react-router-dom";
+import image_02 from "../../assets/images/image_02.svg";
 
 import {
   Chart as ChartJS,
@@ -18,7 +21,6 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -72,13 +74,47 @@ const AdminLayout = () => {
     });
   };
 
+  const data = {
+    labels: ["January", "February", "March", "April", "May", "June", "July"],
+    datasets: [
+      {
+        label: "Applications",
+        data: [65, 59, 80, 81, 56, 55, 40],
+        fill: false,
+        backgroundColor: "rgb(75, 192, 192)",
+        borderColor: "rgba(75, 192, 192, 0.2)",
+      },
+    ],
+  };
+
   return (
     <div className="flex w-full h-screen bg-white">
       <Sidebar />
 
       {/* Main Content */}
       <div className="flex-1 p-6 lg:p-10">
-        <header className="flex flex-col lg:flex-row justify-between items-center mb-10"></header>
+        <header className="flex flex-col lg:flex-row justify-between items-center mb-10 w-full">
+          <img className="mb-4 lg:mb-0" src={image_02} alt="Admin" />
+        
+          
+          <div className="space-x-2">
+            <Link to="/admin/joblisting">
+              <Button variant="contained" color="primary">
+                Job Listing
+              </Button>
+            </Link>
+            <Link to="/admin/events">
+              <Button variant="contained" color="primary">
+                Events
+              </Button>
+            </Link>
+          </div>
+        </header>
+
+        {/* Chart Section */}
+        <section className="bg-white p-8 rounded-lg shadow-md mb-10">
+          <Line data={data} />
+        </section>
 
         <div className="flex w-full bg-white">
           <button className="btn-primary w-40 h-10" onClick={handleOpen}>
