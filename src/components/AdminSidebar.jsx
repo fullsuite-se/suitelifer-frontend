@@ -16,11 +16,13 @@ import iconEvent from "../assets/icons/icon-events.svg";
 import iconEventHover from "../assets/icons/icon-event-hover.svg";
 import iconLogout from "../assets/icons/icon-logout.svg";
 import iconLogoutHover from "../assets/icons/icon-logout-hover.svg";
+import { Logout } from "../modals/Logout";
 
 function AdminSidebar() {
   return (
     <>
       <div className="flex flex-col sm:w-52 md:w-80 w-full h-screen bg-primary items-center sticky">
+        <Logout isOpen={isOpen} handleClose={handleCloseModal} />
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6 sm:py-4">
           <div className="div">
             <img
@@ -176,13 +178,13 @@ function AdminSidebar() {
         </div>
 
         <div className="flex flex-col text-light font-family:Avenir-Black space-y-5 h-screen justify-end w-full place-items-end content-start p-12 items-start">
-          <Link
-            to="/logout"
+          <button
             className="group text-white text-lg font-bold  hover:bg-white p-2 rounded-md no-underline inline-flex justify-center items-center space-x-5"
             style={{
               fontSize: "20px",
               textDecoration: "none",
             }}
+            onClick={() => setIsOpen(true)}
           >
             <img
               src={iconLogout}
@@ -195,7 +197,7 @@ function AdminSidebar() {
               className="size-8 hidden group-hover:inline"
             />
             <span className="group-hover:text-primary">LOGOUT</span>
-          </Link>
+          </button>
         </div>
       </div>
     </>
