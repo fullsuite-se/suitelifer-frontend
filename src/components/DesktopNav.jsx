@@ -44,7 +44,7 @@ export default function DesktopNav() {
       >
         {/* Navigation Links*/}
         <nav
-          className={`flex justify-center items-end transition-all duration-300 ease-in animate-fadeInUp`}
+          className={`flex justify-center items-end`}
         >
           {/* Logo */}
           <div

@@ -43,11 +43,14 @@ import banner_img from "../assets/images/banner-img.svg";
             </div>
             {/* image 3 */}
             <div className="col-start-2 col-end-12 row-start-5 row-end-13 md:row-end-11 lg:row-start-7 lg:row-end-14 lg:col-start-4 lg:col-end-13">
-              <img
+              {/* <img
                 className="aspect-square rounded-4xl w-full h-full object-cover object-top"
                 src={engineers}
                 alt="Two entrepreneurs"
-              />
+              /> */}
+              <video className="w-full h-full rounded-xl object-cover" controls>
+                <source src="#" type="video/mp4" />
+              </video>
             </div>
             {/* image 4 */}
             <div className="col-start-12 col-end-13 row-start-5 row-end-9 md:row-end-8 lg:col-start-13 lg:col-end-17 lg:row-start-7 lg:row-end-11">
