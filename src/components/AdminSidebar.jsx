@@ -18,13 +18,7 @@ import iconLogout from "../assets/icons/icon-logout.svg";
 import iconLogoutHover from "../assets/icons/icon-logout-hover.svg";
 import { Logout } from "../modals/Logout";
 
-function Sidebar() {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleCloseModal = () => {
-    setIsOpen(false);
-  };
-
+function AdminSidebar() {
   return (
     <>
       <div className="flex flex-col sm:w-52 md:w-80 w-full h-screen bg-primary items-center sticky">
@@ -210,4 +204,4 @@ function Sidebar() {
   );
 }
 
-export default Sidebar;
+export default AdminSidebar;

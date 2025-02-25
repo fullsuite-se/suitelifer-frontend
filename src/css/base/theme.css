@@ -122,3 +122,18 @@ h6 {
   transition: border-color 0.25s;
   color: white;
 }
+
+.sunday .fc-daygrid-day-number,
+.saturday .fc-daygrid-day-number {
+  color: #ff7575;
+}
+
+
+
+.fc-daygrid-day-frame {
+  border: none !important;
+}
+
+.no-underline {
+  text-decoration: none;
+}
