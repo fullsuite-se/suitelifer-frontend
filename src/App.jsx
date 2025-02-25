@@ -23,7 +23,6 @@ import AdminContents from "./pages/admin/AdminContents";
 // Employee Pages
 import EmployeeProtectedRoute from "./utils/protectedRoutes/EmployeeProtectedRoute";
 import EmployeeLayout from "./pages/employee/EmployeeLayout";
-import EmployeeDashboard from "./pages/employee/EmployeeDashboard";
 import EmployeeLogin from "./pages/employee/EmployeeLogin";
 import EmployeeBlogsFeed from "./pages/employee/EmployeeBlogsFeed";
 import EmployeeMyBlogs from "./pages/employee/EmployeeMyBlogs";
@@ -61,8 +60,7 @@ function App() {
           {/* Employee Routes */}
           <Route element={<EmployeeProtectedRoute />}>
             <Route path="/employee" element={<EmployeeLayout />}>
-              <Route index element={<EmployeeDashboard />} />
-              <Route path="dashboard" element={<EmployeeDashboard />} />
+              <Route index element={<EmployeeBlogsFeed />} />
               <Route path="blogs-feed" element={<EmployeeBlogsFeed />} />
               <Route path="my-blogs" element={<EmployeeMyBlogs />} />
             </Route>
