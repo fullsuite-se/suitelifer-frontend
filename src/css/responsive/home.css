@@ -27,7 +27,7 @@
   }
 }
 
-.hero-image-05{
+.hero-image-05 {
   @media (width <= 40rem /* 1024px */) {
     display: none;
   }
@@ -51,5 +51,382 @@
     border-bottom-right-radius: 0px;
     border-top-left-radius: 250px;
     border-bottom-left-radius: 250px;
+  }
+}
+
+.home-intro-texts {
+  text-align: end;
+  padding-top: 25%;
+  padding-left: 50%;
+  padding-right: 5%;
+
+  @media (min-width: 0px) {
+    font-size: 8px;
+  }
+
+  @media (min-width: 350px) {
+    font-size: 9px;
+  }
+
+  @media (min-width: 385px) {
+    font-size: 10px;
+  }
+
+  @media (min-width: 425px) {
+    font-size: 11px;
+  }
+
+  @media (min-width: 470px) {
+    font-size: 12px;
+  }
+
+  @media (min-width: 515px) {
+    font-size: 13px;
+  }
+
+  @media (min-width: 600px) {
+    font-size: 15px;
+  }
+
+  @media (min-width: 700px) {
+    font-size: 17px;
+    padding-top: 26%;
+    padding-right: 7%;
+  }
+
+  @media (min-width: 800px) {
+    font-size: 18px;
+    padding-top: 26%;
+    padding-right: 7%;
+  }
+
+  @media (min-width: 930px) {
+    font-size: 20px;
+  }
+
+  @media (min-width: 1100px) {
+    font-size: 26px;
+  }
+
+  @media (width >= 1137px) {
+    font-size: 28px !important;
+  }
+
+  @media (width >= 1154px) {
+    font-size: 29px !important;
+  }
+
+  @media (width >= 1280px) {
+    font-size: 30px !important;
+  }
+
+  @media (width >= 1400px) {
+    font-size: 33px !important;
+    padding-right: 8%;
+  }
+}
+
+.operations {
+  display: flex;
+  flex-direction: column;
+  margin-top: 3rem;
+
+  @media (min-width: 300px) {
+    padding: 0 4rem;
+  }
+
+  @media (min-width: 350px) {
+    padding: 0 5rem;
+    margin-top: 4rem;
+  }
+
+  @media (min-width: 445px) {
+    padding: 0 5rem;
+    margin-top: 5rem;
+  }
+
+  @media (min-width: 535px) {
+    flex-direction: row;
+    padding: 0 2rem;
+    margin-top: 5rem;
+
+    .data-op {
+      position: relative;
+      top: calc(100vw * -0.10);
+    }
+    .admin-op{
+      position: relative;
+      top: -30px;
+    }
+  }
+
+  @media (min-width: 550px) {
+    flex-direction: row;
+    padding: 0 2rem;
+    margin-top: 6rem;
+
+    .data-op {
+      position: relative;
+      top: -60px;
+    }
+    .admin-op{
+      position: relative;
+      top: -30px;
+    }
+  }
+
+  @media (min-width: 580px) {
+    flex-direction: row;
+    padding: 0 2rem;
+    margin-top: 7rem;
+
+    .data-op {
+      position: relative;
+      top: -70px;
+    }
+    .admin-op{
+      position: relative;
+      top: -30px;
+    }
+  }
+
+  @media (min-width: 700px) {
+    flex-direction: row;
+    padding: 0 2rem;
+    margin-top: 7rem;
+
+    .data-op {
+      position: relative;
+      top: -70px;
+    }
+    .admin-op{
+      position: relative;
+      top: -20px;
+    }
+  }
+
+  @media (min-width: 800px) {
+    flex-direction: row;
+    padding: 0 2rem;
+    margin-top: 7rem;
+
+    .data-op {
+      position: relative;
+      top: -80px;
+    }
+    .admin-op{
+      position: relative;
+      top: -20px;
+    }
+  }
+
+  @media (min-width: 820px) {
+    flex-direction: row;
+    padding: 0 2rem;
+    margin-top: 9rem;
+
+    .data-op {
+      position: relative;
+      top: -80px;
+    }
+    .admin-op{
+      position: relative;
+      top: -20px;
+    }
+  }
+
+  @media (min-width: 857px) {
+    flex-direction: row;
+    padding: 0 2rem;
+    margin-top: 11rem;
+
+    .data-op {
+      position: relative;
+      top: -90px;
+    }
+    .admin-op{
+      position: relative;
+      top: -40px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    flex-direction: row;
+    padding: 0 2rem;
+    margin-top: 10rem;
+
+    .data-op {
+      position: relative;
+      top: -100px;
+    }
+    .admin-op{
+      position: relative;
+      top: -50px;
+    }
+  }
+
+  @media (min-width: 900px) {
+    flex-direction: row;
+    padding: 0 2rem;
+    margin-top: 10rem;
+
+    .data-op {
+      position: relative;
+      top: -100px;
+    }
+    .admin-op{
+      position: relative;
+      top: -30px;
+    }
+  }
+
+  @media (min-width: 1000px) {
+    flex-direction: row;
+    padding: 0 2rem;
+    margin-top: 12rem;
+
+    .data-op {
+      position: relative;
+      top: -100px;
+    }
+    .admin-op{
+      position: relative;
+      top: -30px;
+    }
+  }
+  
+  @media (min-width: 1017px) {
+    flex-direction: row;
+    padding: 0 2rem;
+    margin-top: 15rem;
+
+    .data-op {
+      position: relative;
+      top: -100px;
+    }
+    .admin-op{
+      position: relative;
+      top: -30px;
+    }
+  }
+
+  @media (min-width: 1030px) {
+    flex-direction: row;
+    padding: 0 2rem;
+    margin-top: 13rem;
+
+    .data-op {
+      position: relative;
+      top: -100px;
+    }
+    .admin-op{
+      position: relative;
+      top: -30px;
+    }
+  }
+
+  @media (min-width: 1040px) {
+    flex-direction: row;
+    padding: 0 2rem;
+    margin-top: 14rem;
+
+    .data-op {
+      position: relative;
+      top: -100px;
+    }
+    .admin-op{
+      position: relative;
+      top: -30px;
+    }
+  }
+
+  @media (min-width: 1100px) {
+    flex-direction: row;
+    padding: 0 2rem;
+    margin-top: 10rem;
+
+    .data-op {
+      position: relative;
+      top: -100px;
+    }
+    .admin-op{
+      position: relative;
+      top: -30px;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    flex-direction: row;
+    padding: 0 3rem;
+    margin-top: 11rem;
+
+    .data-op {
+      position: relative;
+      top: -100px;
+    }
+    .admin-op{
+      position: relative;
+      top: -50px;
+    }
+  }
+
+  @media (min-width: 1300px) {
+    flex-direction: row;
+    padding: 0 3rem;
+    margin-top: 14rem;
+
+    .data-op {
+      position: relative;
+      top: -140px;
+    }
+    .admin-op{
+      position: relative;
+      top: -50px;
+    }
+  }
+
+  @media (min-width: 1340px) {
+    flex-direction: row;
+    padding: 0 3rem;
+    margin-top: 16rem;
+
+    .data-op {
+      position: relative;
+      top: -150px;
+    }
+    .admin-op{
+      position: relative;
+      top: -70px;
+    }
+  }
+
+  @media (min-width: 1500px) {
+    flex-direction: row;
+    padding: 0 3rem;
+    margin-top: 20rem;
+
+    .data-op {
+      position: relative;
+      top: -150px;
+    }
+    .admin-op{
+      position: relative;
+      top: -70px;
+    }
+  }
+
+  @media (min-width: 1600px) {
+    flex-direction: row;
+    padding: 0 3rem;
+    margin-top: 10rem;
+
+    .data-op {
+      position: relative;
+      top: -150px;
+    }
+    .admin-op{
+      position: relative;
+      top: -70px;
+    }
   }
 }
