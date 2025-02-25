@@ -80,113 +80,6 @@ h6 {
   --font-avenir-roman: Avenir-Roman, "sans-serif";
 }
 
-/* Animation Themes */
-@theme {
-  /* Slide In from Top */
-  --animate-slideIn: fade 2s ease-in;
-  @keyframes slideIn {
-    0% {
-      transform: translateY(-90%);
-    }
-    100% {
-      transform: translateY(0);
-    }
-  }
-
-  /* Slide In from Bottom */
-  --animate-slideOut: fade 2s ease-out;
-  @keyframes slideOut {
-    0% {
-      transform: translateY(0);
-    }
-    100% {
-      transform: translateY(-100%);
-    }
-  }
-
-  /* Slide In from Right */
-  --animate-slideInRight: fade 2s ease-in;
-  @keyframes slideInRight {
-    0% {
-      transform: translateX(100%);
-    }
-    100% {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
-
-/* Slide Out to Right */
-  --animate-slideOutRight: fade 2s ease-out;
-  @keyframes slideOutRight {
-    0% {
-      transform: translateX(0);
-      opacity: 1;
-    }
-    100% {
-      transform: translateX(120%);
-      opacity: 1;
-    }
-  }
-
-  /* Spin counter-clockwise for opening */
-  @keyframes spinCCW {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(-360deg);
-    }
-  }
-  
-  /* Spin clockwise for closing */
-  @keyframes spinCW {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-}
-
-.tablet-nav{
-    @media (width <= 40rem /* 1024px */) {
-        display: none;
-    }
-    @media (width >= 1023px /* 1024px */) {
-        display: none;
-    }
-}
-
-.animate-slideOut {
-  animation: slideOut 0.5s ease-out forwards;
-}
-
-.animate-slideIn {
-  animation: slideIn 0.5s ease-out forwards;
-}
-
-.animate-slideInRight {
-  animation: slideInRight 0.5s ease-out forwards;
-}
-
-.animate-slideOutRight {
-  animation: slideOutRight 0.5s ease-out forwards;
-}
-
-.animate-spinCCW {
-  animation: spinCCW 0.5s linear; /* Adjust duration as needed */
-}
-
-.animate-spinCW {
-  animation: spinCW 0.5s linear;
-}
-
-.active-class {
-  color: var(--color-primary);
-}
-
 .btn-primary {
   border-radius: 18px;
   border: 1px solid transparent;
@@ -201,7 +94,7 @@ h6 {
 
 .btn-primary:hover {
   background-color: #007a8e;
-  transition: background-color 0.2s ease-in
+  transition: background-color 0.2s ease-in;
 }
 
 .btn-light {
@@ -228,11 +121,4 @@ h6 {
   cursor: pointer;
   transition: border-color 0.25s;
   color: white;
-}
-
-.blue-thingy {
-  @media (width >= 10rem) {
-    border-top-right-radius: 250px;
-    border-bottom-right-radius: 250px;
-  }
 }

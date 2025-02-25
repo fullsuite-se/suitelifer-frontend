@@ -76,7 +76,7 @@ export default function TabletNav() {
               className="w-full h-full animate-slideInRight fixed inset-0 z-20 flex justify-end"
             >
               <div
-                className={`w-[40%] bg-white p-3 transition-transform duration-300 ${
+                className={`w-[40%] bg-white p-3 pt-8 shadow transition-transform duration-300 ${
                   isClosing
                     ? "animate-slideOutRight"
                     : "translate-y-0 opacity-100"
@@ -94,7 +94,7 @@ export default function TabletNav() {
                   {/* Close Button */}
                   <XMarkIcon
                     className={`w-8 cursor-pointer mr-5 ${
-                      isClosing ? "animate-spinCW" : "animate-spinCCW"
+                      isClosing ? "animate-" : "animate-spinCCW"
                     }`}
                     onClick={handleClose}
                   />

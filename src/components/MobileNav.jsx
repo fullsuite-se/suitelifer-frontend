@@ -24,7 +24,7 @@ export default function MobileNav() {
 
         {!isOpen 
         ? 
-        <div className="mr-7">
+        <div className="mr-5">
           <Bars2Icon
             className="w-8 cursor-pointer"
             onClick={() => setIsOpen(true)}
@@ -41,7 +41,7 @@ export default function MobileNav() {
       {isOpen && (
         <div
           onClick={handleClose}
-          className="animate-slideIn z-40 fixed inset-0 flex justify-end"
+          className="animate-slideIn z-40 fixed inset-0 flex justify-end ass"
         >
           <div
             className={`w-full bg-gradient-to-t from-transparent to-white to-20% h-[80%] p-3 transition-transform duration-300 ${
