@@ -90,7 +90,7 @@ const AdminLayout = () => {
   return (
     <div className="flex w-full h-screen">
       <Sidebar />
-      <main className="">
+      <main className="w-full">
         <Outlet />
       </main>
     </div>
