@@ -19,6 +19,12 @@ import iconLogoutHover from "../assets/icons/icon-logout-hover.svg";
 import { Logout } from "../modals/Logout";
 
 function AdminSidebar() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleCloseModal = () => {
+    setIsOpen(false);
+  };
+
   return (
     <>
       <div className="flex flex-col sm:w-52 md:w-80 w-full h-screen bg-primary items-center sticky">
