@@ -8,7 +8,7 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { Line } from "react-chartjs-2";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import image_02 from "../../assets/images/image_02.svg";
 
 import {
@@ -88,97 +88,11 @@ const AdminLayout = () => {
   };
 
   return (
-    <div className="flex w-full h-screen bg-white">
+    <div className="flex w-full h-screen bg-red-300">
       <Sidebar />
-
-      {/* Main Content */}
-      <div className="flex-1 p-6 lg:p-10">
-        <header className="flex flex-col lg:flex-row justify-between items-center mb-10 w-full">
-          <img className="mb-4 lg:mb-0" src={image_02} alt="Admin" />
-        
-          
-          <div className="space-x-2">
-            <Link to="/admin/joblisting">
-              <Button variant="contained" color="primary">
-                Job Listing
-              </Button>
-            </Link>
-            <Link to="/admin/events">
-              <Button variant="contained" color="primary">
-                Events
-              </Button>
-            </Link>
-          </div>
-        </header>
-
-        {/* Chart Section */}
-        <section className="bg-white p-8 rounded-lg shadow-md mb-10">
-          <Line data={data} />
-        </section>
-
-        <div className="flex w-full bg-white">
-          <button className="btn-primary w-40 h-10" onClick={handleOpen}>
-            + Event
-          </button>
-          {/* Calendar Section */}
-          <section className="bg-white p-8 rounded-lg shadow-md w-full lg:w-1/2 mx-auto">
-            <FullCalendar
-              plugins={[dayGridPlugin, interactionPlugin]}
-              initialView="dayGridMonth"
-              events={events}
-              eventClick={handleEventClick}
-            />
-          </section>
-
-          {/* Selected Event Info */}
-          {selectedEvent && (
-            <section className="bg-white p-6 rounded-lg shadow-md mt-6">
-              <h3 className="text-lg font-semibold">Upcoming Event</h3>
-              <p className="text-md mt-2">
-                <strong>Title:</strong> {selectedEvent.title}
-              </p>
-              <p className="text-md">
-                <strong>Date:</strong> {selectedEvent.date}
-              </p>
-            </section>
-          )}
-        </div>
-
-        {/* Modal for Adding or Editing Events */}
-        <Modal open={open} onClose={handleClose}>
-          <Box className="modal-container p-6 bg-white rounded-lg w-full sm:w-96 mx-auto mt-24">
-            <h2 className="font-semibold mb-4 text-lg text-center bg-primary">
-              {editEvent ? "Edit Event" : "Add New Event"}
-            </h2>
-            <TextField
-              label="Event Title"
-              fullWidth
-              value={eventTitle}
-              onChange={(e) => setEventTitle(e.target.value)}
-            />
-            <TextField
-              type="date"
-              fullWidth
-              value={eventDate}
-              onChange={(e) => setEventDate(e.target.value)}
-              className="mt-2"
-            />
-            <div className="mt-6 flex justify-between">
-              <Button onClick={handleClose} className="btn-light">
-                Cancel
-              </Button>
-              <Button
-                onClick={handleAddEvent}
-                variant="contained"
-                color="primary"
-                className="btn-primary"
-              >
-                {editEvent ? "Save Changes" : "Add Event"}
-              </Button>
-            </div>
-          </Box>
-        </Modal>
-      </div>
+      <main className="bg-red-300">
+        <Outlet />
+      </main>
     </div>
   );
 };

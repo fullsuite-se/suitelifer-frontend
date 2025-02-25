@@ -4,7 +4,6 @@ import Sidebar from "../../components/Sidebar";
 export default function JobListing() {
   return (
     <div className="flex">
-      <Sidebar />
       <div className="flex-1 container mx-auto p-4 space-y-6">
         {/* Header */}
         <div className="flex justify-between items-center">

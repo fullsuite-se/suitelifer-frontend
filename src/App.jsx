@@ -21,6 +21,10 @@ import EmployeeProtectedRoute from "./utils/protectedRoutes/EmployeeProtectedRou
 import EmployeeLayout from "./pages/employee/EmployeeLayout";
 import EmployeeDashboard from "./pages/employee/EmployeeDashboard";
 import EmployeeLogin from "./pages/employee/EmployeeLogin";
+import AdminBlogs from "./pages/admin/AdminBlogs";
+import AdminNews from "./pages/admin/AdminNews";
+import AdminEvents from "./pages/admin/AdminEvents";
+import AdminContents from "./pages/admin/AdminContents";
 
 function App() {
   return (
@@ -45,6 +49,10 @@ function App() {
               <Route index element={<AdminDashboard />} />
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="joblisting" element={<JobListing />} />
+              <Route path="blogs" element={<AdminBlogs />} />
+              <Route path="news" element={<AdminNews />} />
+              <Route path="events" element={<AdminEvents />} />
+              <Route path="contents" element={<AdminContents />} />
             </Route>
           </Route>
 

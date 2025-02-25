@@ -22,21 +22,21 @@ function Sidebar() {
     <>
       <div className="flex flex-col sm:w-52 md:w-80 w-full h-screen bg-primary items-center sticky">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6 sm:py-4">
-          
           <div className="div">
-          <img
-            className="mx-auto block rounded-full sm:mx-0 sm:shrink-0 w-24 sm:w-20"
-            src={image_01}
-            alt="User Avatar"
-          />
+            <img
+              className="mx-auto block rounded-full sm:mx-0 sm:shrink-0 w-24 sm:w-20"
+              src={image_01}
+              alt="User Avatar"
+            />
           </div>
           <div className="space-y-2 text-center sm:text-left">
             <div className="space-y-0.5">
-              <p className="text-white font-avenir-black text-xl!">Melbraei Santiago</p>
+              <p className="text-white font-avenir-black text-xl!">
+                Melbraei Santiago
+              </p>
               <p className="text-white">Software Engineer</p>
               <p className="text-white font-avenir-black">Role/Position</p>
             </div>
-            
           </div>
         </div>
 
@@ -89,7 +89,7 @@ function Sidebar() {
           </Link>
 
           <Link
-            to="/"
+            to="/admin/blogs"
             className="group text-white font-bold hover:bg-white p-2 rounded-md no-underline inline-flex justify-center items-center space-x-5"
             style={{
               fontSize: "20px",
@@ -110,7 +110,7 @@ function Sidebar() {
           </Link>
 
           <Link
-            to="/"
+            to="/admin/news"
             className="group text-white text-lg font-bold hover:bg-white p-2 rounded-md no-underline inline-flex justify-center items-center space-x-5"
             style={{
               fontSize: "20px",
@@ -131,7 +131,7 @@ function Sidebar() {
           </Link>
 
           <Link
-            to="/"
+            to="/admin/events"
             className="group text-white text-lg font-bold hover:bg-white p-2 rounded-md no-underline inline-flex justify-center items-center space-x-5"
             style={{
               fontSize: "20px",
@@ -152,7 +152,7 @@ function Sidebar() {
           </Link>
 
           <Link
-            to="/"
+            to="/admin/contents"
             className="group text-white text-lg font-bold hover:bg-white p-2 rounded-md no-underline inline-flex justify-center items-center space-x-5"
             style={{
               fontSize: "20px",
@@ -177,7 +177,7 @@ function Sidebar() {
 
         <div className="flex flex-col text-light font-family:Avenir-Black space-y-5 h-screen justify-end w-full place-items-end content-start p-12 items-start">
           <Link
-            to="/"
+            to="/logout"
             className="group text-white text-lg font-bold  hover:bg-white p-2 rounded-md no-underline inline-flex justify-center items-center space-x-5"
             style={{
               fontSize: "20px",
