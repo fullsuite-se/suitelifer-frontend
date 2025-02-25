@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import Sidebar from "../../components/Sidebar";
+import Sidebar from "../../components/AdminSidebar";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -90,7 +90,7 @@ const AdminLayout = () => {
   return (
     <div className="flex w-full h-screen">
       <Sidebar />
-      <main className="">
+      <main className="w-full">
         <Outlet />
       </main>
     </div>
