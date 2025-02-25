@@ -88,9 +88,9 @@ const AdminLayout = () => {
   };
 
   return (
-    <div className="flex w-full h-screen bg-red-300">
+    <div className="flex w-full h-screen">
       <Sidebar />
-      <main className="bg-red-300">
+      <main className="">
         <Outlet />
       </main>
     </div>
