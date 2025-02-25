@@ -19,7 +19,7 @@ export const Logout = ({ isOpen, handleClose }) => {
         { withCredentials: true }
       );
       if (response.data.isLoggedOut) {
-        window.location.href = "/login-admin";
+        window.location.href = "/";
       } else {
         // Modal to show error
         console.log("Failed to log out");
