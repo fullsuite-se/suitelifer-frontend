@@ -40,7 +40,7 @@ export default function DesktopNav() {
       }}
         className={`fixed z-50 top-0 left-0 right-0 ${
           isVisible ? "shadow" : ""
-        } flex justify-between items-center h-16 px-7`}
+        } flex justify-between items-center h-16 px-7 z-50`}
       >
         {/* Navigation Links*/}
         <nav
