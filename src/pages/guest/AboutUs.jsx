@@ -2,6 +2,7 @@ import React from "react";
 import Footer from "../../components/Footer";
 import MobileNav from "../../components/MobileNav";
 import TabletNav from "../../components/TabletNav";
+import DesktopNav from "../../components/DesktopNav";
 
 const AboutUs = () => {
   return (
@@ -14,7 +15,10 @@ const AboutUs = () => {
       <div className="tablet-nav">
         <TabletNav />
       </div>
-      <main>
+      <div className="desktop-nav">
+        <DesktopNav />
+      </div>
+      <main className="md:mt-20">
         {/* Hero Section */}
         <section className="overflow-hidden about-container">
           <div className="h-56 w-72">
