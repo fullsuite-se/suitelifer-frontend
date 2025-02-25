@@ -25,7 +25,7 @@ export default function DesktopNav() {
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
-
+    handleScroll(); 
     // Clean up
     return () => {
       window.removeEventListener("scroll", handleScroll);
