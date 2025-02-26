@@ -67,16 +67,9 @@ const EmployeeSidebar = () => {
           })}
         </ul>
       </section>
-      <section className="p-5 py-7">
-        <button
-          className="flex gap-12 cursor-pointer"
-          onClick={() => setIsOpen(true)}
-        >
-          <img
-            src={fullsuitelogo}
-            alt="fullsuitelogo"
-            className="w-20 h-auto"
-          />
+      <section className="p-5 py-7 flex gap-12">
+        <img src={fullsuitelogo} alt="fullsuitelogo" className="w-20 h-auto" />
+        <button className=" cursor-pointer" onClick={() => setIsOpen(true)}>
           <IconLogout color={"black"} height={"20"} width={"20"} />
         </button>
       </section>
