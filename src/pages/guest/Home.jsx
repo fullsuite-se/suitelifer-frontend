@@ -8,11 +8,13 @@ import DesktopNav from "../../components/home/DesktopNav";
 import Footer from "../../components/Footer";
 import desktopCutoutBg from "../../assets/images/desktop-bg-man-cutout.svg";
 import kb_startup from "../../assets/images/keyboard-startup.svg";
-import dataOp from '../../assets/images/data-op.svg';
-import financeOp from '../../assets/images/finance-op.svg';
-import adminOp from '../../assets/images/admin-op.svg';
+import dataOp from "../../assets/images/data-op.svg";
+import financeOp from "../../assets/images/finance-op.svg";
+import adminOp from "../../assets/images/admin-op.svg";
+import HomeNews from "../../components/home/HomeNews";
+import HomeSocials from "../../components/home/HomeSocials";
+
 import { useState, useEffect } from "react";
-import { data } from "react-router-dom";
 
 const Home = () => {
   const [width, setWidth] = useState(window.innerWidth); //FOR DEBUGGING
@@ -26,7 +28,9 @@ const Home = () => {
 
     // Clean up the event listener on unmount
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [width]);
+
+  
 
   return (
     <>
@@ -99,8 +103,8 @@ const Home = () => {
         <div className="relative z-0">
           <section className="home-intro-texts">
             <p className="text-white">
-              At <span className="font-avenir-black relative">Fullsuite</span>, our goal
-              is to make you{" "}
+              At <span className="font-avenir-black relative">Fullsuite</span>,
+              our goal is to make you{" "}
               <span className="font-avenir-black text-secondary">
                 shine like a star
               </span>
@@ -124,20 +128,45 @@ const Home = () => {
         {/* OPERATIONS */}
         <section className="operations flex justify-center items-center md:flex-row gap-5 lg:gap-8 xl:gap-10 px-4 max-h-min">
           <div className="data-op w-full flex flex-col items-center">
-            <img className="rounded-4xl w-full h-full object-cover aspect-[3/4]" src={dataOp} alt="Data operations analyst" />
-            <p className="mt-3 md:mt-5 font-avenir-black text-primary text-xl md:text-2xl lg:text-3xl text-center">Data Operations</p>
+            <img
+              className="rounded-4xl w-full h-full object-cover aspect-[3/4]"
+              src={dataOp}
+              alt="Data operations analyst"
+            />
+            <p className="mt-3 md:mt-5 font-avenir-black text-primary text-xl md:text-2xl lg:text-3xl text-center">
+              Data Operations
+            </p>
           </div>
           <div className="w-full flex flex-col items-center">
-            <img className="rounded-4xl w-full h-full object-cover aspect-[3/4]" src={financeOp} alt="Finance operations analyst" />
-            <p className="mt-3 md:mt-5 font-avenir-black text-primary text-xl md:text-2xl lg:text-3xl text-center">Finance Operations</p>
+            <img
+              className="rounded-4xl w-full h-full object-cover aspect-[3/4]"
+              src={financeOp}
+              alt="Finance operations analyst"
+            />
+            <p className="mt-3 md:mt-5 font-avenir-black text-primary text-xl md:text-2xl lg:text-3xl text-center">
+              Finance Operations
+            </p>
           </div>
           <div className="admin-op w-full flex flex-col items-center">
-            <img className="rounded-4xl w-full h-full object-cover aspect-[3/4]" src={adminOp} alt="Administrative analyst" />
-            <p className="mt-3 md:mt-5 font-avenir-black text-secondary text-xl md:text-2xl lg:text-3xl text-center">Administrative Operations</p>
+            <img
+              className="rounded-4xl w-full h-full object-cover aspect-[3/4]"
+              src={adminOp}
+              alt="Administrative analyst"
+            />
+            <p className="mt-3 md:mt-5 font-avenir-black text-secondary text-xl md:text-2xl lg:text-3xl text-center">
+              Administrative Operations
+            </p>
           </div>
         </section>
       </section>
-        <div>WIDTH: {width}</div>
+      {/* NEWS SECTION */}
+      <HomeNews/>
+      
+      {/* SOCIALS SECTION */}
+      <HomeSocials/>
+      
+      {/* FOR DEBUGGING ONLY */}
+      <div className="mt-50">WIDTH: {width}</div>
       {/* <div className="h-40"></div> */}
       <Footer />
     </>

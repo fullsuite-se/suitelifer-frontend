@@ -1,4 +1,18 @@
 @import "tailwindcss";
+.news-desc{
+  @media (min-width: 400px) {
+    display: block;
+  }
+}
+
+.news-desc > p {
+  @media (min-width: 400px) {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+}
 
 .tablet-nav {
   @media (width <= 40rem /* 640px */) {
