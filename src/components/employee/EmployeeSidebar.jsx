@@ -4,6 +4,20 @@ import IconBlogs from "../../assets/icons/IconBlogs";
 import IconNewspaper from "../../assets/icons/IconNewspaper";
 import IconLogout from "../../assets/icons/IconLogout";
 import { Logout } from "../../modals/Logout";
+import fullsuitelogo from "../../assets/logos/logo-fs-full.svg";
+
+const sideBarLinks = [
+  {
+    title: "Blogs Feed",
+    icon: IconBlogs,
+    path: "/employee/blogs-feed",
+  },
+  {
+    title: "My Blogs",
+    icon: IconNewspaper,
+    path: "/employee/my-blogs",
+  },
+];
 
 const EmployeeSidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,98 +42,41 @@ const EmployeeSidebar = () => {
       </section>
       <section className="employee-sidebar-links flex-1 ">
         <ul>
-          <li className="mb-1">
-            <NavLink
-              to="/employee/blogs-feed"
-              className={({ isActive }) =>
-                isActive
-                  ? "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
-                  : "bg-white text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200 hover:bg-blue-50"
-              }
-            >
-              <IconBlogs color={"currentColor"} height={"20"} width={"20"} />
-              <span className="no-underline! font-avenir-black">
-                Blogs Feed
-              </span>
-            </NavLink>
-          </li>
-          <li className="mb-1">
-            <NavLink
-              to={"/employee/my-blogs"}
-              className={({ isActive }) =>
-                isActive
-                  ? "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
-                  : "bg-white text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200 hover:bg-blue-50"
-              }
-            >
-              {/* #0097b2 */}
-              <IconNewspaper
-                color={"currentColor"}
-                height={"20"}
-                width={"20"}
-              />
-              <span className="no-underline! font-avenir-black">My Blogs</span>
-            </NavLink>
-          </li>
-          {/* <li>
-            <NavLink
-              to={"/employee/my-blogs"}
-              className={({ isActive }) =>
-                isActive
-                  ? "bg-primary text-white p-3 rounded-lg flex items-center gap-2"
-                  : "bg-white text-primary p-3 rounded-lg flex items-center gap-2"
-              }
-            >
-              <IconNewspaper
-                color={"currentColor"}
-                height={"20"}
-                width={"20"}
-              />
-              <span className="no-underline">Events</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to={"/employee/my-blogs"}
-              className={({ isActive }) =>
-                isActive
-                  ? "bg-primary text-white p-3 rounded-lg flex items-center gap-2"
-                  : "bg-white text-primary p-3 rounded-lg flex items-center gap-2"
-              }
-            >
-              <IconNewspaper
-                color={"currentColor"}
-                height={"20"}
-                width={"20"}
-              />
-              <span className="no-underline">Workshops</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to={"/employee/my-blogs"}
-              className={({ isActive }) =>
-                isActive
-                  ? "bg-primary text-white p-3 rounded-lg flex items-center gap-2"
-                  : "bg-white text-primary p-3 rounded-lg flex items-center gap-2"
-              }
-            >
-              <IconNewspaper
-                color={"currentColor"}
-                height={"20"}
-                width={"20"}
-              />
-              <span className="no-underline">Personality Test</span>
-            </NavLink>
-          </li> */}
+          {sideBarLinks.map((link) => {
+            return (
+              <li>
+                <NavLink
+                  to={`${link.path}`}
+                  className={({ isActive }) =>
+                    isActive
+                      ? "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
+                      : "bg-white text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200 hover:bg-blue-50"
+                  }
+                >
+                  <link.icon
+                    color={"currentColor"}
+                    height={"20"}
+                    width={"20"}
+                  />
+                  <span className="no-underline! font-avenir-black">
+                    {link.title}
+                  </span>
+                </NavLink>
+              </li>
+            );
+          })}
         </ul>
       </section>
       <section className="p-5 py-7">
         <button
-          className="flex gap-3 cursor-pointer"
+          className="flex gap-12 cursor-pointer"
           onClick={() => setIsOpen(true)}
         >
-          <span>Sign out</span>
+          <img
+            src={fullsuitelogo}
+            alt="fullsuitelogo"
+            className="w-20 h-auto"
+          />
           <IconLogout color={"black"} height={"20"} width={"20"} />
         </button>
       </section>
