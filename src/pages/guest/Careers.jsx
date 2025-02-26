@@ -1,7 +1,7 @@
 import React from "react";
-import MobileNav from "../../components/MobileNav";
-import TabletNav from "../../components/TabletNav";
-import DesktopNav from "../../components/DesktopNav";
+import MobileNav from "../../components/home/MobileNav";
+import TabletNav from "../../components/home/TabletNav";
+import DesktopNav from "../../components/home/DesktopNav";
 import JobCarousel from "../../components/careers/JobCarousel";
 
 const Careers = () => {

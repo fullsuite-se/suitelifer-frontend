@@ -1,15 +1,15 @@
-  import image_01 from "../assets/images/image_01.svg";
-  import image_02 from "../assets/images/image_02.svg"
-  import image_03 from "../assets/images/image_03.svg"
-  import image_04 from "../assets/images/image_04.svg"
-  import mo from "../assets/images/mo.jpg";
-  import ken from "../assets/images/ken.jpg";
-  import percy from "../assets/images/percy.jpg";
-  import engineers from "../assets/images/engineers.jpg";
-  import interns from "../assets/images/interns.jpg"; 
-  import windows from "../assets/images/windows.jpeg"
-import kb_startup from "../assets/images/keyboard-startup.svg";
-import banner_img from "../assets/images/banner-img.svg";
+  import image_01 from "../../assets/images/image_01.svg";
+  import image_02 from "../../assets/images/image_02.svg"
+  import image_03 from "../../assets/images/image_03.svg"
+  import image_04 from "../../assets/images/image_04.svg"
+  import mo from "../../assets/images/mo.jpg";
+  import ken from "../../assets/images/ken.jpg";
+  import percy from "../../assets/images/percy.jpg";
+  import engineers from "../../assets/images/engineers.jpg";
+  import interns from "../../assets/images/interns.jpg"; 
+  import windows from "../../assets/images/windows.jpeg"
+import kb_startup from "../../assets/images/keyboard-startup.svg";
+import banner_img from "../../assets/images/banner-img.svg";
 
   const HeroSection = () => {
     return (

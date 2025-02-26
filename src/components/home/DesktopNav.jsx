@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import logo_fs_full from "../assets/logos/logo-fs-full.svg";
+import logo_fs_full from "../../assets/logos/logo-fs-full.svg";
 import { Bars2Icon, XMarkIcon } from "@heroicons/react/24/solid";
 import { NavLink } from "react-router-dom";
 
@@ -40,7 +40,7 @@ export default function DesktopNav() {
       }}
         className={`fixed z-50 top-0 left-0 right-0 ${
           isVisible ? "shadow" : ""
-        } flex justify-between items-center h-16 px-7`}
+        } flex justify-between items-center h-16 px-7 z-50`}
       >
         {/* Navigation Links*/}
         <nav
