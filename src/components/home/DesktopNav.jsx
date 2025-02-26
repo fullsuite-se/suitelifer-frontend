@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import logo_fs_full from "../assets/logos/logo-fs-full.svg";
+import logo_fs_full from "../../assets/logos/logo-fs-full.svg";
 import { Bars2Icon, XMarkIcon } from "@heroicons/react/24/solid";
 import { NavLink } from "react-router-dom";
 
