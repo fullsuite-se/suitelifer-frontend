@@ -8,6 +8,11 @@ import {
   HeartIcon,
   ChatBubbleLeftEllipsisIcon,
 } from "@heroicons/react/20/solid";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 const feed = {
   id: 1,
@@ -77,9 +82,70 @@ const ViewFeed = () => {
         </div>
       </section>
       <section>
-        <div className="max-w-xl h-auto mx-auto">
-          <img src={feed.images[0]} className="w-full h-full object-contain" />
-        </div>
+        <main className="max-w-5xl mx-auto">
+          <Swiper
+            modules={[Navigation, Pagination]}
+            spaceBetween={50}
+            slidesPerView={1}
+            navigation
+            pagination={{ clickable: true }}
+            className="h-[600px]"
+          >
+            {feed.images.map((image, index) => (
+              <SwiperSlide
+                key={index}
+                className="flex items-center justify-center"
+              >
+                <div className="h-full w-full">
+                  <img
+                    src={image}
+                    className="w-full h-full object-cover" // Cover the entire space
+                  />
+                </div>
+              </SwiperSlide>
+            ))}
+            <style>
+              {`
+    .swiper-button-next, .swiper-button-prev {
+  color: white !important; /* Change arrow color */
+  background: rgba(0, 0, 0, 0.5) !important; /* Semi-transparent background */
+  border-radius: 50% !important;
+  width: 42px !important;
+  height: 42px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.swiper-button-next:hover, .swiper-button-prev:hover {
+  background: rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Modify the default Swiper arrows */
+.swiper-button-next::after, .swiper-button-prev::after {
+  font-size: 1rem !important; /* Adjust arrow size */
+  width: 15px !important;
+  height: 15px !important;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-button-next::after {
+  content: "➤" !important; /* Custom arrow for next button */
+}
+
+.swiper-button-prev::after {
+  content: "➤" !important; /* Custom arrow */
+  transform: rotate(180deg); /* Flip the arrow for previous */
+}
+
+      }
+    `}
+            </style>
+          </Swiper>
+        </main>
       </section>
       <section>
         <h4 className="text-center">{feed.title}</h4>

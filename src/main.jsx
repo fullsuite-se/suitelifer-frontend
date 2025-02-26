@@ -14,6 +14,8 @@ import "./css/responsive/careers.css";
 // animations folder contains the animations styles
 import "./css/animation/animation.css";
 
+import "swiper/css";
+
 import App from "./App.jsx";
 
 createRoot(document.getElementById("root")).render(
