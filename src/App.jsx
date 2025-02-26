@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 // Guest Pages
 import Home from "./pages/guest/Home";
@@ -61,10 +61,9 @@ function App() {
           {/* Employee Routes */}
           <Route element={<EmployeeProtectedRoute />}>
             <Route path="/employee" element={<EmployeeLayout />}>
-              <Route index element={<EmployeeBlogsFeed />} />
-              <Route path="blogs-feed" element={<EmployeeBlogsFeed />}>
-                <Route path="feed/:id/:slug" element={<ViewFeed />} />
-              </Route>
+              <Route index element={<Navigate to="blogs-feed" replace />} />
+              <Route path="blogs-feed" element={<EmployeeBlogsFeed />} />
+              <Route path="blogs-feed/feed/:id/:slug" element={<ViewFeed />} />
               <Route path="my-blogs" element={<EmployeeMyBlogs />} />
             </Route>
           </Route>
