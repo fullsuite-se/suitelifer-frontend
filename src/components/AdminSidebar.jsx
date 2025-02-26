@@ -27,7 +27,7 @@ function AdminSidebar() {
 
   return (
     <>
-      <div className="flex flex-col sm:w-52 md:w-80 w-full h-screen bg-primary items-center sticky">
+      <div className="flex flex-col sm:w-52 md:w-90 w-full h-screen bg-primary items-center sticky p-4">
         <Logout isOpen={isOpen} handleClose={handleCloseModal} />
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6 sm:py-4">
           <div className="div">
@@ -48,10 +48,10 @@ function AdminSidebar() {
           </div>
         </div>
 
-        <div className="flex flex-col text-light font-family:Avenir-Black space-y-5 h-screen justify-start w-full place-items-baseline content-start p-12 items-start">
+        <div className="flex flex-col text-light font-family:Avenir-Black space-y-5 h-screen justify-start w-full place-items-baseline content-start p-8 items-start">
           <Link
             to="/admin/dashboard"
-            className="group text-white text-lg font-bold hover:bg-white p-2 rounded-md no-underline inline-flex justify-center items-center space-x-5"
+            className="group text-white font-bold hover:bg-white p-2 rounded-md no-underline inline-flex justify-center items-center space-x-5"
             style={{
               fontSize: "20px",
               textDecoration: "none",
@@ -75,7 +75,7 @@ function AdminSidebar() {
 
           <Link
             to="/admin/joblisting"
-            className="group text-white text-lg font-bold hover:bg-white p-2 rounded-md no-underline inline-flex justify-center items-center space-x-5"
+            className="group text-white font-bold hover:bg-white p-2 rounded-md no-underline inline-flex justify-center items-center space-x-5"
             style={{
               fontSize: "20px",
               textDecoration: "none",
@@ -119,7 +119,7 @@ function AdminSidebar() {
 
           <Link
             to="/admin/news"
-            className="group text-white text-lg font-bold hover:bg-white p-2 rounded-md no-underline inline-flex justify-center items-center space-x-5"
+            className="group text-white font-bold hover:bg-white p-2 rounded-md no-underline inline-flex justify-center items-center space-x-5"
             style={{
               fontSize: "20px",
               textDecoration: "none",
@@ -140,7 +140,7 @@ function AdminSidebar() {
 
           <Link
             to="/admin/events"
-            className="group text-white text-lg font-bold hover:bg-white p-2 rounded-md no-underline inline-flex justify-center items-center space-x-5"
+            className="group text-white font-bold hover:bg-white p-2 rounded-md no-underline inline-flex justify-center items-center space-x-5"
             style={{
               fontSize: "20px",
               textDecoration: "none",
@@ -161,7 +161,7 @@ function AdminSidebar() {
 
           <Link
             to="/admin/contents"
-            className="group text-white text-lg font-bold hover:bg-white p-2 rounded-md no-underline inline-flex justify-center items-center space-x-5"
+            className="group text-white font-bold hover:bg-white p-2 rounded-md no-underline inline-flex justify-center items-center space-x-5"
             style={{
               fontSize: "20px",
               textDecoration: "none",
@@ -183,9 +183,9 @@ function AdminSidebar() {
           </Link>
         </div>
 
-        <div className="flex flex-col text-light font-family:Avenir-Black space-y-5 h-screen justify-end w-full place-items-end content-start p-12 items-start">
+        <div className="flex flex-col text-light font-family:Avenir-Black space-y-5 h-screen justify-end w-full place-items-end content-start p-8 items-start">
           <button
-            className="group text-white text-lg font-bold  hover:bg-white p-2 rounded-md no-underline inline-flex justify-center items-center space-x-5"
+            className="group text-white font-bold  hover:bg-white p-2 rounded-md no-underline inline-flex justify-center items-center space-x-5"
             style={{
               fontSize: "20px",
               textDecoration: "none",

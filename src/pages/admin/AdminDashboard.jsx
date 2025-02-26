@@ -134,7 +134,7 @@ const AdminDashboard = () => {
           event.date
         )
           .toISOString()
-          .split("T")[0],
+          .split("T")[2],
       }))
   );
 
@@ -209,7 +209,7 @@ const AdminDashboard = () => {
                       </h2>
                     </div>
                     <div>
-                      <p className="text-xs text-center uppercase">
+                      <p className="text-lg text-center uppercase">
                         TOTAL EMPLOYEE ACCOUNTS
                       </p>
                     </div>
@@ -226,7 +226,7 @@ const AdminDashboard = () => {
                       </h2>
                     </div>
                     <div>
-                      <p className="text-xs text-center uppercase">
+                      <p className="text-lg text-center uppercase">
                         TOTAL APPLICATIONS
                       </p>
                     </div>
@@ -242,7 +242,7 @@ const AdminDashboard = () => {
                     <h2 className="text-2xl text-center font-bold">
                       {stats.jobListings.total}
                     </h2>
-                    <p className="text-xs text-center uppercase">
+                    <p className="text-lg text-center uppercase">
                       TOTAL JOB LISTINGS
                     </p>
                   </div>
@@ -254,7 +254,7 @@ const AdminDashboard = () => {
                       <div className="text-xl font-bold">
                         {stats.jobListings.open}
                       </div>
-                      <div className="text-xs">Open</div>
+                      <div className="text-md">Open</div>
                     </div>
                     <div
                       className="rounded bg-gray-400 p-2 text-black text-center cursor-pointer"
@@ -263,17 +263,17 @@ const AdminDashboard = () => {
                       <div className="text-xl font-bold">
                         {stats.jobListings.closed}
                       </div>
-                      <div className="text-xs">Closed</div>
+                      <div className="text-md">Closed</div>
                     </div>
                   </div>
                 </div>
               </div>
               {/* Applications Chart */}
-              <div className="border p-4 rounded shadow">
+              <div className="border p-4 rounded shadow ">
                 <div>
                   <h2 className="text-lg font-medium">JOB APPLICATIONS</h2>
                 </div>
-                <div className="h-[480px]">
+                <div className="h-[350px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={getChartData()}>
                       <XAxis
@@ -310,39 +310,41 @@ const AdminDashboard = () => {
           <div className="space-y-6 relative">
             {/* Calendar */}
             <div className="border p-4 rounded shadow h-full">
-              <div className="flex flex-row items-center justify-between"></div>
-              <div className="h-[500px] overflow-hidden">
-                {" "}
-                <FullCalendar
-                  plugins={[dayGridPlugin, interactionPlugin]}
-                  initialView="dayGridMonth"
-                  views={{
-                    dayGridMonth: {
-                      buttonText: "Month",
-                      dayMaxEventRows: 6,
-                    },
-                  }}
-                  headerToolbar={{
-                    left: "prev,next today",
-                    center: "title",
-                    right: "dayGridMonth",
-                  }}
-                  height="100%"
-                  events={calendarEvents}
-                  eventClick={handleEventClick}
-                  dateClick={(info) => {
-                    setEventDate(info.dateStr);
-                    handleOpen();
-                  }}
-                  dayCellClassNames={(date) => {
-                    const day = date.date.getDay();
-                    let classNames = "no-underline text-center";
-                    if (day === 0) classNames += " sunday";
-                    if (day === 6) classNames += " saturday";
-                    return classNames;
-                  }}
-                />
+              <div className="flex flex-row items-center justify-center">
+                <div className="h-[500px] w-120 overflow-hidden">
+                  
+                  <FullCalendar
+                    plugins={[dayGridPlugin, interactionPlugin]}
+                    initialView="dayGridMonth"
+                    views={{
+                      dayGridMonth: {
+                        buttonText: "Month",
+                        dayMaxEventRows: 6,
+                      },
+                    }}
+                    headerToolbar={{
+                      left: "prev,next today",
+                      center: "title",
+                      right: "dayGridMonth",
+                    }}
+                    height="100%"
+                    events={calendarEvents}
+                    eventClick={handleEventClick}
+                    dateClick={(info) => {
+                      setEventDate(info.dateStr);
+                      handleOpen();
+                    }}
+                    dayCellClassNames={(date) => {
+                      const day = date.date.getDay();
+                      let classNames = "no-underline text-center";
+                      if (day === 0) classNames += " sunday";
+                      if (day === 6) classNames += " saturday";
+                      return classNames;
+                    }}
+                  />
+                </div>
               </div>
+
               <h2 className="text-lg font-medium">Upcoming Events</h2>
               <div className="space-y-6">
                 {sortedUpcomingEvents.slice(0, 3).map((event, index) => (
