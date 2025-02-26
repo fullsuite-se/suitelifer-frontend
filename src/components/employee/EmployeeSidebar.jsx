@@ -27,7 +27,7 @@ const EmployeeSidebar = () => {
   };
 
   return (
-    <nav className="w-36 md:w-40 lg:w-48 h-dvh flex flex-col">
+    <nav className="w-36 md:w-40 lg:w-44 xl:w-52 h-dvh flex flex-col">
       <Logout isOpen={isOpen} handleClose={handleCloseModal} />
       <section className="py-11">
         <div className="w-20 h-20 mx-auto mb-3">
@@ -38,13 +38,13 @@ const EmployeeSidebar = () => {
           />
         </div>
         <p className="font-avenir-black text-center">Hernani Domingo</p>
-        <p className="text-sm text-center">@hernani.domingo</p>
+        <p className="text-sm text-center text-primary">@hernani.domingo</p>
       </section>
       <section className="employee-sidebar-links flex-1 ">
         <ul>
-          {sideBarLinks.map((link) => {
+          {sideBarLinks.map((link, index) => {
             return (
-              <li>
+              <li key={index}>
                 <NavLink
                   to={`${link.path}`}
                   className={({ isActive }) =>
