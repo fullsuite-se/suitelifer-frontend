@@ -26,6 +26,7 @@ import EmployeeLayout from "./pages/employee/EmployeeLayout";
 import EmployeeLogin from "./pages/employee/EmployeeLogin";
 import EmployeeBlogsFeed from "./pages/employee/EmployeeBlogsFeed";
 import EmployeeMyBlogs from "./pages/employee/EmployeeMyBlogs";
+import ViewFeed from "./components/ViewFeed";
 
 function App() {
   return (
@@ -61,7 +62,9 @@ function App() {
           <Route element={<EmployeeProtectedRoute />}>
             <Route path="/employee" element={<EmployeeLayout />}>
               <Route index element={<EmployeeBlogsFeed />} />
-              <Route path="blogs-feed" element={<EmployeeBlogsFeed />} />
+              <Route path="blogs-feed" element={<EmployeeBlogsFeed />}>
+                <Route path="feed/:id/:slug" element={<ViewFeed />} />
+              </Route>
               <Route path="my-blogs" element={<EmployeeMyBlogs />} />
             </Route>
           </Route>

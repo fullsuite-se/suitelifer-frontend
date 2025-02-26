@@ -1,0 +1,211 @@
+import React from "react";
+import { useParams } from "react-router-dom";
+import FeedComment from "./FeedComment";
+import {
+  ArrowLeftIcon,
+  ArrowUpIcon,
+  PaperAirplaneIcon,
+  HeartIcon,
+  ChatBubbleLeftEllipsisIcon,
+} from "@heroicons/react/20/solid";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+
+const feed = {
+  id: 1,
+  userPic:
+    "http://sa.kapamilya.com/absnews/abscbnnews/media/2020/tvpatrol/06/01/james-reid.jpg",
+  firstName: "Hernani",
+  lastName: "Domingo",
+  title: "Lost in the beauty of Palawan!",
+  description:
+    "Lost in the beauty of Palawan! 🌊🏝️ From stunning lagoons to white sandy beaches, every moment feels like a dream. ✨🌅 #IslandParadise. Lost in the beauty of Palawan! 🌊🏝️ From stunning lagoons to white sandy beaches, every moment feels like a dream. ✨🌅 #IslandParadise. Lost in the beauty of Palawan! 🌊🏝️ From stunning lagoons to white sandy beaches, every moment feels like a dream. ✨🌅 #IslandParadise.",
+  commentCount: 10,
+  likeCount: 25,
+  date: "2025-02-26 14:30:00",
+  images: [
+    "https://plus.unsplash.com/premium_photo-1697729414037-e2a59823d9d9?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "https://images.unsplash.com/photo-1583685173048-342a162bb888?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "https://images.unsplash.com/photo-1531761535209-180857e963b9?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  ],
+};
+
+const comments = [
+  {
+    id: 1,
+    userPic:
+      "http://sa.kapamilya.com/absnews/abscbnnews/media/2020/tvpatrol/06/01/james-reid.jpg",
+    firstName: "James",
+    lastName: "Reid",
+    content:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit magnam quas ratione, vero iusto expedita odio! Necessitatibus laudantium aliquid iusto?",
+    createdAt: "2025-02-26 14:30:00",
+  },
+  {
+    id: 1,
+    userPic:
+      "http://sa.kapamilya.com/absnews/abscbnnews/media/2020/tvpatrol/06/01/james-reid.jpg",
+    firstName: "James",
+    lastName: "Reid",
+    content:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit magnam quas ratione, vero iusto expedita odio! Necessitatibus laudantium aliquid iusto?",
+    createdAt: "2025-02-26 14:30:00",
+  },
+];
+
+const ViewFeed = () => {
+  const { id } = useParams();
+
+  return (
+    <section className="p-2 xl:p-3 flex flex-col gap-8 mt-4">
+      <section className="flex items-center gap-2">
+        <ArrowLeftIcon className="w-6 h-6 text-primary" />
+        <span className="font-avenir-black text-primary text-base">Back</span>
+      </section>
+      <section className="flex gap-4">
+        <div className="w-12 h-12">
+          <img
+            src={feed.userPic}
+            alt={feed.firstName}
+            className="w-full h-full object-cover rounded-full"
+          />
+        </div>
+        <div>
+          <p className="font-avenir-black">
+            {feed.firstName} {feed.lastName}
+          </p>
+          <span className="text-xs text-gray-500">{feed.date}</span>
+        </div>
+      </section>
+      <section>
+        <main className="max-w-5xl mx-auto">
+          <Swiper
+            modules={[Navigation, Pagination]}
+            spaceBetween={50}
+            slidesPerView={1}
+            navigation
+            pagination={{ clickable: true }}
+            className="h-[600px]"
+          >
+            {feed.images.map((image, index) => (
+              <SwiperSlide
+                key={index}
+                className="flex items-center justify-center"
+              >
+                <div className="h-full w-full">
+                  <img
+                    src={image}
+                    className="w-full h-full object-cover" // Cover the entire space
+                  />
+                </div>
+              </SwiperSlide>
+            ))}
+            <style>
+              {`
+    .swiper-button-next, .swiper-button-prev {
+  color: white !important; /* Change arrow color */
+  background: rgba(0, 0, 0, 0.5) !important; /* Semi-transparent background */
+  border-radius: 50% !important;
+  width: 42px !important;
+  height: 42px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.swiper-button-next:hover, .swiper-button-prev:hover {
+  background: rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Modify the default Swiper arrows */
+.swiper-button-next::after, .swiper-button-prev::after {
+  font-size: 1rem !important; /* Adjust arrow size */
+  width: 15px !important;
+  height: 15px !important;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-button-next::after {
+  content: "➤" !important; /* Custom arrow for next button */
+}
+
+.swiper-button-prev::after {
+  content: "➤" !important; /* Custom arrow */
+  transform: rotate(180deg); /* Flip the arrow for previous */
+}
+
+      }
+    `}
+            </style>
+          </Swiper>
+        </main>
+      </section>
+      <section>
+        <h4 className="text-center">{feed.title}</h4>
+        <p>{feed.description}</p>
+      </section>
+      <section className="flex gap-3">
+        <button className="flex gap-3 cursor-pointer">
+          <HeartIcon className="w-5 h-5 text-gray-400" />
+          <span className="text-gray-500">{feed.likeCount}</span>
+        </button>
+        <button className="flex gap-3 cursor-pointer">
+          <ChatBubbleLeftEllipsisIcon className="w-5 h-5 text-gray-400" />
+          <span className="text-gray-500">{feed.commentCount}</span>
+        </button>
+      </section>
+      <section className="flex items-center gap-3">
+        <div className="w-12 h-12">
+          <img
+            src={feed.userPic}
+            alt={feed.firstName}
+            className="w-full h-full object-cover rounded-full"
+          />
+        </div>
+        <textarea
+          name="comment"
+          id="comment"
+          cols="30"
+          rows="1"
+          className="border flex-1 px-2 py-2 rounded bg-blue-50 border-none min-h-[50px]"
+          placeholder="Write your comment here..."
+        ></textarea>
+        <PaperAirplaneIcon className="text-primary w-6 h-6" />
+      </section>
+      <section className="flex justify-between items-center">
+        <h4 className="">Comments</h4>
+        <div className="flex items-center gap-1">
+          <span className="text-primary font-avenir-black text-sm">
+            Newest first
+          </span>
+          <ArrowUpIcon className="w-4 h-4 text-primary" />
+        </div>
+      </section>
+      <section className="flex flex-col gap-4">
+        {comments.map((comment, index) => (
+          <>
+            <FeedComment
+              id={comment.id}
+              firstName={comment.firstName}
+              lastName={comment.lastName}
+              content={comment.content}
+              createdAt={comment.createdAt}
+              userPic={comment.userPic}
+              key={comment.id}
+            />
+            {index != comments.length - 1 && <hr className="text-gray-200" />}
+          </>
+        ))}
+      </section>
+    </section>
+  );
+};
+
+export default ViewFeed;

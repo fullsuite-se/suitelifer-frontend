@@ -19,6 +19,31 @@
   box-sizing: border-box;
 }
 
+/* width */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+*:hover {
+  scrollbar-color: #c4c4c4 #f7f7f7b0;
+  transition: all ease 0.2s;
+}
+
 a {
   font-weight: 500;
   /* color: #646cff; */
@@ -132,8 +157,6 @@ h6 {
 .saturday .fc-daygrid-day-number {
   color: #ff7575;
 }
-
-
 
 .fc-daygrid-day-frame {
   border: none !important;
