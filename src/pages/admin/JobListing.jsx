@@ -1,21 +1,25 @@
 import React from "react";
+import logofsfull from "../../assets/logos/logo-fs-full.svg";
 
 export default function JobListing() {
   return (
     <div className="flex">
-      <div className="flex-1 container mx-auto p-4 space-y-6">
+      <div className="flex-1 p-2 mx-auto space-y-6">
         {/* Header */}
-        <div className="flex justify-between items-center">
-          <div className="text-2xl font-bold text-primary">fullsuite.</div>
-          <div className="space-x-2">
-            <button className="bg-primary hover:bg-teal-700 text-white px-4 py-2 rounded">
-              <span className="mr-2">+</span> JOB LISTING
-            </button>
-            <button className="bg-primary hover:bg-teal-700 text-white px-4 py-2 rounded">
-              <span className="mr-2">+</span> INDUSTRY
-            </button>
+
+        <header className="">
+          <div className="container flex h-16 items-center justify-between">
+            <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
+            <div className="flex gap-2">
+              <button className="bg-primary hover:bg-teal-700 text-white px-4 py-2 rounded">
+                <span className="mr-2">+</span> JOB LISTING
+              </button>
+              <button className="bg-primary hover:bg-teal-700 text-white px-4 py-2 rounded">
+                <span className="mr-2">+</span> INDUSTRY
+              </button>
+            </div>
           </div>
-        </div>
+        </header>
 
         {/* Stats */}
         <div className="flex gap-4">

@@ -57,12 +57,8 @@ const jobListingsData = [
 ];
 
 const initialEvents = {
-  February: [
-    { date: 19, title: "New Interns' Onboarding" },
-  ],
-  March: [
-    { date: 19, title: "New Interns' Onboarding" },
-  ],
+  February: [{ date: 19, title: "New Interns' Onboarding" }],
+  March: [{ date: 19, title: "New Interns' Onboarding" }],
 };
 
 const stats = {
@@ -183,12 +179,12 @@ const AdminDashboard = () => {
         <div className="container flex h-16 items-center justify-between">
           <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
           <div className="flex gap-2">
-            <Button variant="contained" className="bg-primary text-white">
-              + JOB LISTING
-            </Button>
-            <Button variant="contained" className="bg-primary text-white">
-              + EVENT
-            </Button>
+            <button className="bg-primary hover:bg-teal-700 text-white px-4 py-2 rounded">
+              <span className="mr-2">+</span> JOB LISTING
+            </button>
+            <button className="bg-primary hover:bg-teal-700 text-white px-4 py-2 rounded">
+              <span className="mr-2">+</span> INDUSTRY
+            </button>
           </div>
         </div>
       </header>
