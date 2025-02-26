@@ -1,8 +1,10 @@
 import React from "react";
 import FeedCard from "../../components/FeedCard";
+import { Outlet, useParams } from "react-router-dom";
 
 const blogFeeds = [
   {
+    id: 1,
     userPic:
       "http://sa.kapamilya.com/absnews/abscbnnews/media/2020/tvpatrol/06/01/james-reid.jpg",
     firstName: "Hernani",
@@ -21,6 +23,7 @@ const blogFeeds = [
     ],
   },
   {
+    id: 2,
     userPic:
       "http://sa.kapamilya.com/absnews/abscbnnews/media/2020/tvpatrol/06/01/james-reid.jpg",
     firstName: "Hernani",
@@ -40,19 +43,27 @@ const blogFeeds = [
   },
 ];
 const EmployeeBlogsFeed = () => {
+  const { id } = useParams();
+
   return (
     <section className="p-2 xl:p-3">
-      <div className="flex items-center justify-between">
-        <h2 className="font-avenir-black">Feeds</h2>
-        <span className="font-avenir-black text-primary text-sm">
-          + Create new blog
-        </span>
-      </div>
-      <main>
-        {blogFeeds.map((feed, index) => (
-          <FeedCard key={index} feed={feed} />
-        ))}
-      </main>
+      {id ? (
+        <Outlet />
+      ) : (
+        <>
+          <div className="flex items-center justify-between">
+            <h2 className="font-avenir-black">Feeds</h2>
+            <span className="font-avenir-black text-primary text-sm">
+              + Create new blog
+            </span>
+          </div>
+          <main>
+            {blogFeeds.map((feed, index) => (
+              <FeedCard key={index} feed={feed} />
+            ))}
+          </main>
+        </>
+      )}
     </section>
   );
 };

@@ -32,7 +32,7 @@ const FeedCard = ({ feed }) => {
           </div>
         </div>
 
-        <Link to={"/"}>
+        <Link to={`feed/${feed.id}/${toSlug(feed.title)}`}>
           <ArrowUpRightIcon className="w-7 h-7 text-primary cursor-pointer" />
         </Link>
       </section>
