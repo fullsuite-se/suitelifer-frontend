@@ -2,9 +2,14 @@ import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import IconBlogs from "../../assets/icons/IconBlogs";
 import IconNewspaper from "../../assets/icons/IconNewspaper";
-import IconLogout from "../../assets/icons/IconLogout";
 import { Logout } from "../../modals/Logout";
 import fullsuitelogo from "../../assets/logos/logo-fs-full.svg";
+import { ArrowRightCircleIcon } from "@heroicons/react/24/outline";
+import IconMyBlogs from "../../assets/icons/IconMyBlogs";
+import IconPersonaTest from "../../assets/icons/IconPersonaTest";
+import IconThreads from "../../assets/icons/IconThreads";
+import IconWorkshops from "../../assets/icons/IconWorkshops";
+import IconEvents from "../../assets/icons/IconEvents";
 
 const sideBarLinks = [
   {
@@ -14,8 +19,28 @@ const sideBarLinks = [
   },
   {
     title: "My Blogs",
-    icon: IconNewspaper,
+    icon: IconMyBlogs,
     path: "/employee/my-blogs",
+  },
+  {
+    title: "Threads",
+    icon: IconThreads,
+    path: "/employee/threads",
+  },
+  {
+    title: "Events",
+    icon: IconEvents,
+    path: "/employee/events",
+  },
+  {
+    title: "Workshops",
+    icon: IconWorkshops,
+    path: "/employee/workshops",
+  },
+  {
+    title: "Personality Test",
+    icon: IconPersonaTest,
+    path: "/employee/personality-test",
   },
 ];
 
@@ -70,7 +95,7 @@ const EmployeeSidebar = () => {
       <section className="p-5 py-7 flex gap-12">
         <img src={fullsuitelogo} alt="fullsuitelogo" className="w-20 h-auto" />
         <button className=" cursor-pointer" onClick={() => setIsOpen(true)}>
-          <IconLogout color={"black"} height={"20"} width={"20"} />
+          <ArrowRightCircleIcon className="w-6 h-6" />
         </button>
       </section>
     </nav>

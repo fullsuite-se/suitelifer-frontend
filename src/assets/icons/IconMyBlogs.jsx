@@ -1,6 +1,6 @@
 import React from "react";
 
-const IconNewspaper = ({ color, height, width }) => {
+const IconMyBlogs = ({ color, height, width }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -18,4 +18,4 @@ const IconNewspaper = ({ color, height, width }) => {
   );
 };
 
-export default IconNewspaper;
+export default IconMyBlogs;

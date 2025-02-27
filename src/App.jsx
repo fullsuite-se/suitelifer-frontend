@@ -26,7 +26,7 @@ import EmployeeLayout from "./pages/employee/EmployeeLayout";
 import EmployeeLogin from "./pages/employee/EmployeeLogin";
 import EmployeeBlogsFeed from "./pages/employee/EmployeeBlogsFeed";
 import EmployeeMyBlogs from "./pages/employee/EmployeeMyBlogs";
-import ViewFeed from "./components/ViewFeed";
+import ViewFeed from "./components/employee/ViewFeed";
 
 function App() {
   return (
@@ -65,6 +65,7 @@ function App() {
               <Route path="blogs-feed" element={<EmployeeBlogsFeed />} />
               <Route path="blogs-feed/feed/:id/:slug" element={<ViewFeed />} />
               <Route path="my-blogs" element={<EmployeeMyBlogs />} />
+              <Route path="my-blogs/feed/:id/:slug" element={<ViewFeed />} />
             </Route>
           </Route>
         </Routes>
