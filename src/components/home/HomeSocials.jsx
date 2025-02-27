@@ -6,7 +6,7 @@ const HomeSocials = () => {
   return (
     <section>
       {/* HEADING */}
-      <div className="pt-10 pb-[32%] sm:pb-[22%] sm:pt-20">
+      <div className="pt-10 xl:pt-25 pb-[32%] sm:pb-[22%] sm:pt-20">
         
         <div className="">
           <img

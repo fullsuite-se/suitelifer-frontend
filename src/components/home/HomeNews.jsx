@@ -120,7 +120,7 @@ const HomeNews = () => {
           {newsList.slice(1, 4).map((news) => (
             <div
               key={news.id}
-              className="other-news bg-white rounded-2xl cursor-pointer px-2 pb-2 lg:px-3 transition-all duration-300 hover:shadow-md flex justify-center items-center gap-2"
+              className="other-news rounded-2xl cursor-pointer px-2 pb-2 lg:px-3 transition-all duration-300 hover:shadow-md hover:bg-white flex justify-center items-center gap-2"
             >
               {/* CONTENT */}
               <div className="w-[50%] sm:w-[60%] flex flex-col">
