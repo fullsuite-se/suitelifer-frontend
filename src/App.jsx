@@ -65,6 +65,7 @@ function App() {
               <Route path="blogs-feed" element={<EmployeeBlogsFeed />} />
               <Route path="blogs-feed/feed/:id/:slug" element={<ViewFeed />} />
               <Route path="my-blogs" element={<EmployeeMyBlogs />} />
+              <Route path="my-blogs/feed/:id/:slug" element={<ViewFeed />} />
             </Route>
           </Route>
         </Routes>
