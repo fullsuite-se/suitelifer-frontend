@@ -1,6 +1,7 @@
 import React from "react";
-import FeedCard from "../../components/FeedCard";
+import FeedCard from "../../components/employee/FeedCard";
 import { Outlet, useParams } from "react-router-dom";
+import { TicketIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 
 const blogFeeds = [
   {
@@ -51,15 +52,27 @@ const EmployeeBlogsFeed = () => {
         <Outlet />
       ) : (
         <>
-          <div className="flex items-center justify-between">
+          <div className="lg:flex items-center justify-between hidden">
             <h2 className="font-avenir-black">Feeds</h2>
             <span className="font-avenir-black text-primary text-sm">
               + Create new blog
             </span>
           </div>
+          <div className="bg-primary rounded-md p-3 flex justify-between mb-5 lg:hidden">
+            <div className="flex gap-2">
+              <TicketIcon className="w-5 h-5 text-white" />
+              <span className="text-white text-sm">3 events today</span>
+            </div>
+            <div className="flex gap-1 items-center">
+              <span className="text-white text-xs">See all</span>
+              <ChevronRightIcon className="w-3 h-3 text-white" />
+            </div>
+          </div>
           <main>
             {blogFeeds.map((feed, index) => (
-              <FeedCard key={index} feed={feed} />
+              <div key={index} className="mb-5">
+                <FeedCard feed={feed} />
+              </div>
             ))}
           </main>
         </>

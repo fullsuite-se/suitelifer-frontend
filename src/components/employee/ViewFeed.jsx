@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import FeedComment from "./FeedComment";
 import {
   ArrowLeftIcon,
@@ -46,7 +46,7 @@ const comments = [
     createdAt: "2025-02-26 14:30:00",
   },
   {
-    id: 1,
+    id: 2,
     userPic:
       "http://sa.kapamilya.com/absnews/abscbnnews/media/2020/tvpatrol/06/01/james-reid.jpg",
     firstName: "James",
@@ -59,13 +59,20 @@ const comments = [
 
 const ViewFeed = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <section className="p-2 xl:p-3 flex flex-col gap-8 mt-4">
-      <section className="flex items-center gap-2">
+      <button
+        className="flex items-center gap-2 cursor-pointer"
+        onClick={() => {
+          navigate(location.state.previousPage);
+        }}
+      >
         <ArrowLeftIcon className="w-6 h-6 text-primary" />
         <span className="font-avenir-black text-primary text-base">Back</span>
-      </section>
+      </button>
       <section className="flex gap-4">
         <div className="w-12 h-12">
           <img
@@ -99,56 +106,16 @@ const ViewFeed = () => {
                 <div className="h-full w-full">
                   <img
                     src={image}
-                    className="w-full h-full object-cover" // Cover the entire space
+                    className="w-full h-full object-cover rounded-lg"
                   />
                 </div>
               </SwiperSlide>
             ))}
-            <style>
-              {`
-    .swiper-button-next, .swiper-button-prev {
-  color: white !important; /* Change arrow color */
-  background: rgba(0, 0, 0, 0.5) !important; /* Semi-transparent background */
-  border-radius: 50% !important;
-  width: 42px !important;
-  height: 42px !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.swiper-button-next:hover, .swiper-button-prev:hover {
-  background: rgba(0, 0, 0, 0.8) !important;
-}
-
-/* Modify the default Swiper arrows */
-.swiper-button-next::after, .swiper-button-prev::after {
-  font-size: 1rem !important; /* Adjust arrow size */
-  width: 15px !important;
-  height: 15px !important;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.swiper-button-next::after {
-  content: "➤" !important; /* Custom arrow for next button */
-}
-
-.swiper-button-prev::after {
-  content: "➤" !important; /* Custom arrow */
-  transform: rotate(180deg); /* Flip the arrow for previous */
-}
-
-      }
-    `}
-            </style>
           </Swiper>
         </main>
       </section>
       <section>
-        <h4 className="text-center">{feed.title}</h4>
+        <h3 className="text-center font-avenir-black">{feed.title}</h3>
         <p>{feed.description}</p>
       </section>
       <section className="flex gap-3">
@@ -190,7 +157,7 @@ const ViewFeed = () => {
       </section>
       <section className="flex flex-col gap-4">
         {comments.map((comment, index) => (
-          <>
+          <div key={comment.id}>
             <FeedComment
               id={comment.id}
               firstName={comment.firstName}
@@ -198,10 +165,11 @@ const ViewFeed = () => {
               content={comment.content}
               createdAt={comment.createdAt}
               userPic={comment.userPic}
-              key={comment.id}
             />
-            {index != comments.length - 1 && <hr className="text-gray-200" />}
-          </>
+            {index != comments.length - 1 && (
+              <hr className="text-gray-200 mt-4" />
+            )}
+          </div>
         ))}
       </section>
     </section>
