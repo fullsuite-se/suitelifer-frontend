@@ -5,13 +5,23 @@ import socialTitleMobile from "../../assets/images/social-title-mobile.svg";
 const HomeSocials = () => {
   return (
     <section>
-    {/* HEADING */}
-      <div className="mt-10">
-        <div className="flex justify-end">
-          <img className="w-[140px]" src={dotsLine} alt="3 dots and a line" />
+      {/* HEADING */}
+      <div className="pt-10 pb-[32%] sm:pb-[22%] sm:pt-20">
+        
+        <div className="">
+          <img
+            className="absolute -z-10 transform -translate-y-2/5 -translate-x-[15%] sm:hidden"
+            src={socialTitleMobile}
+            alt="Socials Heading Title"
+          />
+          <img
+            className="absolute -z-10 transform -translate-y-2/5 -translate-x-[19%] w-[80%] hidden sm:block"
+            src={socialTitleDesktop}
+            alt="Socials Heading Title"
+          />
         </div>
-        <div>
-            <img className="hidden absolute -z-10 transform -translate-y-2/5 -translate-x-[40px]" src={socialTitleMobile} alt="Socials Heading Title" />
+        <div className="flex justify-end">
+          <img className="dots-line" src={dotsLine} alt="3 dots and a line" />
         </div>
       </div>
     </section>

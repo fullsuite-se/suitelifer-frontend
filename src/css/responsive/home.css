@@ -1,4 +1,28 @@
 @import "tailwindcss";
+.dots-line{
+  width: 140px;
+
+  @media (min-width:400px) {
+      width: 180px;
+  }
+
+  @media (min-width:500px) {
+    width: 220px;
+  }
+
+  @media (width >= 40rem /* 640px */) {
+    width: 240px;
+  }
+
+  @media (width >= 48rem /* 768px */) {
+    width: 320px;
+  }
+
+  @media (width >= 80rem /* 1280px */) {
+    width: 420px;
+  }
+}
+
 .news-desc{
   @media (min-width: 400px) {
     display: block;
