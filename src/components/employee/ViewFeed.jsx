@@ -167,7 +167,7 @@ const ViewFeed = () => {
               userPic={comment.userPic}
             />
             {index != comments.length - 1 && (
-              <hr className="text-gray-200" key={comment + index} />
+              <hr className="text-gray-200 mt-4" />
             )}
           </div>
         ))}
