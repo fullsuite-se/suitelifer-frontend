@@ -1,4 +1,42 @@
 @import "tailwindcss";
+.dots-line{
+  width: 140px;
+
+  @media (min-width:400px) {
+      width: 180px;
+  }
+
+  @media (min-width:500px) {
+    width: 220px;
+  }
+
+  @media (width >= 40rem /* 640px */) {
+    width: 240px;
+  }
+
+  @media (width >= 48rem /* 768px */) {
+    width: 320px;
+  }
+
+  @media (width >= 80rem /* 1280px */) {
+    width: 420px;
+  }
+}
+
+.news-desc{
+  @media (min-width: 400px) {
+    display: block;
+  }
+}
+
+.news-desc > p {
+  @media (min-width: 400px) {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+}
 
 .tablet-nav {
   @media (width <= 40rem /* 640px */) {
