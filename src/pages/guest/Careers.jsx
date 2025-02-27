@@ -55,7 +55,7 @@ const Careers = () => {
       </div>
 
       {/* SPOTIFY EPISODES */}
-      <div className="px-3">
+      <div className="px-3 mb-10">
         {extractedEpisodeIds.map((id, index) => {
           return (
             <div className="p-1">

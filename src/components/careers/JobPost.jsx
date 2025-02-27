@@ -10,13 +10,15 @@ const JobPost = ({
 }) => {
   const swiperSlide = useSwiperSlide();
   const isActive = swiperSlide.isActive;
+  const isPrev = swiperSlide.isPrev;
+  const isNext = swiperSlide.isNext;
 
   return (
     <div
-      className={`job-container max-w-90 text-sm p-5 rounded-xl flex flex-col ${
+      className={`job-container max-w-100 shadow-2xs text-sm p-5 rounded-xl flex flex-col ${
         isActive
           ? "bg-primary text-white h-75"
-          : "bg-white text-primary h-65 justify-center items-center"
+          : `bg-white text-primary h-65 justify-center items-center ${isPrev ? "md:items-end" : isActive ? "md:items-center" : "md:items-start"}`
       }`}
     >
       <p className="text-base font-avenir-black truncate">{title}</p>
