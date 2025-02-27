@@ -5,12 +5,12 @@ import {
   ChatBubbleLeftEllipsisIcon,
 } from "@heroicons/react/20/solid";
 import { Link } from "react-router-dom";
-import { toSlug } from "../utils/slugUrl";
+import { toSlug } from "../../utils/slugUrl";
 
 const FeedCard = ({ feed }) => {
   return (
     <section
-      className="rounded-lg p-5 xl:p-8 flex flex-col gap-6 mb-5 shadow-md border border-gray-100"
+      className="rounded-lg p-5 xl:p-8 flex flex-col gap-6 shadow-md border border-gray-100"
       style={{
         boxShadow: "rgba(0, 0, 0, 0.08) 0px 4px 12px",
       }}
@@ -32,7 +32,10 @@ const FeedCard = ({ feed }) => {
           </div>
         </div>
 
-        <Link to={`feed/${feed.id}/${toSlug(feed.title)}`}>
+        <Link
+          to={`feed/${feed.id}/${toSlug(feed.title)}`}
+          state={{ previousPage: location.pathname }}
+        >
           <ArrowUpRightIcon className="w-7 h-7 text-primary cursor-pointer" />
         </Link>
       </section>

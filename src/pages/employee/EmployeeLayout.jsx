@@ -9,13 +9,13 @@ const EmployeeLayout = () => {
       className="flex gap-3 xl:gap-6 h-dvh"
       style={{ maxWidth: "1800px", margin: "0 auto", padding: "0 1rem" }}
     >
-      <section>
+      <section className="hidden">
         <EmployeeSidebar />
       </section>
       <main className="flex-1 overflow-y-auto">
         <Outlet />
       </main>
-      <section>
+      <section className="hidden">
         <EmployeeAside />
       </section>
     </section>

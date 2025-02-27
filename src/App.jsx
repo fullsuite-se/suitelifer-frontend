@@ -26,7 +26,7 @@ import EmployeeLayout from "./pages/employee/EmployeeLayout";
 import EmployeeLogin from "./pages/employee/EmployeeLogin";
 import EmployeeBlogsFeed from "./pages/employee/EmployeeBlogsFeed";
 import EmployeeMyBlogs from "./pages/employee/EmployeeMyBlogs";
-import ViewFeed from "./components/ViewFeed";
+import ViewFeed from "./components/employee/ViewFeed";
 
 function App() {
   return (

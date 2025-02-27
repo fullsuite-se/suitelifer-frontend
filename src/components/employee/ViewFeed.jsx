@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import FeedComment from "./FeedComment";
 import {
   ArrowLeftIcon,
@@ -46,7 +46,7 @@ const comments = [
     createdAt: "2025-02-26 14:30:00",
   },
   {
-    id: 1,
+    id: 2,
     userPic:
       "http://sa.kapamilya.com/absnews/abscbnnews/media/2020/tvpatrol/06/01/james-reid.jpg",
     firstName: "James",
@@ -59,13 +59,20 @@ const comments = [
 
 const ViewFeed = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <section className="p-2 xl:p-3 flex flex-col gap-8 mt-4">
-      <section className="flex items-center gap-2">
+      <button
+        className="flex items-center gap-2"
+        onClick={() => {
+          navigate(location.state.previousPage);
+        }}
+      >
         <ArrowLeftIcon className="w-6 h-6 text-primary" />
         <span className="font-avenir-black text-primary text-base">Back</span>
-      </section>
+      </button>
       <section className="flex gap-4">
         <div className="w-12 h-12">
           <img
@@ -150,7 +157,7 @@ const ViewFeed = () => {
       </section>
       <section className="flex flex-col gap-4">
         {comments.map((comment, index) => (
-          <>
+          <div key={comment.id}>
             <FeedComment
               id={comment.id}
               firstName={comment.firstName}
@@ -158,10 +165,11 @@ const ViewFeed = () => {
               content={comment.content}
               createdAt={comment.createdAt}
               userPic={comment.userPic}
-              key={comment.id}
             />
-            {index != comments.length - 1 && <hr className="text-gray-200" />}
-          </>
+            {index != comments.length - 1 && (
+              <hr className="text-gray-200" key={comment + index} />
+            )}
+          </div>
         ))}
       </section>
     </section>

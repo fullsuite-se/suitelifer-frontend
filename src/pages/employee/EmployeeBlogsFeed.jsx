@@ -1,5 +1,5 @@
 import React from "react";
-import FeedCard from "../../components/FeedCard";
+import FeedCard from "../../components/employee/FeedCard";
 import { Outlet, useParams } from "react-router-dom";
 
 const blogFeeds = [
@@ -59,7 +59,9 @@ const EmployeeBlogsFeed = () => {
           </div>
           <main>
             {blogFeeds.map((feed, index) => (
-              <FeedCard key={index} feed={feed} />
+              <div key={index}>
+                <FeedCard feed={feed} />
+              </div>
             ))}
           </main>
         </>
