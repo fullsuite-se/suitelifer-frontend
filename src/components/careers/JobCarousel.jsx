@@ -68,14 +68,14 @@ export default function JobCarousel() {
         loop={true}
         modules={[Navigation, Pagination, EffectCoverflow]}
         slidesPerView={2}
-        coverflowEffect={{ rotate: 10, stretch: 0, depth: 10, modifier: 2.5 }}
+        coverflowEffect={{ rotate: 15, stretch: 0, depth: 50, modifier: .25 }}
         pagination={{
           el: ".swiper-pagination",
           clickable: true,
           dynamicBullets: true,
         }}
         navigation
-        className="flex flex-col justify-center"
+        className="flex flex-col justify-center max-w-200"
       >
         {jobs.map((job, index) => {
           return (
