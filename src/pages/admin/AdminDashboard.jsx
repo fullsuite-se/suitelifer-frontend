@@ -7,6 +7,7 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import moment from "moment";
 import logofsfull from "../../assets/logos/logo-fs-full.svg";
 import "../../css/animation/animation.css";
 import "../../css/base/theme.css";
@@ -75,6 +76,7 @@ const AdminDashboard = () => {
   const [open, setOpen] = useState(false);
   const [eventTitle, setEventTitle] = useState("");
   const [eventDate, setEventDate] = useState("");
+  const [eventDescription, setEventDescription] = useState("");
   const [events, setEvents] = useState(initialEvents);
   const [editEvent, setEditEvent] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -85,17 +87,16 @@ const AdminDashboard = () => {
   const handleClose = () => {
     setEventTitle("");
     setEventDate("");
+    setEventDescription("");
     setEditEvent(null);
     setOpen(false);
   };
 
   const handleAddEvent = () => {
     if (eventTitle && eventDate) {
-      const eventMonth = new Date(eventDate).toLocaleString("default", {
-        month: "long",
-      });
-      const eventDay = new Date(eventDate).getDate();
-      const newEvent = { date: eventDay, title: eventTitle };
+      const eventMonth = moment(eventDate).format("MMMM");
+      const eventDay = moment(eventDate).date();
+      const newEvent = { date: eventDay, title: eventTitle, description: eventDescription };
 
       setEvents((prevEvents) => {
         const updatedEvents = { ...prevEvents };
@@ -120,6 +121,7 @@ const AdminDashboard = () => {
     setSelectedEvent({
       title: clickInfo.event.title,
       date: clickInfo.event.startStr,
+      description: clickInfo.event.extendedProps.description,
     });
     setShowUpcomingEvents(true);
   };
@@ -128,13 +130,8 @@ const AdminDashboard = () => {
     ([month, monthEvents]) =>
       monthEvents.map((event) => ({
         title: event.title,
-        date: new Date(
-          2025,
-          new Date(`${month} 1, 2025`).getMonth(),
-          event.date
-        )
-          .toISOString()
-          .split("T")[2],
+        date: moment(`${month} ${event.date}, 2025`).format("YYYY-MM-DD"),
+        description: event.description,
       }))
   );
 
@@ -162,11 +159,7 @@ const AdminDashboard = () => {
       monthEvents.map((event) => ({
         ...event,
         month,
-        dateObj: new Date(
-          2025,
-          new Date(`${month} 1, 2025`).getMonth(),
-          event.date
-        ),
+        dateObj: moment(`${month} ${event.date}, 2025`).toDate(),
       }))
     )
     .sort((a, b) => a.dateObj - b.dateObj)
@@ -312,7 +305,6 @@ const AdminDashboard = () => {
             <div className="border p-4 rounded shadow h-full">
               <div className="flex flex-row items-center justify-center">
                 <div className="h-[500px] w-120 overflow-hidden">
-                  
                   <FullCalendar
                     plugins={[dayGridPlugin, interactionPlugin]}
                     initialView="dayGridMonth"
@@ -425,6 +417,13 @@ const AdminDashboard = () => {
             fullWidth
             value={eventDate}
             onChange={(e) => setEventDate(e.target.value)}
+            className="mt-2"
+          />
+          <TextField
+            label="Description"
+            fullWidth
+            value={eventDescription}
+            onChange={(e) => setEventDescription(e.target.value)}
             className="mt-2"
           />
           <div className="mt-6 flex justify-between">

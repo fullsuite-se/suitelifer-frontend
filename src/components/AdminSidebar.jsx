@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import "tailwindcss";
 import image_01 from "../assets/images/image_01.svg";
 import iconDashboard from "../assets/icons/icon-dashboard.svg";
@@ -49,143 +49,136 @@ function AdminSidebar() {
         </div>
 
         <div className="flex flex-col text-light font-family:Avenir-Black space-y-5 h-screen justify-start w-full place-items-baseline content-start p-8 items-start">
-          <Link
+          <NavLink
             to="/admin/dashboard"
-            className="group text-white font-bold hover:bg-white p-2 rounded-md no-underline inline-flex justify-center items-center space-x-5"
-            style={{
-              fontSize: "20px",
-              textDecoration: "none",
-              fontWeight: "bolder",
-            }}
+            className={({ isActive }) =>
+              isActive
+                ? "bg-white text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
+                : "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
+            }
           >
-            <img
-              src={iconDashboard}
-              alt="Dashboard"
-              className="size-8 group-hover:hidden"
-            />
-            <img
-              src={iconDashboardHover}
-              alt="Dashboard"
-              className="size-8 hidden group-hover:inline"
-            />
-            <span className="group-hover:text-primary text-left">
-              DASHBOARD
-            </span>
-          </Link>
+            {({ isActive }) => (
+              <>
+                <img
+                  src={isActive ? iconDashboardHover : iconDashboard}
+                  alt="Dashboard"
+                  className="size-8"
+                />
+                <span className="no-underline! font-avenir-black">
+                  DASHBOARD
+                </span>
+              </>
+            )}
+          </NavLink>
 
-          <Link
+          <NavLink
             to="/admin/joblisting"
-            className="group text-white font-bold hover:bg-white p-2 rounded-md no-underline inline-flex justify-center items-center space-x-5"
-            style={{
-              fontSize: "20px",
-              textDecoration: "none",
-            }}
+            className={({ isActive }) =>
+              isActive
+                ? "bg-white text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
+                : "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
+            }
           >
-            <img
-              src={iconJoblisting}
-              alt="Job Listings"
-              className="size-8 group-hover:hidden"
-            />
-            <img
-              src={iconJoblistingHover}
-              alt="Job Listings"
-              className="size-8 hidden group-hover:inline"
-            />
-            <span className="group-hover:text-primary text-left">
-              JOB LISTINGS
-            </span>
-          </Link>
+            {({ isActive }) => (
+              <>
+                <img
+                  src={isActive ? iconJoblistingHover : iconJoblisting}
+                  alt="Job Listings"
+                  className="size-8"
+                />
+                <span className="no-underline! font-avenir-black">
+                  JOB LISTINGS
+                </span>
+              </>
+            )}
+          </NavLink>
 
-          <Link
+          <NavLink
             to="/admin/blogs"
-            className="group text-white font-bold hover:bg-white p-2 rounded-md no-underline inline-flex justify-center items-center space-x-5"
-            style={{
-              fontSize: "20px",
-              textDecoration: "none",
-            }}
+            className={({ isActive }) =>
+              isActive
+                ? "bg-white text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
+                : "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
+            }
           >
-            <img
-              src={iconBlog}
-              alt="Blogs"
-              className="size-8 group-hover:hidden"
-            />
-            <img
-              src={iconBlogHover}
-              alt="Blogs"
-              className="size-8 hidden group-hover:inline"
-            />
-            <span className="group-hover:text-primary text-left">BLOGS</span>
-          </Link>
+            {({ isActive }) => (
+              <>
+                <img
+                  src={isActive ? iconBlogHover : iconBlog}
+                  alt="Blogs"
+                  className="size-8"
+                />
+                <span className="no-underline! font-avenir-black">BLOGS</span>
+              </>
+            )}
+          </NavLink>
 
-          <Link
+          <NavLink
             to="/admin/news"
-            className="group text-white font-bold hover:bg-white p-2 rounded-md no-underline inline-flex justify-center items-center space-x-5"
-            style={{
-              fontSize: "20px",
-              textDecoration: "none",
-            }}
+            className={({ isActive }) =>
+              isActive
+                ? "bg-white text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
+                : "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
+            }
           >
-            <img
-              src={iconNews}
-              alt="News"
-              className="size-8 group-hover:hidden"
-            />
-            <img
-              src={iconNewsHover}
-              alt="News"
-              className="size-8 hidden group-hover:inline"
-            />
-            <span className="group-hover:text-primary text-left">NEWS</span>
-          </Link>
+            {({ isActive }) => (
+              <>
+                <img
+                  src={isActive ? iconNewsHover : iconNews}
+                  alt="News"
+                  className="size-8"
+                />
+                <span className="no-underline! font-avenir-black">NEWS</span>
+              </>
+            )}
+          </NavLink>
 
-          <Link
+          <NavLink
             to="/admin/events"
-            className="group text-white font-bold hover:bg-white p-2 rounded-md no-underline inline-flex justify-center items-center space-x-5"
-            style={{
-              fontSize: "20px",
-              textDecoration: "none",
-            }}
+            className={({ isActive }) =>
+              isActive
+                ? "bg-white text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
+                : "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
+            }
           >
-            <img
-              src={iconEvent}
-              alt="Events"
-              className="size-8 group-hover:hidden"
-            />
-            <img
-              src={iconEventHover}
-              alt="Events"
-              className="size-8 hidden group-hover:inline"
-            />
-            <span className="group-hover:text-primary text-left">EVENTS</span>
-          </Link>
+            {({ isActive }) => (
+              <>
+                <img
+                  src={isActive ? iconEventHover : iconEvent}
+                  alt="Events"
+                  className="size-8"
+                />
+                <span className="no-underline! font-avenir-black">EVENTS</span>
+              </>
+            )}
+          </NavLink>
 
-          <Link
+          <NavLink
             to="/admin/contents"
-            className="group text-white font-bold hover:bg-white p-2 rounded-md no-underline inline-flex justify-center items-center space-x-5"
-            style={{
-              fontSize: "20px",
-              textDecoration: "none",
-            }}
+            className={({ isActive }) =>
+              isActive
+                ? "bg-white text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
+                : "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
+            }
           >
-            <img
-              src={iconContent}
-              alt="Contents"
-              className="size-8 group-hover:hidden"
-            />
-            <img
-              src={iconContentHover}
-              alt="Contents"
-              className="size-8 hidden group-hover:inline"
-            />
-            <span className="group-hover:text-primary text-left items-center">
-              CONTENTS
-            </span>
-          </Link>
+            {({ isActive }) => (
+              <>
+                <img
+                  src={isActive ? iconContentHover : iconContent}
+                  alt="Contents"
+                  className="size-8"
+                />
+                <span className="no-underline! font-avenir-black">
+                  CONTENTS
+                </span>
+              </>
+            )}
+          </NavLink>
         </div>
 
         <div className="flex flex-col text-light font-family:Avenir-Black space-y-5 h-screen justify-end w-full place-items-end content-start p-8 items-start">
           <button
-            className="group text-white font-bold  hover:bg-white p-2 rounded-md no-underline inline-flex justify-center items-center space-x-5"
+            className="group text-white font-bold hover:bg-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200" 
             style={{
               fontSize: "20px",
               textDecoration: "none",
@@ -202,7 +195,7 @@ function AdminSidebar() {
               alt="Logout"
               className="size-8 hidden group-hover:inline"
             />
-            <span className="group-hover:text-primary">LOGOUT</span>
+            <span className="no-underline! font-avenir-black">LOGOUT</span>
           </button>
         </div>
       </div>
