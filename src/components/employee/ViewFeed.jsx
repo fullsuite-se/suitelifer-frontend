@@ -65,7 +65,7 @@ const ViewFeed = () => {
   return (
     <section className="p-2 xl:p-3 flex flex-col gap-8 mt-4">
       <button
-        className="flex items-center gap-2"
+        className="flex items-center gap-2 cursor-pointer"
         onClick={() => {
           navigate(location.state.previousPage);
         }}
