@@ -68,7 +68,7 @@ export default function JobCarousel() {
         loop={true}
         modules={[Navigation, Pagination, EffectCoverflow]}
         slidesPerView={2}
-        coverflowEffect={{ rotate: 15, stretch: 0, depth: 50, modifier: .25 }}
+        coverflowEffect={{ rotate: 0, stretch: 0, depth: 50, modifier: .25 }}
         pagination={{
           el: ".swiper-pagination",
           clickable: true,

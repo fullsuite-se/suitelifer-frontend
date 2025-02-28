@@ -18,7 +18,7 @@ const JobPost = ({
       className={`job-container max-w-100 shadow-2xs text-sm p-5 rounded-xl flex flex-col ${
         isActive
           ? "bg-primary text-white h-75"
-          : `bg-white text-primary h-65 justify-center items-center ${isPrev ? "md:items-end" : isActive ? "md:items-center" : "md:items-start"}`
+          : `bg-white text-primary h-65 justify-center ${isPrev ? "items-end" : isActive ? "items-center" : "items-start"}`
       }`}
     >
       <p className="text-base font-avenir-black truncate">{title}</p>
