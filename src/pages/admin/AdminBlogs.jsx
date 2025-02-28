@@ -386,12 +386,12 @@ const AddBlogModal = ({ isOpen, onClose, onAddBlog, blogType }) => {
           style={{ margin: "16px 0" }}
         />
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <Button onClick={onClose} sx={{ mr: 2 }}>
+          <button onClick={onClose} className="btn-light hover:bg-gray-400 text-black font-bold py-2 px-4 rounded" >
             Cancel
-          </Button>
-          <Button onClick={handleAddBlog} variant="contained" color="primary">
-            Add Blog
-          </Button>
+          </button>
+          <button onClick={handleAddBlog} variant="contained" className="btn-primary" >
+            Publish
+          </button>
         </Box>
       </Box>
     </Modal>
@@ -498,13 +498,13 @@ const DeleteConfirmationModal = ({ isOpen, onClose, onDeleteConfirm }) => (
       <Typography mb={4}>
         Are you sure you want to delete this blog post?
       </Typography>
-      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-        <Button onClick={onClose} sx={{ mr: 2 }}>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1 }}>
+        <button onClick={onClose} className="btn-light">
           Cancel
-        </Button>
-        <Button onClick={onDeleteConfirm} variant="contained" color="primary">
+        </button>
+        <button onClick={onDeleteConfirm} variant="contained" className="btn-primary">
           Delete
-        </Button>
+        </button>
       </Box>
     </Box>
   </Modal>
@@ -513,9 +513,9 @@ const DeleteConfirmationModal = ({ isOpen, onClose, onDeleteConfirm }) => (
 const RecentBlogsPanel = ({ blogs, onEdit, onDelete }) => (
   <Box
     sx={{
-      width: "100%",
+      width: "80%",
       maxWidth: 700,
-      bgcolor: "#bfd1a0",
+     border: 1,
       display: "flex",
       flexDirection: "column",
       p: 1,
