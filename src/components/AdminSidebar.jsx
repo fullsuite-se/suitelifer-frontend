@@ -176,28 +176,26 @@ function AdminSidebar() {
           </NavLink>
         </div>
 
-        <div className="flex flex-col text-light font-family:Avenir-Black space-y-5 h-screen justify-end w-full place-items-end content-start p-8 items-start">
-          <button
-            className="group text-white font-bold hover:bg-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200" 
-            style={{
-              fontSize: "20px",
-              textDecoration: "none",
-            }}
-            onClick={() => setIsOpen(true)}
-          >
-            <img
-              src={iconLogout}
-              alt="Logout"
-              className="size-8 group-hover:hidden"
-            />
-            <img
-              src={iconLogoutHover}
-              alt="Logout"
-              className="size-8 hidden group-hover:inline"
-            />
-            <span className="no-underline! font-avenir-black">LOGOUT</span>
-          </button>
-        </div>
+        <NavLink
+          to="/logout"
+          className={({ isActive }) =>
+            isActive
+              ? "bg-white text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
+              : "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
+          }
+          onClick={() => setIsOpen(true)}
+        >
+          {({ isActive }) => (
+            <>
+              <img
+                src={isActive ? iconLogoutHover : iconLogout}
+                alt="Logout"
+                className="size-8"
+              />
+              <span className="no-underline! font-avenir-black">LOGOUT</span>
+            </>
+          )}
+        </NavLink>
       </div>
     </>
   );

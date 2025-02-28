@@ -386,10 +386,17 @@ const AddBlogModal = ({ isOpen, onClose, onAddBlog, blogType }) => {
           style={{ margin: "16px 0" }}
         />
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <button onClick={onClose} className="btn-light hover:bg-gray-400 text-black font-bold py-2 px-4 rounded" >
+          <button
+            onClick={onClose}
+            className="btn-light hover:bg-gray-400 text-black font-bold py-2 px-4 rounded"
+          >
             Cancel
           </button>
-          <button onClick={handleAddBlog} variant="contained" className="btn-primary" >
+          <button
+            onClick={handleAddBlog}
+            variant="contained"
+            className="btn-primary"
+          >
             Publish
           </button>
         </Box>
@@ -466,12 +473,16 @@ const EditBlogModal = ({ isOpen, onClose, blog, onEditBlog }) => {
           style={{ margin: "16px 0" }}
         />
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <Button onClick={onClose} sx={{ mr: 2 }}>
+          <button onClick={onClose} className="btn-light">
             Cancel
-          </Button>
-          <Button onClick={handleEditBlog} variant="contained" color="primary">
+          </button>
+          <button
+            onClick={handleEditBlog}
+            variant="contained"
+            className="btn-primary"
+          >
             Save Changes
-          </Button>
+          </button>
         </Box>
       </Box>
     </Modal>
@@ -502,7 +513,11 @@ const DeleteConfirmationModal = ({ isOpen, onClose, onDeleteConfirm }) => (
         <button onClick={onClose} className="btn-light">
           Cancel
         </button>
-        <button onClick={onDeleteConfirm} variant="contained" className="btn-primary">
+        <button
+          onClick={onDeleteConfirm}
+          variant="contained"
+          className="btn-primary"
+        >
           Delete
         </button>
       </Box>
@@ -510,22 +525,24 @@ const DeleteConfirmationModal = ({ isOpen, onClose, onDeleteConfirm }) => (
   </Modal>
 );
 
-const RecentBlogsPanel = ({ blogs, onEdit, onDelete }) => (
+const RecentBlogsPanel = ({ blogs, onEdit, onDelete, activeTab }) => (
   <Box
     sx={{
       width: "80%",
       maxWidth: 700,
-     border: 1,
+      border: 1,
       display: "flex",
       flexDirection: "column",
       p: 1,
       borderRadius: 4,
-      height: "60vh",
+      height: "70vh",
       overflowY: "auto",
     }}
   >
     <Typography variant="h6" mb={2}>
-      Recent Blogs
+      {activeTab === "COMPANY BLOGS"
+        ? "Recent Company Blogs"
+        : "Recent Employee Blogs"}
     </Typography>
     <List sx={{ width: "100%", gap: 2, padding: 2 }}>
       {blogs.slice(0, 4).map((blog) => (
