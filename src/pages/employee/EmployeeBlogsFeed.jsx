@@ -1,5 +1,5 @@
 import React from "react";
-import FeedCard from "../../components/employee/FeedCard";
+import FeedCard from "../../components/feed/FeedCard";
 import { Outlet, useParams } from "react-router-dom";
 import { TicketIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 
