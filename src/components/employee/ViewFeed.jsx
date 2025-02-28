@@ -125,7 +125,7 @@ const ViewFeed = () => {
           id="comment"
           cols="30"
           rows="1"
-          className="border flex-1 px-2 py-2 rounded bg-blue-50 border-none min-h-[50px]"
+          className="border flex-1 px-2 py-2 rounded bg-blue-50 border-none min-h-[50px] focus:outline-primary"
           placeholder="Write your comment here..."
         ></textarea>
         <PaperAirplaneIcon className="text-primary w-6 h-6" />
