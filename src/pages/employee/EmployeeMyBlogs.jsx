@@ -1,6 +1,6 @@
 import React from "react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
-import FeedCard from "../../components/employee/FeedCard";
+import FeedCard from "../../components/feed/FeedCard";
 
 const blogFeeds = [
   {

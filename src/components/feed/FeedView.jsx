@@ -54,7 +54,7 @@ const comments = [
   },
 ];
 
-const ViewFeed = () => {
+const FeedView = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -160,4 +160,4 @@ const ViewFeed = () => {
   );
 };
 
-export default ViewFeed;
+export default FeedView;
