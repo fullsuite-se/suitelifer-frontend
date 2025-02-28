@@ -7,7 +7,7 @@ import {
 } from "@headlessui/react";
 import axios from "axios";
 import React, { Fragment } from "react";
-import config from "../config";
+import config from "../../config";
 
 export const Logout = ({ isOpen, handleClose }) => {
   const handleLogout = async () => {

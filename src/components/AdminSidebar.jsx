@@ -16,7 +16,7 @@ import iconEvent from "../assets/icons/icon-events.svg";
 import iconEventHover from "../assets/icons/icon-event-hover.svg";
 import iconLogout from "../assets/icons/icon-logout.svg";
 import iconLogoutHover from "../assets/icons/icon-logout-hover.svg";
-import { Logout } from "../modals/Logout";
+import { Logout } from "./modals/Logout";
 
 function AdminSidebar() {
   const [isOpen, setIsOpen] = useState(false);

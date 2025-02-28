@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import IconBlogs from "../../assets/icons/IconBlogs";
 import IconNewspaper from "../../assets/icons/IconNewspaper";
-import { Logout } from "../../modals/Logout";
 import fullsuitelogo from "../../assets/logos/logo-fs-full.svg";
 import { ArrowRightCircleIcon } from "@heroicons/react/24/outline";
 import IconMyBlogs from "../../assets/icons/IconMyBlogs";
@@ -10,6 +9,7 @@ import IconPersonaTest from "../../assets/icons/IconPersonaTest";
 import IconThreads from "../../assets/icons/IconThreads";
 import IconWorkshops from "../../assets/icons/IconWorkshops";
 import IconEvents from "../../assets/icons/IconEvents";
+import { Logout } from "../modals/Logout";
 
 const sideBarLinks = [
   {
