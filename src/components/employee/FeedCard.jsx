@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   ArrowUpRightIcon,
   HeartIcon,
@@ -6,8 +6,15 @@ import {
 } from "@heroicons/react/20/solid";
 import { Link } from "react-router-dom";
 import { toSlug } from "../../utils/slugUrl";
+import ViewFullImages from "../../modals/ViewFullImages";
 
 const FeedCard = ({ feed }) => {
+  const [isFullImages, setIsFullImages] = useState(false);
+
+  const handleViewImages = () => {
+    setIsFullImages((prev) => !prev);
+  };
+
   return (
     <section
       className="rounded-lg p-5 xl:p-8 flex flex-col gap-6 shadow-md border border-gray-100"
@@ -15,6 +22,11 @@ const FeedCard = ({ feed }) => {
         boxShadow: "rgba(0, 0, 0, 0.08) 0px 4px 12px",
       }}
     >
+      <ViewFullImages
+        viewFull={isFullImages}
+        handleViewFull={handleViewImages}
+        images={feed.images}
+      />
       <section className="flex items-center justify-between">
         <div className="flex gap-4">
           <div className="w-12 h-12">
@@ -48,24 +60,28 @@ const FeedCard = ({ feed }) => {
           <img
             src={feed.images[0]}
             className="w-full h-full object-cover rounded-md"
+            onClick={handleViewImages}
           />
         </div>
         <div className="col-start-3 col-end-4 row-start-1 row-end-2">
           <img
             src={feed.images[1]}
             className="w-full h-full object-cover rounded-md"
+            onClick={handleViewImages}
           />
         </div>
         <div className="ol-start-3 col-end-4 row-start-2 row-end-3">
           <img
             src={feed.images[2]}
             className="w-full h-full object-cover rounded-md"
+            onClick={handleViewImages}
           />
         </div>
         <div className="grid-start-4 grid-end-5 row-start-1 row-end-3">
           <img
             src={feed.images[3]}
             className="w-full h-full object-cover rounded-md"
+            onClick={handleViewImages}
           />
         </div>
       </section>

@@ -8,11 +8,8 @@ import {
   HeartIcon,
   ChatBubbleLeftEllipsisIcon,
 } from "@heroicons/react/20/solid";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
+
+import { Carousel } from "@material-tailwind/react";
 
 const feed = {
   id: 1,
@@ -90,28 +87,14 @@ const ViewFeed = () => {
       </section>
       <section>
         <main className="max-w-5xl mx-auto">
-          <Swiper
-            modules={[Navigation, Pagination]}
-            spaceBetween={50}
-            slidesPerView={1}
-            navigation
-            pagination={{ clickable: true }}
-            className="h-[600px]"
-          >
-            {feed.images.map((image, index) => (
-              <SwiperSlide
-                key={index}
-                className="flex items-center justify-center"
-              >
-                <div className="h-full w-full">
-                  <img
-                    src={image}
-                    className="w-full h-full object-cover rounded-lg"
-                  />
-                </div>
-              </SwiperSlide>
+          <Carousel className="rounded-xl h-[600px]">
+            {feed.images.map((image) => (
+              <img
+                src={image}
+                className="w-full h-full object-cover rounded-lg"
+              />
             ))}
-          </Swiper>
+          </Carousel>
         </main>
       </section>
       <section>
