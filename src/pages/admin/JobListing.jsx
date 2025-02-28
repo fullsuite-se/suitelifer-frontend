@@ -156,20 +156,20 @@ export default function JobListing() {
       <header className="container flex h-16 items-center justify-between">
         <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
         <div className="flex gap-2">
-          <Button
+          <button
             variant="outlined"
-            sx={{ bgcolor: "#0097b2", color: "#ffffff" }}
+            className="btn-primary"
             onClick={() => setOpenJobModal(true)}
           >
             <span className="mr-2">+</span> JOB LISTING
-          </Button>
-          <Button
+          </button>
+          <button
             variant="outlined"
-            sx={{ bgcolor: "#0097b2", color: "#ffffff" }}
+           className="btn-primary"
             onClick={() => setOpenIndustryModal(true)}
           >
             <span className="mr-2">+</span> INDUSTRY
-          </Button>
+          </button>
         </div>
       </header>
 

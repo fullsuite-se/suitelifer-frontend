@@ -172,10 +172,10 @@ const AdminDashboard = () => {
         <div className="container flex h-16 items-center justify-between">
           <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
           <div className="flex gap-2">
-            <button className="bg-primary hover:bg-teal-700 text-white px-4 py-2 rounded">
+            <button className="btn-primary">
               <span className="mr-2">+</span> JOB LISTING
             </button>
-            <button className="bg-primary hover:bg-teal-700 text-white px-4 py-2 rounded">
+            <button className="btn-primary">
               <span className="mr-2">+</span> INDUSTRY
             </button>
           </div>
@@ -184,14 +184,15 @@ const AdminDashboard = () => {
 
       {/* Main Content */}
       <main className="p-2">
+        
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {/* Left Column - Stats and Chart */}
+   
           <div className="col-span-2">
             <div className="grid gap-6">
-              {/* Stats Cards */}
+          
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="grid gap-4 md:grid-cols-2">
-                  {/* Employee Stats */}
+               
                   <div
                     className="border p-4 rounded-2xl shadow cursor-pointer bg-primary text-white"
                     onClick={() => setSelectedChart("employees")}
@@ -208,7 +209,6 @@ const AdminDashboard = () => {
                     </div>
                   </div>
 
-                  {/* Applications Stats */}
                   <div
                     className="border p-4 rounded-2xl shadow cursor-pointer bg-primary text-white"
                     onClick={() => setSelectedChart("applications")}
@@ -266,7 +266,7 @@ const AdminDashboard = () => {
                 <div>
                   <h2 className="text-lg font-medium">JOB APPLICATIONS</h2>
                 </div>
-                <div className="h-[350px]">
+                <div className="h-[550px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={getChartData()}>
                       <XAxis

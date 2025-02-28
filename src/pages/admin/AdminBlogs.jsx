@@ -144,9 +144,7 @@ const AdminBlogs = () => {
     const selectedTab = event.target.value;
     setActiveTab(selectedTab);
 
-    if (selectedTab === "ALL BLOGS") {
-      setBlogs([...employeeBlogData, ...companyBlogData]);
-    } else if (selectedTab === "EMPLOYEE BLOGS") {
+    if (selectedTab === "EMPLOYEE BLOGS") {
       setBlogs(employeeBlogData);
     } else {
       setBlogs(companyBlogData);
@@ -169,13 +167,12 @@ const AdminBlogs = () => {
       <header className="container flex h-16 items-center justify-between">
         <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
         <div className="flex gap-2">
-          <Button
-            variant="outlined"
-            sx={{ bgcolor: "#0097b2", color: "#ffffff" }}
+          <button
+            className="btn-primary"
             onClick={() => setIsAddModalOpen(true)}
           >
-            <span className="mr-2">+</span> ADD BLOG
-          </Button>
+            <span className="mr-2">+</span> BLOG
+          </button>
         </div>
       </header>
       <div className="p-4">
@@ -193,15 +190,16 @@ const AdminBlogs = () => {
             <InputLabel>Blog Type</InputLabel>
             <Select
               value={activeTab}
-              onChange={(e) => setActiveTab(e.target.value)}
+              onChange={handleTabChange}
               label="Blog Type"
             >
-              <MenuItem value="ALL BLOGS">ALL BLOGS</MenuItem>
               <MenuItem value="EMPLOYEE BLOGS">EMPLOYEE BLOGS</MenuItem>
               <MenuItem value="COMPANY BLOGS">COMPANY BLOGS</MenuItem>
             </Select>
           </FormControl>
-          <Box sx={{ display: "flex", flex: 1, justifyContent: "space-around" }}>
+          <Box
+            sx={{ display: "flex", flex: 1, justifyContent: "space-around" }}
+          >
             <Box sx={{ textAlign: "center" }}>
               <Typography variant="body2">Blog Posts</Typography>
               <Typography variant="h4">777</Typography>
