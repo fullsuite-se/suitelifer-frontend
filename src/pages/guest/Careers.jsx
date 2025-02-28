@@ -59,7 +59,7 @@ const Careers = () => {
         {extractedEpisodeIds.map((id, index) => {
           return (
             <div className="p-1">
-              <SpotifyEmbed id={id} index={index} />
+              <SpotifyEmbed id={id} index={index} key={index}/>
             </div>
           );
         })}
