@@ -92,6 +92,7 @@ const ViewFeed = () => {
               <img
                 src={image}
                 className="w-full h-full object-cover rounded-lg"
+                key={image}
               />
             ))}
           </Carousel>
