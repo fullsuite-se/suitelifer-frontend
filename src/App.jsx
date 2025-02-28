@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 // Guest Pages
 import Home from "./pages/guest/Home";
@@ -26,6 +26,7 @@ import EmployeeLayout from "./pages/employee/EmployeeLayout";
 import EmployeeLogin from "./pages/employee/EmployeeLogin";
 import EmployeeBlogsFeed from "./pages/employee/EmployeeBlogsFeed";
 import EmployeeMyBlogs from "./pages/employee/EmployeeMyBlogs";
+import FeedView from "./components/feed/FeedView";
 
 function App() {
   return (
@@ -60,9 +61,11 @@ function App() {
           {/* Employee Routes */}
           <Route element={<EmployeeProtectedRoute />}>
             <Route path="/employee" element={<EmployeeLayout />}>
-              <Route index element={<EmployeeBlogsFeed />} />
+              <Route index element={<Navigate to="blogs-feed" replace />} />
               <Route path="blogs-feed" element={<EmployeeBlogsFeed />} />
+              <Route path="blogs-feed/feed/:id/:slug" element={<FeedView />} />
               <Route path="my-blogs" element={<EmployeeMyBlogs />} />
+              <Route path="my-blogs/feed/:id/:slug" element={<FeedView />} />
             </Route>
           </Route>
         </Routes>
