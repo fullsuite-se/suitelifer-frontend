@@ -8,11 +8,8 @@ import {
   HeartIcon,
   ChatBubbleLeftEllipsisIcon,
 } from "@heroicons/react/20/solid";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
+
+import { Carousel } from "@material-tailwind/react";
 
 const feed = {
   id: 1,
@@ -90,28 +87,15 @@ const ViewFeed = () => {
       </section>
       <section>
         <main className="max-w-5xl mx-auto">
-          <Swiper
-            modules={[Navigation, Pagination]}
-            spaceBetween={50}
-            slidesPerView={1}
-            navigation
-            pagination={{ clickable: true }}
-            className="h-[600px]"
-          >
-            {feed.images.map((image, index) => (
-              <SwiperSlide
-                key={index}
-                className="flex items-center justify-center"
-              >
-                <div className="h-full w-full">
-                  <img
-                    src={image}
-                    className="w-full h-full object-cover rounded-lg"
-                  />
-                </div>
-              </SwiperSlide>
+          <Carousel className="rounded-xl h-[600px]">
+            {feed.images.map((image) => (
+              <img
+                src={image}
+                className="w-full h-full object-cover rounded-lg"
+                key={image}
+              />
             ))}
-          </Swiper>
+          </Carousel>
         </main>
       </section>
       <section>
@@ -141,7 +125,7 @@ const ViewFeed = () => {
           id="comment"
           cols="30"
           rows="1"
-          className="border flex-1 px-2 py-2 rounded bg-blue-50 border-none min-h-[50px]"
+          className="border flex-1 px-2 py-2 rounded bg-blue-50 border-none min-h-[50px] focus:outline-primary"
           placeholder="Write your comment here..."
         ></textarea>
         <PaperAirplaneIcon className="text-primary w-6 h-6" />
