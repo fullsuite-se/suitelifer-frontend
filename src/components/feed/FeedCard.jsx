@@ -6,7 +6,7 @@ import {
 } from "@heroicons/react/20/solid";
 import { Link } from "react-router-dom";
 import { toSlug } from "../../utils/slugUrl";
-import ViewFullImages from "../modals/ViewFullImages";
+import ModalFullImages from "../modals/ModalFullImages";
 
 const FeedCard = ({ feed }) => {
   const [isFullImages, setIsFullImages] = useState(false);
@@ -22,7 +22,7 @@ const FeedCard = ({ feed }) => {
         boxShadow: "rgba(0, 0, 0, 0.08) 0px 4px 12px",
       }}
     >
-      <ViewFullImages
+      <ModalFullImages
         viewFull={isFullImages}
         handleViewFull={handleViewImages}
         images={feed.images}

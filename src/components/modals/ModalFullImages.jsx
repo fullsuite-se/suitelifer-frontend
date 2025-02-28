@@ -10,7 +10,7 @@ import {
 } from "@headlessui/react";
 import { Carousel } from "@material-tailwind/react";
 
-const ViewFullImages = ({ images, viewFull, handleViewFull }) => {
+const ModalFullImages = ({ images, viewFull, handleViewFull }) => {
   const handleCancel = () => {
     handleViewFull();
   };
@@ -56,4 +56,4 @@ const ViewFullImages = ({ images, viewFull, handleViewFull }) => {
   );
 };
 
-export default ViewFullImages;
+export default ModalFullImages;

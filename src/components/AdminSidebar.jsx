@@ -16,7 +16,7 @@ import iconEvent from "../assets/icons/icon-events.svg";
 import iconEventHover from "../assets/icons/icon-event-hover.svg";
 import iconLogout from "../assets/icons/icon-logout.svg";
 import iconLogoutHover from "../assets/icons/icon-logout-hover.svg";
-import { Logout } from "./modals/Logout";
+import { ModalLogout } from "./modals/ModalLogout";
 
 function AdminSidebar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,7 +28,7 @@ function AdminSidebar() {
   return (
     <>
       <div className="flex flex-col sm:w-52 md:w-80 w-full h-screen bg-primary items-center sticky">
-        <Logout isOpen={isOpen} handleClose={handleCloseModal} />
+        <ModalLogout isOpen={isOpen} handleClose={handleCloseModal} />
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6 sm:py-4">
           <div className="div">
             <img

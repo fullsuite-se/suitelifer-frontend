@@ -9,7 +9,7 @@ import IconPersonaTest from "../../assets/icons/IconPersonaTest";
 import IconThreads from "../../assets/icons/IconThreads";
 import IconWorkshops from "../../assets/icons/IconWorkshops";
 import IconEvents from "../../assets/icons/IconEvents";
-import { Logout } from "../modals/Logout";
+import { ModalLogout } from "../modals/ModalLogout";
 
 const sideBarLinks = [
   {
@@ -53,7 +53,7 @@ const EmployeeSidebar = () => {
 
   return (
     <nav className="w-36 md:w-40 lg:w-44 xl:w-52 h-dvh flex flex-col">
-      <Logout isOpen={isOpen} handleClose={handleCloseModal} />
+      <ModalLogout isOpen={isOpen} handleClose={handleCloseModal} />
       <section className="py-11">
         <div className="w-20 h-20 mx-auto mb-3">
           <img
