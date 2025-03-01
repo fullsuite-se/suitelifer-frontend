@@ -9,7 +9,8 @@ import {
   ChatBubbleLeftEllipsisIcon,
 } from "@heroicons/react/20/solid";
 
-import { Carousel } from "@material-tailwind/react";
+import Carousel from "../Carousel";
+
 
 const feed = {
   id: 1,
@@ -87,15 +88,7 @@ const FeedView = () => {
       </section>
       <section>
         <main className="max-w-5xl mx-auto">
-          <Carousel className="rounded-xl h-[600px]">
-            {feed.images.map((image) => (
-              <img
-                src={image}
-                className="w-full h-full object-cover rounded-lg"
-                key={image}
-              />
-            ))}
-          </Carousel>
+          <Carousel images={feed.images}/>
         </main>
       </section>
       <section>
