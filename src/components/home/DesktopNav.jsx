@@ -25,7 +25,7 @@ export default function DesktopNav() {
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
-    handleScroll(); 
+    handleScroll();
     // Clean up
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -35,30 +35,34 @@ export default function DesktopNav() {
   return (
     <>
       <div
-      style={{
-        backgroundColor: `rgba(255, 255, 255, ${opacity})`,
-      }}
+        style={{
+          backgroundColor: `rgba(255, 255, 255, ${opacity})`,
+        }}
         className={`fixed z-50 top-0 left-0 right-0 ${
           isVisible ? "shadow" : ""
         } flex justify-between items-center h-16 px-7 z-50`}
       >
         {/* Navigation Links*/}
-        <nav
-          className={`flex justify-center items-end`}
-        >
+        <nav className={`flex justify-center items-end`}>
           {/* Logo */}
-          <div
-            className={`w-32 ml-7 mr-7 animate-slideInFromLeft`}
-          >
+          <div className={`w-32 ml-7 mr-7 animate-slideInFromLeft`}>
             <img className="object-cover" src={logo_fs_full} alt="Logo" />
           </div>
           <div className="">
             <NavLink
               to="/"
               className={({ isActive }) =>
-                `!no-underline text-dark text-md hover:text-[#007a8e] ${
-                  isActive ? "active-class  " : ""
-                } lg:mr-10 xl:mr-22 ml-7 transition-all duration-300 ease-in-out `
+                `relative !no-underline text-dark text-md hover:text-[#007a8e] ${
+                  isActive ? "active-class text-[#007a8e]" : ""
+                } lg:mr-10 xl:mr-22 ml-7 transition-all duration-300 ease-in-out 
+      
+                before:absolute before:content-[''] before:w-1 before:h-1 
+                before:rounded-full before:bg-[#007a8e] before:left-1/2 before:-translate-x-1/2 
+                before:bottom-[-6px] before:opacity-0 before:transition-all before:duration-300
+                
+                hover:before:opacity-100 hover:before:translate-y-1 
+                ${isActive ? "before:opacity-100 before:translate-y-1" : ""}
+      `
               }
             >
               <>Home</>
@@ -69,9 +73,17 @@ export default function DesktopNav() {
             <NavLink
               to="/about-us"
               className={({ isActive }) =>
-                `!no-underline text-dark text-md hover:text-[#007a8e] ${
-                  isActive ? "active-class" : ""
-                } lg:mr-10 xl:mr-22`
+                `relative !no-underline text-dark text-md hover:text-[#007a8e] ${
+                  isActive ? "active-class text-[#007a8e]" : ""
+                } lg:mr-10 xl:mr-22 ml-7 transition-all duration-300 ease-in-out 
+      
+                before:absolute before:content-[''] before:w-1 before:h-1 
+                before:rounded-full before:bg-[#007a8e] before:left-1/2 before:-translate-x-1/2 
+                before:bottom-[-6px] before:opacity-0 before:transition-all before:duration-300
+                
+                hover:before:opacity-100 hover:before:translate-y-1 
+                ${isActive ? "before:opacity-100 before:translate-y-1" : ""}
+      `
               }
             >
               About
@@ -82,9 +94,17 @@ export default function DesktopNav() {
             <NavLink
               to="/careers"
               className={({ isActive }) =>
-                `!no-underline text-dark text-md hover:text-[#007a8e] ${
-                  isActive ? "active-class" : ""
-                } lg:mr-10 xl:mr-22`
+                `relative !no-underline text-dark text-md hover:text-[#007a8e] ${
+                  isActive ? "active-class text-[#007a8e]" : ""
+                } lg:mr-10 xl:mr-22 ml-7 transition-all duration-300 ease-in-out 
+      
+                before:absolute before:content-[''] before:w-1 before:h-1 
+                before:rounded-full before:bg-[#007a8e] before:left-1/2 before:-translate-x-1/2 
+                before:bottom-[-6px] before:opacity-0 before:transition-all before:duration-300
+                
+                hover:before:opacity-100 hover:before:translate-y-1 
+                ${isActive ? "before:opacity-100 before:translate-y-1" : ""}
+      `
               }
             >
               Careers
@@ -95,9 +115,17 @@ export default function DesktopNav() {
             <NavLink
               to="/news"
               className={({ isActive }) =>
-                `!no-underline text-dark text-md hover:text-[#007a8e] ${
-                  isActive ? "active-class" : ""
-                }lg:mr-10 xl:mr-22`
+                `relative !no-underline text-dark text-md hover:text-[#007a8e] ${
+                  isActive ? "active-class text-[#007a8e]" : ""
+                } lg:mr-10 xl:mr-22 ml-7 transition-all duration-300 ease-in-out 
+      
+                before:absolute before:content-[''] before:w-1 before:h-1 
+                before:rounded-full before:bg-[#007a8e] before:left-1/2 before:-translate-x-1/2 
+                before:bottom-[-6px] before:opacity-0 before:transition-all before:duration-300
+                
+                hover:before:opacity-100 hover:before:translate-y-1 
+                ${isActive ? "before:opacity-100 before:translate-y-1" : ""}
+      `
               }
             >
               News
@@ -108,9 +136,17 @@ export default function DesktopNav() {
             <NavLink
               to="/blogs"
               className={({ isActive }) =>
-                `!no-underline text-dark text-md hover:text-[#007a8e] ${
-                  isActive ? "active-class" : ""
-                } lg:mr-10 xl:mr-22`
+                `relative !no-underline text-dark text-md hover:text-[#007a8e] ${
+                  isActive ? "active-class text-[#007a8e]" : ""
+                } lg:mr-10 xl:mr-22 ml-7 transition-all duration-300 ease-in-out 
+      
+                before:absolute before:content-[''] before:w-1 before:h-1 
+                before:rounded-full before:bg-[#007a8e] before:left-1/2 before:-translate-x-1/2 
+                before:bottom-[-6px] before:opacity-0 before:transition-all before:duration-300
+                
+                hover:before:opacity-100 hover:before:translate-y-1 
+                ${isActive ? "before:opacity-100 before:translate-y-1" : ""}
+      `
               }
             >
               Blogs
@@ -121,9 +157,17 @@ export default function DesktopNav() {
             <NavLink
               to="/contact"
               className={({ isActive }) =>
-                `!no-underline text-dark text-md font-medium hover:text-[#007a8e] ${
-                  isActive ? "active-class" : ""
-                }`
+                `relative !no-underline text-dark text-md hover:text-[#007a8e] ${
+                  isActive ? "active-class text-[#007a8e]" : ""
+                } lg:mr-10 xl:mr-22 ml-7 transition-all duration-300 ease-in-out 
+      
+                before:absolute before:content-[''] before:w-1 before:h-1 
+                before:rounded-full before:bg-[#007a8e] before:left-1/2 before:-translate-x-1/2 
+                before:bottom-[-6px] before:opacity-0 before:transition-all before:duration-300
+                
+                hover:before:opacity-100 hover:before:translate-y-1 
+                ${isActive ? "before:opacity-100 before:translate-y-1" : ""}
+      `
               }
             >
               Contact
@@ -134,7 +178,9 @@ export default function DesktopNav() {
           <NavLink
             to="/login-employee"
             className={({ isActive }) =>
-              `!no-underline bg-[#E5F5F7] px-4 p-3 rounded-4xl text-primary text-md font-md hover:text-[#007a8e] transition-all duration-300 ease-in-out ${isActive ? "active-class" : ""}`
+              `!no-underline bg-[#E5F5F7] px-4 p-3 rounded-4xl text-primary text-md font-md hover:text-[#007a8e] transition-all duration-300 ease-in-out ${
+                isActive ? "active-class" : ""
+              }`
             }
           >
             Employee Login
@@ -143,4 +189,4 @@ export default function DesktopNav() {
       </div>
     </>
   );
-} 
+}
