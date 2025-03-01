@@ -3,14 +3,23 @@ import socialTitleDesktop from "../../assets/images/social-title-desktop.svg";
 import socialTitleMobile from "../../assets/images/social-title-mobile.svg";
 import YouTubeEmbed from "../../components/home/YoutubeEmbed";
 import SingleSpotifyEmbed from "../../components/home/SingleSpotifyEmbed";
+import FacebookPostEmbed from "./FacebookEmbed";
+import InstagramEmbed from "./InstagramEmbed";
 
-const videoId = ["1BsbVedEnwM",];
+const videoId = ["1BsbVedEnwM"];
 
 const spotifyId = [
   "2xwUR7I55qd8t8GOA2knvq",
   "54Dumwl83cHf0Mer6QMffn",
   "0ccRsDmuWXrvECqs8mL1Rc",
 ];
+
+const facebookId = [
+  "pfbid02vZtgYPLkXDKbVmWL9FcPLahi4dWGYSevS77we5KETiVa4nup94u35Ayo5eWRCJGYl",
+  "pfbid025Lp3t3Jg9ofs6puEjFMRNXj4momadqtXEzzuiLJeXtYoDqUqWDvyc32jADz4D2nal",
+];
+
+const instagramId = ["DGJvd8pPZGn"];
 
 const HomeSocials = () => {
   return (
@@ -35,16 +44,22 @@ const HomeSocials = () => {
       </div>
 
       <section className="pt-5 md:pt-0 px-7 xl:px-17">
-        <div className="flex flex-col md:flex-row gap-4 sm:gap-">
-          <div className="md:w-1/2 flex flex-col gap-4">
+        <div className="flex flex-col md:flex-row gap-4 w-full">
+          <div className="md:w-2/5 flex flex-col gap-4">
             {/* Yotube video */}
             <div className="video-container">
               <YouTubeEmbed videoId={videoId[0]} />
             </div>
-            <SingleSpotifyEmbed spotifyId={spotifyId[0]}/>
-
+            <SingleSpotifyEmbed spotifyId={spotifyId[0]} />
           </div>
-          <div className="md:w-1/2 grid place-content-center rounded-2xl bg-red-900">BANG!</div>
+          <div className="md:w-3/5 rounded-2xl flex flex-col md:flex-row gap-4 pb-2 md:pb-0">
+            <div className="h-full md:w-full">
+              <FacebookPostEmbed postId={facebookId[0]} />
+            </div>
+            <div className="h-full md:w-full">
+              <InstagramEmbed postId={instagramId[0]} />
+            </div>
+          </div>
         </div>
       </section>
     </section>

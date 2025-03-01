@@ -2,7 +2,7 @@ const SingleSpotifyEmbed = ({ spotifyId }) => {
   
     return (
       <iframe
-      className=""
+      className="rounded-2xl shadow-md"
         src={`https://open.spotify.com/embed/episode/${spotifyId}?utm_source=generator`}
         width="100%"
         height="152"
