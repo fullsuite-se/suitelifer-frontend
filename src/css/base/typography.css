@@ -2,10 +2,10 @@
 
 @font-face {
   font-family: "Avenir-Black";
-  src: url("../src/assets/fonts/AvenirLTStd-Black.otf");
+  src: url("/public/AvenirLTStd-Black.otf");
 }
 
 @font-face {
   font-family: "Avenir-Roman";
-  src: url("../src/assets/fonts/AvenirLTStd-Roman.otf");
+  src: url("/public/AvenirLTStd-Roman.otf");
 }
