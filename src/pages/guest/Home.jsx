@@ -10,6 +10,7 @@ import kb_startup from "../../assets/images/keyboard-startup.svg";
 import HomeGoalsOperations from "../../components/home/HomeGoalsOperations";
 import HomeNews from "../../components/home/HomeNews";
 import HomeSocials from "../../components/home/HomeSocials";
+import HomeBlogSpot from "../../components/home/HomeBlogSpot";
 
 import { useState, useEffect } from "react";
 
@@ -95,9 +96,14 @@ const Home = () => {
       
       {/* SOCIALS SECTION */}
       <HomeSocials/>
-      
+
+      <div className="h-10"></div>
+
+      {/* HOME BLOG SPOT */}
+      <HomeBlogSpot/>
+
       {/* FOR DEBUGGING ONLY */}
-      {/* <div className="bg-red-900 h-50 text-white grid place-items-center">WIDTH: {width}</div> */}
+      <div className="bg-red-900 h-50 text-white grid place-items-center">WIDTH: {width}</div>
       {/* <div className="h-40"></div> */}
       <Footer />
     </>
