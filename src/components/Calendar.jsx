@@ -76,9 +76,10 @@ const Calendar = () => {
               {events[format(day, "yyyy-MM-dd")] && (
                 <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-primary rounded-full"></div>
               )}
-              {isSameDay(day, new Date()) && (
-                <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-white rounded-full"></div>
-              )}
+              {isSameDay(day, new Date()) &&
+                events[format(day, "yyyy-MM-dd")] && (
+                  <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-white rounded-full"></div>
+                )}
             </div>
           );
         })}
