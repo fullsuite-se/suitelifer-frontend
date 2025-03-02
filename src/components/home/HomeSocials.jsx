@@ -5,6 +5,11 @@ import YouTubeEmbed from "../../components/home/YoutubeEmbed";
 import SingleSpotifyEmbed from "../../components/home/SingleSpotifyEmbed";
 import FacebookPostEmbed from "./FacebookEmbed";
 import InstagramEmbed from "./InstagramEmbed";
+import FacebookIcon from "../../assets/logos/Facebook";
+import InstagramIcon from "../../assets/logos/Instagram";
+import YoutubeIcon from "../../assets/logos/Youtube";
+import SpotifyIcon from "../../assets/logos/Spotify";
+import SocialButton from "./SocialButton";
 
 const videoId = ["1BsbVedEnwM"];
 
@@ -47,9 +52,7 @@ const HomeSocials = () => {
         <div className="flex flex-col md:flex-row gap-4 w-full">
           <div className="md:w-2/5 flex flex-col gap-4">
             {/* Yotube video */}
-            <div className="video-container">
-              <YouTubeEmbed videoId={videoId[0]} />
-            </div>
+            <YouTubeEmbed videoId={videoId[0]} />
             <SingleSpotifyEmbed spotifyId={spotifyId[0]} />
           </div>
           <div className="md:w-3/5 rounded-2xl flex flex-col md:flex-row gap-4 pb-2 md:pb-0">
@@ -61,7 +64,74 @@ const HomeSocials = () => {
             </div>
           </div>
         </div>
+        <section className="flex flex-col lg:flex-row lg:justify-evenly lg:pt-15 lg:pb-5 pt-5 gap-2">
+          <SocialButton
+            href={"https://open.spotify.com/"}
+            children={
+              <>
+                <span>
+                  <SpotifyIcon
+                    color="group-hover:fill-white fill-primary"
+                    height="40"
+                    width="40"
+                  />
+                </span>
+                the Suite Spot
+              </>
+            }
+          />
+
+          <SocialButton
+            href={"https://www.youtube.com/"}
+            children={
+              <>
+                <span>
+                  <YoutubeIcon
+                    color="group-hover:fill-white fill-primary"
+                    height="40"
+                    width="40"
+                  />
+                </span>
+                the Suite Tube
+              </>
+            }
+          />
+
+          <SocialButton
+            href={"https://www.facebook.com/thefullsuitepod"}
+            children={
+              <>
+                <span>
+                  <FacebookIcon
+                    color="group-hover:fill-white fill-primary"
+                    height="40"
+                    width="40"
+                  />
+                </span>
+                the Suite Book
+              </>
+            }
+          />
+
+          <SocialButton
+            href={"https://www.instagram.com/thefullsuitepod/"}
+            children={
+              <>
+                <span>
+                  <InstagramIcon
+                    color="group-hover:fill-white fill-primary"
+                    height="40"
+                    width="40"
+                  />
+                </span>
+                the Suite IG
+              </>
+            }
+          />
+        </section>
       </section>
+
+      {/* Socials Button Links */}
     </section>
   );
 };
