@@ -1,6 +1,6 @@
 import React from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import FeedComment from "./FeedComment";
+import BlogComment from "./BlogComment";
 import {
   ArrowLeftIcon,
   ArrowUpIcon,
@@ -55,7 +55,7 @@ const comments = [
   },
 ];
 
-const FeedView = () => {
+const BlogView = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -135,7 +135,7 @@ const FeedView = () => {
       <section className="flex flex-col gap-4">
         {comments.map((comment, index) => (
           <div key={comment.id}>
-            <FeedComment
+            <BlogComment
               id={comment.id}
               firstName={comment.firstName}
               lastName={comment.lastName}
@@ -153,4 +153,4 @@ const FeedView = () => {
   );
 };
 
-export default FeedView;
+export default BlogView;

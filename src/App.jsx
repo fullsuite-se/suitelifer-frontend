@@ -26,7 +26,7 @@ import EmployeeLayout from "./pages/employee/EmployeeLayout";
 import EmployeeLogin from "./pages/employee/EmployeeLogin";
 import EmployeeBlogsFeed from "./pages/employee/EmployeeBlogsFeed";
 import EmployeeMyBlogs from "./pages/employee/EmployeeMyBlogs";
-import FeedView from "./components/feed/FeedView";
+import BlogView from "./components/blog/BlogView";
 
 function App() {
   return (
@@ -63,9 +63,9 @@ function App() {
             <Route path="/employee" element={<EmployeeLayout />}>
               <Route index element={<Navigate to="blogs-feed" replace />} />
               <Route path="blogs-feed" element={<EmployeeBlogsFeed />} />
-              <Route path="blogs-feed/feed/:id/:slug" element={<FeedView />} />
+              <Route path="blogs-feed/blog/:id/:slug" element={<BlogView />} />
               <Route path="my-blogs" element={<EmployeeMyBlogs />} />
-              <Route path="my-blogs/feed/:id/:slug" element={<FeedView />} />
+              <Route path="my-blogs/blog/:id/:slug" element={<BlogView />} />
             </Route>
           </Route>
         </Routes>

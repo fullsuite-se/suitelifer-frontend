@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { toSlug } from "../../utils/slugUrl";
 import ModalFullImages from "../modals/ModalFullImages";
 
-const FeedCard = ({ feed }) => {
+const BlogCard = ({ feed }) => {
   const [isFullImages, setIsFullImages] = useState(false);
 
   const handleViewImages = () => {
@@ -45,7 +45,7 @@ const FeedCard = ({ feed }) => {
         </div>
 
         <Link
-          to={`feed/${feed.id}/${toSlug(feed.title)}`}
+          to={`blog/${feed.id}/${toSlug(feed.title)}`}
           state={{ previousPage: location.pathname }}
         >
           <ArrowUpRightIcon className="w-7 h-7 text-primary cursor-pointer" />
@@ -99,4 +99,4 @@ const FeedCard = ({ feed }) => {
   );
 };
 
-export default FeedCard;
+export default BlogCard;
