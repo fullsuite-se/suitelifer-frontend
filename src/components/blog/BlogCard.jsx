@@ -58,8 +58,8 @@ const BlogCard = ({ blog }) => {
       <section className="grid grid-cols-4 grid-row grid-rows-2 gap-4">
         <div className="col-start-1 col-end-3 row-start-1 row-end-3">
           <img
-            src={blog.images[0]}
-            className="w-full h-full object-cover rounded-md"
+            src={feed.images[0]}
+            className="w-full h-full object-cover rounded-md cursor-pointer"
             onClick={handleViewImages}
           />
         </div>
@@ -70,7 +70,7 @@ const BlogCard = ({ blog }) => {
             onClick={handleViewImages}
           />
         </div>
-        <div className="ol-start-3 col-end-4 row-start-2 row-end-3">
+        <div className="ol-start-3 col-end-4 row-start-2 row-end-3 cursor-pointer">
           <img
             src={blog.images[2]}
             className="w-full h-full object-cover rounded-md"
@@ -79,8 +79,8 @@ const BlogCard = ({ blog }) => {
         </div>
         <div className="grid-start-4 grid-end-5 row-start-1 row-end-3">
           <img
-            src={blog.images[3]}
-            className="w-full h-full object-cover rounded-md"
+            src={feed.images[3]}
+            className="w-full h-full object-cover rounded-md cursor-pointer"
             onClick={handleViewImages}
           />
         </div>

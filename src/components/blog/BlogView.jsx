@@ -11,8 +11,7 @@ import {
 
 import Carousel from "../Carousel";
 
-
-const blog = {
+const feed = {
   id: 1,
   userPic:
     "http://sa.kapamilya.com/absnews/abscbnnews/media/2020/tvpatrol/06/01/james-reid.jpg",
@@ -88,6 +87,7 @@ const BlogView = () => {
       </section>
       <section>
         <main className="max-w-5xl mx-auto">
+          <Carousel images={feed.images} isButtonOutside={false} />
           <Carousel images={blog.images}/>
         </main>
       </section>
