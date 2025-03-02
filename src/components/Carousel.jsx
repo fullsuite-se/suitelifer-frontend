@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 
-const Carousel = ({ images }) => {
+const Carousel = ({ images, isButtonOutside }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const nextSlide = () => {
@@ -18,7 +18,9 @@ const Carousel = ({ images }) => {
     <div className="relative w-full mx-auto overflow-hidden flex items-center">
       <button
         type="button"
-        className="flex items-center justify-center z-50 p-1 md:p-2 lg:p-4 self-stretch bg-white"
+        className={`flex items-center justify-center z-50 p-1 md:p-2 lg:p-4 self-stretch ${
+          isButtonOutside ? "absolute left-0 h-full bg-transparent" : "bg-white"
+        }`}
       >
         <ChevronLeftIcon
           onClick={prevSlide}
@@ -53,7 +55,11 @@ const Carousel = ({ images }) => {
       </div>
       <button
         type="button"
-        className="flex items-center justify-center z-50 p-1 md:p-2 lg:p-4 self-stretch bg-white"
+        className={`flex items-center justify-center z-50 p-1 md:p-2 lg:p-4 self-stretch ${
+          isButtonOutside
+            ? "absolute right-0 h-full bg-transparent"
+            : "bg-white"
+        }`}
       >
         <ChevronRightIcon
           onClick={prevSlide}
