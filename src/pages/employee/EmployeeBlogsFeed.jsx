@@ -1,5 +1,5 @@
 import React from "react";
-import FeedCard from "../../components/feed/FeedCard";
+import BlogCard from "../../components/blog/BlogCard";
 import { Outlet, useParams } from "react-router-dom";
 import { TicketIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 
@@ -69,9 +69,9 @@ const EmployeeBlogsFeed = () => {
             </div>
           </div>
           <main>
-            {blogFeeds.map((feed, index) => (
+            {blogFeeds.map((blog, index) => (
               <div key={index} className="mb-5">
-                <FeedCard feed={feed} />
+                <BlogCard blog={blog} />
               </div>
             ))}
           </main>

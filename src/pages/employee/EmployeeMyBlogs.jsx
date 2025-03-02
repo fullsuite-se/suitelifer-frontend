@@ -1,6 +1,6 @@
 import React from "react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
-import FeedCard from "../../components/feed/FeedCard";
+import BlogCard from "../../components/blog/BlogCard";
 
 const blogFeeds = [
   {
@@ -58,9 +58,9 @@ const EmployeeMyBlogs = () => {
           </span>
         </div>
         <main>
-          {blogFeeds.map((feed, index) => (
+          {blogFeeds.map((blog, index) => (
             <div key={index} className="mb-5">
-              <FeedCard feed={feed} />
+              <BlogCard blog={blog} />
             </div>
           ))}
         </main>
