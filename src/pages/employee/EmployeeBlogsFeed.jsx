@@ -69,9 +69,9 @@ const EmployeeBlogsFeed = () => {
             </div>
           </div>
           <main>
-            {blogFeeds.map((feed, index) => (
+            {blogFeeds.map((blog, index) => (
               <div key={index} className="mb-5">
-                <BlogCard feed={feed} />
+                <BlogCard blog={blog} />
               </div>
             ))}
           </main>

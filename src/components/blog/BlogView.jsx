@@ -12,7 +12,7 @@ import {
 import Carousel from "../Carousel";
 
 
-const feed = {
+const blog = {
   id: 1,
   userPic:
     "http://sa.kapamilya.com/absnews/abscbnnews/media/2020/tvpatrol/06/01/james-reid.jpg",
@@ -74,42 +74,42 @@ const BlogView = () => {
       <section className="flex gap-4">
         <div className="w-12 h-12">
           <img
-            src={feed.userPic}
-            alt={feed.firstName}
+            src={blog.userPic}
+            alt={blog.firstName}
             className="w-full h-full object-cover rounded-full"
           />
         </div>
         <div>
           <p className="font-avenir-black">
-            {feed.firstName} {feed.lastName}
+            {blog.firstName} {blog.lastName}
           </p>
-          <span className="text-xs text-gray-500">{feed.date}</span>
+          <span className="text-xs text-gray-500">{blog.date}</span>
         </div>
       </section>
       <section>
         <main className="max-w-5xl mx-auto">
-          <Carousel images={feed.images}/>
+          <Carousel images={blog.images}/>
         </main>
       </section>
       <section>
-        <h3 className="text-center font-avenir-black">{feed.title}</h3>
-        <p>{feed.description}</p>
+        <h3 className="text-center font-avenir-black">{blog.title}</h3>
+        <p>{blog.description}</p>
       </section>
       <section className="flex gap-3">
         <button className="flex gap-3 cursor-pointer">
           <HeartIcon className="w-5 h-5 text-gray-400" />
-          <span className="text-gray-500">{feed.likeCount}</span>
+          <span className="text-gray-500">{blog.likeCount}</span>
         </button>
         <button className="flex gap-3 cursor-pointer">
           <ChatBubbleLeftEllipsisIcon className="w-5 h-5 text-gray-400" />
-          <span className="text-gray-500">{feed.commentCount}</span>
+          <span className="text-gray-500">{blog.commentCount}</span>
         </button>
       </section>
       <section className="flex items-center gap-3">
         <div className="w-12 h-12">
           <img
-            src={feed.userPic}
-            alt={feed.firstName}
+            src={blog.userPic}
+            alt={blog.firstName}
             className="w-full h-full object-cover rounded-full"
           />
         </div>
