@@ -18,10 +18,12 @@ const Carousel = ({ images }) => {
     <div className="relative w-full mx-auto overflow-hidden flex items-center">
       <button
         type="button"
-        onClick={prevSlide}
-        className="flex items-center justify-center z-50 p-1 md:p-2 lg:p-4 self-stretch cursor-pointer bg-white"
+        className="flex items-center justify-center z-50 p-1 md:p-2 lg:p-4 self-stretch bg-white"
       >
-        <ChevronLeftIcon className="w-6 h-6 md:w-8 md:h-8 opacity-30 bg-primary text-white hover:text-white hover:bg-primary hover:opacity-100 rounded-full" />
+        <ChevronLeftIcon
+          onClick={prevSlide}
+          className="w-6 h-6 md:w-8 md:h-8 opacity-30 bg-primary cursor-pointer text-white hover:text-white hover:bg-primary hover:opacity-100 rounded-full"
+        />
       </button>
       <div
         className="flex transition-transform duration-700 ease-in-out"
@@ -51,10 +53,12 @@ const Carousel = ({ images }) => {
       </div>
       <button
         type="button"
-        onClick={nextSlide}
-        className="flex items-center justify-center z-50 p-1 md:p-2 lg:p-4 self-stretch cursor-pointer bg-white"
+        className="flex items-center justify-center z-50 p-1 md:p-2 lg:p-4 self-stretch bg-white"
       >
-        <ChevronRightIcon className="w-6 h-6 md:w-8 md:h-8 opacity-30 bg-primary text-white hover:text-white hover:bg-primary hover:opacity-100 rounded-full" />
+        <ChevronRightIcon
+          onClick={prevSlide}
+          className="w-6 h-6 md:w-8 md:h-8 opacity-30 bg-primary cursor-pointer text-white hover:text-white hover:bg-primary hover:opacity-100 rounded-full"
+        />
       </button>
     </div>
   );
