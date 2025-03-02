@@ -11,7 +11,6 @@ import {
 
 import Carousel from "../Carousel";
 
-
 const feed = {
   id: 1,
   userPic:
@@ -88,7 +87,7 @@ const FeedView = () => {
       </section>
       <section>
         <main className="max-w-5xl mx-auto">
-          <Carousel images={feed.images}/>
+          <Carousel images={feed.images} isButtonOutside={false} />
         </main>
       </section>
       <section>
