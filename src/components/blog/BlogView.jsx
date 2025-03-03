@@ -86,7 +86,7 @@ const BlogView = () => {
         </div>
       </section>
       <section>
-        <main className="max-w-5xl mx-auto">
+        <main className="max-w-full mx-auto">
           <Carousel images={blog.images} isButtonOutside={false} />
         </main>
       </section>
