@@ -120,9 +120,8 @@ const HomeNews = () => {
         {/* OTHER NEWS (Remaining Items) */}
         <div className="lg:w-1/2 flex flex-col max-h-full overflow-y-auto gap-2 pb-2">
           {newsList.slice(1, 4).map((news) => (
-            <a href="" className="no-underline rounded-2xl cursor-pointer px-2 pb-2 lg:px-3 transition-all duration-300 hover:shadow-md hover:bg-white">
+            <a key={news.id} href="" className="no-underline rounded-2xl cursor-pointer px-2 pb-2 lg:px-3 transition-all duration-300 hover:shadow-md hover:bg-white">
               <div
-                key={news.id}
                 className="other-news flex justify-center items-center gap-2"
               >
                 {/* CONTENT */}
