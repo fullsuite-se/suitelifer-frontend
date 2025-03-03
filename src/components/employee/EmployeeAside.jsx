@@ -49,7 +49,13 @@ const EmployeeAside = () => {
                 <p className="font-avenir-black text-black">Upcoming</p>
                 <ChevronDownIcon className="size-5 text-primary cursor-pointer group-data-[open]:rotate-180" />
               </DisclosureButton>
-              <DisclosurePanel className="">No.</DisclosurePanel>
+              <DisclosurePanel className="mt-3 flex flex-col gap-3">
+                {events.map((event, index) => (
+                  <div key={index}>
+                    <EventCard event={event} isUpcoming={true} />
+                  </div>
+                ))}
+              </DisclosurePanel>
             </Disclosure>
           </div>
         </div>
