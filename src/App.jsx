@@ -27,6 +27,10 @@ import EmployeeLogin from "./pages/employee/EmployeeLogin";
 import EmployeeBlogsFeed from "./pages/employee/EmployeeBlogsFeed";
 import EmployeeMyBlogs from "./pages/employee/EmployeeMyBlogs";
 import BlogView from "./components/blog/BlogView";
+import EmployeeThreads from "./pages/employee/EmployeeThreads";
+import EmployeeEvents from "./pages/employee/EmployeeEvents";
+import EmployeeWorkshops from "./pages/employee/EmployeeWorkshops";
+import EmployeePersonalityTest from "./pages/employee/EmployeePersonalityTest";
 
 function App() {
   return (
@@ -66,6 +70,13 @@ function App() {
               <Route path="blogs-feed/blog/:id/:slug" element={<BlogView />} />
               <Route path="my-blogs" element={<EmployeeMyBlogs />} />
               <Route path="my-blogs/blog/:id/:slug" element={<BlogView />} />
+              <Route path="threads" element={<EmployeeThreads />} />
+              <Route path="events" element={<EmployeeEvents />} />
+              <Route path="workshops" element={<EmployeeWorkshops />} />
+              <Route
+                path="personality-test"
+                element={<EmployeePersonalityTest />}
+              />
             </Route>
           </Route>
         </Routes>
