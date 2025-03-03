@@ -64,7 +64,7 @@ const HomeSocials = () => {
             </div>
           </div>
         </div>
-        <section className="flex flex-col lg:flex-row lg:justify-evenly lg:pt-15 lg:pb-5 pt-5 gap-2">
+        <section className="flex flex-col md:flex-row md:justify-evenly md:pt-15 md:pb-5 pt-5 gap-2">
           <SocialButton
             href={"https://open.spotify.com/"}
             children={
@@ -108,7 +108,7 @@ const HomeSocials = () => {
                     width="40"
                   />
                 </span>
-                the Suite Book
+                the Suite FB
               </>
             }
           />
