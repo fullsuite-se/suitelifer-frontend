@@ -30,7 +30,7 @@ const HomeGoalsOperations = () => {
   ];
 
   return (
-    <section className="mb-10 sm:mb-15 lg:mb-20 xl:mb-30 flex flex-col">
+    <section className="-mt-[5%] md:-mt-[10%] mb-10 sm:mb-15 lg:mb-20 xl:mb-30 flex flex-col">
       <div className="block">
         {/* Background Image */}
         <div className="cutout-maggie mb-6">
