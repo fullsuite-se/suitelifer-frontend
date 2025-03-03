@@ -28,17 +28,15 @@ const EmployeeAside = () => {
     <aside className="w-52 md:w-64 lg:w-72 h-dvh flex flex-col p-2 xl:p-3">
       <h2 className="font-avenir-black">Events</h2>
       <Calendar />
-      <section>
+      <section className="mt-5">
         <div className="w-full">
           <div className="">
             <Disclosure as="div" defaultOpen={true}>
               <DisclosureButton className="group flex w-full items-center justify-between">
-                <h3 className="font-avenir-black text-primary">
-                  Today <span className="text-sm font-avenir-roman">(5)</span>
-                </h3>
+                <p className="font-avenir-black text-primary">Today</p>
                 <ChevronDownIcon className="size-5 text-primary cursor-pointer group-data-[open]:rotate-180" />
               </DisclosureButton>
-              <DisclosurePanel className="mt-1 flex flex-col gap-3">
+              <DisclosurePanel className="mt-3 flex flex-col gap-3">
                 {events.map((event, index) => (
                   <div key={index}>
                     <EventCard event={event} />
@@ -47,11 +45,11 @@ const EmployeeAside = () => {
               </DisclosurePanel>
             </Disclosure>
             <Disclosure as="div" defaultOpen={true}>
-              <DisclosureButton className="group flex w-full items-center justify-between">
-                <h3 className="font-avenir-black text-black">Upcoming</h3>
+              <DisclosureButton className="group my-3 flex w-full items-center justify-between">
+                <p className="font-avenir-black text-black">Upcoming</p>
                 <ChevronDownIcon className="size-5 text-primary cursor-pointer group-data-[open]:rotate-180" />
               </DisclosureButton>
-              <DisclosurePanel className="mt-1">No.</DisclosurePanel>
+              <DisclosurePanel className="">No.</DisclosurePanel>
             </Disclosure>
           </div>
         </div>
