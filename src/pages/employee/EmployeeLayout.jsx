@@ -15,7 +15,7 @@ const EmployeeLayout = () => {
 
   return (
     <section
-      className="flex gap-3 xl:gap-6 h-dvh flex-col lg:flex-row"
+      className="flex gap-4 h-dvh flex-col lg:flex-row"
       style={{ maxWidth: "1800px", margin: "0 auto", padding: "0 1rem" }}
     >
       <section
