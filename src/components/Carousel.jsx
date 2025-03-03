@@ -62,7 +62,7 @@ const Carousel = ({ images, isButtonOutside }) => {
         }`}
       >
         <ChevronRightIcon
-          onClick={prevSlide}
+          onClick={nextSlide}
           className="w-6 h-6 md:w-8 md:h-8 opacity-30 bg-primary cursor-pointer text-white hover:text-white hover:bg-primary hover:opacity-100 rounded-full"
         />
       </button>
