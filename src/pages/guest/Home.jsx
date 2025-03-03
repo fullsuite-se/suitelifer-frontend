@@ -103,7 +103,7 @@ const Home = () => {
       <HomeBlogSpot/>
 
       {/* FOR DEBUGGING ONLY */}
-      <div className="bg-red-900 h-50 text-white grid place-items-center">WIDTH: {width}</div>
+      {/* <div className="bg-red-900 h-50 text-white grid place-items-center">WIDTH: {width}</div> */}
       {/* <div className="h-40"></div> */}
       <Footer />
     </>

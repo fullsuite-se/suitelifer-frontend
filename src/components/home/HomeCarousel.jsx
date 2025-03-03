@@ -1,25 +1,45 @@
 import { Carousel } from "@material-tailwind/react";
+import BlogCard from "./BlogCard";
+import CompanyBlogs from "./CompanyBlogsList";
 
-const HomeCarousel = () => {
+export function CarouselCustomNavigation() {
+  const companyBlogs = CompanyBlogs;
+
   return (
-    <Carousel className="rounded-xl">
-      <img
-        src="https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2560&q=80"
-        alt="image 1"
-        className="h-full w-full object-cover"
-      />
-      <img
-        src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2940&q=80"
-        alt="image 2"
-        className="h-full w-full object-cover"
-      />
-      <img
-        src="https://images.unsplash.com/photo-1518623489648-a173ef7824f3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2762&q=80"
-        alt="image 3"
-        className="h-full w-full object-cover"
-      />
-    </Carousel> 
+    <Carousel
+      className="rounded-xl"
+      navigation={({ setActiveIndex, activeIndex, length }) => (
+        <div className="carousel-index absolute sm:bottom-3 left-2/4 z-50 flex -translate-x-2/4 gap-2">
+          {new Array(length).fill("").map((_, i) => (
+            <span
+              key={i}
+              className={`block h-1 cursor-pointer rounded-2xl transition-all content-[''] ${
+                activeIndex === i ? "w-8 bg-primary" : "w-4 bg-white/50"
+              }`}
+              onClick={() => setActiveIndex(i)}
+            />
+          ))}
+        </div>
+      )}
+    >
+      {companyBlogs.slice(0, 5).map((blog) => (
+        <div
+          key={blog.id}
+          className="w-full h-full flex justify-center pb-10 items-center px-[18%] md:px-0"
+        >
+          <div className="rounded-2xl w-full max-w-[400px] aspect-[3/4] bg-white shadow-xl">
+            <BlogCard
+              image={blog.image}
+              title={blog.title}
+              author={blog.author}
+              content={blog.content}
+              dateTimePosted={blog.dateTimePosted}
+            />
+          </div>
+        </div>
+      ))}
+    </Carousel>
   );
-};
+}
 
-export default HomeCarousel;
+export default CarouselCustomNavigation;
