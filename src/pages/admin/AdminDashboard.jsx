@@ -1,16 +1,14 @@
 import React, { useState } from "react";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import interactionPlugin from "@fullcalendar/interaction";
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
+import { Calendar, momentLocalizer, Views } from "react-big-calendar";
+import moment from "moment";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 import Button from "@mui/material/Button";
 import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
-import moment from "moment";
 import logofsfull from "../../assets/logos/logo-fs-full.svg";
 import "../../css/animation/animation.css";
-import "../../css/base/theme.css";
+import "../../components/admin/AdminDashboard.css";
+
+const localizer = momentLocalizer(moment);
 
 const applicationData = [
   { month: 0, applications: 2400 },
@@ -57,10 +55,18 @@ const jobListingsData = [
   { month: 11, open: 32, closed: 16 },
 ];
 
-const initialEvents = {
-  February: [{ date: 19, title: "New Interns' Onboarding" }],
-  March: [{ date: 19, title: "New Interns' Onboarding" }],
-};
+const initialEvents = [
+  {
+    title: "New Interns' Onboarding",
+    start: new Date(2025, 1, 19),
+    end: new Date(2025, 1, 19),
+  },
+  {
+    title: "New Interns' Onboarding",
+    start: new Date(2025, 2, 19),
+    end: new Date(2025, 2, 19),
+  },
+];
 
 const stats = {
   employees: 52,
@@ -82,6 +88,20 @@ const AdminDashboard = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedChart, setSelectedChart] = useState("applications");
   const [showUpcomingEvents, setShowUpcomingEvents] = useState(false);
+  const [view, setView] = useState(Views.MONTH);
+  const [date, setDate] = useState(new Date());
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEventDetailsModalOpen, setIsEventDetailsModalOpen] = useState(false);
+  const [isUpcomingEventModalOpen, setIsUpcomingEventModalOpen] =
+    useState(false);
+  const [newEvent, setNewEvent] = useState({
+    title: "",
+    start: new Date(),
+    end: new Date(new Date().setDate(new Date().getDate() + 1)),
+    description: "",
+  });
+  const [editableEvent, setEditableEvent] = useState(null);
+  const [selectedUpcomingEvent, setSelectedUpcomingEvent] = useState(null);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
@@ -94,46 +114,27 @@ const AdminDashboard = () => {
 
   const handleAddEvent = () => {
     if (eventTitle && eventDate) {
-      const eventMonth = moment(eventDate).format("MMMM");
-      const eventDay = moment(eventDate).date();
-      const newEvent = { date: eventDay, title: eventTitle, description: eventDescription };
+      const newEvent = {
+        title: eventTitle,
+        start: new Date(eventDate),
+        end: new Date(eventDate),
+        description: eventDescription,
+      };
 
-      setEvents((prevEvents) => {
-        const updatedEvents = { ...prevEvents };
-        if (updatedEvents[eventMonth]) {
-          const isDuplicate = updatedEvents[eventMonth].some(
-            (event) => event.date === eventDay && event.title === eventTitle
-          );
-          if (!isDuplicate) {
-            updatedEvents[eventMonth].push(newEvent);
-          }
-        } else {
-          updatedEvents[eventMonth] = [newEvent];
-        }
-        return updatedEvents;
-      });
-
+      setEvents((prevEvents) => [...prevEvents, newEvent]);
       handleClose();
     }
   };
 
-  const handleEventClick = (clickInfo) => {
-    setSelectedEvent({
-      title: clickInfo.event.title,
-      date: clickInfo.event.startStr,
-      description: clickInfo.event.extendedProps.description,
-    });
-    setShowUpcomingEvents(true);
+  const handleSelectSlot = ({ start }) => {
+    setEventDate(start);
+    handleOpen();
   };
 
-  const calendarEvents = Object.entries(events).flatMap(
-    ([month, monthEvents]) =>
-      monthEvents.map((event) => ({
-        title: event.title,
-        date: moment(`${month} ${event.date}, 2025`).format("YYYY-MM-DD"),
-        description: event.description,
-      }))
-  );
+  const handleSelectEvent = (event) => {
+    setSelectedEvent(event);
+    setShowUpcomingEvents(true);
+  };
 
   const getChartData = () => {
     switch (selectedChart) {
@@ -154,45 +155,71 @@ const AdminDashboard = () => {
     }
   };
 
-  const sortedUpcomingEvents = Object.entries(events)
-    .flatMap(([month, monthEvents]) =>
-      monthEvents.map((event) => ({
-        ...event,
-        month,
-        dateObj: moment(`${month} ${event.date}, 2025`).toDate(),
-      }))
-    )
+  const sortedUpcomingEvents = events
+    .map((event) => ({
+      ...event,
+      dateObj: new Date(event.start),
+    }))
     .sort((a, b) => a.dateObj - b.dateObj)
     .slice(0, 5);
 
+  const handleAddEventButtonClick = () => {
+    setNewEvent({
+      title: "",
+      start: new Date(),
+      end: new Date(new Date().setDate(new Date().getDate() + 1)),
+      description: "",
+    });
+    setIsAddModalOpen(true);
+  };
+
+  const handleAddEventModal = () => {
+    setEvents([...events, newEvent]);
+    setIsAddModalOpen(false);
+    setNewEvent({
+      title: "",
+      start: new Date(),
+      end: new Date(new Date().setDate(new Date().getDate() + 1)),
+      description: "",
+    });
+  };
+
+  const handleEditEvent = () => {
+    setEvents(
+      events.map((event) => (event === selectedEvent ? editableEvent : event))
+    );
+    setIsEventDetailsModalOpen(false);
+    setSelectedEvent(null);
+    setEditableEvent(null);
+  };
+
+  const handleUpcomingEventClick = (event) => {
+    setSelectedUpcomingEvent(event);
+    setIsUpcomingEventModalOpen(true);
+  };
+
   return (
-    <div className="max-h-screen bg-white p-2">
+    <div className="max-h-100vh bg-white p-1">
       {/* Header */}
-      <header className="">
-        <div className="container flex h-16 items-center justify-between">
-          <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
-          <div className="flex gap-2">
-            <button className="btn-primary">
-              <span className="mr-2">+</span> JOB LISTING
-            </button>
-            <button className="btn-primary">
-              <span className="mr-2">+</span> INDUSTRY
-            </button>
-          </div>
+      <header className="container flex h-12 items-center justify-between flex-wrap">
+        <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
+        <div className="flex gap-2">
+          <button className="btn-primary">
+            <span className="mr-2">+</span> JOB LISTING
+          </button>
+          <button className="btn-primary">
+            <span className="mr-2">+</span> INDUSTRY
+          </button>
         </div>
       </header>
 
       {/* Main Content */}
       <main className="p-2">
-        
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-   
           <div className="col-span-2">
             <div className="grid gap-6">
-          
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="grid gap-4 md:grid-cols-2">
-               
                   <div
                     className="border p-4 rounded-2xl shadow cursor-pointer bg-primary text-white"
                     onClick={() => setSelectedChart("employees")}
@@ -219,7 +246,7 @@ const AdminDashboard = () => {
                       </h2>
                     </div>
                     <div>
-                      <p className="text-lg text-center uppercase">
+                      <p className="text-lg text-center justify-center uppercase ">
                         TOTAL APPLICATIONS
                       </p>
                     </div>
@@ -241,7 +268,7 @@ const AdminDashboard = () => {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div
-                      className="rounded bg-green-200 p-2 text-center text-black cursor-pointer"
+                      className="rounded bg-secondary p-2 text-center text-white cursor-pointer"
                       onClick={() => setSelectedChart("jobListingsOpen")}
                     >
                       <div className="text-xl font-bold">
@@ -250,7 +277,7 @@ const AdminDashboard = () => {
                       <div className="text-md">Open</div>
                     </div>
                     <div
-                      className="rounded bg-gray-400 p-2 text-black text-center cursor-pointer"
+                      className="rounded bg-accent-2 p-2 text-dark text-center cursor-pointer"
                       onClick={() => setSelectedChart("jobListingsClosed")}
                     >
                       <div className="text-xl font-bold">
@@ -262,11 +289,11 @@ const AdminDashboard = () => {
                 </div>
               </div>
               {/* Applications Chart */}
-              <div className="border p-4 rounded shadow ">
+              <div className="border p-4 rounded shadow h-140">
                 <div>
                   <h2 className="text-lg font-medium">JOB APPLICATIONS</h2>
                 </div>
-                <div className="h-[550px]">
+                <div className="h-[400px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={getChartData()}>
                       <XAxis
@@ -300,39 +327,36 @@ const AdminDashboard = () => {
           </div>
 
           {/* Right Column - Calendar and Events */}
-          <div className="space-y-6 relative">
+          <div className="space-y-6 flex">
             {/* Calendar */}
-            <div className="border p-4 rounded shadow h-full">
+            <div className="border bg-accent-1 p-2 rounded shadow">
               <div className="flex flex-row items-center justify-center">
-                <div className="h-[500px] w-120 overflow-hidden">
-                  <FullCalendar
-                    plugins={[dayGridPlugin, interactionPlugin]}
-                    initialView="dayGridMonth"
-                    views={{
-                      dayGridMonth: {
-                        buttonText: "Month",
-                        dayMaxEventRows: 6,
-                      },
+                <div className="h-[500px] w-120">
+                  <Calendar
+                    localizer={localizer}
+                    events={events}
+                    startAccessor="start"
+                    endAccessor="end"
+                    selectable
+                    onSelectSlot={handleSelectSlot}
+                    onSelectEvent={handleSelectEvent}
+                    style={{ height: 500 }}
+                    dayPropGetter={(date) => {
+                      const day = date.getDay();
+                      if (day === 0 || day === 6) {
+                        return {
+                          style: {
+                            backgroundColor: "#ffcccc",
+                            fontStyle: "italic",
+                          },
+                        };
+                      }
+                      return {};
                     }}
-                    headerToolbar={{
-                      left: "prev,next today",
-                      center: "title",
-                      right: "dayGridMonth",
-                    }}
-                    height="100%"
-                    events={calendarEvents}
-                    eventClick={handleEventClick}
-                    dateClick={(info) => {
-                      setEventDate(info.dateStr);
-                      handleOpen();
-                    }}
-                    dayCellClassNames={(date) => {
-                      const day = date.date.getDay();
-                      let classNames = "no-underline text-center";
-                      if (day === 0) classNames += " sunday";
-                      if (day === 6) classNames += " saturday";
-                      return classNames;
-                    }}
+                    view={view}
+                    onView={(newView) => setView(newView)}
+                    date={date}
+                    onNavigate={(newDate) => setDate(newDate)}
                   />
                 </div>
               </div>
@@ -343,13 +367,15 @@ const AdminDashboard = () => {
                   <div key={index}>
                     {index === 0 ||
                     sortedUpcomingEvents[index - 1].month !== event.month ? (
-                      <h3 className="mb-2 font-medium">{event.month}</h3>
+                      <h3 className="mb-2 font-medium">
+                        {moment(event.start).format("MMMM")}
+                      </h3>
                     ) : null}
                     <ul className="space-y-2">
                       <li className="flex gap-2 no-underline">
                         <span className="text-gray-500">•</span>
                         <span className="no-underline">
-                          {event.date} - {event.title}
+                          {moment(event.start).format("D")} - {event.title}
                         </span>
                       </li>
                     </ul>
@@ -371,13 +397,15 @@ const AdminDashboard = () => {
                         {index === 0 ||
                         sortedUpcomingEvents[index - 1].month !==
                           event.month ? (
-                          <h3 className="mb-2 font-medium">{event.month}</h3>
+                          <h3 className="mb-2 font-medium">
+                            {moment(event.start).format("MMMM")}
+                          </h3>
                         ) : null}
                         <ul className="space-y-2">
                           <li className="flex gap-2 no-underline">
                             <span className="text-gray-500">•</span>
                             <span className="no-underline">
-                              {event.date} - {event.title}
+                              {moment(event.start).format("D")} - {event.title}
                             </span>
                           </li>
                         </ul>
@@ -400,47 +428,58 @@ const AdminDashboard = () => {
         </div>
       </main>
 
-      {/* Modal for Adding or Editing Events */}
-      <Modal open={open} onClose={handleClose}>
-        <Box className="modal-container p-6 bg-white rounded-lg w-full sm:w-96 mx-auto mt-24">
-          <h2 className="font-semibold mb-4 text-lg text-center bg-primary">
-            {editEvent ? "Edit Event" : "Add New Event"}
-          </h2>
-          <TextField
-            label="Event Title"
-            fullWidth
-            value={eventTitle}
-            onChange={(e) => setEventTitle(e.target.value)}
-          />
-          <TextField
-            type="date"
-            fullWidth
-            value={eventDate}
-            onChange={(e) => setEventDate(e.target.value)}
-            className="mt-2"
-          />
-          <TextField
-            label="Description"
-            fullWidth
-            value={eventDescription}
-            onChange={(e) => setEventDescription(e.target.value)}
-            className="mt-2"
-          />
-          <div className="mt-6 flex justify-between">
-            <Button onClick={handleClose} className="btn-light">
-              Cancel
-            </Button>
-            <Button
-              onClick={handleAddEvent}
-              variant="contained"
-              color="primary"
-              className="btn-primary"
-            >
-              {editEvent ? "Save Changes" : "Add Event"}
-            </Button>
+      {/* Modal for adding events */}
+      {open && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded shadow-lg w-96">
+            <h2 className="text-lg font-medium mb-4">Add Event</h2>
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">Title</label>
+              <input
+                type="text"
+                className="w-full border rounded p-2"
+                value={eventTitle}
+                onChange={(e) => setEventTitle(e.target.value)}
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">Date</label>
+              <input
+                type="date"
+                className="w-full border rounded p-2"
+                value={moment(eventDate).format("YYYY-MM-DD")}
+                onChange={(e) => setEventDate(e.target.value)}
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">
+                Description
+              </label>
+              <textarea
+                className="w-full border rounded p-2"
+                value={eventDescription}
+                onChange={(e) => setEventDescription(e.target.value)}
+              />
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleClose}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleAddEvent}
+              >
+                Add Event
+              </Button>
+            </div>
           </div>
-        </Box>
-      </Modal>
+        </div>
+      )}
     </div>
   );
 };

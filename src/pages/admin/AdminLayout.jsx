@@ -1,11 +1,13 @@
-import React, { useState } from "react";
-import AdminSidebar from "../../components/AdminSidebar";
+import React from "react";
+import AdminSidebar from "../../components/admin/AdminSidebar";
 import { Outlet } from "react-router-dom";
 
 const AdminLayout = () => {
   return (
     <div className="flex w-full h-screen">
-      <AdminSidebar />
+      <div className="">
+        <AdminSidebar />
+      </div>
       <main className="w-full">
         <Outlet />
       </main>
