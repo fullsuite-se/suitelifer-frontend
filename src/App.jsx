@@ -31,6 +31,7 @@ import EmployeeThreads from "./pages/employee/EmployeeThreads";
 import EmployeeEvents from "./pages/employee/EmployeeEvents";
 import EmployeeWorkshops from "./pages/employee/EmployeeWorkshops";
 import EmployeePersonalityTest from "./pages/employee/EmployeePersonalityTest";
+import BlogCreate from "./components/blog/BlogCreate";
 
 function App() {
   return (
@@ -68,8 +69,11 @@ function App() {
               <Route index element={<Navigate to="blogs-feed" replace />} />
               <Route path="blogs-feed" element={<EmployeeBlogsFeed />} />
               <Route path="blogs-feed/blog/:id/:slug" element={<BlogView />} />
+
               <Route path="my-blogs" element={<EmployeeMyBlogs />} />
               <Route path="my-blogs/blog/:id/:slug" element={<BlogView />} />
+              <Route path="my-blogs/new-blog" element={<BlogCreate />} />
+
               <Route path="threads" element={<EmployeeThreads />} />
               <Route path="events" element={<EmployeeEvents />} />
               <Route path="workshops" element={<EmployeeWorkshops />} />

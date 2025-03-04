@@ -1,6 +1,7 @@
 import React from "react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import BlogCard from "../../components/blog/BlogCard";
+import { useNavigate } from "react-router-dom";
 
 const blogFeeds = [
   {
@@ -44,6 +45,8 @@ const blogFeeds = [
 ];
 
 const EmployeeMyBlogs = () => {
+  const navigate = useNavigate();
+
   return (
     <section>
       <div className="p-2 xl:p-3">
@@ -53,7 +56,12 @@ const EmployeeMyBlogs = () => {
             <span className="text-sm text-gray-500 font-avenir-roman">(6)</span>
             <InformationCircleIcon className="w-4 h-4 text-gray-500" />
           </div>
-          <span className="font-avenir-black text-primary text-sm">
+          <span
+            onClick={() => {
+              navigate("/employee/my-blogs/new-blog");
+            }}
+            className="font-avenir-black text-primary text-sm cursor-pointer"
+          >
             + Create new blog
           </span>
         </div>
