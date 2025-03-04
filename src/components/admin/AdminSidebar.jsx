@@ -22,10 +22,6 @@ import "../../css/animation/animation.css";
 function AdminSidebar() {
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleCloseModal = () => {
-    setIsOpen(false);
-  };
-
   return (
     <>
       <div className="flex-col sm:w-52 md:w-80 p-3 w-full h-screen bg-primary items-center fixed sm:relative transition-transform duration-300 sm:translate-x-0 sm:block hidden">
@@ -53,7 +49,7 @@ function AdminSidebar() {
             to="/admin/dashboard"
             className={({ isActive }) =>
               isActive
-                ? "bg-white text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
+                ? "bg-white w-full text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
                 : "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
             }
           >
@@ -75,7 +71,7 @@ function AdminSidebar() {
             to="/admin/joblisting"
             className={({ isActive }) =>
               isActive
-                ? "bg-white text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
+                ? "bg-white w-full text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
                 : "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
             }
           >
@@ -97,7 +93,7 @@ function AdminSidebar() {
             to="/admin/blogs"
             className={({ isActive }) =>
               isActive
-                ? "bg-white text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
+                ? "bg-white w-full text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
                 : "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
             }
           >
@@ -108,7 +104,9 @@ function AdminSidebar() {
                   alt="Blogs"
                   className="size-8"
                 />
-                <span className="no-underline! font-avenir-black">BLOGS</span>
+                <span className="no-underline! font-avenir-black w-full">
+                  BLOGS
+                </span>
               </>
             )}
           </NavLink>
@@ -117,7 +115,7 @@ function AdminSidebar() {
             to="/admin/news"
             className={({ isActive }) =>
               isActive
-                ? "bg-white text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
+                ? "bg-white w-full text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
                 : "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
             }
           >
@@ -137,7 +135,7 @@ function AdminSidebar() {
             to="/admin/events"
             className={({ isActive }) =>
               isActive
-                ? "bg-white text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
+                ? "bg-white w-full text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
                 : "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
             }
           >
@@ -157,7 +155,7 @@ function AdminSidebar() {
             to="/admin/contents"
             className={({ isActive }) =>
               isActive
-                ? "bg-white text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
+                ? "bg-white w-full text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
                 : "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
             }
           >
