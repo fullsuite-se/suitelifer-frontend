@@ -16,7 +16,6 @@ import iconEvent from "../../assets/icons/icon-events.svg";
 import iconEventHover from "../../assets/icons/icon-event-hover.svg";
 import iconLogout from "../../assets/icons/icon-logout.svg";
 import iconLogoutHover from "../../assets/icons/icon-logout-hover.svg";
-import { ModalLogout } from "../modals/ModalLogout";
 import "../../css/animation/animation.css";
 
 function AdminSidebar() {
@@ -44,7 +43,7 @@ function AdminSidebar() {
           </div>
         </div>
 
-        <div className="flex flex-col text-light font-family:Avenir-Black space-y-5 justify-start w-full place-items-baseline content-start p-8 h-80vh items-start">
+        <div className="flex flex-col text-light font-family:Avenir-Black space-y-5 justify-start w-full place-items-baseline content-start p-8 h-100vh items-start">
           <NavLink
             to="/admin/dashboard"
             className={({ isActive }) =>
@@ -173,15 +172,16 @@ function AdminSidebar() {
             )}
           </NavLink>
 
-          <div className="flex h-50vh content-end">
+          <div className="flex-grow flex items-end w-full mt-auto">
             <NavLink
               to="/logout"
               className={({ isActive }) =>
                 isActive
-                  ? "bg-white text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
-                  : "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
+                  ? "bg-white text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200 w-full"
+                  : "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200 w-full"
               }
               onClick={() => setIsOpen(true)}
+              
             >
               {({ isActive }) => (
                 <>
@@ -190,7 +190,7 @@ function AdminSidebar() {
                     alt="Logout"
                     className="size-8"
                   />
-                  <span className="no-underline! font-avenir-black justify-end">
+                  <span className="no-underline! font-avenir-black w-full text-center sm:text-left">
                     LOGOUT
                   </span>
                 </>

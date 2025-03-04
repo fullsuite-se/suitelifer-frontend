@@ -10,6 +10,7 @@ import {
   List,
   ListItem,
   ListItemText,
+  Grid,
 } from "@mui/material";
 import logofsfull from "../../assets/logos/logo-fs-full.svg";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -20,7 +21,8 @@ const AdminEvents = () => {
   const [events, setEvents] = useState([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEventDetailsModalOpen, setIsEventDetailsModalOpen] = useState(false);
-  const [isUpcomingEventModalOpen, setIsUpcomingEventModalOpen] = useState(false);
+  const [isUpcomingEventModalOpen, setIsUpcomingEventModalOpen] =
+    useState(false);
   const [newEvent, setNewEvent] = useState({
     title: "",
     start: new Date(),
@@ -41,7 +43,71 @@ const AdminEvents = () => {
     });
     setIsAddModalOpen(true);
   };
+  const CustomToolbar = (toolbar) => {
+    return (
+      <div className="rbc-toolbar flex w-full">
+        <div className="flex w-150 justify-start">
+          <div className="flex w-120 justify-between">
+            <button
+              onClick={() => toolbar.onNavigate("PREV")}
+              style={{ color: "#000000", fontWeight: "bold" }}
+            >
+              Back
+            </button>
+            <span
+              style={{
+                fontFamily: "Avenir-Black, sans-serif",
+                fontSize: "24px",
+                fontWeight: "bold",
+                color: "#000000",
+              }}
+            >
+              {moment(toolbar.date).format("MMMM YYYY")}
+            </span>
+            <button
+              onClick={() => toolbar.onNavigate("NEXT")}
+              style={{ color: "#000000", fontWeight: "bold" }}
+            >
+              Next
+            </button>
+          </div>
+        </div>
 
+        <span className="">
+          <button
+            onClick={() => toolbar.onNavigate("TODAY")}
+            style={{ color: "#000000", fontWeight: "bold" }}
+          >
+            Today
+          </button>
+          <button
+            onClick={() => toolbar.onView("month")}
+            style={{ color: "#000000", fontWeight: "bold" }}
+          >
+            Month
+          </button>
+          <button
+            onClick={() => toolbar.onView("week")}
+            style={{ color: "#000000", fontWeight: "bold" }}
+          >
+            Week
+          </button>
+          <button
+            onClick={() => toolbar.onView("day")}
+            style={{ color: "#000000", fontWeight: "bold" }}
+          >
+            Day
+          </button>
+          <button
+            onClick={() => toolbar.onView("agenda")}
+            style={{ color: "#000000", fontWeight: "bold" }}
+          >
+            Agenda
+          </button>
+        </span>
+      </div>
+    );
+  };
   const handleAddEventButtonClick = () => {
     setNewEvent({
       title: "",
@@ -70,7 +136,9 @@ const AdminEvents = () => {
   };
 
   const handleEditEvent = () => {
-    setEvents(events.map(event => event === selectedEvent ? editableEvent : event));
+    setEvents(
+      events.map((event) => (event === selectedEvent ? editableEvent : event))
+    );
     setIsEventDetailsModalOpen(false);
     setSelectedEvent(null);
     setEditableEvent(null);
@@ -91,16 +159,12 @@ const AdminEvents = () => {
       <header className="container flex h-16 items-center justify-between">
         <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
         <div className="flex gap-2">
-          <Button
-            variant="outlined"
-            sx={{ bgcolor: "#0097b2", color: "#ffffff" }}
-            onClick={handleAddEventButtonClick}
-          >
+          <button className="btn-primary" onClick={handleAddEventButtonClick}>
             <span className="mr-2">+</span> EVENT
-          </Button>
+          </button>
         </div>
       </header>
-      <div className="p-4">
+      <div className="p-4 items-center justify-center w-full flex">
         <Calendar
           localizer={localizer}
           events={events}
@@ -109,7 +173,7 @@ const AdminEvents = () => {
           selectable
           onSelectSlot={handleSelectSlot}
           onSelectEvent={handleSelectEvent}
-          style={{ height: 500 }}
+          style={{ height: 700, width: 1000 }}
           dayPropGetter={(date) => {
             const day = date.getDay();
             if (day === 0 || day === 6) {
@@ -122,11 +186,47 @@ const AdminEvents = () => {
             }
             return {};
           }}
+          components={{
+            toolbar: CustomToolbar,
+          }}
           view={view}
           onView={(newView) => setView(newView)}
           date={date}
           onNavigate={(newDate) => setDate(newDate)}
         />
+
+        <div className="p-4 ">
+          <Typography variant="h5">Upcoming Events</Typography>
+          {events.length === 0 ? (
+            <Typography variant="body1" color="textSecondary" fontSize={"36px"}>
+              No Upcoming Events
+            </Typography>
+          ) : (
+            <List>
+              {events
+                .sort((a, b) => new Date(a.start) - new Date(b.start))
+                .slice(0, 8)
+                .map((event, index) => (
+                  <ListItem
+                    button
+                    key={index}
+                    onClick={() => handleUpcomingEventClick(event)}
+                  >
+                    <ListItemText
+                      primary={
+                        event.title.length > 30
+                          ? `${event.title.slice(0, 30)}...`
+                          : event.title
+                      }
+                      secondary={`${moment(event.start).format(
+                        "MMMM Do YYYY, h:mm a"
+                      )} - ${moment(event.end).format("MMMM Do YYYY, h:mm a")}`}
+                    />
+                  </ListItem>
+                ))}
+            </List>
+          )}
+        </div>
       </div>
       <Modal open={isAddModalOpen} onClose={() => setIsAddModalOpen(false)}>
         <Box
@@ -135,13 +235,25 @@ const AdminEvents = () => {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            bgcolor: "background.paper",
+            bgcolor: "#ffffff",
             p: 4,
             borderRadius: 1,
             boxShadow: 24,
           }}
         >
-          <Typography variant="h6" mb={2}>
+          <Typography
+            variant="h6"
+            mb={2}
+            sx={{
+              fontFamily: "avenir-Black",
+              fontSize: "28px",
+              justifyItems: "center",
+              width: "full",
+              display: "flex",
+              justifyContent: "center",
+              color: "#0097b2",
+            }}
+          >
             Add New Event
           </Typography>
           <TextField
@@ -183,16 +295,15 @@ const AdminEvents = () => {
             margin="normal"
           />
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button onClick={() => setIsAddModalOpen(false)} sx={{ mr: 2 }}>
-              Cancel
-            </Button>
-            <Button
-              onClick={handleAddEvent}
-              variant="contained"
-              color="primary"
+            <button
+              onClick={() => setIsAddModalOpen(false)}
+              className="btn-light"
             >
+              Cancel
+            </button>
+            <button onClick={handleAddEvent} className="btn-primary">
               Add Event
-            </Button>
+            </button>
           </Box>
         </Box>
       </Modal>
@@ -232,7 +343,10 @@ const AdminEvents = () => {
                 type="datetime-local"
                 value={moment(editableEvent.start).format("YYYY-MM-DDTHH:mm")}
                 onChange={(e) =>
-                  setEditableEvent({ ...editableEvent, start: new Date(e.target.value) })
+                  setEditableEvent({
+                    ...editableEvent,
+                    start: new Date(e.target.value),
+                  })
                 }
                 margin="normal"
               />
@@ -242,7 +356,10 @@ const AdminEvents = () => {
                 type="datetime-local"
                 value={moment(editableEvent.end).format("YYYY-MM-DDTHH:mm")}
                 onChange={(e) =>
-                  setEditableEvent({ ...editableEvent, end: new Date(e.target.value) })
+                  setEditableEvent({
+                    ...editableEvent,
+                    end: new Date(e.target.value),
+                  })
                 }
                 margin="normal"
               />
@@ -251,24 +368,23 @@ const AdminEvents = () => {
                 label="Description"
                 value={editableEvent.description}
                 onChange={(e) =>
-                  setEditableEvent({ ...editableEvent, description: e.target.value })
+                  setEditableEvent({
+                    ...editableEvent,
+                    description: e.target.value,
+                  })
                 }
                 margin="normal"
               />
               <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                <Button
+                <button
                   onClick={() => setIsEventDetailsModalOpen(false)}
-                  sx={{ mr: 2 }}
+                  className="btn-light"
                 >
                   Cancel
-                </Button>
-                <Button
-                  onClick={handleEditEvent}
-                  variant="contained"
-                  color="primary"
-                >
+                </button>
+                <button onClick={handleEditEvent} className="btn-primary">
                   Save Changes
-                </Button>
+                </button>
               </Box>
             </>
           )}
@@ -284,7 +400,7 @@ const AdminEvents = () => {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            bgcolor: "background.paper",
+            bgcolor: "#ffffff",
             p: 4,
             borderRadius: 1,
             boxShadow: 24,
@@ -292,52 +408,44 @@ const AdminEvents = () => {
         >
           {selectedUpcomingEvent && (
             <>
-              <Typography variant="h6" mb={2}>
+              <Typography
+                variant="h5"
+                mb={2}
+                sx={{ color: "#0097b2", fontFamily: "avenir-Black" }}
+              >
                 Upcoming Event Details
               </Typography>
               <Typography variant="body1" mb={2}>
                 <strong>Title:</strong> {selectedUpcomingEvent.title}
               </Typography>
               <Typography variant="body1" mb={2}>
-                <strong>Start:</strong> {moment(selectedUpcomingEvent.start).format("MMMM Do YYYY, h:mm a")}
+                <strong>Start:</strong>{" "}
+                {moment(selectedUpcomingEvent.start).format(
+                  "MMMM Do YYYY, h:mm a"
+                )}
               </Typography>
               <Typography variant="body1" mb={2}>
-                <strong>End:</strong> {moment(selectedUpcomingEvent.end).format("MMMM Do YYYY, h:mm a")}
+                <strong>End:</strong>{" "}
+                {moment(selectedUpcomingEvent.end).format(
+                  "MMMM Do YYYY, h:mm a"
+                )}
               </Typography>
               <Typography variant="body1" mb={2}>
-                <strong>Description:</strong> {selectedUpcomingEvent.description}
+                <strong>Description:</strong>{" "}
+                {selectedUpcomingEvent.description}
               </Typography>
               <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                <Button
+                <button
                   onClick={() => setIsUpcomingEventModalOpen(false)}
-                  variant="contained"
-                  color="primary"
+                  className="btn-primary"
                 >
                   Close
-                </Button>
+                </button>
               </Box>
             </>
           )}
         </Box>
       </Modal>
-      <div className="p-4">
-        <Typography variant="h6">Upcoming Events</Typography>
-        <List>
-          {events
-            .sort((a, b) => new Date(a.start) - new Date(b.start))
-            .slice(0, 4)
-            .map((event, index) => (
-              <ListItem button key={index} onClick={() => handleUpcomingEventClick(event)}>
-                <ListItemText
-                  primary={event.title}
-                  secondary={`${moment(event.start).format(
-                    "MMMM Do YYYY, h:mm a"
-                  )} - ${moment(event.end).format("MMMM Do YYYY, h:mm a")}`}
-                />
-              </ListItem>
-            ))}
-        </List>
-      </div>
     </div>
   );
 };

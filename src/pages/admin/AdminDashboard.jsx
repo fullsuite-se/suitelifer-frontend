@@ -81,7 +81,8 @@ const stats = {
 const AdminDashboard = () => {
   const [open, setOpen] = useState(false);
   const [eventTitle, setEventTitle] = useState("");
-  const [eventDate, setEventDate] = useState("");
+  const [eventEndDate, setEventStartDate] = useState("");
+  const [eventStartDate, setEventEndDate] = useState("");
   const [eventDescription, setEventDescription] = useState("");
   const [events, setEvents] = useState(initialEvents);
   const [editEvent, setEditEvent] = useState(null);
@@ -106,18 +107,19 @@ const AdminDashboard = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setEventTitle("");
-    setEventDate("");
+    setEventStartDate("");
+    setEventEndDate("");
     setEventDescription("");
     setEditEvent(null);
     setOpen(false);
   };
 
   const handleAddEvent = () => {
-    if (eventTitle && eventDate) {
+    if (eventTitle && eventStartDate) {
       const newEvent = {
         title: eventTitle,
-        start: new Date(eventDate),
-        end: new Date(eventDate),
+        start: new Date(eventStartDate),
+        end: new Date(eventEndDate),  
         description: eventDescription,
       };
 
@@ -126,8 +128,9 @@ const AdminDashboard = () => {
     }
   };
 
+
   const handleSelectSlot = ({ start }) => {
-    setEventDate(start);
+    setEventStartDate(start);
     handleOpen();
   };
 
@@ -430,7 +433,7 @@ const AdminDashboard = () => {
 
       {/* Modal for adding events */}
       {open && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-primary bg-opacity-100 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded shadow-lg w-96">
             <h2 className="text-lg font-medium mb-4">Add Event</h2>
             <div className="mb-4">
@@ -443,12 +446,23 @@ const AdminDashboard = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">Date</label>
+              <label className="block text-sm font-medium mb-1">
+                Start-Date
+              </label>
               <input
-                type="date"
+                type="start-date"
                 className="w-full border rounded p-2"
-                value={moment(eventDate).format("YYYY-MM-DD")}
-                onChange={(e) => setEventDate(e.target.value)}
+                value={moment(eventStartDate).format("YYYY-MM-DD")}
+                onChange={(e) => setEventStartDate(e.target.value)}
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">End-Date</label>
+              <input
+                type="end-date"
+                className="w-full border rounded p-2"
+                value={moment(eventEndDate).format("YYYY-MM-DD")}
+                onChange={(e) => setEventEndDate(e.target.value)}
               />
             </div>
             <div className="mb-4">
