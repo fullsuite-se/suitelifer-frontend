@@ -15,20 +15,14 @@ import { ChevronRightIcon, ChevronLeftIcon } from "@heroicons/react/20/solid";
 
 const daysOfWeek = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
-const events = {
-  "2025-02-13": true,
-  "2025-02-25": true,
-  "2025-02-27": true,
-  "2025-02-28": true,
-  "2025-03-01": true,
-};
-
-const Calendar = () => {
+const Calendar = ({ eventDates }) => {
+  const events = eventDates.reduce((acc, date) => {
+    acc[date] = true;
+    return acc;
+  }, {});
   const [currentMonth, setCurrentMonth] = useState(new Date());
-
   const startDate = startOfWeek(startOfMonth(currentMonth));
   const endDate = endOfWeek(endOfMonth(currentMonth));
-
   const days = eachDayOfInterval({ start: startDate, end: endDate });
 
   return (
