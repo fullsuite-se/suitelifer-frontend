@@ -1,0 +1,177 @@
+@import "tailwindcss";
+
+/* Animation Themes */
+@theme {
+  /* Slide In from Top */
+  --animate-slideIn: fade 2s ease-in;
+  @keyframes slideIn {
+    0% {
+      transform: translateY(-90%);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+
+  /* Slide In from Bottom */
+  --animate-slideOut: fade 2s ease-out;
+  @keyframes slideOut {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-100%);
+    }
+  }
+
+  /* Slide In from Right */
+  --animate-slideInRight: fade 2s ease-in;
+  @keyframes slideInRight {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  /* Slide Out to Right */
+  --animate-slideOutRight: fade 2s ease-out;
+  @keyframes slideOutRight {
+    0% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(120%);
+      opacity: 1;
+    }
+  }
+
+  --animate-slideInFromLeft: fade 2s ease-out;
+  @keyframes slideInFromLeft {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(0%);
+    }
+  }
+
+  --animate-slideBackToLeft: fade 2s ease-out;
+  @keyframes slideBackToLeft {
+    0% {
+      transform: translateX(0%);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(-100%);
+      opacity: 0;
+      display: none;
+    }
+  }
+
+  /* Spin counter-clockwise for opening */
+  --animate-spinCCW: fade 2s ease-out;
+  @keyframes spinCCW {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(-360deg);
+    }
+  }
+
+  /* Spin clockwise for closing */
+  --animate-spinCW: fade 2s ease-out;
+  @keyframes spinCW {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  --animate-fadeInUp: fade 2s ease-out;
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  --animate-fadeOutUp: fade 2s ease-out;
+  @keyframes fadeOutUp {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+
+  --animate-fadeInDown: fade 2s ease-out;
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }  
+ 
+}
+
+.animate-fadeInDown {
+  animation: fadeInDown 0.3s ease-in-out forwards;
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.3s ease-in-out forwards;
+}
+
+.animate-fadeOutUp {
+  animation: fadeOutUp 0.3s ease-in-out forwards;
+}
+
+.animate-slideOut {
+  animation: slideOut 0.5s ease-out forwards;
+}
+
+.animate-slideIn {
+  animation: slideIn 0.5s ease-out forwards;
+}
+
+.animate-slideInRight {
+  animation: slideInRight 0.5s ease-out forwards;
+}
+
+.animate-slideOutRight {
+  animation: slideOutRight 0.5s ease-out forwards;
+}
+
+.animate-slideInFromLeft {
+  animation: slideInFromLeft 0.5s ease-out forwards;
+}
+
+.animate-slideBackToLeft {
+  animation: slideBackToLeft 0.5s ease-out forwards;
+}
+
+.animate-spinCCW {
+  animation: spinCCW 0.5s linear; /* Adjust duration as needed */
+}
+
+.animate-spinCW {
+  animation: spinCW 0.5s linear;
+}

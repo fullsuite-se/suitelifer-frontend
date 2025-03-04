@@ -19,9 +19,10 @@ const EmployeeLogin = () => {
       );
 
       console.log("Login successful:", response.data);
-
+      alert(response.data);
       setAccessToken(response.data.accessToken);
     } catch (error) {
+      alert(error);
       console.error("Login failed:", error);
     }
   };

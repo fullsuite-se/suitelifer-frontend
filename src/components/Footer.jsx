@@ -186,20 +186,22 @@ const Footer = () => {
           </div>
         </div>
         <div>
-          <span className="text-sm text-white font-avenir-black">Legal</span>
+          <span className="text-sm text-white font-avenir-black footer-text">
+            Legal
+          </span>
           <ul className="flex-wrap flex gap-1 mt-3 flex-col">
             <li className="text-sm ">
-              <Link to={""} className="footer-text text-primary!">
+              <Link to={""} className="footer-text text-white">
                 Privacy Policy
               </Link>
             </li>
             <li className="text-sm text-white">
-              <Link to={""} className="footer-text text-primary!">
+              <Link to={""} className="footer-text text-white">
                 Terms of Use
               </Link>
             </li>
             <li className="text-sm text-white">
-              <Link to={""} className="footer-text text-primary!">
+              <Link to={""} className="footer-text text-white">
                 FAQs
               </Link>
             </li>

@@ -1,9 +1,21 @@
+@import "tailwindcss";
+
 @font-face {
   font-family: "Avenir-Black";
-  src: url("../src/assets/fonts/AvenirLTStd-Black.otf");
+  src: url("/AvenirLTStd-Black.otf");
+}
+
+@font-face {
+  font-family: "Avenir-BlackOblique";
+  src: url("/AvenirLTStd-BlackOblique.otf");
 }
 
 @font-face {
   font-family: "Avenir-Roman";
-  src: url("../src/assets/fonts/AvenirLTStd-Roman.otf");
+  src: url("/AvenirLTStd-Roman.otf");
+}
+
+@font-face {
+  font-family: "Avenir-RomanOblique";
+  src: url("/AvenirLTStd-RomanOblique.otf");
 }

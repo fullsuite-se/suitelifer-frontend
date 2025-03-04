@@ -27,11 +27,10 @@
     margin: 0 3rem;
   }
 
-  p,
-  li,
-  span {
+  .footer-text {
     font-size: 1.05rem;
   }
+
   .logoFS {
     width: calc(var(--spacing) * 15);
   }
@@ -94,8 +93,8 @@
   }
 
   .footer-links > :last-child > span,
-  .footer-links > :last-child > ul > li {
-    color: var(--color-primary);
+  .footer-links > :last-child > ul > li > a {
+    color: var(--color-primary) !important;
   }
 
   .footer-container > :first-child,

@@ -19,6 +19,31 @@
   box-sizing: border-box;
 }
 
+/* width */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+*:hover {
+  scrollbar-color: #c4c4c4 #f7f7f7b0;
+  transition: all ease 0.2s;
+}
+
 a {
   font-weight: 500;
   /* color: #646cff; */
@@ -77,114 +102,9 @@ h6 {
   --color-accent-1: #eee3e3;
   --color-accent-2: #4a6e73;
   --font-avenir-black: Avenir-Black, "sans-serif";
+  --font-avenir-black-oblique: Avenir-BlackOblique, "sans-serif";
   --font-avenir-roman: Avenir-Roman, "sans-serif";
-}
-
-/* Animation Themes */
-@theme {
-  /* Slide In from Top */
-  --animate-slideIn: fade 2s ease-in;
-  @keyframes slideIn {
-    0% {
-      transform: translateY(-90%);
-    }
-    100% {
-      transform: translateY(0);
-    }
-  }
-
-  /* Slide In from Bottom */
-  --animate-slideOut: fade 2s ease-out;
-  @keyframes slideOut {
-    0% {
-      transform: translateY(0);
-    }
-    100% {
-      transform: translateY(-100%);
-    }
-  }
-
-  /* Slide In from Right */
-  --animate-slideInRight: fade 2s ease-in;
-  @keyframes slideInRight {
-    0% {
-      transform: translateX(100%);
-    }
-    100% {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
-
-/* Slide Out to Right */
-  --animate-slideOutRight: fade 2s ease-out;
-  @keyframes slideOutRight {
-    0% {
-      transform: translateX(0);
-      opacity: 1;
-    }
-    100% {
-      transform: translateX(120%);
-      opacity: 1;
-    }
-  }
-
-  /* Spin counter-clockwise for opening */
-  @keyframes spinCCW {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(-360deg);
-    }
-  }
-  
-  /* Spin clockwise for closing */
-  @keyframes spinCW {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-}
-
-.tablet-nav{
-    @media (width <= 40rem /* 1024px */) {
-        display: none;
-    }
-    @media (width >= 1023px /* 1024px */) {
-        display: none;
-    }
-}
-
-.animate-slideOut {
-  animation: slideOut 0.5s ease-out forwards;
-}
-
-.animate-slideIn {
-  animation: slideIn 0.5s ease-out forwards;
-}
-
-.animate-slideInRight {
-  animation: slideInRight 0.5s ease-out forwards;
-}
-
-.animate-slideOutRight {
-  animation: slideOutRight 0.5s ease-out forwards;
-}
-
-.animate-spinCCW {
-  animation: spinCCW 0.5s linear; /* Adjust duration as needed */
-}
-
-.animate-spinCW {
-  animation: spinCW 0.5s linear;
-}
-
-.active-class {
-  color: var(--color-primary);
+  --font-avenir-roman-oblique: Avenir-BlackOblique, "sans-serif";
 }
 
 .btn-primary {
@@ -201,13 +121,13 @@ h6 {
 
 .btn-primary:hover {
   background-color: #007a8e;
-  transition: background-color 0.2s ease-in
+  transition: background-color 0.2s ease-in;
 }
 
 .btn-light {
   border-radius: 18px;
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
+  padding: 0.4em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
@@ -215,6 +135,11 @@ h6 {
   cursor: pointer;
   transition: border-color 0.25s;
   color: var(--color-primary);
+}
+
+.btn-light:hover {
+  background-color: rgba(213, 212, 212, 0.984);
+  transition: background-color 0.2s ease-in;
 }
 
 .btn-dark {
@@ -230,9 +155,54 @@ h6 {
   color: white;
 }
 
-.blue-thingy {
-  @media (width >= 10rem) {
-    border-top-right-radius: 250px;
-    border-bottom-right-radius: 250px;
-  }
+.sunday .fc-daygrid-day-number,
+.saturday .fc-daygrid-day-number {
+  color: #ff7575;
+}
+
+.fc-daygrid-day-frame {
+  border: none !important;
+}
+
+.no-underline {
+  text-decoration: none;
+}
+
+/* Swiper Theme */
+.swiper-button-next,
+.swiper-button-prev {
+  color: white !important; /* Change arrow color */
+  background: rgba(0, 0, 0, 0.5) !important; /* Semi-transparent background */
+  border-radius: 50% !important;
+  width: 42px !important;
+  height: 42px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  background: rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Modify the default Swiper arrows */
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  font-size: 1rem !important; /* Adjust arrow size */
+  width: 15px !important;
+  height: 15px !important;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-button-next::after {
+  content: "➤" !important; /* Custom arrow for next button */
+}
+
+.swiper-button-prev::after {
+  content: "➤" !important; /* Custom arrow */
+  transform: rotate(180deg); /* Flip the arrow for previous */
 }
