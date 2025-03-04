@@ -15,8 +15,6 @@ const Careers = () => {
     const fetchEpisodes = async () => {
       try {
         const episodes = await axios.get(`${config.apiBaseUrl}/api/episodes`);
-        
-        console.log(episodes.data);
 
         setEpisodes(episodes.data);
       } catch (err) {
@@ -65,10 +63,10 @@ const Careers = () => {
 
       {/* SPOTIFY EPISODES */}
       <div className="px-3 mb-10">
-        {spotifyEpisodes.map((episode, index) => {
+        {spotifyEpisodes.map(({id}, index) => {
           return (
             <div className="p-1" key={index}>
-              <SpotifyEmbed id={episode.id} index={index} key={index}/>
+              <SpotifyEmbed id={id} index={index} key={index}/>
             </div>
           );
         })}
