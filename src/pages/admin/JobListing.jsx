@@ -165,7 +165,7 @@ export default function JobListing() {
           </button>
           <button
             variant="outlined"
-           className="btn-primary"
+            className="btn-primary"
             onClick={() => setOpenIndustryModal(true)}
           >
             <span className="mr-2">+</span> INDUSTRY

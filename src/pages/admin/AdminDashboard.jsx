@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -7,6 +7,8 @@ import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import logofsfull from "../../assets/logos/logo-fs-full.svg";
 import "../../css/animation/animation.css";
 import "../../components/admin/AdminDashboard.css";
+import { SidebarContext } from "./AdminLayout";
+import AppsIcon from "@mui/icons-material/Apps";
 
 const localizer = momentLocalizer(moment);
 
@@ -79,6 +81,8 @@ const stats = {
 };
 
 const AdminDashboard = () => {
+  const { isOpen, setIsOpen } = useContext(SidebarContext);
+
   const [open, setOpen] = useState(false);
   const [eventTitle, setEventTitle] = useState("");
   const [eventEndDate, setEventStartDate] = useState("");
@@ -119,7 +123,7 @@ const AdminDashboard = () => {
       const newEvent = {
         title: eventTitle,
         start: new Date(eventStartDate),
-        end: new Date(eventEndDate),  
+        end: new Date(eventEndDate),
         description: eventDescription,
       };
 
@@ -127,7 +131,6 @@ const AdminDashboard = () => {
       handleClose();
     }
   };
-
 
   const handleSelectSlot = ({ start }) => {
     setEventStartDate(start);
@@ -205,7 +208,13 @@ const AdminDashboard = () => {
     <div className="max-h-100vh bg-white p-1">
       {/* Header */}
       <header className="container flex h-12 items-center justify-between flex-wrap">
-        <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
+        <div className="flex gap-4 items-center">
+          <button className="sm:hidden" onClick={() => setIsOpen(!isOpen)}>
+            <AppsIcon sx={{ fontSize: "48px" }} />
+          </button>
+          <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
+        </div>
+
         <div className="flex gap-2">
           <button className="btn-primary">
             <span className="mr-2">+</span> JOB LISTING
@@ -218,8 +227,12 @@ const AdminDashboard = () => {
 
       {/* Main Content */}
       <main className="p-2">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <div className="col-span-2">
+        <div
+          // className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+
+          className="flex flex-col xl:flex-row gap-5"
+        >
+          <div className="flex-1">
             <div className="grid gap-6">
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="grid gap-4 md:grid-cols-2">

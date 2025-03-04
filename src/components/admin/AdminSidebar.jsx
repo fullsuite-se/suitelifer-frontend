@@ -18,14 +18,17 @@ import iconLogout from "../../assets/icons/icon-logout.svg";
 import iconLogoutHover from "../../assets/icons/icon-logout-hover.svg";
 import "../../css/animation/animation.css";
 
-function AdminSidebar() {
-  const [isOpen, setIsOpen] = useState(false);
-
+function AdminSidebar({ isOpen }) {
   return (
     <>
-      <div className="flex-col sm:w-52 md:w-80 p-3 w-full h-screen bg-primary items-center fixed sm:relative transition-transform duration-300 sm:translate-x-0 sm:block hidden">
+    
+      <div
+        className={`flex-col sm:w-52 md:w-80 p-3 w-full h-screen bg-primary items-center fixed sm:relative transition-transform duration-300 sm:translate-x-0 sm:block 
+          
+          ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
+      >
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6 sm:py-4">
-          <div className="div">
+          <div>
             <img
               className="mx-auto block rounded-full sm:mx-0 sm:shrink-0 w-24 sm:w-20"
               src={image_01}
@@ -34,7 +37,7 @@ function AdminSidebar() {
           </div>
           <div className="space-y-2 text-center sm:text-left">
             <div className="space-y-0.5">
-              <p className="text-white font-avenir-black text-xl!">
+              <p className="text-white font-avenir-black text-xl">
                 Melbraei Santiago
               </p>
               <p className="text-white">Software Engineer</p>
@@ -43,160 +46,73 @@ function AdminSidebar() {
           </div>
         </div>
 
-        <div className="flex flex-col text-light font-family:Avenir-Black space-y-5 justify-start w-full place-items-baseline content-start p-8 h-100vh items-start">
-          <NavLink
-            to="/admin/dashboard"
-            className={({ isActive }) =>
-              isActive
-                ? "bg-white w-full text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
-                : "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <img
-                  src={isActive ? iconDashboardHover : iconDashboard}
-                  alt="Dashboard"
-                  className="size-8"
-                />
-                <span className="no-underline! font-avenir-black">
-                  DASHBOARD
-                </span>
-              </>
-            )}
-          </NavLink>
+        <div className="flex flex-col text-light font-family:Avenir-Black space-y-5 justify-start w-full place-items-baseline content-start p-8 h-full items-start">
+          {[
+            {
+              to: "/admin/dashboard",
+              icon: iconDashboard,
+              iconHover: iconDashboardHover,
+              label: "DASHBOARD",
+            },
+            {
+              to: "/admin/joblisting",
+              icon: iconJoblisting,
+              iconHover: iconJoblistingHover,
+              label: "JOB LISTINGS",
+            },
+            {
+              to: "/admin/blogs",
+              icon: iconBlog,
+              iconHover: iconBlogHover,
+              label: "BLOGS",
+            },
+            {
+              to: "/admin/news",
+              icon: iconNews,
+              iconHover: iconNewsHover,
+              label: "NEWS",
+            },
+            {
+              to: "/admin/events",
+              icon: iconEvent,
+              iconHover: iconEventHover,
+              label: "EVENTS",
+            },
+            {
+              to: "/admin/contents",
+              icon: iconContent,
+              iconHover: iconContentHover,
+              label: "CONTENTS",
+            },
 
-          <NavLink
-            to="/admin/joblisting"
-            className={({ isActive }) =>
-              isActive
-                ? "bg-white w-full text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
-                : "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <img
-                  src={isActive ? iconJoblistingHover : iconJoblisting}
-                  alt="Job Listings"
-                  className="size-8"
-                />
-                <span className="no-underline! font-avenir-black">
-                  JOB LISTINGS
-                </span>
-              </>
-            )}
-          </NavLink>
-
-          <NavLink
-            to="/admin/blogs"
-            className={({ isActive }) =>
-              isActive
-                ? "bg-white w-full text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
-                : "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <img
-                  src={isActive ? iconBlogHover : iconBlog}
-                  alt="Blogs"
-                  className="size-8"
-                />
-                <span className="no-underline! font-avenir-black w-full">
-                  BLOGS
-                </span>
-              </>
-            )}
-          </NavLink>
-
-          <NavLink
-            to="/admin/news"
-            className={({ isActive }) =>
-              isActive
-                ? "bg-white w-full text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
-                : "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <img
-                  src={isActive ? iconNewsHover : iconNews}
-                  alt="News"
-                  className="size-8"
-                />
-                <span className="no-underline! font-avenir-black">NEWS</span>
-              </>
-            )}
-          </NavLink>
-
-          <NavLink
-            to="/admin/events"
-            className={({ isActive }) =>
-              isActive
-                ? "bg-white w-full text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
-                : "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <img
-                  src={isActive ? iconEventHover : iconEvent}
-                  alt="Events"
-                  className="size-8"
-                />
-                <span className="no-underline! font-avenir-black">EVENTS</span>
-              </>
-            )}
-          </NavLink>
-
-          <NavLink
-            to="/admin/contents"
-            className={({ isActive }) =>
-              isActive
-                ? "bg-white w-full text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
-                : "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <img
-                  src={isActive ? iconContentHover : iconContent}
-                  alt="Contents"
-                  className="size-8"
-                />
-                <span className="no-underline! font-avenir-black">
-                  CONTENTS
-                </span>
-              </>
-            )}
-          </NavLink>
-
-          <div className="flex-grow flex items-end w-full mt-auto">
+            {
+              to: "/logout",
+              icon: iconLogout,
+              iconHover: iconLogoutHover,
+              label: "LOGOUT",
+            },
+          ].map(({ to, icon, iconHover, label }) => (
             <NavLink
-              to="/logout"
+              key={to}
+              to={to}
               className={({ isActive }) =>
                 isActive
-                  ? "bg-white text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200 w-full"
-                  : "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200 w-full"
+                  ? "bg-white w-full text-primary p-3 rounded-lg flex items-center gap-3 transition-colors duration-200 no-underline"
+                  : "bg-primary text-white p-3 rounded-lg flex items-center gap-3 transition-colors duration-200 no-underline"
               }
-              onClick={() => setIsOpen(true)}
-              
             >
               {({ isActive }) => (
                 <>
                   <img
-                    src={isActive ? iconLogoutHover : iconLogout}
-                    alt="Logout"
+                    src={isActive ? iconHover : icon}
+                    alt={label}
                     className="size-8"
                   />
-                  <span className="no-underline! font-avenir-black w-full text-center sm:text-left">
-                    LOGOUT
-                  </span>
+                  <span className="font-avenir-black">{label}</span>
                 </>
               )}
             </NavLink>
-          </div>
+          ))}
         </div>
       </div>
     </>

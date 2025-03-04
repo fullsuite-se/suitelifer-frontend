@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import moment from "moment";
 import {
-  Button,
   Modal,
   TextField,
   Typography,
@@ -10,14 +9,17 @@ import {
   List,
   ListItem,
   ListItemText,
-  Grid,
 } from "@mui/material";
 import logofsfull from "../../assets/logos/logo-fs-full.svg";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import { SidebarContext } from "./AdminLayout";
+import AppsIcon from "@mui/icons-material/Apps";
 
 const localizer = momentLocalizer(moment);
 
 const AdminEvents = () => {
+  const { isOpen, setIsOpen } = useContext(SidebarContext);
+
   const [events, setEvents] = useState([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEventDetailsModalOpen, setIsEventDetailsModalOpen] = useState(false);
@@ -157,7 +159,11 @@ const AdminEvents = () => {
   return (
     <div className="bg-white p-2">
       <header className="container flex h-16 items-center justify-between">
+        <button className="sm:hidden" onClick={() => setIsOpen(!isOpen)}>
+          <AppsIcon sx={{ fontSize: "48px" }} />
+        </button>
         <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
+
         <div className="flex gap-2">
           <button className="btn-primary" onClick={handleAddEventButtonClick}>
             <span className="mr-2">+</span> EVENT
@@ -205,7 +211,7 @@ const AdminEvents = () => {
             <List>
               {events
                 .sort((a, b) => new Date(a.start) - new Date(b.start))
-                .slice(0, 8)
+                .slice(0)
                 .map((event, index) => (
                   <ListItem
                     button
