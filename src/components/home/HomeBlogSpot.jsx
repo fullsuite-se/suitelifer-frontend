@@ -11,9 +11,7 @@ const HomeBlogSpot = () => {
       </div>
       <div className="mt-[47%] sm:mt-[57%] md:mt-[8%] xl:mt-[10%] w-full absolute rounded-2xl">
           <BlogCarousel/>
-      </div>
-
-      
+      </div>      
     </section>
   );
 };
