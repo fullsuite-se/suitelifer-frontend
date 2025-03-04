@@ -1,5 +1,95 @@
 @import "tailwindcss";
 
+.swiper-wrapper {
+  width: 100%;
+  height: max-content !important;
+  padding-bottom: 64px !important;
+  -webkit-transition-timing-function: linear !important;
+  transition-timing-function: linear !important;
+  position: relative;
+  }
+  .swiper-pagination-bullet {
+  background: #4F46E5;
+  }
+  .swiper-pagination-bullet-active {
+  background: #4F46E5 !important;
+  }
+
+.carousel-container{
+  margin-top: 60%;
+
+  @media (min-width: 365px) {
+    margin-top: 61%;
+  }
+
+  @media (min-width: 550px) {
+    margin-top: 65%;
+  }
+
+  @media (min-width: 768px) {
+    margin-top: 0%;
+  }
+}
+
+.carousel-index{
+  bottom: calc(var(--spacing) * 8);
+
+  @media (min-width: 321px) {
+    bottom: calc(var(--spacing) * 4)
+  }
+
+  @media (min-width: 321px) {
+    bottom: calc(var(--spacing) * 4)
+  }
+
+  @media (min-width: 480px) {
+    bottom: calc(var(--spacing) * 2)
+  }
+}
+
+.small-blog-card{
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  
+    @media (min-width: 332px) {
+      -webkit-line-clamp: 4;
+    }
+
+    @media (min-width: 390px) {
+      -webkit-line-clamp: 5;
+    }
+
+    @media (min-width: 430px) {
+      -webkit-line-clamp: 6;
+    }
+
+    @media (min-width: 485px) {
+      -webkit-line-clamp: 7;
+    }
+
+    @media (min-width: 768px) {
+      -webkit-line-clamp: 3;
+    }
+
+    @media (min-width: 1024px) {
+      -webkit-line-clamp: 4;
+    }
+
+    @media (min-width: 1280px) {
+      -webkit-line-clamp: 7;
+    }
+}
+
+.small-blog-card-content{
+  padding: calc(var(--spacing) * 4);
+
+  @media (min-width: 500px) {
+    padding: calc(var(--spacing) * 5);
+  }
+}
+
 .op-title{
   font-size: 18px;
   

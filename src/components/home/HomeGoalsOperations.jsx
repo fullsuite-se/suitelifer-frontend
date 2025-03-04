@@ -1,6 +1,7 @@
 import desktopCutoutBgMarvin from "../../assets/images/desktop-bg-man-cutout-marvin.svg";
 import desktopCutoutBgMaggie from "../../assets/images/desktop-bg-man-cutout-maggie.svg";
 import mobileCutoutBgMaggie from "../../assets/images/mobile-bg-man-cutout-maggie.png";
+import mobileCutoutBgMaggieNew from "../../assets/images/mobile-bg-man-cutout-maggie-new.png";
 import dataOp from "../../assets/images/data-op.svg";
 import financeOp from "../../assets/images/finance-op.svg";
 import adminOp from "../../assets/images/admin-op.svg";
@@ -15,7 +16,7 @@ const HomeGoalsOperations = () => {
       alt: "Marketing operations analyst",
     },
     { title: "Tech Support", image: adminOp, alt: "Tech support analyst" },
-    { title: "Data Operations", image: dataOp, alt: "Data operations analyst" },
+    { title: "Business Operations", image: dataOp, alt: "Data operations analyst" },
     {
       title: "Finance Operations",
       image: financeOp,
@@ -29,12 +30,12 @@ const HomeGoalsOperations = () => {
   ];
 
   return (
-    <section className="mb-10 sm:mb-15 lg:mb-20 xl:mb-30 flex flex-col">
+    <section className="-mt-[5%] md:-mt-[10%] mb-10 sm:mb-15 lg:mb-20 xl:mb-30 flex flex-col">
       <div className="block">
         {/* Background Image */}
         <div className="cutout-maggie mb-6">
           <img
-            src={mobileCutoutBgMaggie}
+            src={mobileCutoutBgMaggieNew}
             alt="cutout background"
             className="block -z-10 w-[100%] sm:hidden"
           />

@@ -46,7 +46,7 @@ export default function TabletNav() {
     <>
       <div className="h-16 mb-2">
         <div
-          className={`fixed z-10 transition-transform duration-300 bg-white w-full `}
+          className={`fixed z-50 transition-transform duration-300 bg-white w-full `}
         >
           <div
             className={`bg-white fixed top-0 left-0 right-0 z-20 transition-transform duration-300 ${

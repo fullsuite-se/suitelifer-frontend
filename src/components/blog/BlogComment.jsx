@@ -1,6 +1,6 @@
 import React from "react";
 
-const FeedComment = ({
+const BlogComment = ({
   id,
   userPic,
   firstName,
@@ -32,4 +32,4 @@ const FeedComment = ({
   );
 };
 
-export default FeedComment;
+export default BlogComment;

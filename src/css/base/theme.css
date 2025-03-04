@@ -103,7 +103,9 @@ h6 {
   --color-accent-1: #eee3e3;
   --color-accent-2: #4a6e73;
   --font-avenir-black: Avenir-Black, "sans-serif";
+  --font-avenir-black-oblique: Avenir-BlackOblique, "sans-serif";
   --font-avenir-roman: Avenir-Roman, "sans-serif";
+  --font-avenir-roman-oblique: Avenir-BlackOblique, "sans-serif";
 }
 
 .btn-primary {

@@ -26,7 +26,12 @@ import EmployeeLayout from "./pages/employee/EmployeeLayout";
 import EmployeeLogin from "./pages/employee/EmployeeLogin";
 import EmployeeBlogsFeed from "./pages/employee/EmployeeBlogsFeed";
 import EmployeeMyBlogs from "./pages/employee/EmployeeMyBlogs";
-import FeedView from "./components/feed/FeedView";
+import BlogView from "./components/blog/BlogView";
+import EmployeeThreads from "./pages/employee/EmployeeThreads";
+import EmployeeEvents from "./pages/employee/EmployeeEvents";
+import EmployeeWorkshops from "./pages/employee/EmployeeWorkshops";
+import EmployeePersonalityTest from "./pages/employee/EmployeePersonalityTest";
+import BlogCreate from "./components/blog/BlogCreate";
 
 function App() {
   return (
@@ -42,7 +47,7 @@ function App() {
           <Route path="/careers" element={<Careers />} />
           <Route path="/news" element={<News />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/blog" element={<Blog />} />
+          <Route path="/blogs" element={<Blog />} />
           <Route path="/legal" element={<Legal />} />
 
           {/* Admin Routes */}
@@ -63,9 +68,19 @@ function App() {
             <Route path="/employee" element={<EmployeeLayout />}>
               <Route index element={<Navigate to="blogs-feed" replace />} />
               <Route path="blogs-feed" element={<EmployeeBlogsFeed />} />
-              <Route path="blogs-feed/feed/:id/:slug" element={<FeedView />} />
+              <Route path="blogs-feed/blog/:id/:slug" element={<BlogView />} />
+
               <Route path="my-blogs" element={<EmployeeMyBlogs />} />
-              <Route path="my-blogs/feed/:id/:slug" element={<FeedView />} />
+              <Route path="my-blogs/blog/:id/:slug" element={<BlogView />} />
+              <Route path="my-blogs/new-blog" element={<BlogCreate />} />
+
+              <Route path="threads" element={<EmployeeThreads />} />
+              <Route path="events" element={<EmployeeEvents />} />
+              <Route path="workshops" element={<EmployeeWorkshops />} />
+              <Route
+                path="personality-test"
+                element={<EmployeePersonalityTest />}
+              />
             </Route>
           </Route>
         </Routes>

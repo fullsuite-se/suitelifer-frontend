@@ -1,6 +1,6 @@
 import React from "react";
-import FeedCard from "../../components/feed/FeedCard";
-import { Outlet, useParams } from "react-router-dom";
+import BlogCard from "../../components/blog/BlogCard";
+import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { TicketIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 
 const blogFeeds = [
@@ -45,6 +45,7 @@ const blogFeeds = [
 ];
 const EmployeeBlogsFeed = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   return (
     <section className="p-2 xl:p-3">
@@ -54,7 +55,12 @@ const EmployeeBlogsFeed = () => {
         <>
           <div className="lg:flex items-center justify-between hidden">
             <h2 className="font-avenir-black">Feeds</h2>
-            <span className="font-avenir-black text-primary text-sm">
+            <span
+              onClick={() => {
+                navigate("/employee/my-blogs/new-blog");
+              }}
+              className="font-avenir-black text-primary text-sm cursor-pointer"
+            >
               + Create new blog
             </span>
           </div>
@@ -69,9 +75,9 @@ const EmployeeBlogsFeed = () => {
             </div>
           </div>
           <main>
-            {blogFeeds.map((feed, index) => (
+            {blogFeeds.map((blog, index) => (
               <div key={index} className="mb-5">
-                <FeedCard feed={feed} />
+                <BlogCard blog={blog} />
               </div>
             ))}
           </main>

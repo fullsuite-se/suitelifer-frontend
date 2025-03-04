@@ -3,10 +3,10 @@ import { useSwiperSlide } from "swiper/react";
 
 const JobPost = ({
   title,
-  employmentType,
+  employment_type,
   salary = null,
   description,
-  setup,
+  setup_name,
 }) => {
   const swiperSlide = useSwiperSlide();
   const isActive = swiperSlide.isActive;
@@ -18,15 +18,19 @@ const JobPost = ({
       className={`job-container max-w-100 shadow-2xs text-sm p-5 rounded-xl flex flex-col ${
         isActive
           ? "bg-primary text-white h-75"
-          : `bg-white text-primary h-65 justify-center items-center ${isPrev ? "md:items-end" : isActive ? "md:items-center" : "md:items-start"}`
+          : `bg-white text-primary h-65 justify-center ${
+              isPrev ? "items-end" : isActive ? "items-center" : "items-start"
+            }`
       }`}
     >
-      <p className="text-base font-avenir-black truncate">{title}</p>
+      <p className="text-base font-avenir-black truncate" title={title}>
+        {title}
+      </p>
       <div
         className={`flex ${isActive ? "flex-row" : "flex-col"} justify-between`}
       >
-        <p className="text-sm font-avenir-black">{employmentType}</p>
-        <p className="text-sm font-avenir-roman mb-3">{setup}</p>
+        <p className="text-sm font-avenir-black">{employment_type}</p>
+        <p className="text-sm font-avenir-roman mb-3">{setup_name}</p>
       </div>
       {isActive && salary && (
         <>
@@ -40,7 +44,12 @@ const JobPost = ({
         </p>
       )}
       {isActive && (
-        <a href="#" onClick={() => {console.log('hello')}}>
+        <a
+          href="#"
+          onClick={() => {
+            console.log("hello");
+          }}
+        >
           <button className="bg-[#4DB6C9] text-white p-2 rounded-xl w-full mt-auto">
             View Full Details
           </button>

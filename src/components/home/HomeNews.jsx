@@ -86,9 +86,10 @@ const HomeNews = () => {
         {/* MAIN NEWS (First Item) */}
         <div className="lg:w-1/2 flex px-2 flex-col items-center justify-center">
           {newsList.length > 0 && (
-            <div className="rounded-2xl cursor-pointer">
+            <a href="#" className="no-underline rounded-2xl cursor-pointer">
+              <div>
               {/* TITLE */}
-              <div className="title">
+              <div className="title hover:underline">
                 <p className="sm:text-xl lg:text-2xl line-clamp-2">
                   {newsList[0].title}
                 </p>
@@ -96,11 +97,11 @@ const HomeNews = () => {
               {/* AUTHOR AND READ TIME */}
               <div className="news-info py-1 md:py-2 mb-2">
                 <p className="text-sm">
-                  <span className="text-primary">
-                    {newsList[0].author} &nbsp; |
+                  <span className="text-primary hover:underline">
+                    {newsList[0].author}
                   </span>
-                  &nbsp;{" "}
-                  <span className="text-gray-400">{newsList[0].readTime}</span>
+                  <span className="text-primary">&nbsp; |</span>
+                  <span className="text-gray-400">&nbsp;&nbsp;{newsList[0].readTime}</span>
                 </p>
               </div>
               {/* IMAGE */}
@@ -112,55 +113,57 @@ const HomeNews = () => {
                 />
               </div>
             </div>
+            </a>
           )}
         </div>
 
         {/* OTHER NEWS (Remaining Items) */}
-        <div className="lg:w-1/2 flex flex-col max-h-full overflow-y-auto gap-2 lg:pb-2">
+        <div className="lg:w-1/2 flex flex-col max-h-full overflow-y-auto gap-2 pb-2">
           {newsList.slice(1, 4).map((news) => (
-            <div
-              key={news.id}
-              className="other-news rounded-2xl cursor-pointer px-2 pb-2 lg:px-3 transition-all duration-300 hover:shadow-md hover:bg-white flex justify-center items-center gap-2"
-            >
-              {/* CONTENT */}
-              <div className="w-[50%] sm:w-[60%] flex flex-col">
-                <div>
-                  {/* TITLE */}
-                  <div className="mb-1">
-                    <p
-                      title={news.title}
-                      className="text-[12px] line-clamp-2 sm:text-[16px] md:text-lg pr-2 font-avenir-black"
-                    >
-                      {news.title}
-                    </p>
-                  </div>
-                  {/* DESCRIPTION */}
-                  <div className="news-desc pr-2 mb-2">
-                    <p className="text-[10px] line-clamp-2 sm:text-[12px] md:text-sm sm:line-clamp-3 text-gray-500">
-                      {news.description}
-                    </p>
-                  </div>
-                  {/* AUTHOR AND READ TIME */}
-                  <div className="news-info">
-                    <p className="text-sm text-[10px] sm:text-[12px] md:text-sm">
-                      <span className="text-primary">
-                        {news.author} &nbsp; |
-                      </span>
-                      &nbsp;{" "}
-                      <span className="text-gray-400">{news.readTime}</span>
-                    </p>
+            <a key={news.id} href="" className="no-underline rounded-2xl cursor-pointer px-2 pb-2 lg:px-3 transition-all duration-300 hover:shadow-md hover:bg-white">
+              <div
+                className="other-news flex justify-center items-center gap-2"
+              >
+                {/* CONTENT */}
+                <div className="w-[50%] sm:w-[60%] flex flex-col">
+                  <div>
+                    {/* TITLE */}
+                    <div className="mb-1">
+                      <p
+                        title={news.title}
+                        className="text-[12px] line-clamp-2 sm:text-[16px] md:text-lg pr-2 font-avenir-black"
+                      >
+                        {news.title}
+                      </p>
+                    </div>
+                    {/* DESCRIPTION */}
+                    <div className="news-desc pr-2 mb-2">
+                      <p className="text-[10px] line-clamp-2 sm:text-[12px] md:text-sm sm:line-clamp-3 text-gray-500">
+                        {news.description}
+                      </p>
+                    </div>
+                    {/* AUTHOR AND READ TIME */}
+                    <div className="news-info">
+                      <p className="text-sm text-[10px] sm:text-[12px] md:text-sm">
+                        <span className="text-primary">
+                          {news.author} &nbsp; |
+                        </span>
+                        &nbsp;{" "}
+                        <span className="text-gray-400">{news.readTime}</span>
+                      </p>
+                    </div>
                   </div>
                 </div>
+                {/* IMAGE */}
+                <div className="w-[50%] sm:w-[40%] h-full flex items-center">
+                  <img
+                    className="aspect-video h-full object-cover rounded-md sm:rounded-xl"
+                    src={news.image}
+                    alt="News image"
+                  />
+                </div>
               </div>
-              {/* IMAGE */}
-              <div className="w-[50%] sm:w-[40%] h-full flex items-center">
-                <img
-                  className="aspect-video h-full object-cover rounded-md sm:rounded-xl"
-                  src={news.image}
-                  alt="News image"
-                />
-              </div>
-            </div>
+            </a>
           ))}
         </div>
       </section>
