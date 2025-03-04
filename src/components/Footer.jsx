@@ -14,14 +14,14 @@ const Footer = () => {
     <footer className="relative pb-5 footer-container">
       <section className="flex flex-col px-4 my-3 gap-3">
         <div className="flex gap-3">
-          <div className="w-10 h-auto logoFS">
+          {/* <div className="w-10 h-auto logoFS">
             <img
               src={logoFS}
               alt="FullSuite"
               className="w-full object-contain h-full"
             />
-          </div>
-          <div className="w-32 h-auto logoFSTagline">
+          </div> */}
+          <div className="ml-3 w-32 h-auto logoFSTagline">
             <img
               src={logoTagline}
               alt="FullSuite"
