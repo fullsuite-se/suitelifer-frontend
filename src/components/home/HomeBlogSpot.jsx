@@ -1,23 +1,17 @@
 import desktopBgBlogSpot from "../../assets/images/bg-blog-spot.svg";
-import mobileBgBlogSpot from "../../assets/images/bg-mobile-blog-spot.svg";
-import HomeCarousel from "./HomeCarousel";
-import HomeCarouselSwiper from "./HomeCarouselSwiper";
+import mobileBgBlogSpot2 from "../../assets/images/bg-mobile-blog-spot-2.svg";
+import BlogCarousel from "./BlogCarousel";
 
 const HomeBlogSpot = () => {
   return (
-    <section className="flex flex-col mb-[50%]">
-      <div className="absolute w-full">
-        <img className="w-full -z-10 md:hidden" src={mobileBgBlogSpot} alt="" />
-        <img className="w-full -z-10 hidden md:block" src={desktopBgBlogSpot} alt="" />
+    <section className="flex flex-col mb-5">
+      <div className="w-full">
+        <img className="w-full -z-20 md:hidden" src={mobileBgBlogSpot2} alt="" />
+        <img className="w-full -z-20 hidden md:block" src={desktopBgBlogSpot} alt="" />
       </div>
-      <div className="carousel-container flex flex-col items-start">
-      <HomeCarousel/>
-
-        {/* <div className="hidden md:block"> */}
-          {/* <HomeCarouselSwiper /> */}
-        {/* </div> */}
-      </div>
-      
+      <div className="mt-[47%] sm:mt-[57%] md:mt-[8%] xl:mt-[10%] w-full absolute rounded-2xl">
+          <BlogCarousel/>
+      </div>      
     </section>
   );
 };

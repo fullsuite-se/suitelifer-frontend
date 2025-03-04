@@ -46,7 +46,7 @@ function App() {
           <Route path="/careers" element={<Careers />} />
           <Route path="/news" element={<News />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/blog" element={<Blog />} />
+          <Route path="/blogs" element={<Blog />} />
           <Route path="/legal" element={<Legal />} />
 
           {/* Admin Routes */}
