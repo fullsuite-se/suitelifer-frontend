@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Calendar from "../Calendar";
 import {
   Disclosure,
@@ -7,27 +7,41 @@ import {
 } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import EventCard from "../events/EventCard";
-
-const events = [
-  {
-    title: "Annual Sports Fest 2025",
-    description:
-      "Join us for a day of fun and competition! Various sports activities, games, and team-building events await. Don't miss out on the excitement!",
-    time: "7:00 AM - 6:00 PM",
-  },
-  {
-    title: "Tech Conference 2025",
-    description:
-      "A gathering of the brightest minds in technology, discussing the latest trends in AI, cloud computing, and cybersecurity.",
-    time: "9:00 AM - 4:00 PM",
-  },
-];
+import config from "../../config";
+import axios from "axios";
+import { format } from "date-fns";
 
 const EmployeeAside = () => {
+  const [events, setEvents] = useState([]);
+  const [eventDates, setEventDates] = useState([]);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get(`${config.apiBaseUrl}/api/all-events`);
+        setEvents(response.data);
+
+        const dates = response.data.reduce((acc, current) => {
+          const formattedDate = format(
+            new Date(current.date_time),
+            "yyyy-MM-dd"
+          );
+          acc.push(formattedDate);
+          return acc;
+        }, []);
+        setEventDates(dates);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
   return (
     <aside className="w-52 md:w-64 lg:w-72 h-dvh flex flex-col p-2 xl:p-3">
       <h2 className="font-avenir-black">Events</h2>
-      <Calendar />
+      <Calendar eventDates={eventDates} />
       <section className="mt-5">
         <div className="w-full">
           <div className="">
