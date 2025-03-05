@@ -37,7 +37,7 @@ const Blog = () => {
         {/* BANNER */}
         <div className="relative flex flex-col items-center">
           <div
-            className="absolute -left-50 top-[40%] -translate-y-2/3 bg-primary h-14 md:h-25 w-[61%] rounded-lg z-0"
+            className="absolute -left-50 top-[30%]  -translate-y-2/3 bg-primary h-14 w-[94%] rounded-lg z-0  md:h-25 md:w-[77%] md:top-[40%] lg:w-[61%] lg:top-[40%]"
             style={{
               animation: "slideInFromLeft 0.8s ease-out forwards",
             }}
@@ -87,9 +87,13 @@ const Blog = () => {
           </div>
         </div>
       </section>
-      <div className="p-10 ml-10">
-      <GuestBlogTags />
-    </div>
+      <div className="flex justify-center lg:p-10 mt-10">
+  <div className="w-full max-w-3xl flex justify-center">
+    <GuestBlogTags />
+  </div>
+</div>
+
+
       <div className="py-5"></div>
       {/* BLOGS CONTENT */}
       <main className="px-[5%]">
@@ -105,6 +109,10 @@ const Blog = () => {
           created_at={guestBlogsList[0].created_at}
           images={guestBlogsList[0].images}
         />
+
+        <p className="md:text-2xl uppercase font-avenir-black text-primary pb-3 mt-20 lg:pb-4">
+          MORE BLOGS
+        </p>
       </main>
       <div className="h-30"></div>
     </section>
