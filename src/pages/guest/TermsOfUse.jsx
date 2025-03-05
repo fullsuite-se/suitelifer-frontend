@@ -4,7 +4,7 @@ import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
 
-const PrivacyPolicy = () => {
+const TermsOfUse = () => {
   return (
     <>
       {/* MOBILE NAV */}
@@ -21,9 +21,9 @@ const PrivacyPolicy = () => {
       <div className="desktop-nav">
         <DesktopNav />
       </div>
-      <div className="relative">LEGAL</div>
+      <div className="relative">LEGAL - Privacy Policy</div>
     </>
   );
 };
 
-export default PrivacyPolicy;
+export default TermsOfUse;
