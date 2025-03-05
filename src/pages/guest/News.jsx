@@ -8,7 +8,7 @@ import NewsLarge from "../../components/news/NewsLarge";
 import newsList from "../../components/news/NewsList";
 
 const News = () => {
-  return (
+  return ( 
     <section
       className="gap-4 h-dvh"
       style={{ maxWidth: "1800px", margin: "0 auto", padding: "0 1rem" }}
@@ -28,7 +28,7 @@ const News = () => {
       {/* NEWS HERO */}
       <section className="pt-[10%] xl:pt-[8%]">
         <img
-          className="-z-50 absolute w-[90%] transform translate-y-5 -translate-x-10 lg:-translate-x-20 xl:-translate-x-30"
+          className="-z-50 absolute w-[90%] transform translate-y-5 -translate-x-10 lg:-translate-x-20 xl:-translate-x-30 opacity-90"
           src={bgNews}
           alt=""
         />
