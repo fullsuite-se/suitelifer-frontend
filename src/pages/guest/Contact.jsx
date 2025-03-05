@@ -32,8 +32,13 @@ const Contact = () => {
       <div className="desktop-nav">
         <DesktopNav />
       </div>
+      <div className="relative">
+  {/* Background Boxes */}
+  <div className="absolute top-10 left-10 w-40 h-40 bg-primary/20 rounded-lg -z-1"></div>
+  <div className="absolute top-255 left-15 bottom-20 right-20 w-28 h-28 bg-secondary/20 rounded-xl -z-1 "></div>
+  <div className="absolute top-270 left-5 w-20 h-20 bg-primary/10 -z-1 rounded-xl"></div>
 
-      <main className="mt-0  lg:mt-20">
+      <main className="mt-0 lg:mt-20 text-[12px] md:text-[14px] lg:text-[16px] ">
         <div className="flex flex-col md:flex-row items-start md:items-center">
           <div
             className="relative p-8 pr-8 md:pr-16 rounded-tr-xl rounded-br-xl text-white mr-4 md:min-h-[500px] justify-center items-center flex flex-col 
@@ -46,7 +51,7 @@ const Contact = () => {
           >
             <div className="absolute inset-0 bg-primary opacity-80 rounded-tr-xl rounded-br-xl"></div>
             <div className="relative z-10">
-              <h2 className="font-avenir-black text-3xl text-white-300">
+              <h2 className="font-avenir-black text-3xl text-white-300 lg:text-xl">
                 <span className="text-secondary">Chat</span> to our team
               </h2>
               <p className="mt-4 text-white text-xs md:text-base">
@@ -85,7 +90,8 @@ const Contact = () => {
             </div>
           </div>
 
-          <div className="p-8 w-full md:max-w-lg lg:max-w-xl xl:max-w-2xl">
+          <div className="p-8 w-full md:max-w-lg lg:max-w-2xl xl:max-w-4xl ">
+
             <form action="#" className="space-y-4">
               <div>
                 <label className="block text-gray-700 font-medium">
@@ -131,8 +137,8 @@ const Contact = () => {
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row items-center md:items-center gap-6 mt-12 p-10 justify-center">
-          <div className="md:w-1/2 flex flex-col justify-center text-left">
+        <div className="flex flex-col md:flex-row items-center md:items-center mt-12 p-10 justify-center gap-10">
+          <div className="md:w-1/2 flex flex-col justify-center text-left lg:w-1/4">
             <h2 className="font-avenir-black text-lg md:text-xl">
               Visit us <span className="text-primary">here</span>
             </h2>
@@ -165,6 +171,7 @@ const Contact = () => {
         <FAQ />
         <Footer />
       </main>
+</div>
     </>
   );
 };
