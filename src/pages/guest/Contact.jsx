@@ -8,8 +8,6 @@ import bgimg from "../../assets/images/engineers.jpg";
 import emailicon from "../../assets/icons/envelope.svg";
 import tphoneicon from "../../assets/icons/mobile-button.svg";
 import phoneicon from "../../assets/icons/phone-flip.svg";
-import clockicon from "../../assets/icons/clock-three.svg";
-import markericon from "../../assets/icons/marker.svg";
 
 import ClockIcon from "../../assets/logos/ClockIcon";
 import MarkerIcon from "../../assets/logos/MarkerIcon";
