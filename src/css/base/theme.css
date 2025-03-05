@@ -93,6 +93,27 @@ h6 {
   margin: 1.67em 0;
 }
 
+/* For the WYSISYG */
+/* Bold text */
+strong,
+b {
+  font-family: "Avenir-Black", sans-serif;
+}
+
+/* Italic text */
+em,
+i {
+  font-family: "Avenir-RomanOblique", sans-serif;
+}
+
+/* Bold + Italic */
+strong em,
+b i,
+strong i,
+b em {
+  font-family: "Avenir-BlackOblique", sans-serif;
+}
+
 /* Color Themes */
 @theme {
   --color-primary: #0097b2;
