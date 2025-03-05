@@ -7,7 +7,8 @@ import Careers from "./pages/guest/Careers";
 import News from "./pages/guest/News";
 import Contact from "./pages/guest/Contact";
 import Blog from "./pages/guest/Blog";
-import Legal from "./pages/guest/Legal";
+import TermsOfUse from "./pages/guest/TermsOfUse";
+import PrivacyPolicy from "./pages/guest/PrivacyPolicy";
 
 // Admin Pages
 import AdminProtectedRoute from "./utils/protectedRoutes/AdminProtectedRoute";
@@ -48,7 +49,9 @@ function App() {
           <Route path="/news" element={<News />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/blogs" element={<Blog />} />
-          <Route path="/legal" element={<Legal />} />
+          <Route path="/blogs" element={<Blog />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-of-use" element={<TermsOfUse />} />
 
           {/* Admin Routes */}
           <Route element={<AdminProtectedRoute />}>
