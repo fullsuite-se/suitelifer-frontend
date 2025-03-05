@@ -90,48 +90,49 @@ const Contact = () => {
 
           <div className="p-8 w-full md:max-w-lg lg:max-w-2xl xl:max-w-4xl ">
 
-            <form action="#" className="space-y-4">
-              <div>
-                <label className="block text-gray-700 font-medium">
-                  Full Name*
-                </label>
-                <input
-                  type="text"
-                  className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-medium">
-                  Email Address*
-                </label>
-                <input
-                  type="email"
-                  className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-medium">
-                  Subject*
-                </label>
-                <input
-                  type="text"
-                  className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-medium">
-                  Message*
-                </label>
-                <textarea
-                  rows="4"
-                  className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary placeholder-primary/50"
-                  placeholder="Type your message here"
-                ></textarea>
-              </div>
-              <button className="w-full font-avenir-black bg-primary text-white py-3 rounded-md hover:bg-primary/90 transition">
-                SEND
-              </button>
-            </form>
+          <form action="#" className="space-y-4">
+  <div>
+    <label className="block text-gray-700 font-medium">
+      Full Name<span className="text-primary">*</span>
+    </label>
+    <input
+      type="text"
+      className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+    />
+  </div>
+  <div>
+    <label className="block text-gray-700 font-medium">
+      Email Address<span className="text-primary">*</span>
+    </label>
+    <input
+      type="email"
+      className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+    />
+  </div>
+  <div>
+    <label className="block text-gray-700 font-medium">
+      Subject<span className="text-primary">*</span>
+    </label>
+    <input
+      type="text"
+      className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+    />
+  </div>
+  <div>
+    <label className="block text-gray-700 font-medium">
+      Message<span className="text-primary">*</span>
+    </label>
+    <textarea
+      rows="4"
+      className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary placeholder-primary/50"
+      placeholder="Type your message here"
+    ></textarea>
+  </div>
+  <button className="w-full font-avenir-black bg-primary text-white py-3 rounded-md hover:bg-primary/90 transition">
+    SEND
+  </button>
+</form>
+
           </div>
         </div>
 
