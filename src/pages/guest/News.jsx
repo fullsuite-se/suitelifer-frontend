@@ -6,12 +6,13 @@ import DesktopNav from "../../components/home/DesktopNav";
 import bgNews from "../../assets/images/bg-news.svg";
 import NewsLarge from "../../components/news/NewsLarge";
 import newsList from "../../components/news/NewsList";
+import NewsCardSmall from "../../components/news/NewsCardSmall";
 
 const News = () => {
   return (
     <section
       className="gap-4 h-dvh"
-      style={{ maxWidth: "1800px", margin: "0 auto", padding: "0 1rem" }}
+      style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 1rem" }}
     >
       {/* MOBILE NAV */}
       <div className="sm:hidden">
@@ -79,6 +80,7 @@ const News = () => {
         <p className="md:text-2xl uppercase font-avenir-black text-primary pb-3 lg:pb-4">
           The latest
         </p>
+        {/* LARGE NEWS */}
         <NewsLarge
           id={newsList[0].id}
           title={newsList[0].title}
@@ -88,8 +90,29 @@ const News = () => {
           created_at={newsList[0].created_at}
           imagesWithCaption={newsList[0].imagesWithCaption}
         />
+
+        {/* SMALL ARTICLE CARDS --DISPLAYS 5 LATEST NEWS */}
+
+        <p className="mt-10 md:text-xl uppercase font-avenir-black text-primary pb-3 lg:pb-4">
+          More articles
+        </p>
+        <div className="layout-small-news-cards gap-4">
+          {newsList.map((news, index) => (
+            <NewsCardSmall
+              key={news.id || index} // Use a unique key (id preferred)
+              id={news.id}
+              title={news.title}
+              author={news.author}
+              article={news.article}
+              readTime={news.read_time}
+              created_at={news.created_at}
+              imagesWithCaption={news.imagesWithCaption}
+            />
+          ))}
+        </div>
       </main>
-      <div className="h-30"></div>
+      <div className="h-20"></div>
+      <Footer/>
     </section>
   );
 };

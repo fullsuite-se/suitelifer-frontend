@@ -10,6 +10,7 @@
   import windows from "../../assets/images/windows.jpeg"
 import kb_startup from "../../assets/images/keyboard-startup.svg";
 import banner_img from "../../assets/images/banner-img.svg";
+import videoTemplate from "../../assets/videos/video-template.mp4";
 
   const HeroSection = () => {
     return (
@@ -49,7 +50,7 @@ import banner_img from "../../assets/images/banner-img.svg";
                 alt="Two entrepreneurs"
               /> */}
               <video className="w-full h-full rounded-xl object-cover" controls>
-                <source src="#" type="video/mp4" />
+                <source src={videoTemplate} type="video/mp4" />
               </video>
             </div>
             {/* image 4 */}
