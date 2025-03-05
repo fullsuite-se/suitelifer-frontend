@@ -4,70 +4,54 @@ import {
   ItalicIcon,
   UnderlineIcon,
   ListBulletIcon,
+  NumberedListIcon,
 } from "@heroicons/react/24/outline";
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Underline from "@tiptap/extension-underline";
 
 const TextEditor = () => {
-  const refTitle = useRef(null);
-  const refDescription = useRef(null);
+  const editor = useEditor({
+    extensions: [StarterKit, Underline],
+    content: "<p>Hello, <strong> world! <strong/></p>",
+  });
 
-  const title = `<h1 style="font-family: avenir-black;">Hello!</h1>`;
-  const description = "<p>Hellooo This is the descirption<p>";
-
-  useEffect(() => {
-    if (refTitle.current && refDescription.current) {
-      refTitle.current.innerHTML = title;
-      refDescription.current.innerHTML = description;
-    }
-  }, []);
-
-  const handleBtnClick = () => {
-    console.log(refTitle.current.innerHTML);
-    console.log(refDescription.current.innerHTML);
-  };
-
-  const handleBoldBtn = () => {
-    const content = refDescription.current.firstChild;
-    content.style.fontFamily = "avenir-black";
-  };
-
-  const handleItalicBtn = () => {
-    const content = refDescription.current.firstChild;
-    content.style.fontFamily = "avenir-romanoblique";
-    content.style.textDecoration = "underline";
-  };
-
-  const handleUnderlineBtn = () => {
-    const content = refDescription.current.firstChild;
-    content.style.textDecoration = "underline";
-  };
+  if (!editor) {
+    return null;
+  }
 
   return (
-    <section>
-      <div
-        ref={refTitle}
-        contentEditable={true}
-        className="border focus:border-primary"
-      ></div>
-      <div
-        ref={refDescription}
-        contentEditable={true}
-        className="border focus:border-primary"
-      ></div>
-      <section>
-        <div className="flex items-center gap-3">
-          <BoldIcon className="size-5 cursor-pointer" onClick={handleBoldBtn} />
-          <ItalicIcon
-            className="size-5 cursor-pointer"
-            onClick={handleItalicBtn}
-          />
-          <UnderlineIcon
-            className="size-5 cursor-pointer"
-            onClick={handleUnderlineBtn}
-          />
-          <ListBulletIcon className="size-6 cursor-pointer" />
-        </div>
-      </section>
-    </section>
+    <div className="p-4 border rounded-lg bg-[--color-light] text-[--color-dark]">
+      <div className="flex gap-3 mb-2 place-items-center">
+        <BoldIcon
+          className="size-5 cursor-pointer"
+          onClick={() => editor.chain().focus().toggleBold().run()}
+        />
+        <ItalicIcon
+          className="size-5 cursor-pointer"
+          onClick={() => editor.chain().focus().toggleItalic().run()}
+        />
+        <UnderlineIcon
+          className="size-5 cursor-pointer"
+          onClick={() => editor.chain().focus().toggleUnderline().run()}
+        />
+        <ListBulletIcon
+          className="size-6 cursor-pointer"
+          onClick={() => editor.chain().focus().toggleBulletList().run()}
+        />
+        <NumberedListIcon
+          className="size-5 cursor-pointer"
+          onClick={() => editor.chain().focus().toggleOrderedList().run()}
+        />
+      </div>
+      <EditorContent
+        editor={editor}
+        className="border p-2 rounded bg-[--color-accent-1] text-[--color-dark] 
+             font-[Avenir-Roman] 
+             [&_ul]:list-disc [&_ul]:pl-6 
+             [&_ol]:list-decimal [&_ol]:pl-6"
+      />
+    </div>
   );
 };
 
