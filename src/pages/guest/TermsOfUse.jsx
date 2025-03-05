@@ -4,9 +4,10 @@ import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
 
-import privacyPolicyimg from "../../assets/images/fingerprint-and-loupe.jpg";
+import termsOfUseimg from "../../assets/images/terms-of-use.jpg";
 import LegalHeader from "../../components/legal/LegalHeader";
-import PrivacyPolicyContent from "../../components/legal/PrivacyPolicyContent";
+import TermsOfUseContent from "../../components/legal/TermsOfUseContent";
+
 
 const TermsOfUse = () => {
   useEffect(() => {
@@ -33,21 +34,26 @@ const TermsOfUse = () => {
       <div className="relative">
         <main className="mt-0 lg:mt-20 text-[12px] md:text-[14px] lg:text-[16px]">
           <LegalHeader
-            image={privacyPolicyimg}
-            heading="Privacy Policy"
-            sectionId="privacy-policy-content"
+            image={termsOfUseimg}
+            heading="Terms of Use"
+            sectionId="terms-of-use-content"
+
+            classNameValue="w-45 -mb-5 md:w-60 lg:w-70 ml-15"
+
           />
 
-          <section id="privacy-policy-content">
+          <section id="terms-of-use-content" className="mb-20">
            
               <br />
               <br />
               <br />
               <br />
        
-           <PrivacyPolicyContent />
+           <TermsOfUseContent />
 
           </section>
+
+          <Footer />
         </main>
       </div>
     </>

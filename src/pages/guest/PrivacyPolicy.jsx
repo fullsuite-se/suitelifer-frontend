@@ -36,18 +36,18 @@ const PrivacyPolicy = () => {
             image={privacyPolicyimg}
             heading="Privacy Policy"
             sectionId="privacy-policy-content"
+            classNameValue="w-32 md:w-40 lg:w-48"
           />
 
-          <section id="privacy-policy-content">
-           
-              <br />
-              <br />
-              <br />
-              <br />
-       
-           <PrivacyPolicyContent />
+          <section id="privacy-policy-content" className="mb-20">
+            <br />
+            <br />
+            <br />
+            <br />
 
+            <PrivacyPolicyContent />
           </section>
+          <Footer />
         </main>
       </div>
     </>
