@@ -6,12 +6,13 @@ import DesktopNav from "../../components/home/DesktopNav";
 import bgNews from "../../assets/images/bg-news.svg";
 import NewsLarge from "../../components/news/NewsLarge";
 import newsList from "../../components/news/NewsList";
+import NewsCardSmall from "../../components/news/NewsCardSmall";
 
 const News = () => {
-  return (
+  return ( 
     <section
       className="gap-4 h-dvh"
-      style={{ maxWidth: "1800px", margin: "0 auto", padding: "0 1rem" }}
+      style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 1rem" }}
     >
       {/* MOBILE NAV */}
       <div className="sm:hidden">
@@ -28,7 +29,7 @@ const News = () => {
       {/* NEWS HERO */}
       <section className="pt-[10%] xl:pt-[8%]">
         <img
-          className="absolute w-[90%] transform translate-y-5 -translate-x-10 lg:-translate-x-20 xl:-translate-x-30"
+          className="-z-50 absolute w-[90%] transform translate-y-5 -translate-x-10 lg:-translate-x-20 xl:-translate-x-30 opacity-90"
           src={bgNews}
           alt=""
         />
@@ -76,17 +77,42 @@ const News = () => {
       <div className="py-5"></div>
       {/* NEWS CONTENT */}
       <main className="px-[5%]">
-        <p className="uppercase font-avenir-black text-primary pb-3">The latest</p>
-        <NewsLarge 
-        title={"Lorem ipsum dolor sit, amet consectetur adipisicing elit. Earum aliquid id maiores quidem at ex nostrum nisi cum nesciunt! Voluptas."}
-        author={"Matt"}
-        content={
-          `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Earum aliquid id maiores quidem at ex nostrum nisi cum nesciunt! Voluptas.
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio porro ratione nostrum cumque, mollitia ipsum fuga dignissimos est quibusdam laboriosam voluptatum accusamus debitis dolorum officia. Ducimus sed beatae natus aspernatur.`
-        }
-        readTime={`2025-03-04 12:32:04`}
+        <p className="md:text-2xl uppercase font-avenir-black text-primary pb-3 lg:pb-4">
+          The latest
+        </p>
+        {/* LARGE NEWS */}
+        <NewsLarge
+          id={newsList[0].id}
+          title={newsList[0].title}
+          author={newsList[0].author}
+          article={newsList[0].article}
+          readTime={newsList[0].read_time}
+          created_at={newsList[0].created_at}
+          imagesWithCaption={newsList[0].imagesWithCaption}
         />
+
+        {/* SMALL ARTICLE CARDS --DISPLAYS 5 LATEST NEWS */}
+
+        <p className="mt-10 md:text-xl uppercase font-avenir-black text-primary pb-3 lg:pb-4">
+          More articles
+        </p>
+        <div className="layout-small-news-cards gap-4">
+          {newsList.map((news, index) => (
+            <NewsCardSmall
+              key={news.id || index} // Use a unique key (id preferred)
+              id={news.id}
+              title={news.title}
+              author={news.author}
+              article={news.article}
+              readTime={news.read_time}
+              created_at={news.created_at}
+              imagesWithCaption={news.imagesWithCaption}
+            />
+          ))}
+        </div>
       </main>
+      <div className="h-20"></div>
+      <Footer/>
     </section>
   );
 };

@@ -86,18 +86,18 @@ const HomeNews = () => {
         {/* MAIN NEWS (First Item) */}
         <div className="lg:w-1/2 flex px-2 flex-col items-center justify-center">
           {newsList.length > 0 && (
-            <a href="#" className="no-underline rounded-2xl cursor-pointer">
+            <a href="#" className="no-underline hover:underline rounded-2xl cursor-pointer group">
               <div>
               {/* TITLE */}
-              <div className="title hover:underline">
-                <p className="sm:text-xl lg:text-2xl line-clamp-2">
+              <div className="title">
+                <p className="sm:text-xl lg:text-2xl line-clamp-2 group-hover:underline">
                   {newsList[0].title}
                 </p>
               </div>
               {/* AUTHOR AND READ TIME */}
-              <div className="news-info py-1 md:py-2 mb-2">
+              <div className="news-info py-1 md:py-2 mb-2 no-underline!">
                 <p className="text-sm">
-                  <span className="text-primary hover:underline">
+                  <span className="text-primary">
                     {newsList[0].author}
                   </span>
                   <span className="text-primary">&nbsp; |</span>
