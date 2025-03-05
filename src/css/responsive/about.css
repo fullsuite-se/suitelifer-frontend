@@ -5,12 +5,16 @@
   .about-container > :nth-child(6) {
     padding: 0 4rem;
   }
+
+  .about-text-banner {
+    padding-top: 4rem !important;
+  }
 }
 
 @media (min-width: 873px) {
   .about-text-banner {
     font-size: 4rem;
-    padding-top: 2rem;
+    padding-top: 1.5rem;
   }
 
   .about-container > :nth-child(3),
@@ -18,6 +22,10 @@
   .about-container > :nth-child(5),
   .about-container > :nth-child(6) {
     margin-right: calc(var(--spacing) * 8);
+  }
+
+  .about-text-banner {
+    font-size: 1.9rem !important;
   }
 }
 
@@ -43,7 +51,7 @@
   }
 
   .about-text-banner {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
 
   .about-container > :nth-child(2) {
