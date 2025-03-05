@@ -1,10 +1,45 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../../components/Footer";
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
+import axios from "axios";
+import config from "../../config";
+
+import lifeHarmonyLight from "../../assets/icons/life-harmony-light.svg";
+import lifeHarmonyPrimary from "../../assets/icons/life-harmony-primary.svg";
+
+import teamPlayerLight from "../../assets/icons/team-player-light.svg";
+import teamPlayerPrimary from "../../assets/icons/team-player-primary.svg";
+
+import understoodLight from "../../assets/icons/understood-light.svg";
+import understoodPrimary from "../../assets/icons/understood-primary.svg";
+
+import upholdsLight from "../../assets/icons/upholds-light.svg";
+import upholdsPrimary from "../../assets/icons/upholds-primary.svg";
+
+import focusedAthleteLight from "../../assets/icons/focused-athlete-light.svg";
+import focusedAthletePrimary from "../../assets/icons/focused-athlete-primary.svg";
 
 const AboutUs = () => {
+  const [content, setContent] = useState({});
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const response = await axios.get(
+          `${config.apiBaseUrl}/api/get-about-us`
+        );
+        console.log(response.data);
+
+        setContent(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchContent();
+  }, []);
+
   return (
     <section className="">
       {/* MOBILE NAV */}
@@ -28,7 +63,7 @@ const AboutUs = () => {
             />
           </div>
           <div className="about-text-banner flex flex-col mb-2">
-            <h1 className="font-avenir-black px-5">text banner here</h1>
+            <h2 className="font-avenir-black px-5">{content.text_banner}</h2>
             <div className="h-10 w-20 lg:h-20 lg:w-32 rounded-l-2xl bg-primary ml-auto"></div>
           </div>
           <div className="mx-5">
@@ -45,22 +80,23 @@ const AboutUs = () => {
               Lorem, ipsum dolor it
             </h2>
             <p className="text-lg leading-tight">
-              FullSuite is the preferred and trusted offshore service provider
-              to help data-intense tech companies scale operations and revenue
-              at a fraction of the cost of traditional staffing.
+              FullSuite was originally founded by Maggie Po on October 8, 2014
+              as Offshore Concept Consulting, Inc. In 2018, the founder acquired
+              full ownership of the brand name, FullSuite because it embodied
+              the company vision to provide a comprehensive suite of solutions
+              for startups. Maggie, alongside her co-founders, envisioned that
+              instead of piecemeal services, FullSuite will offer an end-to-end
+              approach that helps venture-backed startups handle critical data
+              operational functions—especially the ones their AI systems can’t
+              yet automate.
             </p>
-            <p className="text-sm">
-              FullSuite is the preferred and trusted offshore service provider
-              to help data-intense tech companies scale operations and revenue
-              at a fraction of the cost of traditional staffing. FullSuite is
-              the preferred and trusted offshore service provider to help
-              data-intense tech companies scale operations and revenue at a
-              fraction of the cost of traditional staffing. FullSuite is the
-              preferred and trusted offshore service provider to help
-              data-intense tech companies scale operations and revenue at a
-              fraction of the cost of traditional staffing. FullSuite is lorem
-              ipsum the preferred and trusted offshore service provider to help
-              data-intense.
+            <p className="text-sm md:text-base">
+              In 2020, the legal entity was changed to Offshore Concept BPO
+              Services, Inc. to reflect in the name the more accurate
+              representation of its services. But, the brand name is still in
+              use which reflects the various suite of operations that the
+              company offers to help customers scale their businesses
+              efficiently.
             </p>
           </section>
           <section className="">
@@ -75,7 +111,7 @@ const AboutUs = () => {
             </div>
           </section>
           <section>
-            <p className="text-sm m-5">
+            <p className="text-sm md:text-base m-5">
               FullSuite is the preferred and trusted offshore service provider
               to help data-intense tech companies scale operations and revenue
               at a fraction of the cost of traditional staffing. FullSuite is
@@ -88,7 +124,7 @@ const AboutUs = () => {
               ipsum the preferred and trusted offshore service provider to help
               data-intense.
             </p>
-            <p className="text-sm mx-5">
+            <p className="text-sm md:text-base mx-5">
               FullSuite is the preferred and trusted offshore service provider
               to help data-intense tech companies scale operations and revenue
               at a fraction of the cost of traditional staffing. FullSuite is
@@ -118,9 +154,9 @@ const AboutUs = () => {
 
         {/* Our Core Values Section */}
         <section>
-          <p className="text-primary text-center text-sm font-avenir-black">
-            OUR CORE VALUES
-          </p>
+          <h2 className="font-avenir-black lg:text-4xl! text-center m-0!">
+            The suitelifer is...
+          </h2>
         </section>
       </main>
 
