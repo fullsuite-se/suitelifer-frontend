@@ -191,12 +191,12 @@ const Footer = () => {
           </span>
           <ul className="flex-wrap flex gap-1 mt-3 flex-col">
             <li className="text-sm ">
-              <Link to={"/legal/privacy-policy"} className="footer-text text-white">
+              <Link to={"/privacy-policy"} className="footer-text text-white">
                 Privacy Policy
               </Link>
             </li>
             <li className="text-sm text-white">
-              <Link to={""} className="footer-text text-white">
+              <Link to={"/terms-of-use"} className="footer-text text-white">
                 Terms of Use
               </Link>
             </li>
