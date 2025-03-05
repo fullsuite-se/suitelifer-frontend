@@ -13,6 +13,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import EditIcon from "@mui/icons-material/Edit";
 import Tooltip from "@mui/material/Tooltip";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 const initialJobListings = [
   {
@@ -82,6 +83,24 @@ export default function JobListing() {
   const [openIndustryModal, setOpenIndustryModal] = useState(false);
   const [editJob, setEditJob] = useState(null);
   const [newIndustry, setNewIndustry] = useState("");
+  const [newSetUp, setNewSetUp] = useState("");
+  const [openManageIndustryModal, setOpenManageIndustryModal] = useState(false);
+  const [setup, setSetup] = useState(setupData);
+  const [openSetUpModal, setOpenSetUpModal] = useState(false);
+
+  const setupData = [
+    {
+      setup: "",
+      createdBy: accountName,
+      dateCreated: Date.now(),
+      updatedBy: accountName,
+      lastUpdated: Date.now(),
+    },
+  ];
+
+  const formatDate = (timestamp) => {
+    return new Date(timestamp).toLocaleString();
+  };
 
   const { register, handleSubmit, reset } = useForm({
     defaultValues: {
@@ -96,6 +115,7 @@ export default function JobListing() {
       requirements: "",
       preferredQualifications: "",
       industry: "",
+      setup: "Hybrid",
     },
   });
 
@@ -121,6 +141,17 @@ export default function JobListing() {
   const closedJobListings = filteredJobListings.filter(
     (job) => job.status === "Closed"
   ).length;
+
+  const handleTabChange = (event) => {
+    const selectedTab = event.target.value;
+    setActiveTab(selectedTab);
+
+    if (selectedTab === "MANAGE INDUSTRIES") {
+      setIndustries();
+    } else {
+      setSetUp(setupData);
+    }
+  };
 
   const handleAddJob = (data) => {
     if (editJob !== null) {
@@ -200,7 +231,7 @@ export default function JobListing() {
       </div>
 
       {/* Search and Filter */}
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap gap-4 items-center">
         <div className="relative flex-1">
           <input
             type="text"
@@ -227,6 +258,13 @@ export default function JobListing() {
             ))}
           </select>
         </div>
+        <button
+          variant="outlined"
+          className=""
+          onClick={() => setOpenManageIndustryModal(true)}
+        >
+          <MoreVertIcon />
+        </button>
       </div>
 
       {/* Table */}
@@ -237,6 +275,7 @@ export default function JobListing() {
             <th className="py-2 text-left p-2">Description</th>
             <th className="py-2 text-left p-2">Employment Type</th>
             <th className="py-2 text-left p-2">Status</th>
+            <th className="py-2 text-left p-2">Set-Up</th>
             <th className="py-2 text-left p-2">Visibility</th>
             <th className="py-2 text-center p-2">Action</th>
           </tr>
@@ -255,13 +294,16 @@ export default function JobListing() {
               </td>
               <td className="py-2 p-2">{job.type}</td>
               <td className="py-2 p-2">{job.status}</td>
+              <td className="py-2 p-2">{job.setup}</td>
               <td className="py-2 p-2">{job.visibility}</td>
               <td className="py-2 p-2">
                 <button
                   className="bg-transparent p-2 rounded w-8 items-center"
                   onClick={() => handleEditJob(index)}
                 >
-                  <EditIcon />
+                  <button onClick={openJobModal}>
+                    <EditIcon />
+                  </button>
                 </button>
               </td>
             </tr>
@@ -338,6 +380,19 @@ export default function JobListing() {
                   >
                     <MenuItem value="Part-Time">Part-Time</MenuItem>
                     <MenuItem value="Full-Time">Full-Time</MenuItem>
+                  </Select>
+                </FormControl>
+                <FormControl fullWidth className="mt-2" margin="normal">
+                  <InputLabel>Set-Up</InputLabel>
+                  <Select
+                    label="Setup"
+                    sx={{ bgcolor: "#fbe9e7" }}
+                    {...register("setup")}
+                  >
+                    <MenuItem value="Hybrid">Hybrid</MenuItem>
+                    <MenuItem value="On-Site">On-Site</MenuItem>
+                    <MenuItem value="Remote">Remote</MenuItem>
+                    <MenuItem value="In-Office">In-Office</MenuItem>
                   </Select>
                 </FormControl>
               </div>
@@ -493,6 +548,64 @@ export default function JobListing() {
               </Button>
             </div>
           </form>
+        </Box>
+      </Modal>
+      {/* Manage Industry and Table Industry Modal */}
+      <Modal
+        open={openManageIndustryModal}
+        onClose={() => setOpenManageIndustryModal(false)}
+      >
+        <Box className="modal-container p-2 bg-white rounded-lg w-full sm:w-250 mx-auto mt-24h-screen overflow-y-auto">
+          <button
+            variant="outlined"
+            className="btn-primary"
+            onClick={() => setOpenIndustryModal(true)}
+          >
+            Add Industry
+          </button>
+          <button
+            variant="outlined"
+            className="btn-primary"
+            onClick={() => setOpenSetUpModal(true)}
+          >
+            Add SetUp
+          </button>
+
+          <FormControl fullWidth className="mt-2" margin="normal">
+            <InputLabel>Manage Industries</InputLabel>
+            <select
+              className="bg-gray-200 h-10 px-4 py-2 rounded w-full"
+              value={selectedIndustry}
+              onChange={(e) => setSelectedIndustry(e.target.value)}
+            >
+              <option value="all">All Industries</option>
+              {industries.map((industry, index) => (
+                <option key={index} value={industry}>
+                  {industry}
+                </option>
+              ))}
+            </select>
+            <button onClick={setOpenIndustryModal}>Add Industry</button>
+            <button onClick={setOpenSetUpModal}>Add Set-Up</button>
+          </FormControl>
+        </Box>
+      </Modal>
+
+      {/* SetUp Modal */}
+      <Modal open={openSetUpModal} onClose={() => setOpenSetUpModal(false)}>
+        <Box
+          className={`modal-container p-6 bg-white rounded-lg mx-auto mt-12 ${
+            isSmallScreen ? "w-full" : "sm:w-96"
+          }`}
+        >
+          <TextField
+            label="Set-Up"
+            fullWidth
+            value={newSetUp}
+            onChange={(e) => setNewSetUp(e.target.value)}
+            className="mt-2"
+            sx={{ bgcolor: "#fbe9e7" }}
+          />
         </Box>
       </Modal>
     </div>
