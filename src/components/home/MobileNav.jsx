@@ -24,14 +24,14 @@ export default function MobileNav() {
 
         {!isOpen 
         ? 
-        <div className="mr-5">
+        <div className="mr-10">
           <Bars2Icon
             className="w-8 cursor-pointer"
             onClick={() => setIsOpen(true)}
           />
         </div>
         : 
-        <XMarkIcon className="w-8 cursor-pointer mr-5" onClick={handleClose} />
+        <XMarkIcon className="w-8 cursor-pointer mr-10" onClick={handleClose} />
         }        
         {/* Close Button */}
       </div>
