@@ -204,7 +204,10 @@ const TermsOfUseContent = () => {
           <p className="text-gray-700 mt-2">
             If you have any questions or concerns about these terms of use,
             please contact us at{" "}
-            <a href="mailto:infosec@fullsuite.ph" className="text-primary no-underline">
+            <a
+              href="mailto:infosec@fullsuite.ph"
+              className="text-primary no-underline"
+            >
               infosec@fullsuite.ph
             </a>
             .

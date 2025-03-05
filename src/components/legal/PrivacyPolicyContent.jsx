@@ -179,8 +179,11 @@ const PrivacyPolicyContent = () => {
             your data privacy rights have been violated, you have a right to
             file a complaint with the National Privacy Commission of the
             Philippines. If you have any questions or concerns regarding your
-            data, please contact our Data Protection Officer at
-            dpo@fullsuite.ph.
+            data, please contact our Data Protection Officer at 
+            {" "}
+            <a href="mailto:dpo@fullsuite.ph" className="text-primary no-underline">
+              dpo@fullsuite.ph
+            </a>
           </p>
         </section>
 
