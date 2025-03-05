@@ -41,9 +41,9 @@ const NewsLarge = ({
         {/* Gap */}
         <div className="h-2 lg:hidden"></div>
         {/* Article */}
-        <p className="lg:hidden line-clamp-4 md:line-clamp-6 lg:line-clamp-1 lg:overflow-hidden text-gray-400">
+        <article className="lg:hidden line-clamp-4 md:line-clamp-6 lg:line-clamp-1 lg:overflow-hidden text-gray-400">
           {article}
-        </p>
+        </article>
       </a>
       {/* <span className="text-end text-primary -mt-1 font-avenir-black hover:underline cursor-pointer">Read the full article here</span> */}
     </section>
