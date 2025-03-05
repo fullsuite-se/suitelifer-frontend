@@ -20,7 +20,7 @@ const initialJobListings = [
     title: "Financial Management Associate",
     description: "Lorem ipsum dolor sit",
     type: "Full-time",
-    status: "Open",
+    status: 1,
     visibility: "Shown",
     salaryRangeStart: "",
     salaryRangeEnd: "",
@@ -59,7 +59,7 @@ const initialJobListings = [
     title: "Business Operation Associate",
     description: "We are looking for a",
     type: "Full-time",
-    status: "Open",
+    status: "",
     visibility: "Shown",
     salaryRangeStart: "",
     salaryRangeEnd: "",
@@ -69,6 +69,49 @@ const initialJobListings = [
     industry: "Business Operations",
   },
 ];
+
+const Industries = [
+  {
+    name: "Technology",
+    createdBy: "Admin",
+    updatedBy: "John",
+    dateCreated: "2024-01-10",
+    lastUpdated: "2024-02-15",
+  },
+  {
+    name: "Healthcare",
+    createdBy: "Alice",
+    updatedBy: "Bob",
+    dateCreated: "2024-01-12",
+    lastUpdated: "2024-02-18",
+  },
+  {
+    name: "Finance",
+    createdBy: "Charlie",
+    updatedBy: "David",
+    dateCreated: "2024-01-14",
+    lastUpdated: "2024-02-20",
+  },
+];
+
+// const dataSetUp = [
+//   {
+//     setup: "",
+//     createdBy: accountName,
+//     dateCreated: Date.now(),
+//     updatedBy: accountName,
+//     lastUpdated: Date.now(),
+//   },
+// ];
+// const dataIndustry = [
+//   {
+//     setup: "",
+//     createdBy: accountName,
+//     dateCreated: Date.now(),
+//     updatedBy: accountName,
+//     lastUpdated: Date.now(),
+//   },
+// ];
 
 const initialIndustries = ["Business Operations", "Technology", "Marketing"];
 
@@ -80,35 +123,20 @@ export default function JobListing() {
     useState(initialJobListings);
   const [industries, setIndustries] = useState(initialIndustries);
   const [openJobModal, setOpenJobModal] = useState(false);
+  const [openSetUpModal, setOpenSetUpModal] = useState(false);
   const [openIndustryModal, setOpenIndustryModal] = useState(false);
   const [editJob, setEditJob] = useState(null);
   const [newIndustry, setNewIndustry] = useState("");
-  const [newSetUp, setNewSetUp] = useState("");
   const [openManageIndustryModal, setOpenManageIndustryModal] = useState(false);
-  const [setup, setSetup] = useState(setupData);
-  const [openSetUpModal, setOpenSetUpModal] = useState(false);
-
-  const setupData = [
-    {
-      setup: "",
-      createdBy: accountName,
-      dateCreated: Date.now(),
-      updatedBy: accountName,
-      lastUpdated: Date.now(),
-    },
-  ];
-
-  const formatDate = (timestamp) => {
-    return new Date(timestamp).toLocaleString();
-  };
+  const [newSetUp, setNewSetUp] = useState("");
 
   const { register, handleSubmit, reset } = useForm({
     defaultValues: {
       title: "",
       description: "",
       type: "Full-time",
-      status: "Open",
-      visibility: "Shown",
+      status: 1,
+      visibility: 1,
       salaryRangeStart: "",
       salaryRangeEnd: "",
       responsibilities: "",
@@ -142,17 +170,6 @@ export default function JobListing() {
     (job) => job.status === "Closed"
   ).length;
 
-  const handleTabChange = (event) => {
-    const selectedTab = event.target.value;
-    setActiveTab(selectedTab);
-
-    if (selectedTab === "MANAGE INDUSTRIES") {
-      setIndustries();
-    } else {
-      setSetUp(setupData);
-    }
-  };
-
   const handleAddJob = (data) => {
     if (editJob !== null) {
       const updatedJobListings = jobListings.map((job, index) =>
@@ -174,6 +191,10 @@ export default function JobListing() {
       setOpenIndustryModal(false);
     }
   };
+
+  const handleAddSetUp = () => {
+    
+  }
 
   const handleEditJob = (index) => {
     setEditJob(index);
@@ -438,8 +459,8 @@ export default function JobListing() {
                     sx={{ bgcolor: "#fbe9e7" }}
                     {...register("status")}
                   >
-                    <MenuItem value="Open">Open</MenuItem>
-                    <MenuItem value="Closed">Closed</MenuItem>
+                    <MenuItem value={1}>Open</MenuItem>
+                    <MenuItem value={0}>Closed</MenuItem>
                   </Select>
                 </FormControl>
 
@@ -450,8 +471,8 @@ export default function JobListing() {
                     sx={{ bgcolor: "#fbe9e7" }}
                     {...register("visibility")}
                   >
-                    <MenuItem value="Shown">Shown</MenuItem>
-                    <MenuItem value="Hidden">Hidden</MenuItem>
+                    <MenuItem value={1}>Shown</MenuItem>
+                    <MenuItem value={0}>Hidden</MenuItem>
                   </Select>
                 </FormControl>
               </div>
@@ -509,6 +530,13 @@ export default function JobListing() {
             }}
             className="space-y-4"
           >
+            {/* <input
+              type="text"
+              placeholder="Created By"
+              value={""}
+              onChange={(e) => setCreatedBy(e.target.value)}
+            /> */}
+
             <TextField
               label="Industry Name"
               fullWidth
@@ -550,44 +578,41 @@ export default function JobListing() {
           </form>
         </Box>
       </Modal>
-      {/* Manage Industry and Table Industry Modal */}
+
       <Modal
         open={openManageIndustryModal}
         onClose={() => setOpenManageIndustryModal(false)}
       >
-        <Box className="modal-container p-2 bg-white rounded-lg w-full sm:w-250 mx-auto mt-24h-screen overflow-y-auto">
-          <button
-            variant="outlined"
-            className="btn-primary"
-            onClick={() => setOpenIndustryModal(true)}
-          >
-            Add Industry
-          </button>
-          <button
-            variant="outlined"
-            className="btn-primary"
-            onClick={() => setOpenSetUpModal(true)}
-          >
-            Add SetUp
-          </button>
+        <Box className="modal-container bg-white p-4 rounded-lg mx-auto mt-12 w-96">
+          <h2 className="text-lg font-semibold mb-4 text-center">
+            Manage Industries
+          </h2>
 
-          <FormControl fullWidth className="mt-2" margin="normal">
-            <InputLabel>Manage Industries</InputLabel>
-            <select
-              className="bg-gray-200 h-10 px-4 py-2 rounded w-full"
-              value={selectedIndustry}
-              onChange={(e) => setSelectedIndustry(e.target.value)}
-            >
-              <option value="all">All Industries</option>
+          <table className="w-full border-2">
+            <thead>
+              <tr className="bg-secondary">
+                <th className="py-2 text-left p-2">Industry Name</th>
+                <th className="py-2 text-left p-2">Created By</th>
+                <th className="py-2 text-left p-2">Date Created</th>
+                <th className="py-2 text-left p-2">Updated By</th>
+                <th className="py-2 text-left p-2">Last Updated</th>
+              </tr>
+            </thead>
+            <tbody>
               {industries.map((industry, index) => (
-                <option key={index} value={industry}>
-                  {industry}
-                </option>
+                <tr
+                  key={index}
+                  className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
+                >
+                  <td className="py-2 p-2">{industry.name}</td>
+                  <td className="py-2 p-2">{industry.createdBy}</td>
+                  <td className="py-2 p-2">{industry.dateCreated}</td>
+                  <td className="py-2 p-2">{industry.updatedBy}</td>
+                  <td className="py-2 p-2">{industry.lastUpdated}</td>
+                </tr>
               ))}
-            </select>
-            <button onClick={setOpenIndustryModal}>Add Industry</button>
-            <button onClick={setOpenSetUpModal}>Add Set-Up</button>
-          </FormControl>
+            </tbody>
+          </table>
         </Box>
       </Modal>
 
@@ -598,14 +623,23 @@ export default function JobListing() {
             isSmallScreen ? "w-full" : "sm:w-96"
           }`}
         >
-          <TextField
-            label="Set-Up"
-            fullWidth
-            value={newSetUp}
-            onChange={(e) => setNewSetUp(e.target.value)}
-            className="mt-2"
-            sx={{ bgcolor: "#fbe9e7" }}
-          />
+          <h2 className="font-semibold mb-4 text-lg text-center bg-white">
+            Add Set-Up
+          </h2>
+          <FormControl fullWidth className="mt-2" margin="normal">
+            <InputLabel>Set-up</InputLabel>
+            <Select
+              label="setup"
+              value={newSetUp}
+              onChange={(e) => setNewSetUp(e.target.value)}
+              sx={{ bgcolor: "#fbe9e7" }}
+            >
+              <MenuItem value="Remote">Remote</MenuItem>
+              <MenuItem value="On-Site">On-Site</MenuItem>
+              <MenuItem value="In-Office">In-Office</MenuItem>
+              <MenuItem value="Hybrid">Hybrid</MenuItem>
+            </Select>
+          </FormControl>
         </Box>
       </Modal>
     </div>
