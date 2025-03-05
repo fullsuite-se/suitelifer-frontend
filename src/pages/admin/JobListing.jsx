@@ -20,53 +20,57 @@ const initialJobListings = [
     title: "Financial Management Associate",
     description: "Lorem ipsum dolor sit",
     type: "Full-time",
-    status: 1,
-    visibility: "Shown",
+    status: 0,
+    visibility: 1,
     salaryRangeStart: "",
     salaryRangeEnd: "",
     responsibilities: "",
     requirements: "",
     preferredQualifications: "",
     industry: "Business Operations",
+    setup: "Hybrid",
   },
   {
     title: "Business Operation Manager",
     description: "Business operation",
     type: "Full-time",
-    status: "Open",
-    visibility: "Shown",
+    status: 1,
+    visibility: 0,
     salaryRangeStart: "",
     salaryRangeEnd: "",
     responsibilities: "",
     requirements: "",
     preferredQualifications: "",
     industry: "Business Operations",
+    setup: "In-Office",
   },
   {
     title: "Associate Manager Business Operations",
     description: "Lorem Ipsum is simply.",
     type: "Full-time",
-    status: "Closed",
-    visibility: "Hidden",
+    status: 1,
+    visibility: 0,
     salaryRangeStart: "",
     salaryRangeEnd: "",
     responsibilities: "",
     requirements: "",
     preferredQualifications: "",
     industry: "Business Operations",
+    setup: "On-Site",
   },
   {
     title: "Business Operation Associate",
     description: "We are looking for a",
     type: "Full-time",
-    status: "",
-    visibility: "Shown",
+    status: 0,
+    visibility: 1,
     salaryRangeStart: "",
     salaryRangeEnd: "",
     responsibilities: "",
     requirements: "",
     preferredQualifications: "",
     industry: "Business Operations",
+    setup: "Remote",
   },
 ];
 
@@ -164,10 +168,10 @@ export default function JobListing() {
 
   const totalJobListings = filteredJobListings.length;
   const openJobListings = filteredJobListings.filter(
-    (job) => job.status === "Open"
+    (job) => job.status === 1
   ).length;
   const closedJobListings = filteredJobListings.filter(
-    (job) => job.status === "Closed"
+    (job) => job.status === 0
   ).length;
 
   const handleAddJob = (data) => {
@@ -192,9 +196,7 @@ export default function JobListing() {
     }
   };
 
-  const handleAddSetUp = () => {
-    
-  }
+  const handleAddSetUp = () => {};
 
   const handleEditJob = (index) => {
     setEditJob(index);
@@ -228,25 +230,25 @@ export default function JobListing() {
       {/* Stats */}
       <div className="flex flex-wrap gap-4">
         <div className="bg-primary text-white px-4 py-2 rounded-md">
-          <div className="text-sm">Total Applications</div>
-          <div className="text-2xl font-bold">917</div>
+          <div className="text-lg">Total Applications</div>
+          <div className="text-2xl font-bold text-center">917</div>
         </div>
         <div className="border px-4 py-2 rounded-md">
-          <div className="text-sm">Industries</div>
-          <div className="text-2xl font-bold">{industries.length}</div>
+          <div className="text-lg">Industries</div>
+          <div className="text-2xl font-bold text-center">{industries.length}</div>
         </div>
         <div className="border px-4 py-2 rounded-md">
-          <div className="text-sm">Job Listings</div>
-          <div className="text-2xl font-bold">{totalJobListings}</div>
+          <div className="text-lg">Job Listings</div>
+          <div className="text-2xl font-bold text-center">{totalJobListings}</div>
         </div>
         <div className="flex gap-2">
           <div className="border px-4 py-2 rounded-md">
-            <div className="text-sm">Open</div>
-            <div className="text-2xl font-bold">{openJobListings}</div>
+            <div className="text-lg">Open</div>
+            <div className="text-2xl font-bold text-center">{openJobListings}</div>
           </div>
           <div className="border px-4 py-2 rounded-md">
-            <div className="text-sm">Closed</div>
-            <div className="text-2xl font-bold">{closedJobListings}</div>
+            <div className="text-lg">Closed</div>
+            <div className="text-2xl font-bold text-center">{closedJobListings}</div>
           </div>
         </div>
       </div>
@@ -314,9 +316,13 @@ export default function JobListing() {
                 </Tooltip>
               </td>
               <td className="py-2 p-2">{job.type}</td>
-              <td className="py-2 p-2">{job.status}</td>
+              <td className="py-2 p-2">
+                {job.status === 1 ? "Open" : "Closed"}
+              </td>
               <td className="py-2 p-2">{job.setup}</td>
-              <td className="py-2 p-2">{job.visibility}</td>
+              <td className="py-2 p-2">
+                {job.visibility === 1 ? "Shown" : "Hidden"}
+              </td>
               <td className="py-2 p-2">
                 <button
                   className="bg-transparent p-2 rounded w-8 items-center"
@@ -380,6 +386,7 @@ export default function JobListing() {
                   {...register("salaryRangeStart", { valueAsNumber: true })}
                   className="mt-2"
                   margin="normal"
+                  defaultValue={0}
                   sx={{ bgcolor: "#fbe9e7" }}
                 />
                 <TextField
@@ -389,6 +396,7 @@ export default function JobListing() {
                   {...register("salaryRangeEnd", { valueAsNumber: true })}
                   className="mt-2"
                   margin="normal"
+                  defaultValue={0}
                   sx={{ bgcolor: "#fbe9e7" }}
                 />
 
