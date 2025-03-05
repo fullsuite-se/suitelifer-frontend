@@ -1,23 +1,30 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
 import JobCarousel from "../../components/careers/JobCarousel";
 import Footer from "../../components/Footer";
 import SpotifyEmbed from "../../components/careers/SpotifyEmbed";
-
-const rawEpisodes = [
-  "https://open.spotify.com/episode/0ccRsDmuWXrvECqs8mL1Rc?si=bef9b96228254312",
-  "https://open.spotify.com/episode/4kcxdragdUgbApJkWwSl2K?si=8dc9871de0db4edc",
-  "https://open.spotify.com/episode/43GsS6y8zIKu4F9UlHqJNu?si=27327d4712794064",
-];
-
-const extractedEpisodeIds = rawEpisodes.map((url) => {
-  const idPart = url.split("episode/")[1];
-  return idPart.split("?")[0];
-});
+import config from '../../config';
+import axios from "axios";
 
 const Careers = () => {
+  const [spotifyEpisodes, setEpisodes] = useState([]);
+
+  useEffect( () => {
+    const fetchEpisodes = async () => {
+      try {
+        const episodes = await axios.get(`${config.apiBaseUrl}/api/episodes`);
+
+        setEpisodes(episodes.data);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    fetchEpisodes();
+  }, [])
+  
+
   return (
     <>
       {/* MOBILE NAV */}
@@ -56,9 +63,9 @@ const Careers = () => {
 
       {/* SPOTIFY EPISODES */}
       <div className="px-3 mb-10">
-        {extractedEpisodeIds.map((id, index) => {
+        {spotifyEpisodes.map(({id}, index) => {
           return (
-            <div className="p-1">
+            <div className="p-1" key={index}>
               <SpotifyEmbed id={id} index={index} key={index}/>
             </div>
           );

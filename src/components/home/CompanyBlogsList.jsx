@@ -6,7 +6,7 @@ const companyBlogs = [
     author: "Sarah Johnson",
     dateTimePosted: "2h ago",
     content:
-      "Discover how FullSuite's all-in-one platform helps teams streamline workflows, automate tasks, and boost productivity with ease.",
+      "Discover how FullSuite's all-in-one platform helps teams streamline workflows, automate tasks, and boost productivity with ease. Discover how FullSuite's all-in-one platform helps teams streamline workflows, automate tasks, and boost productivity with ease.",
     image:
       "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2940&q=80",
   },
@@ -16,7 +16,7 @@ const companyBlogs = [
     author: "James Carter",
     dateTimePosted: "1 day ago",
     content:
-      "Startups need the right tools to scale efficiently. Explore how FullSuite simplifies operations, from project management to HR.",
+      "Startups need the right tools to scale efficiently. Explore how FullSuite simplifies operations, from project management to HR. Discover how FullSuite's all-in-one platform help how FullSuite simplifies operations",
     image:
       "https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2560&q=80",
   },
@@ -26,7 +26,7 @@ const companyBlogs = [
     author: "Emily Davis",
     dateTimePosted: "3 days ago",
     content:
-      "With remote work on the rise, FullSuite provides seamless solutions for collaboration, productivity, and team engagement.",
+      "With remote work on the rise, FullSuite provides seamless solutions for collaboration, productivity, and team engagement. Discover how FullSuite's all-in-one platform helps teams streamline workflows, automate tasks, and boost productivity with ease.",
     image:
       "https://images.unsplash.com/photo-1518623489648-a173ef7824f3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2762&q=80",
   },
@@ -36,7 +36,7 @@ const companyBlogs = [
     author: "Michael Lee",
     dateTimePosted: "1 week ago",
     content:
-      "Employee satisfaction is key to business success. Learn how FullSuite improves communication, recognition, and workplace culture.",
+      "Employee satisfaction is key to business success. Learn how FullSuite improves communication, recognition, and workplace culture. Discover how FullSuite's all-in-one platform help how FullSuite simplifies operations",
     image:
       "https://img.daisyui.com/images/stock/photo-1565098772267-60af42b81ef2.webp",
   },

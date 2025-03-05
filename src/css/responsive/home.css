@@ -68,6 +68,18 @@
     @media (min-width: 485px) {
       -webkit-line-clamp: 7;
     }
+
+    @media (min-width: 768px) {
+      -webkit-line-clamp: 3;
+    }
+
+    @media (min-width: 1024px) {
+      -webkit-line-clamp: 4;
+    }
+
+    @media (min-width: 1280px) {
+      -webkit-line-clamp: 7;
+    }
 }
 
 .small-blog-card-content{

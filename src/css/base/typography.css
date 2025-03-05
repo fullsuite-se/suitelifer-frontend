@@ -6,6 +6,16 @@
 }
 
 @font-face {
+  font-family: "Avenir-BlackOblique";
+  src: url("/AvenirLTStd-BlackOblique.otf");
+}
+
+@font-face {
   font-family: "Avenir-Roman";
   src: url("/AvenirLTStd-Roman.otf");
+}
+
+@font-face {
+  font-family: "Avenir-RomanOblique";
+  src: url("/AvenirLTStd-RomanOblique.otf");
 }
