@@ -152,8 +152,16 @@
   animation: slideIn 0.5s ease-out forwards;
 }
 
+.animate-slideInLong {
+  animation: slideIn 0.8s ease-out forwards;
+}
+
 .animate-slideInRight {
   animation: slideInRight 0.5s ease-out forwards;
+}
+
+.animate-slideInRightLong{
+  animation: slideInRight 1.0s ease-out forwards;
 }
 
 .animate-slideOutRight {
