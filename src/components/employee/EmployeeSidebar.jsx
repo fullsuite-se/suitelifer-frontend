@@ -66,7 +66,7 @@ const EmployeeSidebar = () => {
         <p className="text-sm text-center text-primary">@hernani.domingo</p>
       </section>
       <section className="employee-sidebar-links flex-1 ">
-        <ul>
+        <ul className="list-none!">
           {sideBarLinks.map((link, index) => {
             return (
               <li key={index}>

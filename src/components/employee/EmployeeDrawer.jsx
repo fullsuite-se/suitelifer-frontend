@@ -60,7 +60,7 @@ const EmployeeDrawer = ({ onClose }) => {
         <XMarkIcon className="w-9 h-9 rounded-full p-1" onClick={handleClose} />
       </section>
       <section className="">
-        <ul>
+        <ul className="list-none!">
           {sideBarLinks.map((link, index) => {
             return (
               <li key={index}>

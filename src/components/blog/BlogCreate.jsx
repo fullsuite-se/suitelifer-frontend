@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 import TextEditor from "../TextEditor";
@@ -8,40 +8,85 @@ import config from "../../config";
 const BlogCreate = () => {
   const navigate = useNavigate();
   const [files, setFiles] = useState(null);
+  const [blogTitle, setBlogTitle] = useState("");
+  const [blogDescription, setBlogDescription] = useState("");
+
+  const refTitle = useRef();
+  const refDesc = useRef();
 
   const handleFileChange = (e) => {
     setFiles([...e.target.files]);
   };
 
+  const handleTitleChange = (content) => {
+    setBlogTitle(content);
+  };
+
+  const handleDescriptionChange = (content) => {
+    setBlogDescription(content);
+  };
+
+  useEffect(() => {
+    if (refTitle.current) {
+      refTitle.current.innerHTML = blogTitle;
+      refDesc.current.innerHTML = blogDescription;
+    }
+  }, [blogTitle, blogDescription]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (files.length === 0) {
-      alert("Please select at least one file before submitting.");
+    if (!blogTitle.trim() || !blogDescription.trim()) {
+      alert("Please write something in the editor.");
       return;
     }
 
-    const formData = new FormData();
-    files.forEach((file) => formData.append("images", file));
+    console.log(blogTitle);
+    console.log(blogDescription);
 
-    const uploadFile = async () => {
+    // console.log("Title: ", blogTitle);
+    // console.log("Desc: ", blogDescription);
+
+    // return;
+
+    // if (files.length === 0) {
+    //   alert("Please select at least one file before submitting.");
+    //   return;
+    // }
+
+    const imagesData = new FormData();
+    files.forEach((file) => imagesData.append("images", file));
+
+    const eBlogData = {
+      title: blogTitle,
+      description: blogDescription,
+    };
+
+    const uploadBlog = async () => {
       try {
-        const response = await axios.post(
-          `${config.apiBaseUrl}/api/upload-image`,
-          formData,
+        const responseBlog = await axios.post(
+          `${config.apiBaseUrl}/api/add-employee-blog`,
+          eBlogData,
           {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
+            withCredentials: true,
           }
         );
 
-        console.log("File uploaded successfully:", response.data);
+        const eblogId = responseBlog.data.eblog_id;
+        const responseImg = await axios.post(
+          `${config.apiBaseUrl}/api/upload-image/blogs/${eblogId}`,
+          imagesData,
+          {
+            withCredentials: true,
+          }
+        );
+        console.log("Blog uploaded successfully:", responseBlog.data);
+        console.log("File uploaded successfully:", responseImg.data);
       } catch (error) {
         console.error("Error uploading file:", error);
       }
     };
-    uploadFile();
+    uploadBlog();
   };
 
   return (
@@ -59,26 +104,43 @@ const BlogCreate = () => {
         </span>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <TextEditor />
+      <section
+        className="p-5 rounded-lg"
+        style={{
+          boxShadow: "rgba(0, 0, 0, 0.08) 0px 4px 12px",
+        }}
+      >
+        <div className="flex items-center gap-4">
+          <div className="w-13 h-13 mb-3">
+            <img
+              src="http://sa.kapamilya.com/absnews/abscbnnews/media/2020/tvpatrol/06/01/james-reid.jpg"
+              alt="Hernani"
+              className="w-full h-full object-cover rounded-full"
+            />
+          </div>
+          <p className="font-avenir-black text-center">Hernani Domingo</p>
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="border p-2 rounded w-full "
+            multiple
+          />
+          <TextEditor
+            titleChange={handleTitleChange}
+            descChange={handleDescriptionChange}
+          />
 
-        {/* File Upload Input */}
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          className="border p-2 rounded w-full"
-          multiple
-        />
-
-        {/* Submit Button */}
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
-          Submit Blog
-        </button>
-      </form>
+          <button
+            type="submit"
+            className="bg-primary text-white px-4 py-2 rounded"
+          >
+            Publish Blog
+          </button>
+        </form>
+      </section>
     </section>
   );
 };

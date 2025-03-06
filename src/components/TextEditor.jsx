@@ -10,18 +10,26 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 
-const TextEditor = () => {
+const TextEditor = ({ titleChange, descChange }) => {
   const editor = useEditor({
     extensions: [StarterKit, Underline],
-    content: "<p>Hello, <strong> world! <strong/></p>",
+    content: "<p></p>",
+    onUpdate: ({ editor }) => {
+      descChange(editor.getHTML());
+    },
   });
 
   if (!editor) {
     return null;
   }
+  const handleTitleOnChange = (e) => {
+    const value = e.target.value;
+    const text = ` <h3><strong>${value}</strong></h3>`;
+    titleChange(text);
+  };
 
   return (
-    <div className="p-4 border rounded-lg bg-[--color-light] text-[--color-dark]">
+    <div className="">
       <div className="flex gap-3 mb-2 place-items-center">
         <BoldIcon
           className="size-5 cursor-pointer"
@@ -44,6 +52,16 @@ const TextEditor = () => {
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
         />
       </div>
+      <input
+        type="text"
+        className="border p-2 font-avenir-black w-full rounded-md"
+        onChange={handleTitleOnChange}
+        style={{
+          fontSize: "1.17em",
+          margin: "0.75em 0",
+        }}
+        placeholder="Write your title here"
+      />
       <EditorContent
         editor={editor}
         className="border p-2 rounded bg-[--color-accent-1] text-[--color-dark] 

@@ -46,7 +46,7 @@ const Footer = () => {
               <p className="footer-text text-white text-sm">Let's chat.</p>
 
               <div>
-                <ul className="flex items-center gap-4">
+                <ul className="flex items-center gap-4 list-none!">
                   <li>
                     <FacebookIcon color={"#0097b2"} height="20" width="20" />
                   </li>
@@ -83,7 +83,7 @@ const Footer = () => {
           <p className="footer-text text-white text-sm">Let's chat.</p>
 
           <div>
-            <ul className="flex items-center gap-4">
+            <ul className="flex items-center gap-4 list-none!">
               <li>
                 <FacebookIcon color={"white"} height="20" width="20" />
               </li>
@@ -110,7 +110,7 @@ const Footer = () => {
           <span className="footer-text text-sm text-white font-avenir-black">
             About Us
           </span>
-          <ul className="flex flex-wrap gap-1 flex-col mt-3">
+          <ul className="flex flex-wrap gap-1 flex-col mt-3 list-none!">
             <li className="text-sm text-white">
               <Link to={""} className="footer-text">
                 Our Story
@@ -142,7 +142,7 @@ const Footer = () => {
           <span className="footer-text text-sm text-white font-avenir-black">
             Careers
           </span>
-          <ul className="flex flex-wrap gap-1 flex-col mt-3">
+          <ul className="flex flex-wrap gap-1 flex-col mt-3 list-none!">
             <li className="text-sm text-white">
               <Link to={""} className="footer-text">
                 Data Operations
@@ -166,7 +166,7 @@ const Footer = () => {
           </ul>
 
           <div className="footer-legal">
-            <ul className="flex-wrap flex gap-1 flex-col mt-5">
+            <ul className="flex-wrap flex gap-1 flex-col mt-5 list-none!">
               <li className="text-sm text-white">
                 <Link to={""} className="footer-text">
                   Privacy Policy
@@ -189,7 +189,7 @@ const Footer = () => {
           <span className="text-sm text-white font-avenir-black footer-text">
             Legal
           </span>
-          <ul className="flex-wrap flex gap-1 mt-3 flex-col">
+          <ul className="flex-wrap flex gap-1 mt-3 flex-col list-none!">
             <li className="text-sm ">
               <Link to={"/privacy-policy"} className="footer-text text-white">
                 Privacy Policy
