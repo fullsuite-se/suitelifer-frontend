@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import formatTimestamp from "../TimestampFormatter";
 
 const GuestBlogCard = ({
@@ -12,10 +13,8 @@ const GuestBlogCard = ({
   const { day, fullDate, time } = formatTimestamp(created_at);
 
   return (
-    <a
-      href=""
-      className="no-underline cursor-pointer group flex flex-col lg:flex-row-reverse lg:gap-10"
-    >
+    <Link to={`/blogs/${id}`} className="no-underline cursor-pointer group flex flex-col lg:flex-row-reverse lg:gap-10">
+ 
     <section 
   className="relative w-full h-80 lg:h-90 rounded-xl overflow-hidden 
   transform transition-all duration-300 ease-in-out group-hover:scale-105 
@@ -48,7 +47,7 @@ const GuestBlogCard = ({
           </p>
         </div>
       </section>
-    </a>
+    </Link>
   );
 };
 

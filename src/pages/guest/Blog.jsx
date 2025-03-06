@@ -114,23 +114,19 @@ const Blog = () => {
           MORE BLOGS
         </p>
         <div className="h-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 justify-center items-center">
-        
-           
-        {guestBlogsList.map((blog, index) => (
-  <div key={blog.id || index}>
-    <GuestBlogCard
-      id={blog.id}
-      title={blog.title}
-      author={blog.author}
-      article={blog.article}
-      readTime={blog.readTime}
-      created_at={blog.created_at}
-      images={blog.images}
-    />
-  </div>
-))}
-
-        
+          {guestBlogsList.slice(1, guestBlogsList.length).map((blog, index) => (
+            <div key={blog.id || index}>
+              <GuestBlogCard
+                id={blog.id}
+                title={blog.title}
+                author={blog.author}
+                article={blog.article}
+                readTime={blog.readTime}
+                created_at={blog.created_at}
+                images={blog.images}
+              />
+            </div>
+          ))}
         </div>
       </main>
       <div className="h-30"></div>

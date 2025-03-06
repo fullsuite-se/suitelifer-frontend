@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import formatTimestamp from "../TimestampFormatter";
 
 const GuestBlogLarge = ({
@@ -12,10 +13,7 @@ const GuestBlogLarge = ({
   const { day, fullDate, time } = formatTimestamp(created_at);
 
   return (
-    <a
-      href=""
-      className="no-underline cursor-pointer group flex flex-col lg:flex-row-reverse lg:gap-10"
-    >
+    <Link to={`/blogs/${id}`} className="no-underline cursor-pointer group flex flex-col lg:flex-row-reverse lg:gap-10">
       <section
         className="relative w-full rounded-3xl overflow-hidden  transform transition-all duration-300 ease-in-out group-hover:scale-105 
   group-hover:shadow-xl group-hover:shadow-secondary/50 active:scale-105 
@@ -44,7 +42,7 @@ const GuestBlogLarge = ({
           <p className="mt-2 text-sm text-gray-300 line-clamp-3">{article}</p>
         </div>
       </section>
-    </a>
+    </Link>
   );
 };
 
