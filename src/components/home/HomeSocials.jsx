@@ -31,7 +31,7 @@ const HomeSocials = () => {
     <section>
       {/* HEADING */}
       <div className="pt-10 xl:pt-25 pb-[32%] sm:pb-[22%] sm:pt-20">
-        <div className="">
+        <div className="relative">
           <img
             className="absolute -z-10 transform -translate-y-2/5 -translate-x-[15%] sm:hidden"
             src={socialTitleMobile}

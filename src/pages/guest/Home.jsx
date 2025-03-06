@@ -28,10 +28,11 @@ const Home = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, [width]);
 
-  
-
   return (
-    <>
+    <section
+      className="gap-4 h-dvh"
+      style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
+    >
       {/* MOBILE NAV */}
       <div className="sm:hidden">
         <MobileNav />
@@ -89,24 +90,24 @@ const Home = () => {
         />
       </div>
       {/* GOAL AND OPERATIONS */}
-      <HomeGoalsOperations/>
+      <HomeGoalsOperations />
       {/* <div className="h-300 bg-red-900"></div> */}
       {/* NEWS SECTION */}
-      <HomeNews/>
-      
+      <HomeNews />
+
       {/* SOCIALS SECTION */}
-      <HomeSocials/>
+      <HomeSocials />
 
       <div className="h-10"></div>
 
       {/* HOME BLOG SPOT */}
-      <HomeBlogSpot/>
+      <HomeBlogSpot />
 
       {/* FOR DEBUGGING ONLY */}
       {/* <div className="bg-red-900 h-50 text-white grid place-items-center">WIDTH: {width}</div> */}
       {/* <div className="h-40"></div> */}
       <Footer />
-    </>
+    </section>
   );
 };
 

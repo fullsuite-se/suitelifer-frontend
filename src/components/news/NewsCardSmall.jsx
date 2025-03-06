@@ -13,7 +13,7 @@ const NewsCardSmall = ({
       className="container-news-card-small rounded-2xl transition-all duration-300 flex gap-3 no-underline min-w-[0px]"
     >
       <img
-        className="image-news-card-small size-[25vw] w-1/2 aspect-[3/2] object-cover"
+        className="image-news-card-small size-[25vw] aspect-[3/2] object-cover"
         src={imagesWithCaption[0].image}
         alt="News image"
       />

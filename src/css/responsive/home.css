@@ -155,37 +155,33 @@
 }
 
 .text-goal{
-  font-size: 11px;
+  font-size: 10px;
 
-  @media (min-width: 350px) {
-    font-size: 12px;
-  }
-
-  @media (min-width: 378px) {
-    font-size: 13px;
+  @media (min-width: 351px) {
+    font-size: 11px;
   }
 
   @media (min-width: 410px) {
-    font-size: 14px;
+    font-size: 12px;
   }
 
   @media (min-width: 450px) {
-    font-size: 15px;
+    font-size: 14px;
     .txt-btn{
       font-size: 14px;
     }
   }
 
   @media (min-width: 500px) {
-    font-size: 17px;
+    font-size: 16px;
   }
 
   @media (min-width: 535px) {
-    font-size: 18px;
+    font-size: 16px;
   }
 
   @media (min-width: 600px) {
-    font-size: 20px;
+    font-size: 18px;
     .txt-btn{
       font-size: 16px;
       margin-top: calc(var(--spacing) * 4)
@@ -193,99 +189,102 @@
   }
 
   @media (width >= 40rem /* 640px */) {
-    font-size: 16px;
+    font-size: 12px;
+    .txt-btn{
+      font-size: 10px;
+      margin-top: calc(var(--spacing) * 3)
+    }
   }
 
   @media (min-width: 700px) {
-    font-size: 18px;
+    font-size: 12px;
     .txt-btn{
-      font-size: 16px;
+      font-size: 10px;
       margin-top: calc(var(--spacing) * 4)
     }
   }
 
   @media (min-width: 770px) {
-    font-size: 18px;
+    font-size: 14px;
+    .txt-btn{
+      font-size: 12px;
+      margin-top: calc(var(--spacing) * 4)
+    }
   }
 
   @media (min-width: 840px) {
-    font-size: 20px;
+    font-size: 14px;
   }
 
   @media (min-width: 930px) {
-    font-size: 22px;
+    font-size: 16px;
   }
 
   @media (min-width: 971px) {
-    font-size: 24px;
+    font-size: 16px;
     .txt-btn{
-      font-size: 22px;
-      margin-top: calc(var(--spacing) * 7)
+      font-size: 12px;
+      margin-top: calc(var(--spacing) * 4)
     }
   }
 
   @media (min-width: 1137px) {
-    font-size: 26px;
+    font-size: 18px;
     .txt-btn{
-      font-size: 24px;
+      font-size: 16px;
       margin-top: calc(var(--spacing) * 9);
       border-radius: 24px;
     }
   }
 
   @media (min-width: 1260px) {
-    font-size: 28px;
+    font-size: 20px;
     .txt-btn{
-      font-size: 24px;
+      font-size: 18px;
       margin-top: calc(var(--spacing) * 9)
     }
   }
 
   @media (min-width: 1356px) {
-    font-size: 30px;
+    font-size: 22px;
     .txt-btn{
-      font-size: 24px;
-      margin-top: calc(var(--spacing) * 12)
+      font-size: 20px;
+      margin-top: calc(var(--spacing) * 8)
     }
   }
 
   @media (min-width: 1453px) {
-    font-size: 32px;
+    font-size: 22px;
     .txt-btn{
-      font-size: 26px;
-      margin-top: calc(var(--spacing) * 14)
+      font-size: 20px;
     }
   }
 
   @media (min-width: 1549px) {
-    font-size: 36px;
+    font-size: 24px;
     .txt-btn{
-      font-size: 30px;
-      margin-top: calc(var(--spacing) * 14)
+      font-size: 20px;
     }
   }
 
   @media (min-width: 1744px) {
-    font-size: 42px;
+    font-size: 26px;
     .txt-btn{
-      font-size: 34px;
-      margin-top: calc(var(--spacing) * 18)
+      font-size: 22px;
     }
   }
 
   @media (min-width: 1858px) {
-    font-size: 44px;
+    font-size: 26px;
     .txt-btn{
-      font-size: 34px;
-      margin-top: calc(var(--spacing) * 18)
+      font-size: 22px;
     }
   }
 
   @media (min-width: 1942px) {
-    font-size: 46px;
+    font-size: 26px;
     .txt-btn{
-      font-size: 38px;
-      margin-top: calc(var(--spacing) * 18)
+      font-size: 22px;
     }
   }
 }
@@ -293,12 +292,16 @@
 .text-goal-container{
   padding-top: 25%;
 
-  @media (min-width: 770px) {
-    padding-top: 28%;
+  @media (min-width: 640px) {
+    padding-top: 15%;
   }
 
-  @media (min-width: 1549px) {
-    padding-top: 27%;
+  @media (min-width: 770px) {
+    padding-top: 15%;
+  }
+
+  @media (min-width: 1479px) {
+    padding-top: 17%;
   }
 }
 
