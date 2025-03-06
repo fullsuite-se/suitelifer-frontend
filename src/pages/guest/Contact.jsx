@@ -49,9 +49,9 @@ const Contact = () => {
             >
               <div className="absolute inset-0 bg-primary opacity-80 rounded-tr-xl rounded-br-xl"></div>
               <div className="relative z-10">
-                <h2 className="font-avenir-black text-3xl text-white-300 lg:text-xl">
+                <p className="font-avenir-black text-2xl md:!text-3xl text-white-300 lg:!text-4xl xl:!text-5xl">
                   <span className="text-secondary">Chat</span> to our team
-                </h2>
+                </p>
                 <p className="mt-4 text-white text-xs md:text-base">
                   Lorem ipsum dolor sit amet ipsum consectetur adipiscing elit
                   Ut et massa mi. Aliquam in hendrerit urna. Pellent que sit

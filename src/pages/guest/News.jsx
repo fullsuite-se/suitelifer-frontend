@@ -6,12 +6,13 @@ import DesktopNav from "../../components/home/DesktopNav";
 import bgNews from "../../assets/images/bg-news.svg";
 import NewsLarge from "../../components/news/NewsLarge";
 import newsList from "../../components/news/NewsList";
+import NewsCardSmall from "../../components/news/NewsCardSmall";
 
 const News = () => {
-  return ( 
+  return (
     <section
       className="gap-4 h-dvh"
-      style={{ maxWidth: "1800px", margin: "0 auto", padding: "0 1rem" }}
+      style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
     >
       {/* MOBILE NAV */}
       <div className="sm:hidden">
@@ -27,22 +28,25 @@ const News = () => {
       </div>
       {/* NEWS HERO */}
       <section className="pt-[10%] xl:pt-[8%]">
-        <img
-          className="-z-50 absolute w-[90%] transform translate-y-5 -translate-x-10 lg:-translate-x-20 xl:-translate-x-30 opacity-90"
-          src={bgNews}
-          alt=""
-        />
+        <div className="relative">
+          <img
+            className="-z-50 absolute w-[90%] transform translate-y-5 -translate-x-10 lg:-translate-x-20 xl:-translate-x-30 opacity-90"
+            src={bgNews} //NEWS BACKGROUND
+            alt=""
+          />
+        </div>
+
         {/* BANNER */}
         <div className="text-center">
-          <p className="font-avenir-black text-4xl md:text-7xl">
+          <p className="font-avenir-black text-4xl md:text-7xl animate-fadeInUp">
             <span className="text-primary">suite</span> news
           </p>
           <p className="text-gray-400 md:text-xl">
             we serve the latest. the hottest
           </p>
         </div>
-        {/* SEARCH BAR */}'
-        <div className="flex justify-center px-4">
+        {/* SEARCH BAR */}
+        <div className="flex justify-center px-4 mt-5">
           <div className="w-full max-w-sm min-w-[200px] ">
             <div className="relative flex items-center">
               <svg
@@ -79,6 +83,7 @@ const News = () => {
         <p className="md:text-2xl uppercase font-avenir-black text-primary pb-3 lg:pb-4">
           The latest
         </p>
+        {/* LARGE NEWS */}
         <NewsLarge
           id={newsList[0].id}
           title={newsList[0].title}
@@ -88,8 +93,29 @@ const News = () => {
           created_at={newsList[0].created_at}
           imagesWithCaption={newsList[0].imagesWithCaption}
         />
+
+        {/* SMALL ARTICLE CARDS --DISPLAYS 5 LATEST NEWS */}
+
+        <p className="mt-10 md:text-xl uppercase font-avenir-black text-primary pb-3 lg:pb-4">
+          More articles
+        </p>
+        <div className="layout-small-news-cards gap-4 sm:gap-5">
+          {newsList.map((news, index) => (
+            <NewsCardSmall
+              key={news.id || index} // Use a unique key (id preferred)
+              id={news.id}
+              title={news.title}
+              author={news.author}
+              article={news.article}
+              readTime={news.read_time}
+              created_at={news.created_at}
+              imagesWithCaption={news.imagesWithCaption}
+            />
+          ))}
+        </div>
       </main>
-      <div className="h-30"></div>
+      <div className="h-20"></div>
+      <Footer />
     </section>
   );
 };

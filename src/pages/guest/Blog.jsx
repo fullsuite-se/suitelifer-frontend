@@ -8,12 +8,13 @@ import guestBlogsList from "../../components/guest-blogs/GuestBlogsList";
 import GuestBlogLarge from "../../components/guest-blogs/GuestBlogLarge";
 import BlogText from "../../components/guest-blogs/GuestBlogText";
 import GuestBlogTags from "../../components/guest-blogs/GuestBlogTags";
+import GuestBlogCard from "../../components/guest-blogs/GuestBlogCard";
 
 const Blog = () => {
   return (
     <section
       className="gap-4 h-dvh"
-      style={{ maxWidth: "1800px", margin: "0 auto", padding: "0 1rem" }}
+      style={{ maxWidth: "1800px", margin: "0 auto" }}
     >
       {/* MOBILE NAV */}
       <div className="sm:hidden">
@@ -35,24 +36,24 @@ const Blog = () => {
           alt=""
         />
         {/* BANNER */}
-        <div className="relative flex flex-col items-center">
-          <div
-            className="absolute -left-50 top-[30%]  -translate-y-2/3 bg-primary h-14 w-[94%] rounded-lg z-0  md:h-25 md:w-[77%] md:top-[40%] lg:w-[61%] lg:top-[40%]"
-            style={{
-              animation: "slideInFromLeft 0.8s ease-out forwards",
-            }}
-          ></div>
+        <div className="grid grid-cols-2 items-center gap-3">
+          <div className="relative flex items-center justify-end">
+            <div
+              className="absolute bg-primary h-15 md:h-25 w-[200%]  rounded-br-2xl rounded-tr-2xl"
+              style={{ animation: "slideInFromLeft 0.8s ease-out forwards" }}
+            ></div>
 
-          {/* Text Content */}
-          <div className="relative text-center z-10">
-            <p className="font-avenir-black text-4xl md:text-7xl">
-              <BlogText />
-              <span className="text-black">&nbsp; spot</span>
-            </p>
-            <p className="text-gray-400 md:text-xl mt-7">
-              where ideas spark and stories thrive.
-            </p>
+            <BlogText />
           </div>
+          <div className="text-4xl md:text-7xl font-avenir-black">
+            <span className="text-black">spot</span>
+          </div>
+        </div>
+
+        <div className="text-center mt-5">
+          <p className="text-gray-400 text-[12px] md:text-[14px] lg:text-[16px]">
+            where ideas spark and stories thrive.{" "}
+          </p>
         </div>
 
         {/* SEARCH BAR */}
@@ -88,11 +89,10 @@ const Blog = () => {
         </div>
       </section>
       <div className="flex justify-center lg:p-10 mt-10">
-  <div className="w-full max-w-3xl flex justify-center">
-    <GuestBlogTags />
-  </div>
-</div>
-
+        <div className="w-full max-w-3xl flex justify-center">
+          <GuestBlogTags />
+        </div>
+      </div>
 
       <div className="py-5"></div>
       {/* BLOGS CONTENT */}
@@ -110,9 +110,24 @@ const Blog = () => {
           images={guestBlogsList[0].images}
         />
 
-        <p className="md:text-2xl uppercase font-avenir-black text-primary pb-3 mt-20 lg:pb-4">
-          MORE BLOGS
+        <p className="md:text-2xl font-avenir-black text-primary pb-3 mt-10 lg:pb-4">
+          More Blogs
         </p>
+        <div className="h-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 justify-center items-center">
+          {guestBlogsList.slice(1, guestBlogsList.length).map((blog, index) => (
+            <div key={blog.id || index}>
+              <GuestBlogCard
+                id={blog.id}
+                title={blog.title}
+                author={blog.author}
+                article={blog.article}
+                readTime={blog.readTime}
+                created_at={blog.created_at}
+                images={blog.images}
+              />
+            </div>
+          ))}
+        </div>
       </main>
       <div className="h-30"></div>
     </section>

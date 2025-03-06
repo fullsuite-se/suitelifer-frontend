@@ -16,7 +16,7 @@ export default function MobileNav() {
   };
 
   return (
-    <div className="h-16 text-center">
+    <div className="relative h-16 text-center">
       <div className="bg-white z-50 fixed flex justify-between items-center h-16 w-full text-center">
         <div className="w-32 ml-7">
           <img className="object-cover" src={logo_fs_full} alt="Logo" />
@@ -24,14 +24,14 @@ export default function MobileNav() {
 
         {!isOpen 
         ? 
-        <div className="mr-10">
+        <div className="mr-7">
           <Bars2Icon
             className="w-8 cursor-pointer"
             onClick={() => setIsOpen(true)}
           />
         </div>
         : 
-        <XMarkIcon className="w-8 cursor-pointer mr-10" onClick={handleClose} />
+        <XMarkIcon className="w-8 cursor-pointer mr-7" onClick={handleClose} />
         }        
         {/* Close Button */}
       </div>

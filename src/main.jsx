@@ -10,6 +10,7 @@ import "./css/responsive/footer.css";
 import "./css/responsive/home.css";
 import "./css/responsive/about.css";
 import "./css/responsive/careers.css";
+import "./css/responsive/news.css";
 
 // animations folder contains the animations styles
 import "./css/animation/animation.css";
