@@ -14,7 +14,7 @@ const Blog = () => {
   return (
     <section
       className="gap-4 h-dvh"
-      style={{ maxWidth: "1800px", margin: "0 auto", padding: "0 1rem" }}
+      style={{ maxWidth: "1800px", margin: "0 auto" }}
     >
       {/* MOBILE NAV */}
       <div className="sm:hidden">
@@ -51,8 +51,8 @@ const Blog = () => {
         </div>
 
         <div className="text-center mt-5">
-          <p className="text-gray-400 md:text-xl">
-            we serve the latest. the hottest
+          <p className="text-gray-400 text-[12px] md:text-[14px] lg:text-[16px]">
+            where ideas spark and stories thrive.{" "}
           </p>
         </div>
 
@@ -110,8 +110,8 @@ const Blog = () => {
           images={guestBlogsList[0].images}
         />
 
-        <p className="md:text-2xl uppercase font-avenir-black text-primary pb-3 mt-20 lg:pb-4">
-          MORE BLOGS
+        <p className="md:text-2xl font-avenir-black text-primary pb-3 mt-10 lg:pb-4">
+          More Blogs
         </p>
         <div className="h-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 justify-center items-center">
           {guestBlogsList.slice(1, guestBlogsList.length).map((blog, index) => (

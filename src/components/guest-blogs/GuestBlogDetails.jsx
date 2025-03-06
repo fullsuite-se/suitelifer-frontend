@@ -8,7 +8,7 @@ import DesktopNav from "../../components/home/DesktopNav";
 import bgBlogs from "../../assets/images/blogs-text-bg.svg";
 import GuestBlogsList from "../../components/guest-blogs/GuestBlogsList";
 import BlogImageCarousel from "./GuestBlogImageCarousel";
-import GuestBlogCard from "./GuestBlogCard";
+import GuestBlogCardSmall from "./GuestBlogCardSmall";
 
 const BlogDetails = () => {
   const { id } = useParams();
@@ -23,7 +23,7 @@ const BlogDetails = () => {
     <>
       <section
         className="gap-4 h-dvh"
-        style={{ maxWidth: "1800px", margin: "0 auto", padding: "0 1rem" }}
+        style={{ maxWidth: "2000px", margin: "0 auto" }}
       >
         <div className="sm:hidden">
           <MobileNav />
@@ -43,7 +43,7 @@ const BlogDetails = () => {
           />
         </section>
 
-        <main className="  px-[2%] text-sm md:text-base md:px-[10%] lg:!px-[15%] xl:px-[20%]">
+        <main className="  px-[7%] text-sm md:text-base md:px-[5%] lg:!px-[10%]">
           <button
             onClick={() => navigate("/blogs")}
             className="flex items-center gap-2 text-primary !text-[12px] md:text-base font-semibold transition  
@@ -52,37 +52,50 @@ const BlogDetails = () => {
             <ArrowLeft size={15} /> <span className="mt-1">Back to blogs</span>
           </button>
 
-          <h1 className="!text-xl md:!text-2x lg:!text-3xl font-avenir-black text-center">
-            {blog.title}
-          </h1>
-          <BlogImageCarousel images={blog.images} />
+          <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr]  gap-10">
+  {/* Main Blog Content */}
+  <div>
+  <p className="!text-[12px] text-gray-500 mt-5">
+         {blog.created_at}   </p>
+    <p className="!text-xl md:!text-2xl lg:!text-3xl font-avenir-black my-2">
+      {blog.title}
+    </p>
+    <p className="!text-[12px] text-gray-500">
+    <span className="text-primary font-avenir-black"> {blog.author}</span>      |{" "}
+            {blog.readTime}
+          </p>
+    <BlogImageCarousel images={blog.images} />
 
-          <p className="mt-4 text-gray-700 whitespace-pre-line">
-            {blog.article}
-          </p>
-          <p className="md:text-xl uppercase font-avenir-black text-primary pb-3 mt-20 lg:pb-4">
-            MORE BLOGS
-          </p>
-          <div className="h-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 justify-center items-center">
-            {GuestBlogsList.slice(1, GuestBlogsList.length).map(
-              (blog, index) => (
-                <div key={blog.id || index}>
-                  <GuestBlogCard
-                    id={blog.id}
-                    title={blog.title}
-                    author={blog.author}
-                    article={blog.article}
-                    readTime={blog.readTime}
-                    created_at={blog.created_at}
-                    images={blog.images}
-                  />
-                </div>
-              )
-            )}
-          </div>
+    <p className="mt-4 text-gray-700 whitespace-pre-line">{blog.article}</p>
+  </div>
+
+  {/* More Blogs Section (Moves below article on mobile) */}
+  <div className="overflow-y-auto lg:px-5 lg:h-[100vh]">
+    <p className=" mt-5 font-avenir-black text-primary pb-3 lg:pb-4">
+      Read More Blogs
+    </p>
+    <div className="grid grid-cols-1 gap-2 justify-center items-center">
+      {GuestBlogsList.slice(1, 6).map((blog, index) => (
+        <div key={blog.id || index}>
+          <GuestBlogCardSmall
+            id={blog.id}
+            title={blog.title}
+            author={blog.author}
+            article={blog.article}
+            readTime={blog.readTime}
+            created_at={blog.created_at}
+            images={blog.images}
+          />
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
         </main>
 
         <div className="h-30"></div>
+        <Footer />
       </section>
     </>
   );
