@@ -21,7 +21,7 @@ const BlogImageCarousel = ({ images }) => {
 
   return (
     <div
-  className="relative w-full max-w-3xl lg:max-w-5xl mx-auto overflow-hidden"
+  className="relative w-full max-w-3xl lg:max-w-5xl mt-5 mx-auto overflow-hidden"
 >
   <div className="w-full h-60 md:h-80 lg:h-[32rem] bg-transparent flex items-center justify-center rounded-lg overflow-hidden relative group-hover:scale-105 
   group-hover:shadow-xl group-hover:shadow-secondary/50">
