@@ -40,10 +40,10 @@ export default function DesktopNav() {
         }}
         className={`fixed z-50 top-0 left-0 right-0 ${
           isVisible ? "shadow" : ""
-        } flex justify-between items-center h-16 px-7 z-50`}
+        } flex justify-between items-center h-16 px-7 z-50 `}
       >
         {/* Navigation Links*/}
-        <nav className={`flex justify-center items-end`}>
+        <nav className={`flex justify-center items-end relative`}>
           {/* Logo */}
           <div className={`w-32 lg:ml-0 lg:mr-7 xl:ml-9 xl:mr-16  animate-slideInFromLeft`}>
             <img className="object-cover" src={logo_fs_full} alt="Logo" />

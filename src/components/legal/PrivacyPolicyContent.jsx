@@ -37,7 +37,7 @@ const PrivacyPolicyContent = () => {
       <div className="hidden md:block md:w-1/4 lg:w-1/5">
         <div className="sticky top-20 bg-white p-7 shadow-md rounded-xl w-fit min-w-[180px]">
           <h4 className="font-avenir-black text-gray-700">TABLE OF CONTENTS</h4>
-          <ul className="mt-4 space-y-2">
+          <ul className="mt-4 space-y-2 list-none!">
             {sections.map((section) => (
               <li key={section.id}>
                 <button
@@ -179,9 +179,11 @@ const PrivacyPolicyContent = () => {
             your data privacy rights have been violated, you have a right to
             file a complaint with the National Privacy Commission of the
             Philippines. If you have any questions or concerns regarding your
-            data, please contact our Data Protection Officer at 
-            {" "}
-            <a href="mailto:dpo@fullsuite.ph" className="text-primary no-underline">
+            data, please contact our Data Protection Officer at{" "}
+            <a
+              href="mailto:dpo@fullsuite.ph"
+              className="text-primary no-underline"
+            >
               dpo@fullsuite.ph
             </a>
           </p>

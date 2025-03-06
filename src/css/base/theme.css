@@ -106,6 +106,16 @@ i {
   font-family: "Avenir-RomanOblique", sans-serif;
 }
 
+ul {
+  list-style-type: disc;
+  padding-left: 20px;
+}
+
+ol {
+  list-style-type: decimal;
+  padding-left: 20px;
+}
+
 /* Bold + Italic */
 strong em,
 b i,

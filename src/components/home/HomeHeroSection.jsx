@@ -49,7 +49,7 @@ import videoTemplate from "../../assets/videos/video-template.mp4";
                 src={engineers}
                 alt="Two entrepreneurs"
               /> */}
-              <video className="w-full h-full rounded-xl object-cover" controls>
+              <video className="w-full h-full rounded-4xl object-cover"  autoPlay loop muted controls>
                 <source src={videoTemplate} type="video/mp4" />
               </video>
             </div>
