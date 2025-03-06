@@ -33,6 +33,7 @@ import EmployeeEvents from "./pages/employee/EmployeeEvents";
 import EmployeeWorkshops from "./pages/employee/EmployeeWorkshops";
 import EmployeePersonalityTest from "./pages/employee/EmployeePersonalityTest";
 import BlogCreate from "./components/blog/BlogCreate";
+import BlogDetails from "./components/guest-blogs/GuestBlogDetails";
 
 function App() {
   return (
@@ -49,7 +50,7 @@ function App() {
           <Route path="/news" element={<News />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/blogs" element={<Blog />} />
-          <Route path="/blogs" element={<Blog />} />
+          <Route path="/blogs/:id" element={<BlogDetails/>} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-use" element={<TermsOfUse />} />
 
