@@ -14,9 +14,9 @@ const Careers = () => {
   useEffect( () => {
     const fetchEpisodes = async () => {
       try {
-        const episodes = await axios.get(`${config.apiBaseUrl}/api/episodes`);
+        const response = await axios.get(`${config.apiBaseUrl}/api/all-episodes`);
 
-        setEpisodes(episodes.data);
+        setEpisodes(response.data.data);
       } catch (err) {
         console.log(err);
       }
@@ -63,10 +63,10 @@ const Careers = () => {
 
       {/* SPOTIFY EPISODES */}
       <div className="px-3 mb-10">
-        {spotifyEpisodes.map(({id}, index) => {
+        {spotifyEpisodes.map(({spotifyId}, index) => {
           return (
             <div className="p-1" key={index}>
-              <SpotifyEmbed id={id} index={index} key={index}/>
+              <SpotifyEmbed id={spotifyId} index={index}/>
             </div>
           );
         })}

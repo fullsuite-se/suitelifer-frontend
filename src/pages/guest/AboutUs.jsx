@@ -30,9 +30,9 @@ const AboutUs = () => {
         const response = await axios.get(
           `${config.apiBaseUrl}/api/get-about-us`
         );
-        console.log(response.data);
+        console.log(response.data.data);
 
-        setContent(response.data);
+        setContent(response.data.data);
       } catch (error) {
         console.log(error);
       }
@@ -63,7 +63,7 @@ const AboutUs = () => {
             />
           </div>
           <div className="about-text-banner flex flex-col mb-2">
-            <h2 className="font-avenir-black px-5">{content.text_banner}</h2>
+            <h2 className="font-avenir-black px-5">{content.textBanner}</h2>
             <div className="h-10 w-20 lg:h-20 lg:w-32 rounded-l-2xl bg-primary ml-auto"></div>
           </div>
           <div className="mx-5">
