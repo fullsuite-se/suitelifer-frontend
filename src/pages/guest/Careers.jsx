@@ -63,10 +63,10 @@ const Careers = () => {
 
       {/* SPOTIFY EPISODES */}
       <div className="px-3 mb-10">
-        {spotifyEpisodes.map(({id}, index) => {
+        {spotifyEpisodes.map(({spotifyId}, index) => {
           return (
             <div className="p-1" key={index}>
-              <SpotifyEmbed id={id} index={index} key={index}/>
+              <SpotifyEmbed id={spotifyId} index={index}/>
             </div>
           );
         })}
