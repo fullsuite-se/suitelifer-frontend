@@ -12,8 +12,16 @@ import InputLabel from "@mui/material/InputLabel";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import Tooltip from "@mui/material/Tooltip";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import {
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+} from "@mui/material";
 
 const initialJobListings = [
   {
@@ -27,7 +35,7 @@ const initialJobListings = [
     responsibilities: "",
     requirements: "",
     preferredQualifications: "",
-    industry: "Business Operations",
+    industry: "Technology",
     setup: "Hybrid",
   },
   {
@@ -55,7 +63,7 @@ const initialJobListings = [
     responsibilities: "",
     requirements: "",
     preferredQualifications: "",
-    industry: "Business Operations",
+    industry: "Marketing",
     setup: "On-Site",
   },
   {
@@ -73,51 +81,8 @@ const initialJobListings = [
     setup: "Remote",
   },
 ];
-
-const Industries = [
-  {
-    name: "Technology",
-    createdBy: "Admin",
-    updatedBy: "John",
-    dateCreated: "2024-01-10",
-    lastUpdated: "2024-02-15",
-  },
-  {
-    name: "Healthcare",
-    createdBy: "Alice",
-    updatedBy: "Bob",
-    dateCreated: "2024-01-12",
-    lastUpdated: "2024-02-18",
-  },
-  {
-    name: "Finance",
-    createdBy: "Charlie",
-    updatedBy: "David",
-    dateCreated: "2024-01-14",
-    lastUpdated: "2024-02-20",
-  },
-];
-
-// const dataSetUp = [
-//   {
-//     setup: "",
-//     createdBy: accountName,
-//     dateCreated: Date.now(),
-//     updatedBy: accountName,
-//     lastUpdated: Date.now(),
-//   },
-// ];
-// const dataIndustry = [
-//   {
-//     setup: "",
-//     createdBy: accountName,
-//     dateCreated: Date.now(),
-//     updatedBy: accountName,
-//     lastUpdated: Date.now(),
-//   },
-// ];
-
 const initialIndustries = ["Business Operations", "Technology", "Marketing"];
+const initialSetup = ["Remote", "Hybrid", "On-Site", "In-Office"];
 
 export default function JobListing() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -125,14 +90,18 @@ export default function JobListing() {
   const [jobListings, setJobListings] = useState(initialJobListings);
   const [filteredJobListings, setFilteredJobListings] =
     useState(initialJobListings);
+
   const [industries, setIndustries] = useState(initialIndustries);
   const [openJobModal, setOpenJobModal] = useState(false);
   const [openSetUpModal, setOpenSetUpModal] = useState(false);
   const [openIndustryModal, setOpenIndustryModal] = useState(false);
   const [editJob, setEditJob] = useState(null);
-  const [newIndustry, setNewIndustry] = useState("");
+  const [newIndustry, setNewIndustry] = useState();
   const [openManageIndustryModal, setOpenManageIndustryModal] = useState(false);
+  const [setup, setSetup] = useState(initialSetup);
   const [newSetUp, setNewSetUp] = useState("");
+  const [openAddSetUpModal, setOpenAddSetUpModal] = useState(false);
+  const [selectedOption, setSelectedOption] = useState("Industry");
 
   const { register, handleSubmit, reset } = useForm({
     defaultValues: {
@@ -196,7 +165,13 @@ export default function JobListing() {
     }
   };
 
-  const handleAddSetUp = () => {};
+  const handleAddSetUp = () => {
+    if (newSetUp && !setup.includes(newSetUp)) {
+      setSetup([...setup, newSetUp]);
+      setNewSetUp("");
+      setOpenSetUpModal(false);
+    }
+  };
 
   const handleEditJob = (index) => {
     setEditJob(index);
@@ -224,42 +199,55 @@ export default function JobListing() {
           >
             <span className="mr-2">+</span> INDUSTRY
           </button>
+          <button
+            variant="outlined"
+            className="btn-primary"
+            onClick={() => setOpenAddSetUpModal(true)}
+          >
+            <span className="mr-2">+</span> SET-UP
+          </button>
         </div>
       </header>
-
       {/* Stats */}
       <div className="flex flex-wrap gap-4">
-        <div className="bg-primary text-white px-4 py-2 rounded-md">
-          <div className="text-lg">Total Applications</div>
+        <div className="bg-primary text-white px-4 py-2 rounded-md w-80">
+          <div className="text-lg text-center">Total Applications</div>
           <div className="text-2xl font-bold text-center">917</div>
         </div>
-        <div className="border px-4 py-2 rounded-md">
-          <div className="text-lg">Industries</div>
-          <div className="text-2xl font-bold text-center">{industries.length}</div>
+        <div className="border px-4 py-2 rounded-md w-50 bg-gray-200">
+          <div className="text-lg text-center ">Industries</div>
+          <div className="text-2xl font-bold text-center">
+            {industries.length}
+          </div>
         </div>
-        <div className="border px-4 py-2 rounded-md">
-          <div className="text-lg">Job Listings</div>
-          <div className="text-2xl font-bold text-center">{totalJobListings}</div>
+        <div className="border px-4 py-2 rounded-md w-50 bg-gray-200">
+          <div className="text-lg text-center">Job Listings</div>
+          <div className="text-2xl font-bold text-center">
+            {totalJobListings}
+          </div>
         </div>
         <div className="flex gap-2">
-          <div className="border px-4 py-2 rounded-md">
-            <div className="text-lg">Open</div>
-            <div className="text-2xl font-bold text-center">{openJobListings}</div>
+          <div className="border px-4 py-2 rounded-md w-25">
+            <div className="text-lg text-center">Open</div>
+            <div className="text-2xl font-bold text-center">
+              {openJobListings}
+            </div>
           </div>
-          <div className="border px-4 py-2 rounded-md">
-            <div className="text-lg">Closed</div>
-            <div className="text-2xl font-bold text-center">{closedJobListings}</div>
+          <div className="border px-4 py-2 rounded-md w-25">
+            <div className="text-lg text-center">Closed</div>
+            <div className="text-2xl font-bold text-center">
+              {closedJobListings}
+            </div>
           </div>
         </div>
       </div>
-
       {/* Search and Filter */}
       <div className="flex flex-wrap gap-4 items-center">
         <div className="relative flex-1">
           <input
             type="text"
             placeholder="Search Job"
-            className="bg-gray-200 text-black px-4 py-2 rounded w-full"
+            className="bg-gray-200 text-black px-4 py-2 rounded-xl w-full"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -267,9 +255,9 @@ export default function JobListing() {
         <div className="text-right justify-center items-center w-50 h-10 text-2xl p-1">
           Industries
         </div>
-        <div className="relative w-full sm:w-[300px]">
+        <div className="relative w-full sm:w-[350px]">
           <select
-            className="bg-gray-200 h-10 px-4 py-2 rounded w-full"
+            className="bg-gray-200 h-10 px-4 py-2 rounded-xl w-full"
             value={selectedIndustry}
             onChange={(e) => setSelectedIndustry(e.target.value)}
           >
@@ -289,55 +277,53 @@ export default function JobListing() {
           <MoreVertIcon />
         </button>
       </div>
-
       {/* Table */}
-      <table className="w-full bg-white border-2">
-        <thead>
-          <tr className="bg-secondary">
-            <th className="py-2 text-left p-2">Job Title</th>
-            <th className="py-2 text-left p-2">Description</th>
-            <th className="py-2 text-left p-2">Employment Type</th>
-            <th className="py-2 text-left p-2">Status</th>
-            <th className="py-2 text-left p-2">Set-Up</th>
-            <th className="py-2 text-left p-2">Visibility</th>
-            <th className="py-2 text-center p-2">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredJobListings.map((job, index) => (
-            <tr
-              key={index}
-              className={index % 2 === 0 ? "bg-tertiary" : "bg-white"}
-            >
-              <td className="py-2 p-2 font-medium">{job.title}</td>
-              <td className="py-2 p-2 line-clamp-3">
-                <Tooltip title={job.description} arrow>
-                  <span>{job.description}</span>
-                </Tooltip>
-              </td>
-              <td className="py-2 p-2">{job.type}</td>
-              <td className="py-2 p-2">
-                {job.status === 1 ? "Open" : "Closed"}
-              </td>
-              <td className="py-2 p-2">{job.setup}</td>
-              <td className="py-2 p-2">
-                {job.visibility === 1 ? "Shown" : "Hidden"}
-              </td>
-              <td className="py-2 p-2">
-                <button
-                  className="bg-transparent p-2 rounded w-8 items-center"
-                  onClick={() => handleEditJob(index)}
-                >
-                  <button onClick={openJobModal}>
-                    <EditIcon />
-                  </button>
-                </button>
-              </td>
+      <div className="border-primary border-2 rounded-2xl overflow-clip">
+        <table className="w-full bg-white">
+          <thead>
+            <tr className="bg-secondary">
+              <th className="text-left py-2 px-5">Job Title</th>
+              <th className="text-left p-2">Description</th>
+              <th className="text-left p-2">Employment Type</th>
+              <th className="text-left p-2">Status</th>
+              <th className="text-left p-2">Set-Up</th>
+              <th className="text-left p-2">Visibility</th>
+              <th className="text-center p-2">Action</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-
+          </thead>
+          <tbody>
+            {filteredJobListings.map((job, index) => (
+              <tr
+                key={index}
+                className={index % 2 === 0 ? "bg-tertiary" : "bg-white"}
+              >
+                <td className="py-2 px-5 font-medium">{job.title}</td>
+                <td className="p-2 line-clamp-2">
+                  <Tooltip title={job.description} arrow>
+                    <span>{job.description}</span>
+                  </Tooltip>
+                </td>
+                <td className="p-2">{job.type}</td>
+                <td className="p-2">{job.status === 1 ? "Open" : "Closed"}</td>
+                <td className="p-2">{job.setup}</td>
+                <td className="p-2">
+                  {job.visibility === 1 ? "Shown" : "Hidden"}
+                </td>
+                <td className="p-2 text-center">
+                  <button
+                    className="bg-transparent p-2 rounded w-8 items-center"
+                    onClick={() => handleEditJob(index)}
+                  >
+                    <button onClick={openJobModal}>
+                      <EditIcon />
+                    </button>
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       {/* Job Modal */}
       <Modal open={openJobModal} onClose={() => setOpenJobModal(false)}>
         <div className="space-y-10 overflow-hidden ">
@@ -358,14 +344,20 @@ export default function JobListing() {
                   margin="normal"
                   sx={{ bgcolor: "#fbe9e7" }}
                 />
-                <TextField
-                  label="Industry"
-                  fullWidth
-                  {...register("industry")}
-                  className="gap-x-3"
-                  margin="normal"
-                  sx={{ bgcolor: "#fbe9e7" }}
-                />
+                <FormControl fullWidth className="mt-2" margin="normal">
+                  <InputLabel>Industry</InputLabel>
+                  <Select
+                    label="Industry"
+                    sx={{ bgcolor: "#fbe9e7" }}
+                    {...register("industry")}
+                  >
+                    {industries.map((option) => (
+                      <MenuItem key={option} value={option}>
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </div>
 
               <TextField
@@ -399,7 +391,6 @@ export default function JobListing() {
                   defaultValue={0}
                   sx={{ bgcolor: "#fbe9e7" }}
                 />
-
                 <FormControl fullWidth className="mt-2" margin="normal">
                   <InputLabel>Employment Type</InputLabel>
                   <Select
@@ -418,10 +409,11 @@ export default function JobListing() {
                     sx={{ bgcolor: "#fbe9e7" }}
                     {...register("setup")}
                   >
-                    <MenuItem value="Hybrid">Hybrid</MenuItem>
-                    <MenuItem value="On-Site">On-Site</MenuItem>
-                    <MenuItem value="Remote">Remote</MenuItem>
-                    <MenuItem value="In-Office">In-Office</MenuItem>
+                    {setup.map((option) => (
+                      <MenuItem key={option} value={option}>
+                        {option}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </div>
@@ -517,7 +509,6 @@ export default function JobListing() {
           </Box>
         </div>
       </Modal>
-
       {/* Industry Modal */}
       <Modal
         open={openIndustryModal}
@@ -538,13 +529,6 @@ export default function JobListing() {
             }}
             className="space-y-4"
           >
-            {/* <input
-              type="text"
-              placeholder="Created By"
-              value={""}
-              onChange={(e) => setCreatedBy(e.target.value)}
-            /> */}
-
             <TextField
               label="Industry Name"
               fullWidth
@@ -586,46 +570,112 @@ export default function JobListing() {
           </form>
         </Box>
       </Modal>
-
       <Modal
         open={openManageIndustryModal}
         onClose={() => setOpenManageIndustryModal(false)}
       >
-        <Box className="modal-container bg-white p-4 rounded-lg mx-auto mt-12 w-96">
-          <h2 className="text-lg font-semibold mb-4 text-center">
-            Manage Industries
-          </h2>
+        <Box className="modal-container bg-white p-4 rounded-lg mx-auto mt-12 w-250 h-200">
+          <h2>Manage Industry and Set-up</h2>
+          <FormControl fullWidth className="mt-7">
+            <Select
+              value={selectedOption}
+              onChange={(e) => setSelectedOption(e.target.value)}
+              sx={{ bgcolor: "#fbe9e7" }}
+            >
+              <MenuItem value="Industry">Industry</MenuItem>
+              <MenuItem value="Set-Up">Set-Up</MenuItem>
+            </Select>
+          </FormControl>
 
-          <table className="w-full border-2">
-            <thead>
-              <tr className="bg-secondary">
-                <th className="py-2 text-left p-2">Industry Name</th>
-                <th className="py-2 text-left p-2">Created By</th>
-                <th className="py-2 text-left p-2">Date Created</th>
-                <th className="py-2 text-left p-2">Updated By</th>
-                <th className="py-2 text-left p-2">Last Updated</th>
-              </tr>
-            </thead>
-            <tbody>
-              {industries.map((industry, index) => (
-                <tr
-                  key={index}
-                  className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
-                >
-                  <td className="py-2 p-2">{industry.name}</td>
-                  <td className="py-2 p-2">{industry.createdBy}</td>
-                  <td className="py-2 p-2">{industry.dateCreated}</td>
-                  <td className="py-2 p-2">{industry.updatedBy}</td>
-                  <td className="py-2 p-2">{industry.lastUpdated}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="flex justify-between w-full gap-3 mt-4 flex-end">
+            {selectedOption === "Industry" ? (
+              <button
+                variant="outlined"
+                className="btn-primary"
+                onClick={() => setOpenIndustryModal(true)}
+              >
+                <span className="mr-2">+</span> INDUSTRY
+              </button>
+            ) : (
+              <button
+                onClick={() => setOpenAddSetUpModal(true)}
+                className="btn-primary"
+              >
+                <span className="mr-2">+</span> SET-UP
+              </button>
+            )}
+          </div>
+
+          {/* Conditionally render tables based on selectedOption */}
+          {selectedOption === "Industry" ? (
+            <Table className="mt-4">
+              <TableHead>
+                <TableRow>
+                  <TableCell>ID</TableCell>
+                  <TableCell>Industry Name</TableCell>
+                  <TableCell>Created By</TableCell>
+                  <TableCell>Date Created</TableCell>
+                  <TableCell>Action</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {industries.map((industry, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{industry}</TableCell>
+                    <TableCell>Admin</TableCell>
+                    <TableCell>{new Date().toLocaleDateString()}</TableCell>
+                    <TableCell>
+                      <button>
+                        <EditIcon />
+                      </button>
+                      <button>
+                        <DeleteIcon />
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <Table className="mt-4">
+              <TableHead>
+                <TableRow>
+                  <TableCell>ID</TableCell>
+                  <TableCell>Setup Name</TableCell>
+                  <TableCell>Created By</TableCell>
+                  <TableCell>Date Created</TableCell>
+                  <TableCell>Action</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {setup.map((setup, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{setup}</TableCell>
+                    <TableCell>Admin</TableCell>
+                    <TableCell>{new Date().toLocaleDateString()}</TableCell>
+                    <TableCell>
+                      <button>
+                        <EditIcon />
+                      </button>
+                      <button>
+                        <DeleteIcon />
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </Box>
       </Modal>
 
       {/* SetUp Modal */}
-      <Modal open={openSetUpModal} onClose={() => setOpenSetUpModal(false)}>
+      <Modal
+        open={openAddSetUpModal}
+        onClose={() => setOpenAddSetUpModal(false)}
+      >
         <Box
           className={`modal-container p-6 bg-white rounded-lg mx-auto mt-12 ${
             isSmallScreen ? "w-full" : "sm:w-96"
@@ -634,20 +684,44 @@ export default function JobListing() {
           <h2 className="font-semibold mb-4 text-lg text-center bg-white">
             Add Set-Up
           </h2>
-          <FormControl fullWidth className="mt-2" margin="normal">
-            <InputLabel>Set-up</InputLabel>
-            <Select
-              label="setup"
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleAddSetUp();
+              setOpenAddSetUpModal(false);
+            }}
+            className="space-y-4"
+          >
+            <TextField
+              label="Setup Name"
+              variant="outlined"
+              fullWidth
               value={newSetUp}
-              onChange={(e) => setNewSetUp(e.target.value)}
               sx={{ bgcolor: "#fbe9e7" }}
-            >
-              <MenuItem value="Remote">Remote</MenuItem>
-              <MenuItem value="On-Site">On-Site</MenuItem>
-              <MenuItem value="In-Office">In-Office</MenuItem>
-              <MenuItem value="Hybrid">Hybrid</MenuItem>
-            </Select>
-          </FormControl>
+              onChange={(e) => setNewSetUp(e.target.value)}
+              placeholder="Enter setup name"
+            />
+
+            <div className="mt-6 flex justify-end gap-x-3">
+              <button
+                type="submit"
+                variant="contained"
+                color="primary"
+                className="btn-primary"
+                onClick={() => setOpenAddSetUpModal(true)}
+              >
+                Add Setup
+              </button>
+              <button
+                type="submit"
+                variant="contained"
+                className="btn-primary"
+                onClick={() => setOpenAddSetUpModal(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
         </Box>
       </Modal>
     </div>
