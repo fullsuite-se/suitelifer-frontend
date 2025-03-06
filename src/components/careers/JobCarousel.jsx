@@ -64,9 +64,9 @@ export default function JobCarousel() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const data = await axios.get(`${config.apiBaseUrl}/api/all-jobs`);
+        const response = await axios.get(`${config.apiBaseUrl}/api/all-jobs`);
 
-        setJobs(data.data);
+        setJobs(response.data.data);
       } catch (err) {
         console.log(err);
       }
