@@ -14,9 +14,9 @@ const Careers = () => {
   useEffect( () => {
     const fetchEpisodes = async () => {
       try {
-        const episodes = await axios.get(`${config.apiBaseUrl}/api/episodes`);
+        const response = await axios.get(`${config.apiBaseUrl}/api/all-episodes`);
 
-        setEpisodes(episodes.data);
+        setEpisodes(response.data.data);
       } catch (err) {
         console.log(err);
       }

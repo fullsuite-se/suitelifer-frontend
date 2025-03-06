@@ -2,11 +2,12 @@ import React from "react";
 import { useSwiperSlide } from "swiper/react";
 
 const JobPost = ({
-  title,
-  employment_type,
-  salary = null,
+  jobTitle,
+  employmentType,
+  salaryMin,
+  salaryMax,
   description,
-  setup_name,
+  setupName,
 }) => {
   const swiperSlide = useSwiperSlide();
   const isActive = swiperSlide.isActive;
@@ -23,23 +24,23 @@ const JobPost = ({
             }`
       }`}
     >
-      <p className="text-base font-avenir-black truncate" title={title}>
-        {title}
+      <p className="text-base font-avenir-black truncate" title={jobTitle}>
+        {jobTitle}
       </p>
       <div
         className={`flex ${isActive ? "flex-row" : "flex-col"} justify-between`}
       >
-        <p className="text-sm font-avenir-black">{employment_type}</p>
-        <p className="text-sm font-avenir-roman mb-3">{setup_name}</p>
+        <p className="text-sm font-avenir-black">{employmentType}</p>
+        <p className="text-sm font-avenir-roman mb-3">{setupName}</p>
       </div>
-      {isActive && salary && (
+      {isActive && salaryMin && (
         <>
           <p className="text-[0.75em]">Expected Salary</p>
-          <p className="text-base font-avenir-black mb-3">PHP {salary}</p>
+          <p className="text-base font-avenir-black mb-3">PHP {salaryMin} {salaryMax && `- PHP ${salaryMax}`}</p>
         </>
       )}
       {isActive && (
-        <p className={`mb-3 ${salary ? "line-clamp-5" : "line-clamp-7"}`}>
+        <p className={`mb-3 ${salaryMin ? "line-clamp-5" : "line-clamp-7"}`}>
           {description}
         </p>
       )}
