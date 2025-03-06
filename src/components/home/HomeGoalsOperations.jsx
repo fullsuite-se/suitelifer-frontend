@@ -1,5 +1,7 @@
 import desktopCutoutBgMarvin from "../../assets/images/desktop-bg-man-cutout-marvin.svg";
-import desktopCutoutBgMaggie from "../../assets/images/desktop-bg-man-cutout-maggie.svg";
+import desktopCutoutBgMaggie from "../../assets/images/desktop-bg-man-cutout-maggie.png";
+import desktopBgMaggie from "../../assets/images/bg-maggie.png";
+import desktopBgMarvinTwins from "../../assets/images/bg-marvin-twins.png";
 import mobileCutoutBgMaggie from "../../assets/images/mobile-bg-man-cutout-maggie.png";
 import mobileCutoutBgMaggieNew from "../../assets/images/mobile-bg-man-cutout-maggie-new.png";
 import dataOp from "../../assets/images/data-op.svg";
@@ -16,7 +18,11 @@ const HomeGoalsOperations = () => {
       alt: "Marketing operations analyst",
     },
     { title: "Tech Support", image: adminOp, alt: "Tech support analyst" },
-    { title: "Business Operations", image: dataOp, alt: "Data operations analyst" },
+    {
+      title: "Business Operations",
+      image: dataOp,
+      alt: "Data operations analyst",
+    },
     {
       title: "Finance Operations",
       image: financeOp,
@@ -30,23 +36,27 @@ const HomeGoalsOperations = () => {
   ];
 
   return (
-    <section className="-mt-[5%] md:-mt-[10%] mb-10 sm:mb-15 lg:mb-20 xl:mb-30 flex flex-col">
+    <section className="relative -mt-[5%] mb-10 sm:mb-15 lg:mb-20 xl:mb-30 flex flex-col">
       <div className="block">
         {/* Background Image */}
         <div className="cutout-maggie mb-6">
           <img
+          // !!! NOTE: for MOBILE, 1643x 1693 must be the size of the background image.
+
             src={mobileCutoutBgMaggieNew}
             alt="cutout background"
             className="block -z-10 w-[100%] sm:hidden"
           />
           <img
-            src={desktopCutoutBgMaggie}
+          // !!! NOTE: For DESKTOP, 1673 x 1220 must be the size of the background image
+            // src={desktopBgMarvinTwins}
+            src={desktopBgMaggie}
             alt="cutout background"
             className="-z-10 w-[100%] hidden sm:block"
           />
         </div>
         {/* OPERATIONS */}
-        <section className="flex flex-col sm:flex-row justify-center items-center md:flex-row gap-5 lg:gap-8 xl:gap-10 px-4 max-h-min">
+        <section className="flex flex-col sm:flex-row justify-center items-center md:flex-row gap-3 lg:gap-8 xl:gap-10 px-4 max-h-min">
           {operations.slice(-3).map((op, index) => (
             <div
               key={index}
@@ -57,11 +67,13 @@ const HomeGoalsOperations = () => {
                 sm:px-0 
                 flex flex-col items-center
                 ${index == 0 ? "sm:transform sm:-translate-y-[28%]" : ""}
-                ${index == 2 ? "admin-op sm:transform sm:-translate-y-[8%]" : ""}
+                ${
+                  index == 2 ? "admin-op sm:transform sm:-translate-y-[8%]" : ""
+                }
                 `}
             >
               <img
-                className="rounded-4xl sm:rounded-3xl size-[80%] object-cover aspect-[3/4]"
+                className="rounded-4xl sm:rounded-3xl size-[80%] lg:size-[60%] object-cover aspect-[3/4]"
                 src={op.image}
                 alt={op.alt}
               />
@@ -77,24 +89,16 @@ const HomeGoalsOperations = () => {
       </div>
 
       {/* Texts overlay */}
-      <div className="text-goal-container absolute pt-[30%] pl-[40%] pr-[5%] w-full z-10">
+      <div className="text-goal-container absolute pt-[30%] pl-[40%] md:pl-[45%] pr-[5%] w-full z-10">
         <section className="text-goal min-h-[230px] text-end">
-          <p className="text-white">
-            At <span className="font-avenir-black">Fullsuite</span>, our goal is
-            to make you{" "}
-            <span className="font-avenir-black text-secondary">
-              shine like a star
-            </span>
-            . We are an avenue for dreamers like you who wish to gain{" "}
-            <span className="font-avenir-black">skills</span>, expand their{" "}
-            <span className="font-avenir-black">knowledge</span>, and contribute
-            to <span className="font-avenir-black">growing</span> businesses.
-          </p>{" "}
-          <br />
-          <p className="text-white">
-            If you believe that you've got what it takes, learn more about us
-            here.
-          </p>
+          <article className="text-white">
+            <p>We are a <b>dynamic</b> and <b>inclusive</b> organization that serves as a <b className="text-secondary">launchpad</b> for individuals to climb the corporate ladder and achieve
+            their full potential professionally. We provide <b>training</b>, <b>career exposure</b>, and <b>experience</b>, especially for fresh grads and those new
+            to the work industry. </p> <br />
+            
+            <p>Join our <b className="text-secondary">community of achievers.</b><br /> Contact us to
+            learn how we can help you <b className="text-secondary">shine.</b></p>
+          </article>
           {/* Add more texts/components as needed */}
           <button className="txt-btn z-10 btn-light mt-3 sm:mt-4 md:mt-6 lg:mt-8 ">
             Learn more

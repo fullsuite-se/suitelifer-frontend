@@ -8,10 +8,6 @@
     @media (min-width: 1024px) {
         grid-template-columns: repeat(4, minmax(0, 1fr));
     }
-
-    @media (min-width: 1280px) {
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-    }
 }
 
 .container-news-card-small {
@@ -87,6 +83,7 @@
 }
 
 .author-news-card-small {
+  
   font-size: 12px;
   margin-top: calc(var(--spacing) * 2);
 
