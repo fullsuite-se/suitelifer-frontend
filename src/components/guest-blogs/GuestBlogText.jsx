@@ -13,11 +13,10 @@ const BlogText = () => {
 
   return (
     <span
-      className={`transition-colors duration-1000 ${
+      className={`relative z-10 mr-3 text-4xl md:text-7xl transition-colors duration-1000 font-avenir-black  ${
         isPrimary ? "text-primary" : "text-white"
       }`}
-    >
-      blog
+    >blog
     </span>
   );
 };
