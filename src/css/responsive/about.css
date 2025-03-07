@@ -1,3 +1,22 @@
+.container-ceo-message{
+  font-size: clamp(8px, 2.63vw, 2rem);
+  .title{
+    font-size: clamp(12px, 3.6vw, 4rem);
+  }
+  .quote{
+    font-size: clamp(10px, 3.3vw, 2rem);
+  }
+  @media (min-width: 768px) {
+    font-size: clamp(10px, 1.3vw, 26px);
+    .title{
+      font-size: clamp(14px, 2.2vw, 44px);
+    }
+    .quote{
+      font-size: clamp(12px, 1.6vw, 32px);
+    } 
+  }
+}
+
 @media (min-width: 1400px) {
   .about-container > :nth-child(3),
   .about-container > :nth-child(4),
