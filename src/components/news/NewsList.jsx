@@ -47,19 +47,6 @@ const newsList = [
       {
         image: "https://wallpaperaccess.com/full/1104816.jpg",
         caption: "Navigating financial growth with FullSuite",
-      },{
-        image:
-          "https://www.jeffbullas.com/wp-content/uploads/2020/06/Startup-Funding-%E2%80%93-A-Comprehensive-Guide-for-Entrepreneurs.jpg",
-        caption: "FullSuite’s financial services for startups",
-      },
-      {
-        image:
-          "https://media.licdn.com/dms/image/v2/D5612AQEubj8AkC71DA/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1714050908982?e=2147483647&v=beta&t=fTC9fr9fl9Ho5ZppHR76pTkWXNA4FDn69jc9v-Gdh4g",
-        caption: "Tech startups leveraging FullSuite’s expertise",
-      },
-      {
-        image: "https://wallpaperaccess.com/full/1104816.jpg",
-        caption: "Navigating financial growth with FullSuite",
       },
     ],
   },
@@ -103,9 +90,9 @@ const newsList = [
           "https://images.unsplash.com/photo-1579567761406-4684ee0c75b6?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fHRlY2h8ZW58MHx8MHx8fDA%3D",
         caption: "FullSuite simplifying startup operations",
       },
-      { image:  "https://images.unsplash.com/photo-1579567761406-4684ee0c75b6?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fHRlY2h8ZW58MHx8MHx8fDA%3D", caption: "Seamless financial and operational integration" },
+      { image: "", caption: "Seamless financial and operational integration" },
       {
-        image:  "https://images.unsplash.com/photo-1579567761406-4684ee0c75b6?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fHRlY2h8ZW58MHx8MHx8fDA%3D",
+        image: "",
         caption: "Startups leveraging FullSuite’s automation tools",
       },
     ],
