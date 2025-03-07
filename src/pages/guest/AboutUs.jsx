@@ -5,6 +5,7 @@ import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
 import axios from "axios";
 import config from "../../config";
+import CoreValueCard from "../../components/about-us/CoreValueCard";
 
 import lifeHarmonyLight from "../../assets/icons/life-harmony-light.svg";
 import lifeHarmonyPrimary from "../../assets/icons/life-harmony-primary.svg";
@@ -21,8 +22,17 @@ import upholdsPrimary from "../../assets/icons/upholds-primary.svg";
 import focusedAthleteLight from "../../assets/icons/focused-athlete-light.svg";
 import focusedAthletePrimary from "../../assets/icons/focused-athlete-primary.svg";
 
+// TEMPORARY ICON
+import CoreValue01 from "../../assets/icons/core-value-01";
+
 const AboutUs = () => {
   const [content, setContent] = useState({});
+
+  const [clickCount, setClickCount] = useState(0);
+
+  const handleClick = () => {
+    setClickCount((prev) => (prev < 6 ? prev + 1 : 0)); // Reset after animation
+  };
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -41,7 +51,10 @@ const AboutUs = () => {
   }, []);
 
   return (
-    <section className="">
+    <section 
+    className="gap-4 h-dvh"
+    style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
+    >
       {/* MOBILE NAV */}
       <div className="sm:hidden">
         <MobileNav />
@@ -58,17 +71,18 @@ const AboutUs = () => {
         <section className="overflow-hidden about-container">
           <div className="h-56 w-72">
             <img
-              className="w-full h-full object-cover rounded-r-3xl"
+              style={{ animation: "slideInFromLeft 0.8s ease-out forwards" }}
+              className="w-full h-full object-cover rounded-r-3xl "
               src="https://images.unsplash.com/photo-1739382121445-19b3460a9e7a?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             />
           </div>
           <div className="about-text-banner flex flex-col mb-2">
             <h2 className="font-avenir-black px-5">{content.textBanner}</h2>
-            <div className="h-10 w-20 lg:h-20 lg:w-32 rounded-l-2xl bg-primary ml-auto"></div>
+            <div className="h-10 w-20 lg:h-20 lg:w-32 rounded-l-2xl bg-primary ml-auto animate-slideInRightLong"></div>
           </div>
           <div className="mx-5">
             <img
-              className="w-full h-full object-cover rounded-3xl"
+              className="w-full h-full object-cover rounded-3xl animate-slideInLong"
               src="https://images.unsplash.com/photo-1739382120576-b1434e8bc4d3?q=80&w=1975&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             />
           </div>
@@ -101,8 +115,23 @@ const AboutUs = () => {
           </section>
           <section className="">
             <div className="flex justify-between overflow-ellipsis mb-4">
-              <div className="h-10 w-20 lg:h-20 lg:w-32 rounded-r-full lg:rounded-full bg-secondary opacity-35 self-end"></div>
-              <div className="h-20 w-20 lg:h-20 lg:w-32 rounded-2xl bg-primary opacity-15 relative -top-10 -right-10"></div>
+              <div
+                className="h-10 w-20 lg:h-20 lg:w-32 rounded-r-full lg:rounded-full bg-secondary opacity-35 self-end"
+                onClick={handleClick}
+                style={
+                  clickCount === 6
+                    ? { animation: "spinCCW 3s ease-out forwards" }
+                    : {}
+                }
+              ></div>
+              <div
+                style={
+                  clickCount === 6
+                    ? { animation: "spinCCW 3s ease-out forwards" }
+                    : {}
+                }
+                className="h-20 w-20 lg:h-20 lg:w-32 rounded-2xl bg-primary opacity-15 relative -top-10 -right-10"
+              ></div>
             </div>
             <div className="max-w-4xl h-72 lg:h-96 mx-5">
               <video className="w-full h-full rounded-xl object-cover" controls>
@@ -153,11 +182,86 @@ const AboutUs = () => {
         </section>
 
         {/* Our Core Values Section */}
-        <section>
+        <section className="relative">
           <h2 className="font-avenir-black lg:text-4xl! text-center m-0!">
-            The suitelifer is...
+            The suitelifer...
           </h2>
+          <div className="flex flex-col lg:flex-row lg:justify-center lg:mb-[10%] my-[5%] gap-6 lg:gap-10">
+            <div className="flex justify-evenly lg:flex-none lg:gap-10">
+              {/* 1 */}
+              <CoreValueCard
+                icon={
+                  <CoreValue01
+                    color="group-hover:fill-white w-20 fill-primary size-40"
+                    size={"50%"}
+                  />
+                }
+                text={<b>team player</b>}
+              />
+              {/* 2 */}
+              <CoreValueCard
+                className={"lg:translate-y-[40%]"}
+                icon={
+                  <CoreValue01
+                    color="group-hover:fill-white w-20 fill-primary size-40"
+                    size={"50%"}
+                  />
+                }
+                text={
+                  <p>
+                    is <br />
+                    <b>understood</b>
+                  </p>
+                }
+              />
+            </div>
+            <div className="flex justify-center">
+              {/* 3 */}
+              <CoreValueCard
+                icon={
+                  <CoreValue01
+                    color="group-hover:fill-white w-20 fill-primary size-40"
+                    size={"50%"}
+                  />
+                }
+                text={
+                  <p>
+                    is a <b>focused athlete</b>
+                  </p>
+                }
+              />
+            </div>
+            <div className="flex justify-evenly lg:gap-10">
+              {/* 4 */}
+              <CoreValueCard
+                className={"lg:translate-y-[40%]"}
+                icon={
+                  <CoreValue01
+                    color="group-hover:fill-white w-20 fill-primary size-40"
+                    size={"50%"}
+                  />
+                }
+                text={<b>upholds</b>}
+              />
+              {/* 5 */}
+              <CoreValueCard
+                icon={
+                  <CoreValue01
+                    color="group-hover:fill-white w-20 fill-primary size-40"
+                    size={"50%"}
+                  />
+                }
+                text={<b>values work/life harmony</b>}
+              />
+            </div>
+          </div>
         </section>
+        <div className="h-100 grid place-content-center bg-amber-100 text-center p-5">
+          <i>
+            This height is but an illusion, a mere construct of perception,
+            bound by the limits we choose to accept.
+          </i>
+        </div>
       </main>
 
       <Footer />
