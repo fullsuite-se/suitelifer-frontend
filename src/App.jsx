@@ -36,7 +36,6 @@ import EmployeeEvents from "./pages/employee/EmployeeEvents";
 import EmployeeWorkshops from "./pages/employee/EmployeeWorkshops";
 import EmployeePersonalityTest from "./pages/employee/EmployeePersonalityTest";
 import BlogCreate from "./components/blog/BlogCreate";
-import BlogDetails from "./components/guest-blogs/GuestBlogDetails";
 import CareersJobDetails from "./pages/guest/CareersJobDetails";
 function App() {
   return (
@@ -50,7 +49,7 @@ function App() {
 
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/careers" element={<Careers />} />
-          <Route path="/careers/:id" element={<CareersJobDetails />} />
+          <Route path="/careers/:slug" element={<CareersJobDetails />} />
           <Route path="/news" element={<News />} />
           <Route path="/news/:id/:slug" element={<NewsDetails/>} />
           <Route path="/contact" element={<Contact />} />

@@ -1,6 +1,7 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useSwiperSlide } from "swiper/react";
+import { toSlug } from "../../utils/slugUrl";
 
 const JobPost = ({
   jobId,
@@ -14,15 +15,10 @@ const JobPost = ({
   const swiperSlide = useSwiperSlide();
   const isActive = swiperSlide.isActive;
   const isPrev = swiperSlide.isPrev;
-  const navigate = useNavigate();
-
-  const handleNavigate = () => {
-    navigate(`/careers/${jobId}`)
-  }
 
   return (
     <div
-      className={`job-container max-w-100 shadow-2xs text-sm p-5 rounded-xl flex flex-col ${
+      className={`job-container shadow-2xs text-sm px-5 pt-5 rounded-xl flex flex-col ${
         isActive
           ? "bg-primary text-white h-75"
           : `bg-white text-primary h-65 justify-center ${
@@ -42,7 +38,13 @@ const JobPost = ({
       {isActive && salaryMin && (
         <>
           <p className="text-[0.75em]">Expected Salary</p>
-          <p className="text-base font-avenir-black mb-3">PHP {salaryMin} {salaryMax && `- PHP ${salaryMax}`}</p>
+          <p className="text-base font-avenir-black mb-3">
+            {Intl.NumberFormat("en-US", {
+                    style: "currency",
+                    currency: "PHP",
+                    maximumFractionDigits: 0,
+                  }).format(salaryMin)}<span className="text-xs font-avenir-roman"> min</span>
+          </p>
         </>
       )}
       {isActive && (
@@ -51,14 +53,11 @@ const JobPost = ({
         </p>
       )}
       {isActive && (
-        <a
-          href="#"
-          onClick={handleNavigate}
-        >
-          <button className="bg-[#4DB6C9] text-white p-2 rounded-xl w-full mt-auto" >
+        <NavLink to={`/careers/${toSlug(jobTitle)}`} state={{ jobId }}>
+          <button className="bg-[#4DB6C9] text-white p-2 rounded-xl w-full mt-auto">
             View Full Details
           </button>
-        </a>
+        </NavLink>
       )}
     </div>
   );
