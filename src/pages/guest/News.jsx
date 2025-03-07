@@ -63,12 +63,12 @@ const News = () => {
               </svg>
 
               <input
-                className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md pl-10 pr-3 py-2 transition duration-300 ease focus:outline-none focus:border-primary-400 hover:border-slate-300 shadow-sm focus:shadow"
+                className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md pl-10 pr-3 py-2 transition duration-300 ease focus:outline-none focus:border-primary-400 hover:border-slate-300  focus:shadow"
                 placeholder="Search news..."
               />
 
               <button
-                className="rounded-md bg-primary py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-[#007a8e] focus:shadow-none active:bg-[#007a8e] hover:bg-[#007a8e] cursor-pointer active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2"
+                className="rounded-md bg-primary py-2 px-4 border border-transparent text-center text-sm text-white transition-all hover:shadow-lg focus:bg-[#007a8e] focus:shadow-none active:bg-[#007a8e] hover:bg-[#007a8e] cursor-pointer active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2"
                 type="button"
               >
                 Search
@@ -96,8 +96,8 @@ const News = () => {
 
         {/* SMALL ARTICLE CARDS --DISPLAYS 5 LATEST NEWS */}
 
-        <p className="mt-10 md:text-xl uppercase font-avenir-black text-primary pb-3 lg:pb-4">
-          More articles
+        <p className="mt-10 md:text-xl  font-avenir-black text-primary pb-3 lg:pb-4">
+          More Articles
         </p>
         <div className="layout-small-news-cards gap-4 sm:gap-5">
           {newsList.map((news, index) => (

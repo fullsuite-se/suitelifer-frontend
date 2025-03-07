@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const BlogText = () => {
+const AnimatedText = ({ text, color }) => {
   const [isPrimary, setIsPrimary] = useState(true);
 
   useEffect(() => {
@@ -13,12 +13,13 @@ const BlogText = () => {
 
   return (
     <span
-      className={`relative z-10 mr-3 text-4xl md:text-7xl transition-colors duration-1000 font-avenir-black  ${
-        isPrimary ? "text-primary" : "text-white"
+      className={`relative z-10 mr-3 text-4xl md:text-7xl transition-colors duration-1000 font-avenir-black ${
+        isPrimary ?   "text-primary":`text-${color}`
       }`}
-    >blog
+    >
+      {text}
     </span>
   );
 };
 
-export default BlogText;
+export default AnimatedText;

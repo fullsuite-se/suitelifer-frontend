@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import formatTimestamp from "../TimestampFormatter";
+import { toSlug } from "../../utils/slugUrl";
 
 const GuestBlogCard = ({
   id,
@@ -13,7 +14,7 @@ const GuestBlogCard = ({
   const { day, fullDate, time } = formatTimestamp(created_at);
 
   return (
-    <Link to={`/blogs/${id}`} className="no-underline cursor-pointer group flex flex-col lg:flex-row-reverse lg:gap-10">
+    <Link  to={`${id}/${toSlug(title)}`} className="no-underline cursor-pointer group flex flex-col lg:flex-row-reverse lg:gap-10">
  
     <section 
   className="relative w-full h-80 lg:h-90 rounded-xl overflow-hidden 
@@ -45,6 +46,9 @@ const GuestBlogCard = ({
           <p className="mt-2 !text-[12px] sm:!text-[14px] text-gray-300 line-clamp-3">
             {article}
           </p>
+
+
+          <p className="text-xs text-gray-400 mt-2">{fullDate}</p>
         </div>
       </section>
     </Link>

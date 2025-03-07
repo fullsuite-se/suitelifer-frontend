@@ -22,6 +22,7 @@ const GuestBlogTags = () => {
             {category}
           </button>
         ))}
+      <div className="pr-2"></div>
       </div>
     </div>
   );

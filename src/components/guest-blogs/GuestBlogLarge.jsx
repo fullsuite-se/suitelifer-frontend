@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import formatTimestamp from "../TimestampFormatter";
+import { toSlug } from "../../utils/slugUrl";
 
 const GuestBlogLarge = ({
   id,
@@ -14,7 +15,7 @@ const GuestBlogLarge = ({
 
   return (
     <Link
-      to={`/blogs/${id}`}
+      to={`${id}/${toSlug(title)}`}
       className="no-underline cursor-pointer group flex flex-col lg:flex-row-reverse lg:gap-10"
     >
       <section
@@ -43,6 +44,8 @@ const GuestBlogLarge = ({
             | {readTime}
           </p>
           <p className="mt-2 text-sm text-gray-300 line-clamp-3">{article}</p>
+
+          <p className="text-xs text-gray-400 mt-2">{fullDate}</p>
         </div>
       </section>
     </Link>
