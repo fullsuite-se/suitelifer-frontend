@@ -6,9 +6,10 @@ import DesktopNav from "../../components/home/DesktopNav";
 import bgBlogs from "../../assets/images/blogs-text-bg.svg";
 import guestBlogsList from "../../components/guest-blogs/GuestBlogsList";
 import GuestBlogLarge from "../../components/guest-blogs/GuestBlogLarge";
-import BlogText from "../../components/guest-blogs/GuestBlogText";
+import AnimatedText from "../../components/guest-blogs/AnimatedText";
 import GuestBlogTags from "../../components/guest-blogs/GuestBlogTags";
 import GuestBlogCard from "../../components/guest-blogs/GuestBlogCard";
+import loadingGif from "../../assets/gif/suitelifer-loading.gif";
 
 const Blog = () => {
   return (
@@ -43,11 +44,9 @@ const Blog = () => {
               style={{ animation: "slideInFromLeft 0.8s ease-out forwards" }}
             ></div>
 
-            <BlogText />
+            <AnimatedText text="blog" color="white" />
           </div>
-          <div className="text-4xl md:text-7xl font-avenir-black">
-            <span className="text-black">spot</span>
-          </div>
+          <AnimatedText text="spot" color="black" />
         </div>
 
         <div className="text-center mt-5">
@@ -74,12 +73,12 @@ const Blog = () => {
               </svg>
 
               <input
-                className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md pl-10 pr-3 py-2 transition duration-300 ease focus:outline-none focus:border-primary-400 hover:border-slate-300 shadow-sm focus:shadow"
+                className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md pl-10 pr-3 py-2 transition duration-300 ease focus:outline-none focus:border-primary-400 hover:border-slate-300  focus:shadow"
                 placeholder="Search blogs..."
               />
 
               <button
-                className="rounded-md bg-primary py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-[#007a8e] focus:shadow-none active:bg-[#007a8e] hover:bg-[#007a8e] cursor-pointer active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2"
+                className="rounded-md bg-primary py-2 px-4 border border-transparent text-center text-sm text-white transition-all  hover:shadow-lg focus:bg-[#007a8e] focus:shadow-none active:bg-[#007a8e] hover:bg-[#007a8e] cursor-pointer active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2"
                 type="button"
               >
                 Search
@@ -129,7 +128,17 @@ const Blog = () => {
           ))}
         </div>
       </main>
-      <div className="h-30"></div>
+      <div className="h-10"></div>
+      <div className="flex justify-center items-center w-full h-15  rounded-lg overflow-hidden">
+  <img 
+    src={loadingGif} 
+    alt="Loading..." 
+    className="w-auto h-full object-contain"
+  />
+</div>
+{/* <p className="text-center text-primary">Loading...</p> */}
+<div className="h-30"></div>
+
     </section>
   );
 };

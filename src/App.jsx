@@ -9,6 +9,9 @@ import Contact from "./pages/guest/Contact";
 import Blog from "./pages/guest/Blog";
 import TermsOfUse from "./pages/guest/TermsOfUse";
 import PrivacyPolicy from "./pages/guest/PrivacyPolicy";
+import BlogDetails from "./pages/guest/BlogDetails";
+import NewsDetails from "./pages/guest/NewsDetails";
+
 
 // Admin Pages
 import AdminProtectedRoute from "./utils/protectedRoutes/AdminProtectedRoute";
@@ -33,8 +36,6 @@ import EmployeeEvents from "./pages/employee/EmployeeEvents";
 import EmployeeWorkshops from "./pages/employee/EmployeeWorkshops";
 import EmployeePersonalityTest from "./pages/employee/EmployeePersonalityTest";
 import BlogCreate from "./components/blog/BlogCreate";
-import BlogDetails from "./components/guest-blogs/GuestBlogDetails";
-
 function App() {
   return (
     <>
@@ -48,9 +49,10 @@ function App() {
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/news" element={<News />} />
+          <Route path="/news/:id/:slug" element={<NewsDetails/>} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/blogs" element={<Blog />} />
-          <Route path="/blogs/:id" element={<BlogDetails/>} />
+          <Route path="/blogs/:id/:slug" element={<BlogDetails/>} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-use" element={<TermsOfUse />} />
 
