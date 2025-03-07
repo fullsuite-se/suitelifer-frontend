@@ -12,7 +12,6 @@ import GuestBlogCardSmall from "../guest-blogs/GuestBlogCardSmall";
 import NewsCardNoSnippet from "./NewsCardNoSnippet";
 import formatTimestamp from "../../components/TimestampFormatter";
 
-
 const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -58,9 +57,7 @@ const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
           <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-10">
             {/* Main Article */}
             <div>
-              <p className="text-[12px] text-gray-500 mt-5">
-                {fullDate}
-              </p>
+              <p className="text-[12px] text-gray-500 mt-5">{fullDate}</p>
               <p className="text-xl md:text-2xl lg:text-3xl font-avenir-black my-2">
                 {data.title}
               </p>
@@ -88,37 +85,36 @@ const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
                 Read More {type}
               </p>
               <div className="grid grid-cols-1 gap-2 justify-center items-center">
-  {type === "Blog" ? (
-    relatedArticles.map((article, index) => (
-      <div key={article.id || index}>
-        <GuestBlogCardSmall
-          id={article.id}
-          title={article.title}
-          author={article.author}
-          article={article.article}
-          readTime={article.readTime || article.read_time}
-          created_at={article.created_at}
-          images={article.images || article.imagesWithCaption}
-        />
-      </div>
-    ))
-  ) : (
-    <div className="grid grid-cols-1 gap-4 justify-center items-center">
-      {relatedArticles.map((news, index) => (
-        <NewsCardNoSnippet
-          key={news.id || index} 
-          id={news.id}
-          title={news.title}
-          author={news.author}
-          readTime={news.read_time}
-          created_at={news.created_at}
-          imagesWithCaption={news.imagesWithCaption}
-        />
-      ))}
-    </div>
-  )}
-</div>
-
+                {type === "Blog" ? (
+                  relatedArticles.map((article, index) => (
+                    <div key={article.id || index}>
+                      <GuestBlogCardSmall
+                        id={article.id}
+                        title={article.title}
+                        author={article.author}
+                        article={article.article}
+                        readTime={article.readTime || article.read_time}
+                        created_at={article.created_at}
+                        images={article.images || article.imagesWithCaption}
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <div className="grid grid-cols-1 gap-4 justify-center items-center">
+                    {relatedArticles.map((news, index) => (
+                      <NewsCardNoSnippet
+                        key={news.id || index}
+                        id={news.id}
+                        title={news.title}
+                        author={news.author}
+                        readTime={news.read_time}
+                        created_at={news.created_at}
+                        imagesWithCaption={news.imagesWithCaption}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </main>
