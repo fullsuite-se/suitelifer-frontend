@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
@@ -14,7 +14,7 @@ const Careers = () => {
   useEffect( () => {
     const fetchEpisodes = async () => {
       try {
-        const response = await axios.get(`${config.apiBaseUrl}/api/all-episodes`);
+        const response = await axios.get(`${config.apiBaseUrl}/api/latest-three-episodes`);
 
         setEpisodes(response.data.data);
       } catch (err) {
@@ -24,7 +24,6 @@ const Careers = () => {
     fetchEpisodes();
   }, [])
   
-
   return (
     <>
       {/* MOBILE NAV */}
