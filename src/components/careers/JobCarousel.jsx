@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from 'axios';
+import axios from "axios";
 import JobPost from "./JobPost";
 import { Swiper, SwiperSlide, useSwiperSlide } from "swiper/react";
 import config from "../../config.js";
@@ -64,7 +64,9 @@ export default function JobCarousel() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await axios.get(`${config.apiBaseUrl}/api/all-jobs`);
+        const response = await axios.get(
+          `${config.apiBaseUrl}/api/all-open-jobs`
+        );
 
         setJobs(response.data.data);
       } catch (err) {
@@ -83,7 +85,7 @@ export default function JobCarousel() {
         draggable={false}
         allowTouchMove={false}
         centeredSlides={true}
-        loop={true}
+        loop={jobs.length > 3}
         modules={[Navigation, Pagination, EffectCoverflow]}
         slidesPerView={2}
         slidesPerGroup={1}
@@ -99,7 +101,7 @@ export default function JobCarousel() {
         {jobs.map((job, index) => {
           return (
             <SwiperSlide key={index}>
-              <JobPost {...job}/>
+              <JobPost {...job} />
             </SwiperSlide>
           );
         })}

@@ -1,7 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useSwiperSlide } from "swiper/react";
 
 const JobPost = ({
+  jobId,
   jobTitle,
   employmentType,
   salaryMin,
@@ -12,7 +14,11 @@ const JobPost = ({
   const swiperSlide = useSwiperSlide();
   const isActive = swiperSlide.isActive;
   const isPrev = swiperSlide.isPrev;
-  const isNext = swiperSlide.isNext;
+  const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    navigate(`/careers/${jobId}`)
+  }
 
   return (
     <div
@@ -47,11 +53,9 @@ const JobPost = ({
       {isActive && (
         <a
           href="#"
-          onClick={() => {
-            console.log("hello");
-          }}
+          onClick={handleNavigate}
         >
-          <button className="bg-[#4DB6C9] text-white p-2 rounded-xl w-full mt-auto">
+          <button className="bg-[#4DB6C9] text-white p-2 rounded-xl w-full mt-auto" >
             View Full Details
           </button>
         </a>
