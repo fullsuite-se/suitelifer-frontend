@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import axios from "axios";
 import config from "../../config.js";
 import MobileNav from "../../components/home/MobileNav.jsx";
@@ -8,17 +8,18 @@ import DesktopNav from "../../components/home/DesktopNav.jsx";
 
 const CareersJobDetails = () => {
   const [jobDetails, setJobDetails] = useState(null);
-  const { id } = useParams();
+  const location = useLocation();
+  const { jobId } = location.state;
 
   useEffect(() => {
     const fetchJobDetails = async () => {
       try {
-        console.log("Fetching job details for jobId:", id);
+        console.log("Fetching job details for jobId:", jobId);
 
         console.log(config.apiBaseUrl);
 
         const response = await axios.get(
-          `${config.apiBaseUrl}/api/get-job-details/${id}`
+          `${config.apiBaseUrl}/api/get-job-details/${jobId}`
         );
         setJobDetails(response.data.data);
 
