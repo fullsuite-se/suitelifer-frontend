@@ -5,6 +5,7 @@ import config from "../../config";
 
 const AdminProtectedRoute = () => {
   const [user, setUser] = useState(null);
+  const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const refreshToken = async () => {
@@ -13,8 +14,7 @@ const AdminProtectedRoute = () => {
         `${config.apiBaseUrl}/api/refresh-token`,
         { withCredentials: true }
       );
-      const newToken = response.data.accessToken;
-      return newToken;
+      return response.data.accessToken;
     } catch (error) {
       console.error("Failed to refresh token:", error);
       return null;
@@ -22,35 +22,60 @@ const AdminProtectedRoute = () => {
   };
 
   const getUser = async () => {
-    const response = await axios.get(`${config.apiBaseUrl}/api/user-info`, {
-      withCredentials: true,
-    });
-    console.log(response.data);
+    try {
+      const response = await axios.get(`${config.apiBaseUrl}/api/user-info`, {
+        withCredentials: true,
+      });
+      return response.data.user;
+    } catch (error) {
+      console.error("Failed to fetch user:", error);
+      return null;
+    }
+  };
 
-    return response.data.user;
+  const getUserServices = async (userId) => {
+    try {
+      const response = await axios.get(
+        `${config.apiBaseUrl}/api/get-services/${userId}`,
+        { withCredentials: true }
+      );
+      return response.data.services;
+    } catch (error) {
+      console.error("Failed to fetch services:", error);
+      return [];
+    }
+  };
+
+  const fetchData = async () => {
+    try {
+      let user = await getUser();
+
+      if (!user) {
+        const newToken = await refreshToken();
+        if (newToken) {
+          user = await getUser();
+        }
+      }
+
+      if (user) {
+        setUser(user);
+        const services = await getUserServices(user.id);
+        setServices(services);
+      } else {
+        setUser(null);
+        setServices([]);
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      setUser(null);
+      setServices([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    const fetchUserRole = async () => {
-      try {
-        const user = await getUser();
-        console.log(user);
-        setUser(user);
-      } catch (error) {
-        const newToken = await refreshToken();
-        if (newToken) {
-          const user = await getUser();
-          console.log(user);
-          setUser(user);
-        } else {
-          setUser(null);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserRole();
+    fetchData();
   }, []);
 
   if (loading) {
