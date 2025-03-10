@@ -186,7 +186,7 @@ const AdminBlogs = () => {
             p: 2,
           }}
         >
-          <FormControl sx={{ minWidth: 200 }}>
+          <FormControl sx={{ minWidth: 300 }}>
             <InputLabel>Blog Type</InputLabel>
             <Select
               value={activeTab}
