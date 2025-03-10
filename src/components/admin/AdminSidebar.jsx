@@ -46,7 +46,7 @@ function AdminSidebar({ isOpen }) {
           </div>
         </div>
 
-        <div className="flex flex-col text-light font-family:Avenir-Black space-y-5 justify-start w-full place-items-baseline content-start p-8 h-full items-start">
+        <div className="flex flex-col text-light font-family:Avenir-Black space-y-5 justify-start w-full place-items-baseline content-start p-8 items-start">
           {[
             {
               to: "/admin/dashboard",

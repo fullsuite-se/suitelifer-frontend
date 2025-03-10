@@ -273,16 +273,18 @@ const AdminBlogs = () => {
     </main>
   );
 };
-
+{
+  /* Blog Table */
+}
 const BlogTable = ({ blogs, onEdit, onDelete }) => (
-  <TableContainer component={Paper}>
+  <TableContainer>
     <Table>
       <TableHead>
         <TableRow>
           <TableCell>Title</TableCell>
           <TableCell>Author</TableCell>
           <TableCell>Date Published</TableCell>
-          <TableCell>Action</TableCell>
+          <TableCell align="center">Action</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -300,13 +302,15 @@ const BlogTable = ({ blogs, onEdit, onDelete }) => (
             </TableCell>
             <TableCell>{blog.author}</TableCell>
             <TableCell>{blog.date}</TableCell>
-            <TableCell>
-              <Button sx={{ color: "black" }} onClick={() => onEdit(blog)}>
+            <TableCell align="center">
+              <div className="gap-x-4 flex justify-center items-center">
+              <button onClick={() => onEdit(blog)}>
                 <EditIcon />
-              </Button>
-              <Button sx={{ color: "black" }} onClick={() => onDelete(blog)}>
+              </button>
+              <button onClick={() => onDelete(blog)}>
                 <DeleteIcon />
-              </Button>
+              </button>
+              </div>
             </TableCell>
           </TableRow>
         ))}
@@ -326,7 +330,11 @@ const AddBlogModal = ({ isOpen, onClose, onAddBlog, blogType }) => {
       id: Date.now(),
       title,
       author: author || "New Author",
-      date: new Date().toLocaleDateString(),
+      date: new Date().toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }),
       content,
       attachment,
       views: 0,
@@ -393,7 +401,12 @@ const AddBlogModal = ({ isOpen, onClose, onAddBlog, blogType }) => {
             Cancel
           </button>
           <button
-            onClick={handleAddBlog}
+            onClick={() => {
+              handleAddBlog();
+              {
+                onClose;
+              }
+            }}
             variant="contained"
             className="btn-primary"
           >

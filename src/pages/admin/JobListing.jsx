@@ -81,7 +81,11 @@ const initialJobListings = [
     setup: "Remote",
   },
 ];
-const initialIndustries = ["Business Operations", "Technology", "Marketing"];
+const initialIndustries = [
+  { name: "Business Operations", assessmentUrl: "http://google.com" },
+  { name: "Technology", assessmentUrl: "http://google.com" },
+  { name: "Marketing", assessmentUrl: "http://google.com" },
+];
 const initialSetup = ["Remote", "Hybrid", "On-Site", "In-Office"];
 
 export default function JobListing() {
@@ -96,12 +100,14 @@ export default function JobListing() {
   const [openSetUpModal, setOpenSetUpModal] = useState(false);
   const [openIndustryModal, setOpenIndustryModal] = useState(false);
   const [editJob, setEditJob] = useState(null);
+  const [editIndustry, setEditIndustry] = useState(null);
   const [newIndustry, setNewIndustry] = useState();
   const [openManageIndustryModal, setOpenManageIndustryModal] = useState(false);
   const [setup, setSetup] = useState(initialSetup);
   const [newSetUp, setNewSetUp] = useState("");
-  const [openAddSetUpModal, setOpenAddSetUpModal] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Industry");
+  const [assessmentUrl, setAssessmentUrl] = useState();
+  const [editSetUp, setEditSetUp] = useState(null);
 
   const { register, handleSubmit, reset } = useForm({
     defaultValues: {
@@ -158,25 +164,69 @@ export default function JobListing() {
   };
 
   const handleAddIndustry = () => {
-    if (newIndustry && !industries.includes(newIndustry)) {
-      setIndustries([...industries, newIndustry]);
-      setNewIndustry("");
-      setOpenIndustryModal(false);
+    if (editIndustry !== null) {
+      const updatedIndustries = industries.map((industry, index) =>
+        index === editIndustry ? { name: newIndustry, assessmentUrl } : industry
+      );
+
+      setIndustries(updatedIndustries);
+      setEditIndustry(null);
+    } else if (
+      newIndustry &&
+      !industries.some((ind) => ind.name === newIndustry)
+    ) {
+      setIndustries([...industries, { name: newIndustry, assessmentUrl }]);
     }
+
+    setNewIndustry("");
+    setAssessmentUrl("");
+    setOpenIndustryModal(false);
   };
 
   const handleAddSetUp = () => {
-    if (newSetUp && !setup.includes(newSetUp)) {
-      setSetup([...setup, newSetUp]);
-      setNewSetUp("");
-      setOpenSetUpModal(false);
+    if (editSetUp !== null) {
+      const updatedSetups = setup.map((item, index) =>
+        index === editSetUp ? newSetUp : item
+      );
+      setSetup(updatedSetups);
+      setEditSetUp(null);
+    } else {
+      if (newSetUp && !setup.includes(newSetUp)) {
+        setSetup([...setup, newSetUp]);
+      }
     }
+    setNewSetUp("");
+    setOpenSetUpModal(false);
   };
 
   const handleEditJob = (index) => {
     setEditJob(index);
     reset(jobListings[index]);
     setOpenJobModal(true);
+  };
+
+  const handleEditIndustry = (index) => {
+    setEditIndustry(index);
+    reset({
+      name: industries[index].name,
+      assessmentUrl: industries[index].assessmentUrl,
+    });
+    setOpenIndustryModal(true);
+  };
+
+  const handleDeleteIndustry = (index) => {
+    const updatedIndustries = industries.filter((_, i) => i !== index);
+    setIndustries(updatedIndustries);
+  };
+
+  const handleEditSetUp = (index) => {
+    setEditSetUp(index);
+    reset({ name: setup[index] });
+    setOpenSetUpModal(true);
+  };
+
+  const handleDeleteSetUp = (index) => {
+    setSetup(setup.filter((_, i) => i !== index));
   };
 
   return (
@@ -202,7 +252,7 @@ export default function JobListing() {
           <button
             variant="outlined"
             className="btn-primary"
-            onClick={() => setOpenAddSetUpModal(true)}
+            onClick={() => setOpenSetUpModal(true)}
           >
             <span className="mr-2">+</span> SET-UP
           </button>
@@ -263,8 +313,8 @@ export default function JobListing() {
           >
             <option value="all">All Industries</option>
             {industries.map((industry, index) => (
-              <option key={index} value={industry}>
-                {industry}
+              <option key={index} value={industry.name}>
+                {industry.name}
               </option>
             ))}
           </select>
@@ -298,7 +348,7 @@ export default function JobListing() {
                 className={index % 2 === 0 ? "bg-tertiary" : "bg-white"}
               >
                 <td className="py-2 px-5 font-medium">{job.title}</td>
-                <td className="p-2 line-clamp-2">
+                <td className="p-2 line-clamp-1">
                   <Tooltip title={job.description} arrow>
                     <span>{job.description}</span>
                   </Tooltip>
@@ -478,32 +528,17 @@ export default function JobListing() {
               </div>
 
               <div className="mt-6 flex justify-end gap-x-3">
-                <Button
+                <button
                   onClick={() => setOpenJobModal(false)}
                   variant="filled"
-                  sx={{
-                    bgcolor: "#bf360c",
-                    color: "#ffffff",
-                    "&:hover": {
-                      bgcolor: "#e64a19",
-                    },
-                  }}
+                 className="btn-light"
+                 
                 >
                   Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  variant="filled"
-                  sx={{
-                    bgcolor: "#0097b2",
-                    color: "#ffffff",
-                    "&:hover": {
-                      bgcolor: "#007a99",
-                    },
-                  }}
-                >
-                  {editJob !== null ? "Save Changes" : "Add Job"}
-                </Button>
+                </button>
+                <button type="submit" variant="filled" className="btn-primary">
+                  {editJob !== null ? "SAVE CHANGES" : "ADD JOB"}
+                </button>
               </div>
             </form>
           </Box>
@@ -520,7 +555,7 @@ export default function JobListing() {
           }`}
         >
           <h2 className="font-semibold mb-4 text-lg text-center bg-white">
-            Add Industry
+            {editIndustry !== null ? "Edit Industry" : "Add Industry"}
           </h2>
           <form
             onSubmit={(e) => {
@@ -529,43 +564,43 @@ export default function JobListing() {
             }}
             className="space-y-4"
           >
-            <TextField
-              label="Industry Name"
-              fullWidth
-              value={newIndustry}
-              onChange={(e) => setNewIndustry(e.target.value)}
-              className="mt-2"
-              sx={{ bgcolor: "#fbe9e7" }}
-            />
+            <div className="">
+              <TextField
+                label="Industry Name"
+                fullWidth
+                value={newIndustry}
+                onChange={(e) => setNewIndustry(e.target.value)}
+                className="mt-2"
+                sx={{ bgcolor: "#fbe9e7" }}
+              />
+              </div>
+              <TextField
+                label="Assessment URL"
+                fullWidth
+                value={assessmentUrl}
+                onChange={(e) =>
+                  setAssessmentUrl((au) => (au = e.target.value))
+                }
+                className="mt-2"
+                sx={{ bgcolor: "#fbe9e7" }}
+              />
+            
             <div className="mt-6 flex justify-end gap-x-3">
-              <Button
+              <button
                 onClick={() => setOpenIndustryModal(false)}
                 className="btn-light"
-                sx={{
-                  bgcolor: "#bf360c",
-                  color: "#ffffff",
-                  "&:hover": {
-                    bgcolor: "#e64a19",
-                  },
-                }}
+                
               >
                 Cancel
-              </Button>
-              <Button
+              </button>
+              <button
+                onClick={() => setEditIndustry(index)}
                 type="submit"
-                variant="contained"
-                color="primary"
+                variant="filled"
                 className="btn-primary"
-                sx={{
-                  bgcolor: "#0097b2",
-                  color: "#ffffff",
-                  "&:hover": {
-                    bgcolor: "#007a99",
-                  },
-                }}
               >
-                Add Industry
-              </Button>
+                {editIndustry !== null ? "SAVE CHANGES" : "ADD INDUSTRY"}
+              </button>
             </div>
           </form>
         </Box>
@@ -598,7 +633,7 @@ export default function JobListing() {
               </button>
             ) : (
               <button
-                onClick={() => setOpenAddSetUpModal(true)}
+                onClick={() => setOpenSetUpModal(true)}
                 className="btn-primary"
               >
                 <span className="mr-2">+</span> SET-UP
@@ -606,32 +641,54 @@ export default function JobListing() {
             )}
           </div>
 
-          {/* Conditionally render tables based on selectedOption */}
+          {/* Industry or SetUp */}
+
           {selectedOption === "Industry" ? (
             <Table className="mt-4">
               <TableHead>
                 <TableRow>
                   <TableCell>ID</TableCell>
                   <TableCell>Industry Name</TableCell>
+                  <TableCell>Assessment URL</TableCell>
                   <TableCell>Created By</TableCell>
                   <TableCell>Date Created</TableCell>
-                  <TableCell>Action</TableCell>
+                  <TableCell align="center">Action</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {industries.map((industry, index) => (
                   <TableRow key={index}>
                     <TableCell>{index + 1}</TableCell>
-                    <TableCell>{industry}</TableCell>
+                    <TableCell>{industry.name}</TableCell>
+                    <TableCell className="max-w-[150px] truncate">
+                      {industry.assessmentUrl}
+                    </TableCell>
+
                     <TableCell>Admin</TableCell>
                     <TableCell>{new Date().toLocaleDateString()}</TableCell>
-                    <TableCell>
-                      <button>
-                        <EditIcon />
-                      </button>
-                      <button>
-                        <DeleteIcon />
-                      </button>
+                    <TableCell align="center">
+                      <div className="flex justify-center items-center gap-2">
+                        <button
+                          className="bg-transparent p-2 rounded w-8 flex items-center justify-center"
+                          onClick={() => handleEditIndustry(index)}
+                        >
+                          <EditIcon />
+                        </button>
+
+                        <button
+                          onClick={() => handleDeleteIndustry(index)}
+                          variant="filled"
+                          sx={{
+                            bgcolor: "#d32f2f",
+                            color: "#ffffff",
+                            "&:hover": {
+                              bgcolor: "#b71c1c",
+                            },
+                          }}
+                        >
+                          <DeleteIcon />
+                        </button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -645,23 +702,32 @@ export default function JobListing() {
                   <TableCell>Setup Name</TableCell>
                   <TableCell>Created By</TableCell>
                   <TableCell>Date Created</TableCell>
-                  <TableCell>Action</TableCell>
+                  <TableCell align="center">Action</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {setup.map((setup, index) => (
+                {setup.map((item, index) => (
                   <TableRow key={index}>
                     <TableCell>{index + 1}</TableCell>
-                    <TableCell>{setup}</TableCell>
+                    <TableCell>{item}</TableCell>
                     <TableCell>Admin</TableCell>
                     <TableCell>{new Date().toLocaleDateString()}</TableCell>
-                    <TableCell>
-                      <button>
-                        <EditIcon />
-                      </button>
-                      <button>
-                        <DeleteIcon />
-                      </button>
+                    <TableCell align="center">
+                      <div className="flex justify-center items-center gap-2">
+                        <button
+                          className="bg-transparent p-2 rounded w-8 flex items-center justify-center"
+                          onClick={() => handleEditSetUp(index)}
+                        >
+                          <EditIcon />
+                        </button>
+
+                        <button
+                          className="bg-transparent p-2 rounded w-8 flex items-center justify-center"
+                          onClick={() => handleDeleteSetUp(index)}
+                        >
+                          <DeleteIcon />
+                        </button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -672,23 +738,20 @@ export default function JobListing() {
       </Modal>
 
       {/* SetUp Modal */}
-      <Modal
-        open={openAddSetUpModal}
-        onClose={() => setOpenAddSetUpModal(false)}
-      >
+      <Modal open={openSetUpModal} onClose={() => setOpenSetUpModal(false)}>
         <Box
           className={`modal-container p-6 bg-white rounded-lg mx-auto mt-12 ${
             isSmallScreen ? "w-full" : "sm:w-96"
           }`}
         >
           <h2 className="font-semibold mb-4 text-lg text-center bg-white">
-            Add Set-Up
+            {editSetUp !== null ? "Edit Set-Up" : "Add Set-Up"}
           </h2>
           <form
             onSubmit={(e) => {
               e.preventDefault();
               handleAddSetUp();
-              setOpenAddSetUpModal(false);
+              setOpenSetUpModal(false);
             }}
             className="space-y-4"
           >
@@ -704,21 +767,20 @@ export default function JobListing() {
 
             <div className="mt-6 flex justify-end gap-x-3">
               <button
-                type="submit"
-                variant="contained"
-                color="primary"
-                className="btn-primary"
-                onClick={() => setOpenAddSetUpModal(true)}
+                onClick={() => setOpenSetUpModal(false)}
+                variant="filled"
+                className="btn-light"
               >
-                Add Setup
+                Cancel
               </button>
               <button
                 type="submit"
                 variant="contained"
+                color="primary"
                 className="btn-primary"
-                onClick={() => setOpenAddSetUpModal(false)}
+                onClick={() => setOpenSetUpModal(true)}
               >
-                Cancel
+                {editSetUp !== null ? "Edit Set-Up" : "Add Set-Up"}
               </button>
             </div>
           </form>
