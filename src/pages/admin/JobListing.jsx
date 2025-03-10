@@ -270,7 +270,7 @@ export default function JobListing() {
             {industries.length}
           </div>
         </div>
-        <div className="border px-4 py-2 rounded-md w-50 bg-gray-200"> 
+        <div className="border px-4 py-2 rounded-md w-50 bg-gray-200">
           <div className="text-lg text-center">Job Listings</div>
           <div className="text-2xl font-bold text-center">
             {totalJobListings}
@@ -350,7 +350,11 @@ export default function JobListing() {
                 <td className="py-2 px-5 font-medium">{job.title}</td>
                 <td className="p-2 line-clamp-1">
                   <Tooltip title={job.description} arrow>
-                    <span>{job.description}</span>
+                    <span>
+                      {job.description.length > 100
+                        ? `${job.description.slice(0, 100)}...`
+                        : job.description}
+                    </span>
                   </Tooltip>
                 </td>
                 <td className="p-2">{job.type}</td>
@@ -529,8 +533,7 @@ export default function JobListing() {
                 <button
                   onClick={() => setOpenJobModal(false)}
                   variant="filled"
-                 className="btn-light"
-                 
+                  className="btn-light"
                 >
                   Cancel
                 </button>
@@ -571,23 +574,20 @@ export default function JobListing() {
                 className="mt-2"
                 sx={{ bgcolor: "#fbe9e7" }}
               />
-              </div>
-              <TextField
-                label="Assessment URL"
-                fullWidth
-                value={assessmentUrl}
-                onChange={(e) =>
-                  setAssessmentUrl((au) => (au = e.target.value))
-                }
-                className="mt-2"
-                sx={{ bgcolor: "#fbe9e7" }}
-              />
-            
+            </div>
+            <TextField
+              label="Assessment URL"
+              fullWidth
+              value={assessmentUrl}
+              onChange={(e) => setAssessmentUrl((au) => (au = e.target.value))}
+              className="mt-2"
+              sx={{ bgcolor: "#fbe9e7" }}
+            />
+
             <div className="mt-6 flex justify-end gap-x-3">
               <button
                 onClick={() => setOpenIndustryModal(false)}
                 className="btn-light"
-                
               >
                 Cancel
               </button>
