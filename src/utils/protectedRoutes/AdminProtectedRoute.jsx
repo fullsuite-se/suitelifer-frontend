@@ -4,7 +4,7 @@ import axios from "axios";
 import config from "../../config";
 
 const AdminProtectedRoute = () => {
-  const [role, setRole] = useState(null);
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const refreshToken = async () => {
@@ -33,15 +33,15 @@ const AdminProtectedRoute = () => {
     const fetchUserRole = async () => {
       try {
         const user = await getUser();
-        setRole(user.role);
+        setUser(user);
       } catch (error) {
         const newToken = await refreshToken();
         if (newToken) {
           const user = await getUser();
-          console.log(`User role: catch ${user.role}`);
-          setRole(user.role);
+          console.log(`User role: catch ${user}`);
+          setUser(user);
         } else {
-          setRole(null);
+          setUser(null);
         }
       } finally {
         setLoading(false);
@@ -55,7 +55,7 @@ const AdminProtectedRoute = () => {
     return <div>Loading...</div>;
   }
 
-  return role === "admin" ? <Outlet /> : <Navigate to="/login-admin" />;
+  return user ? <Outlet /> : <Navigate to="/login-admin" />;
 };
 
 export default AdminProtectedRoute;
