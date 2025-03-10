@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import axios from "axios";
 import config from "../../config";
+import { useStore } from "../../store/authStore";
 
 const AdminProtectedRoute = () => {
   const [user, setUser] = useState(null);
-  const [services, setServices] = useState([]);
+  const setServices = useStore((state) => state.setServices);
   const [loading, setLoading] = useState(true);
 
   const refreshToken = async () => {
@@ -59,6 +60,7 @@ const AdminProtectedRoute = () => {
 
       if (user) {
         setUser(user);
+
         const services = await getUserServices(user.id);
         setServices(services);
       } else {
