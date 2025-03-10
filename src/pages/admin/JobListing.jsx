@@ -270,7 +270,7 @@ export default function JobListing() {
             {industries.length}
           </div>
         </div>
-        <div className="border px-4 py-2 rounded-md w-50 bg-gray-200">
+        <div className="border px-4 py-2 rounded-md w-50 bg-gray-200"> 
           <div className="text-lg text-center">Job Listings</div>
           <div className="text-2xl font-bold text-center">
             {totalJobListings}
@@ -403,7 +403,7 @@ export default function JobListing() {
                   >
                     {industries.map((option) => (
                       <MenuItem key={option} value={option}>
-                        {option}
+                        {option.name}
                       </MenuItem>
                     ))}
                   </Select>

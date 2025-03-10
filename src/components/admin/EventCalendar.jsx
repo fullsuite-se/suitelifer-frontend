@@ -10,9 +10,9 @@ const EventCalendar = ({ events, onSelectSlot, onSelectEvent }) => {
   const [date, setDate] = useState(new Date());
 
   const CustomToolbar = ({ label, onNavigate, onView }) => (
-    <div className="rbc-toolbar flex justify-between items-center p-2">
+    <div className=" flex justify-between items-center p-2">
       {/* Left Navigation Buttons */}
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center space-x-2 ">
         <button className="btn-light" onClick={() => onNavigate("PREV")}>
           ◀ Back
         </button>
@@ -24,7 +24,7 @@ const EventCalendar = ({ events, onSelectSlot, onSelectEvent }) => {
 
       {/* View Selection Buttons */}
       <div className="space-x-2">
-        <button className="btn-primary" onClick={() => onNavigate("TODAY")}>
+        <button className="btn-light" onClick={() => onNavigate("TODAY")}>
           Today
         </button>
         <button className="btn-light" onClick={() => onView(Views.MONTH)}>
