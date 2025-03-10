@@ -364,9 +364,7 @@ export default function JobListing() {
                     className="bg-transparent p-2 rounded w-8 items-center"
                     onClick={() => handleEditJob(index)}
                   >
-                    <button onClick={openJobModal}>
-                      <EditIcon />
-                    </button>
+                      <EditIcon onClick/>
                   </button>
                 </td>
               </tr>
