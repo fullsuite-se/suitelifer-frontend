@@ -172,11 +172,13 @@ export default function JobListing() {
     console.log(newIndustry);
   };
 
-  const handleEditIndustry = (index) => {
-    setEditIndustry(index);
+
+
+  const handleEditIndustry = (industry) => {
+    setEditIndustry(industry);
     reset({
-      name: industries[index].name,
-      assessmentUrl: industries[index].assessmentUrl,
+      name: industries[industry].name,
+      assessmentUrl: industries[industry].assessmentUrl,
     });
     setOpenIndustryModal(true);
   };
@@ -319,15 +321,16 @@ export default function JobListing() {
                 className={index % 2 === 0 ? "bg-tertiary" : "bg-white"}
               >
                 <td className="py-2 px-5 font-medium">{job.jobTitle}</td>
-                <td className="p-2 line-clamp-1">
+                <td className="p-2">
                   <Tooltip title={job.description} arrow>
-                    <span>
-                      {job.description.length > 100
-                        ? `${job.description.slice(0, 100)}...`
+                    <span className="block break-words whitespace-normal max-w-full">
+                      {job.description.length > 50
+                        ? `${job.description.slice(0, 50)}...`
                         : job.description}
                     </span>
                   </Tooltip>
                 </td>
+
                 <td className="p-2">{job.employmentType}</td>
                 <td className="p-2">{job.isOpen === 1 ? "Open" : "Closed"}</td>
                 <td className="p-2">{job.setupName}</td>

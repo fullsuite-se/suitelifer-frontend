@@ -12,34 +12,37 @@ const EventCalendar = ({ events, onSelectSlot, onSelectEvent }) => {
   const CustomToolbar = ({ label, onNavigate, onView }) => (
     <div className="p-2 w-full bg-primary flex">
       {/* Left Navigation Buttons */}
-      <div className="flex space-x-2 justify-between w-400 items-center">
-      <div className="flex"><button className="btn-light" onClick={() => onNavigate("TODAY")}>
-          Today
-        </button>
+      <div className="flex space-x-2 justify-between w-250 items-center">
+        <div className="flex">
+          <button className="btn-light" onClick={() => onNavigate("TODAY")}>
+            Today
+          </button>
         </div>
-        <button className="btn-light" onClick={() => onNavigate("PREV")}>
-          ◀ Back
-        </button>
-        <span className="font-bold text-xl">{label}</span>
-        <button className="btn-light" onClick={() => onNavigate("NEXT")}>
-          Next ▶
-        </button>
+        <div className="flex w-130 justify-between">
+          <button className="btn-light" onClick={() => onNavigate("PREV")}>
+            ◀ Back
+          </button>
+          <span className="font-avenir-black text-4xl items-center">{label}</span>
+          <button className="btn-light" onClick={() => onNavigate("NEXT")}>
+            Next ▶
+          </button>
+        </div>
       </div>
-
-      <div className="space-x-2 items-center w-full flex-start">
-       
-        <button className="btn-light" onClick={() => onView(Views.MONTH)}>
-          Month
-        </button>
-        <button className="btn-light" onClick={() => onView(Views.WEEK)}>
-          Week
-        </button>
-        <button className="btn-light" onClick={() => onView(Views.DAY)}>
-          Day
-        </button>
-        <button className="btn-light" onClick={() => onView(Views.AGENDA)}>
-          Agenda
-        </button>
+      <div className="">
+        <div className="flex w-100 items-end justify-end gap-x-2">
+          <button className="btn-light" onClick={() => onView(Views.MONTH)}>
+            Month
+          </button>
+          <button className="btn-light" onClick={() => onView(Views.WEEK)}>
+            Week
+          </button>
+          <button className="btn-light" onClick={() => onView(Views.DAY)}>
+            Day
+          </button>
+          <button className="btn-light" onClick={() => onView(Views.AGENDA)}>
+            Agenda
+          </button>
+        </div>
       </div>
     </div>
   );
