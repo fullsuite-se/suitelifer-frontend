@@ -25,6 +25,7 @@ const AdminProtectedRoute = () => {
     const response = await axios.get(`${config.apiBaseUrl}/api/user-info`, {
       withCredentials: true,
     });
+    console.log(response.data);
 
     return response.data.user;
   };
@@ -33,12 +34,13 @@ const AdminProtectedRoute = () => {
     const fetchUserRole = async () => {
       try {
         const user = await getUser();
+        console.log(user);
         setUser(user);
       } catch (error) {
         const newToken = await refreshToken();
         if (newToken) {
           const user = await getUser();
-          console.log(`User role: catch ${user}`);
+          console.log(user);
           setUser(user);
         } else {
           setUser(null);
