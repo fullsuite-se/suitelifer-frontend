@@ -25,90 +25,29 @@ import {
 import axios from "axios";
 import config from "../../config";
 
-const initialJobListings = [
-  {
-    title: "Financial Management Associate",
-    description: "Lorem ipsum dolor sit",
-    type: "Full-time",
-    status: 0,
-    visibility: 1,
-    salaryRangeStart: "",
-    salaryRangeEnd: "",
-    responsibilities: "",
-    requirements: "",
-    preferredQualifications: "",
-    industry: "Technology",
-    setup: "Hybrid",
-  },
-  {
-    title: "Business Operation Manager",
-    description: "Business operation",
-    type: "Full-time",
-    status: 1,
-    visibility: 0,
-    salaryRangeStart: "",
-    salaryRangeEnd: "",
-    responsibilities: "",
-    requirements: "",
-    preferredQualifications: "",
-    industry: "Business Operations",
-    setup: "In-Office",
-  },
-  {
-    title: "Associate Manager Business Operations",
-    description: "Lorem Ipsum is simply.",
-    type: "Full-time",
-    status: 1,
-    visibility: 0,
-    salaryRangeStart: "",
-    salaryRangeEnd: "",
-    responsibilities: "",
-    requirements: "",
-    preferredQualifications: "",
-    industry: "Marketing",
-    setup: "On-Site",
-  },
-  {
-    title: "Business Operation Associate",
-    description: "We are looking for a",
-    type: "Full-time",
-    status: 0,
-    visibility: 1,
-    salaryRangeStart: "",
-    salaryRangeEnd: "",
-    responsibilities: "",
-    requirements: "",
-    preferredQualifications: "",
-    industry: "Business Operations",
-    setup: "Remote",
-  },
-];
-const initialIndustries = [
-  { name: "Business Operations", assessmentUrl: "http://google.com" },
-  { name: "Technology", assessmentUrl: "http://google.com" },
-  { name: "Marketing", assessmentUrl: "http://google.com" },
-];
 const initialSetup = ["Remote", "Hybrid", "On-Site", "In-Office"];
 
 export default function JobListing() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedIndustry, setSelectedIndustry] = useState("all");
   const [jobListings, setJobListings] = useState([]);
-  const [filteredJobListings, setFilteredJobListings] =
-    useState(initialJobListings);
+  const [filteredJobListings, setFilteredJobListings] = useState([]);
 
-  const [industries, setIndustries] = useState(initialIndustries);
+  const [industries, setIndustries] = useState([]);
   const [openJobModal, setOpenJobModal] = useState(false);
   const [openSetUpModal, setOpenSetUpModal] = useState(false);
   const [openIndustryModal, setOpenIndustryModal] = useState(false);
   const [editJob, setEditJob] = useState(null);
-  const [editIndustry, setEditIndustry] = useState(null);
+  const [isEditModal, setEditIndustry] = useState(false);
+  const [newIndustry, setNewIndustry] = useState({
+    user_id: "81aba726-f897-11ef-a725-0af0d960a833",
+  });
   const [industryName, setIndustryName] = useState();
+  const [assessmentUrl, setAssessmentUrl] = useState();
   const [openManageIndustryModal, setOpenManageIndustryModal] = useState(false);
   const [setup, setSetup] = useState(initialSetup);
   const [newSetUp, setNewSetUp] = useState("");
   const [selectedOption, setSelectedOption] = useState("Industry");
-  const [assessmentUrl, setAssessmentUrl] = useState();
   const [editSetUp, setEditSetUp] = useState(null);
 
   const { register, handleSubmit, reset } = useForm({
@@ -132,15 +71,13 @@ export default function JobListing() {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
-    const filtered = jobListings.filter((job) => {
-      const matchesSearchQuery = job.jobTitle
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
-      const matchesIndustry =
-        selectedIndustry === "all" || job.industry === selectedIndustry;
-      return matchesSearchQuery && matchesIndustry;
-    });
-    setFilteredJobListings(filtered);
+    const fetchIndustries = async () => {
+      const response = (
+        await axios.get(`${config.apiBaseUrl}/api/get-all-industries-hr`)
+      ).data;
+
+      setIndustries((i) => (i = response.data));
+    };
 
     const fetchJobListings = async () => {
       const response = (await axios.get(`${config.apiBaseUrl}/api/all-jobs`))
@@ -150,8 +87,19 @@ export default function JobListing() {
       setJobListings(response.data);
     };
 
+    fetchIndustries();
     fetchJobListings();
-  }, []);
+
+    const filtered = jobListings.filter((job) => {
+      const matchesSearchQuery = job.jobTitle
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
+      const matchesIndustry =
+        selectedIndustry === "all" || job.industryName === selectedIndustry;
+      return matchesSearchQuery && matchesIndustry;
+    });
+    setFilteredJobListings(filtered);
+  }, [setIndustries]);
 
   const totalJobListings = filteredJobListings.length;
   const openJobListings = filteredJobListings.filter(
@@ -161,39 +109,34 @@ export default function JobListing() {
     (job) => job.status === 0
   ).length;
 
-  const handleAddJob = (data) => {
+  const handleAddJob = async (data) => {
     if (editJob !== null) {
       const updatedJobListings = jobListings.map((job, index) =>
         index === editJob ? data : job
       );
       setJobListings(updatedJobListings);
     } else {
-      setJobListings([...jobListings, data]);
+      await axios.post(`${config.apiBaseUrl}/api/add-job`, data);
     }
     setEditJob(null);
     setOpenJobModal(false);
     reset();
   };
 
-  const handleAddIndustry = () => {
-    if (editIndustry !== null) {
+  const handleAddIndustry = async () => {
+    if (isEditModal) {
       const updatedIndustries = industries.map((industry, index) =>
-        index === editIndustry
+        index === isEditModal
           ? { name: industryName, assessmentUrl }
           : industry
       );
 
       setIndustries(updatedIndustries);
       setEditIndustry(null);
-    } else if (
-      industryName &&
-      !industries.some((ind) => ind.name === industryName)
-    ) {
-      setIndustries([...industries, { name: industryName, assessmentUrl }]);
+    } else {
+      await axios.post(`${config.apiBaseUrl}/api/add-industry`, newIndustry);
+      setIndustries([...industries, { newIndustry }]);
     }
-
-    setIndustryName("");
-    setAssessmentUrl("");
     setOpenIndustryModal(false);
   };
 
@@ -217,6 +160,16 @@ export default function JobListing() {
     setEditJob(index);
     reset(jobListings[index]);
     setOpenJobModal(true);
+  };
+
+  const handleIndustryNameChange = (e) => {
+    setNewIndustry((n) => (n = { ...n, industry_name: e.target.value }));
+    console.log(newIndustry);
+  };
+
+  const handleAssessmentUrlChange = (e) => {
+    setNewIndustry((n) => (n = { ...n, assessment_url: e.target.value }));
+    console.log(newIndustry);
   };
 
   const handleEditIndustry = (index) => {
@@ -287,20 +240,24 @@ export default function JobListing() {
         <div className="border px-4 py-2 rounded-md w-50 bg-gray-200">
           <div className="text-lg text-center">Job Listings</div>
           <div className="text-2xl font-bold text-center">
-            {totalJobListings}
+            {jobListings.length}
           </div>
         </div>
         <div className="flex gap-2">
           <div className="border px-4 py-2 rounded-md w-25">
             <div className="text-lg text-center">Open</div>
             <div className="text-2xl font-bold text-center">
-              {openJobListings}
+              {jobListings.filter((value, index) => {
+                return value.isOpen === 1;
+              }).length}
             </div>
           </div>
           <div className="border px-4 py-2 rounded-md w-25">
             <div className="text-lg text-center">Closed</div>
             <div className="text-2xl font-bold text-center">
-              {closedJobListings}
+            {jobListings.filter((value, index) => {
+                return value.isOpen === 0;
+              }).length}
             </div>
           </div>
         </div>
@@ -327,8 +284,8 @@ export default function JobListing() {
           >
             <option value="all">All Industries</option>
             {industries.map((industry, index) => (
-              <option key={index} value={industry.name}>
-                {industry.name}
+              <option key={index} value={industry.industryId}>
+                {industry.industryName}
               </option>
             ))}
           </select>
@@ -415,11 +372,11 @@ export default function JobListing() {
                   <Select
                     label="Industry"
                     sx={{ bgcolor: "#fbe9e7" }}
-                    {...register("industry")}
+                    {...register("industry_id")}
                   >
-                    {industries.map((option) => (
-                      <MenuItem key={option} value={option}>
-                        {option.name}
+                    {industries.map((option, index) => (
+                      <MenuItem key={index} value={option.industryId}>
+                        {option.industryName}
                       </MenuItem>
                     ))}
                   </Select>
@@ -570,7 +527,7 @@ export default function JobListing() {
           }`}
         >
           <h2 className="font-semibold mb-4 text-lg text-center bg-white">
-            {editIndustry !== null ? "Edit Industry" : "Add Industry"}
+            {isEditModal ? "Edit Industry" : "Add Industry"}
           </h2>
           <form
             onSubmit={(e) => {
@@ -584,7 +541,7 @@ export default function JobListing() {
                 label="Industry Name"
                 fullWidth
                 value={industryName}
-                onChange={(e) => setIndustryName(e.target.value)}
+                onChange={(e) => handleIndustryNameChange(e)}
                 className="mt-2"
                 sx={{ bgcolor: "#fbe9e7" }}
               />
@@ -593,7 +550,7 @@ export default function JobListing() {
               label="Assessment URL"
               fullWidth
               value={assessmentUrl}
-              onChange={(e) => setAssessmentUrl((au) => (au = e.target.value))}
+              onChange={(e) => handleAssessmentUrlChange(e)}
               className="mt-2"
               sx={{ bgcolor: "#fbe9e7" }}
             />
@@ -606,12 +563,12 @@ export default function JobListing() {
                 Cancel
               </button>
               <button
-                onClick={() => setEditIndustry(index)}
+                onClick={() => handleAddIndustry}
                 type="submit"
                 variant="filled"
                 className="btn-primary"
               >
-                {editIndustry !== null ? "SAVE CHANGES" : "ADD INDUSTRY"}
+                {isEditModal ? "SAVE CHANGES" : "ADD INDUSTRY"}
               </button>
             </div>
           </form>
