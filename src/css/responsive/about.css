@@ -1,3 +1,19 @@
+.mission-vision-text {
+  .blue-text {
+    font-size: clamp(5px, 1.8vw, 26px);
+  }
+
+  .title{
+    font-size: clamp(5px, 3vw, 3.3rem);
+    padding-block: calc(var(--spacing) * 2);
+  }
+
+  .description{
+    font-size: clamp(5px, 1.8vw, 26px);
+    text-indent: calc(var(--spacing) * 4) 
+  }
+}
+
 .container-ceo-message{
   font-size: clamp(8px, 2.63vw, 2rem);
   .title{

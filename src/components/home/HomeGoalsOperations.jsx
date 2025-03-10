@@ -1,14 +1,8 @@
-import desktopCutoutBgMarvin from "../../assets/images/desktop-bg-man-cutout-marvin.svg";
-import desktopCutoutBgMaggie from "../../assets/images/desktop-bg-man-cutout-maggie.png";
-import desktopBgMaggie from "../../assets/images/bg-maggie.png";
-import desktopBgMarvinTwins from "../../assets/images/bg-marvin-twins.png";
-import mobileCutoutBgMaggie from "../../assets/images/mobile-bg-man-cutout-maggie.png";
-import mobileCutoutBgMaggieNew from "../../assets/images/mobile-bg-man-cutout-maggie-new.png";
+import bgCutoutMobile from "../../assets/images/bg-mobile-cutout-home.png";
+import bgCutoutDesktop from "../../assets/images/bg-desktop-cutout-home.png";
 import dataOp from "../../assets/images/data-op.svg";
 import financeOp from "../../assets/images/finance-op.svg";
 import adminOp from "../../assets/images/admin-op.svg";
-import socialTitleDesktop from "../../assets/images/social-title-desktop.svg";
-import { useState, useEffect } from "react";
 
 const HomeGoalsOperations = () => {
   const operations = [
@@ -41,13 +35,13 @@ const HomeGoalsOperations = () => {
         {/* Background Image */}
         <div className="cutout-maggie mb-6">
           <img
-            src={mobileCutoutBgMaggieNew}
+            src={bgCutoutMobile}
             alt="cutout background"
             className="block -z-10 w-[100%] sm:hidden"
           />
           <img
             // src={desktopBgMarvinTwins}
-            src={desktopBgMaggie}
+            src={bgCutoutDesktop}
             alt="cutout background"
             className="-z-10 w-[100%] hidden sm:block"
           />
@@ -70,7 +64,7 @@ const HomeGoalsOperations = () => {
                 `}
             >
               <img
-                className="rounded-4xl sm:rounded-3xl size-[80%] lg:size-[60%] object-cover aspect-[3/4]"
+                className="rounded-4xl sm:rounded-3xl size-[80%] lg:size-[60%] object-cover aspect-[3/4] transition-all duration-300 hover:scale-95"
                 src={op.image}
                 alt={op.alt}
               />
