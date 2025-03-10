@@ -1,0 +1,33 @@
+/* Mobile styles */
+/* @media (max-width: 767px) {
+    .container {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .btn-primary {
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+  
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .col-span-2 {
+      grid-column: span 1;
+    }
+  
+    .h {
+      height: 300px;
+    }
+  
+    .h {
+      height: 300px;
+    }
+  
+    .w-70 {
+      width: 100%;
+    }
+  } */
+
