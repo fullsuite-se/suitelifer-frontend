@@ -12,13 +12,12 @@ import PrivacyPolicy from "./pages/guest/PrivacyPolicy";
 import BlogDetails from "./pages/guest/BlogDetails";
 import NewsDetails from "./pages/guest/NewsDetails";
 
-
 // Admin Pages
 import AdminProtectedRoute from "./utils/protectedRoutes/AdminProtectedRoute";
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminLogin from "./pages/admin/AdminLogin";
-import JobListing from "./pages/admin/JobListing";
+import AdminJobListings from "./pages/admin/AdminJobListings";
 import AdminBlogs from "./pages/admin/AdminBlogs";
 import AdminNews from "./pages/admin/AdminNews";
 import AdminEvents from "./pages/admin/AdminEvents";
@@ -37,6 +36,8 @@ import EmployeeWorkshops from "./pages/employee/EmployeeWorkshops";
 import EmployeePersonalityTest from "./pages/employee/EmployeePersonalityTest";
 import BlogCreate from "./components/blog/BlogCreate";
 import CareersJobDetails from "./pages/guest/CareersJobDetails";
+import AdminDynamicRoutes from "./utils/protectedRoutes/AdminDynamicRoutes";
+import RootLayout from "./components/layout/RootLayout";
 function App() {
   return (
     <>
@@ -46,20 +47,18 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login-employee" element={<EmployeeLogin />} />
           <Route path="/login-admin" element={<AdminLogin />} />
-
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/careers/:slug" element={<CareersJobDetails />} />
           <Route path="/news" element={<News />} />
-          <Route path="/news/:id/:slug" element={<NewsDetails/>} />
+          <Route path="/news/:id/:slug" element={<NewsDetails />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/blogs" element={<Blog />} />
-          <Route path="/blogs/:id/:slug" element={<BlogDetails/>} />
+          <Route path="/blogs/:id/:slug" element={<BlogDetails />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-use" element={<TermsOfUse />} />
-
           {/* Admin Routes */}
-          <Route element={<AdminProtectedRoute />}>
+          {/* <Route element={<AdminProtectedRoute />}>
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
               <Route path="dashboard" element={<AdminDashboard />} />
@@ -69,8 +68,12 @@ function App() {
               <Route path="events" element={<AdminEvents />} />
               <Route path="contents" element={<AdminContents />} />
             </Route>
+          </Route> */}
+          <Route element={<AdminProtectedRoute />}>
+            <Route path="/admin" element={<RootLayout />}>
+              <Route path="*" element={<AdminDynamicRoutes />} />
+            </Route>
           </Route>
-
           {/* Employee Routes */}
           <Route element={<EmployeeProtectedRoute />}>
             <Route path="/employee" element={<EmployeeLayout />}>
