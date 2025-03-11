@@ -5,6 +5,7 @@ import EmployeeAside from "../../components/employee/EmployeeAside";
 import logoFull from "../../assets/logos/logo-fs-full.svg";
 import { Bars2Icon } from "@heroicons/react/20/solid";
 import EmployeeDrawer from "../../components/employee/EmployeeDrawer";
+import CMSNavigation from "../navigation/CMSNavigation";
 
 const RootLayout = () => {
   const drawerRef = useRef();
@@ -25,7 +26,7 @@ const RootLayout = () => {
         <EmployeeDrawer onClose={handleDrawer} />
       </section>
       <section className="hidden lg:block">
-        <EmployeeSidebar />
+        <CMSNavigation />
       </section>
       <section className="lg:hidden flex justify-between pt-5 px-2">
         <div className="w-20 h-auto">
