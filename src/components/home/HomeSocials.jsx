@@ -29,7 +29,7 @@ const instagramId = ["DGJvd8pPZGn"];
 
 const HomeSocials = () => {
   return (
-    <section className="overflow-hidden">
+    <section>
       {/* HEADING */}
       <motion.div
         initial={{ opacity: 0, y: 50 }}

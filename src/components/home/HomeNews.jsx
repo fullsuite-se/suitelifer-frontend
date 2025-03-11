@@ -10,7 +10,7 @@ import { motion } from "framer-motion";
 
 const HomeNews = () => {
   return (
-    <section className="px-7 xl:px-17 overflow-hidden">
+    <section className="px-7 xl:px-17">
       {/* TITLE: "LATEST COMPANY NEWS" */}
       <div className="mb-5 relative">
         <p
