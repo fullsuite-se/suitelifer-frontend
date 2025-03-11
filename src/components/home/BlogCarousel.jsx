@@ -4,7 +4,8 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import BlogCard from "./BlogCard";
-import companyBlogs from "./CompanyBlogsList";
+// import companyBlogs from "./CompanyBlogsList";
+import GuestBlogsList from "../guest-blogs/GuestBlogsList";
 
 const BlogCarousel = () => {
   return (
@@ -20,11 +21,11 @@ const BlogCarousel = () => {
         }}
         navigation
         pagination={{ clickable: true, enabled: false }}
-        autoplay={{ delay: 3000 }}
+        autoplay={{ delay: 5000 }}
         loop
         className="py-6"
       >
-        {companyBlogs.slice(0, 5).map((blog) => (
+        {GuestBlogsList.slice(0, 5).map((blog) => (
           <SwiperSlide key={blog.id}>
               <BlogCard {...blog} />
           </SwiperSlide>
