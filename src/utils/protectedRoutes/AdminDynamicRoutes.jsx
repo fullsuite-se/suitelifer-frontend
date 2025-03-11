@@ -17,7 +17,7 @@ const AdminDynamicRoutes = () => {
         {services.map(({ feature_name }) => {
           if (!feature_name) return null;
 
-          const path = feature_name.toLowerCase().replace(/\s+/g, "-");
+          const path = feature_name.toLowerCase().replace(" ", "");
           const componentName =
             "Admin" +
             feature_name
