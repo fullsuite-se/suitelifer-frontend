@@ -53,6 +53,7 @@ const HomeGoalsOperations = () => {
               key={index}
               style={{}}
               className={`
+                group
                 w-full 
                 px-[10%] 
                 sm:px-0 
@@ -64,14 +65,11 @@ const HomeGoalsOperations = () => {
                 `}
             >
               <img
-                className="rounded-4xl sm:rounded-3xl size-[80%] lg:size-[60%] object-cover aspect-[3/4] transition-all duration-300 hover:scale-95"
+                className="rounded-4xl sm:rounded-3xl size-[80%] lg:size-[60%] object-cover aspect-[3/4] transition-all duration-300 hover:scale-95 "
                 src={op.image}
                 alt={op.alt}
               />
-              <p
-                className={`op-title mt-3 md:mt-5 font-avenir-black text-center 
-                    ${index === 2 ? "text-secondary" : "text-primary"}`}
-              >
+              <p className="op-title mt-3 md:mt-5 font-avenir-black text-center text-primary transition-all duration-300 group-hover:!text-secondary">
                 {op.title}
               </p>
             </div>
