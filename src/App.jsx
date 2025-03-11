@@ -57,26 +57,10 @@ function App() {
           <Route path="/blogs/:id/:slug" element={<BlogDetails />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-use" element={<TermsOfUse />} />
-          {/* Admin Routes */}
-          {/* <Route element={<AdminProtectedRoute />}>
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<AdminDashboard />} />
-              <Route path="dashboard" element={<AdminDashboard />} />
-              <Route path="joblisting" element={<JobListing />} />
-              <Route path="blogs" element={<AdminBlogs />} />
-              <Route path="news" element={<AdminNews />} />
-              <Route path="events" element={<AdminEvents />} />
-              <Route path="contents" element={<AdminContents />} />
-            </Route>
-          </Route> */}
+
           <Route element={<AdminProtectedRoute />}>
-            <Route path="/admin" element={<RootLayout />}>
+            <Route path="/app" element={<RootLayout />}>
               <Route path="*" element={<AdminDynamicRoutes />} />
-            </Route>
-          </Route>
-          {/* Employee Routes */}
-          <Route element={<EmployeeProtectedRoute />}>
-            <Route path="/employee" element={<EmployeeLayout />}>
               <Route index element={<Navigate to="blogs-feed" replace />} />
               <Route path="blogs-feed" element={<EmployeeBlogsFeed />} />
               <Route path="blogs-feed/blog/:id/:slug" element={<BlogView />} />
@@ -86,7 +70,7 @@ function App() {
               <Route path="my-blogs/new-blog" element={<BlogCreate />} />
 
               <Route path="threads" element={<EmployeeThreads />} />
-              <Route path="events" element={<EmployeeEvents />} />
+              <Route path="company-events" element={<EmployeeEvents />} />
               <Route path="workshops" element={<EmployeeWorkshops />} />
               <Route
                 path="personality-test"
