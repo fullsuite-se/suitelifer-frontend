@@ -69,7 +69,7 @@ const Home = () => {
             </div>
           </div> */}
           {/* with animations eto */}
-          <div className="banner ml-[9%] flex items-center">
+          <div className="banner ml-[9%] flex items-center overflow-hidden">
             <div>
               <motion.p
                 initial={{ opacity: 0, y: 10 }}
@@ -122,7 +122,7 @@ const Home = () => {
               scale: [1, 1.05, 1],
               transition: { duration: 3, repeat: Infinity, ease: "easeInOut" },
             }}
-            className="flex justify-end items-start ml-5 pb-3 lg:hidden"
+            className="flex justify-end items-start ml-5 pb-3 lg:hidden overflow-hidden"
           >
             <img
               className="opacity-70 -z-10 rounded-l-4xl object-cover h-full w-full"

@@ -18,6 +18,7 @@ import YouTubeEmbed from "../../components/home/YoutubeEmbed";
 import largeBottomFiller from "../../assets/images/about-large-bottom-filler.svg";
 import smallBottomFiller from "../../assets/images/about-small-bottom-filler.svg";
 
+import { motion } from "framer-motion";
 // TEMPORARY ICON
 import CoreValue01 from "../../assets/icons/core-value-01";
 
@@ -72,10 +73,29 @@ const AboutUs = () => {
               src="https://images.unsplash.com/photo-1739382121445-19b3460a9e7a?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             />
           </div>
-          <div className="about-text-banner flex flex-col mb-2">
-            <h2 className="font-avenir-black px-5">{content.textBanner}</h2>
-            <div className="h-10 w-20 lg:h-20 lg:w-32 rounded-l-2xl bg-primary ml-auto animate-slideInRightLong"></div>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="about-text-banner flex flex-col mb-2"
+          >
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut", delay: 1 }}
+              className="font-avenir-black px-5"
+            >
+              {content.textBanner}
+            </motion.h2>
+
+            <motion.div
+              initial={{ x: 100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
+              className="h-10 w-20 lg:h-20 lg:w-32 rounded-l-2xl bg-primary ml-auto"
+            />
+          </motion.div>
+
           <div className="mx-5">
             <img
               className="w-full h-full object-cover rounded-3xl animate-slideInLong"

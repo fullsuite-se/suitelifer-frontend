@@ -78,7 +78,7 @@ const HeroSection = () => {
 
     // with animations ito
     <section className="Hero lg:w-3/5">
-      <div className="grid grid-cols-12 grid-rows-12 md:grid-rows-10 lg:grid-cols-16 lg:grid-rows-16 lg:gap-4 gap-5 aspect-square">
+      <div className="grid grid-cols-12 grid-rows-12 md:grid-rows-10 lg:grid-cols-16 lg:grid-rows-16 lg:gap-4 gap-5 aspect-square overflow-hidden">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 0.5, scale: 1 }}

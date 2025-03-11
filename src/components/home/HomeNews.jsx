@@ -6,10 +6,11 @@ import adminOp from "../../assets/images/admin-op.svg";
 import newsList from "../news/NewsList";
 import { Link } from "react-router-dom";
 import { toSlug } from "../../utils/slugUrl";
+import { motion } from "framer-motion";
 
 const HomeNews = () => {
   return (
-    <section className="px-7 xl:px-17">
+    <section className="px-7 xl:px-17 overflow-hidden">
       {/* TITLE: "LATEST COMPANY NEWS" */}
       <div className="mb-5 relative">
         <p
@@ -31,36 +32,65 @@ const HomeNews = () => {
         >
           NEWS
         </p>
-        <p className="font-serif font-black text-2xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-7xl">
+        <motion.p
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          viewport={{ once: true, amount: 0.2 }} // Triggers when 20% of the text is in view
+          className="font-serif font-black text-2xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-7xl"
+        >
           <span className="text-primary">Latest</span> Company News
-        </p>
+        </motion.p>
       </div>
       {/* CONTENTS */}
       <section className="flex flex-col lg:flex-row gap-0 lg:gap-10">
         {/* MAIN NEWS (First Item) */}
-        <div className="lg:w-1/2 flex px-2 flex-col items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          viewport={{ once: true, amount: 0.2 }} // Ensures it only animates once when 20% is in view
+          className="lg:w-1/2 flex px-2 flex-col items-center justify-center"
+        >
           {newsList.length > 0 && (
             <Link
               to={`/news/${newsList[0].id}/${toSlug(newsList[0].title)}`}
               className="no-underline rounded-2xl cursor-pointer group transition-all duration-300 hover:shadow-md hover:bg-white hover:p-5"
             >
-              
               <div className="group-hover:!text-primary">
-                {/* IMAGE */}<div className="mb-5">
-                <img
-                  className="aspect-video object-cover rounded-2xl"
-                  src={newsList[0].imagesWithCaption[2].image}
-                  alt="Main content news image"
-                />
-              </div>{" "}
+                {/* IMAGE */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+                  className="mb-5"
+                >
+                  <img
+                    className="aspect-video object-cover rounded-2xl"
+                    src={newsList[0].imagesWithCaption[2].image}
+                    alt="Main content news image"
+                  />
+                </motion.div>
+
                 {/* TITLE */}
-                <div className="title">
-                  <p className="font-serif font-bold sm:text-xl lg:text-2xl line-clamp-2 ">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
+                  className="title"
+                >
+                  <p className="font-serif font-bold sm:text-xl lg:text-2xl line-clamp-2">
                     {newsList[0].title}
                   </p>
-                </div>
+                </motion.div>
+
                 {/* AUTHOR AND READ TIME */}
-                <div className="news-info py-1 md:py-2 mb-2 no-underline!">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, ease: "easeOut", delay: 0.6 }}
+                  className="news-info py-1 md:py-2 mb-2 no-underline!"
+                >
                   <p className="text-sm">
                     <span className="text-primary">{newsList[0].author}</span>
                     <span className="text-primary">&nbsp; |</span>
@@ -68,24 +98,24 @@ const HomeNews = () => {
                       &nbsp;&nbsp;{newsList[0].readTime}
                     </span>
                   </p>
-                </div>
+                </motion.div>
               </div>
             </Link>
           )}
-        </div>
+        </motion.div>
 
         {/* OTHER NEWS (Remaining Items) */}
         <div className="lg:w-1/2 flex flex-col max-h-full overflow-y-auto gap-2 pb-2">
-      
-      <a
-        className=" text-[10px] z-10 md:mt-2 pr-2 lg:mt-2 sm:text-[16px] no-underline text-primary font-avenir-black flex items-center justify-end gap-1"
-        href="news"
-      >
-        <span className="flex items-end ">View all</span>
-        <ChevronRightIcon className="size-4 sm:size-5 mb-1" />
-      </a>
+          <a
+            className=" text-[10px] z-10 md:mt-2 pr-2 lg:mt-2 sm:text-[16px] no-underline text-primary font-avenir-black flex items-center justify-end gap-1"
+            href="news"
+          >
+            <span className="flex items-end ">View all</span>
+            <ChevronRightIcon className="size-4 sm:size-5 mb-1" />
+          </a>
           {newsList.slice(1, 4).map((news) => (
-            <Link key={news.id}
+            <Link
+              key={news.id}
               to={`/news/${news.id}/${toSlug(newsList[0].title)}`}
               className="group no-underline rounded-2xl cursor-pointer px-2 py-3 lg:px-4 transition-all duration-300 hover:shadow-md hover:bg-white hover:p-3"
             >
@@ -133,7 +163,6 @@ const HomeNews = () => {
           ))}
         </div>
       </section>
-
     </section>
   );
 };
