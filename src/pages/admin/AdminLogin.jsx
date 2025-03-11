@@ -14,7 +14,7 @@ const AdminLogin = () => {
     try {
       const response = await axios.post(
         `${config.apiBaseUrl}/api/login`,
-        { username, password, role: "admin" },
+        { email: username, password, role: "admin" },
         { withCredentials: true }
       );
 
