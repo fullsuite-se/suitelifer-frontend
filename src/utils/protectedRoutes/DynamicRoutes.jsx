@@ -2,7 +2,7 @@ import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import { useStore } from "../../store/authStore";
 
-const AdminDynamicRoutes = () => {
+const DynamicRoutes = () => {
   const services = useStore((state) => state.services) || [];
 
   return (
@@ -35,4 +35,4 @@ const AdminDynamicRoutes = () => {
   );
 };
 
-export default AdminDynamicRoutes;
+export default DynamicRoutes;

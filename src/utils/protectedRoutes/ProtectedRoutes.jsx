@@ -4,7 +4,7 @@ import axios from "axios";
 import config from "../../config";
 import { useStore } from "../../store/authStore";
 
-const AdminProtectedRoute = () => {
+const ProtectedRoutes = () => {
   const [user, setUser] = useState(null);
   const setServices = useStore((state) => state.setServices);
   const [loading, setLoading] = useState(true);
@@ -87,4 +87,4 @@ const AdminProtectedRoute = () => {
   return user ? <Outlet /> : <Navigate to="/login-admin" />;
 };
 
-export default AdminProtectedRoute;
+export default ProtectedRoutes;
