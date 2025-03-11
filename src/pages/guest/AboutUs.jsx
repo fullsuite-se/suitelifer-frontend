@@ -6,6 +6,10 @@ import DesktopNav from "../../components/home/DesktopNav";
 import axios from "axios";
 import config from "../../config";
 import CoreValueCard from "../../components/about-us/CoreValueCard";
+import bgMaggieMobile from "../../assets/images/bg-mobile-chair-cutout.png";
+import bgMaggieDesktop from "../../assets/images/bg-desktop-chair-cutout.png";
+import imgBuilding from "../../assets/images/img-building.svg";
+import imgMeeting from "../../assets/images/img-meeting.svg";
 
 import lifeHarmonyLight from "../../assets/icons/life-harmony-light.svg";
 import lifeHarmonyPrimary from "../../assets/icons/life-harmony-primary.svg";
@@ -51,9 +55,9 @@ const AboutUs = () => {
   }, []);
 
   return (
-    <section 
-    className="gap-4 h-dvh"
-    style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
+    <section
+      className="gap-4 h-dvh"
+      style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
     >
       {/* MOBILE NAV */}
       <div className="sm:hidden">
@@ -182,7 +186,7 @@ const AboutUs = () => {
         </section>
 
         {/* Our Core Values Section */}
-        <section className="relative">
+        <section className="overflow-hidden relative">
           <h2 className="font-avenir-black lg:text-4xl! text-center m-0!">
             The suitelifer...
           </h2>
@@ -193,10 +197,15 @@ const AboutUs = () => {
                 icon={
                   <CoreValue01
                     color="group-hover:fill-white w-20 fill-primary size-40"
-                    size={"50%"}
+                    size={"45%"}
                   />
                 }
-                text={<b>team player</b>}
+                text={
+                  <p>
+                    is a <br />
+                    <b>team player</b>
+                  </p>
+                }
               />
               {/* 2 */}
               <CoreValueCard
@@ -204,7 +213,7 @@ const AboutUs = () => {
                 icon={
                   <CoreValue01
                     color="group-hover:fill-white w-20 fill-primary size-40"
-                    size={"50%"}
+                    size={"45%"}
                   />
                 }
                 text={
@@ -221,12 +230,13 @@ const AboutUs = () => {
                 icon={
                   <CoreValue01
                     color="group-hover:fill-white w-20 fill-primary size-40"
-                    size={"50%"}
+                    size={"45%"}
                   />
                 }
                 text={
                   <p>
-                    is a <b>focused athlete</b>
+                    is a <br />
+                    <b>focused athlete</b>
                   </p>
                 }
               />
@@ -238,7 +248,7 @@ const AboutUs = () => {
                 icon={
                   <CoreValue01
                     color="group-hover:fill-white w-20 fill-primary size-40"
-                    size={"50%"}
+                    size={"45%"}
                   />
                 }
                 text={<b>upholds</b>}
@@ -248,12 +258,138 @@ const AboutUs = () => {
                 icon={
                   <CoreValue01
                     color="group-hover:fill-white w-20 fill-primary size-40"
-                    size={"50%"}
+                    size={"45%"}
                   />
                 }
                 text={<b>values work/life harmony</b>}
               />
             </div>
+          </div>
+        </section>
+
+        {/* Mission Vision */}
+        <section className="flex justify-center mb-[5%] md:mb-0">
+          <div className="grid grid-cols-2 grid-rows-2 px-[5%] max-h-[1600px]">
+            {/* Mission Image */}
+            <div className="flex justify-end">
+              <div className="lg:translate-y-[10%] lg:translate-x-[10%] bg-primary/50 p-[5%] max-h-[800px] rounded-2xl lg:rounded-4xl size-[50vw] aspect-4/3">
+                <img
+                  className="w-full h-full rounded-2xl lg:rounded-3xl object-cover"
+                  src={imgMeeting}
+                  alt="Mission image"
+                />
+              </div>
+            </div>
+
+            {/* Mission Text */}
+            <article className="mission-vision-text flex flex-col justify-center items-start text-end">
+              <div className="lg:pl-[14%]">
+                <p className="blue-text uppercase font-avenir-black text-primary">
+                  FullSuite Mission
+                </p>
+                <p className="title font-avenir-black">
+                  Empowering startups to scale better, grow faster.
+                </p>
+                <p className="description">
+                  We are on the mission of enabling startups to scale better and
+                  grow faster and in turn provide our fellow Suitelifers the
+                  career exposure that will allow them to professionally grow.
+                </p>
+              </div>
+            </article>
+
+            {/* Vision Text */}
+            <article className="pt-[15%] lg:pr-[13%] mission-vision-text flex flex-col justify-start items-start text-start">
+              <p className="blue-text uppercase w-full font-avenir-black text-primary">
+                Fullsuite Vision
+              </p>
+              <p className="title font-avenir-black w-full">
+                Empowering startups, Fueling Careers
+              </p>
+              <p className="description">
+                As a Suitelifer, you become part of a dynamic community, driven
+                by a shared purpose and an unwavering commitment to excellence.
+                Allow us to guide your career journey where limitations are
+                shattered, and aspirations are transformed into reality.
+                Together, we will leave an indelible mark on the startup world,
+                demonstrating that greatness can emerge from the unlikeliest of
+                places.
+              </p>
+            </article>
+            {/* Vision Image */}
+            <div className="flex">
+              <div className="lg:-translate-y-[10%] lg:-translate-x-[10%]  bg-secondary/50 p-[5%] max-h-[800px] rounded-2xl lg:rounded-4xl size-[50vw] aspect-4/3">
+                <img
+                  className="w-full h-full rounded-2xl lg:rounded-3xl object-cover"
+                  src={imgBuilding}
+                  alt="Mission image"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Message from the CEO */}
+        <section className="relative">
+          {/* Text overlay */}
+          <article className="absolute text-end text-white">
+            <div className="container-ceo-message pt-[22%] md:pt-[15%] pr-[5%] md:pr-[10%]">
+              <div className="flex justify-end">
+                {/* Title */}
+                <p className="title w-[60%] font-avenir-black">
+                  Scaling Smarter, Growing Faster
+                </p>
+              </div>{" "}
+              <br />
+              {/* First paragraph bolded */}
+              <div className="flex justify-end">
+                {/* Title */}
+                <p className="quote w-[50%] md:quote md:w-[55%]">
+                  <i className="font-avenir-black indent-8">
+                    At FullSuite, we are redefining how startups scale—offering
+                    seamless, cost-efficient solutions to help you grow with
+                    confidence.
+                  </i>
+                </p>
+              </div>
+              <p className=""></p> <br />
+              <div className="flex justify-end">
+                {/* Second paragraph */}
+                <p className="w-1/2 md:w-[55%] indent-8">
+                  FullSuite was built to empower venture-backed startups with
+                  the operational and financial expertise they need to scale
+                  efficiently. Our team understands the challenges of rapid
+                  growth, and we are committed to providing tailored, offshore
+                  solutions that allow you to focus on innovation while we
+                  handle the complexities of finance and operations.
+                </p>
+              </div>{" "}
+              <br />
+              {/* Third paragraph */}
+              <div className="flex justify-end">
+                <p className="w-[48%] md:w-[55%] indent-8">
+                  We take pride in being the trusted partner of some of the most
+                  ambitious startups, ensuring they have the support and
+                  infrastructure needed to thrive in a competitive market.
+                  Whether you're looking to streamline processes or expand your
+                  team without the burden of traditional staffing costs,
+                  FullSuite is here to help you achieve your goals.
+                </p>
+              </div>
+            </div>
+          </article>
+          {/* Image background */}
+          <div className="">
+            <img
+              className="md:hidden h-full w-full"
+              src={bgMaggieMobile}
+              alt=""
+            />
+            <img
+              className="hidden md:block h-full w-full"
+              src={bgMaggieDesktop}
+              alt=""
+            />
           </div>
         </section>
         <div className="h-100 grid place-content-center bg-amber-100 text-center p-5">

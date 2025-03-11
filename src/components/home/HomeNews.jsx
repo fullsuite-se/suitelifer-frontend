@@ -14,7 +14,7 @@ const HomeNews = () => {
         <p
           className="
             absolute -z-10 
-            text-[110px] 
+            text-[100px] 
             sm:text-[180px] 
             md:text-[200px] 
             lg:text-[280px] 

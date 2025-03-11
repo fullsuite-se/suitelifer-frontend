@@ -38,6 +38,7 @@ import EmployeeEvents from "./pages/employee/EmployeeEvents";
 import EmployeeWorkshops from "./pages/employee/EmployeeWorkshops";
 import EmployeePersonalityTest from "./pages/employee/EmployeePersonalityTest";
 import BlogCreate from "./components/blog/BlogCreate";
+import CareersJobDetails from "./pages/guest/CareersJobDetails";
 function App() {
   return (
     <>
@@ -52,6 +53,7 @@ function App() {
           <Route path="/careers" element={<Careers />} />
           <Route path="/application-form" element={<ApplicationForm />} />
           <Route path="/congrats-application-form" element={<CongratsApplicationForm />} />
+          <Route path="/careers/:slug" element={<CareersJobDetails />} />
           <Route path="/news" element={<News />} />
           <Route path="/news/:id/:slug" element={<NewsDetails/>} />
           <Route path="/contact" element={<Contact />} />
