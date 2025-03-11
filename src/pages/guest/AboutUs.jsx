@@ -49,7 +49,7 @@ const AboutUs = () => {
 
   return (
     <section
-      className="gap-4 h-dvh"
+      className="gap-4"
       style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
     >
       {/* MOBILE NAV */}
@@ -63,7 +63,7 @@ const AboutUs = () => {
       <div className="desktop-nav">
         <DesktopNav />
       </div>
-      <main className="md:mt-20">
+      <main className="lg:mt-20">
         {/* Hero Section */}
         <section className="overflow-hidden about-container">
           <div className="h-56 w-72">
