@@ -9,10 +9,10 @@
   position: relative;
 }
 .swiper-pagination-bullet {
-  background: #4f46e5;
+  background: var(--color-primary);
 }
 .swiper-pagination-bullet-active {
-  background: #4f46e5 !important;
+  background: var(--color-primary) !important;
 }
 
 .carousel-container {

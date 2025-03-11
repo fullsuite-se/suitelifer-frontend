@@ -1,16 +1,41 @@
+.day-in-the-pod{
+  .more-about-us{
+    font-size: clamp(12px, 2.63vw, 2rem);
+  }
+  .title{
+    font-size: clamp(18px, 3.9vw, 4rem);
+  }
+}
+
 .mission-vision-text {
   .blue-text {
-    font-size: clamp(5px, 1.8vw, 26px);
+    font-size: clamp(7.5px, 1.8vw, 26px);
   }
 
   .title{
-    font-size: clamp(5px, 3vw, 3.3rem);
+    font-size: clamp(10px, 3vw, 3.3rem);
     padding-block: calc(var(--spacing) * 2);
   }
 
   .description{
-    font-size: clamp(5px, 1.8vw, 26px);
-    text-indent: calc(var(--spacing) * 4) 
+    font-size: clamp(7.5px, 1.7vw, 26px);
+    text-indent: calc(var(--spacing) * 2) 
+  }
+
+  @media (min-width: 1024px) {
+    .blue-text {
+      font-size: clamp(7.5px, 1.2vw, 26px);
+    }
+  
+    .title{
+      font-size: clamp(10px, 2.2vw, 3.3rem);
+      padding-block: calc(var(--spacing) * 2);
+    }
+  
+    .description{
+      font-size: clamp(7.5px, 1.2vw, 26px);
+      text-indent: calc(var(--spacing) * 2) 
+    }
   }
 }
 
