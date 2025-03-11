@@ -157,7 +157,9 @@
 
 .text-goal {
   font-size: clamp(8px, 2.95vw,2rem);
-
+  .txt-btn{
+    font-size: clamp(8px, 1.95vw, 1.7rem);
+  }
   @media (min-width: 640px) {
     font-size: clamp(8px, 1.8vw, 34px);
   }
