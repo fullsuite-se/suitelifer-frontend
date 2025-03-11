@@ -1,5 +1,6 @@
-import { useParams, useNavigate } from "react-router-dom";
+
 import { ArrowLeft } from "lucide-react";
+import { useParams } from "react-router-dom";
 import React from "react";
 import Footer from "../Footer";
 import MobileNav from "../home/MobileNav";
@@ -11,10 +12,10 @@ import { toSlug } from "../../utils/slugUrl";
 import GuestBlogCardSmall from "../guest-blogs/GuestBlogCardSmall";
 import NewsCardNoSnippet from "./NewsCardNoSnippet";
 import formatTimestamp from "../../components/TimestampFormatter";
+import BackButton from "../BackButton";
 
 const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
   const { id } = useParams();
-  const navigate = useNavigate();
 
   if (!data) {
     return <h1 className="text-center text-red-500">Not found</h1>;
@@ -47,18 +48,12 @@ const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
         </section>
 
         <main className="px-[7%] text-sm md:text-base md:px-[5%] lg:px-[8%]">
-          <button
-            onClick={() => navigate(backPath)}
-            className="flex items-center gap-2 text-primary text-[12px] md:text-base font-semibold transition active:font-avenir-black"
-          >
-            <ArrowLeft size={15} /> <span className="mt-1">Back to {type}</span>
-          </button>
-
+          <BackButton backPath={backPath} type={type}/>
           <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-10">
             {/* Main Article */}
             <div>
               <p className="text-[12px] text-gray-500 mt-5">{fullDate}</p>
-              <p className="text-xl md:text-2xl lg:text-3xl font-avenir-black my-2">
+              <p className={`text-xl md:text-2xl lg:text-3xl font-avenir-black my-2 ${type === 'News' ? 'font-serif font-bold' : 'font-sansita-extra-bold'}`}>
                 {data.title}
               </p>
               <p className="text-[12px] text-gray-500">
@@ -74,9 +69,10 @@ const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
                 imagesWithCaption={data.imagesWithCaption}
               />
 
-              <p className="mt-4 text-gray-700 whitespace-pre-line">
-                {data.article}
-              </p>
+<p className={`mt-4 text-gray-700 whitespace-pre-line ${type === "News" ? "font-serif" : ""}`}>
+  {data.article}
+</p>
+
             </div>
 
             {/* Related Articles */}
@@ -107,7 +103,7 @@ const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
                         id={news.id}
                         title={news.title}
                         author={news.author}
-                        readTime={news.read_time}
+                        readTime={news.readTime}
                         created_at={news.created_at}
                         imagesWithCaption={news.imagesWithCaption}
                       />

@@ -11,6 +11,8 @@ import TermsOfUse from "./pages/guest/TermsOfUse";
 import PrivacyPolicy from "./pages/guest/PrivacyPolicy";
 import BlogDetails from "./pages/guest/BlogDetails";
 import NewsDetails from "./pages/guest/NewsDetails";
+import ApplicationForm from "./pages/guest/ApplicationForm";
+import CongratsApplicationForm from "./pages/guest/CongratsApplicationForm";
 
 
 // Admin Pages
@@ -49,6 +51,8 @@ function App() {
 
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/careers" element={<Careers />} />
+          <Route path="/application-form" element={<ApplicationForm />} />
+          <Route path="/congrats-application-form" element={<CongratsApplicationForm />} />
           <Route path="/careers/:slug" element={<CareersJobDetails />} />
           <Route path="/news" element={<News />} />
           <Route path="/news/:id/:slug" element={<NewsDetails/>} />

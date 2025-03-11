@@ -19,3 +19,38 @@
   font-family: "Avenir-RomanOblique";
   src: url("/AvenirLTStd-RomanOblique.otf");
 }
+
+@font-face {
+  font-family: "SansitaSwashed-Black";
+  src: url("/SansitaSwashed-Black.ttf");
+}
+
+@font-face {
+  font-family: "SansitaSwashed-Bold";
+  src: url("/SansitaSwashed-Bold.ttf");
+}
+
+@font-face {
+  font-family: "SansitaSwashed-Regular";
+  src: url("/SansitaSwashed-Regular.ttf");
+}
+
+@font-face {
+  font-family: "SansitaSwashed-ExtraBold";
+  src: url("/SansitaSwashed-ExtraBold.ttf");
+}
+
+@font-face {
+  font-family: "SansitaSwashed-Light";
+  src: url("/SansitaSwashed-Light.ttf");
+}
+
+@font-face {
+  font-family: "SansitaSwashed-Medium";
+  src: url("/SansitaSwashed-Medium.ttf");
+}
+
+@font-face {
+  font-family: "SansitaSwashed-SemiBold";
+  src: url("/SansitaSwashed-SemiBold.ttf");
+}
