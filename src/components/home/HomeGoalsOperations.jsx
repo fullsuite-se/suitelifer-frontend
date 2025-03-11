@@ -106,7 +106,7 @@ const HomeGoalsOperations = () => {
 
 
     // with animationsss
-    <section className="relative -mt-[5%] mb-10 sm:mb-15 lg:mb-20 xl:mb-30 flex flex-col">
+    <section className="relative -mt-[5%] mb-10 sm:mb-15 lg:mb-20 xl:mb-30 flex flex-col overflow-hidden">
     <div className="block">
       {/* Cutout Image (Fades in and moves slightly up) */}
       <motion.div
