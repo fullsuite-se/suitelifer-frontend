@@ -18,11 +18,11 @@ const NewsLarge = ({
       {/* Image and article container */}
       <Link
         to={`/news/${id}/${toSlug(title)}`}
-        className="no-underline cursor-pointer group flex flex-col lg:flex-row-reverse lg:gap-10"
+        className="no-underline cursor-pointer group flex flex-col lg:flex-row-reverse lg:gap-10  hover:p-10 hover:shadow-lg hover:bg-white hover:rounded-xl transition-all duration-300"
       >
         <div className="lg:w-1/2 flex flex-col justify-center">
           {/* Title */}
-          <p className="hover:underline line-clamp-2 text-lg lg:text-2xl font-bold font-serif xl:text-4xl">
+          <p className="group-hover:!text-primary transition-all duration-200 line-clamp-2 text-lg lg:text-2xl font-bold font-serif xl:text-4xl">
             {title}
           </p>
 
@@ -54,7 +54,7 @@ const NewsLarge = ({
         <div className="h-2 lg:hidden"></div>
 
         {/* Article */}
-        <article className="lg:hidden line-clamp-4 md:line-clamp-6 lg:line-clamp-1 lg:overflow-hidden text-gray-400 font-serif">
+        <article className="text-sm lg:hidden line-clamp-4 md:line-clamp-6 lg:line-clamp-1 lg:overflow-hidden text-gray-500 font-serif">
           {article}
         </article>
       </Link>

@@ -53,7 +53,7 @@ const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
             {/* Main Article */}
             <div>
               <p className="text-[12px] text-gray-500 mt-5">{fullDate}</p>
-              <p className={`text-xl md:text-2xl lg:text-3xl font-avenir-black my-2 ${type === 'News' ? 'font-serif font-bold' : 'font-sansita-extra-bold'}`}>
+              <p className={`text-xl md:text-2xl lg:text-3xl font-avenir-black my-2 ${type === 'News' ? 'font-serif font-bold' : 'font-sansita-bold'}`}>
                 {data.title}
               </p>
               <p className="text-[12px] text-gray-500">

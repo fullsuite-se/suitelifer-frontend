@@ -36,17 +36,26 @@ const Footer = () => {
                 FullSuite is the remote operations concierge of choice of
                 venture-backed startups in the US.
               </p>
-
               <p className="footer-text text-white text-sm">
                 We provide tailored and customized finance and operational
                 solutions for early stage and growth startups, supporting them
                 from pre-revenue stage to when they scale.
+              </p>{" "}
+              <p className="footer-text text-white text-sm">
+                <span>Interested in availing our services?</span> Check this
+                out! &nbsp;
+                <span>
+                  <Link
+                    to="https://fullsuite.ph"
+                    className="font-avenir-black text-primary"
+                  >
+                    fullsuite.ph
+                  </Link>
+                </span>
               </p>
-
               <p className="footer-text text-white text-sm">Let's chat.</p>
-
               <div>
-                <ul className="flex items-center gap-4 list-none!">
+                <ul className="flex items-center gap-4 list-none! -ml-5">
                   <li>
                     <FacebookIcon color={"#0097b2"} height="20" width="20" />
                   </li>
@@ -69,7 +78,7 @@ const Footer = () => {
 
       <section className="footer-social flex gap-3">
         <div className="flex flex-col gap-3 pl-7 pt-8">
-          <p className="footer-text text-white text-sm footdr-">
+          <p className="footer-text text-white text-sm">
             FullSuite is the remote operations concierge of choice of
             venture-backed startups in the US.
           </p>
@@ -80,10 +89,20 @@ const Footer = () => {
             pre-revenue stage to when they scale.
           </p>
 
+          <p className="footer-text text-white text-sm">
+            <span>Interested in availing our services?</span> Check this out!
+            &nbsp;
+            <span>
+              <Link to="https://fullsuite.ph" className="font-avenir-black">
+                fullsuite.ph
+              </Link>
+            </span>
+          </p>
+
           <p className="footer-text text-white text-sm">Let's chat.</p>
 
           <div>
-            <ul className="flex items-center gap-4 list-none!">
+            <ul className="flex items-center gap-4 list-none! -ml-5  ">
               <li>
                 <FacebookIcon color={"white"} height="20" width="20" />
               </li>
@@ -110,29 +129,29 @@ const Footer = () => {
           <span className="footer-text text-sm text-white font-avenir-black">
             About Us
           </span>
-          <ul className="flex flex-wrap gap-1 flex-col mt-3 list-none!">
-            <li className="text-sm text-white">
-              <Link to={""} className="footer-text">
+          <ul className="flex flex-wrap gap-1 flex-col mt-2 list-none! -ml-5">
+            <li className="text-sm text-white ">
+              <Link to={""} className="footer-text hover:!text-primary">
                 Our Story
               </Link>
             </li>
             <li className="text-sm text-white">
-              <Link to={""} className="footer-text">
+              <Link to={""} className="footer-text hover:!text-primary">
                 Mission
               </Link>
             </li>
             <li className="text-sm text-white">
-              <Link to={""} className="footer-text">
+              <Link to={""} className="footer-text hover:!text-primary">
                 Vision
               </Link>
             </li>
             <li className="text-sm text-white">
-              <Link to={""} className="footer-text">
+              <Link to={""} className="footer-text hover:!text-primary">
                 CEO's message
               </Link>
             </li>
             <li className="text-sm text-white">
-              <Link to={""} className="footer-text">
+              <Link to={""} className="footer-text hover:!text-primary">
                 Testimonials
               </Link>
             </li>
@@ -142,38 +161,36 @@ const Footer = () => {
           <span className="footer-text text-sm text-white font-avenir-black">
             Careers
           </span>
-          <ul className="flex flex-wrap gap-1 flex-col mt-3 list-none!">
+          <ul className="flex flex-wrap gap-1 flex-col mt-2 list-none! -ml-5">
             <li className="text-sm text-white">
-              <Link to={""} className="footer-text">
+              <Link to={""} className="footer-text hover:!text-primary">
                 Data Operations
               </Link>
             </li>
             <li className="text-sm text-white">
-              <Link to={""} className="footer-text">
+              <Link to={""} className="footer-text hover:!text-primary">
                 Finance Operations
               </Link>
             </li>
             <li className="text-sm text-white">
-              <Link to={""} className="footer-text">
+              <Link to={""} className="footer-text hover:!text-primary">
                 Administrative Operations
               </Link>
             </li>
-            <li className="text-sm text-white">
-              <Link to={""} className="footer-text">
-                CEO's message
-              </Link>
-            </li>
           </ul>
-
+          <div className="py-2"></div>
           <div className="footer-legal">
-            <ul className="flex-wrap flex gap-1 flex-col mt-5 list-none!">
+            <span className="footer-text text-sm text-white font-avenir-black">
+              Legal
+            </span>
+            <ul className="flex-wrap flex gap-1 flex-col mt-2 list-none! -ml-5">
               <li className="text-sm text-white">
-                <Link to={""} className="footer-text">
+                <Link to={"/privacy-policy"} className="footer-text">
                   Privacy Policy
                 </Link>
               </li>
-              <li className="text-sm text-white">
-                <Link to={""} className="footer-text">
+              <li className="text-sm text-white ">
+                <Link to={"/terms-of-use"} className="footer-text">
                   Terms of Use
                 </Link>
               </li>
@@ -189,19 +206,28 @@ const Footer = () => {
           <span className="text-sm text-white font-avenir-black footer-text">
             Legal
           </span>
-          <ul className="flex-wrap flex gap-1 mt-3 flex-col list-none!">
+          <ul className="flex-wrap flex gap-1 mt-3 flex-col list-none! -ml-5">
             <li className="text-sm ">
-              <Link to={"/privacy-policy"} className="footer-text text-white">
+              <Link
+                to={"/privacy-policy"}
+                className="footer-text text-white hover:!text-primary"
+              >
                 Privacy Policy
               </Link>
             </li>
             <li className="text-sm text-white">
-              <Link to={"/terms-of-use"} className="footer-text text-white">
+              <Link
+                to={"/terms-of-use"}
+                className="footer-text text-white hover:!text-primary"
+              >
                 Terms of Use
               </Link>
             </li>
             <li className="text-sm text-white">
-              <Link to={""} className="footer-text text-white">
+              <Link
+                to={""}
+                className="footer-text text-white hover:!text-primary"
+              >
                 FAQs
               </Link>
             </li>

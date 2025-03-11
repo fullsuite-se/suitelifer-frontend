@@ -92,10 +92,10 @@
     align-items: top;
   }
 
-  .footer-links > :last-child > span,
+  /* .footer-links > :last-child > span,
   .footer-links > :last-child > ul > li > a {
     color: var(--color-primary) !important;
-  }
+  } */
 
   .footer-container > :first-child,
   .footer-container > :nth-child(2) {
