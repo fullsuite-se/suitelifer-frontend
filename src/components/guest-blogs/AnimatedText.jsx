@@ -13,7 +13,7 @@ const AnimatedText = ({ text, color }) => {
 
   return (
     <span
-      className={`relative z-10 mr-3 text-4xl md:text-7xl transition-colors duration-1000 font-avenir-black ${
+      className={`relative z-10 mr-4 text-4xl md:text-7xl mb-3 transition-colors duration-1000 font-sansita-black ${
         isPrimary ?   "text-primary":`text-${color}`
       }`}
     >

@@ -56,10 +56,10 @@ const News = () => {
 
         {/* BANNER */}
         <div className="text-center">
-          <p className="font-avenir-black text-4xl md:text-7xl animate-fadeInUp">
+          <p className="text-4xl md:text-7xl animate-fadeInUp font-serif font-extrabold">
             <span className="text-primary">suite</span> news
           </p>
-          <p className="text-gray-400 md:text-xl">
+          <p className="text-gray-400 text-[12px] md:text-[14px] lg:text-[16px]">
             we serve the latest. the hottest
           </p>
         </div>
@@ -68,7 +68,7 @@ const News = () => {
         <div className="flex justify-center mt-6 px-4">
           <div className="relative flex items-center w-full max-w-xs sm:max-w-sm md:max-w-lg">
           
-          <svg
+            <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"

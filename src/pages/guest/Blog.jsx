@@ -66,7 +66,7 @@ const Blog = () => {
           <AnimatedText text="spot" color="black" />
         </div>
 
-        <div className="text-center mt-5">
+        <div className="text-center mt-3 md:mt-5">
           <p className="text-gray-400 text-[12px] md:text-[14px] lg:text-[16px]">
             where ideas spark and stories thrive.
           </p>
@@ -164,6 +164,7 @@ const Blog = () => {
               ))}
             </div>
 
+            <div className="h-10"></div>
             <div className="flex justify-center items-center w-full h-15 rounded-lg overflow-hidden">
               <img
                 src={loadingGif}

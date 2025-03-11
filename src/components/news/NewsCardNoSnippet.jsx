@@ -21,7 +21,7 @@ const NewsCardNoSnippet = ({ id, title, author, readTime, created_at, imagesWith
 
       {/* Content */}
       <div className="flex flex-col justify-center">
-        <h2 className="font-avenir-black !text-sm sm:text-base md:!text-sm md:line-clamp-2 lg:line-clamp-2 xl:line-clamp-none leading-tight group-hover:text-primary transition duration-300 ease-in-out ">
+        <h2 className="font-serif font-bold !text-sm sm:text-base md:!text-sm md:line-clamp-2 lg:line-clamp-2 xl:line-clamp-none leading-tight group-hover:text-primary transition duration-300 ease-in-out ">
           {title}
         </h2>
         <div className=" sm:text-sm text-gray-500 !text-sm">

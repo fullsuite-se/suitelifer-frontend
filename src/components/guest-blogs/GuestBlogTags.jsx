@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const categories = ["All", "Business", "Employees", "Startups", "Finance"];
+const categories = ["All", "Business", "Employees", "Startups", "Finance", "Baguio"];
 
 const GuestBlogTags = () => {
   const [activeTag, setActiveTag] = useState("All");
