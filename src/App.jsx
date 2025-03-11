@@ -13,7 +13,7 @@ import BlogDetails from "./pages/guest/BlogDetails";
 import NewsDetails from "./pages/guest/NewsDetails";
 
 // Admin Pages
-import AdminProtectedRoute from "./utils/protectedRoutes/AdminProtectedRoute";
+import ProtectedRoutes from "./utils/protectedRoutes/ProtectedRoutes";
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -36,7 +36,7 @@ import EmployeeWorkshops from "./pages/employee/EmployeeWorkshops";
 import EmployeePersonalityTest from "./pages/employee/EmployeePersonalityTest";
 import BlogCreate from "./components/blog/BlogCreate";
 import CareersJobDetails from "./pages/guest/CareersJobDetails";
-import AdminDynamicRoutes from "./utils/protectedRoutes/AdminDynamicRoutes";
+import DynamicRoutes from "./utils/protectedRoutes/DynamicRoutes";
 import RootLayout from "./components/layout/RootLayout";
 function App() {
   return (
@@ -58,9 +58,9 @@ function App() {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-use" element={<TermsOfUse />} />
 
-          <Route element={<AdminProtectedRoute />}>
+          <Route element={<ProtectedRoutes />}>
             <Route path="/app" element={<RootLayout />}>
-              <Route path="*" element={<AdminDynamicRoutes />} />
+              <Route path="*" element={<DynamicRoutes />} />
               <Route index element={<Navigate to="blogs-feed" replace />} />
               <Route path="blogs-feed" element={<EmployeeBlogsFeed />} />
               <Route path="blogs-feed/blog/:id/:slug" element={<BlogView />} />
