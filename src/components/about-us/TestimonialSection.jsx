@@ -46,10 +46,10 @@ const Testimonials = () => {
             <SwiperSlide key={testimonial.id}>
               {({ isActive }) => (
                 <div
-                  className={`p-6 mt-4 ease-out hover:-translate-y-2 bg-white shadow-lg rounded-lg text-center transition-transform duration-300 ${
+                  className={`p-6 mt-4 ease-out bg-white shadow-lg rounded-lg text-center transition-transform duration-300 ${
                     isActive
-                      ? "scale-90 md:scale-110 bg-primary text-white"
-                      : "scale-90 opacity-75"
+                      ? "scale-90 md:scale-110 bg-primary text-white hover:scale-115"
+                      : "scale-90 opacity-75 hover:-translate-y-2"
                   }`}
                 >
                   <img
