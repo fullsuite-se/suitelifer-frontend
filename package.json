@@ -33,6 +33,7 @@
     "@tiptap/starter-kit": "^2.11.5",
     "axios": "^1.7.9",
     "date-fns": "^4.1.0",
+    "framer-motion": "^12.4.11",
     "lucide-react": "^0.475.0",
     "react": "^19.0.0",
     "react-chartjs-2": "^5.3.0",
