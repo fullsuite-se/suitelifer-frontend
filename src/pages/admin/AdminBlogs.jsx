@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import logofsfull from "../../assets/logos/logo-fs-full.svg";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import FileUploader from "../../components/admin/FileUploader";
 import {
   Button,
   Modal,
@@ -24,7 +25,9 @@ import {
   ListItemText,
   ListItemAvatar,
   Avatar,
+  Container,
 } from "@mui/material";
+import TextEditor from "../../components/TextEditor";
 
 const employeeBlogData = [
   {
@@ -251,6 +254,7 @@ const AdminBlogs = () => {
           </div>
         </div>
       </div>
+
       <AddBlogModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
@@ -296,6 +300,7 @@ const BlogTable = ({ blogs, onEdit, onDelete }) => (
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 maxWidth: "200px",
+                fontWeight: "bold",
               }}
             >
               {blog.title}
@@ -304,12 +309,12 @@ const BlogTable = ({ blogs, onEdit, onDelete }) => (
             <TableCell>{blog.date}</TableCell>
             <TableCell align="center">
               <div className="gap-x-4 flex justify-center items-center">
-              <button onClick={() => onEdit(blog)}>
-                <EditIcon />
-              </button>
-              <button onClick={() => onDelete(blog)}>
-                <DeleteIcon />
-              </button>
+                <button onClick={() => onEdit(blog)}>
+                  <EditIcon />
+                </button>
+                <button onClick={() => onDelete(blog)}>
+                  <DeleteIcon />
+                </button>
               </div>
             </TableCell>
           </TableRow>
@@ -356,31 +361,29 @@ const AddBlogModal = ({ isOpen, onClose, onAddBlog, blogType }) => {
           p: 4,
           borderRadius: 1,
           boxShadow: 24,
+          width: "40%",
+          height: "67vh",
         }}
       >
-        <Typography variant="h6" mb={2}>
-          Add New {blogType === "EMPLOYEE BLOGS" ? "Employee" : "Company"} Blog
-        </Typography>
-        <TextField
-          fullWidth
-          label="Title"
-          value={title}
-          onChange={(e) => {
-            if (e.target.value.length <= 100) {
-              setTitle(e.target.value);
-            }
-          }}
-          margin="normal"
+        <div className="flex w-full justify-center items-center *:">
+          <Typography variant="h5" mb={2}>
+            Add New {blogType === "EMPLOYEE BLOGS" ? "Employee" : "Company"}{" "}
+            Blog
+          </Typography>
+        </div>
+
+        <div className="flex flex-end">
+          <FileUploader
+            type="file"
+            onChange={(e) => setAttachment(e.target.files[0])}
+            style={{ margin: "16px 0" }}
+          />
+        </div>
+        <TextEditor
+          titleChange={(newTitle) => setTitle(newTitle)}
+          descChange={(newContent) => setContent(newContent)}
         />
-        <TextField
-          fullWidth
-          label="Content"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          margin="normal"
-          multiline
-          rows={4}
-        />
+
         <TextField
           fullWidth
           label="Author"
@@ -388,12 +391,10 @@ const AddBlogModal = ({ isOpen, onClose, onAddBlog, blogType }) => {
           onChange={(e) => setAuthor(e.target.value)}
           margin="normal"
         />
-        <input
-          type="file"
-          onChange={(e) => setAttachment(e.target.files[0])}
-          style={{ margin: "16px 0" }}
-        />
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+
+        <Box
+          sx={{ display: "flex", justifyContent: "flex-end" }}
+        >
           <button
             onClick={onClose}
             className="btn-light hover:bg-gray-400 text-black font-bold py-2 px-4 rounded"

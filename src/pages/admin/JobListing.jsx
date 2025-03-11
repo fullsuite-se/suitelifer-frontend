@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import logofsfull from "../../assets/logos/logo-fs-full.svg";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
 import { useForm } from "react-hook-form";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
@@ -24,6 +23,15 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import config from "../../config";
+
+import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
+import { ModuleRegistry } from "@ag-grid-community/core";
+import { AgGridReact } from "@ag-grid-community/react";
+import "@ag-grid-community/styles/ag-grid.css";
+import "@ag-grid-community/styles/ag-theme-quartz.css";
+import { useNavigate } from "react-router-dom";
+
+ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 const initialSetup = ["Remote", "Hybrid", "On-Site", "In-Office"];
 
@@ -67,8 +75,116 @@ export default function JobListing() {
     },
   });
 
+  const gridOptions = {
+    getRowStyle: (params) => {
+      if (params.node.rowIndex % 2 === 0) {
+        return { background: "#ECF1E3", color: "black" };
+      } else {
+        return { background: "white", color: "black" };
+      }
+    },
+  };
+
+  const gridRef = useRef();
+  const [rowData, setRowData] = useState([]);
+  const columnDefs = useMemo(
+    () => [
+      {
+        headerName: "Job Title",
+        field: "jobTitle",
+        flex: 2,
+        filter: "agTextColumnFilter",
+        headerClass: "text-primary bg-tertiary font-bold",
+      },
+      {
+        headerName: "Description",
+        field: "description",
+        flex: 3,
+        filter: "agTextColumnFilter",
+
+        cellRenderer: (params) => {
+          const desc = params.value;
+          return desc.length > 50 ? `${desc.slice(0, 50)}...` : desc;
+        },
+        headerClass: "text-primary font-bold bg-tertiary",
+      },
+      {
+        headerName: "Employment Type",
+        field: "employmentType",
+        flex: 1,
+        filter: "agTextColumnFilter",
+        headerClass: "text-primary font-bold bg-tertiary",
+      },
+      {
+        headerName: "Status",
+        field: "isOpen",
+        flex: 1,
+        filter: "agTextColumnFilter",
+        valueFormatter: (params) => (params.value === 1 ? "Open" : "Closed"),
+        headerClass: "text-primary font-bold bg-tertiary",
+      },
+      {
+        headerName: "Set-Up",
+        field: "setupName",
+        flex: 1,
+        filter: "agTextColumnFilter",
+        headerClass: "text-primary font-bold bg-tertiary",
+      },
+      {
+        headerName: "Visibility",
+        field: "isShown",
+        flex: 1,
+        filter: "agTextColumnFilter",
+        valueFormatter: (params) => (params.value === 1 ? "Shown" : "Hidden"),
+        headerClass: "text-primary font-bold bg-tertiary",
+      },
+      {
+        headerName: "Action",
+        field: "action",
+        filter: false,
+        headerClass: "text-primary font-bold bg-tertiary",
+        flex: 1,
+        cellRenderer: (params) => {
+          return (
+            <button
+              className="bg-transparent p-2 rounded w-8 h-8 flex justify-center items-center"
+              onClick={() => handleEditJob(params.data)}
+            >
+              <EditIcon />
+            </button>
+          );
+        },
+      },
+    ],
+    []
+  );
+
+  const defaultColDef = useMemo(
+    () => ({
+      filter: "agTextColumnFilter",
+      floatingFilter: true,
+      sortable: true,
+    }),
+    []
+  );
+
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
+  useEffect(() => {
+    const fetchJobListings = async () => {
+      try {
+        const response = await axios.get(`${config.apiBaseUrl}/api/all-jobs`);
+        console.log(response.data.data);
+        setJobListings(response.data.data);
+        setRowData(response.data.data);
+      } catch (error) {
+        console.error("Error fetching job listings:", error);
+      }
+    };
+
+    fetchJobListings();
+  }, []);
 
   useEffect(() => {
     const fetchIndustries = async () => {
@@ -114,6 +230,8 @@ export default function JobListing() {
       const updatedJobListings = jobListings.map((job, index) =>
         index === editJob ? data : job
       );
+      console.log(updatedJobListings);
+
       setJobListings(updatedJobListings);
     } else {
       await axios.post(`${config.apiBaseUrl}/api/add-job`, data);
@@ -126,9 +244,7 @@ export default function JobListing() {
   const handleAddIndustry = async () => {
     if (isEditModal) {
       const updatedIndustries = industries.map((industry, index) =>
-        index === isEditModal
-          ? { name: industryName, assessmentUrl }
-          : industry
+        index === isEditModal ? { name: industryName, assessmentUrl } : industry
       );
 
       setIndustries(updatedIndustries);
@@ -171,8 +287,6 @@ export default function JobListing() {
     setNewIndustry((n) => (n = { ...n, assessment_url: e.target.value }));
     console.log(newIndustry);
   };
-
-
 
   const handleEditIndustry = (industry) => {
     setEditIndustry(industry);
@@ -229,38 +343,35 @@ export default function JobListing() {
       </header>
       {/* Stats */}
       <div className="flex flex-wrap gap-4">
-        <div className="bg-primary text-white px-4 py-2 rounded-md w-80">
-          <div className="text-lg text-center">Total Applications</div>
-          <div className="text-2xl font-bold text-center">917</div>
+        <div className="bg-primary text-white px-4 py-2 rounded-2xl w-100 h-10 flex items-center justify-between">
+          <span>{`Total Applications`}</span>
+          <span className="text-2xl">{`${jobListings.length}`}</span>
         </div>
-        <div className="border px-4 py-2 rounded-md w-50 bg-gray-200">
-          <div className="text-lg text-center ">Industries</div>
-          <div className="text-2xl font-bold text-center">
-            {industries.length}
-          </div>
+        <div className="border-2 text-dark px-4 py-2 rounded-2xl w-100 h-10 flex items-center justify-between">
+          <span>{`Industries`}</span>
+          <span className="text-2xl">{`${industries.length}`}</span>
         </div>
-        <div className="border px-4 py-2 rounded-md w-50 bg-gray-200">
-          <div className="text-lg text-center">Job Listings</div>
-          <div className="text-2xl font-bold text-center">
-            {jobListings.length}
-          </div>
-        </div>
-        <div className="flex gap-2">
-          <div className="border px-4 py-2 rounded-md w-25">
-            <div className="text-lg text-center">Open</div>
-            <div className="text-2xl font-bold text-center">
-              {jobListings.filter((value, index) => {
-                return value.isOpen === 1;
-              }).length}
-            </div>
-          </div>
-          <div className="border px-4 py-2 rounded-md w-25">
-            <div className="text-lg text-center">Closed</div>
-            <div className="text-2xl font-bold text-center">
-            {jobListings.filter((value, index) => {
-                return value.isOpen === 0;
-              }).length}
-            </div>
+
+        <div className="border-2 text-dark px-4 py-2 rounded-2xl w-198 h-10 flex items-center justify-between">
+          <span>{`Job Listings`}</span>
+          <span className="text-2xl">{`${jobListings.length}`}</span>
+          <div className="border-l-2 text-dark px-4 py-2 rounded-2xl w-100 h-10 flex items-center justify-between flex-end">
+            <span className="">Open</span>
+            <span className="text-2xl font-bold">
+              {
+                jobListings.filter((value, index) => {
+                  return value.isOpen === 1;
+                }).length
+              }
+            </span>
+            <span className="">Closed</span>
+            <span className="text-2xl font-bold">
+              {
+                jobListings.filter((value, index) => {
+                  return value.isOpen === 0;
+                }).length
+              }
+            </span>
           </div>
         </div>
       </div>
@@ -300,56 +411,25 @@ export default function JobListing() {
           <MoreVertIcon />
         </button>
       </div>
-      {/* Table */}
-      <div className="border-primary border-2 rounded-2xl overflow-clip">
-        <table className="w-full bg-white">
-          <thead>
-            <tr className="bg-secondary">
-              <th className="text-left py-2 px-5">Job Title</th>
-              <th className="text-left p-2">Description</th>
-              <th className="text-left p-2">Employment Type</th>
-              <th className="text-left p-2">Status</th>
-              <th className="text-left p-2">Set-Up</th>
-              <th className="text-left p-2">Visibility</th>
-              <th className="text-center p-2">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {jobListings.map((job, index) => (
-              <tr
-                key={index}
-                className={index % 2 === 0 ? "bg-tertiary" : "bg-white"}
-              >
-                <td className="py-2 px-5 font-medium">{job.jobTitle}</td>
-                <td className="p-2">
-                  <Tooltip title={job.description} arrow>
-                    <span className="block break-words whitespace-normal max-w-full">
-                      {job.description.length > 50
-                        ? `${job.description.slice(0, 50)}...`
-                        : job.description}
-                    </span>
-                  </Tooltip>
-                </td>
 
-                <td className="p-2">{job.employmentType}</td>
-                <td className="p-2">{job.isOpen === 1 ? "Open" : "Closed"}</td>
-                <td className="p-2">{job.setupName}</td>
-                <td className="p-2">
-                  {job.visibility === 1 ? "Shown" : "Hidden"}
-                </td>
-                <td className="p-2 text-center">
-                  <button
-                    className="bg-transparent p-2 rounded w-8 items-center"
-                    onClick={() => handleEditJob(index)}
-                  >
-                    <EditIcon />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div
+        className="ag-theme-quartz p-5"
+        style={{ height: "65vh", width: "100%" }}
+      >
+        <AgGridReact
+          rowData={rowData}
+          ref={gridRef}
+          columnDefs={columnDefs}
+          gridOptions={gridOptions}
+          defaultColDef={defaultColDef}
+          pagination={true}
+          paginationPageSize={15}
+          paginationPageSizeSelector={[15, 25, 50]}
+          domLayout="autoHeight"
+          className="h-full"
+        />
       </div>
+
       {/* Job Modal */}
       <Modal open={openJobModal} onClose={() => setOpenJobModal(false)}>
         <div className="space-y-10 overflow-hidden ">
@@ -358,7 +438,7 @@ export default function JobListing() {
               {editJob !== null ? "Edit Job Listing" : "Add Job Listing"}
             </h2>
             <form
-              onSubmit={handleSubmit(handleAddJob)}
+              onSubmit={(handleAddJob)}
               className="space-y-4 mt-1"
             >
               <div className="flex justify-between gap-4">
