@@ -3,7 +3,7 @@ import axios from "axios";
 import config from "../../config";
 
 const AdminLogin = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [accessToken, setAccessToken] = useState(null);
 
@@ -14,12 +14,11 @@ const AdminLogin = () => {
     try {
       const response = await axios.post(
         `${config.apiBaseUrl}/api/login`,
-        { email: username, password, role: "admin" },
+        { email, password },
         { withCredentials: true }
       );
 
       console.log("Login successful:", response.data);
-
       setAccessToken(response.data.accessToken);
     } catch (error) {
       console.error("Login failed:", error);
@@ -58,7 +57,6 @@ const AdminLogin = () => {
       );
 
       console.log("Token refreshed:", response.data);
-
       const newToken = response.data.accessToken;
       setAccessToken(newToken);
       return newToken;
@@ -73,12 +71,12 @@ const AdminLogin = () => {
       <h2>Login Admin</h2>
       <form onSubmit={handleLogin}>
         <div>
-          <label htmlFor="username">Username:</label>
+          <label htmlFor="email">Email:</label>
           <input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         <div>
