@@ -41,14 +41,17 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <Toaster position="top-right" reverseOrder={false} />
+        <Toaster position="top-center" reverseOrder={false} />
         <Routes>
           {/* Routes that are publicly avaialable (guest) */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/careers" element={<Careers />} />
-          <Route path="/application-form/:id/:jobPosition" element={<ApplicationForm />} />
+          <Route
+            path="/application-form/:id/:jobPosition"
+            element={<ApplicationForm />}
+          />
           <Route
             path="/congrats-application-form"
             element={<CongratsApplicationForm />}
