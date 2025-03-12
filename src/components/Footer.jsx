@@ -8,6 +8,7 @@ import FacebookIcon from "../assets/logos/Facebook.jsx";
 import InstagramIcon from "../assets/logos/Instagram.jsx";
 import LinkedlnIcon from "../assets/logos/Linkedln.jsx";
 import { Link } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 
 const Footer = () => {
   return (
@@ -136,29 +137,29 @@ const Footer = () => {
           </span>
           <ul className="flex flex-wrap gap-1 flex-col mt-2 list-none! -ml-5">
             <li className="text-sm text-white ">
-              <Link to={""} className="footer-text hover:!text-primary">
-                Our Story
-              </Link>
+            <HashLink to="/about-us#our-story" className="footer-text hover:!text-primary">
+  Our Story
+</HashLink>
             </li>
             <li className="text-sm text-white">
-              <Link to={""} className="footer-text hover:!text-primary">
+              <HashLink to="/about-us#our-mission" className="footer-text hover:!text-primary">
                 Mission
-              </Link>
+              </HashLink>
             </li>
             <li className="text-sm text-white">
-              <Link to={""} className="footer-text hover:!text-primary">
+              <HashLink to="/about-us#our-vision" className="footer-text hover:!text-primary">
                 Vision
-              </Link>
+              </HashLink>
             </li>
             <li className="text-sm text-white">
-              <Link to={""} className="footer-text hover:!text-primary">
+              <HashLink to={"/about-us/#ceo-message"} className="footer-text hover:!text-primary">
                 CEO's message
-              </Link>
+              </HashLink>
             </li>
             <li className="text-sm text-white">
-              <Link to={""} className="footer-text hover:!text-primary">
+              <HashLink to={"/about-us/#testimonials"} className="footer-text hover:!text-primary">
                 Testimonials
-              </Link>
+              </HashLink>
             </li>
           </ul>
         </div>

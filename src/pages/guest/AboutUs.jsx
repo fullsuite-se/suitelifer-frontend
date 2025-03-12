@@ -66,7 +66,7 @@ const AboutUs = () => {
       </div>
       <main className="md:mt-20">
         {/* Hero Section */}
-        <section className="overflow-hidden about-container">
+        <section className="overflow-hidden about-container"  id="our-story">
           <div className="h-56 w-72">
             <img
               style={{ animation: "slideInFromLeft 0.8s ease-out forwards" }}
@@ -97,13 +97,13 @@ const AboutUs = () => {
             />
           </motion.div>
 
-          <div className="mx-5">
+          <div className="mx-5" >
             <img
               className="w-full h-full object-cover rounded-3xl animate-slideInLong"
               src="https://images.unsplash.com/photo-1739382120576-b1434e8bc4d3?q=80&w=1975&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             />
           </div>
-          <section className="flex flex-col gap-3 mt-5 mx-5">
+          <section className="flex flex-col gap-3 mt-5 mx-5" >
             <p className="text-primary text-center text-sm font-avenir-black">
               OUR STORY
             </p>
@@ -161,10 +161,10 @@ const AboutUs = () => {
           </section>
 
           <section className="!-px-200">
-            <p className=" xl:-ml-25 xl:mt-50 font-avenir-black px-5 py-3 !text-xl md:mt-10 lg:mt-20 lg:!text-2xl">
+            <p className=" xl:-ml-25 lg:mt-40 xl:mt-50 font-avenir-black px-5 py-3 !text-xl md:mt-10 lg:!text-2xl">
               “{videoTitle}”
             </p>
-            <p className="text-sm md:text-base mx-5 mb-10 xl:-ml-20">
+            <p className="text-sm md:text-base mx-5 mb-10 xl:-ml-20 ">
               In this exclusive podcast interview, Maggie, the CEO of FullSuite
               Company, shares her journey of resilience and leadership in the
               competitive world of BPO. From navigating challenges to redefining
@@ -274,15 +274,17 @@ const AboutUs = () => {
         <section className="flex justify-center mb-[5%] md:mb-0">
           <div className="grid grid-cols-2 grid-rows-2 px-[5%] max-h-[1600px]">
             {/* Mission Image */}
-            <div className="flex justify-end">
-              <div className="md:translate-y-[10%] md:translate-x-[10%] bg-primary/50 p-[5%] max-h-[800px] rounded-2xl lg:rounded-4xl size-[50vw] md:aspect-4/3">
-                <img
-                  className="w-full h-full rounded-2xl lg:rounded-3xl object-cover"
-                  src={imgMeeting}
-                  alt="Mission image"
-                />
+            <section id="our-mission">
+              <div className="flex justify-end">
+                <div className="md:translate-y-[10%] md:translate-x-[10%] bg-primary/50 p-[5%] max-h-[800px] rounded-2xl lg:rounded-4xl size-[50vw] md:aspect-4/3">
+                  <img
+                    className="w-full h-full rounded-2xl lg:rounded-3xl object-cover"
+                    src={imgMeeting}
+                    alt="Mission image"
+                  />
+                </div>
               </div>
-            </div>
+            </section>
 
             {/* Mission Text */}
             <article className="mission-vision-text flex flex-col justify-center items-start text-end">
@@ -298,15 +300,17 @@ const AboutUs = () => {
             </article>
 
             {/* Vision Text */}
-            <article className="pt-[15%] md:pt-[18%] lg:pt-[23%] pr-[7%] md:pr-[13%] mission-vision-text flex flex-col justify-start items-start text-start">
-              <p className="blue-text uppercase w-full font-avenir-black text-primary">
-                Fullsuite Vision
-              </p>
-              <p className="title font-avenir-black w-full">
-                {MissionVisionList[1].title}
-              </p>
-              <p className="description">{MissionVisionList[1].content}</p>
-            </article>
+            <section  id="our-vision">
+              <article className="pt-[15%] md:pt-[18%] lg:pt-[23%] pr-[7%] md:pr-[13%] mission-vision-text flex flex-col justify-start items-start text-start">
+                <p className="blue-text uppercase w-full font-avenir-black text-primary">
+                  Fullsuite Vision
+                </p>
+                <p className="title font-avenir-black w-full">
+                  {MissionVisionList[1].title}
+                </p>
+                <p className="description">{MissionVisionList[1].content}</p>
+              </article>
+            </section>
             {/* Vision Image */}
             <div className="flex">
               <div className="md:-translate-y-[10%] md:-translate-x-[10%] bg-[#DFE8CF] p-[5%] max-h-[800px] rounded-2xl lg:rounded-4xl size-[50vw] md:aspect-4/3">
@@ -321,7 +325,7 @@ const AboutUs = () => {
         </section>
 
         {/* Message from the CEO */}
-        <section className="relative pb-20">
+        <section className="relative pb-20" id="ceo-message">
           {/* Text overlay */}
           <article className="absolute text-end text-white">
             <div className="container-ceo-message pt-[22%] md:pt-[15%] pr-[5%] md:pr-[10%]">
@@ -385,7 +389,7 @@ const AboutUs = () => {
         </section>
 
         {/* Testimonials */}
-        <section>
+        <section id="testimonials">
           <div className="flex justify-end scale-x-[-1]">
             <img className="dots-line" src={dotsLine} alt="3 dots and a line" />
           </div>
