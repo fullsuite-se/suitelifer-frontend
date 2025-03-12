@@ -1,15 +1,17 @@
-import React, { useState } from "react";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import interactionPlugin from "@fullcalendar/interaction";
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
+import React, { useContext, useState } from "react";
+import { Calendar, momentLocalizer, Views } from "react-big-calendar";
+import moment from "moment";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 import Button from "@mui/material/Button";
 import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import logofsfull from "../../assets/logos/logo-fs-full.svg";
 import "../../css/animation/animation.css";
-import "../../css/base/theme.css";
+import "../../components/admin/AdminDashboard.css";
+// import { SidebarContext } from "./AdminLayout";
+
+import AppsIcon from "@mui/icons-material/Apps";
+
+const localizer = momentLocalizer(moment);
 
 const applicationData = [
   { month: 0, applications: 2400 },
@@ -56,14 +58,18 @@ const jobListingsData = [
   { month: 11, open: 32, closed: 16 },
 ];
 
-const initialEvents = {
-  February: [
-    { date: 19, title: "New Interns' Onboarding" },
-  ],
-  March: [
-    { date: 19, title: "New Interns' Onboarding" },
-  ],
-};
+const initialEvents = [
+  {
+    title: "New Interns' Onboarding",
+    start: new Date(2025, 1, 19),
+    end: new Date(2025, 1, 19),
+  },
+  {
+    title: "New Interns' Onboarding",
+    start: new Date(2025, 2, 19),
+    end: new Date(2025, 2, 19),
+  },
+];
 
 const stats = {
   employees: 52,
@@ -78,69 +84,62 @@ const stats = {
 const AdminDashboard = () => {
   const [open, setOpen] = useState(false);
   const [eventTitle, setEventTitle] = useState("");
-  const [eventDate, setEventDate] = useState("");
+  const [eventEndDate, setEventStartDate] = useState("");
+  const [eventStartDate, setEventEndDate] = useState("");
+  const [eventDescription, setEventDescription] = useState("");
   const [events, setEvents] = useState(initialEvents);
   const [editEvent, setEditEvent] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedChart, setSelectedChart] = useState("applications");
   const [showUpcomingEvents, setShowUpcomingEvents] = useState(false);
+  const [view, setView] = useState(Views.MONTH);
+  const [date, setDate] = useState(new Date());
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEventDetailsModalOpen, setIsEventDetailsModalOpen] = useState(false);
+  const [isUpcomingEventModalOpen, setIsUpcomingEventModalOpen] =
+    useState(false);
+  const [newEvent, setNewEvent] = useState({
+    title: "",
+    start: new Date(),
+    end: new Date(new Date().setDate(new Date().getDate() + 1)),
+    description: "",
+  });
+  const [editableEvent, setEditableEvent] = useState(null);
+  const [selectedUpcomingEvent, setSelectedUpcomingEvent] = useState(null);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setEventTitle("");
-    setEventDate("");
+    setEventStartDate("");
+    setEventEndDate("");
+    setEventDescription("");
     setEditEvent(null);
     setOpen(false);
   };
 
   const handleAddEvent = () => {
-    if (eventTitle && eventDate) {
-      const eventMonth = new Date(eventDate).toLocaleString("default", {
-        month: "long",
-      });
-      const eventDay = new Date(eventDate).getDate();
-      const newEvent = { date: eventDay, title: eventTitle };
+    if (eventTitle && eventStartDate) {
+      const newEvent = {
+        title: eventTitle,
+        start: new Date(eventStartDate),
+        end: new Date(eventEndDate),
+        description: eventDescription,
+      };
 
-      setEvents((prevEvents) => {
-        const updatedEvents = { ...prevEvents };
-        if (updatedEvents[eventMonth]) {
-          const isDuplicate = updatedEvents[eventMonth].some(
-            (event) => event.date === eventDay && event.title === eventTitle
-          );
-          if (!isDuplicate) {
-            updatedEvents[eventMonth].push(newEvent);
-          }
-        } else {
-          updatedEvents[eventMonth] = [newEvent];
-        }
-        return updatedEvents;
-      });
-
+      setEvents((prevEvents) => [...prevEvents, newEvent]);
       handleClose();
     }
   };
 
-  const handleEventClick = (clickInfo) => {
-    setSelectedEvent({
-      title: clickInfo.event.title,
-      date: clickInfo.event.startStr,
-    });
-    setShowUpcomingEvents(true);
+  const handleSelectSlot = ({ start }) => {
+    setEventStartDate(start);
+    handleOpen();
   };
 
-  const calendarEvents = Object.entries(events).flatMap(
-    ([month, monthEvents]) =>
-      monthEvents.map((event) => ({
-        title: event.title,
-        date: new Date(
-          2025,
-          new Date(`${month} 1, 2025`).getMonth(),
-          event.date
-        )
-          .toISOString()
-          .split("T")[0],
-      }))
-  );
+  const handleSelectEvent = (event) => {
+    setSelectedEvent(event);
+    setShowUpcomingEvents(true);
+  };
 
   const getChartData = () => {
     switch (selectedChart) {
@@ -161,48 +160,81 @@ const AdminDashboard = () => {
     }
   };
 
-  const sortedUpcomingEvents = Object.entries(events)
-    .flatMap(([month, monthEvents]) =>
-      monthEvents.map((event) => ({
-        ...event,
-        month,
-        dateObj: new Date(
-          2025,
-          new Date(`${month} 1, 2025`).getMonth(),
-          event.date
-        ),
-      }))
-    )
+  const sortedUpcomingEvents = events
+    .map((event) => ({
+      ...event,
+      dateObj: new Date(event.start),
+    }))
     .sort((a, b) => a.dateObj - b.dateObj)
     .slice(0, 5);
 
+  const handleAddEventButtonClick = () => {
+    setNewEvent({
+      title: "",
+      start: new Date(),
+      end: new Date(new Date().setDate(new Date().getDate() + 1)),
+      description: "",
+    });
+    setIsAddModalOpen(true);
+  };
+
+  const handleAddEventModal = () => {
+    setEvents([...events, newEvent]);
+    setIsAddModalOpen(false);
+    setNewEvent({
+      title: "",
+      start: new Date(),
+      end: new Date(new Date().setDate(new Date().getDate() + 1)),
+      description: "",
+    });
+  };
+
+  const handleEditEvent = () => {
+    setEvents(
+      events.map((event) => (event === selectedEvent ? editableEvent : event))
+    );
+    setIsEventDetailsModalOpen(false);
+    setSelectedEvent(null);
+    setEditableEvent(null);
+  };
+
+  const handleUpcomingEventClick = (event) => {
+    setSelectedUpcomingEvent(event);
+    setIsUpcomingEventModalOpen(true);
+  };
+
   return (
-    <div className="max-h-screen bg-white p-2">
+    <div className="max-h-100vh bg-white p-1">
       {/* Header */}
-      <header className="">
-        <div className="container flex h-16 items-center justify-between">
+      <header className="container flex h-12 items-center justify-between flex-wrap">
+        <div className="flex gap-4 items-center">
+          <button className="sm:hidden">
+            <AppsIcon sx={{ fontSize: "48px" }} />
+          </button>
           <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
-          <div className="flex gap-2">
-            <Button variant="contained" className="bg-primary text-white">
-              + JOB LISTING
-            </Button>
-            <Button variant="contained" className="bg-primary text-white">
-              + EVENT
-            </Button>
-          </div>
+        </div>
+
+        <div className="flex gap-2">
+          <button className="btn-primary">
+            <span className="mr-2">+</span> JOB LISTING
+          </button>
+          <button className="btn-primary">
+            <span className="mr-2">+</span> INDUSTRY
+          </button>
         </div>
       </header>
 
       {/* Main Content */}
       <main className="p-2">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {/* Left Column - Stats and Chart */}
-          <div className="col-span-2">
+        <div
+          // className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+
+          className="flex flex-col xl:flex-row gap-5"
+        >
+          <div className="flex-1">
             <div className="grid gap-6">
-              {/* Stats Cards */}
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="grid gap-4 md:grid-cols-2">
-                  {/* Employee Stats */}
                   <div
                     className="border p-4 rounded-2xl shadow cursor-pointer bg-primary text-white"
                     onClick={() => setSelectedChart("employees")}
@@ -213,13 +245,12 @@ const AdminDashboard = () => {
                       </h2>
                     </div>
                     <div>
-                      <p className="text-xs text-center uppercase">
+                      <p className="text-lg text-center uppercase">
                         TOTAL EMPLOYEE ACCOUNTS
                       </p>
                     </div>
                   </div>
 
-                  {/* Applications Stats */}
                   <div
                     className="border p-4 rounded-2xl shadow cursor-pointer bg-primary text-white"
                     onClick={() => setSelectedChart("applications")}
@@ -230,7 +261,7 @@ const AdminDashboard = () => {
                       </h2>
                     </div>
                     <div>
-                      <p className="text-xs text-center uppercase">
+                      <p className="text-lg text-center justify-center uppercase ">
                         TOTAL APPLICATIONS
                       </p>
                     </div>
@@ -246,38 +277,38 @@ const AdminDashboard = () => {
                     <h2 className="text-2xl text-center font-bold">
                       {stats.jobListings.total}
                     </h2>
-                    <p className="text-xs text-center uppercase">
+                    <p className="text-lg text-center uppercase">
                       TOTAL JOB LISTINGS
                     </p>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div
-                      className="rounded bg-green-200 p-2 text-center text-black cursor-pointer"
+                      className="rounded bg-secondary p-2 text-center text-white cursor-pointer"
                       onClick={() => setSelectedChart("jobListingsOpen")}
                     >
                       <div className="text-xl font-bold">
                         {stats.jobListings.open}
                       </div>
-                      <div className="text-xs">Open</div>
+                      <div className="text-md">Open</div>
                     </div>
                     <div
-                      className="rounded bg-gray-400 p-2 text-black text-center cursor-pointer"
+                      className="rounded bg-accent-2 p-2 text-dark text-center cursor-pointer"
                       onClick={() => setSelectedChart("jobListingsClosed")}
                     >
                       <div className="text-xl font-bold">
                         {stats.jobListings.closed}
                       </div>
-                      <div className="text-xs">Closed</div>
+                      <div className="text-md">Closed</div>
                     </div>
                   </div>
                 </div>
               </div>
               {/* Applications Chart */}
-              <div className="border p-4 rounded shadow">
+              <div className="border p-4 rounded shadow h-140">
                 <div>
                   <h2 className="text-lg font-medium">JOB APPLICATIONS</h2>
                 </div>
-                <div className="h-[480px]">
+                <div className="h-[400px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={getChartData()}>
                       <XAxis
@@ -311,55 +342,55 @@ const AdminDashboard = () => {
           </div>
 
           {/* Right Column - Calendar and Events */}
-          <div className="space-y-6 relative">
+          <div className="space-y-6 flex">
             {/* Calendar */}
-            <div className="border p-4 rounded shadow h-full">
-              <div className="flex flex-row items-center justify-between"></div>
-              <div className="h-[500px] overflow-hidden">
-                {" "}
-                <FullCalendar
-                  plugins={[dayGridPlugin, interactionPlugin]}
-                  initialView="dayGridMonth"
-                  views={{
-                    dayGridMonth: {
-                      buttonText: "Month",
-                      dayMaxEventRows: 6,
-                    },
-                  }}
-                  headerToolbar={{
-                    left: "prev,next today",
-                    center: "title",
-                    right: "dayGridMonth",
-                  }}
-                  height="100%"
-                  events={calendarEvents}
-                  eventClick={handleEventClick}
-                  dateClick={(info) => {
-                    setEventDate(info.dateStr);
-                    handleOpen();
-                  }}
-                  dayCellClassNames={(date) => {
-                    const day = date.date.getDay();
-                    let classNames = "no-underline text-center";
-                    if (day === 0) classNames += " sunday";
-                    if (day === 6) classNames += " saturday";
-                    return classNames;
-                  }}
-                />
+            <div className="border bg-accent-1 p-2 rounded shadow">
+              <div className="flex flex-row items-center justify-center">
+                <div className="h-[500px] w-120">
+                  <Calendar
+                    localizer={localizer}
+                    events={events}
+                    startAccessor="start"
+                    endAccessor="end"
+                    selectable
+                    onSelectSlot={handleSelectSlot}
+                    onSelectEvent={handleSelectEvent}
+                    style={{ height: 500 }}
+                    dayPropGetter={(date) => {
+                      const day = date.getDay();
+                      if (day === 0 || day === 6) {
+                        return {
+                          style: {
+                            backgroundColor: "#ffcccc",
+                            fontStyle: "italic",
+                          },
+                        };
+                      }
+                      return {};
+                    }}
+                    view={view}
+                    onView={(newView) => setView(newView)}
+                    date={date}
+                    onNavigate={(newDate) => setDate(newDate)}
+                  />
+                </div>
               </div>
+
               <h2 className="text-lg font-medium">Upcoming Events</h2>
               <div className="space-y-6">
                 {sortedUpcomingEvents.slice(0, 3).map((event, index) => (
                   <div key={index}>
                     {index === 0 ||
                     sortedUpcomingEvents[index - 1].month !== event.month ? (
-                      <h3 className="mb-2 font-medium">{event.month}</h3>
+                      <h3 className="mb-2 font-medium">
+                        {moment(event.start).format("MMMM")}
+                      </h3>
                     ) : null}
                     <ul className="space-y-2">
                       <li className="flex gap-2 no-underline">
                         <span className="text-gray-500">•</span>
                         <span className="no-underline">
-                          {event.date} - {event.title}
+                          {moment(event.start).format("D")} - {event.title}
                         </span>
                       </li>
                     </ul>
@@ -381,13 +412,15 @@ const AdminDashboard = () => {
                         {index === 0 ||
                         sortedUpcomingEvents[index - 1].month !==
                           event.month ? (
-                          <h3 className="mb-2 font-medium">{event.month}</h3>
+                          <h3 className="mb-2 font-medium">
+                            {moment(event.start).format("MMMM")}
+                          </h3>
                         ) : null}
                         <ul className="space-y-2">
                           <li className="flex gap-2 no-underline">
                             <span className="text-gray-500">•</span>
                             <span className="no-underline">
-                              {event.date} - {event.title}
+                              {moment(event.start).format("D")} - {event.title}
                             </span>
                           </li>
                         </ul>
@@ -410,40 +443,69 @@ const AdminDashboard = () => {
         </div>
       </main>
 
-      {/* Modal for Adding or Editing Events */}
-      <Modal open={open} onClose={handleClose}>
-        <Box className="modal-container p-6 bg-white rounded-lg w-full sm:w-96 mx-auto mt-24">
-          <h2 className="font-semibold mb-4 text-lg text-center bg-primary">
-            {editEvent ? "Edit Event" : "Add New Event"}
-          </h2>
-          <TextField
-            label="Event Title"
-            fullWidth
-            value={eventTitle}
-            onChange={(e) => setEventTitle(e.target.value)}
-          />
-          <TextField
-            type="date"
-            fullWidth
-            value={eventDate}
-            onChange={(e) => setEventDate(e.target.value)}
-            className="mt-2"
-          />
-          <div className="mt-6 flex justify-between">
-            <Button onClick={handleClose} className="btn-light">
-              Cancel
-            </Button>
-            <Button
-              onClick={handleAddEvent}
-              variant="contained"
-              color="primary"
-              className="btn-primary"
-            >
-              {editEvent ? "Save Changes" : "Add Event"}
-            </Button>
+      {/* Modal for adding events */}
+      {open && (
+        <div className="fixed inset-0 bg-primary bg-opacity-100 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded shadow-lg w-96">
+            <h2 className="text-lg font-medium mb-4">Add Event</h2>
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">Title</label>
+              <input
+                type="text"
+                className="w-full border rounded p-2"
+                value={eventTitle}
+                onChange={(e) => setEventTitle(e.target.value)}
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">
+                Start-Date
+              </label>
+              <input
+                type="start-date"
+                className="w-full border rounded p-2"
+                value={moment(eventStartDate).format("YYYY-MM-DD")}
+                onChange={(e) => setEventStartDate(e.target.value)}
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">End-Date</label>
+              <input
+                type="end-date"
+                className="w-full border rounded p-2"
+                value={moment(eventEndDate).format("YYYY-MM-DD")}
+                onChange={(e) => setEventEndDate(e.target.value)}
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">
+                Description
+              </label>
+              <textarea
+                className="w-full border rounded p-2"
+                value={eventDescription}
+                onChange={(e) => setEventDescription(e.target.value)}
+              />
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleClose}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleAddEvent}
+              >
+                Add Event
+              </Button>
+            </div>
           </div>
-        </Box>
-      </Modal>
+        </div>
+      )}
     </div>
   );
 };
