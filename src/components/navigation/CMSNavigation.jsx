@@ -72,15 +72,15 @@ const CMSNavigation = () => {
           <p className="font-avenir-black text-center">Hernani Domingo</p>
           <p className="text-sm text-center text-primary">@hernani.domingo</p>
         </section>
-        <section className="employee-sidebar-links flex-1 ">
+        <section className=" flex-1 ">
           <ul className="list-none!">
             {services.length !== 0 && (
               <Disclosure as="div" defaultOpen={true}>
-                <DisclosureButton className="group flex w-full items-center justify-between">
+                <DisclosureButton className="group cursor-pointer flex w-full items-center justify-between">
                   <p className="font-avenir-black text-primary p-3">
                     Management
                   </p>
-                  <ChevronDownIcon className="size-5 text-primary cursor-pointer group-data-[open]:rotate-180" />
+                  <ChevronDownIcon className="size-5 text-primary  group-data-[open]:rotate-180" />
                 </DisclosureButton>
                 <DisclosurePanel className="mt-1 ml-5 flex flex-col">
                   {services.map(({ feature_name }, index) => {
@@ -97,8 +97,8 @@ const CMSNavigation = () => {
                           to={`/app/${path}`}
                           className={({ isActive }) =>
                             isActive
-                              ? "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
-                              : "bg-white text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200 hover:bg-blue-50"
+                              ? "bg-primary text-white p-3 transition-none! rounded-lg flex items-center gap-3 no-underline!"
+                              : "bg-white text-primary p-3 transition-none! rounded-lg flex items-center gap-3 no-underline! hover:bg-blue-50"
                           }
                         >
                           {icons ? (
@@ -124,8 +124,8 @@ const CMSNavigation = () => {
                     to={`/app/${service.path}`}
                     className={({ isActive }) =>
                       isActive
-                        ? "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
-                        : "bg-white text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200 hover:bg-blue-50"
+                        ? "bg-primary text-white transition-none! p-3 rounded-lg flex items-center gap-3 no-underline!"
+                        : "bg-white text-primary transition-none! p-3 rounded-lg flex items-center gap-3 no-underline! hover:bg-blue-50"
                     }
                   >
                     {service ? (

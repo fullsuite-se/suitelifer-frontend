@@ -10,7 +10,7 @@ const HomeBlogSpot = () => {
   whileInView={{ opacity: 1 }} 
   transition={{ duration: 0.8, ease: "easeOut" }}
   viewport={{ once: true, amount: 0.2 }}
-  className="relative flex flex-col mb-5 overflow-hidden"
+  className="relative flex flex-col mb-5 "
 >
   <motion.div 
     initial={{ opacity: 0, scale: 0.95 }} 

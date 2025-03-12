@@ -16,18 +16,9 @@ import CongratsApplicationForm from "./pages/guest/CongratsApplicationForm";
 
 // Admin Pages
 import ProtectedRoutes from "./utils/protectedRoutes/ProtectedRoutes";
-import AdminLayout from "./pages/admin/AdminLayout";
-import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminLogin from "./pages/admin/AdminLogin";
-import AdminJobListings from "./pages/admin/AdminJobListings";
-import AdminBlogs from "./pages/admin/AdminBlogs";
-import AdminNews from "./pages/admin/AdminNews";
-import AdminEvents from "./pages/admin/AdminEvents";
-import AdminContents from "./pages/admin/AdminContents";
 
 // Employee Pages
-import EmployeeProtectedRoute from "./utils/protectedRoutes/EmployeeProtectedRoute";
-import EmployeeLayout from "./pages/employee/EmployeeLayout";
 import EmployeeLogin from "./pages/employee/EmployeeLogin";
 import EmployeeBlogsFeed from "./pages/employee/EmployeeBlogsFeed";
 import EmployeeMyBlogs from "./pages/employee/EmployeeMyBlogs";
@@ -51,8 +42,11 @@ function App() {
           <Route path="/login-admin" element={<AdminLogin />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/careers" element={<Careers />} />
-          <Route path="/application-form" element={<ApplicationForm />} />
-          <Route path="/congrats-application-form" element={<CongratsApplicationForm />} />
+          <Route path="/application-form/:id/:jobPosition" element={<ApplicationForm />} />
+          <Route
+            path="/congrats-application-form"
+            element={<CongratsApplicationForm />}
+          />
           <Route path="/careers/:slug" element={<CareersJobDetails />} />
           <Route path="/news" element={<News />} />
           <Route path="/news/:id/:slug" element={<NewsDetails />} />

@@ -12,6 +12,7 @@ import GuestBlogCard from "../../components/guest-blogs/GuestBlogCard";
 import loadingGif from "../../assets/gif/suitelifer-loading.gif";
 import ArticleSearchResults from "../../components/news/SearchingBlogOrNews";
 import { motion } from "framer-motion";
+import BackToTop from "../../components/BackToTop";
 
 const Blog = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -187,6 +188,7 @@ const Blog = () => {
       </main>
 
       <div className="h-30"></div>
+      <BackToTop/>
     </section>
   );
 };

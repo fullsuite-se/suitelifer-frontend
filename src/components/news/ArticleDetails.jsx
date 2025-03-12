@@ -13,6 +13,7 @@ import GuestBlogCardSmall from "../guest-blogs/GuestBlogCardSmall";
 import NewsCardNoSnippet from "./NewsCardNoSnippet";
 import formatTimestamp from "../../components/TimestampFormatter";
 import BackButton from "../BackButton";
+import BackToTop from "../BackToTop";
 
 const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
   const { id } = useParams();
@@ -115,7 +116,7 @@ const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
           </div>
         </main>
 
-        <div className="h-30"></div>
+        <div className="h-30"></div> <BackToTop/>
         <Footer />
       </section>
     </>

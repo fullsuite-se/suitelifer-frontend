@@ -12,6 +12,7 @@ import { ChevronRightIcon } from "@heroicons/react/24/solid";
 import GuestIndustryTags from "../../components/careers/GuestIndustriesTags";
 import dotsLine from "../../assets/images/socials-dots-line.svg";
 import bgPodcast from "../../assets/images/bg-career-podcast.svg";
+import BackToTop from "../../components/BackToTop";
 
 const Careers = () => {
   const [spotifyEpisodes, setEpisodes] = useState([]);
@@ -163,6 +164,7 @@ const Careers = () => {
               <div className="absolute -translate-y-30 -z-50 w-[15%] h-25 bg-primary/10 rounded-r-4xl"></div>
             </div>
         </main>
+        <BackToTop/>
         <Footer />
       </section>
     </>
