@@ -62,7 +62,7 @@ const HomeNews = () => {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
                   className="mb-5"
                 >
                   <img
@@ -76,7 +76,7 @@ const HomeNews = () => {
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
                   className="title"
                 >
                   <p className="font-serif font-bold sm:text-xl lg:text-2xl line-clamp-2">
@@ -88,7 +88,7 @@ const HomeNews = () => {
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, ease: "easeOut", delay: 0.6 }}
+                  transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
                   className="news-info py-1 md:py-2 mb-2 no-underline!"
                 >
                   <p className="text-sm">

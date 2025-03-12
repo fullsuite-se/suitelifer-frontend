@@ -142,7 +142,7 @@ const HomeGoalsOperations = () => {
               key={index}
               initial={chosenAnimation.initial}
               whileInView={chosenAnimation.animate}
-              transition={{ duration: 0.8, delay: index * 0.2, ease: "easeOut" }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
               className={`
                 group
                 w-full 

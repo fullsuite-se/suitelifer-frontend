@@ -79,18 +79,16 @@ const HeroSection = () => {
     // with animations ito
     <section className="Hero lg:w-3/5">
       <div className="grid grid-cols-12 grid-rows-12 md:grid-rows-10 lg:grid-cols-16 lg:grid-rows-16 lg:gap-4 gap-5 aspect-square ">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 0.5, scale: 1 }}
-          transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
-          className="kb-startup col-start-4 col-end-6 -z-10 lg:col-start-5 lg:col-end-8 lg:row-start-1 lg:row-end-3 lg:opacity-30"
-        >
-          <img
-            className="opacity-50 rounded-b-4xl w-full h-full object-cover"
-            src={kb_startup}
-            alt="A keyboard with a startup key"
-          />
-        </motion.div>
+      <motion.div
+  initial={{ opacity: 0.5, scale: 1 }}
+  animate={{ scale: 1.05 }}
+  transition={{ duration: 2, ease: "easeInOut", repeat: Infinity, repeatType: "reverse" }}
+  className="kb-startup col-start-4 col-end-6 z-10 opacity-50 lg:col-start-5 lg:col-end-8 lg:row-start-1 lg:row-end-3"
+>
+  <img className="rounded-b-4xl w-full h-full object-cover" src={kb_startup} alt="A keyboard with a startup key" />
+</motion.div>
+
+
 
         <motion.div
           animate={{ y: [0, -6, 0] }}

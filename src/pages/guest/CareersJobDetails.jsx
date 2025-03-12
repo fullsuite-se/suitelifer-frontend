@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import axios from "axios";
 import config from "../../config.js";
 import MobileNav from "../../components/home/MobileNav.jsx";
 import TabletNav from "../../components/home/TabletNav.jsx";
 import DesktopNav from "../../components/home/DesktopNav.jsx";
+import { toSlug } from "../../utils/slugUrl.js";
 
 const CareersJobDetails = () => {
   const [jobDetails, setJobDetails] = useState(null);
@@ -147,12 +148,16 @@ const CareersJobDetails = () => {
                 <br />
               </>
             )}
-            <button
-              className="mx-auto font-avenir-black bg-primary py-2 text-white rounded-2xl min-w-52 mb-10"
-              type="button"
-            >
-              APPLY NOW
-            </button>
+            <Link className="1fr flex no-underline"     
+              to={`/application-form`}>
+
+              <button
+                className="mx-auto font-avenir-black bg-primary py-2 text-white rounded-2xl min-w-52 mb-10"
+                type="button"
+              >
+                APPLY NOW
+              </button>
+            </Link>
           </div>
         ) : (
           <p>Loading job details...</p>
