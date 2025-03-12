@@ -188,7 +188,7 @@ export default function TabletNav() {
                     </div>
 
                     <div className="mt-8">
-                      <NavLink
+                      {/* <NavLink
                         to="/login-employee"
                         className={({ isActive }) =>
                           `!no-underline bg-[#E5F5F7] px-5 p-3 rounded-4xl text-primary text-lg font-medium hover:text-[#007a8e] ${
@@ -198,7 +198,7 @@ export default function TabletNav() {
                         onClick={handleClose}
                       >
                         Employee Login
-                      </NavLink>
+                      </NavLink> */}
                     </div>
                   </nav>
                 </div>

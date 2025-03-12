@@ -10,6 +10,7 @@ import LinkedlnIcon from "../assets/logos/Linkedln.jsx";
 import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import FetchLogos from "./footer/LogoSlideShow.jsx";
+import { NavLink } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -79,6 +80,18 @@ const Footer = () => {
                   </li>
                 </ul>
               </div>
+
+              
+              <button className="group relative px-6 py-2 mt-5 text-primary text-md font-medium rounded-full overflow-hidden lg:w-40 xl:w-50 xl:text-lg transition-all duration-100 ">
+  <Link className="no-underline" target="_blank" to={"/login"}>
+    <div className="absolute inset-0 bg-primary opacity-10 rounded-full transition-all duration-100 group-hover:opacity-100"></div>
+    <span className="relative group-hover:!text-white">Suitelifer Login</span>
+  </Link>
+</button>
+
+            
+
+
             </div>
           </section>
         </div>
