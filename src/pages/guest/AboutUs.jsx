@@ -307,7 +307,7 @@ const AboutUs = () => {
             </article>
 
             {/* Vision Text */}
-            <article className="pt-[15%] md:pt-[18%] lg:pt-[23%] pr-[7%] md:pr-[13%] mission-vision-text flex flex-col justify-start items-start text-start">
+            <article className="pt-[2%] pr-[7%] md:pr-[13%] mission-vision-text flex flex-col justify-center items-start text-start">
               <p className="blue-text uppercase w-full font-avenir-black text-primary">
                 Fullsuite Vision
               </p>
