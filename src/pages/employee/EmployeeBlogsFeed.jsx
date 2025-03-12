@@ -57,7 +57,7 @@ const EmployeeBlogsFeed = () => {
             <h2 className="font-avenir-black">Feeds</h2>
             <span
               onClick={() => {
-                navigate("/employee/my-blogs/new-blog");
+                navigate("/app/my-blogs/new-blog");
               }}
               className="font-avenir-black text-primary text-sm cursor-pointer"
             >

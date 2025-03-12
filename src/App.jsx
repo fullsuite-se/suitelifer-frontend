@@ -14,12 +14,7 @@ import NewsDetails from "./pages/guest/NewsDetails";
 import ApplicationForm from "./pages/guest/ApplicationForm";
 import CongratsApplicationForm from "./pages/guest/CongratsApplicationForm";
 
-// Admin Pages
-import ProtectedRoutes from "./utils/protectedRoutes/ProtectedRoutes";
-import AdminLogin from "./pages/admin/AdminLogin";
-
-// Employee Pages
-import EmployeeLogin from "./pages/employee/EmployeeLogin";
+// Regular Pages
 import EmployeeBlogsFeed from "./pages/employee/EmployeeBlogsFeed";
 import EmployeeMyBlogs from "./pages/employee/EmployeeMyBlogs";
 import BlogView from "./components/blog/BlogView";
@@ -29,17 +24,28 @@ import EmployeeWorkshops from "./pages/employee/EmployeeWorkshops";
 import EmployeePersonalityTest from "./pages/employee/EmployeePersonalityTest";
 import BlogCreate from "./components/blog/BlogCreate";
 import CareersJobDetails from "./pages/guest/CareersJobDetails";
+
+// Route Management
 import DynamicRoutes from "./utils/protectedRoutes/DynamicRoutes";
+import ProtectedRoutes from "./utils/protectedRoutes/ProtectedRoutes";
+
+// Layout
 import RootLayout from "./components/layout/RootLayout";
+
+// Auth Pages
+import Login from "./components/auth/Login";
+
+// Others
+import { Toaster } from "react-hot-toast";
 function App() {
   return (
     <>
       <BrowserRouter>
+        <Toaster position="top-right" reverseOrder={false} />
         <Routes>
           {/* Routes that are publicly avaialable (guest) */}
           <Route path="/" element={<Home />} />
-          <Route path="/login-employee" element={<EmployeeLogin />} />
-          <Route path="/login-admin" element={<AdminLogin />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/application-form/:id/:jobPosition" element={<ApplicationForm />} />
@@ -56,6 +62,7 @@ function App() {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-use" element={<TermsOfUse />} />
 
+          {/* Routes that are avaialable to admins and employees (guest) */}
           <Route element={<ProtectedRoutes />}>
             <Route path="/app" element={<RootLayout />}>
               <Route path="*" element={<DynamicRoutes />} />
