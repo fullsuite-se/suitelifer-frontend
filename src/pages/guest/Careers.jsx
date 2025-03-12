@@ -8,6 +8,7 @@ import SpotifyEmbed from "../../components/careers/SpotifyEmbed";
 import config from "../../config";
 import axios from "axios";
 import JobCarouselVersion2 from "../../components/careers/JobCarouselVersion2";
+import BackToTop from "../../components/BackToTop";
 
 const Careers = () => {
   const [spotifyEpisodes, setEpisodes] = useState([]);
@@ -96,6 +97,7 @@ const Careers = () => {
           })}
         </div>
 
+        <BackToTop/>
         <Footer />
       </section>
     </>

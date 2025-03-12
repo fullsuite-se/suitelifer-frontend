@@ -9,6 +9,7 @@ import newsList from "../../components/news/NewsList";
 import NewsCardSmall from "../../components/news/NewsCardSmall";
 import ArticleSearchResults from "../../components/news/SearchingBlogOrNews";
 import { motion } from "framer-motion";
+import BackToTop from "../../components/BackToTop";
 
 const News = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -152,7 +153,7 @@ const News = () => {
           </>
         )}
       </main>
-      <div className="h-20"></div>
+      <div className="h-20"></div> <BackToTop/>
       <Footer />
     </section>
   );

@@ -29,7 +29,7 @@ const instagramId = ["DGJvd8pPZGn"];
 
 const HomeSocials = () => {
   return (
-    <section className="overflow-hidden">
+    <section>
       {/* HEADING */}
       <motion.div
         initial={{ opacity: 0, y: 50 }}
@@ -43,7 +43,7 @@ const HomeSocials = () => {
           <motion.img
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
             className="absolute -z-10 transform -translate-y-2/5 -translate-x-[15%] sm:hidden"
             src={socialTitleMobile}
             alt="Socials Heading Title"
@@ -51,7 +51,7 @@ const HomeSocials = () => {
           <motion.img
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
             className="absolute -z-10 transform -translate-y-2/5 -translate-x-[19%] w-[80%] hidden sm:block"
             src={socialTitleDesktop}
             alt="Socials Heading Title"
@@ -62,7 +62,7 @@ const HomeSocials = () => {
         <motion.div
           initial={{ opacity: 0, x: 50 }}
           whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
           viewport={{ once: true, amount: 0.2 }}
           className="flex justify-end"
         >
@@ -82,7 +82,7 @@ const HomeSocials = () => {
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
               viewport={{ once: true, amount: 0.2 }}
             >
               <YouTubeEmbed videoId={videoId[0]} />
@@ -91,7 +91,7 @@ const HomeSocials = () => {
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
               viewport={{ once: true, amount: 0.2 }}
             >
               <SingleSpotifyEmbed spotifyId={spotifyId[0]} />
@@ -101,14 +101,14 @@ const HomeSocials = () => {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
             viewport={{ once: true, amount: 0.2 }}
             className="md:w-3/5 rounded-2xl flex flex-col md:flex-row gap-4 pb-2 md:pb-0"
           >
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut", delay: 0.5 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
               viewport={{ once: true, amount: 0.2 }}
               className="h-full md:w-full"
             >
@@ -118,7 +118,7 @@ const HomeSocials = () => {
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut", delay: 0.6 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
               viewport={{ once: true, amount: 0.2 }}
               className="h-full md:w-full"
             >
@@ -128,56 +128,57 @@ const HomeSocials = () => {
         </motion.div>
 
         <motion.section
-  initial={{ opacity: 0, y: 20 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.6, ease: "easeOut", staggerChildren: 0.2 }}
-  viewport={{ once: true, amount: 0.2 }}
-  className="flex flex-col md:flex-row md:justify-evenly md:pt-15 md:pb-5 pt-5 gap-2"
->
-  {[
-    {
-      href: "https://open.spotify.com/",
-      icon: SpotifyIcon,
-      text: "the Suite Spot",
-      delay: 0.2,
-    },
-    {
-      href: "https://www.youtube.com/",
-      icon: YoutubeIcon,
-      text: "the Suite Tube",
-      delay: 0.4,
-    },
-    {
-      href: "https://www.facebook.com/thefullsuitepod",
-      icon: FacebookIcon,
-      text: "the Suite FB",
-      delay: 0.6,
-    },
-    {
-      href: "https://www.instagram.com/thefullsuitepod/",
-      icon: InstagramIcon,
-      text: "the Suite IG",
-      delay: 0.8,
-    },
-  ].map(({ href, icon: Icon, text, delay }) => (
-    <SocialButton key={href} href={href}>
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay }}
-        viewport={{ once: true, amount: 0.2 }}
-        className="flex items-center gap-2"
-      >
-        <Icon color="group-hover:fill-white fill-primary" height="40" width="40" />
-        <span className="text-sm sm:text-base">{text}</span>
-      </motion.div>
-    </SocialButton>
-  ))}
-</motion.section>
-
-
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut", staggerChildren: 0.2 }}
+          viewport={{ once: true, amount: 0.2 }}
+          className="flex flex-col md:flex-row md:justify-evenly md:pt-15 md:pb-5 pt-5 gap-2"
+        >
+          {[
+            {
+              href: "https://open.spotify.com/",
+              icon: SpotifyIcon,
+              text: "the Suite Spot",
+              delay: 0.1,
+            },
+            {
+              href: "https://www.youtube.com/",
+              icon: YoutubeIcon,
+              text: "the Suite Tube",
+              delay: 0.2,
+            },
+            {
+              href: "https://www.facebook.com/thefullsuitepod",
+              icon: FacebookIcon,
+              text: "the Suite FB",
+              delay: 0.3,
+            },
+            {
+              href: "https://www.instagram.com/thefullsuitepod/",
+              icon: InstagramIcon,
+              text: "the Suite IG",
+              delay: 0.4,
+            },
+          ].map(({ href, icon: Icon, text, delay }) => (
+            <SocialButton key={href} href={href}>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay }}
+                viewport={{ once: true, amount: 0.2 }}
+                className="flex items-center gap-2"
+              >
+                <Icon
+                  color="group-hover:fill-white fill-primary"
+                  height="40"
+                  width="40"
+                />
+                <span className="text-sm sm:text-base">{text}</span>
+              </motion.div>
+            </SocialButton>
+          ))}
+        </motion.section>
       </section>
-
     </section>
   );
 };
