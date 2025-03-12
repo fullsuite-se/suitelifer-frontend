@@ -45,8 +45,10 @@ export default function DesktopNav() {
         {/* Navigation Links*/}
         <nav className={`flex justify-center items-end relative`}>
           {/* Logo */}
-          <div className={`w-32 lg:ml-0 lg:mr-7 xl:ml-9 xl:mr-16  animate-slideInFromLeft`}>
-            <img className="object-cover" src={logo_fs_full} alt="Logo" />
+          <div
+            className={`w-32 lg:ml-0 lg:mr-7 xl:ml-9 xl:mr-16  animate-slideInFromLeft`}
+          >
+            <a href="/"><img className="object-cover" src={logo_fs_full} alt="Logo" /></a>
           </div>
           <div className="flex gap-9 xl:gap-14">
             <div className="">
@@ -177,7 +179,7 @@ export default function DesktopNav() {
           </div>
         </nav>
         <div>
-          <NavLink
+          {/* <NavLink
             to="/login-employee"
             className={({ isActive }) =>
               `!no-underline bg-[#E5F5F7] px-4 p-3 rounded-4xl text-primary text-md font-md hover:text-[#007a8e] transition-all duration-300 ease-in-out ${
@@ -186,7 +188,7 @@ export default function DesktopNav() {
             }
           >
             Employee Login
-          </NavLink>
+          </NavLink> */}
         </div>
       </div>
     </>

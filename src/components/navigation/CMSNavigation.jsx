@@ -53,6 +53,7 @@ const regularServices = [
 const CMSNavigation = () => {
   const services = useStore((state) => state.services) || [];
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const user = useStore((state) => state.user);
 
   return (
     <section>
@@ -69,18 +70,47 @@ const CMSNavigation = () => {
               className="w-full h-full object-cover rounded-full"
             />
           </div>
-          <p className="font-avenir-black text-center">Hernani Domingo</p>
-          <p className="text-sm text-center text-primary">@hernani.domingo</p>
+          <p className="font-avenir-black text-center">
+            {`${user?.first_name ?? "Unknown"} ${user?.last_name ?? "User"}`}
+          </p>
+          <p className="text-sm text-center text-primary">
+            {`@${user?.first_name?.trim()?.toLowerCase() ?? "unknown"}.${
+              user?.last_name?.trim()?.toLowerCase() ?? "user"
+            }`}
+          </p>
         </section>
-        <section className="employee-sidebar-links flex-1 ">
+        <section className=" flex-1 ">
           <ul className="list-none!">
+            {regularServices.map((service, index) => {
+              return (
+                <li key={index}>
+                  <NavLink
+                    to={`/app/${service.path}`}
+                    className={({ isActive }) =>
+                      isActive
+                        ? "bg-primary text-white transition-none! p-3 rounded-lg flex items-center gap-3 no-underline!"
+                        : "bg-white text-primary transition-none! p-3 rounded-lg flex items-center gap-3 no-underline! hover:bg-blue-50"
+                    }
+                  >
+                    {service ? (
+                      <service.icon className="size-4 group-hover:hidden" />
+                    ) : (
+                      <Square2StackIcon className="size-4 group-hover:hidden" />
+                    )}
+                    <span className="no-underline! font-avenir-black">
+                      {service.feature_name}
+                    </span>
+                  </NavLink>
+                </li>
+              );
+            })}
             {services.length !== 0 && (
               <Disclosure as="div" defaultOpen={true}>
-                <DisclosureButton className="group flex w-full items-center justify-between">
+                <DisclosureButton className="group cursor-pointer flex w-full items-center justify-between">
                   <p className="font-avenir-black text-primary p-3">
-                    Management
+                    Admin Tools
                   </p>
-                  <ChevronDownIcon className="size-5 text-primary cursor-pointer group-data-[open]:rotate-180" />
+                  <ChevronDownIcon className="size-5 text-primary  group-data-[open]:rotate-180" />
                 </DisclosureButton>
                 <DisclosurePanel className="mt-1 ml-5 flex flex-col">
                   {services.map(({ feature_name }, index) => {
@@ -97,8 +127,8 @@ const CMSNavigation = () => {
                           to={`/app/${path}`}
                           className={({ isActive }) =>
                             isActive
-                              ? "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
-                              : "bg-white text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200 hover:bg-blue-50"
+                              ? "bg-primary text-white p-3 transition-none! rounded-lg flex items-center gap-3 no-underline!"
+                              : "bg-white text-primary p-3 transition-none! rounded-lg flex items-center gap-3 no-underline! hover:bg-blue-50"
                           }
                         >
                           {icons ? (
@@ -116,30 +146,6 @@ const CMSNavigation = () => {
                 </DisclosurePanel>
               </Disclosure>
             )}
-
-            {regularServices.map((service, index) => {
-              return (
-                <li key={index}>
-                  <NavLink
-                    to={`/app/${service.path}`}
-                    className={({ isActive }) =>
-                      isActive
-                        ? "bg-primary text-white p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200"
-                        : "bg-white text-primary p-3 rounded-lg flex items-center gap-3 no-underline! transition-colors duration-200 hover:bg-blue-50"
-                    }
-                  >
-                    {service ? (
-                      <service.icon className="size-4 group-hover:hidden" />
-                    ) : (
-                      <Square2StackIcon className="size-4 group-hover:hidden" />
-                    )}
-                    <span className="no-underline! font-avenir-black">
-                      {service.feature_name}
-                    </span>
-                  </NavLink>
-                </li>
-              );
-            })}
           </ul>
         </section>
         <section className="p-5 py-7 flex gap-12">

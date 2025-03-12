@@ -21,9 +21,11 @@ import smallBottomFiller from "../../assets/images/about-small-bottom-filler.svg
 import { motion } from "framer-motion";
 // TEMPORARY ICON
 import CoreValue01 from "../../assets/icons/core-value-01";
+import BackToTop from "../../components/BackToTop";
 
 const AboutUs = () => {
   const [content, setContent] = useState({});
+  const [videoTitle, setVideoTitle] = useState("Thought it was over, but...");
 
   const [clickCount, setClickCount] = useState(0);
 
@@ -49,7 +51,7 @@ const AboutUs = () => {
 
   return (
     <section
-      className="gap-4"
+      className="gap-4 h-dvh"
       style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
     >
       {/* MOBILE NAV */}
@@ -63,9 +65,9 @@ const AboutUs = () => {
       <div className="desktop-nav">
         <DesktopNav />
       </div>
-      <main className="lg:mt-20">
+      <main className="md:mt-20">
         {/* Hero Section */}
-        <section className="overflow-hidden about-container">
+        <section className="overflow-hidden about-container"  id="our-story">
           <div className="h-56 w-72">
             <img
               style={{ animation: "slideInFromLeft 0.8s ease-out forwards" }}
@@ -96,20 +98,20 @@ const AboutUs = () => {
             />
           </motion.div>
 
-          <div className="mx-5">
+          <div className="mx-5" >
             <img
               className="w-full h-full object-cover rounded-3xl animate-slideInLong"
               src="https://images.unsplash.com/photo-1739382120576-b1434e8bc4d3?q=80&w=1975&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             />
           </div>
-          <section className="flex flex-col gap-3 mt-5 mx-5">
+          <section className="flex flex-col gap-3 mt-5 mx-5" >
             <p className="text-primary text-center text-sm font-avenir-black">
               OUR STORY
             </p>
-            <h2 className="font-avenir-black lg:text-4xl! text-center m-0!">
+            {/* <h2 className="font-avenir-black lg:text-4xl! text-center m-0!">
               Lorem, ipsum dolor it
-            </h2>
-            <p className="text-lg leading-tight">
+            </h2> */}
+            <p className="text-sm md:text-base mb-5">
               FullSuite was originally founded by Maggie Po on October 8, 2014
               as Offshore Concept Consulting, Inc. In 2018, the founder acquired
               full ownership of the brand name, FullSuite because it embodied
@@ -129,10 +131,11 @@ const AboutUs = () => {
               efficiently.
             </p>
           </section>
-          <section className="">
-            <div className="flex justify-between overflow-ellipsis mb-4">
+          <section>
+            {/* Decorative Elements */}
+            <div className="flex justify-between overflow-ellipsis mb-4 relative">
               <div
-                className="h-10 w-20 lg:h-20 lg:w-32 rounded-r-full lg:rounded-full bg-secondary opacity-35 self-end"
+                className="h-10 w-20 lg:h-20 lg:w-32 rounded-r-full lg:rounded-full bg-secondary opacity-35"
                 onClick={handleClick}
                 style={
                   clickCount === 6
@@ -140,49 +143,38 @@ const AboutUs = () => {
                     : {}
                 }
               ></div>
+
               <div
                 style={
                   clickCount === 6
                     ? { animation: "spinCCW 3s ease-out forwards" }
                     : {}
                 }
-                className="h-20 w-20 lg:h-20 lg:w-32 rounded-2xl bg-primary opacity-15 relative -top-10 -right-10"
+                className="h-20 w-20 lg:h-20 lg:w-32 rounded-2xl bg-primary opacity-15 absolute top-0 right-0"
               ></div>
             </div>
+
             <div className="max-w-4xl h-72 lg:h-96 mx-5">
               <video className="w-full h-full rounded-xl object-cover" controls>
                 <source src="#" type="video/mp4" />
               </video>
             </div>
           </section>
-          <section>
-            <p className="text-sm md:text-base m-5">
-              FullSuite is the preferred and trusted offshore service provider
-              to help data-intense tech companies scale operations and revenue
-              at a fraction of the cost of traditional staffing. FullSuite is
-              the preferred and trusted offshore service provider to help
-              data-intense tech companies scale operations and revenue at a
-              fraction of the cost of traditional staffing. FullSuite is the
-              preferred and trusted offshore service provider to help
-              data-intense tech companies scale operations and revenue at a
-              fraction of the cost of traditional staffing. FullSuite is lorem
-              ipsum the preferred and trusted offshore service provider to help
-              data-intense.
+
+          <section className="!-px-200">
+            <p className=" xl:-ml-25 lg:mt-40 xl:mt-50 font-avenir-black px-5 py-3 !text-xl md:mt-10 lg:!text-2xl">
+              “{videoTitle}”
             </p>
-            <p className="text-sm md:text-base mx-5">
-              FullSuite is the preferred and trusted offshore service provider
-              to help data-intense tech companies scale operations and revenue
-              at a fraction of the cost of traditional staffing. FullSuite is
-              the preferred and trusted offshore service provider to help
-              data-intense tech companies scale operations and revenue at a
-              fraction of the cost of traditional staffing. FullSuite is the
-              preferred and trusted offshore service provider to help
-              data-intense tech companies scale operations and revenue at a
-              fraction of the cost of traditional staffing. FullSuite is lorem
-              ipsum the preferred and trusted offshore service provider to help
-              data-intense.
+            <p className="text-sm md:text-base mx-5 mb-10 xl:-ml-20 ">
+              In this exclusive podcast interview, Maggie, the CEO of FullSuite
+              Company, shares her journey of resilience and leadership in the
+              competitive world of BPO. From navigating challenges to redefining
+              success, she proves that every setback is just a setup for a
+              greater comeback. Tune in for an inspiring conversation on
+              perseverance, innovation, and the future of FullSuite.
             </p>
           </section>
+
           <section className="flex gap-2 my-5 justify-end">
             <div className="h-2 w-2 lg:w-3 lg:h-3 rounded-full opacity-30 bg-primary"></div>
             <div className="h-2 w-2 lg:w-3 lg:h-3 rounded-full opacity-50 bg-primary"></div>
@@ -196,7 +188,7 @@ const AboutUs = () => {
             ></div>
           </section>
         </section>
-
+<div className="py-20"></div>
         {/* Our Core Values Section */}
         <section className="overflow-hidden relative">
           <h2 className="font-avenir-black lg:text-4xl! text-center m-0!">
@@ -283,15 +275,17 @@ const AboutUs = () => {
         <section className="flex justify-center mb-[5%] md:mb-0">
           <div className="grid grid-cols-2 grid-rows-2 px-[5%] max-h-[1600px]">
             {/* Mission Image */}
-            <div className="flex justify-end">
-              <div className="md:translate-y-[10%] md:translate-x-[10%] bg-primary/50 p-[5%] max-h-[800px] rounded-2xl lg:rounded-4xl size-[50vw] md:aspect-4/3">
-                <img
-                  className="w-full h-full rounded-2xl lg:rounded-3xl object-cover"
-                  src={imgMeeting}
-                  alt="Mission image"
-                />
+            <section id="our-mission">
+              <div className="flex justify-end">
+                <div className="md:translate-y-[10%] md:translate-x-[10%] bg-primary/50 p-[5%] max-h-[800px] rounded-2xl lg:rounded-4xl size-[50vw] md:aspect-4/3">
+                  <img
+                    className="w-full h-full rounded-2xl lg:rounded-3xl object-cover"
+                    src={imgMeeting}
+                    alt="Mission image"
+                  />
+                </div>
               </div>
-            </div>
+            </section>
 
             {/* Mission Text */}
             <article className="mission-vision-text flex flex-col justify-center items-start text-end">
@@ -307,15 +301,17 @@ const AboutUs = () => {
             </article>
 
             {/* Vision Text */}
-            <article className="pt-[2%] pr-[7%] md:pr-[13%] mission-vision-text flex flex-col justify-center items-start text-start">
-              <p className="blue-text uppercase w-full font-avenir-black text-primary">
-                Fullsuite Vision
-              </p>
-              <p className="title font-avenir-black w-full">
-                {MissionVisionList[1].title}
-              </p>
-              <p className="description">{MissionVisionList[1].content}</p>
-            </article>
+            <section  id="our-vision">
+              <article className="pt-[15%] md:pt-[18%] lg:pt-[23%] pr-[7%] md:pr-[13%] mission-vision-text flex flex-col justify-start items-start text-start">
+                <p className="blue-text uppercase w-full font-avenir-black text-primary">
+                  Fullsuite Vision
+                </p>
+                <p className="title font-avenir-black w-full">
+                  {MissionVisionList[1].title}
+                </p>
+                <p className="description">{MissionVisionList[1].content}</p>
+              </article>
+            </section>
             {/* Vision Image */}
             <div className="flex">
               <div className="md:-translate-y-[10%] md:-translate-x-[10%] bg-[#DFE8CF] p-[5%] max-h-[800px] rounded-2xl lg:rounded-4xl size-[50vw] md:aspect-4/3">
@@ -330,7 +326,7 @@ const AboutUs = () => {
         </section>
 
         {/* Message from the CEO */}
-        <section className="relative pb-20">
+        <section className="relative pb-20" id="ceo-message">
           {/* Text overlay */}
           <article className="absolute text-end text-white">
             <div className="container-ceo-message pt-[22%] md:pt-[15%] pr-[5%] md:pr-[10%]">
@@ -394,7 +390,7 @@ const AboutUs = () => {
         </section>
 
         {/* Testimonials */}
-        <section>
+        <section id="testimonials">
           <div className="flex justify-end scale-x-[-1]">
             <img className="dots-line" src={dotsLine} alt="3 dots and a line" />
           </div>
@@ -465,7 +461,7 @@ const AboutUs = () => {
           </i>
         </div> */}
       </main>
-
+<BackToTop/>
       <Footer />
     </section>
   );

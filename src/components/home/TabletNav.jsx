@@ -85,11 +85,13 @@ export default function TabletNav() {
                 <div className="flex justify-between">
                   {/* Fullsuite Icon */}
                   <div className="w-32 ml-4">
-                    <img
-                      className="object-cover"
-                      src={logo_fs_full}
-                      alt="Logo"
-                    />
+                    <a href="/">
+                      <img
+                        className="object-cover"
+                        src={logo_fs_full}
+                        alt="Logo"
+                      />
+                    </a>
                   </div>
                   {/* Close Button */}
                   <XMarkIcon
@@ -100,8 +102,8 @@ export default function TabletNav() {
                   />
                 </div>
 
-                {/* Navigation Links FIX SCROLLING*/} 
-                <div className="max-h-[calc(100vh-4rem)] overflow-y-auto"> 
+                {/* Navigation Links FIX SCROLLING*/}
+                <div className="max-h-[calc(100vh-4rem)] overflow-y-auto">
                   <nav className="flex items-center flex-col space-y-4 py-10">
                     <div>
                       <NavLink
@@ -188,7 +190,7 @@ export default function TabletNav() {
                     </div>
 
                     <div className="mt-8">
-                      <NavLink
+                      {/* <NavLink
                         to="/login-employee"
                         className={({ isActive }) =>
                           `!no-underline bg-[#E5F5F7] px-5 p-3 rounded-4xl text-primary text-lg font-medium hover:text-[#007a8e] ${
@@ -198,7 +200,7 @@ export default function TabletNav() {
                         onClick={handleClose}
                       >
                         Employee Login
-                      </NavLink>
+                      </NavLink> */}
                     </div>
                   </nav>
                 </div>
@@ -209,4 +211,4 @@ export default function TabletNav() {
       </div>
     </>
   );
-} 
+}

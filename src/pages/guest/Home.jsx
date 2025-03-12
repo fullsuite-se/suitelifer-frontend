@@ -14,6 +14,7 @@ import HomeBlogSpot from "../../components/home/HomeBlogSpot";
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import BackToTop from "../../components/BackToTop";
 
 const Home = () => {
   const [width, setWidth] = useState(window.innerWidth); //FOR DEBUGGING
@@ -31,7 +32,7 @@ const Home = () => {
 
   return (
     <section
-      className="gap-4 h-dvh"
+      className="gap-4 overflow-hidden"
       style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
     >
       {/* MOBILE NAV */}
@@ -183,6 +184,7 @@ const Home = () => {
       {/* FOR DEBUGGING ONLY */}
       {/* <div className="bg-red-900 h-50 text-white grid place-items-center">WIDTH: {width}</div> */}
       {/* <div className="h-40"></div> */}
+      <BackToTop/>
       <Footer />
     </section>
   );

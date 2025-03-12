@@ -14,9 +14,11 @@ import ArticleSearchResults from "../../components/news/SearchingBlogOrNews";
 import BackButton from "../../components/BackButton";
 import { DefaultStepper } from "../../components/careers/ApplicationFormStepper";
 import FileUploadIcon from "../../assets/icons/file-upload";
-
+import { useParams } from "react-router-dom";
+import BackToTop from "../../components/BackToTop";
 const ApplicationForm = () => {
-  const [position, setPosition] = useState("Marketing Manager");
+  const { id, jobPosition } = useParams();
+  const [position, setPosition] = useState(jobPosition);
 
   const [showReferralInput, setShowReferralInput] = useState(false);
 
@@ -405,7 +407,7 @@ const ApplicationForm = () => {
               <div className="py-5"></div>
               <button
                 type="button"
-                className="w-full font-avenir-black bg-gray-300 text-white py-3 rounded-md hover:bg-primary/90 transition"
+                className="w-full font-avenir-black bg-gray-300 text-white py-3 rounded-md hover:bg-gray-400 transition"
               >
                 Cancel
               </button>{" "}
@@ -413,7 +415,7 @@ const ApplicationForm = () => {
                 type="submit"
                 className="w-full font-avenir-black bg-primary text-white py-3 rounded-md hover:bg-primary/90 transition"
               >
-                SUBMIT
+                SUBMIT APPLICATION
               </button>
             </form>
           </div>
@@ -421,6 +423,7 @@ const ApplicationForm = () => {
       </section>
 
       <div className="h-30"></div>
+      <BackToTop/>
     </section>
   );
 };

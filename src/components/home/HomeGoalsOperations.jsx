@@ -106,7 +106,7 @@ const HomeGoalsOperations = () => {
 
 
     // with animationsss
-    <section className="relative -mt-[5%] mb-10 sm:mb-15 lg:mb-20 xl:mb-30 flex flex-col overflow-hidden">
+    <section className="relative -mt-[5%] mb-10 sm:mb-15 lg:mb-20 xl:mb-30 flex flex-col">
     <div className="block">
       {/* Cutout Image (Fades in and moves slightly up) */}
       <motion.div
@@ -142,7 +142,7 @@ const HomeGoalsOperations = () => {
               key={index}
               initial={chosenAnimation.initial}
               whileInView={chosenAnimation.animate}
-              transition={{ duration: 0.8, delay: index * 0.2, ease: "easeOut" }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
               className={`
                 group
                 w-full 

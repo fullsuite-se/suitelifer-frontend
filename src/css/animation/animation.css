@@ -2,6 +2,20 @@
 
 /* Animation Themes */
 @theme {
+
+  /* Custom Bounce Animation */
+  @keyframes bounceCustom {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    10% {
+      transform: translateY(-10px);
+    }
+    20% {
+      transform: translateY(0);
+    }
+  }
+
   /* Slide In from Top */
   --animate-slideIn: fade 2s ease-in;
   @keyframes slideIn {
@@ -130,6 +144,9 @@
     }
   }  
  
+}
+.animate-bounceCustom {
+  animation: bounceCustom 5s ease-in-out infinite;
 }
 
 .animate-fadeInDown {

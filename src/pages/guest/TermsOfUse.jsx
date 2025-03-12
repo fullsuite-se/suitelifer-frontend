@@ -7,6 +7,7 @@ import DesktopNav from "../../components/home/DesktopNav";
 import termsOfUseimg from "../../assets/images/terms-of-use.jpg";
 import LegalHeader from "../../components/legal/LegalHeader";
 import TermsOfUseContent from "../../components/legal/TermsOfUseContent";
+import BackToTop from "../../components/BackToTop";
 
 
 const TermsOfUse = () => {
@@ -52,7 +53,7 @@ const TermsOfUse = () => {
            <TermsOfUseContent />
 
           </section>
-
+          <BackToTop/>
           <Footer />
         </main>
       </div>

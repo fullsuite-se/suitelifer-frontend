@@ -97,7 +97,7 @@ const BlogCreate = () => {
           <InformationCircleIcon className="w-4 h-4 text-gray-500" />
         </div>
         <span
-          onClick={() => navigate("/employee/my-blogs")}
+          onClick={() => navigate("/app/my-blogs")}
           className="font-avenir-black text-red-400 text-sm cursor-pointer"
         >
           Discard Blog
