@@ -407,7 +407,7 @@ const ApplicationForm = () => {
               <div className="py-5"></div>
               <button
                 type="button"
-                className="w-full font-avenir-black bg-gray-300 text-white py-3 rounded-md hover:bg-primary/90 transition"
+                className="w-full font-avenir-black bg-gray-300 text-white py-3 rounded-md hover:bg-gray-400 transition"
               >
                 Cancel
               </button>{" "}
@@ -415,7 +415,7 @@ const ApplicationForm = () => {
                 type="submit"
                 className="w-full font-avenir-black bg-primary text-white py-3 rounded-md hover:bg-primary/90 transition"
               >
-                SUBMIT
+                SUBMIT APPLICATION
               </button>
             </form>
           </div>
