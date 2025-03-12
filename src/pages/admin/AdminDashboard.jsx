@@ -6,7 +6,6 @@ import Button from "@mui/material/Button";
 import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import logofsfull from "../../assets/logos/logo-fs-full.svg";
 import "../../css/animation/animation.css";
-import "../../components/admin/AdminDashboard.css";
 // import { SidebarContext } from "./AdminLayout";
 
 import AppsIcon from "@mui/icons-material/Apps";
