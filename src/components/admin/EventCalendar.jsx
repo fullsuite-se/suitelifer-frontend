@@ -10,7 +10,7 @@ const EventCalendar = ({ events, onSelectSlot, onSelectEvent }) => {
   const [date, setDate] = useState(new Date());
 
   const CustomToolbar = ({ label, onNavigate, onView }) => (
-    <div className="p-2 w-full bg-primary flex">
+    <div className="p-2 w-full bg-primary flex gap-5">
       {/* Left Navigation Buttons */}
       <div className="flex space-x-2 justify-between w-250 items-center">
         <div className="flex">
@@ -18,32 +18,34 @@ const EventCalendar = ({ events, onSelectSlot, onSelectEvent }) => {
             Today
           </button>
         </div>
-        <div className="flex w-130 justify-between">
+        <div className="flex justify-between w-full">
           <button className="btn-light" onClick={() => onNavigate("PREV")}>
-            ◀ Back
+            ◀ Prev
           </button>
-          <span className="font-avenir-black text-4xl items-center">{label}</span>
+          <span className="font-avenir-black text-4xl items-center">
+            {label}
+          </span>
           <button className="btn-light" onClick={() => onNavigate("NEXT")}>
             Next ▶
           </button>
         </div>
       </div>
-      <div className="">
-        <div className="flex w-100 items-end justify-end gap-x-2">
-          <button className="btn-light" onClick={() => onView(Views.MONTH)}>
-            Month
-          </button>
-          <button className="btn-light" onClick={() => onView(Views.WEEK)}>
-            Week
-          </button>
-          <button className="btn-light" onClick={() => onView(Views.DAY)}>
-            Day
-          </button>
-          <button className="btn-light" onClick={() => onView(Views.AGENDA)}>
-            Agenda
-          </button>
-        </div>
-      </div>
+
+      {/* View Selection Dropdown */}
+      <select
+        className="btn-light"
+        value={view}
+        onChange={(e) => {
+          const newView = e.target.value;
+          setView(newView); 
+          onView(newView);
+        }}
+      >
+        <option value={Views.MONTH}>Month</option>
+        <option value={Views.WEEK}>Week</option>
+        <option value={Views.DAY}>Day</option>
+        <option value={Views.AGENDA}>Agenda</option>
+      </select>
     </div>
   );
 

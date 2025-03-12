@@ -26,6 +26,9 @@ const AdminEvents = () => {
   const [events, setEvents] = useState([]);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEventDetailsModalOpen, setIsEventDetailsModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+
   const [newEvent, setNewEvent] = useState({
     title: "",
     start: new Date(),
@@ -33,7 +36,6 @@ const AdminEvents = () => {
     description: "",
   });
 
-  // Update upcoming events when events change
   useEffect(() => {
     setUpcomingEvents(
       events.filter((event) => new Date(event.start) >= new Date())
@@ -59,13 +61,17 @@ const AdminEvents = () => {
     setEvents([...events, newEvent]);
     setIsAddModalOpen(false);
 
-    // Reset newEvent state
     setNewEvent({
       title: "",
       start: new Date(),
       end: new Date(new Date().setDate(new Date().getDate() + 1)),
       description: "",
     });
+  };
+
+  const handleEventClick = (event) => {
+    setSelectedEvent(event);
+    setIsEventDetailsModalOpen(true);
   };
 
   return (
@@ -88,7 +94,7 @@ const AdminEvents = () => {
             <EventCalendar
               events={events}
               onSelectSlot={handleSelectSlot}
-              onSelectEvent={() => {}}
+              onSelectEvent={handleEventClick}
               onAddEvent={() => setIsAddModalOpen(true)}
             />
           </div>
@@ -100,9 +106,13 @@ const AdminEvents = () => {
           <List>
             {upcomingEvents
               .sort((a, b) => new Date(a.start) - new Date(b.start))
-              .slice(0, 5) 
+              .slice(0, 5)
               .map((event, index) => (
-                <ListItem key={index}>
+                <ListItem
+                  key={index}
+                  button
+                  onClick={() => handleEventClick(event)}
+                >
                   <ListItemText
                     primary={event.title}
                     secondary={moment(event.start).format(
@@ -197,6 +207,54 @@ const AdminEvents = () => {
               Add Event
             </button>
           </Box>
+        </Box>
+      </Modal>
+
+      {/* Event Details Modal */}
+      <Modal
+        open={isEventDetailsModalOpen}
+        onClose={() => setIsEventDetailsModalOpen(false)}
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            p: 4,
+            bgcolor: "white",
+            borderRadius: 1,
+            boxShadow: 24,
+            minWidth: 300,
+          }}
+        >
+          {selectedEvent && (
+            <>
+              <Typography variant="h6" className="font-bold text-primary">
+                Event Details
+              </Typography>
+              <Typography variant="body1" className="mt-3">
+                <strong>Title:</strong> {selectedEvent.title}
+              </Typography>
+              <Typography variant="body1">
+                <strong>Date & Time:</strong>{" "}
+                {moment(selectedEvent.start).format("MMMM Do YYYY, h:mm a")} -{" "}
+                {moment(selectedEvent.end).format("h:mm a")}
+              </Typography>
+              <Typography variant="body1">
+                <strong>Description:</strong>{" "}
+                {selectedEvent.description || "No description provided."}
+              </Typography>
+              <div className="flex flex-end justify-end">
+                <button
+                  onClick={() => setIsEventDetailsModalOpen(false)}
+                  className="btn-primary"
+                >
+                  Close
+                </button>
+              </div>
+            </>
+          )}
         </Box>
       </Modal>
     </div>
