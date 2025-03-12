@@ -108,7 +108,7 @@ const CMSNavigation = () => {
               <Disclosure as="div" defaultOpen={true}>
                 <DisclosureButton className="group cursor-pointer flex w-full items-center justify-between">
                   <p className="font-avenir-black text-primary p-3">
-                    Management
+                    Admin Tools
                   </p>
                   <ChevronDownIcon className="size-5 text-primary  group-data-[open]:rotate-180" />
                 </DisclosureButton>
