@@ -7,7 +7,8 @@ import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import logofsfull from "../../assets/logos/logo-fs-full.svg";
 import "../../css/animation/animation.css";
 import "../../components/admin/AdminDashboard.css";
-import { SidebarContext } from "./AdminLayout";
+// import { SidebarContext } from "./AdminLayout";
+
 import AppsIcon from "@mui/icons-material/Apps";
 
 const localizer = momentLocalizer(moment);
@@ -81,8 +82,6 @@ const stats = {
 };
 
 const AdminDashboard = () => {
-  const { isOpen, setIsOpen } = useContext(SidebarContext);
-
   const [open, setOpen] = useState(false);
   const [eventTitle, setEventTitle] = useState("");
   const [eventEndDate, setEventStartDate] = useState("");
@@ -209,7 +208,7 @@ const AdminDashboard = () => {
       {/* Header */}
       <header className="container flex h-12 items-center justify-between flex-wrap">
         <div className="flex gap-4 items-center">
-          <button className="sm:hidden" onClick={() => setIsOpen(!isOpen)}>
+          <button className="sm:hidden">
             <AppsIcon sx={{ fontSize: "48px" }} />
           </button>
           <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
