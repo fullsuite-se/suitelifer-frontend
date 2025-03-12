@@ -19,7 +19,7 @@ export default function MobileNav() {
     <div className="relative h-16 text-center">
       <div className="bg-white z-50 fixed flex justify-between items-center h-16 w-full text-center">
         <div className="w-32 ml-7">
-          <img className="object-cover" src={logo_fs_full} alt="Logo" />
+          <a href="/"><img className="object-cover" src={logo_fs_full} alt="Logo" /></a>
         </div>
 
         {!isOpen ? (
@@ -46,7 +46,7 @@ export default function MobileNav() {
           className="animate-slideIn z-40 fixed inset-0 flex justify-end ass"
         >
           <div
-            className={`w-full bg-gradient-to-t from-transparent to-white to-20% h-[80%] p-3 transition-transform duration-300 ${
+            className={`w-full bg-gradient-to-t from-transparent to-white to-40% h-[100%] p-3 transition-transform duration-300 ${
               isClosing ? "animate-slideOut" : "translate-y-14 opacity-100"
             }`}
           >

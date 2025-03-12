@@ -25,11 +25,13 @@ const Footer = () => {
             />
           </div> */}
           <div className="ml-3 w-32 h-auto logoFSTagline">
-            <img
-              src={logoTagline}
-              alt="FullSuite"
-              className="w-full object-contain h-full"
-            />
+            <a href="/">
+              <img
+                src={logoTagline}
+                alt="FullSuite"
+                className="w-full object-contain h-full"
+              />
+            </a>
           </div>
         </div>
         <div className="footer-social-container hidden">

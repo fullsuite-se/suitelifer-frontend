@@ -48,7 +48,7 @@ export default function DesktopNav() {
           <div
             className={`w-32 lg:ml-0 lg:mr-7 xl:ml-9 xl:mr-16  animate-slideInFromLeft`}
           >
-            <img className="object-cover" src={logo_fs_full} alt="Logo" />
+            <a href="/"><img className="object-cover" src={logo_fs_full} alt="Logo" /></a>
           </div>
           <div className="flex gap-9 xl:gap-14">
             <div className="">
