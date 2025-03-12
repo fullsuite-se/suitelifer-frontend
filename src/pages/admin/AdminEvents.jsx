@@ -9,7 +9,6 @@ import {
   ListItemText,
 } from "@mui/material";
 import logofsfull from "../../assets/logos/logo-fs-full.svg";
-import { SidebarContext } from "./AdminLayout";
 import AppsIcon from "@mui/icons-material/Apps";
 import {
   Dialog,
@@ -21,7 +20,7 @@ import EventCalendar from "./../../components/admin/EventCalendar";
 import moment from "moment";
 
 const AdminEvents = () => {
-  const { isOpen, setIsOpen } = useContext(SidebarContext);
+ 
   const [openDialog, setOpenDialog] = useState(false);
   const [events, setEvents] = useState([]);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
