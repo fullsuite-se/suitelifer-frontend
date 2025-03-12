@@ -5,6 +5,7 @@ import * as THREE from "three";
 import GLOBE from "vanta/dist/vanta.globe.min";
 import fullsuite from "../../assets/logos/logo-fs-full.svg";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -52,12 +53,13 @@ const Login = () => {
       );
 
       if (response.data.accessToken) {
+        toast.success("Login successful!");
         navigate("/app/blogs-feed");
       } else {
-        alert("Failed");
+        toast.error("Login failed. Please check your credentials.");
       }
     } catch (error) {
-      alert(error);
+      toast.error("An error occurred. Please try again.");
       console.error("Login failed:", error);
     }
   };
