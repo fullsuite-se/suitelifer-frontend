@@ -6,6 +6,7 @@ import MobileNav from "../../components/home/MobileNav.jsx";
 import TabletNav from "../../components/home/TabletNav.jsx";
 import DesktopNav from "../../components/home/DesktopNav.jsx";
 import { toSlug } from "../../utils/slugUrl.js";
+import BackToTop from "../../components/BackToTop.jsx";
 
 const CareersJobDetails = () => {
   const [jobDetails, setJobDetails] = useState(null);
@@ -167,6 +168,7 @@ const CareersJobDetails = () => {
           <p>Loading job details...</p>
         )}
       </div>
+      <BackToTop/>
     </>
   );
 };

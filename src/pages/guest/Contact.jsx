@@ -13,6 +13,7 @@ import ClockIcon from "../../assets/logos/ClockIcon";
 import MarkerIcon from "../../assets/logos/MarkerIcon";
 import FAQ from "../../components/contact/FaqsDropDown";
 import { motion } from "framer-motion";
+import BackToTop from "../../components/BackToTop";
 
 const Contact = () => {
   const fadeInUp = {
@@ -375,7 +376,7 @@ const Contact = () => {
             </motion.div>
           </motion.div>
 
-          <FAQ />
+          <FAQ /> <BackToTop/>
           <Footer />
         </main>
       </div>

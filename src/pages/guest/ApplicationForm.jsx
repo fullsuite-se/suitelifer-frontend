@@ -15,6 +15,7 @@ import BackButton from "../../components/BackButton";
 import { DefaultStepper } from "../../components/careers/ApplicationFormStepper";
 import FileUploadIcon from "../../assets/icons/file-upload";
 import { useParams } from "react-router-dom";
+import BackToTop from "../../components/BackToTop";
 const ApplicationForm = () => {
   const { id, jobPosition } = useParams();
   const [position, setPosition] = useState(jobPosition);
@@ -422,6 +423,7 @@ const ApplicationForm = () => {
       </section>
 
       <div className="h-30"></div>
+      <BackToTop/>
     </section>
   );
 };

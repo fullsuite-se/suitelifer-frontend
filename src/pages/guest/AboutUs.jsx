@@ -21,6 +21,7 @@ import smallBottomFiller from "../../assets/images/about-small-bottom-filler.svg
 import { motion } from "framer-motion";
 // TEMPORARY ICON
 import CoreValue01 from "../../assets/icons/core-value-01";
+import BackToTop from "../../components/BackToTop";
 
 const AboutUs = () => {
   const [content, setContent] = useState({});
@@ -460,7 +461,7 @@ const AboutUs = () => {
           </i>
         </div> */}
       </main>
-
+<BackToTop/>
       <Footer />
     </section>
   );

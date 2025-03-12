@@ -7,6 +7,7 @@ import DesktopNav from "../../components/home/DesktopNav";
 import privacyPolicyimg from "../../assets/images/fingerprint-and-loupe.jpg";
 import LegalHeader from "../../components/legal/LegalHeader";
 import PrivacyPolicyContent from "../../components/legal/PrivacyPolicyContent";
+import BackToTop from "../../components/BackToTop";
 
 const PrivacyPolicy = () => {
   useEffect(() => {
@@ -46,7 +47,7 @@ const PrivacyPolicy = () => {
             <br />
 
             <PrivacyPolicyContent />
-          </section>
+          </section> <BackToTop/>
           <Footer />
         </main>
       </div>
