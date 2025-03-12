@@ -12,6 +12,8 @@ import { ChevronRightIcon } from "@heroicons/react/24/solid";
 import GuestIndustryTags from "../../components/careers/GuestIndustriesTags";
 import dotsLine from "../../assets/images/socials-dots-line.svg";
 import bgPodcast from "../../assets/images/bg-career-podcast.svg";
+import bgHero from "../../assets/images/bg-hero-careers.svg";
+import bgHeroTablet from "../../assets/images/bg-tablet-careers.svg";
 import BackToTop from "../../components/BackToTop";
 
 const Careers = () => {
@@ -63,8 +65,94 @@ const Careers = () => {
         <div className="desktop-nav">
           <DesktopNav />
         </div>
-        <main className="lg:mt-20">
-          <div className="flex justify-end scale-x-[-1] -translate-x-[1%] pb-[5%]">
+        <main className="">
+          {/* 
+          landscape:https://images.unsplash.com/photo-1541746972996-4e0b0f43e02a?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8c3RhcnR1cHxlbnwwfHwwfHx8MA%3D%3D
+          // https://images.unsplash.com/photo-1554780336-390462301acf?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
+          portrait: https://images.unsplash.com/photo-1554780336-390462301acf?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
+          */}
+
+          <section>
+            <div className="relative -z-50 lg:block hidden w-full">
+              <img className="absolute" src={bgHero} alt="" />
+            </div>
+            {/* For mobile bg */}
+            <section className="lg:hidden">
+              {/* blue at top */}
+              <div className="">
+                <div className="absolute right-10 overflow-hidden -translate-x-10 sm:-translate-x-20 -translate-y-[23vw] z-50 w-[14%] h-[35vw] bg-primary/5 rounded-b-4xl"></div>
+              </div>
+              {/* blue at top left */}
+              <div className="">
+                <div className="w-[15%] h-[13vw] rounded-r-3xl absolute overflow-hidden -z-50  bg-primary/10 "></div>
+              </div>
+              {/* green at top right */}
+              <div className="">
+                <div className="right-0 w-[12%] h-[25vw] translate-y-10 rounded-l-3xl absolute overflow-hidden -z-50  bg-secondary/10 "></div>
+              </div>
+              {/* blue at bottom */}
+              <div className="">
+                <div className="w-[15%] h-[35vw] rounded-r-3xl translate-y-[80vw]  absolute overflow-hidden -z-50  bg-primary/10 "></div>
+              </div>
+            </section>
+
+            {/* background images */}
+            <section className="absolute block w-full h-[50dvh]">
+              {/* upper left image */}
+              <div className=""></div>
+              {/* upper left image */}
+              <img
+                className="absolute w-[20vw] translate-y-[15vw] -translate-x-[50%] rounded-2xl opacity-50 object-cover aspect-3/4"
+                src="https://images.unsplash.com/photo-1541746972996-4e0b0f43e02a?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8c3RhcnR1cHxlbnwwfHwwfHx8MA%3D%3D"
+                alt=""
+              />
+
+              {/* lower right image
+              <img
+                className="size-[20%] translate-y-[30vw] -translate-x-[50%] rounded-xl max-w-[180px] opacity-50 object-cover aspect-3/4"
+                src="https://images.unsplash.com/photo-1554780336-390462301acf?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                alt=""
+              /> */}
+
+              {/* main image */}
+            </section>
+            {/* <img src="https://images.unsplash.com/photo-1541746972996-4e0b0f43e02a?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8c3RhcnR1cHxlbnwwfHwwfHx8MA%3D%3Dhttps://images.unsplash.com/photo-1554780336-390462301acf?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" /> */}
+            <div className="hero-container pb-[25%]">
+              <p className="pl-[5%] career-hero-text-desktop font-avenir-black">
+                Let's <span className="text-primary">launch</span> your career,
+              </p>
+              <div className="flex justify-center md:py-4">
+                <img
+                  className="size-[40%] md:size-[50%] max-w-[350px] xl:max-w-[380px] object-cover aspect-3/4 rounded-2xl md:rounded-4xl"
+                  src="https://images.unsplash.com/photo-1635107510862-53886e926b74?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  alt=""
+                />
+              </div>
+              <p className="text-end pr-[5%] career-hero-text-desktop font-avenir-black">
+                hop on <span className="text-primary">now</span>.
+              </p>
+            </div>
+
+            <div className="text-center">
+              <p className="career-hero-text-mobile-small font-avenir-black">
+                Let's <span className="text-primary">launch</span> your career,
+              </p>
+              <p className="pl-[20%] career-hero-text-mobile-large font-avenir-black">
+                hop on <span className="text-primary">now</span>.
+              </p>
+            </div>
+          </section>
+
+          {/* HEIGHT DUMMY */}
+          {/* <div className="h-100 grid place-content-center bg-amber-100 text-center p-5">
+            <i>
+              This height is but an illusion, a mere construct of perception,
+              bound by the limits we choose to accept.
+            </i>
+          </div> */}
+
+          {/* Three dots one line */}
+          <div className="flex justify-end scale-x-[-1] -translate-x-[1%] py-[12%] sm:py-[3%]">
             <img className="dots-line" src={dotsLine} alt="3 dots and a line" />
           </div>
           {/* Current Job Openings */}
@@ -158,13 +246,13 @@ const Careers = () => {
                   ))}
                 </div>
               </div>
-            </div>            
+            </div>
           </section>
           <div className="relative hidden sm:block">
-              <div className="absolute -translate-y-30 -z-50 w-[15%] h-25 bg-primary/10 rounded-r-4xl"></div>
-            </div>
+            <div className="absolute -translate-y-30 -z-50 w-[15%] h-25 bg-primary/10 rounded-r-4xl"></div>
+          </div>
         </main>
-        <BackToTop/>
+        <BackToTop />
         <Footer />
       </section>
     </>
