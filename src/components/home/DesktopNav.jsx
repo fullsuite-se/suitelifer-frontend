@@ -179,8 +179,8 @@ export default function DesktopNav() {
           </div>
         </nav>
         <div>
-          <NavLink
-            to="/login"
+          {/* <NavLink
+            to="/login-employee"
             className={({ isActive }) =>
               `!no-underline bg-[#E5F5F7] px-4 p-3 rounded-4xl text-primary text-md font-md hover:text-[#007a8e] transition-all duration-300 ease-in-out ${
                 isActive ? "active-class" : ""
@@ -188,7 +188,7 @@ export default function DesktopNav() {
             }
           >
             Employee Login
-          </NavLink>
+          </NavLink> */}
         </div>
       </div>
     </>
