@@ -8,6 +8,12 @@
     }
 }
 
+.bg-mobile-images{
+    @media (min-width: 600px){
+        display: none;
+    }
+}
+
 .top-text{
     font-size: clamp(17px, 3.3vw, 2rem);
 }
