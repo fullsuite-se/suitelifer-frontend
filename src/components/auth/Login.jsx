@@ -96,13 +96,13 @@ const Login = () => {
       className="w-screen h-screen flex justify-start items-center bg-white"
     >
       <div
-        className="bg-white mx-auto rounded-md p-10 py-16 border border-gray-200"
+        className="bg-white mx-auto rounded-2xl p-10 py-16 border border-gray-200"
         style={{ width: "min(90%, 600px)" }}
       >
         <img src={fullsuite} alt="FullSuite" className="w-28 h-auto mx-auto" />
-        <h2 className="text-center text-base font-bold my-4">
-          Sign In to Your Account
-        </h2>
+        <p className="text-center text-base my-4 text-gray-500 mb-10">
+          Welcome to SuiteLifer!
+        </p>
         <form onSubmit={handleLogin} className="flex flex-col gap-5">
           <div>
             <input
@@ -111,8 +111,7 @@ const Login = () => {
               value={email}
               placeholder="Email"
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded mt-1 focus:border-red-500"
-            />
+              className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary placeholder-primary/50"  />
           </div>
           <div className="relative">
             <input
@@ -121,25 +120,24 @@ const Login = () => {
               value={password}
               placeholder="Password"
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded mt-1 pr-10 focus:border-red-500"
-            />
+              className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary placeholder-primary/50" />
             <button
               type="button"
               className="absolute right-3 top-4 text-gray-500 hover:text-gray-700"
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? (
-                <EyeSlashIcon className="w-5 h-5 cursor-pointer" />
+                <EyeSlashIcon className="w-5 h-5 cursor-pointer text-primary" />
               ) : (
-                <EyeIcon className="w-5 h-5 cursor-pointer" />
+                <EyeIcon className="w-5 h-5 cursor-pointer text-primary" />
               )}
             </button>
           </div>
           <button
             type="submit"
-            className="w-full bg-primary p-2 rounded text-white font-avenir-black cursor-pointer"
+            className="mt-5 w-full bg-primary p-3 rounded-xl text-white font-avenir-black cursor-pointer"
           >
-            Login
+            LOG IN
           </button>
         </form>
       </div>
