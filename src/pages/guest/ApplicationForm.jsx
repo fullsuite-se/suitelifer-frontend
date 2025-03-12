@@ -14,9 +14,10 @@ import ArticleSearchResults from "../../components/news/SearchingBlogOrNews";
 import BackButton from "../../components/BackButton";
 import { DefaultStepper } from "../../components/careers/ApplicationFormStepper";
 import FileUploadIcon from "../../assets/icons/file-upload";
-
+import { useParams } from "react-router-dom";
 const ApplicationForm = () => {
-  const [position, setPosition] = useState("Marketing Manager");
+  const { id, jobPosition } = useParams();
+  const [position, setPosition] = useState(jobPosition);
 
   const [showReferralInput, setShowReferralInput] = useState(false);
 

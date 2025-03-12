@@ -46,6 +46,7 @@ const Footer = () => {
                 out! &nbsp;
                 <span>
                   <Link
+                    target="_blank"
                     to="https://fullsuite.ph"
                     className="font-avenir-black text-primary"
                   >
@@ -93,7 +94,11 @@ const Footer = () => {
             <span>Interested in availing our services?</span> Check this out!
             &nbsp;
             <span>
-              <Link to="https://fullsuite.ph" className="font-avenir-black">
+              <Link
+                to="https://fullsuite.ph"
+                target="_blank"
+                className="font-avenir-black"
+              >
                 fullsuite.ph
               </Link>
             </span>
