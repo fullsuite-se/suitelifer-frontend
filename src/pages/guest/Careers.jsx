@@ -77,7 +77,7 @@ const Careers = () => {
               <img className="absolute" src={bgHero} alt="" />
             </div>
             {/* For mobile bg */}
-            <section className="lg:hidden">
+            <section className=" relative lg:hidden">
               {/* blue at top */}
               <div className="">
                 <div className="absolute right-10 overflow-hidden -translate-x-10 sm:-translate-x-20 -translate-y-[23vw] z-50 w-[14%] h-[35vw] bg-primary/5 rounded-b-4xl"></div>
@@ -97,7 +97,7 @@ const Careers = () => {
             </section>
 
             {/* background images */}
-            <section className="absolute block w-full h-[50dvh]">
+            <section className="bg-mobile-images absolute block w-full h-[50dvh]">
               {/* upper left image */}
               <div className=""></div>
               {/* upper left image */}
@@ -175,7 +175,7 @@ const Careers = () => {
                 <div className="absolute overflow-hidden right-0 translate-y-12 -z-50 w-[25%] h-25 bg-secondary/10 rounded-l-4xl"></div>
               </div>
               {/* Filter */}
-              <div className="flex justify-center py-[3%] px-[5%] pb-[5%]">
+              <div className="flex justify-center py-[3%] pl-[5%] pb-[5%]">
                 <div className="w-full max-w-3xl flex justify-center">
                   <GuestIndustryTags />
                 </div>
