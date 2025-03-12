@@ -14,7 +14,7 @@ import MarkerIcon from "../../assets/logos/MarkerIcon";
 import FAQ from "../../components/contact/FaqsDropDown";
 import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
-
+import { useEffect, useState } from "react";
 const Contact = () => {
   const fadeInUp = {
     hidden: { opacity: 0, y: 50 },
@@ -24,6 +24,12 @@ const Contact = () => {
       transition: { duration: 0.8, ease: "easeOut" },
     },
   };
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    setIsLoaded(true);
+  }, []);
+
   return (
     // <>
     //   {/* MOBILE NAV */}
@@ -225,14 +231,14 @@ const Contact = () => {
         <main className="mt-0 lg:mt-20 text-[12px] md:text-[14px] lg:text-[16px]">
           <motion.div
             initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+            animate={isLoaded ? "visible" : "hidden"}
             variants={fadeInUp}
+            transition={{ duration: 0.6, ease: "easeOut" }}
             className="flex flex-col md:flex-row items-start md:items-center"
           >
             <div
               className="relative p-8 pr-8 md:pr-16 rounded-tr-xl rounded-br-xl text-white mr-4 md:min-h-[500px] justify-center items-center flex flex-col 
-              w-[98%] md:w-[60%] lg:w-[60%] xl:w-[50%] max-w-[90%] xl:max-w-[60%]"
+          w-[98%] md:w-[60%] lg:w-[60%] xl:w-[50%] max-w-[90%] xl:max-w-[60%]"
               style={{
                 backgroundImage: `url(${bgimg})`,
                 backgroundSize: "cover",
@@ -242,8 +248,9 @@ const Contact = () => {
               <div className="absolute inset-0 bg-primary opacity-80 rounded-tr-xl rounded-br-xl"></div>
               <div className="relative z-10">
                 <p className="font-avenir-black text-2xl md:!text-3xl text-white-300 lg:!text-4xl xl:!text-5xl">
-                  Check your
-                  <span className="text-secondary"> culture fit </span>with us!
+                  Check your{" "}
+                  <span className="text-secondary"> culture fit </span>
+                  with us!
                 </p>
                 <p className="mt-4 text-white text-xs md:text-base">
                   Lorem ipsum dolor sit amet ipsum consectetur adipiscing
@@ -281,9 +288,9 @@ const Contact = () => {
 
             <motion.div
               initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.3 }}
+              animate={isLoaded ? "visible" : "hidden"}
               variants={fadeInUp}
+              transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
               className="p-8 w-full md:max-w-lg lg:max-w-2xl xl:max-w-4xl"
             >
               <form action="#" className="space-y-4">
@@ -333,9 +340,9 @@ const Contact = () => {
 
           <motion.div
             initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+            animate={isLoaded ? "visible" : "hidden"}
             variants={fadeInUp}
+            transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
             className="flex flex-col md:flex-row items-center md:items-center mt-12 p-10 justify-center gap-10"
           >
             <div className="md:w-1/2 flex flex-col justify-center text-left lg:w-1/4">
@@ -361,9 +368,9 @@ const Contact = () => {
 
             <motion.div
               initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.3 }}
+              animate={isLoaded ? "visible" : "hidden"}
               variants={fadeInUp}
+              transition={{ duration: 0.6, ease: "easeOut", delay: 0.6 }}
               className="md:w-2/3 w-full"
             >
               <iframe
@@ -376,7 +383,10 @@ const Contact = () => {
             </motion.div>
           </motion.div>
 
-          <FAQ /> <BackToTop/>
+          <section id="faqs">
+            <FAQ />
+          </section>
+          <BackToTop />
           <Footer />
         </main>
       </div>

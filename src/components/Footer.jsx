@@ -201,9 +201,9 @@ const Footer = () => {
                 </Link>
               </li>
               <li className="text-sm text-white">
-                <Link to={""} className="footer-text">
+                <HashLink to={"/contact#faqs"} className="footer-text hover:!text-primary">
                   FAQs
-                </Link>
+                </HashLink>
               </li>
             </ul>
           </div>
@@ -230,12 +230,9 @@ const Footer = () => {
               </Link>
             </li>
             <li className="text-sm text-white">
-              <Link
-                to={""}
-                className="footer-text text-white hover:!text-primary"
-              >
-                FAQs
-              </Link>
+            <HashLink to={"/contact#faqs"} className="footer-text hover:!text-primary">
+                  FAQs
+                </HashLink>
             </li>
           </ul>
         </div>

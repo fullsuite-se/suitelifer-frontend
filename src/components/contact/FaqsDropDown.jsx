@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { motion } from "framer-motion";
+import {motion} from "framer-motion";
 const fadeInUp = {
   hidden: { opacity: 0, y: 50 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
 };
+
+
 const faqs = [
   {
     question: "How long is the hiring process?",
@@ -36,7 +38,11 @@ const FAQ = () => {
   const toggleFAQ = (index) => {
     setOpenIndex(openIndex === index ? null : index);
   };
+  const [isLoaded, setIsLoaded] = useState(false);
 
+  useEffect(() => {
+    setIsLoaded(true);
+  }, []);
   return (
     // <div className="max-w-2xl mx-auto mt-10 px-4 mb-20 lg:max-w-4xl xl:max-w-7xl">
     //   <h2 className="font-avenir-black text-lg md:text-xl text-primary">
@@ -66,13 +72,13 @@ const FAQ = () => {
     //   </div>
     // </div>
 
+
     //with animat
 
     <motion.div
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
-      variants={fadeInUp}
+      initial={{ opacity: 0, y: 50 }}
+      animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6, ease: "easeOut" }}
       className="max-w-2xl mx-auto mt-10 px-4 mb-20 lg:max-w-4xl xl:max-w-7xl"
     >
       <h2 className="font-avenir-black text-lg md:text-xl text-primary">
@@ -82,10 +88,9 @@ const FAQ = () => {
         {faqs.map((faq, index) => (
           <motion.div
             key={index}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-            variants={fadeInUp}
+            initial={{ opacity: 0, y: 20 }}
+            animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.1 }}
             className="border-b border-primary"
           >
             <button
@@ -101,11 +106,7 @@ const FAQ = () => {
             </button>
             <motion.div
               initial={{ height: 0, opacity: 0 }}
-              animate={
-                openIndex === index
-                  ? { height: "auto", opacity: 1 }
-                  : { height: 0, opacity: 0 }
-              }
+              animate={openIndex === index ? { height: "auto", opacity: 1 } : { height: 0, opacity: 0 }}
               transition={{ duration: 0.4, ease: "easeInOut" }}
               className="overflow-hidden"
             >
@@ -119,6 +120,7 @@ const FAQ = () => {
         ))}
       </div>
     </motion.div>
+  
   );
 };
 
