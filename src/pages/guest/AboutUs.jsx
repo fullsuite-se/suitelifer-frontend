@@ -24,6 +24,7 @@ import CoreValue01 from "../../assets/icons/core-value-01";
 
 const AboutUs = () => {
   const [content, setContent] = useState({});
+  const [videoTitle, setVideoTitle] = useState("Thought it was over, but...");
 
   const [clickCount, setClickCount] = useState(0);
 
@@ -106,10 +107,10 @@ const AboutUs = () => {
             <p className="text-primary text-center text-sm font-avenir-black">
               OUR STORY
             </p>
-            <h2 className="font-avenir-black lg:text-4xl! text-center m-0!">
+            {/* <h2 className="font-avenir-black lg:text-4xl! text-center m-0!">
               Lorem, ipsum dolor it
-            </h2>
-            <p className="text-lg leading-tight">
+            </h2> */}
+            <p className="text-sm md:text-base mb-5">
               FullSuite was originally founded by Maggie Po on October 8, 2014
               as Offshore Concept Consulting, Inc. In 2018, the founder acquired
               full ownership of the brand name, FullSuite because it embodied
@@ -129,10 +130,11 @@ const AboutUs = () => {
               efficiently.
             </p>
           </section>
-          <section className="">
-            <div className="flex justify-between overflow-ellipsis mb-4">
+          <section>
+            {/* Decorative Elements */}
+            <div className="flex justify-between overflow-ellipsis mb-4 relative">
               <div
-                className="h-10 w-20 lg:h-20 lg:w-32 rounded-r-full lg:rounded-full bg-secondary opacity-35 self-end"
+                className="h-10 w-20 lg:h-20 lg:w-32 rounded-r-full lg:rounded-full bg-secondary opacity-35"
                 onClick={handleClick}
                 style={
                   clickCount === 6
@@ -140,49 +142,38 @@ const AboutUs = () => {
                     : {}
                 }
               ></div>
+
               <div
                 style={
                   clickCount === 6
                     ? { animation: "spinCCW 3s ease-out forwards" }
                     : {}
                 }
-                className="h-20 w-20 lg:h-20 lg:w-32 rounded-2xl bg-primary opacity-15 relative -top-10 -right-10"
+                className="h-20 w-20 lg:h-20 lg:w-32 rounded-2xl bg-primary opacity-15 absolute top-0 right-0"
               ></div>
             </div>
+
             <div className="max-w-4xl h-72 lg:h-96 mx-5">
               <video className="w-full h-full rounded-xl object-cover" controls>
                 <source src="#" type="video/mp4" />
               </video>
             </div>
           </section>
-          <section>
-            <p className="text-sm md:text-base m-5">
-              FullSuite is the preferred and trusted offshore service provider
-              to help data-intense tech companies scale operations and revenue
-              at a fraction of the cost of traditional staffing. FullSuite is
-              the preferred and trusted offshore service provider to help
-              data-intense tech companies scale operations and revenue at a
-              fraction of the cost of traditional staffing. FullSuite is the
-              preferred and trusted offshore service provider to help
-              data-intense tech companies scale operations and revenue at a
-              fraction of the cost of traditional staffing. FullSuite is lorem
-              ipsum the preferred and trusted offshore service provider to help
-              data-intense.
+
+          <section className="!-px-200">
+            <p className=" xl:-ml-25 xl:mt-50 font-avenir-black px-5 py-3 !text-xl md:mt-10 lg:mt-20 lg:!text-2xl">
+              “{videoTitle}”
             </p>
-            <p className="text-sm md:text-base mx-5">
-              FullSuite is the preferred and trusted offshore service provider
-              to help data-intense tech companies scale operations and revenue
-              at a fraction of the cost of traditional staffing. FullSuite is
-              the preferred and trusted offshore service provider to help
-              data-intense tech companies scale operations and revenue at a
-              fraction of the cost of traditional staffing. FullSuite is the
-              preferred and trusted offshore service provider to help
-              data-intense tech companies scale operations and revenue at a
-              fraction of the cost of traditional staffing. FullSuite is lorem
-              ipsum the preferred and trusted offshore service provider to help
-              data-intense.
+            <p className="text-sm md:text-base mx-5 mb-10 xl:-ml-20">
+              In this exclusive podcast interview, Maggie, the CEO of FullSuite
+              Company, shares her journey of resilience and leadership in the
+              competitive world of BPO. From navigating challenges to redefining
+              success, she proves that every setback is just a setup for a
+              greater comeback. Tune in for an inspiring conversation on
+              perseverance, innovation, and the future of FullSuite.
             </p>
           </section>
+
           <section className="flex gap-2 my-5 justify-end">
             <div className="h-2 w-2 lg:w-3 lg:h-3 rounded-full opacity-30 bg-primary"></div>
             <div className="h-2 w-2 lg:w-3 lg:h-3 rounded-full opacity-50 bg-primary"></div>
@@ -196,7 +187,7 @@ const AboutUs = () => {
             ></div>
           </section>
         </section>
-
+<div className="py-20"></div>
         {/* Our Core Values Section */}
         <section className="overflow-hidden relative">
           <h2 className="font-avenir-black lg:text-4xl! text-center m-0!">
