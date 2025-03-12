@@ -7,8 +7,8 @@ import { NavLink } from "react-router-dom";
 
 const JobCarouselVersion2 = ({ jobs }) => {
   return (
-    <section className="py-24">
-      <div className="mx-auto max-w-[1560px] px-4 sm:px-6 lg:px-8">
+    <section className="">
+      <div className="mx-auto max-w-[1550px] px-4 sm:px-6 lg:px-8">
         <Swiper
           modules={[Navigation, Pagination, Autoplay]}
           pagination={{ clickable: true, enabled: true }}
@@ -16,11 +16,16 @@ const JobCarouselVersion2 = ({ jobs }) => {
           slidesPerView={1}
           autoplay={{ delay: 5000 }}
           loop
-          navigation={true}
+          // navigation={true}
           breakpoints={{
             0: {
               slidesPerView: 1,
               spaceBetween: 20,
+              centeredSlides: true,
+            },
+            600: {
+              slidesPerView: 2,
+              spaceBetween: 28,
               centeredSlides: true,
             },
             768: {
@@ -42,9 +47,9 @@ const JobCarouselVersion2 = ({ jobs }) => {
               <SwiperSlide key={index}>
                 {({ isActive }) => (
                   <div
-                    className={`p-7 mt-4 ease-out min-h-80 flex flex-col justify-center bg-white shadow-lg rounded-lg transition-transform duration-300 ${
+                    className={`p-7 ease-out min-h- min-h-100 flex flex-col justify-center bg-white shadow-lg rounded-lg transition-transform duration-300 ${
                       isActive
-                        ? "scale-90 md:scale-110 bg-primary hover:scale-115"
+                        ? "scale-90 md:scale-110 bg-primary md:hover:scale-115"
                         : "scale-90 opacity-75 hover:-translate-y-2"
                     }`}
                   >
