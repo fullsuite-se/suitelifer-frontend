@@ -58,7 +58,7 @@ const EmployeeMyBlogs = () => {
           </div>
           <span
             onClick={() => {
-              navigate("/employee/my-blogs/new-blog");
+              navigate("/app/my-blogs/new-blog");
             }}
             className="font-avenir-black text-primary text-sm cursor-pointer"
           >

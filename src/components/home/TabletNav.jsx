@@ -100,8 +100,8 @@ export default function TabletNav() {
                   />
                 </div>
 
-                {/* Navigation Links FIX SCROLLING*/} 
-                <div className="max-h-[calc(100vh-4rem)] overflow-y-auto"> 
+                {/* Navigation Links FIX SCROLLING*/}
+                <div className="max-h-[calc(100vh-4rem)] overflow-y-auto">
                   <nav className="flex items-center flex-col space-y-4 py-10">
                     <div>
                       <NavLink
@@ -209,4 +209,4 @@ export default function TabletNav() {
       </div>
     </>
   );
-} 
+}
