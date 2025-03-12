@@ -85,11 +85,13 @@ export default function TabletNav() {
                 <div className="flex justify-between">
                   {/* Fullsuite Icon */}
                   <div className="w-32 ml-4">
-                    <img
-                      className="object-cover"
-                      src={logo_fs_full}
-                      alt="Logo"
-                    />
+                    <a href="/">
+                      <img
+                        className="object-cover"
+                        src={logo_fs_full}
+                        alt="Logo"
+                      />
+                    </a>
                   </div>
                   {/* Close Button */}
                   <XMarkIcon
