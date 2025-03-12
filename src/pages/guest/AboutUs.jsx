@@ -50,7 +50,7 @@ const AboutUs = () => {
 
   return (
     <section
-      className="gap-4 h-dvh"
+      className="gap-4"
       style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
     >
       {/* MOBILE NAV */}
@@ -64,7 +64,7 @@ const AboutUs = () => {
       <div className="desktop-nav">
         <DesktopNav />
       </div>
-      <main className="md:mt-20">
+      <main className="lg:mt-20">
         {/* Hero Section */}
         <section className="overflow-hidden about-container">
           <div className="h-56 w-72">
@@ -298,7 +298,7 @@ const AboutUs = () => {
             </article>
 
             {/* Vision Text */}
-            <article className="pt-[15%] md:pt-[18%] lg:pt-[23%] pr-[7%] md:pr-[13%] mission-vision-text flex flex-col justify-start items-start text-start">
+            <article className="pt-[2%] pr-[7%] md:pr-[13%] mission-vision-text flex flex-col justify-center items-start text-start">
               <p className="blue-text uppercase w-full font-avenir-black text-primary">
                 Fullsuite Vision
               </p>

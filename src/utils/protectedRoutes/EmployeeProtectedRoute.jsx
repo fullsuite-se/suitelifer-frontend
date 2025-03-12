@@ -55,7 +55,9 @@ const AdminProtectedRoute = () => {
     return <div>Loading...</div>;
   }
 
-  return role === "employee" ? <Outlet /> : <Navigate to="/login-employee" />;
+  const test = "employee";
+
+  return test === "employee" ? <Outlet /> : <Navigate to="/login-employee" />;
 };
 
 export default AdminProtectedRoute;

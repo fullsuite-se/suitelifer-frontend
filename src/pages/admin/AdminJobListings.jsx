@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function JobListing() {
+export default function AdminJobListings() {
   return (
     <div className="flex">
       <div className="flex-1 container mx-auto p-4 space-y-6">
