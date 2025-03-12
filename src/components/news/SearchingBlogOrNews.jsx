@@ -16,7 +16,7 @@ const ArticleSearchResults = ({ type, list, searchTerm }) => {
     : list;
 
   return (
-    <div className="w-full mt-6">
+    <div className="w-full">
       {filteredResults.length > 0 ? (
         <>
           <p className="text-sm md:text-lg text-primary  mb-3">
@@ -32,7 +32,7 @@ const ArticleSearchResults = ({ type, list, searchTerm }) => {
                   title={news.title}
                   author={news.author}
                   article={news.article}
-                  readTime={news.read_time}
+                  readTime={news.readTime}
                   created_at={news.created_at}
                   imagesWithCaption={news.imagesWithCaption}
                 />
@@ -56,7 +56,7 @@ const ArticleSearchResults = ({ type, list, searchTerm }) => {
           )}
         </>
       ) : (
-        <div className="flex flex-col items-center text-gray-500 mt-50">
+        <div className="flex flex-col items-center text-gray-500 my-30 ">
           <img
             src={nothingFoundIcon}
             alt="No results"

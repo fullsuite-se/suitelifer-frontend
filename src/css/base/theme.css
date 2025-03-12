@@ -137,6 +137,13 @@ b em {
   --font-avenir-black-oblique: Avenir-BlackOblique, "sans-serif";
   --font-avenir-roman: Avenir-Roman, "sans-serif";
   --font-avenir-roman-oblique: Avenir-BlackOblique, "sans-serif";
+  --font-sansita-black: SansitaSwashed-Black, "sans-serif";
+  --font-sansita-bold: SansitaSwashed-Bold, "sans-serif";
+  --font-sansita-regular: SansitaSwashed-Regular, "sans-serif";
+  --font-sansita-extra-bold: SansitaSwashed-ExtraBold, "sans-serif";
+  --font-sansita-light: SansitaSwashed-Light, "sans-serif";
+  --font-sansita-medium: SansitaSwashed-Medium, "sans-serif";
+  --font-sansita-semi-bold: SansitaSwashed-SemiBold, "sans-serif";
 }
 
 .btn-primary {

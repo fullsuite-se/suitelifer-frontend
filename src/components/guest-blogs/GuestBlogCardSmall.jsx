@@ -36,7 +36,7 @@ const GuestBlogCardSmall = ({
         </div>
 
         <div className="absolute bottom-0 p-4 text-white">
-          <h2 className="!text-[14px] lg:!text-[16px] group-hover:text-secondary group-hover:font-avenir-black  transition duration-300 ease-in-out line-clamp-2">
+          <h2 className="font-sansita-semi-bold !text-[14px] lg:!text-[16px] group-hover:text-secondary   transition duration-300 ease-in-out line-clamp-2">
             {title}
           </h2>
 

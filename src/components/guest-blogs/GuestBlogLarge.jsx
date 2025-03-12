@@ -34,7 +34,7 @@ const GuestBlogLarge = ({
 
         <div className="absolute bottom-0 p-7 text-white lg:p-15">
           <h2
-            className="font-avenir-black text-lg  lg:text-2xl  group-hover:text-secondary transition duration-300 ease-in-out
+            className="font-sansita-extra-bold text-lg  lg:text-2xl  group-hover:text-secondary transition duration-300 ease-in-out
           "
           >
             {title}

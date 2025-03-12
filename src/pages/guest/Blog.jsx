@@ -11,6 +11,7 @@ import GuestBlogTags from "../../components/guest-blogs/GuestBlogTags";
 import GuestBlogCard from "../../components/guest-blogs/GuestBlogCard";
 import loadingGif from "../../assets/gif/suitelifer-loading.gif";
 import ArticleSearchResults from "../../components/news/SearchingBlogOrNews";
+import { motion } from "framer-motion";
 
 const Blog = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -50,7 +51,7 @@ const Blog = () => {
       {/* BLOGS HERO */}
       <section className="pt-[10%] xl:pt-[8%]">
         <img
-          className="-z-50 absolute w-[90%] transform translate-y-5 -translate-x-10 lg:-translate-x-20 xl:-translate-x-50 opacity-90"
+          className="-z-50 absolute w-[90%] transform translate-y-5 -translate-x-6 lg:-translate-y-10  xl:-translate-y-15 lg:-translate-x-15 xl:-translate-x-40 opacity-90"
           src={bgBlogs}
           alt=""
         />
@@ -66,11 +67,20 @@ const Blog = () => {
           <AnimatedText text="spot" color="black" />
         </div>
 
-        <div className="text-center mt-5">
-          <p className="text-gray-400 text-[12px] md:text-[14px] lg:text-[16px]">
-            where ideas spark and stories thrive.
-          </p>
-        </div>
+        <div className="text-center mt-3 md:mt-5">
+  <p className="text-gray-400 text-[12px] md:text-[14px] lg:text-[16px]">
+    <motion.span
+      initial={{ width: 0 }}
+      animate={{ width: "100%" }}
+      transition={{ duration: 2.5, ease: "linear", delay:1 }}
+      className="overflow-hidden whitespace-nowrap inline-block"
+    >
+      where ideas spark and stories thrive.
+    </motion.span>
+  </p>
+</div>
+
+
 
         {/* SEARCH BAR */}
         <div className="flex justify-center mt-6 px-4">
@@ -164,6 +174,7 @@ const Blog = () => {
               ))}
             </div>
 
+            <div className="h-10"></div>
             <div className="flex justify-center items-center w-full h-15 rounded-lg overflow-hidden">
               <img
                 src={loadingGif}

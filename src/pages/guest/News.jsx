@@ -8,6 +8,7 @@ import NewsLarge from "../../components/news/NewsLarge";
 import newsList from "../../components/news/NewsList";
 import NewsCardSmall from "../../components/news/NewsCardSmall";
 import ArticleSearchResults from "../../components/news/SearchingBlogOrNews";
+import { motion } from "framer-motion";
 
 const News = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -48,27 +49,47 @@ const News = () => {
       <section className="pt-[10%] xl:pt-[8%]">
         <div className="relative">
           <img
-            className="-z-50 absolute w-[90%] transform translate-y-5 -translate-x-10 lg:-translate-x-20 xl:-translate-x-30 opacity-90"
+            className="-z-50 absolute w-[90%] transform translate-y-5 -translate-x-6 lg:-translate-y-10  xl:-translate-y-15 lg:-translate-x-15 xl:-translate-x-40 opacity-90"
             src={bgNews}
             alt=""
           />
         </div>
 
         {/* BANNER */}
-        <div className="text-center">
-          <p className="font-avenir-black text-4xl md:text-7xl animate-fadeInUp">
-            <span className="text-primary">suite</span> news
+        <div className="text-center overflow-hidden">
+          <p className="text-4xl md:text-7xl font-serif font-extrabold flex justify-center gap-4 md:gap-8 flex-nowrap">
+            <motion.span
+              initial={{ x: "-100vw", opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 120, damping: 20 }}
+              className="text-primary"
+            >
+              suite
+            </motion.span>
+            <motion.span
+              initial={{ x: "100vw", opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 120, damping: 20 }}
+            >
+              news
+            </motion.span>
           </p>
-          <p className="text-gray-400 md:text-xl">
-            we serve the latest. the hottest
+          <p className="text-gray-400 text-[12px] md:text-[14px] lg:text-[16px]">
+            <motion.span
+              initial={{ width: 0 }}
+              animate={{ width: "100%" }}
+              transition={{ duration: 2.5, ease: "linear", delay: 0.5 }}
+              className="overflow-hidden whitespace-nowrap inline-block"
+            >
+              we serve the latest. the hottest.
+            </motion.span>
           </p>
         </div>
 
         {/* SEARCH BAR */}
         <div className="flex justify-center mt-6 px-4">
           <div className="relative flex items-center w-full max-w-xs sm:max-w-sm md:max-w-lg">
-          
-          <svg
+            <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"
@@ -109,7 +130,11 @@ const News = () => {
       {/* NEWS CONTENT */}
       <main className="px-[5%]">
         {isSearching ? (
-          <ArticleSearchResults type="news" list={newsList} searchTerm={searchTerm} />
+          <ArticleSearchResults
+            type="news"
+            list={newsList}
+            searchTerm={searchTerm}
+          />
         ) : (
           <>
             <p className="md:text-2xl uppercase font-avenir-black text-primary pb-3 lg:pb-4">

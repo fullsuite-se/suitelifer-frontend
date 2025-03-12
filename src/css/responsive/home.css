@@ -9,10 +9,10 @@
   position: relative;
 }
 .swiper-pagination-bullet {
-  background: #4f46e5;
+  background: var(--color-primary);
 }
 .swiper-pagination-bullet-active {
-  background: #4f46e5 !important;
+  background: var(--color-primary) !important;
 }
 
 .carousel-container {
@@ -52,6 +52,7 @@
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
 
   @media (min-width: 332px) {
     -webkit-line-clamp: 4;
@@ -156,7 +157,9 @@
 
 .text-goal {
   font-size: clamp(8px, 2.95vw,2rem);
-
+  .txt-btn{
+    font-size: clamp(8px, 1.95vw, 1.7rem);
+  }
   @media (min-width: 640px) {
     font-size: clamp(8px, 1.8vw, 34px);
   }
