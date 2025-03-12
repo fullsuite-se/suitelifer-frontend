@@ -1,6 +1,5 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { Outlet } from "react-router-dom";
-import EmployeeSidebar from "../../components/employee/EmployeeSidebar";
 import EmployeeAside from "../../components/employee/EmployeeAside";
 import logoFull from "../../assets/logos/logo-fs-full.svg";
 import { Bars2Icon } from "@heroicons/react/20/solid";
