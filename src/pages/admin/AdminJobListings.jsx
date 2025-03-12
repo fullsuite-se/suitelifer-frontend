@@ -343,19 +343,19 @@ export default function JobListing() {
       </header>
       {/* Stats */}
       <div className="flex flex-wrap gap-4">
-        <div className="bg-primary text-white px-4 py-2 rounded-2xl w-100 h-10 flex items-center justify-between">
+        <div className="bg-primary text-white px-4 py-2 rounded-2xl w-80 h-10 flex items-center justify-between">
           <span>{`Total Applications`}</span>
           <span className="text-2xl">{`${jobListings.length}`}</span>
         </div>
-        <div className="border-2 text-dark px-4 py-2 rounded-2xl w-100 h-10 flex items-center justify-between">
+        <div className="border-2 text-dark px-4 py-2 rounded-2xl w-80 h-10 flex items-center justify-between">
           <span>{`Industries`}</span>
           <span className="text-2xl">{`${industries.length}`}</span>
         </div>
 
-        <div className="border-2 text-dark px-4 py-2 rounded-2xl w-198 h-10 flex items-center justify-between">
+        <div className="border-2 text-dark px-4 py-2 rounded-2xl w-136 h-10 flex items-center justify-between">
           <span>{`Job Listings`}</span>
           <span className="text-2xl">{`${jobListings.length}`}</span>
-          <div className="border-l-2 text-dark px-4 py-2 rounded-2xl w-100 h-10 flex items-center justify-between flex-end">
+          <div className="border-l-2 text-dark px-4 py-2 rounded-2xl w-80 h-10 flex items-center justify-between flex-end">
             <span className="">Open</span>
             <span className="text-2xl font-bold">
               {

@@ -113,9 +113,12 @@ const AdminNews = () => {
   const isOutletPage = location.pathname.includes("/news/details/");
 
   return (
+    
     <>
       {!isOutletPage ? (
         <>
+
+        
           <div
             className={"ag-theme-quartz p-5"}
             style={{ height: "max(600px, 90%)", width: "100%" }}
