@@ -74,6 +74,29 @@ const CMSNavigation = () => {
         </section>
         <section className=" flex-1 ">
           <ul className="list-none!">
+            {regularServices.map((service, index) => {
+              return (
+                <li key={index}>
+                  <NavLink
+                    to={`/app/${service.path}`}
+                    className={({ isActive }) =>
+                      isActive
+                        ? "bg-primary text-white transition-none! p-3 rounded-lg flex items-center gap-3 no-underline!"
+                        : "bg-white text-primary transition-none! p-3 rounded-lg flex items-center gap-3 no-underline! hover:bg-blue-50"
+                    }
+                  >
+                    {service ? (
+                      <service.icon className="size-4 group-hover:hidden" />
+                    ) : (
+                      <Square2StackIcon className="size-4 group-hover:hidden" />
+                    )}
+                    <span className="no-underline! font-avenir-black">
+                      {service.feature_name}
+                    </span>
+                  </NavLink>
+                </li>
+              );
+            })}
             {services.length !== 0 && (
               <Disclosure as="div" defaultOpen={true}>
                 <DisclosureButton className="group cursor-pointer flex w-full items-center justify-between">
@@ -116,30 +139,6 @@ const CMSNavigation = () => {
                 </DisclosurePanel>
               </Disclosure>
             )}
-
-            {regularServices.map((service, index) => {
-              return (
-                <li key={index}>
-                  <NavLink
-                    to={`/app/${service.path}`}
-                    className={({ isActive }) =>
-                      isActive
-                        ? "bg-primary text-white transition-none! p-3 rounded-lg flex items-center gap-3 no-underline!"
-                        : "bg-white text-primary transition-none! p-3 rounded-lg flex items-center gap-3 no-underline! hover:bg-blue-50"
-                    }
-                  >
-                    {service ? (
-                      <service.icon className="size-4 group-hover:hidden" />
-                    ) : (
-                      <Square2StackIcon className="size-4 group-hover:hidden" />
-                    )}
-                    <span className="no-underline! font-avenir-black">
-                      {service.feature_name}
-                    </span>
-                  </NavLink>
-                </li>
-              );
-            })}
           </ul>
         </section>
         <section className="p-5 py-7 flex gap-12">
