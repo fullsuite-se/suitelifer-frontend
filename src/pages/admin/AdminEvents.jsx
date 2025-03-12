@@ -153,9 +153,10 @@ const AdminEvents = () => {
             bgcolor: "white",
             borderRadius: 1,
             boxShadow: 24,
+            width:"300px"
           }}
         >
-          <Typography variant="h6" mb={2} className="text-center text-blue-600">
+          <Typography variant="h5" mb={2} className="text-center text-primary font-bold">
             Add New Event
           </Typography>
           <TextField
