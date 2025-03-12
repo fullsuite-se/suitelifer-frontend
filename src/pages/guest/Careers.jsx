@@ -84,7 +84,7 @@ const Careers = () => {
               </div>
               {/* blue at top left */}
               <div className="">
-                <div className="w-[15%] h-15 rounded-r-3xl absolute overflow-hidden -z-50  bg-primary/10 "></div>
+                <div className="w-[15%] h-[13vw] rounded-r-3xl absolute overflow-hidden -z-50  bg-primary/10 "></div>
               </div>
               {/* green at top right */}
               <div className="">
