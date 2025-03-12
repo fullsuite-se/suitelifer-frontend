@@ -35,10 +35,13 @@ import RootLayout from "./components/layout/RootLayout";
 // Auth Pages
 import Login from "./components/auth/Login";
 
+// Others
+import { Toaster } from "react-hot-toast";
 function App() {
   return (
     <>
       <BrowserRouter>
+        <Toaster position="top-right" reverseOrder={false} />
         <Routes>
           {/* Routes that are publicly avaialable (guest) */}
           <Route path="/" element={<Home />} />
