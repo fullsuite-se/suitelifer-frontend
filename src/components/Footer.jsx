@@ -161,6 +161,15 @@ const Footer = () => {
         <FetchLogos size={22}/>
         </div>
       </section>
+      <section className="pl-5 mb-3">
+      <button className="group relative px-6 py-2 mt-5 text-white text-md font-medium rounded-full overflow-hidden lg:w-40 xl:w-50 xl:text-lg transition-all duration-100 ">
+  <Link className="no-underline" target="_blank" to={"/login"}>
+    <div className="absolute inset-0 bg-white opacity-30 rounded-full transition-all duration-100 group-hover:opacity-100"></div>
+    <span className="relative group-hover:!text-white">Suitelifer Login</span>
+  </Link>
+</button>
+
+      </section>
 
       <section className="footer-links flex justify-between px-7 pt-4">
         <div>
