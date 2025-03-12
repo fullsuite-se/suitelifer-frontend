@@ -1,0 +1,3 @@
+.top-text{
+    font-size: clamp(17px, 3.3vw, 2rem);
+}
