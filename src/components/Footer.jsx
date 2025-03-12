@@ -9,6 +9,7 @@ import InstagramIcon from "../assets/logos/Instagram.jsx";
 import LinkedlnIcon from "../assets/logos/Linkedln.jsx";
 import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
+import FetchLogos from "./footer/LogoSlideShow.jsx";
 
 const Footer = () => {
   return (
@@ -44,7 +45,7 @@ const Footer = () => {
               </p>{" "}
               <p className="footer-text text-white text-sm">
                 <span>Interested in availing our services?</span> Check this
-                out! &nbsp;
+                out!&nbsp;
                 <span>
                   <Link
                     target="_blank"
@@ -58,14 +59,23 @@ const Footer = () => {
               <p className="footer-text text-white text-sm">Let's chat.</p>
               <div>
                 <ul className="flex items-center gap-4 list-none! -ml-5">
-                  <li>
-                    <FacebookIcon color={"#0097b2"} height="20" width="20" />
+                  <li className="hover:scale-150 transition-all duration-100">
+                    <Link 
+                      target="_blank"
+                      to={"https://facebook.com/thefullsuitepod"}
+                    >
+                      <FacebookIcon color={"#0097b2"} height="20" width="20" />
+                    </Link>
                   </li>
-                  <li>
-                    <InstagramIcon color={"#0097b2"} height="20" width="20" />
+                 
+                  <li className="hover:scale-150 transition-all duration-100"><Link target="_blank" to={"https://instagram.com/thefullsuitepod"}>
+                    <InstagramIcon color={"#0097b2"} height="20" width="20" /></Link>
                   </li>
-                  <li>
-                    <LinkedlnIcon color={"#0097b2"} height="20" width="20" />
+              
+                  <li className="hover:scale-150 transition-all duration-100">
+                    <Link target="_blank" to={"https://www.linkedin.com/company/fullsuite"}>
+                      <LinkedlnIcon color={"#0097b2"} height="20" width="20" />
+                    </Link>
                   </li>
                 </ul>
               </div>
@@ -92,8 +102,7 @@ const Footer = () => {
           </p>
 
           <p className="footer-text text-white text-sm">
-            <span>Interested in availing our services?</span> Check this out!
-            &nbsp;
+            <span>Interested in availing our services?</span> Check this out!&nbsp;
             <span>
               <Link
                 to="https://fullsuite.ph"
@@ -110,23 +119,33 @@ const Footer = () => {
           <div>
             <ul className="flex items-center gap-4 list-none! -ml-5  ">
               <li>
-                <FacebookIcon color={"white"} height="20" width="20" />
+                <Link
+                  target="_blank"
+                  to={"https://facebook.com/thefullsuitepod"}
+                >
+                  <FacebookIcon color={"white"} height="20" width="20" />
+                </Link>
               </li>
               <li>
-                <InstagramIcon color={"white"} height="20" width="20" />
+                <Link
+                  target="_blank"
+                  to={"https://instagram.com/thefullsuitepod"}
+                >
+                  <InstagramIcon color={"white"} height="20" width="20" />
+                </Link>
               </li>
               <li>
-                <LinkedlnIcon color={"white "} height="20" width="20" />
+               
+              <Link target="_blank" to={"https://www.linkedin.com/company/fullsuite"}>
+                      <LinkedlnIcon color={"white"} height="20" width="20" />
+                    </Link>
               </li>
             </ul>
           </div>
         </div>
+        {/* dito allen! */}
         <div className="basis-sm pr-2 self-start">
-          <img
-            src={logoSOC}
-            alt="SOC logo"
-            className="w-full object-contain h-full"
-          />
+        <FetchLogos size={22}/>
         </div>
       </section>
 
@@ -137,27 +156,42 @@ const Footer = () => {
           </span>
           <ul className="flex flex-wrap gap-1 flex-col mt-2 list-none! -ml-5">
             <li className="text-sm text-white ">
-            <HashLink to="/about-us#our-story" className="footer-text hover:!text-primary">
-  Our Story
-</HashLink>
+              <HashLink
+                to="/about-us#our-story"
+                className="footer-text hover:!text-primary"
+              >
+                Our Story
+              </HashLink>
             </li>
             <li className="text-sm text-white">
-              <HashLink to="/about-us#our-mission" className="footer-text hover:!text-primary">
+              <HashLink
+                to="/about-us#our-mission"
+                className="footer-text hover:!text-primary"
+              >
                 Mission
               </HashLink>
             </li>
             <li className="text-sm text-white">
-              <HashLink to="/about-us#our-vision" className="footer-text hover:!text-primary">
+              <HashLink
+                to="/about-us#our-vision"
+                className="footer-text hover:!text-primary"
+              >
                 Vision
               </HashLink>
             </li>
             <li className="text-sm text-white">
-              <HashLink to={"/about-us/#ceo-message"} className="footer-text hover:!text-primary">
+              <HashLink
+                to={"/about-us/#ceo-message"}
+                className="footer-text hover:!text-primary"
+              >
                 CEO's message
               </HashLink>
             </li>
             <li className="text-sm text-white">
-              <HashLink to={"/about-us/#testimonials"} className="footer-text hover:!text-primary">
+              <HashLink
+                to={"/about-us/#testimonials"}
+                className="footer-text hover:!text-primary"
+              >
                 Testimonials
               </HashLink>
             </li>
@@ -201,7 +235,10 @@ const Footer = () => {
                 </Link>
               </li>
               <li className="text-sm text-white">
-                <HashLink to={"/contact#faqs"} className="footer-text hover:!text-primary">
+                <HashLink
+                  to={"/contact#faqs"}
+                  className="footer-text hover:!text-primary"
+                >
                   FAQs
                 </HashLink>
               </li>
@@ -230,21 +267,18 @@ const Footer = () => {
               </Link>
             </li>
             <li className="text-sm text-white">
-            <HashLink to={"/contact#faqs"} className="footer-text hover:!text-primary">
-                  FAQs
-                </HashLink>
+              <HashLink
+                to={"/contact#faqs"}
+                className="footer-text hover:!text-primary"
+              >
+                FAQs
+              </HashLink>
             </li>
           </ul>
         </div>
       </section>
       <section className="soc-logo-container hidden">
-        <div className="w-30 h-30">
-          <img
-            src={logoSOC}
-            alt="SOC logo"
-            className="w-full object-contain h-full"
-          />
-        </div>
+       <FetchLogos size={32}/>
       </section>
     </footer>
   );
