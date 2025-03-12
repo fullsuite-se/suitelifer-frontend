@@ -53,6 +53,7 @@ const regularServices = [
 const CMSNavigation = () => {
   const services = useStore((state) => state.services) || [];
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const user = useStore((state) => state.user);
 
   return (
     <section>
@@ -69,8 +70,14 @@ const CMSNavigation = () => {
               className="w-full h-full object-cover rounded-full"
             />
           </div>
-          <p className="font-avenir-black text-center">Hernani Domingo</p>
-          <p className="text-sm text-center text-primary">@hernani.domingo</p>
+          <p className="font-avenir-black text-center">
+            {`${user?.first_name ?? "Unknown"} ${user?.last_name ?? "User"}`}
+          </p>
+          <p className="text-sm text-center text-primary">
+            {`@${user?.first_name?.trim()?.toLowerCase() ?? "unknown"}.${
+              user?.last_name?.trim()?.toLowerCase() ?? "user"
+            }`}
+          </p>
         </section>
         <section className=" flex-1 ">
           <ul className="list-none!">
