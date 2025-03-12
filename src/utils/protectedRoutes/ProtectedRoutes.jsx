@@ -5,8 +5,9 @@ import config from "../../config";
 import { useStore } from "../../store/authStore";
 
 const ProtectedRoutes = () => {
-  const [user, setUser] = useState(null);
   const setServices = useStore((state) => state.setServices);
+  const user = useStore((state) => state.setUser);
+  const setUser = useStore((state) => state.setUser);
   const [loading, setLoading] = useState(true);
 
   const refreshToken = async () => {
@@ -60,9 +61,9 @@ const ProtectedRoutes = () => {
 
       if (user) {
         setUser(user);
-
         const services = await getUserServices(user.id);
         setServices(services);
+        console.log(user);
       } else {
         setUser(null);
         setServices([]);
@@ -84,7 +85,7 @@ const ProtectedRoutes = () => {
     return <div>Loading...</div>;
   }
 
-  return user ? <Outlet /> : <Navigate to="/login-admin" />;
+  return user ? <Outlet /> : <Navigate to="/login" />;
 };
 
 export default ProtectedRoutes;
