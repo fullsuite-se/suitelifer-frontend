@@ -27,6 +27,7 @@ import { ModuleRegistry } from "@ag-grid-community/core";
 import { AgGridReact } from "@ag-grid-community/react";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
+import toast from "react-hot-toast";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -57,7 +58,11 @@ export default function AdminJobListing() {
       const response = (
         await axios.post(`${config.apiBaseUrl}/api/add-job`, newJobListing)
       ).data;
-      alert(response.message);
+      if (response.success) {
+        toast.success(response.message);
+      } else {
+        toast.error(response.message);
+      }
       setJobListings((j) => [...j, newJobListing]);
     } else {
       const updatedJobListings = jobListings.map((job, index) =>
@@ -101,11 +106,15 @@ export default function AdminJobListing() {
         newIndustry.industry_name != "" ||
         !industries.includes(newIndustry)
       ) {
-        setIndustries((i) => [...i, newIndustry]);
         const response = (
           await axios.post(`${config.apiBaseUrl}/api/add-industry`, newIndustry)
         ).data;
-        alert(response.message);
+        if (response.success) {
+          toast.success(response.message);
+        } else {
+          toast.error(response.message);
+        }
+        setIndustries((i) => [...i, newIndustry]);
       }
     } else {
       // EDIT INDUSTRY
@@ -143,11 +152,15 @@ export default function AdminJobListing() {
       // ADD SETUP
       if (newSetup.setup_name != "" && !setups.includes(newSetup)) {
         console.log(newSetup.user_id);
-        setSetups([...setups, newSetup]);
         const response = (
           await axios.post(`${config.apiBaseUrl}/api/add-setup`, newSetup)
         ).data;
-        alert(response.message);
+        if (response.success) {
+          toast.success(response.message);
+        } else {
+          toast.error(response.message);
+        }
+        setSetups((s) => [...s, newSetup]);
       }
     } else {
       // EDIT SETUP
@@ -274,33 +287,35 @@ export default function AdminJobListing() {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
+  // API CALLS
+
+  const fetchIndustries = async () => {
+    const response = (
+      await axios.get(`${config.apiBaseUrl}/api/get-all-industries-hr`)
+    ).data;
+
+    setIndustries((i) => (i = response.data));
+  };
+
+  const fetchSetups = async () => {
+    const response = (
+      await axios.get(`${config.apiBaseUrl}/api/get-all-setups`)
+    ).data;
+
+    console.log(response.data);
+
+    setSetups((s) => (s = response.data));
+  };
+
+  const fetchJobListings = async () => {
+    const response = (await axios.get(`${config.apiBaseUrl}/api/all-jobs`))
+      .data;
+
+    setJobListings((jl) => (jl = response.data));
+    setRowData(response.data);
+  };
+
   useEffect(() => {
-    const fetchIndustries = async () => {
-      const response = (
-        await axios.get(`${config.apiBaseUrl}/api/get-all-industries-hr`)
-      ).data;
-
-      setIndustries((i) => (i = response.data));
-    };
-
-    const fetchSetups = async () => {
-      const response = (
-        await axios.get(`${config.apiBaseUrl}/api/get-all-setups`)
-      ).data;
-
-      console.log(response.data);
-
-      setSetups((s) => (s = response.data));
-    };
-
-    const fetchJobListings = async () => {
-      const response = (await axios.get(`${config.apiBaseUrl}/api/all-jobs`))
-        .data;
-
-      setJobListings((jl) => (jl = response.data));
-      setRowData(response.data);
-    };
-
     fetchIndustries();
     fetchSetups();
     fetchJobListings();
@@ -423,177 +438,206 @@ export default function AdminJobListing() {
 
       {/* Job Modal */}
       <Modal open={jobModalIsOpen} onClose={() => setJobModalIsOpen(false)}>
-        <div className="space-y-10 overflow-hidden ">
-          <Box className="modal-container p-2 bg-white rounded-lg w-full sm:w-250 mx-auto mt-24h-screen overflow-y-auto">
-            <h2 className="mb-4 text-lg text-center bg-white ">
+        <div className="fixed inset-0 flex items-center justify-center">
+          <Box className="modal-container px-10 py-3 bg-white rounded-lg w-full sm:w-250 max-h-[80vh] overflow-y-auto shadow-lg">
+            <h2 className="mb-4 font-avenir-black text-lg text-center bg-white">
               {editJobDetails === null ? "Add Job Listing" : "Edit Job Listing"}
             </h2>
-            <form onSubmit={(e) => handleAddEditJobListing(e)} className="space-y-4 mt-1">
-              <div className="flex justify-between gap-4">
-                <TextField
-                  label="Job Title"
-                  variant="outlined"
-                  required
-                  name="title"
-                  onChange={(e) => handleNewJobListingChange(e)}
-                  fullWidth
-                  className="gap-x-3"
-                  margin="normal"
-                  sx={{ bgcolor: "#fbe9e7" }}
-                />
-                <FormControl fullWidth className="mt-2" margin="normal">
-                  <InputLabel>Industry</InputLabel>
-                  <Select
-                    label="Industry"
+            <form
+              onSubmit={(e) => handleAddEditJobListing(e)}
+              className="space-y-4 mt-1"
+            >
+              {/* JOB TITLE + INDUSTRY */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-700 font-avenir-black">
+                    Job Title<span className="text-primary">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="title"
+                    required
+                    className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-avenir-black">
+                    Industry<span className="text-primary">*</span>
+                  </label>
+                  <select
                     name="industry_id"
                     required
-                    onChange={(e) => handleNewJobListingChange(e)}
-                    sx={{ bgcolor: "#fbe9e7" }}
+                    defaultValue=""
+                    className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
                   >
-                    {industries.map((option, index) => (
-                      <MenuItem key={index} value={option.industryId}>
-                        {option.industryName}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                    <option value="" disabled>
+                      -- Select an option --
+                    </option>
+                    {industries.map((industry, index) => {
+                      return (
+                        <option value={industry.industryId}>
+                          {industry.industryName}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
               </div>
-
-              <TextField
-                label="Description"
-                variant="outlined"
-                required
-                name="description"
-                onChange={(e) => handleNewJobListingChange(e)}
-                fullWidth
-                multiline
-                className="mt-2"
-                margin="normal"
-                sx={{ bgcolor: "#fbe9e7" }}
-              />
-              <div className="flex gap-4">
-                <TextField
-                  label="Minimum Salary"
-                  variant="outlined"
-                  name="salary_min"
-                  onChange={(e) => handleNewJobListingChange(e)}
-                  fullWidth
-                  type="number"
-                  className="mt-2"
-                  margin="normal"
-                  defaultValue={0}
-                  sx={{ bgcolor: "#fbe9e7" }}
-                />
-                <TextField
-                  label="Max Salary"
-                  variant="outlined"
-                  name="salary_max"
-                  onChange={(e) => handleNewJobListingChange(e)}
-                  fullWidth
-                  type="number"
-                  className="mt-2"
-                  margin="normal"
-                  defaultValue={0}
-                  sx={{ bgcolor: "#fbe9e7" }}
-                />
-                <FormControl fullWidth className="mt-2" margin="normal">
-                  <InputLabel>Employment Type</InputLabel>
-                  <Select
-                    label="Employment Type"
-                    name="employment_type"
+              {/* DESCRIPTION */}
+              <div className="grid grid-cols-1">
+                <div>
+                  <label className="block text-gray-700 font-avenir-black">
+                    Description<span className="text-primary">*</span>
+                  </label>
+                  <textarea
+                    name="description"
                     required
-                    onChange={(e) => handleNewJobListingChange(e)}
-                    sx={{ bgcolor: "#fbe9e7" }}
+                    rows={3}
+                    className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                  ></textarea>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                {/* MIN SALARY */}
+                <div>
+                  <label className="block text-gray-700 font-avenir-black">
+                    Min Salary
+                  </label>
+                  <input
+                    type="number"
+                    name="salary_min"
+                    className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+                {/* MAX SALARY */}
+                <div>
+                  <label className="block text-gray-700 font-avenir-black">
+                    Max Salary
+                  </label>
+                  <input
+                    type="number"
+                    name="salary_max"
+                    className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+                {/* EMPLOYMENT TYPE */}
+                <div>
+                  <label className="block text-gray-700 font-avenir-black">
+                    Employment Type<span className="text-primary">*</span>
+                  </label>
+                  <select
+                    name="industry_id"
+                    required
+                    defaultValue=""
+                    className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
                   >
-                    <MenuItem value="Part-Time">Part-Time</MenuItem>
-                    <MenuItem value="Full-Time">Full-Time</MenuItem>
-                  </Select>
-                </FormControl>
-                <FormControl fullWidth className="mt-2" margin="normal">
-                  <InputLabel>Set-Up</InputLabel>
-                  <Select
-                    label="Setup"
-                    required
+                    <option value="" disabled>
+                      -- Select an option --
+                    </option>
+                    <option value="Full-time">Full-time</option>
+                    <option value="Part-time">Part-time</option>
+                  </select>
+                </div>
+                {/* SETUP */}
+                <div>
+                  <label className="block text-gray-700 font-avenir-black">
+                    Setup<span className="text-primary">*</span>
+                  </label>
+                  <select
                     name="setup_id"
-                    onChange={(e) => handleNewJobListingChange(e)}
-                    sx={{ bgcolor: "#fbe9e7" }}
-                  >
-                    {setups.map((setup, index) => (
-                      <MenuItem key={setup.setupId} value={setup.setupId}>
-                        {setup.setupName}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </div>
-
-              <TextField
-                label="Responsibilities"
-                variant="outlined"
-                name="responsibility"
-                onChange={(e) => handleNewJobListingChange(e)}
-                multiline
-                fullWidth
-                margin="normal"
-                sx={{ bgcolor: "#fbe9e7" }}
-              />
-
-              <TextField
-                label="Requirements"
-                variant="outlined"
-                name="requirement"
-                onChange={(e) => handleNewJobListingChange(e)}
-                multiline
-                fullWidth
-                margin="normal"
-                sx={{ bgcolor: "#fbe9e7" }}
-              />
-
-              <TextField
-                id="filled-textarea"
-                label="Preferred Qualifications"
-                variant="outlined"
-                name="preferred_qualification"
-                onChange={(e) => handleNewJobListingChange(e)}
-                multiline
-                fullWidth
-                margin="normal"
-                sx={{ bgcolor: "#fbe9e7" }}
-              />
-              <div className="flex gap-4">
-                <FormControl fullWidth className="mt-2" margin="normal">
-                  <InputLabel>Status</InputLabel>
-                  <Select
-                    label="Status"
                     required
+                    defaultValue=""
+                    className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                  >
+                    <option value="" disabled>
+                      -- Select an option --
+                    </option>
+                    {setups.map((setup, index) => {
+                      return (
+                        <option value={setup.setupId}>{setup.setupName}</option>
+                      );
+                    })}
+                  </select>
+                </div>
+              </div>
+              {/* RESPONSIBILITIES */}
+              <div className="grid grid-cols-1">
+                <div>
+                  <label className="block text-gray-700 font-avenir-black">
+                    Responsibilities
+                  </label>
+                  <textarea
+                    name="responsibilitiy"
+                    rows={3}
+                    className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                  ></textarea>
+                </div>
+              </div>
+              {/* REQUIREMENTS */}
+              <div className="grid grid-cols-1">
+                <div>
+                  <label className="block text-gray-700 font-avenir-black">
+                    Requirements
+                  </label>
+                  <textarea
+                    name="requirement"
+                    rows={3}
+                    className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                  ></textarea>
+                </div>
+              </div>
+              {/* PREFERRED QUALIFICATIONS */}
+              <div className="grid grid-cols-1">
+                <div>
+                  <label className="block text-gray-700 font-avenir-black">
+                    Preferred Qualifications
+                  </label>
+                  <textarea
+                    name="preferred_qualification"
+                    rows={3}
+                    className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                  ></textarea>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-700 font-avenir-black">
+                    Status<span className="text-primary">*</span>
+                  </label>
+                  <select
                     name="is_open"
-                    onChange={(e) => handleNewJobListingChange(e)}
-                    sx={{ bgcolor: "#fbe9e7" }}
-                  >
-                    <MenuItem value={1}>Open</MenuItem>
-                    <MenuItem value={0}>Closed</MenuItem>
-                  </Select>
-                </FormControl>
-
-                <FormControl fullWidth className="mt-2" margin="normal">
-                  <InputLabel>Visibility</InputLabel>
-                  <Select
-                    label="Visibility"
                     required
-                    name="is_shown"
-                    onChange={(e) => handleNewJobListingChange(e)}
-                    sx={{ bgcolor: "#fbe9e7" }}
+                    defaultValue=""
+                    className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
                   >
-                    <MenuItem value={1}>Shown</MenuItem>
-                    <MenuItem value={0}>Hidden</MenuItem>
-                  </Select>
-                </FormControl>
+                    <option value="" disabled>
+                      -- Select an option --
+                    </option>
+                    <option value={1}>Open</option>
+                    <option value={0}>Closed</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-avenir-black">
+                    Visibility<span className="text-primary">*</span>
+                  </label>
+                  <select
+                    name="is_shown"
+                    required
+                    defaultValue=""
+                    className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                  >
+                    <option value="" disabled>
+                      -- Select an option --
+                    </option>
+                    <option value={1}>Shown</option>
+                    <option value={0}>Hidden</option>
+                  </select>
+                </div>
               </div>
-
-              <div className="mt-6 flex justify-end gap-x-3">
+              <div className="mt-6 flex justify-end gap-x-3 mb-3">
                 <button
                   onClick={handleJobListingModalClose}
-                  variant="filled"
                   className="btn-light"
                 >
                   Cancel
