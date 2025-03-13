@@ -162,7 +162,7 @@ const Careers = () => {
               <p className="px-[5%] font-avenir-black flex justify-between items-center">
                 <span className="top-text">Current Job Openings</span>
                 <a
-                  href=""
+                  href="/careers-all"
                   className="animate-bounceCustom flex text-sm md:text-base no-underline text-primary hover:underline!"
                 >
                   View all{" "}

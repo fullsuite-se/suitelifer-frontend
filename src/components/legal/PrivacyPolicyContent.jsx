@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 
+import privacyPolicyimg from "../../assets/images/fingerprint-and-loupe.jpg";
 const PrivacyPolicyContent = () => {
   const sections = [
     { id: "information-collection", title: "1. Information Collection" },
@@ -64,7 +65,7 @@ const PrivacyPolicyContent = () => {
               </li>
             ))}
           </ul>
-          <button
+          {/* <button
             onClick={() => {
               const element = document.getElementById("top");
               if (element) {
@@ -80,12 +81,24 @@ const PrivacyPolicyContent = () => {
             className="mt-4 text-sm text-primary hover:underline"
           >
             ↑ Back to top
-          </button>
+          </button> */}
         </div>
       </div>
 
       <div className="md:w-3/4 md:mr-5 lg:w-4/5 lg:mr-15">
-        <div id="top">
+        <div className="flex items-center gap-3">
+          <img
+            src={privacyPolicyimg}
+            alt="privacy-policy"
+            className="w-15 h-15"
+          />
+          <p className="text-3xl md:text-3xl lg:text-5xl font-avenir-black leading-none">
+            Privacy<span className="text-primary"> Policy</span>
+          </p>
+        </div>
+
+        <br />
+        <div>
           <p className="text-gray-500 text-sm">
             Last Updated on March 03, 2023
           </p>

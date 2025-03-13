@@ -6,6 +6,7 @@ import "swiper/css/pagination";
 import BlogCard from "./BlogCard";
 // import companyBlogs from "./CompanyBlogsList";
 import GuestBlogsList from "../guest-blogs/GuestBlogsList";
+import GuestBlogCard from "../guest-blogs/GuestBlogCard";
 
 const BlogCarousel = () => {
   return (
@@ -15,7 +16,7 @@ const BlogCarousel = () => {
         spaceBetween={10}
         slidesPerView={1}
         breakpoints={{
-          1280: {slidesPerView: 4},
+          1280: {slidesPerView: 5},
           768: {slidesPerView: 3},
           1024: { slidesPerView: 3 },
         }}
@@ -27,7 +28,10 @@ const BlogCarousel = () => {
       >
         {GuestBlogsList.slice(0, 5).map((blog) => (
           <SwiperSlide key={blog.id}>
-              <BlogCard {...blog} />
+            <div className="p-4">
+              <GuestBlogCard {...blog}/>
+            </div>
+            
           </SwiperSlide>
         ))}
       </Swiper>
