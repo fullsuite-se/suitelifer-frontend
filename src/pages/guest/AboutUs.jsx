@@ -22,6 +22,11 @@ import { motion } from "framer-motion";
 // TEMPORARY ICON
 import CoreValue01 from "../../assets/icons/core-value-01";
 import BackToTop from "../../components/BackToTop";
+import FocusedAthleteIcon from "../../assets/icons/FocusedAthleteIcon";
+import TeamPlayerIcon from "../../assets/icons/TeamPlayerIcon";
+import UnderstoodIcon from '../../assets/icons/UnderstoodIcon';
+import WorkLifeHarmonyIcon from "../../assets/icons/WorkLifeHarmonyIcon";
+import UpholdsIcon from "../../assets/icons/UpholdsIcon";
 
 const AboutUs = () => {
   const [content, setContent] = useState({});
@@ -67,7 +72,7 @@ const AboutUs = () => {
       </div>
       <main className="md:mt-20">
         {/* Hero Section */}
-        <section className="overflow-hidden about-container"  id="our-story">
+        <section className="overflow-hidden about-container" id="our-story">
           <div className="h-56 w-72">
             <img
               style={{ animation: "slideInFromLeft 0.8s ease-out forwards" }}
@@ -98,13 +103,13 @@ const AboutUs = () => {
             />
           </motion.div>
 
-          <div className="mx-5" >
+          <div className="mx-5">
             <img
               className="w-full h-full object-cover rounded-3xl animate-slideInLong"
               src="https://images.unsplash.com/photo-1739382120576-b1434e8bc4d3?q=80&w=1975&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             />
           </div>
-          <section className="flex flex-col gap-3 mt-5 mx-5" >
+          <section className="flex flex-col gap-3 mt-5 mx-5">
             <p className="text-primary text-center text-sm font-avenir-black">
               OUR STORY
             </p>
@@ -188,7 +193,7 @@ const AboutUs = () => {
             ></div>
           </section>
         </section>
-<div className="py-20"></div>
+        <div className="py-20"></div>
         {/* Our Core Values Section */}
         <section className="overflow-hidden relative">
           <h2 className="font-avenir-black lg:text-4xl! text-center m-0!">
@@ -199,7 +204,7 @@ const AboutUs = () => {
               {/* 1 */}
               <CoreValueCard
                 icon={
-                  <CoreValue01
+                  <TeamPlayerIcon
                     color="group-hover:fill-white w-20 fill-primary size-40"
                     size={"45%"}
                   />
@@ -215,7 +220,7 @@ const AboutUs = () => {
               <CoreValueCard
                 className={"lg:translate-y-[40%]"}
                 icon={
-                  <CoreValue01
+                  <UnderstoodIcon
                     color="group-hover:fill-white w-20 fill-primary size-40"
                     size={"45%"}
                   />
@@ -232,7 +237,11 @@ const AboutUs = () => {
               {/* 3 */}
               <CoreValueCard
                 icon={
-                  <CoreValue01
+                  // <CoreValue01
+                  //   color="group-hover:fill-white w-20 fill-primary size-40"
+                  //   size={"45%"}
+                  // />
+                  <FocusedAthleteIcon
                     color="group-hover:fill-white w-20 fill-primary size-40"
                     size={"45%"}
                   />
@@ -250,7 +259,7 @@ const AboutUs = () => {
               <CoreValueCard
                 className={"lg:translate-y-[40%]"}
                 icon={
-                  <CoreValue01
+                  <UpholdsIcon
                     color="group-hover:fill-white w-20 fill-primary size-40"
                     size={"45%"}
                   />
@@ -260,7 +269,7 @@ const AboutUs = () => {
               {/* 5 */}
               <CoreValueCard
                 icon={
-                  <CoreValue01
+                  <WorkLifeHarmonyIcon
                     color="group-hover:fill-white w-20 fill-primary size-40"
                     size={"45%"}
                   />
@@ -301,7 +310,7 @@ const AboutUs = () => {
             </article>
 
             {/* Vision Text */}
-            <section  id="our-vision">
+            <section id="our-vision">
               <article className="pt-[15%] md:pt-[18%] lg:pt-[23%] pr-[7%] md:pr-[13%] mission-vision-text flex flex-col justify-start items-start text-start">
                 <p className="blue-text uppercase w-full font-avenir-black text-primary">
                   Fullsuite Vision
@@ -461,7 +470,7 @@ const AboutUs = () => {
           </i>
         </div> */}
       </main>
-<BackToTop/>
+      <BackToTop />
       <Footer />
     </section>
   );
