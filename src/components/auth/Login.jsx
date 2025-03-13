@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
+import { getUserFromCookie, refreshToken } from "../../utils/cookie";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -16,6 +17,23 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const vantaRef = useRef(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const user = await getUserFromCookie();
+      if (!user) {
+        const newToken = await refreshToken();
+        if (newToken) {
+          window.location.reload();
+          user = await getUserFromCookie();
+        }
+      }
+      if (user) {
+        navigate("/app/blogs-feed");
+      }
+    };
+    fetchUser();
+  }, []);
 
   useEffect(() => {
     let effect = null;
@@ -76,6 +94,8 @@ const Login = () => {
       if (error.response) {
         if (error.response.status === 401) {
           toast.error("Invalid email or password. Please try again.");
+          setEmail("");
+          setPassword("");
         } else {
           toast.error(
             `Error ${error.response.status}: ${
@@ -92,7 +112,7 @@ const Login = () => {
       }
       console.error("Login failed:", error);
     } finally {
-      setLoading(true);
+      setLoading(false);
     }
   };
 
