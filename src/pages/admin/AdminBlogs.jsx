@@ -239,7 +239,7 @@ const AdminBlogs = () => {
               }}
             />
           </div>
-          <div className="lg:w-5/12">
+          <div className="lg:w-5/10">
             <RecentBlogsPanel
               blogs={blogs}
               onEdit={(blog) => {
@@ -373,11 +373,12 @@ const AddBlogModal = ({ isOpen, onClose, onAddBlog, blogType }) => {
         </div>
 
         <div className="flex flex-end">
-          <FileUploader
-            type="file"
-            onChange={(e) => setAttachment(e.target.files[0])}
-            style={{ margin: "16px 0" }}
-          />
+         
+            <FileUploader
+              type="file"
+              onChange={(e) => setAttachment(e.target.files[0])}
+              style={{ margin: "16px 0", display: "block" }}
+            />
         </div>
         <TextEditor
           titleChange={(newTitle) => setTitle(newTitle)}
@@ -392,13 +393,8 @@ const AddBlogModal = ({ isOpen, onClose, onAddBlog, blogType }) => {
           margin="normal"
         />
 
-        <Box
-          sx={{ display: "flex", justifyContent: "flex-end" }}
-        >
-          <button
-            onClick={onClose}
-            className="btn-light hover:bg-gray-400 text-black font-bold py-2 px-4 rounded"
-          >
+        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          <button onClick={onClose} className="btn-light">
             Cancel
           </button>
           <button
