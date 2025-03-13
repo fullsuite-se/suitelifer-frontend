@@ -9,14 +9,14 @@ import GuestBlogLarge from "../../components/guest-blogs/GuestBlogLarge";
 import AnimatedText from "../../components/guest-blogs/AnimatedText";
 import GuestBlogTags from "../../components/guest-blogs/GuestBlogTags";
 import GuestBlogCard from "../../components/guest-blogs/GuestBlogCard";
-import loadingGif from "../../assets/gif/suitelifer-loading.gif";
+import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
 import ArticleSearchResults from "../../components/news/SearchingBlogOrNews";
 import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
 
 const Blog = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchTerm, setSearchTerm] = useState(""); 
+  const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
 
   const handleSearch = () => {
@@ -28,7 +28,7 @@ const Blog = () => {
 
   const handleClearSearch = () => {
     setSearchQuery("");
-    setSearchTerm(""); 
+    setSearchTerm("");
     setIsSearching(false);
   };
 
@@ -69,19 +69,17 @@ const Blog = () => {
         </div>
 
         <div className="text-center mt-3 md:mt-5">
-  <p className="text-gray-400 text-[12px] md:text-[14px] lg:text-[16px]">
-    <motion.span
-      initial={{ width: 0 }}
-      animate={{ width: "100%" }}
-      transition={{ duration: 2.5, ease: "linear", delay:1 }}
-      className="overflow-hidden whitespace-nowrap inline-block"
-    >
-      where ideas spark and stories thrive.
-    </motion.span>
-  </p>
-</div>
-
-
+          <p className="text-gray-400 text-[12px] md:text-[14px] lg:text-[16px]">
+            <motion.span
+              initial={{ width: 0 }}
+              animate={{ width: "100%" }}
+              transition={{ duration: 2.5, ease: "linear", delay: 1 }}
+              className="overflow-hidden whitespace-nowrap inline-block"
+            >
+              where ideas spark and stories thrive.
+            </motion.span>
+          </p>
+        </div>
 
         {/* SEARCH BAR */}
         <div className="flex justify-center mt-6 px-4">
@@ -177,10 +175,11 @@ const Blog = () => {
 
             <div className="h-10"></div>
             <div className="flex justify-center items-center w-full h-15 rounded-lg overflow-hidden">
-              <img
-                src={loadingGif}
-                alt="Loading..."
-                className="w-auto h-full object-contain"
+              <TwoCirclesLoader
+                bg={"transparent"}
+                color1={"#0097b2"}
+                color2={"#bfd1a0"}
+                height={"35"}
               />
             </div>
           </>
@@ -188,7 +187,7 @@ const Blog = () => {
       </main>
 
       <div className="h-30"></div>
-      <BackToTop/>
+      <BackToTop />
     </section>
   );
 };

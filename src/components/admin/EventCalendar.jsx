@@ -10,7 +10,7 @@ const EventCalendar = ({ events, onSelectSlot, onSelectEvent }) => {
   const [date, setDate] = useState(new Date());
 
   const CustomToolbar = ({ label, onNavigate, onView }) => (
-    <div className="p-2 w-full bg-primary flex gap-5">
+    <div className="p-2 w-full bg-white flex gap-5">
       {/* Left Navigation Buttons */}
       <div className="flex space-x-2 justify-between w-250 items-center">
         <div className="flex">
@@ -22,7 +22,7 @@ const EventCalendar = ({ events, onSelectSlot, onSelectEvent }) => {
           <button className="btn-light" onClick={() => onNavigate("PREV")}>
             ◀ Prev
           </button>
-          <span className="font-avenir-black text-4xl items-center">
+          <span className="font-avenir-black text-primary font-bold text-4xl items-center">
             {label}
           </span>
           <button className="btn-light" onClick={() => onNavigate("NEXT")}>
@@ -37,7 +37,7 @@ const EventCalendar = ({ events, onSelectSlot, onSelectEvent }) => {
         value={view}
         onChange={(e) => {
           const newView = e.target.value;
-          setView(newView); 
+          setView(newView);
           onView(newView);
         }}
       >
@@ -51,26 +51,47 @@ const EventCalendar = ({ events, onSelectSlot, onSelectEvent }) => {
 
   return (
     <Calendar
-      localizer={localizer}
-      events={events}
-      startAccessor="start"
-      endAccessor="end"
-      selectable
-      onSelectSlot={onSelectSlot}
-      onSelectEvent={onSelectEvent}
-      style={{ height: 680, width: "100%" }}
-      dayPropGetter={(date) => ({
-        style:
-          date.getDay() === 0 || date.getDay() === 6
-            ? { backgroundColor: "#ffcccc" }
-            : {},
-      })}
-      components={{ toolbar: CustomToolbar }}
-      view={view}
-      onView={setView}
-      date={date}
-      onNavigate={setDate}
-    />
+    localizer={localizer}
+    events={events}
+    startAccessor="start"
+    endAccessor="end"
+    selectable
+    onSelectSlot={onSelectSlot}
+    onSelectEvent={onSelectEvent}
+    style={{ height: 680, width: "100%" }}
+    eventPropGetter={(event) => {
+      const eventDate = new Date(event.start).setHours(0, 0, 0, 0);
+      const today = new Date().setHours(0, 0, 0, 0);
+      const isWeekend = new Date(event.start).getDay() === 0 || new Date(event.start).getDay() === 6;
+      const isToday = eventDate === today;
+  
+      return {
+        style: {
+          backgroundColor: isToday ? "#30ABC1" : isWeekend ? "#bfd1a0" : "#007a8e",
+          color: isToday ? "#ffffff" : isWeekend ? "#000000" : "#000000",
+          border: "none",
+        },
+      };
+    }}
+    dayPropGetter={(date) => {
+      const today = new Date().setHours(0, 0, 0, 0);
+      const isToday = date.setHours(0, 0, 0, 0) === today;
+      const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+  
+      return {
+        style: {
+          backgroundColor: isToday ? "#007a8e" : "inherit",
+          color: isToday ? "white" : isWeekend ? "#0097b2" : "inherit", 
+        },
+      };
+    }}
+    components={{ toolbar: CustomToolbar }}
+    view={view}
+    onView={setView}
+    date={date}
+    onNavigate={setDate}
+  />
+  
   );
 };
 

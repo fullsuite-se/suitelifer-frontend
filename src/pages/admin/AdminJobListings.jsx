@@ -9,15 +9,8 @@ import FormControl from "@mui/material/FormControl";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import {
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-} from "@mui/material";
+import { ToggleButton} from "@mui/material";
+import SettingsIcon from "@mui/icons-material/Settings";
 import axios from "axios";
 import config from "../../config";
 
@@ -242,7 +235,7 @@ export default function AdminJobListing() {
     setSetupModalIsOpen(false);
   };
 
-  const [selectedOption, setSelectedOption] = useState("Industry");
+  const [selectedOption, setSelectedOption] = useState("Manage Industry");
 
   // TABLE SETTINGS
   const gridOptions = {
@@ -256,7 +249,7 @@ export default function AdminJobListing() {
   };
 
   const gridRef = useRef();
-  const [rowData, setRowData] = useState([]);
+  const [rowJobData, setRowJobData] = useState([]);
   const columnDefs = useMemo(
     () => [
       {
@@ -334,6 +327,103 @@ export default function AdminJobListing() {
     []
   );
 
+  const [rowIndustryData, setRowIndustryData] = useState([]);
+  const colIndustry = useMemo(
+    () => [
+      {
+        headerName: "Industry Name",
+        field: "industryName",
+        flex: 1,
+        headerClass: "text-primary font-bold bg-tertiary",
+      },
+      {
+        headerName: "Assessment URL",
+        field: "assessmentUrl",
+        flex: 1,
+        filter: "agTextColumnFilter",
+        headerClass: "text-primary font-bold bg-tertiary",
+      },
+      {
+        headerName: "Created By",
+        field: "createdBy",
+        flex: 1,
+        filter: "agTextColumnFilter",
+        valueFormatter: (params) => (params.value === 1 ? "Open" : "Closed"),
+        headerClass: "text-primary font-bold bg-tertiary",
+      },
+      {
+        headerName: "Date Created",
+        field: "createdAt",
+        flex: 1,
+        filter: "agTextColumnFilter",
+        headerClass: "text-primary font-bold bg-tertiary",
+      },
+      {
+        headerName: "Action",
+        field: "action",
+        filter: false,
+        headerClass: "text-primary font-bold bg-tertiary",
+        flex: 1,
+        cellRenderer: (params) => {
+          return (
+            <button
+              className="bg-transparent p-2 rounded w-8 h-8 flex justify-center items-center"
+              onClick={() => handleEditIndustry(params.data)}
+            >
+              <EditIcon />
+            </button>
+          );
+        },
+      },
+    ],
+    []
+  );
+
+  const [rowSetupData, setRowSetupData] = useState([]);
+  const colSetup = useMemo(
+    () => [
+      {
+        headerName: "Setup Name",
+        field: "setupName",
+        flex: 1,
+        headerClass: "text-primary font-bold bg-tertiary",
+      },
+      {
+        headerName: "Created By",
+        field: "createdBy",
+        flex: 2,
+        filter: "agTextColumnFilter",
+        headerClass: "text-primary font-bold bg-tertiary",
+      },
+      {
+        headerName: "Date Created",
+        field: "createdAt",
+        flex: 1,
+        filter: "agTextColumnFilter",
+        valueFormatter: (params) => (params.value === 1 ? "Open" : "Closed"),
+        headerClass: "text-primary font-bold bg-tertiary",
+      },
+      {
+        headerName: "Action",
+        field: "action",
+        filter: false,
+        headerClass: "text-primary font-bold bg-tertiary",
+        flex: 1,
+        cellRenderer: (params) => {
+          return (
+            <button
+              className="bg-transparent p-2 rounded w-8 h-8 flex justify-center items-center"
+              onClick={() => handleEditSetUp(params.data)}
+            >
+              <EditIcon />
+            </button>
+          );
+        },
+      },
+    ],
+    []
+  );
+
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -399,7 +489,11 @@ export default function AdminJobListing() {
   const handleDeleteSetUp = (index) => {
     setSetups(setups.filter((_, i) => i !== index));
   };
-
+  const handleToggle = () => {
+    setSelectedOption((prev) =>
+      prev === "Manage Industry" ? "Manage Set-Up" : "Manage Industry"
+    );
+  };
   return (
     <div className="flex flex-col p-2 mx-auto space-y-6">
       {/* Header */}
@@ -427,23 +521,30 @@ export default function AdminJobListing() {
           >
             <span className="mr-2">+</span> SET-UP
           </button>
+          <button
+            variant="outlined"
+            className="text-primary fontSixe"
+            onClick={() => setIndustryMgmtModalIsOpen(true)}
+          >
+            <SettingsIcon fontSize="large" />
+          </button>
         </div>
       </header>
       {/* Stats */}
       <div className="flex flex-wrap gap-4">
-        <div className="bg-primary text-white px-4 py-2 rounded-2xl w-100 h-10 flex items-center justify-between">
+        <div className="bg-primary text-white px-4 py-2 rounded-2xl w-80 h-10 flex items-center justify-between">
           <span>{`Total Applications`}</span>
           <span className="text-2xl">{`${jobListings.length}`}</span>
         </div>
-        <div className="border-2 text-dark px-4 py-2 rounded-2xl w-100 h-10 flex items-center justify-between">
+        <div className="border-2 text-dark px-4 py-2 rounded-2xl w-80 h-10 flex items-center justify-between">
           <span>{`Industries`}</span>
           <span className="text-2xl">{`${industries.length}`}</span>
         </div>
 
-        <div className="border-2 text-dark px-4 py-2 rounded-2xl w-198 h-10 flex items-center justify-between">
+        <div className="border-2 text-dark px-4 py-2 rounded-2xl w-136 h-10 flex items-center justify-between">
           <span>{`Job Listings`}</span>
           <span className="text-2xl">{`${totalJobListings}`}</span>
-          <div className="border-l-2 text-dark px-4 py-2 rounded-2xl w-100 h-10 flex items-center justify-between flex-end">
+          <div className="border-l-2 text-dark px-4 py-2 rounded-2xl w-80 h-10 flex items-center justify-between flex-end">
             <span className="">Open</span>
             <span className="text-2xl font-bold">{openJobListings}</span>
             <span className="">Closed</span>
@@ -452,25 +553,13 @@ export default function AdminJobListing() {
         </div>
       </div>
       {/* Search and Filter */}
-      <div className="flex flex-wrap gap-4 items-center">
-        <div className="text-right justify-center items-center w-50 h-10 text-2xl p-1">
-          Industries
-        </div>
-        <button
-          variant="outlined"
-          className=""
-          onClick={() => setIndustryMgmtModalIsOpen(true)}
-        >
-          <MoreVertIcon />
-        </button>
-      </div>
 
       <div
         className="ag-theme-quartz p-5"
         style={{ height: "65vh", width: "100%" }}
       >
         <AgGridReact
-          rowData={rowData}
+          rowData={rowJobData}
           ref={gridRef}
           columnDefs={columnDefs}
           gridOptions={gridOptions}
@@ -786,128 +875,93 @@ export default function AdminJobListing() {
         onClose={() => setIndustryMgmtModalIsOpen(false)}
       >
         <Box className="modal-container bg-white p-4 rounded-lg mx-auto mt-12 w-250 h-200">
-          <h2>Manage Industry and Set-up</h2>
-          <FormControl fullWidth className="mt-7">
-            <Select
-              value={selectedOption}
-              onChange={(e) => setSelectedOption(e.target.value)}
-              sx={{ bgcolor: "#fbe9e7" }}
-            >
-              <MenuItem value="Industry">Industry</MenuItem>
-              <MenuItem value="Set-Up">Set-Up</MenuItem>
-            </Select>
-          </FormControl>
+          <div className="flex items-center gap-5 w-full justify-between p-2">
+            
+              <ToggleButton
+                onClick={handleToggle}
+                value={selectedOption}
+                variant="contained"
+                sx={{
+                  backgroundColor: "#0097b2",
+                  color: "white",
+                  border: "none",
+                  borderRadius:"20px",
+                  fontSize:"16px",
+                  width:"400px",
+                  "&:hover": {
+                    backgroundColor: "#0088a3",
+                    border: "none", 
+                  },
+                  "&.Mui-selected": {
+                    border: "none", 
+                  },
+                  "&.MuiToggleButton-root": {
+                    border: "none", 
+                  },
+                }}
+              >
+                {selectedOption}
+              </ToggleButton>
+           
 
-          <div className="flex justify-between w-full gap-3 mt-4 flex-end">
-            {selectedOption === "Industry" ? (
-              <button
-                variant="outlined"
-                className="btn-primary"
-                onClick={() => setIndustryModalIsOpen(true)}
-              >
-                <span className="mr-2">+</span> INDUSTRY
-              </button>
-            ) : (
-              <button
-                onClick={() => setSetupModalIsOpen(true)}
-                className="btn-primary"
-              >
-                <span className="mr-2">+</span> SET-UP
-              </button>
-            )}
-          </div>
+           
+              {selectedOption === "Manage Industry" ? (
+                <button
+                  variant="outlined"
+                  className="btn-primary flex"
+                  onClick={() => setIndustryModalIsOpen(true)}
+                  
+                >
+                  ADD INDUSTRY
+                </button>
+              ) : (
+                <button
+                  onClick={() => setSetupModalIsOpen(true)}
+                  className="btn-primary"
+                >
+                  ADD SET-UP
+                </button>
+              )}
+            </div>
+     
 
           {/* INDUSTRY OR SETUP MANAGEMENT */}
-          {selectedOption === "Industry" ? (
-            <Table className="mt-4">
-              <TableHead>
-                <TableRow>
-                  <TableCell>ID</TableCell>
-                  <TableCell>Industry Name</TableCell>
-                  <TableCell>Assessment URL</TableCell>
-                  <TableCell>Created By</TableCell>
-                  <TableCell>Date Created</TableCell>
-                  <TableCell align="center">Action</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {industries.map((industry, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>{industry.industryName}</TableCell>
-                    <TableCell className="max-w-[150px] truncate">
-                      {industry.assessmentUrl}
-                    </TableCell>
-
-                    <TableCell>Admin</TableCell>
-                    <TableCell>{new Date().toLocaleDateString()}</TableCell>
-                    <TableCell align="center">
-                      <div className="flex justify-center items-center gap-2">
-                        <button
-                          className="bg-transparent p-2 rounded w-8 flex items-center justify-center"
-                          onClick={() => handleEditIndustry(index)}
-                        >
-                          <EditIcon />
-                        </button>
-
-                        <button
-                          onClick={() => handleDeleteIndustry(index)}
-                          variant="filled"
-                          sx={{
-                            bgcolor: "#d32f2f",
-                            color: "#ffffff",
-                            "&:hover": {
-                              bgcolor: "#b71c1c",
-                            },
-                          }}
-                        >
-                          <DeleteIcon />
-                        </button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+          {selectedOption === "Manage Industry" ? (
+            <div
+              className="ag-theme-quartz p-5"
+              style={{ height: "65vh", width: "100%" }}
+            >
+              <AgGridReact
+                rowData={rowIndustryData}
+                ref={gridRef}
+                columnDefs={colIndustry}
+                gridOptions={gridOptions}
+                defaultColDef={defaultColDef}
+                pagination={true}
+                paginationPageSize={15}
+                paginationPageSizeSelector={[15, 25, 50]}
+                domLayout="autoHeight"
+                className="h-full"
+              />
+            </div>
           ) : (
-            <Table className="mt-4">
-              <TableHead>
-                <TableRow>
-                  <TableCell>ID</TableCell>
-                  <TableCell>Setup Name</TableCell>
-                  <TableCell>Created by</TableCell>
-                  <TableCell>Date Created</TableCell>
-                  <TableCell align="center">Action</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {setups.map((setup, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>{setup.setupName}</TableCell>
-                    <TableCell>{setup.createdBy}</TableCell>
-                    <TableCell>{setup.createdAt}</TableCell>
-                    <TableCell align="center">
-                      <div className="flex justify-center items-center gap-2">
-                        <button
-                          className="bg-transparent p-2 rounded w-8 flex items-center justify-center"
-                          onClick={() => handleEditSetUp(index)}
-                        >
-                          <EditIcon />
-                        </button>
-
-                        <button
-                          className="bg-transparent p-2 rounded w-8 flex items-center justify-center"
-                          onClick={() => handleDeleteSetUp(index)}
-                        >
-                          <DeleteIcon />
-                        </button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <div
+              className="ag-theme-quartz p-5"
+              style={{ height: "65vh", width: "100%" }}
+            >
+              <AgGridReact
+                rowData={rowSetupData}
+                ref={gridRef}
+                columnDefs={colSetup}
+                gridOptions={gridOptions}
+                defaultColDef={defaultColDef}
+                pagination={true}
+                paginationPageSize={15}
+                paginationPageSizeSelector={[15, 25, 50]}
+                domLayout="autoHeight"
+                className="h-full"
+              />
+            </div>
           )}
         </Box>
       </Modal>

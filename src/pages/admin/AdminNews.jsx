@@ -6,6 +6,8 @@ import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import AppsIcon from "@mui/icons-material/Apps";
+import logofsfull from "../../assets/logos/logo-fs-full.svg";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -116,10 +118,27 @@ const AdminNews = () => {
     <>
       {!isOutletPage ? (
         <>
+
+<header className="container flex h-12 items-center justify-between flex-wrap">
+              <div className="flex gap-4 items-center">
+                <button className="sm:hidden">
+                  <AppsIcon sx={{ fontSize: "48px" }} />
+                </button>
+                <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
+              </div>
+
+              <div className="flex gap-2">
+                <button className="btn-primary">
+                  <span className="mr-2">+</span> NEWS
+                </button>
+            
+              </div>
+            </header>
           <div
             className={"ag-theme-quartz p-5"}
             style={{ height: "max(600px, 90%)", width: "100%" }}
           >
+            
             <AgGridReact
               rowData={rowNewsData}
               ref={gridRef}

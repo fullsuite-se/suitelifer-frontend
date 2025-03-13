@@ -7,13 +7,33 @@ import fullsuite from "../../assets/logos/logo-fs-full.svg";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
+import { getUserFromCookie, refreshToken } from "../../utils/cookie";
 
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const vantaRef = useRef(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const user = await getUserFromCookie();
+      if (!user) {
+        const newToken = await refreshToken();
+        if (newToken) {
+          window.location.reload();
+          user = await getUserFromCookie();
+        }
+      }
+      if (user) {
+        navigate("/app/blogs-feed");
+      }
+    };
+    fetchUser();
+  }, []);
 
   useEffect(() => {
     let effect = null;
@@ -56,6 +76,7 @@ const Login = () => {
     }
 
     try {
+      setLoading(true);
       const response = await axios.post(
         `${config.apiBaseUrl}/api/login`,
         { email, password },
@@ -69,9 +90,12 @@ const Login = () => {
         toast.error("Login failed. Please check your credentials.");
       }
     } catch (error) {
+      setLoading(false);
       if (error.response) {
         if (error.response.status === 401) {
           toast.error("Invalid email or password. Please try again.");
+          setEmail("");
+          setPassword("");
         } else {
           toast.error(
             `Error ${error.response.status}: ${
@@ -87,6 +111,8 @@ const Login = () => {
         toast.error("An unexpected error occurred. Please try again.");
       }
       console.error("Login failed:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -99,7 +125,14 @@ const Login = () => {
         className="bg-white mx-auto rounded-2xl p-10 py-16 border border-gray-200"
         style={{ width: "min(90%, 600px)" }}
       >
-        <a href="/"><img src={fullsuite} alt="FullSuite" className="w-28 h-auto mx-auto" /></a>
+        <img
+          src={fullsuite}
+          alt="FullSuite"
+          onClick={() => {
+            navigate("/");
+          }}
+          className="w-28 h-auto mx-auto cursor-pointer"
+        />
         <p className="text-center text-base my-4 text-gray-500 mb-10">
           Welcome to SuiteLifer!
         </p>
@@ -111,7 +144,8 @@ const Login = () => {
               value={email}
               placeholder="Email"
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary placeholder-primary/50"  />
+              className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary placeholder-primary/50"
+            />
           </div>
           <div className="relative">
             <input
@@ -120,7 +154,8 @@ const Login = () => {
               value={password}
               placeholder="Password"
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary placeholder-primary/50" />
+              className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary placeholder-primary/50"
+            />
             <button
               type="button"
               className="absolute right-3 top-4 text-gray-500 hover:text-gray-700"
@@ -137,7 +172,19 @@ const Login = () => {
             type="submit"
             className="mt-5 w-full bg-primary p-3 rounded-xl text-white font-avenir-black cursor-pointer"
           >
-            LOG IN
+            {loading ? (
+              <div className="mx-auto w-fit">
+                <TwoCirclesLoader
+                  bg={"transparent"}
+                  color1={"#bfd1a0"}
+                  color2={"#ffffff"}
+                  width={"135"}
+                  height={"24"}
+                />
+              </div>
+            ) : (
+              "LOG IN"
+            )}
           </button>
         </form>
       </div>

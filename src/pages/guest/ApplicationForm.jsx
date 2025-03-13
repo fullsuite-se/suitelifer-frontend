@@ -9,7 +9,6 @@ import GuestBlogLarge from "../../components/guest-blogs/GuestBlogLarge";
 import AnimatedText from "../../components/guest-blogs/AnimatedText";
 import GuestBlogTags from "../../components/guest-blogs/GuestBlogTags";
 import GuestBlogCard from "../../components/guest-blogs/GuestBlogCard";
-import loadingGif from "../../assets/gif/suitelifer-loading.gif";
 import ArticleSearchResults from "../../components/news/SearchingBlogOrNews";
 import BackButton from "../../components/BackButton";
 import { DefaultStepper } from "../../components/careers/ApplicationFormStepper";
@@ -212,18 +211,17 @@ const ApplicationForm = () => {
                   <span className="text-primary">*</span>
                 </label>
                 <select
-  name="applicationType"
-  required
-  defaultValue="" 
-  className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
->
-  <option value="" disabled>
-    Select an option
-  </option>
-  <option value="job">Job Position</option>
-  <option value="internship">Internship</option>
-</select>
-
+                  name="applicationType"
+                  required
+                  defaultValue=""
+                  className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                >
+                  <option value="" disabled>
+                    Select an option
+                  </option>
+                  <option value="job">Job Position</option>
+                  <option value="internship">Internship</option>
+                </select>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -233,7 +231,7 @@ const ApplicationForm = () => {
                   </label>
                   <select
                     name="applicationType"
-  defaultValue="" 
+                    defaultValue=""
                     required
                     className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
                   >
@@ -259,7 +257,7 @@ const ApplicationForm = () => {
                   </label>
                   <select
                     name="applicationType"
-  defaultValue="" 
+                    defaultValue=""
                     required
                     className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
                   >
@@ -395,15 +393,17 @@ const ApplicationForm = () => {
                 </div>
               </div>
               <div>
-    <label className="block text-gray-700 font-avenir-black mb-3">
-        Upload your Curriculum Vitae here: <span className="text-primary">*</span>
-    </label>
-    <div className="flex flex-col items-center justify-center p-10 border border-primary border-dashed rounded-lg text-primary cursor-pointer hover:bg-primary/10 ">
-        <FileUploadIcon size={50} /> 
-        <span className="text-center mt-5">Click here to upload your resume or drag and drop it here</span>
-    </div>
-</div>
-
+                <label className="block text-gray-700 font-avenir-black mb-3">
+                  Upload your Curriculum Vitae here:{" "}
+                  <span className="text-primary">*</span>
+                </label>
+                <div className="flex flex-col items-center justify-center p-10 border border-primary border-dashed rounded-lg text-primary cursor-pointer hover:bg-primary/10 ">
+                  <FileUploadIcon size={50} />
+                  <span className="text-center mt-5">
+                    Click here to upload your resume or drag and drop it here
+                  </span>
+                </div>
+              </div>
               <div className="py-5"></div>
               <button
                 type="button"
@@ -423,7 +423,7 @@ const ApplicationForm = () => {
       </section>
 
       <div className="h-30"></div>
-      <BackToTop/>
+      <BackToTop />
     </section>
   );
 };
