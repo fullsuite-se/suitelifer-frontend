@@ -10,16 +10,8 @@ import InputLabel from "@mui/material/InputLabel";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { ToggleButton, ToggleButtonGroup } from "@mui/material";
+import { ToggleButton} from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
-import {
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-} from "@mui/material";
 import axios from "axios";
 import config from "../../config";
 
