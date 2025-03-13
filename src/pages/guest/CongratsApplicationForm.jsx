@@ -10,7 +10,6 @@ import GuestBlogLarge from "../../components/guest-blogs/GuestBlogLarge";
 import AnimatedText from "../../components/guest-blogs/AnimatedText";
 import GuestBlogTags from "../../components/guest-blogs/GuestBlogTags";
 import GuestBlogCard from "../../components/guest-blogs/GuestBlogCard";
-import loadingGif from "../../assets/gif/suitelifer-loading.gif";
 import ArticleSearchResults from "../../components/news/SearchingBlogOrNews";
 import BackButton from "../../components/BackButton";
 import { DefaultStepper } from "../../components/careers/ApplicationFormStepper";
@@ -18,7 +17,6 @@ import FileUploadIcon from "../../assets/icons/file-upload";
 
 const CongratsApplicationForm = () => {
   const [testLink, setTestLink] = useState(" www.testgorilla.com/assessment");
-
 
   return (
     <section
@@ -44,7 +42,11 @@ const CongratsApplicationForm = () => {
         <main className="px-[5%]">
           <div className="md:px-5 lg:px-20 xl:px-50">
             <div className="flex flex-col items-center justify-center space-y-4 text-sm p-10 md:p-12 lg:p-15 xl:px-50 shadow-sm border-primary border-1 rounded-lg bg-white text-center">
-              <img src={congratsImg} alt="Congratulations" className="w-24 md:w-35" />{" "}
+              <img
+                src={congratsImg}
+                alt="Congratulations"
+                className="w-24 md:w-35"
+              />{" "}
               {/* Adjusted image width */}
               <p className="text-lg md:text-2xl lg:text-4xl font-avenir-black text-primary">
                 Congratulations!
@@ -62,11 +64,12 @@ const CongratsApplicationForm = () => {
                 best for your initial test! Fighting!!
               </p>
               <a className="md:text-lg font-avenir-black text-primary ">
-               {testLink}
+                {testLink}
               </a>
               <div className="hidden lg:block"></div>
-              
-              <p className="text-gray-400 text-[12px] md:text-[14px] lg:text-base mb-2 mt-10">from</p>
+              <p className="text-gray-400 text-[12px] md:text-[14px] lg:text-base mb-2 mt-10">
+                from
+              </p>
               <img src={fullsuitelogo} alt="fullsuite logo" className="h-5" />
             </div>
           </div>
