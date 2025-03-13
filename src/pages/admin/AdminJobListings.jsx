@@ -6,7 +6,6 @@ import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import EditIcon from "@mui/icons-material/Edit";
@@ -28,57 +27,118 @@ import { AgGridReact } from "@ag-grid-community/react";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
 import toast from "react-hot-toast";
+import { useStore } from "../../store/authStore";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 export default function AdminJobListing() {
+  // USER DETAILS
+  const user = useStore((state) => state.user);
+
   // JOB LISTINGS VARIABLES
+  const defaultJobDetails = {
+    job_id: null,
+    title: "",
+    industry_id: "",
+    industry_name: "",
+    employment_type: "",
+    setup_id: "",
+    description: "",
+    salary_min: 0,
+    salary_max: 0,
+    responsibility: "",
+    requirement: "",
+    preferred_qualification: "",
+    is_open: "",
+    is_shown: "",
+  };
+
   const [jobListings, setJobListings] = useState([]);
-  const [newJobListing, setNewJobListing] = useState({});
+  const [jobDetails, setJobDetails] = useState(defaultJobDetails);
   const [jobModalIsOpen, setJobModalIsOpen] = useState(false);
-  const [editJobDetails, setEditJobDetails] = useState(null);
 
   // JOB FUNCTIONS
   const handleAddJobListingButtonClick = () => {
-    setNewJobListing((nj) => ({
-      ...nj,
-      user_id: "81aba726-f897-11ef-a725-0af0d960a833",
+    console.log(user);
+
+    setJobDetails((jd) => ({
+      ...jd,
     }));
     setJobModalIsOpen(true);
   };
 
-  const handleNewJobListingChange = (e) => {
-    setNewJobListing((ni) => ({ ...ni, [e.target.name]: e.target.value }));
+  const handleJobDetailsChange = (e) => {
+    setJobDetails((jd) => ({ ...jd, [e.target.name]: e.target.value }));
   };
 
   const handleAddEditJobListing = async (e) => {
     e.preventDefault();
-    if (editJobDetails === null) {
-      // ADD JOB LISTING
-      const response = (
-        await axios.post(`${config.apiBaseUrl}/api/add-job`, newJobListing)
-      ).data;
-      if (response.success) {
-        toast.success(response.message);
-      } else {
-        toast.error(response.message);
-      }
-      setJobListings((j) => [...j, newJobListing]);
-    } else {
-      const updatedJobListings = jobListings.map((job, index) =>
-        index === editJobDetails ? data : job
-      );
-      console.log(updatedJobListings);
+    console.log("Job Details:", jobDetails);
 
-      setJobListings(updatedJobListings);
+    try {
+      let response;
+      if (jobDetails.job_id === null) {
+        // ADD JOB LISTING
+        response = await axios.post(`${config.apiBaseUrl}/api/add-job`, {
+          ...jobDetails,
+          user_id: user.id,
+        });
+      } else {
+        // EDIT JOB LISTING
+        response = await axios.post(`${config.apiBaseUrl}/api/edit-job`, {
+          ...jobDetails,
+          user_id: user.id,
+        });
+      }
+
+      if (response.data.success) {
+        toast.success(response.data.message);
+        if (jobDetails.job_id === null) {
+          setJobListings((j) => [...j, jobDetails]);
+        } else {
+          const updatedJobListings = jobListings.map((job) =>
+            job.jobId === jobDetails.job_id ? { ...jobDetails } : job
+          );
+          setJobListings(updatedJobListings);
+        }
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("An error occurred while processing the request.");
     }
-    setEditJobDetails(null);
+
+    setJobDetails(defaultJobDetails);
     setJobModalIsOpen(false);
+    setDataUpdated(true);
   };
 
   const handleJobListingModalClose = () => {
-    setNewJobListing((nj) => {});
+    console.log(jobDetails);
+    setJobDetails((jd) => defaultJobDetails);
     setJobModalIsOpen(false);
+  };
+
+  const handleEditJobClick = (job) => {
+    setJobDetails({
+      job_id: job.jobId,
+      title: job.jobTitle,
+      industry_id: job.industryId,
+      industry_name: job.industryName,
+      setup_id: job.setupId,
+      employment_type: job.employmentType,
+      setup_id: job.setupId,
+      description: job.description,
+      salary_min: job.salaryMin,
+      salary_max: job.salaryMax,
+      responsibility: job.responsibility,
+      requirement: job.requirement,
+      preferred_qualification: job.preferredQualification,
+      is_open: job.isOpen,
+      is_shown: job.isShown,
+    });
+    setJobModalIsOpen(true);
   };
 
   // INDUSTRY VARIABLES
@@ -206,18 +266,6 @@ export default function AdminJobListing() {
         filter: "agTextColumnFilter",
         headerClass: "text-primary bg-tertiary font-bold",
       },
-      // {
-      //   headerName: "Description",
-      //   field: "description",
-      //   flex: 3,
-      //   filter: "agTextColumnFilter",
-
-      //   cellRenderer: (params) => {
-      //     const desc = params.value;
-      //     return desc.length > 50 ? `${desc.slice(0, 50)}...` : desc;
-      //   },
-      //   headerClass: "text-primary font-bold bg-tertiary",
-      // },
       {
         headerName: "Industry",
         field: "industryName",
@@ -240,7 +288,7 @@ export default function AdminJobListing() {
         headerClass: "text-primary font-bold bg-tertiary",
       },
       {
-        headerName: "Set-Up",
+        headerName: "Setup",
         field: "setupName",
         flex: 1,
         filter: "agTextColumnFilter",
@@ -264,7 +312,9 @@ export default function AdminJobListing() {
           return (
             <button
               className="bg-transparent p-2 rounded w-8 h-8 flex justify-center items-center"
-              onClick={() => handleEditJob(params.data)}
+              onClick={() => {
+                handleEditJobClick(params.data);
+              }}
             >
               <EditIcon />
             </button>
@@ -315,11 +365,13 @@ export default function AdminJobListing() {
     setRowData(response.data);
   };
 
+  const [dataUpdated, setDataUpdated] = useState(false);
+
   useEffect(() => {
     fetchIndustries();
     fetchSetups();
     fetchJobListings();
-  }, [setIndustries, setSetups, setJobListings]);
+  }, [dataUpdated]);
 
   const totalJobListings = jobListings.length;
   const openJobListings = jobListings.filter(
@@ -328,11 +380,6 @@ export default function AdminJobListing() {
   const closedJobListings = jobListings.filter(
     (value) => value.isOpen === 0
   ).length;
-
-  const handleEditJob = (index) => {
-    setEditJobDetails(index);
-    setJobModalIsOpen(true);
-  };
 
   const handleEditIndustry = (industry) => {
     setEditIndustryDetails(industry);
@@ -441,7 +488,9 @@ export default function AdminJobListing() {
         <div className="fixed inset-0 flex items-center justify-center">
           <Box className="modal-container px-10 py-3 bg-white rounded-lg w-full sm:w-250 max-h-[80vh] overflow-y-auto shadow-lg">
             <h2 className="mb-4 font-avenir-black text-lg text-center bg-white">
-              {editJobDetails === null ? "Add Job Listing" : "Edit Job Listing"}
+              {jobDetails.job_id === null
+                ? "Add Job Listing"
+                : "Edit Job Listing"}
             </h2>
             <form
               onSubmit={(e) => handleAddEditJobListing(e)}
@@ -456,6 +505,8 @@ export default function AdminJobListing() {
                   <input
                     type="text"
                     name="title"
+                    value={jobDetails.title}
+                    onChange={(e) => handleJobDetailsChange(e)}
                     required
                     className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
                   />
@@ -467,7 +518,9 @@ export default function AdminJobListing() {
                   <select
                     name="industry_id"
                     required
-                    defaultValue=""
+                    disabled={jobDetails.job_id !== null}
+                    value={jobDetails.industry_id}
+                    onChange={(e) => handleJobDetailsChange(e)}
                     className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
                   >
                     <option value="" disabled>
@@ -475,7 +528,7 @@ export default function AdminJobListing() {
                     </option>
                     {industries.map((industry, index) => {
                       return (
-                        <option value={industry.industryId}>
+                        <option key={index} value={industry.industryId}>
                           {industry.industryName}
                         </option>
                       );
@@ -492,6 +545,8 @@ export default function AdminJobListing() {
                   <textarea
                     name="description"
                     required
+                    value={jobDetails.description}
+                    onChange={(e) => handleJobDetailsChange(e)}
                     rows={3}
                     className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
                   ></textarea>
@@ -506,6 +561,8 @@ export default function AdminJobListing() {
                   <input
                     type="number"
                     name="salary_min"
+                    value={jobDetails.salary_min}
+                    onChange={(e) => handleJobDetailsChange(e)}
                     className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
@@ -517,6 +574,8 @@ export default function AdminJobListing() {
                   <input
                     type="number"
                     name="salary_max"
+                    value={jobDetails.salary_max}
+                    onChange={(e) => handleJobDetailsChange(e)}
                     className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
@@ -526,9 +585,10 @@ export default function AdminJobListing() {
                     Employment Type<span className="text-primary">*</span>
                   </label>
                   <select
-                    name="industry_id"
+                    name="employment_type"
                     required
-                    defaultValue=""
+                    value={jobDetails.employment_type}
+                    onChange={(e) => handleJobDetailsChange(e)}
                     className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
                   >
                     <option value="" disabled>
@@ -546,7 +606,8 @@ export default function AdminJobListing() {
                   <select
                     name="setup_id"
                     required
-                    defaultValue=""
+                    value={jobDetails.setup_id}
+                    onChange={(e) => handleJobDetailsChange(e)}
                     className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
                   >
                     <option value="" disabled>
@@ -554,7 +615,9 @@ export default function AdminJobListing() {
                     </option>
                     {setups.map((setup, index) => {
                       return (
-                        <option value={setup.setupId}>{setup.setupName}</option>
+                        <option key={index} value={setup.setupId}>
+                          {setup.setupName}
+                        </option>
                       );
                     })}
                   </select>
@@ -567,7 +630,9 @@ export default function AdminJobListing() {
                     Responsibilities
                   </label>
                   <textarea
-                    name="responsibilitiy"
+                    name="responsibility"
+                    value={jobDetails.responsibility}
+                    onChange={(e) => handleJobDetailsChange(e)}
                     rows={3}
                     className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
                   ></textarea>
@@ -581,6 +646,8 @@ export default function AdminJobListing() {
                   </label>
                   <textarea
                     name="requirement"
+                    value={jobDetails.requirement}
+                    onChange={(e) => handleJobDetailsChange(e)}
                     rows={3}
                     className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
                   ></textarea>
@@ -594,6 +661,8 @@ export default function AdminJobListing() {
                   </label>
                   <textarea
                     name="preferred_qualification"
+                    value={jobDetails.preferred_qualification}
+                    onChange={(e) => handleJobDetailsChange(e)}
                     rows={3}
                     className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
                   ></textarea>
@@ -607,7 +676,8 @@ export default function AdminJobListing() {
                   <select
                     name="is_open"
                     required
-                    defaultValue=""
+                    value={jobDetails.is_open}
+                    onChange={(e) => handleJobDetailsChange(e)}
                     className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
                   >
                     <option value="" disabled>
@@ -624,7 +694,8 @@ export default function AdminJobListing() {
                   <select
                     name="is_shown"
                     required
-                    defaultValue=""
+                    value={jobDetails.is_shown}
+                    onChange={(e) => handleJobDetailsChange(e)}
                     className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
                   >
                     <option value="" disabled>
@@ -643,7 +714,9 @@ export default function AdminJobListing() {
                   Cancel
                 </button>
                 <button type="submit" variant="filled" className="btn-primary">
-                  {editJobDetails === null ? "ADD JOB LISTING" : "SAVE CHANGES"}
+                  {jobDetails.job_id === null
+                    ? "ADD JOB LISTING"
+                    : "SAVE CHANGES"}
                 </button>
               </div>
             </form>
@@ -653,55 +726,58 @@ export default function AdminJobListing() {
 
       {/* INDUSTRY ADD/EDIT MODAL */}
       <Modal open={industryModalIsOpen} onClose={handleIndustryModalClose}>
-        <Box
-          className={`modal-container p-6 bg-white rounded-lg mx-auto mt-12 ${
-            isSmallScreen ? "w-full" : "sm:w-96"
-          }`}
-        >
-          <h2 className="font-semibold mb-4 text-lg text-center bg-white">
-            {editIndustryDetails ? "Edit Industry" : "Add Industry"}
-          </h2>
-          <form
-            onSubmit={(e) => {
-              handleAddEditIndustry(e);
-            }}
-            className="space-y-4"
-          >
-            <div className="">
-              <TextField
-                label="Industry Name"
-                fullWidth
-                onChange={(e) => handleIndustryChange(e)}
-                className="mt-2"
-                sx={{ bgcolor: "#fbe9e7" }}
-              />
-            </div>
-            <TextField
-              label="Assessment URL"
-              fullWidth
-              onChange={(e) => handleIndustryChange(e)}
-              className="mt-2"
-              sx={{ bgcolor: "#fbe9e7" }}
-            />
-
-            <div className="mt-6 flex justify-end gap-x-3">
-              <button
-                onClick={() => setIndustryModalIsOpen(false)}
-                className="btn-light"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => handleAddEditIndustry}
-                type="submit"
-                variant="filled"
-                className="btn-primary"
-              >
-                {editIndustryDetails ? "SAVE CHANGES" : "ADD INDUSTRY"}
-              </button>
-            </div>
-          </form>
-        </Box>
+        <div className="fixed inset-0 flex items-center justify-center">
+          <Box className="modal-container px-10 bg-white rounded-lg w-full sm:w-96 max-h-[80vh] overflow-y-auto shadow-lg">
+            <h2 className="mb-4 font-avenir-black text-lg text-center bg-white">
+              {jobDetails.job_id === null ? "Add Industry" : "Edit Industry"}
+            </h2>
+            <form
+              onSubmit={(e) => {
+                handleAddEditIndustry(e);
+              }}
+              className="space-y-4"
+            >
+              <div>
+                <label className="block text-gray-700 font-avenir-black">
+                  Industry Name<span className="text-primary">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="industry_name"
+                  required
+                  className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 font-avenir-black">
+                  Assessment URL<span className="text-primary">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="assessment_url"
+                  required
+                  className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <div className="mt-6 flex justify-end gap-x-3 mb-5">
+                <button
+                  onClick={() => setIndustryModalIsOpen(false)}
+                  className="btn-light"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleAddEditIndustry}
+                  type="submit"
+                  variant="filled"
+                  className="btn-primary"
+                >
+                  {editIndustryDetails ? "SAVE CHANGES" : "ADD INDUSTRY"}
+                </button>
+              </div>
+            </form>
+          </Box>
+        </div>
       </Modal>
 
       {/* INDUSTRY/SETUP MANAGEMENT MODAL */}
