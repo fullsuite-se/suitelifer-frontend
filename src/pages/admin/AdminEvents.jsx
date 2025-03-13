@@ -1,32 +1,24 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   TextField,
   Typography,
   Box,
-  List,
-  ListItem,
-  ListItemText,
-} from "@mui/material";
-import logofsfull from "../../assets/logos/logo-fs-full.svg";
-import AppsIcon from "@mui/icons-material/Apps";
-import {
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
 } from "@mui/material";
-import EventCalendar from "./../../components/admin/EventCalendar";
 import moment from "moment";
+import EventCalendar from "./../../components/admin/EventCalendar";
 
 const AdminEvents = () => {
- 
   const [openDialog, setOpenDialog] = useState(false);
   const [events, setEvents] = useState([]);
-  const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEventDetailsModalOpen, setIsEventDetailsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   const [newEvent, setNewEvent] = useState({
     title: "",
@@ -35,12 +27,6 @@ const AdminEvents = () => {
     description: "",
   });
 
-  useEffect(() => {
-    setUpcomingEvents(
-      events.filter((event) => new Date(event.start) >= new Date())
-    );
-  }, [events]);
-
   const handleSelectSlot = ({ start }) => {
     if (
       new Date(start).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0)
@@ -48,18 +34,30 @@ const AdminEvents = () => {
       setOpenDialog(true);
       return;
     }
+    setIsEditing(false);
     setNewEvent({
-      ...newEvent,
+      title: "",
       start,
       end: new Date(start.getTime() + 60 * 60 * 1000),
+      description: "",
     });
     setIsAddModalOpen(true);
   };
 
   const handleAddEvent = () => {
-    setEvents([...events, newEvent]);
+    if (isEditing) {
+      // Update the existing event
+      setEvents((prevEvents) =>
+        prevEvents.map((event) =>
+          event.start === selectedEvent.start ? newEvent : event
+        )
+      );
+      setIsEditing(false);
+    } else {
+      // Add new event
+      setEvents([...events, newEvent]);
+    }
     setIsAddModalOpen(false);
-
     setNewEvent({
       title: "",
       start: new Date(),
@@ -73,13 +71,16 @@ const AdminEvents = () => {
     setIsEventDetailsModalOpen(true);
   };
 
+  const handleEditEvent = () => {
+    setNewEvent(selectedEvent);
+    setIsEditing(true);
+    setIsEventDetailsModalOpen(false);
+    setIsAddModalOpen(true);
+  };
+
   return (
     <div className="bg-white p-2">
       <header className="flex justify-between items-center h-16">
-        <button className="sm:hidden" onClick={() => setIsOpen(!isOpen)}>
-          <AppsIcon sx={{ fontSize: "48px" }} />
-        </button>
-        <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
         <button className="btn-primary" onClick={() => setIsAddModalOpen(true)}>
           + EVENT
         </button>
@@ -89,41 +90,24 @@ const AdminEvents = () => {
 
       <div className="flex gap-8">
         <div className="bg-white shadow-lg rounded-lg p-4 w-300">
-          <div className="border border-gray-300 rounded-lg overflow-hidden">
-            <EventCalendar
-              events={events}
-              onSelectSlot={handleSelectSlot}
-              onSelectEvent={handleEventClick}
-              onAddEvent={() => setIsAddModalOpen(true)}
-            />
-          </div>
-        </div>
+          <EventCalendar
+            events={events}
+            onSelectSlot={handleSelectSlot}
+            onSelectEvent={handleEventClick}
+            eventPropGetter={(event) => ({
+              className: "custom-event", 
+            })}
+            dayPropGetter={(date) => {
+              const today = new Date();
+              const isToday =
+                date.getDate() === today.getDate() &&
+                date.getMonth() === today.getMonth() &&
+                date.getFullYear() === today.getFullYear();
 
-        {/* Upcoming Events Section */}
-        <div className="mt-6">
-          <Typography variant="h4">Upcoming Events</Typography>
-          <List>
-            {upcomingEvents
-              .sort((a, b) => new Date(a.start) - new Date(b.start))
-              .slice(0, 5)
-              .map((event, index) => (
-                <ListItem
-                  key={index}
-                  button
-                  onClick={() => handleEventClick(event)}
-                >
-                  <ListItemText
-                    primary={event.title}
-                    secondary={moment(event.start).format(
-                      "MMMM Do YYYY, h:mm a"
-                    )}
-                  />
-                </ListItem>
-              ))}
-            {upcomingEvents.length === 0 && (
-              <Typography>No upcoming events.</Typography>
-            )}
-          </List>
+              return isToday ? { className: "custom-today" } : {};
+            }}
+            style={{ height: 680, width: "100%" }}
+          />
         </div>
       </div>
 
@@ -140,7 +124,7 @@ const AdminEvents = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Add Event Modal */}
+      {/* Add/Edit Event Modal */}
       <Modal open={isAddModalOpen} onClose={() => setIsAddModalOpen(false)}>
         <Box
           sx={{
@@ -152,11 +136,11 @@ const AdminEvents = () => {
             bgcolor: "white",
             borderRadius: 1,
             boxShadow: 24,
-            width:"300px"
+            width: "450px",
           }}
         >
-          <Typography variant="h5" mb={2} className="text-center text-primary font-bold">
-            Add New Event
+          <Typography variant="h5" mb={2} className="text-center font-bold">
+            {isEditing ? "Edit Event" : "Add New Event"}
           </Typography>
           <TextField
             fullWidth
@@ -204,7 +188,7 @@ const AdminEvents = () => {
               Cancel
             </button>
             <button onClick={handleAddEvent} className="btn-primary">
-              Add Event
+              {isEditing ? "Update Event" : "Add Event"}
             </button>
           </Box>
         </Box>
@@ -225,34 +209,45 @@ const AdminEvents = () => {
             bgcolor: "white",
             borderRadius: 1,
             boxShadow: 24,
-            minWidth: 300,
+            width: "400px",
           }}
         >
           {selectedEvent && (
             <>
-              <Typography variant="h6" className="font-bold text-primary">
-                Event Details
-              </Typography>
-              <Typography variant="body1" className="mt-3">
-                <strong>Title:</strong> {selectedEvent.title}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Date & Time:</strong>{" "}
-                {moment(selectedEvent.start).format("MMMM Do YYYY, h:mm a")} -{" "}
-                {moment(selectedEvent.end).format("h:mm a")}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Description:</strong>{" "}
-                {selectedEvent.description || "No description provided."}
-              </Typography>
-              <div className="flex flex-end justify-end">
+              <div className="flex flex-col gap-y-4 items-start">
+                <Typography
+                  variant="h5"
+                  align="center"
+                  fontWeight="bold"
+                  color="#0097b2"
+                >
+                  {selectedEvent.title}
+                </Typography>
+                <Typography>
+                  <strong>Start:</strong>{" "}
+                  {moment(selectedEvent.start).format("MMMM D, YYYY h:mm A")}
+                </Typography>
+                <Typography>
+                  <strong>End:</strong>{" "}
+                  {moment(selectedEvent.end).format("MMMM D, YYYY h:mm A")}
+                </Typography>
+                <Typography>
+                  <strong>Description:</strong>{" "}
+                  {selectedEvent.description || "No description"}
+                </Typography>
+              </div>
+
+              <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
                 <button
                   onClick={() => setIsEventDetailsModalOpen(false)}
-                  className="btn-primary"
+                  className="btn-light"
                 >
                   Close
                 </button>
-              </div>
+                <button onClick={handleEditEvent} className="btn-primary mr-2">
+                  Edit
+                </button>
+              </Box>
             </>
           )}
         </Box>
