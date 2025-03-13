@@ -1,16 +1,22 @@
 .hero-container{
-    padding-block: 20%;
+    padding-block: 30%;
 
-    @media (min-width: 600px){
+    @media (min-width: 768px){
+        padding-block: 0%;
+        padding-top: 0%;
+        padding-bottom: 5%;        
+    }
+
+    @media (min-width: 1024px){
+        padding-block: 0%;
+        padding-top: 7%;
+        padding-bottom: 5%;        
+    }
+
+    @media (min-width: 1280px){
         padding-block: 0%;
         padding-top: 5%;
         padding-bottom: 5%;        
-    }
-}
-
-.bg-mobile-images{
-    @media (min-width: 600px){
-        display: none;
     }
 }
 
@@ -21,21 +27,21 @@
 .career-hero-text-desktop{
     font-size: clamp(17px, 5.3vw, 4rem);
     display: none;
-    @media (min-width: 600px){
+    @media (min-width:768px){
         display: block;        
     }
 }
 
 .career-hero-text-mobile-small{
     font-size: clamp(17px, 6.3vw, 4rem);
-    @media (min-width: 600px){
+    @media (min-width: 768px){
         display: none;        
     }
 }
 
 .career-hero-text-mobile-large{
     font-size: clamp(17px, 9.9vw, 8rem);
-    @media (min-width: 600px){
+    @media (min-width: 768px){
         display: none;        
     }
 }
