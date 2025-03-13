@@ -125,13 +125,14 @@ const Login = () => {
         className="bg-white mx-auto rounded-2xl p-10 py-16 border border-gray-200"
         style={{ width: "min(90%, 600px)" }}
       >
-        <a href="/">
-          <img
-            src={fullsuite}
-            alt="FullSuite"
-            className="w-28 h-auto mx-auto"
-          />
-        </a>
+        <img
+          src={fullsuite}
+          alt="FullSuite"
+          onClick={() => {
+            navigate("/");
+          }}
+          className="w-28 h-auto mx-auto cursor-pointer"
+        />
         <p className="text-center text-base my-4 text-gray-500 mb-10">
           Welcome to SuiteLifer!
         </p>
