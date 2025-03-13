@@ -1,69 +1,33 @@
 import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import axios from "axios";
-import config from "../../config";
 import { useStore } from "../../store/authStore";
+import {
+  getServicesFromCookie,
+  refreshToken,
+  getUserFromCookie,
+} from "../cookie";
 
 const ProtectedRoutes = () => {
   const setServices = useStore((state) => state.setServices);
-  const user = useStore((state) => state.setUser);
+  const user = useStore((state) => state.user);
   const setUser = useStore((state) => state.setUser);
   const [loading, setLoading] = useState(true);
 
-  const refreshToken = async () => {
-    try {
-      const response = await axios.get(
-        `${config.apiBaseUrl}/api/refresh-token`,
-        { withCredentials: true }
-      );
-      return response.data.accessToken;
-    } catch (error) {
-      console.error("Failed to refresh token:", error);
-      return null;
-    }
-  };
-
-  const getUser = async () => {
-    try {
-      const response = await axios.get(`${config.apiBaseUrl}/api/user-info`, {
-        withCredentials: true,
-      });
-      return response.data.user;
-    } catch (error) {
-      console.error("Failed to fetch user:", error);
-      return null;
-    }
-  };
-
-  const getUserServices = async (userId) => {
-    try {
-      const response = await axios.get(
-        `${config.apiBaseUrl}/api/get-services/${userId}`,
-        { withCredentials: true }
-      );
-      return response.data.services;
-    } catch (error) {
-      console.error("Failed to fetch services:", error);
-      return [];
-    }
-  };
-
   const fetchData = async () => {
     try {
-      let user = await getUser();
+      let user = await getUserFromCookie();
 
       if (!user) {
         const newToken = await refreshToken();
         if (newToken) {
-          user = await getUser();
+          user = await getUserFromCookie();
         }
       }
 
       if (user) {
         setUser(user);
-        const services = await getUserServices(user.id);
+        const services = await getServicesFromCookie(user.id);
         setServices(services);
-        console.log(user);
       } else {
         setUser(null);
         setServices([]);
