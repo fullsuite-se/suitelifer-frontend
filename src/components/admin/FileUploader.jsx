@@ -1,18 +1,9 @@
 import { useState } from "react";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  TextField,
-} from "@mui/material";
+import { Dialog, DialogTitle, DialogContent } from "@mui/material";
 
 const FileUploader = () => {
   const [attachments, setAttachments] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [editingFileIndex, setEditingFileIndex] = useState(null);
-  const [newFileName, setNewFileName] = useState("");
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
@@ -21,22 +12,6 @@ const FileUploader = () => {
 
   const handleDelete = (index) => {
     setAttachments(attachments.filter((_, i) => i !== index));
-  };
-
-  const saveEdit = () => {
-    if (editingFileIndex !== null) {
-      const updatedFiles = [...attachments];
-      updatedFiles[editingFileIndex] = new File(
-        [attachments[editingFileIndex]],
-        newFileName,
-        {
-          type: attachments[editingFileIndex].type,
-        }
-      );
-      setAttachments(updatedFiles);
-      setEditingFileIndex(null);
-      setNewFileName("");
-    }
   };
 
   return (
@@ -55,39 +30,47 @@ const FileUploader = () => {
           gap: "10px",
         }}
       >
-        {attachments.slice(0, 4).map((file, index) => (
-          <div key={index} style={{ marginBottom: "10px" }}>
-            {file.type.startsWith("image/") ? (
-              <img
-                src={URL.createObjectURL(file)}
-                alt={`Uploaded Preview ${index + 1}`}
-                style={{
-                  maxWidth: "100%",
-                  height: "120px",
-                  borderRadius: "8px",
-                  padding: "5px",
-                }}
-              />
-            ) : (
-              <p>
-                <strong>File:</strong> {file.name}{" "}
-                <a
-                  href={URL.createObjectURL(file)}
-                  download={file.name}
-                  style={{ color: "blue", textDecoration: "underline" }}
-                >
-                  (Download)
-                </a>
-              </p>
-            )}
-          </div>
-        ))}
+        <div className="flex w-180 justify-between items-center">
+          {attachments.slice(0, 4).map((file, index) => (
+            <div key={index} style={{ marginBottom: "10px" }}>
+              {file.type.startsWith("image/") ? (
+                <img
+                  src={URL.createObjectURL(file)}
+                  alt={`Uploaded Preview ${index + 1}`}
+                  style={{
+                    maxWidth: "100%",
+                    height: "120px",
+                    borderRadius: "8px",
+                    padding: "5px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                />
+              ) : (
+                <p>
+                  <strong>File:</strong> {file.name}{" "}
+                  <a
+                    href={URL.createObjectURL(file)}
+                    download={file.name}
+                    style={{ color: "blue", textDecoration: "underline" }}
+                  >
+                    (Download)
+                  </a>
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
-      {attachments.length > 3 && (
+      {attachments.length > 4 && (
         <div className="items-center justify-center flex">
-          <Button variant="contained" onClick={() => setShowModal(true)}>
+          <button
+            className="btn-light"
+            variant="contained"
+            onClick={() => setShowModal(true)}
+          >
             See More
-          </Button>
+          </button>
         </div>
       )}
       <Dialog open={showModal} onClose={() => setShowModal(false)}>
@@ -110,30 +93,20 @@ const FileUploader = () => {
                 ) : (
                   <p>{file.name}</p>
                 )}
-                <Button variant="outlined" onClick={() => handleDelete(index)}>
+                <button
+                  className="btn-light"
+                  onClick={() => handleDelete(index)}
+                >
                   Delete
-                </Button>
+                </button>
               </div>
             ))}
-          </div>
-          {editingFileIndex !== null && (
-            <div>
-              <TextField
-                value={newFileName}
-                onChange={(e) => setNewFileName(e.target.value)}
-                label="New File Name"
-                fullWidth
-              />
-              <DialogActions>
-                <Button onClick={() => setEditingFileIndex(null)}>
-                  Cancel
-                </Button>
-                <Button onClick={saveEdit} variant="contained">
-                  Save
-                </Button>
-              </DialogActions>
+            <div className="btn-light h-10 flex flex-end w-full items-center justify-center">
+              <button classname="btn-light" onClick={() => setShowModal(false)}>
+                Close
+              </button>
             </div>
-          )}
+          </div>
         </DialogContent>
       </Dialog>
     </div>
