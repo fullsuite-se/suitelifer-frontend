@@ -11,6 +11,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import {
   Table,
@@ -169,7 +170,7 @@ export default function AdminJobListing() {
     setSetupModalIsOpen(false);
   };
 
-  const [selectedOption, setSelectedOption] = useState("Industry");
+  const [selectedOption, setSelectedOption] = useState("Manage Industry");
 
   // TABLE SETTINGS
   const gridOptions = {
@@ -366,7 +367,7 @@ export default function AdminJobListing() {
       ).data;
       console.log(response.data);
       setIndustries((i) => (i = response.data));
-      setRowIndustryData(response.data)
+      setRowIndustryData(response.data);
     };
 
     const fetchSetups = async () => {
@@ -424,7 +425,11 @@ export default function AdminJobListing() {
   const handleDeleteSetUp = (index) => {
     setSetups(setups.filter((_, i) => i !== index));
   };
-
+  const handleToggle = () => {
+    setSelectedOption((prev) =>
+      prev === "Manage Industry" ? "Manage Set-Up" : "Manage Industry"
+    );
+  };
   return (
     <div className="flex flex-col p-2 mx-auto space-y-6">
       {/* Header */}
@@ -751,38 +756,58 @@ export default function AdminJobListing() {
         onClose={() => setIndustryMgmtModalIsOpen(false)}
       >
         <Box className="modal-container bg-white p-4 rounded-lg mx-auto mt-12 w-250 h-200">
-          <FormControl fullWidth className="mt-7">
-            <Select
-              value={selectedOption}
-              onChange={(e) => setSelectedOption(e.target.value)}
-              sx={{ bgcolor: "#fbe9e7" }}
-            >
-              <MenuItem value="Industry">Industry</MenuItem>
-              <MenuItem value="Set-Up">Set-Up</MenuItem>
-            </Select>
-          </FormControl>
+          <div className="flex items-center gap-5 w-full justify-between p-2">
+            
+              <ToggleButton
+                onClick={handleToggle}
+                value={selectedOption}
+                variant="contained"
+                sx={{
+                  backgroundColor: "#0097b2",
+                  color: "white",
+                  border: "none",
+                  borderRadius:"20px",
+                  fontSize:"16px",
+                  width:"400px",
+                  "&:hover": {
+                    backgroundColor: "#0088a3",
+                    border: "none", 
+                  },
+                  "&.Mui-selected": {
+                    border: "none", 
+                  },
+                  "&.MuiToggleButton-root": {
+                    border: "none", 
+                  },
+                }}
+              >
+                {selectedOption}
+              </ToggleButton>
+           
 
-          <div className="flex justify-between w-full gap-3 mt-4 flex-end">
-            {selectedOption === "Industry" ? (
-              <button
-                variant="outlined"
-                className="btn-primary"
-                onClick={() => setIndustryModalIsOpen(true)}
-              >
-                <span className="mr-2">+</span> INDUSTRY
-              </button>
-            ) : (
-              <button
-                onClick={() => setSetupModalIsOpen(true)}
-                className="btn-primary"
-              >
-                <span className="mr-2">+</span> SET-UP
-              </button>
-            )}
-          </div>
+           
+              {selectedOption === "Manage Industry" ? (
+                <button
+                  variant="outlined"
+                  className="btn-primary flex"
+                  onClick={() => setIndustryModalIsOpen(true)}
+                  
+                >
+                  ADD INDUSTRY
+                </button>
+              ) : (
+                <button
+                  onClick={() => setSetupModalIsOpen(true)}
+                  className="btn-primary"
+                >
+                  ADD SET-UP
+                </button>
+              )}
+            </div>
+     
 
           {/* INDUSTRY OR SETUP MANAGEMENT */}
-          {selectedOption === "Industry" ? (
+          {selectedOption === "Manage Industry" ? (
             <div
               className="ag-theme-quartz p-5"
               style={{ height: "65vh", width: "100%" }}
