@@ -11,7 +11,6 @@ import {
 import AppsIcon from "@mui/icons-material/Apps";
 import logofsfull from "../../assets/logos/logo-fs-full.svg";
 
-// Separate datasets
 const applicationsData = [
   { month: 0, value: 2400 },
   { month: 1, value: 2500 },
@@ -75,7 +74,7 @@ const closedJobsData = [
 const AdminDashboard = () => {
   const [selectedData, setSelectedData] = useState(applicationsData);
   const [selectedLabel, setSelectedLabel] = useState("Total Applications");
-  const [selectedColor, setSelectedColor] = useState("#82ca9d");
+  const [selectedColor, setSelectedColor] = useState("#0097b2");
 
   const handleDataChange = (data, label, color) => {
     setSelectedData(data);
@@ -111,7 +110,7 @@ const AdminDashboard = () => {
             handleDataChange(
               employeesData,
               "Total Employee Accounts",
-              "#8884d8"
+              "#0097b2"
             )
           }
         >
@@ -122,7 +121,7 @@ const AdminDashboard = () => {
         <button
           className="p-4 rounded-lg shadow text-black text-xl font-semibold bg-white w-100"
           onClick={() =>
-            handleDataChange(applicationsData, "Total Applications", "#82ca9d")
+            handleDataChange(applicationsData, "Total Applications", "#0097b2")
           }
         >
           <span className="text-3xl">917</span>
@@ -136,7 +135,7 @@ const AdminDashboard = () => {
             <button
               className="bg-secondary p-4 rounded-lg text-black-700 text-lg font-semibold w-45"
               onClick={() =>
-                handleDataChange(openJobsData, "Open Job Listings", "#ffc658")
+                handleDataChange(openJobsData, "Open Job Listings", "#0097b2")
               }
             >
               <span className="text-2xl">14</span>
@@ -149,7 +148,7 @@ const AdminDashboard = () => {
                 handleDataChange(
                   closedJobsData,
                   "Closed Job Listings",
-                  "#ff7300"
+                  "#0097b2"
                 )
               }
             >
