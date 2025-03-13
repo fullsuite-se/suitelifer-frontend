@@ -22,6 +22,8 @@ const UpholdsIcon = ({ color, size }) => {
         id="Shape 2"
         fill-rule="evenodd"
         class="s0"
+        fill={color}
+        className={color}
         d="m294 76h494c18.2 0 33 14.8 33 33 0 18.2-14.8 33-33 33h-494c-18.2 0-33-14.8-33-33 0-18.2 14.8-33 33-33z"
       />
       <path
@@ -52,6 +54,8 @@ const UpholdsIcon = ({ color, size }) => {
         id="Shape 6"
         fill-rule="evenodd"
         class="s0"
+        fill={color}
+        className={color}
         d="m323.3 465c-57.4 0-104-45.2-106.2-102h212.3c-2.2 56.8-48.8 102-106.1 102z"
       />
       <path
