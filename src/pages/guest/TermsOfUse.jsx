@@ -34,21 +34,21 @@ const TermsOfUse = () => {
 
       <div className="relative">
         <main className="mt-0 lg:mt-20 text-[12px] md:text-[14px] lg:text-[16px]">
-          <LegalHeader
+          {/* <LegalHeader
             image={termsOfUseimg}
             heading="Terms of Use"
             sectionId="terms-of-use-content"
 
             classNameValue="w-45 -mb-5 md:w-60 lg:w-70 ml-15"
 
-          />
+          /> */}
 
           <section id="terms-of-use-content" className="mb-20">
            
+              {/* <br />
               <br />
               <br />
-              <br />
-              <br />
+              <br /> */}
        
            <TermsOfUseContent />
 

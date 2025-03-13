@@ -29,7 +29,7 @@ const BlogCard = ({
         <div className="small-blog-card-content p-4">
           {/* Title */}
           <div>
-            <p className="font-sansita-semi-bold text-[16px] md:text-[28px] sm:text-xl lg:text-[20px] line-clamp-2">
+            <p className="font-avenir-black text-[16px] md:text-[28px] sm:text-xl lg:text-[20px] line-clamp-2">
               {title}
             </p>
           </div>

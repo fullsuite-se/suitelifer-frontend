@@ -14,7 +14,7 @@ const GuestBlogCard = ({
   const { day, fullDate, time } = formatTimestamp(created_at);
 
   return (
-    <Link  to={`${id}/${toSlug(title)}`} className="no-underline cursor-pointer group flex flex-col lg:flex-row-reverse lg:gap-10">
+    <Link  to={`/blogs/${id}/${toSlug(title)}`} className="no-underline cursor-pointer group flex flex-col lg:flex-row-reverse lg:gap-10">
  
     <section 
   className="relative w-full h-80 lg:h-90 rounded-xl overflow-hidden 
@@ -34,7 +34,7 @@ const GuestBlogCard = ({
         </div>
 
         <div className="absolute bottom-0 p-4 text-white">
-          <h2 className="font-sansita-extra-bold !text-base sm:!text-lg md:!text-lg  group-hover:text-secondary transition duration-300 ease-in-out">
+          <h2 className="font-avenir-black !text-base sm:!text-lg md:!text-lg  group-hover:text-secondary transition duration-300 ease-in-out">
             {title}
           </h2>
 

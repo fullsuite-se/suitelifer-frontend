@@ -33,18 +33,17 @@ const PrivacyPolicy = () => {
 
       <div className="relative">
         <main className="mt-0 lg:mt-20 text-[12px] md:text-[14px] lg:text-[16px]">
-          <LegalHeader
+          {/* <LegalHeader
             image={privacyPolicyimg}
             heading="Privacy Policy"
             sectionId="privacy-policy-content"
             classNameValue="w-32 md:w-40 lg:w-48"
-          />
+          /> */}
+
+
 
           <section id="privacy-policy-content" className="mb-20">
-            <br />
-            <br />
-            <br />
-            <br />
+            
 
             <PrivacyPolicyContent />
           </section> <BackToTop/>

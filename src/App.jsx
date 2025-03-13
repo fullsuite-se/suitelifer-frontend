@@ -37,6 +37,7 @@ import Login from "./components/auth/Login";
 
 // Others
 import { Toaster } from "react-hot-toast";
+import CareersAll from "./pages/guest/CareersAll";
 function App() {
   return (
     <>
@@ -48,6 +49,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/careers" element={<Careers />} />
+          <Route path="/careers-all" element={<CareersAll />} />
           <Route
             path="/application-form/:id/:jobPosition"
             element={<ApplicationForm />}
