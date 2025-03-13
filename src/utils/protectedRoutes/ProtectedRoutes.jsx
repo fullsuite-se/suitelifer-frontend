@@ -6,7 +6,7 @@ import { useStore } from "../../store/authStore";
 
 const ProtectedRoutes = () => {
   const setServices = useStore((state) => state.setServices);
-  const user = useStore((state) => state.setUser);
+  const user = useStore((state) => state.user);
   const setUser = useStore((state) => state.setUser);
   const [loading, setLoading] = useState(true);
 
