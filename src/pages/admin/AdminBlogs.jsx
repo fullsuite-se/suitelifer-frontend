@@ -13,6 +13,7 @@ import logofsfull from "../../assets/logos/logo-fs-full.svg";
 import FileUploaderProvider from "../../components/admin/FileUploader";
 import TextEditor from "../../components/TextEditor";
 import { motion } from "framer-motion";
+import PreviewIcon from "@mui/icons-material/Preview";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -58,38 +59,37 @@ const AdminBlog = () => {
 
   const companyBlogData = [
     {
-      id: "1",
       title: "Company Growth Strategies for 2025",
       author: "CEO John Doe",
       datePublished: { seconds: 1616161616 },
       comments: 325,
       views: 9456,
       likes: 3455,
+      flex: 1,
       image:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
     },
     {
-      id: "2",
       title: "Sustainability Initiatives in Our Business",
       author: "Jane Smith",
       datePublished: { seconds: 1616161626 },
       comments: 54545,
       views: 95853453,
       likes: 94,
+      flex: 1,
       image: "https://i.mydramalist.com/eJ8Dd_5c.jpg",
     },
     {
-      id: "3",
       title: "The Future of AI in Business Operations",
       author: "Michael Lee",
       datePublished: { seconds: 1616161636 },
       comments: 1200,
       views: 123456,
       likes: 23904,
+      flex: 2,
       image: "https://i.mydramalist.com/jBq4b_5f.jpg",
     },
     {
-      id: "4",
       title: "Remote Work: The New Normal?",
       author: "Sophia Chen",
       datePublished: { seconds: 1616161646 },
@@ -100,7 +100,6 @@ const AdminBlog = () => {
         "https://od2-image-api.abs-cbn.com/prod/editorImage/1735922206940SHOWTIME-JM-On-Unforgettable-Firsts-Main.jpg",
     },
     {
-      id: "5",
       title: "Marketing Trends to Watch in 2025",
       author: "David Brown",
       datePublished: { seconds: 1616161656 },
@@ -111,7 +110,6 @@ const AdminBlog = () => {
         "https://cdn-images.dzcdn.net/images/artist/53df60edbde3b362ebe1b6f8936a5545/1900x1900-000000-80-0-0.jpg",
     },
     {
-      id: "7",
       title: "Employee Well-being and Productivity",
       author: "Olivia Martinez",
       datePublished: { seconds: 1616161676 },
@@ -125,7 +123,6 @@ const AdminBlog = () => {
 
   const employeeBlogData = [
     {
-      id: "3",
       title: "How I Learned React in 3 Months",
       author: "Alice Johnson",
       datePublished: { seconds: 1616161636 },
@@ -136,7 +133,6 @@ const AdminBlog = () => {
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
     },
     {
-      id: "4",
       title: "Work-Life Balance Tips from a Remote Worker",
       author: "Bob Williams",
       datePublished: { seconds: 1616161646 },
@@ -146,7 +142,6 @@ const AdminBlog = () => {
       image: "https://i.mydramalist.com/eJ8Dd_5c.jpg",
     },
     {
-      id: "5",
       title: "Mastering Time Management as a Developer",
       author: "Chris Evans",
       datePublished: { seconds: 1616161656 },
@@ -157,7 +152,6 @@ const AdminBlog = () => {
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
     },
     {
-      id: "6",
       title: "Overcoming Imposter Syndrome in Tech",
       author: "Jessica Smith",
       datePublished: { seconds: 1616161666 },
@@ -168,7 +162,6 @@ const AdminBlog = () => {
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
     },
     {
-      id: "7",
       title: "The Power of Networking for Career Growth",
       author: "Daniel White",
       datePublished: { seconds: 1616161676 },
@@ -179,7 +172,6 @@ const AdminBlog = () => {
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
     },
     {
-      id: "8",
       title: "Lessons from My First Year as a Software Engineer",
       author: "Megan Taylor",
       datePublished: { seconds: 1616161686 },
@@ -190,7 +182,6 @@ const AdminBlog = () => {
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
     },
     {
-      id: "9",
       title: "How to Stay Motivated While Working Remotely",
       author: "Ethan Harris",
       datePublished: { seconds: 1616161696 },
@@ -319,13 +310,16 @@ const AdminBlog = () => {
                     headerName: "Action",
                     field: "action",
                     flex: 1,
-                    headerClass: "text-primary font-bold bg-tertiary",
+                    headerClass:
+                      "text-primary font-bold bg-tertiary flex items-center justify-center text-center w-full h-full",
+
                     cellRenderer: (params) => (
                       <div
                         style={{
                           display: "flex",
                           justifyContent: "center",
                           gap: "10px",
+                          alignItems: "center",
                         }}
                       >
                         <button
@@ -339,6 +333,16 @@ const AdminBlog = () => {
                           onClick={() => handleDelete(params.data.id)}
                         >
                           <DeleteIcon />
+                        </button>
+                        <button
+                          className=""
+                          onClick={() => {
+                            navigate(`details/${blogId}`);
+                          }}
+                        >
+                          <span className="text-sm">
+                            <PreviewIcon />
+                          </span>
                         </button>
                       </div>
                     ),
@@ -364,11 +368,11 @@ const AdminBlog = () => {
             </div>
 
             {/* Recent Blogs Panel */}
-            <div className="w-full p-2 bg-white rounded-lg border-1 border-accent-2 h-full">
+            <div className="w-full p-2 bg-white rounded-lg border-2 border-accent-2 h-full">
               <div className="p-2 text-center w-full flex justify-end">
                 <motion.span
                   initial={{ x: -200 }}
-                  animate={{ x: 50 }}
+                  animate={{ x: 55 }}
                   transition={{ duration: 0.2, ease: "easeOut" }}
                   className="w-full text-4xl font-bold font-avenir-black mb-4 text-primary inline-block"
                 >
@@ -376,7 +380,7 @@ const AdminBlog = () => {
                 </motion.span>
                 <motion.span
                   initial={{ x: 200 }}
-                  animate={{ x: -50 }}
+                  animate={{ x: -55 }}
                   transition={{ duration: 0.2, ease: "easeOut" }}
                   className="w-full text-4xl font-bold font-avenir-black mb-4 inline-block "
                 >
@@ -390,24 +394,24 @@ const AdminBlog = () => {
                 {rowBlogData.slice(0, 10).map((blog) => (
                   <div
                     key={blog.id}
-                    className="flex items-center gap-3 mb-4 p-3 bg-accent-2 rounded-lg shadow"
+                    className="flex items-center gap-3 mb-4 p-3 bg-white rounded-lg shadow border-2 border-accent-2"
                   >
                     <img
                       src={blog.image}
-                      className="w-16 h-16 object-cover rounded-lg"
+                      className="w-16 h-16 object-cover rounded-lg border-1 "
                       alt={blog.title}
                     />
                     <div className="flex flex-col">
-                      <h3 className="text-sm font-bold text-white">
+                      <h3 className="text-sm font-bold text-black">
                         {blog.title}
                       </h3>
-                      <p className="text-xs text-secondary">by {blog.author}</p>
+                      <p className="text-xs text-black">by {blog.author}</p>
                       <div className="text-xs text-black flex gap-2 mt-1">
                         <span>💬 {formatNumber(blog.comments)}</span>
                         <span>👁 {formatNumber(blog.views)}</span>
                         <span>❤️ {formatNumber(blog.likes)}</span>
                         <button
-                          className="text-accent-1 text-xs"
+                          className="text-accent-2 text-xs"
                           onClick={() => handleEdit(blog)}
                         >
                           Edit
