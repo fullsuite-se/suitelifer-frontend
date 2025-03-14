@@ -1,83 +1,65 @@
-import { useState } from "react";
+import { useState, createContext, useContext } from "react";
 import { Dialog, DialogTitle, DialogContent } from "@mui/material";
 
-const FileUploader = () => {
+const FileUploadContext = createContext();
+
+export const useFileUpload = () => useContext(FileUploadContext);
+
+const FileUploaderProvider = ({ onUpload, children }) => {
   const [attachments, setAttachments] = useState([]);
   const [showModal, setShowModal] = useState(false);
 
+  // Handle File Upload
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
+    const fileURLs = files.map((file) => URL.createObjectURL(file)); // Convert files to URLs
+
     setAttachments([...attachments, ...files]);
+
+    if (onUpload) {
+      onUpload(fileURLs[0]); // Send first uploaded file to parent component
+    }
   };
 
+  // Handle File Delete
   const handleDelete = (index) => {
     setAttachments(attachments.filter((_, i) => i !== index));
   };
 
   return (
-    <div>
-      <input
-        type="file"
-        multiple
-        onChange={handleFileChange}
-        style={{ margin: "16px 0" }}
-      />
-      <div
-        style={{
-          marginTop: "10px",
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "10px",
-        }}
-      >
-        <div className="flex w-180 justify-between items-center">
-          {attachments.slice(0, 4).map((file, index) => (
-            <div key={index} style={{ marginBottom: "10px" }}>
-              {file.type.startsWith("image/") ? (
-                <img
-                  src={URL.createObjectURL(file)}
-                  alt={`Uploaded Preview ${index + 1}`}
-                  style={{
-                    maxWidth: "100%",
-                    height: "120px",
-                    borderRadius: "8px",
-                    padding: "5px",
-                    display: "flex",
-                    justifyContent: "space-between",
-                  }}
-                />
-              ) : (
-                <p>
-                  <strong>File:</strong> {file.name}{" "}
-                  <a
-                    href={URL.createObjectURL(file)}
-                    download={file.name}
-                    style={{ color: "blue", textDecoration: "underline" }}
-                  >
-                    (Download)
-                  </a>
-                </p>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-      {attachments.length > 4 && (
-        <div className="items-center justify-center flex">
-          <button
-            className="btn-light"
-            variant="contained"
-            onClick={() => setShowModal(true)}
+    <FileUploadContext.Provider value={{ attachments }}>
+      {children}
+      <div>
+        {/* Hidden File Input */}
+        <input
+          type="file"
+          multiple
+          onChange={handleFileChange}
+          style={{ display: "none" }}
+          id="file-upload"
+        />
+
+        {/* Upload Button */}
+        <div className="flex mt-4">
+          <label
+            htmlFor="file-upload"
+            className="btn-light w-full text-center cursor-pointer"
           >
-            See More
-          </button>
+            Upload File
+          </label>
         </div>
-      )}
-      <Dialog open={showModal} onClose={() => setShowModal(false)}>
-        <DialogTitle>All Attachments</DialogTitle>
-        <DialogContent>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-            {attachments.map((file, index) => (
+
+        {/* Display Uploaded Files */}
+        <div
+          style={{
+            marginTop: "10px",
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "10px",
+          }}
+        >
+          <div className="flex w-180 justify-between items-center">
+            {attachments.slice(0, 4).map((file, index) => (
               <div key={index} style={{ marginBottom: "10px" }}>
                 {file.type.startsWith("image/") ? (
                   <img
@@ -91,26 +73,74 @@ const FileUploader = () => {
                     }}
                   />
                 ) : (
-                  <p>{file.name}</p>
+                  <p>
+                    <strong>File:</strong> {file.name}{" "}
+                    <a
+                      href={URL.createObjectURL(file)}
+                      download={file.name}
+                      style={{ color: "blue", textDecoration: "underline" }}
+                    >
+                      (Download)
+                    </a>
+                  </p>
                 )}
-                <button
-                  className="btn-light"
-                  onClick={() => handleDelete(index)}
-                >
-                  Delete
-                </button>
               </div>
             ))}
-            <div className="btn-light h-10 flex flex-end w-full items-center justify-center">
-              <button classname="btn-light" onClick={() => setShowModal(false)}>
-                Close
-              </button>
-            </div>
           </div>
-        </DialogContent>
-      </Dialog>
-    </div>
+        </div>
+
+        {/* See More Button */}
+        {attachments.length > 4 && (
+          <div className="items-center justify-center flex">
+            <button className="btn-light" onClick={() => setShowModal(true)}>
+              See More
+            </button>
+          </div>
+        )}
+
+        {/* Modal to View All Attachments */}
+        <Dialog open={showModal} onClose={() => setShowModal(false)}>
+          <DialogTitle>All Attachments</DialogTitle>
+          <DialogContent>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+              {attachments.map((file, index) => (
+                <div key={index} style={{ marginBottom: "10px" }}>
+                  {file.type.startsWith("image/") ? (
+                    <img
+                      src={URL.createObjectURL(file)}
+                      alt={`Uploaded Preview ${index + 1}`}
+                      style={{
+                        maxWidth: "100px",
+                        height: "100px",
+                        borderRadius: "8px",
+                        padding: "5px",
+                      }}
+                    />
+                  ) : (
+                    <p>{file.name}</p>
+                  )}
+                  <button
+                    className="btn-light"
+                    onClick={() => handleDelete(index)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              ))}
+              <div className="btn-light h-10 flex flex-end w-full items-center justify-center">
+                <button
+                  className="btn-light"
+                  onClick={() => setShowModal(false)}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+    </FileUploadContext.Provider>
   );
 };
 
-export default FileUploader;
+export default FileUploaderProvider;
