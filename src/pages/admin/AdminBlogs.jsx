@@ -22,6 +22,15 @@ const AdminBlog = () => {
   const [editingBlog, setEditingBlog] = useState(null);
   const [newBlog, setNewBlog] = useState({ title: "", author: "", image: "" });
 
+  const formatNumber = (num) => {
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
+    } else if (num >= 1000) {
+      return (num / 1000).toFixed(1).replace(/\.0$/, "") + "K";
+    }
+    return num;
+  };
+
   const addOrUpdateBlog = () => {
     if (editingBlog) {
       setRowBlogData((prevData) =>
@@ -55,16 +64,56 @@ const AdminBlog = () => {
       datePublished: { seconds: 1616161616 },
       comments: 325,
       views: 9456,
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
     },
     {
       id: "2",
       title: "Sustainability Initiatives in Our Business",
       author: "Jane Smith",
       datePublished: { seconds: 1616161626 },
-      comments: 545,
-      views: 9158,
+      comments: 54545,
+      views: 95853453,
       image: "https://i.mydramalist.com/eJ8Dd_5c.jpg",
+    },
+    {
+      id: "3",
+      title: "The Future of AI in Business Operations",
+      author: "Michael Lee",
+      datePublished: { seconds: 1616161636 },
+      comments: 1200,
+      views: 123456,
+      image: "https://i.mydramalist.com/jBq4b_5f.jpg",
+    },
+    {
+      id: "4",
+      title: "Remote Work: The New Normal?",
+      author: "Sophia Chen",
+      datePublished: { seconds: 1616161646 },
+      comments: 875,
+      views: 65432,
+      image:
+        "https://od2-image-api.abs-cbn.com/prod/editorImage/1735922206940SHOWTIME-JM-On-Unforgettable-Firsts-Main.jpg",
+    },
+    {
+      id: "5",
+      title: "Marketing Trends to Watch in 2025",
+      author: "David Brown",
+      datePublished: { seconds: 1616161656 },
+      comments: 2345,
+      views: 789654,
+      image:
+        "https://cdn-images.dzcdn.net/images/artist/53df60edbde3b362ebe1b6f8936a5545/1900x1900-000000-80-0-0.jpg",
+    },
+    {
+      id: "7",
+      title: "Employee Well-being and Productivity",
+      author: "Olivia Martinez",
+      datePublished: { seconds: 1616161676 },
+      comments: 432,
+      views: 98765,
+      image:
+        "https://www.vivaartistsagency.ph/wp-content/uploads/2020/01/ANNE-CURTIS.jpg",
     },
   ];
 
@@ -74,18 +123,64 @@ const AdminBlog = () => {
       title: "How I Learned React in 3 Months",
       author: "Alice Johnson",
       datePublished: { seconds: 1616161636 },
-      comments: 35,
+      comments: 35123,
       views: 156,
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
     },
     {
       id: "4",
       title: "Work-Life Balance Tips from a Remote Worker",
       author: "Bob Williams",
       datePublished: { seconds: 1616161646 },
-      comments: 69,
-      views: 4580,
+      comments: 6912334,
+      views: 480,
       image: "https://i.mydramalist.com/eJ8Dd_5c.jpg",
+    },
+    {
+      id: "5",
+      title: "Mastering Time Management as a Developer",
+      author: "Chris Evans",
+      datePublished: { seconds: 1616161656 },
+      comments: 872,
+      views: 12000,
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
+    },
+    {
+      id: "6",
+      title: "Overcoming Imposter Syndrome in Tech",
+      author: "Jessica Smith",
+      datePublished: { seconds: 1616161666 },
+      comments: 1456,
+      views: 65432,
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
+    },
+    {
+      id: "7",
+      title: "The Power of Networking for Career Growth",
+      author: "Daniel White",
+      datePublished: { seconds: 1616161676 },
+      comments: 678,
+      views: 7654,
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
+    },
+    {
+      id: "8",
+      title: "Lessons from My First Year as a Software Engineer",
+      author: "Megan Taylor",
+      datePublished: { seconds: 1616161686 },
+      comments: 2345,
+      views: 98765,
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
+    },
+    {
+      id: "9",
+      title: "How to Stay Motivated While Working Remotely",
+      author: "Ethan Harris",
+      datePublished: { seconds: 1616161696 },
+      comments: 453,
+      views: 5432,
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
     },
   ];
 
@@ -223,7 +318,7 @@ const AdminBlog = () => {
               <h2 className="text-lg font-semibold mb-4">Blogs</h2>
               <div
                 className="overflow-y-auto"
-                style={{ maxHeight: "700px", width:"400px" }}
+                style={{ maxHeight: "700px", width: "400px" }}
               >
                 {rowBlogData.slice(0, 20).map((blog) => (
                   <div
@@ -245,8 +340,9 @@ const AdminBlog = () => {
                       </h3>
                       <p className="text-xs text-secondary">by {blog.author}</p>
                       <div className="text-xs text-black flex gap-2 mt-1">
-                        <span>💬 {blog.comments} comments</span>
-                        <span>👁 {blog.views} views</span>
+                        <span>💬 {formatNumber(blog.comments)} comments</span>
+                        <span>👁 {formatNumber(blog.views)} views</span>
+
                         <button
                           className="font-avenir-black text-accent-1 text-xs"
                           onClick={() => handleEdit(blog)}
