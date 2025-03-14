@@ -12,6 +12,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import logofsfull from "../../assets/logos/logo-fs-full.svg";
 import FileUploaderProvider from "../../components/admin/FileUploader";
 import TextEditor from "../../components/TextEditor";
+import { motion } from "framer-motion";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -47,7 +48,6 @@ const AdminBlog = () => {
         views: 0,
         image: newBlog.image || "https://via.placeholder.com/150",
       };
-
       setRowBlogData((prevData) => [...prevData, newEntry]);
     }
 
@@ -64,6 +64,7 @@ const AdminBlog = () => {
       datePublished: { seconds: 1616161616 },
       comments: 325,
       views: 9456,
+      likes: 3455,
       image:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
     },
@@ -74,6 +75,7 @@ const AdminBlog = () => {
       datePublished: { seconds: 1616161626 },
       comments: 54545,
       views: 95853453,
+      likes: 94,
       image: "https://i.mydramalist.com/eJ8Dd_5c.jpg",
     },
     {
@@ -83,6 +85,7 @@ const AdminBlog = () => {
       datePublished: { seconds: 1616161636 },
       comments: 1200,
       views: 123456,
+      likes: 23904,
       image: "https://i.mydramalist.com/jBq4b_5f.jpg",
     },
     {
@@ -92,6 +95,7 @@ const AdminBlog = () => {
       datePublished: { seconds: 1616161646 },
       comments: 875,
       views: 65432,
+      likes: 82394,
       image:
         "https://od2-image-api.abs-cbn.com/prod/editorImage/1735922206940SHOWTIME-JM-On-Unforgettable-Firsts-Main.jpg",
     },
@@ -102,6 +106,7 @@ const AdminBlog = () => {
       datePublished: { seconds: 1616161656 },
       comments: 2345,
       views: 789654,
+      likes: 904,
       image:
         "https://cdn-images.dzcdn.net/images/artist/53df60edbde3b362ebe1b6f8936a5545/1900x1900-000000-80-0-0.jpg",
     },
@@ -112,6 +117,7 @@ const AdminBlog = () => {
       datePublished: { seconds: 1616161676 },
       comments: 432,
       views: 98765,
+      likes: 982,
       image:
         "https://www.vivaartistsagency.ph/wp-content/uploads/2020/01/ANNE-CURTIS.jpg",
     },
@@ -125,6 +131,7 @@ const AdminBlog = () => {
       datePublished: { seconds: 1616161636 },
       comments: 35123,
       views: 156,
+      likes: 4,
       image:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
     },
@@ -135,6 +142,7 @@ const AdminBlog = () => {
       datePublished: { seconds: 1616161646 },
       comments: 6912334,
       views: 480,
+      likes: 3904,
       image: "https://i.mydramalist.com/eJ8Dd_5c.jpg",
     },
     {
@@ -144,7 +152,9 @@ const AdminBlog = () => {
       datePublished: { seconds: 1616161656 },
       comments: 872,
       views: 12000,
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
+      likes: 9823904,
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
     },
     {
       id: "6",
@@ -153,7 +163,9 @@ const AdminBlog = () => {
       datePublished: { seconds: 1616161666 },
       comments: 1456,
       views: 65432,
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
+      likes: 493090,
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
     },
     {
       id: "7",
@@ -162,7 +174,9 @@ const AdminBlog = () => {
       datePublished: { seconds: 1616161676 },
       comments: 678,
       views: 7654,
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
+      likes: 8548,
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
     },
     {
       id: "8",
@@ -171,7 +185,9 @@ const AdminBlog = () => {
       datePublished: { seconds: 1616161686 },
       comments: 2345,
       views: 98765,
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
+      likes: 89435,
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
     },
     {
       id: "9",
@@ -180,7 +196,9 @@ const AdminBlog = () => {
       datePublished: { seconds: 1616161696 },
       comments: 453,
       views: 5432,
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
+      likes: 33,
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
     },
   ];
 
@@ -204,6 +222,19 @@ const AdminBlog = () => {
     setRowBlogData(rowBlogData.filter((blog) => blog.id !== id));
   };
 
+  const totalBlogs = rowBlogData.length;
+  const totalComments = rowBlogData.reduce(
+    (sum, blog) => sum + (blog.comments || 0),
+    0
+  );
+  const totalViews = rowBlogData.reduce(
+    (sum, blog) => sum + (blog.views || 0),
+    0
+  );
+  const totalLikes = rowBlogData.reduce(
+    (sum, blog) => sum + (blog.likes || 0),
+    0
+  );
   return (
     <>
       {!location.pathname.includes("/blog/details/") ? (
@@ -232,11 +263,30 @@ const AdminBlog = () => {
             </div>
           </header>
 
+          <div className="flex gap-4 p-4 bg-white shadow-md rounded-lg mb-4">
+            <div className="p-4 bg-gray-200 rounded-lg w-80 h-10 items-center justify-between flex">
+              <span className="text-lg font-bold">Total Blogs</span>
+              <span className="text-2xl">{formatNumber(totalBlogs)}</span>
+            </div>
+            <div className="p-4 bg-gray-200 rounded-lg w-80 h-10 items-center justify-between flex">
+              <span className="text-lg font-bold">Total Comments</span>
+              <span className="text-2xl">{formatNumber(totalComments)}</span>
+            </div>
+            <div className="p-4 bg-gray-200 rounded-lg w-80 h-10 items-center justify-between flex">
+              <span className="text-lg font-bold">Total Views</span>
+              <span className="text-2xl">{formatNumber(totalViews)}</span>
+            </div>
+            <div className="p-4 bg-gray-200 rounded-lg w-80 h-10 items-center justify-between flex">
+              <span className="text-lg font-bold">Total Likes</span>
+              <span className="text-2xl">{formatNumber(totalLikes)}</span>
+            </div>
+          </div>
+
           <div className="flex gap-4">
             {/* Blog Table */}
             <div
               className="ag-theme-quartz p-5 w-600"
-              style={{ height: "800px" }}
+              style={{ height: "700px" }}
             >
               <AgGridReact
                 rowData={rowBlogData}
@@ -314,37 +364,50 @@ const AdminBlog = () => {
             </div>
 
             {/* Recent Blogs Panel */}
-            <div className="w-full p-4 bg-white rounded-lg border-4 border-accent-2">
-              <h2 className="text-lg font-semibold mb-4">Blogs</h2>
+            <div className="w-full p-2 bg-white rounded-lg border-1 border-accent-2 h-full">
+              <div className="p-2 text-center w-full flex justify-end">
+                <motion.span
+                  initial={{ x: -200 }}
+                  animate={{ x: 50 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="w-full text-4xl font-bold font-avenir-black mb-4 text-primary inline-block"
+                >
+                  Blog
+                </motion.span>
+                <motion.span
+                  initial={{ x: 200 }}
+                  animate={{ x: -50 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="w-full text-4xl font-bold font-avenir-black mb-4 inline-block "
+                >
+                  Spot
+                </motion.span>
+              </div>
               <div
                 className="overflow-y-auto"
-                style={{ maxHeight: "700px", width: "400px" }}
+                style={{ maxHeight: "620px", width: "400px" }}
               >
-                {rowBlogData.slice(0, 20).map((blog) => (
+                {rowBlogData.slice(0, 10).map((blog) => (
                   <div
                     key={blog.id}
                     className="flex items-center gap-3 mb-4 p-3 bg-accent-2 rounded-lg shadow"
                   >
                     <img
-                      src={blog.image || "https://via.placeholder.com/150"}
-                      onError={(e) => {
-                        e.target.src = "https://via.placeholder.com/150";
-                      }}
-                      alt={blog.title}
+                      src={blog.image}
                       className="w-16 h-16 object-cover rounded-lg"
+                      alt={blog.title}
                     />
-
                     <div className="flex flex-col">
-                      <h3 className="text-sm font-bold text-white font-avenir-black">
+                      <h3 className="text-sm font-bold text-white">
                         {blog.title}
                       </h3>
                       <p className="text-xs text-secondary">by {blog.author}</p>
                       <div className="text-xs text-black flex gap-2 mt-1">
-                        <span>💬 {formatNumber(blog.comments)} comments</span>
-                        <span>👁 {formatNumber(blog.views)} views</span>
-
+                        <span>💬 {formatNumber(blog.comments)}</span>
+                        <span>👁 {formatNumber(blog.views)}</span>
+                        <span>❤️ {formatNumber(blog.likes)}</span>
                         <button
-                          className="font-avenir-black text-accent-1 text-xs"
+                          className="text-accent-1 text-xs"
                           onClick={() => handleEdit(blog)}
                         >
                           Edit
