@@ -6,6 +6,7 @@ import {
   refreshToken,
   getUserFromCookie,
 } from "../cookie";
+import OnLoadLayoutAnimation from "../../components/layout/OnLoadLayoutAnimation";
 
 const ProtectedRoutes = () => {
   const setServices = useStore((state) => state.setServices);
@@ -46,7 +47,7 @@ const ProtectedRoutes = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <OnLoadLayoutAnimation />;
   }
 
   return user ? <Outlet /> : <Navigate to="/login" />;
