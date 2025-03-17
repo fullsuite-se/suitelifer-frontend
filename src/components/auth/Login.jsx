@@ -112,6 +112,7 @@ const Login = () => {
       id="vanta-bg"
       className="w-screen h-screen flex justify-start items-center bg-white"
     >
+      {}
       <div
         className="bg-white mx-auto rounded-2xl p-10 py-16 border border-gray-200"
         style={{ width: "min(90%, 600px)" }}
