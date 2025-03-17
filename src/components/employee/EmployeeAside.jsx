@@ -7,8 +7,7 @@ import {
 } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import EventCard from "../events/EventCard";
-import config from "../../config";
-import axios from "axios";
+import api from "../../utils/axios";
 import { format } from "date-fns";
 
 const EmployeeAside = () => {
@@ -18,7 +17,7 @@ const EmployeeAside = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get(`${config.apiBaseUrl}/api/all-events`);
+        const response = await api.get("/api/all-events");
         setEvents(response.data);
 
         const dates = response.data.reduce((acc, current) => {

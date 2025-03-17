@@ -5,8 +5,7 @@ import DesktopNav from "../../components/home/DesktopNav";
 import JobCarousel from "../../components/careers/JobCarousel";
 import Footer from "../../components/Footer";
 import SpotifyEmbed from "../../components/careers/SpotifyEmbed";
-import config from "../../config";
-import axios from "axios";
+import api from "../../utils/axios";
 import JobCarouselVersion2 from "../../components/careers/JobCarouselVersion2";
 import { ChevronRightIcon } from "@heroicons/react/24/solid";
 import GuestIndustryTags from "../../components/careers/GuestIndustriesTags";
@@ -27,10 +26,7 @@ const CareersAll = () => {
   useEffect(() => {
     const fetchEpisodes = async () => {
       try {
-        const response = await axios.get(
-          `${config.apiBaseUrl}/api/latest-three-episodes`
-        );
-
+        const response = await api.get("/api/latest-three-episodes");
         setEpisodes(response.data.data);
       } catch (err) {
         console.log(err);
@@ -40,7 +36,7 @@ const CareersAll = () => {
 
     const fetchJobs = async () => {
       try {
-        const response = await axios.get(`${config.apiBaseUrl}/api/all-jobs`);
+        const response = await api.get("/api/all-jobs");
 
         setJobs(response.data.data);
       } catch (err) {

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../utils/axios";
 import JobPost from "./JobPost";
 import { Swiper, SwiperSlide, useSwiperSlide } from "swiper/react";
-import config from "../../config.js";
 
 import {
   Navigation,
@@ -64,9 +63,7 @@ export default function JobCarousel() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await axios.get(
-          `${config.apiBaseUrl}/api/all-jobs`
-        );
+        const response = await api.get("/api/all-jobs");
 
         setJobs(response.data.data);
       } catch (err) {
