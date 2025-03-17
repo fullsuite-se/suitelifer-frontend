@@ -154,13 +154,13 @@ export default function AdminJobListing() {
     try {
       let response;
       if (industryDetails.job_ind_id === null) {
-        // ADD JOB LISTING
+        // ADD INDUSTRY
         response = await api.post("/api/add-industry", {
           ...industryDetails,
           user_id: user.id,
         });
       } else {
-        // EDIT JOB LISTING
+        // EDIT INDUSTRY
         response = await api.post("/api/edit-industry", {
           ...industryDetails,
           user_id: user.id,
@@ -232,14 +232,14 @@ export default function AdminJobListing() {
     try {
       let response;
       if (setupDetails.setup_id === null) {
-        // ADD JOB LISTING
-        response = await axios.post(`${config.apiBaseUrl}/api/add-setup`, {
+        // ADD SETUP
+        response = await api.post("/api/add-setup", {
           ...setupDetails,
           user_id: user.id,
         });
       } else {
-        // EDIT JOB LISTING
-        response = await axios.post(`${config.apiBaseUrl}/api/edit-setup`, {
+        // EDIT SETUP
+        response = await api.post("/api/edit-setup", {
           ...setupDetails,
           user_id: user.id,
         });
@@ -488,23 +488,21 @@ export default function AdminJobListing() {
   const fetchIndustries = async () => {
     const response = (await api.get("/api/get-all-industries-hr")).data;
 
-    setIndustries((i) => (i = response.data));
+    setIndustries((i) => response.data);
     setRowIndustryData(response.data);
   };
 
   const fetchSetups = async () => {
     const response = (await api.get("/api/get-all-setups")).data;
 
-    console.log(response.data);
-
-    setSetups((s) => (s = response.data));
+    setSetups((s) => response.data);
     setRowSetupData(response.data);
   };
 
   const fetchJobListings = async () => {
     const response = (await api.get("/api/all-jobs")).data;
 
-    setJobListings((jl) => (jl = response.data));
+    setJobListings((jl) => response.data);
     setRowJobData(response.data);
   };
 
@@ -524,29 +522,12 @@ export default function AdminJobListing() {
     (value) => value.isOpen === 0
   ).length;
 
-  const handleEditIndustry = (industry) => {
-    setEditIndustryDetails(industry);
-    setIndustryModalIsOpen(true);
-  };
-
-  const handleDeleteIndustry = (index) => {
-    const updatedIndustries = industries.filter((_, i) => i !== index);
-    setIndustries(updatedIndustries);
-  };
-
-  const handleEditSetUp = (index) => {
-    setEditSetUp(index);
-    setSetupModalIsOpen(true);
-  };
-
-  const handleDeleteSetUp = (index) => {
-    setSetups(setups.filter((_, i) => i !== index));
-  };
   const handleToggle = () => {
     setSelectedOption((prev) =>
       prev === "Manage Industry" ? "Manage Set-Up" : "Manage Industry"
     );
   };
+
   return (
     <div className="flex flex-col p-2 mx-auto space-y-6">
       {/* Header */}
