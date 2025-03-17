@@ -3,9 +3,6 @@ import logofsfull from "../../assets/logos/logo-fs-full.svg";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import EditIcon from "@mui/icons-material/Edit";
@@ -23,6 +20,7 @@ import toast from "react-hot-toast";
 import { useStore } from "../../store/authStore";
 import JobListingModal from "../../components/admin/JobListingModal";
 import IndustryModal from "../../components/admin/IndustryModal";
+import SetupModal from "../../components/admin/SetupModal";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -54,12 +52,7 @@ export default function AdminJobListing() {
 
   // JOB FUNCTIONS
   const handleAddJobListingButtonClick = () => {
-    console.log(user);
-
-    setJobDetails((jd) => ({
-      ...jd,
-    }));
-    setJobModalIsOpen(true);
+    setJobModalIsOpen((io) => true);
   };
 
   const handleJobDetailsChange = (e) => {
@@ -152,10 +145,6 @@ export default function AdminJobListing() {
 
   // INDUSTRY FUNCTIONS
   const handleAddIndustryButtonClick = () => {
-    setIndustryDetails((id) => ({
-      ...id,
-      user_id: "81aba726-f897-11ef-a725-0af0d960a833",
-    }));
     setIndustryModalIsOpen((io) => true);
   };
 
@@ -205,7 +194,7 @@ export default function AdminJobListing() {
   };
 
   const handleIndustryDetailsChange = (e) => {
-    setIndustryDetails((ni) => ({ ...ni, [e.target.name]: e.target.value }));
+    setIndustryDetails((id) => ({ ...id, [e.target.name]: e.target.value }));
   };
 
   const handleIndustryModalClose = () => {
@@ -223,54 +212,80 @@ export default function AdminJobListing() {
   };
 
   // SETUP VARIABLES
+  const defaultSetupDetails = {
+    setup_id: null,
+    setup_name: "",
+  };
+
   const [setups, setSetups] = useState([]);
-  const [newSetup, setNewSetUp] = useState({});
+  const [setupDetails, setSetupDetails] = useState(defaultSetupDetails);
   const [setupModalIsOpen, setSetupModalIsOpen] = useState(false);
-  const [editSetupDetails, setEditSetUp] = useState(null);
 
   // SETUP FUNCTIONS
   const handleAddSetupButtonClick = () => {
-    setNewSetUp((ns) => ({
-      ...ns,
-      user_id: "81aba726-f897-11ef-a725-0af0d960a833",
-    }));
-    setSetupModalIsOpen(true);
+    setSetupModalIsOpen((io) => true);
   };
 
   const handleAddEditSetup = async (e) => {
     e.preventDefault();
-    if (!editSetupIsOpe) {
-      // ADD SETUP
-      if (newSetup.setup_name != "" && !setups.includes(newSetup)) {
-        console.log(newSetup.user_id);
-        const response = (
-          await axios.post(`${config.apiBaseUrl}/api/add-setup`, newSetup)
-        ).data;
-        if (response.success) {
-          toast.success(response.message);
-        } else {
-          toast.error(response.message);
-        }
-        setSetups((s) => [...s, newSetup]);
+    console.log("Setup Details:", setupDetails);
+
+    try {
+      let response;
+      if (setupDetails.setup_id === null) {
+        // ADD JOB LISTING
+        response = await axios.post(`${config.apiBaseUrl}/api/add-setup`, {
+          ...setupDetails,
+          user_id: user.id,
+        });
+      } else {
+        // EDIT JOB LISTING
+        response = await axios.post(`${config.apiBaseUrl}/api/edit-setup`, {
+          ...setupDetails,
+          user_id: user.id,
+        });
       }
-    } else {
-      // EDIT SETUP
-      // const updatedSetups = setups.map((item, index) =>
-      //   index === editSetupDetails ? newSetup : item
-      // );
-      // setSetups(updatedSetups);
-      // setEditSetUp(null);
+
+      if (response.data.success) {
+        toast.success(response.data.message);
+        if (setupDetails.setup_id === null) {
+          setSetups((s) => [...s, setupDetails]);
+        } else {
+          const updatedSetups = setups.map((setup) =>
+            setup.setupId === setupDetails.setup_id
+              ? { ...setupDetails }
+              : setup
+          );
+          setSetups((s) => updatedSetups);
+        }
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("An error occurred while processing the request.");
     }
-    handleSetupModalClose();
+
+    setSetupDetails((id) => defaultSetupDetails);
+    setSetupModalIsOpen((io) => false);
+    setDataUpdated((du) => !dataUpdated);
   };
 
-  const handleSetupNameChange = (e) => {
-    setNewSetUp((ns) => ({ ...ns, setup_name: e.target.value }));
+  const handleSetupDetailsChange = (e) => {
+    setSetupDetails((sd) => ({ ...sd, [e.target.name]: e.target.value }));
   };
 
   const handleSetupModalClose = () => {
-    setNewSetUp((ns) => {});
-    setSetupModalIsOpen(false);
+    setSetupDetails((ns) => defaultSetupDetails);
+    setSetupModalIsOpen((io) => false);
+  };
+
+  const handleEditSetupClick = (setup) => {
+    setSetupDetails((sd) => ({
+      setup_id: setup.setupId,
+      setup_name: setup.setupName,
+    }));
+    setSetupModalIsOpen((io) => true);
   };
 
   const [selectedOption, setSelectedOption] = useState("Manage Industry");
@@ -453,7 +468,9 @@ export default function AdminJobListing() {
           return (
             <button
               className="bg-transparent p-2 rounded w-8 h-8 flex justify-center items-center"
-              onClick={() => handleEditSetUp(params.data)}
+              onClick={() => {
+                handleEditSetupClick(params.data);
+              }}
             >
               <EditIcon />
             </button>
@@ -634,6 +651,15 @@ export default function AdminJobListing() {
         handleAddEditIndustry={handleAddEditIndustry}
       />
 
+      {/* SETUP ADD/EDIT MODAL */}
+      <SetupModal
+        setupModalIsOpen={setupModalIsOpen}
+        handleSetupModalClose={handleSetupModalClose}
+        setupDetails={setupDetails}
+        handleSetupDetailsChange={handleSetupDetailsChange}
+        handleAddEditSetup={handleAddEditSetup}
+      />
+
       {/* INDUSTRY/SETUP MANAGEMENT MODAL */}
       <Modal
         open={industryMgmtModalIsOpen}
@@ -671,13 +697,13 @@ export default function AdminJobListing() {
               <button
                 variant="outlined"
                 className="btn-primary flex"
-                onClick={() => setIndustryModalIsOpen(true)}
+                onClick={() => setIndustryModalIsOpen((io) => true)}
               >
                 ADD INDUSTRY
               </button>
             ) : (
               <button
-                onClick={() => setSetupModalIsOpen(true)}
+                onClick={() => setSetupModalIsOpen((io) => true)}
                 className="btn-primary"
               >
                 ADD SET-UP
@@ -723,48 +749,6 @@ export default function AdminJobListing() {
               />
             </div>
           )}
-        </Box>
-      </Modal>
-
-      {/* SETUP ADD/EDIT MODAL */}
-      <Modal open={setupModalIsOpen} onClose={handleSetupModalClose}>
-        <Box
-          className={`modal-container p-6 bg-white rounded-lg mx-auto mt-12 ${
-            isSmallScreen ? "w-full" : "sm:w-96"
-          }`}
-        >
-          <h2 className="font-semibold mb-4 text-lg text-center bg-white">
-            {editSetupDetails !== null ? "Edit Set-Up" : "Add Set-Up"}
-          </h2>
-          <form onSubmit={(e) => handleAddEditSetup(e)} className="space-y-4">
-            <TextField
-              label="Setup Name"
-              variant="outlined"
-              fullWidth
-              // value={newSetup.setup_name}
-              sx={{ bgcolor: "#fbe9e7" }}
-              onChange={(e) => handleSetupNameChange(e)}
-              placeholder="Enter setup name"
-            />
-
-            <div className="mt-6 flex justify-end gap-x-3">
-              <button
-                onClick={handleSetupModalClose}
-                variant="filled"
-                className="btn-light"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                variant="contained"
-                color="primary"
-                className="btn-primary"
-              >
-                {editSetupDetails !== null ? "Edit Set-Up" : "Add Set-Up"}
-              </button>
-            </div>
-          </form>
         </Box>
       </Modal>
     </div>
