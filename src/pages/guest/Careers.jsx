@@ -97,7 +97,7 @@ const Careers = () => {
             <section className=" relative hidden md:block lg:hidden">
               {/* blue at top */}
               <div className="">
-                <div className="absolute w-[8%] h-[20vw] max-w-[150px] max-h-[450px] -translate-x-[25px] lg:-translate-y-[5vw] -translate-y-[13vw] right-10 overflow-hidden z-50 bg-primary/5 rounded-b-4xl"></div>
+                <div className="absolute w-[8%] h-[20vw] max-w-[150px] max-h-[450px] -translate-x-[25px] lg:-translate-y-[5vw] -translate-y-[13vw] right-10 overflow-hidden z-10 bg-primary/5 rounded-b-4xl"></div>
               </div>
               {/* blue at top left */}
               <div className="">
@@ -117,6 +117,7 @@ const Careers = () => {
                 <div className="right-0 w-[15%] h-[5vw] rounded-l-2xl -translate-x-[] translate-y-[65vw]  absolute overflow-hidden -z-50  bg-primary/15 "></div>
               </div>
 
+              {/* green at bottom right */}
               <div className="">
                 <div className="right-0 w-[13%] h-[9vw] rounded-2xl -translate-x-[44vw] translate-y-[65vw]  absolute overflow-hidden -z-50  bg-secondary/10 "></div>
               </div>
@@ -186,7 +187,7 @@ const Careers = () => {
                 />
 
               */}
-              {/* DESKTOP background images */}
+              {/* TABLET + DESKTOP background images */}
               <section className="relative hidden md:block mx-auto">
                 {/* left image MAIN */}
                 <div className="relative w-full max-w-[400px] mx-auto">
@@ -213,8 +214,8 @@ const Careers = () => {
                 {/* upper right image 1 */}
                 <div className="relative w-full max-w-[400px] mx-auto">
                   <img
-                    className="right-0 absolute z-10 w-[18vw] max-w-[260px] -translate-y-40 translate-x-[7vw]
-                                rounded-3xl opacity-10 
+                    className="right-0 top-0 absolute z-10 w-[18vw] max-w-[260px] -translate-y-40 lg:-translate-y-50 translate-x-[7vw]
+                                rounded-b-3xl opacity-10 
                                 object-cover aspect-3/4"
                     src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     alt=""
@@ -225,7 +226,7 @@ const Careers = () => {
                 <div className="relative w-full max-w-[400px] mx-auto">
                   <img
                     className="right-0 absolute z-10 w-[15vw] max-w-[240px] -translate-y-none translate-x-[18vw] lg:translate-x-[24vw]
-                                rounded-3xl opacity-10 
+                                rounded-3xl opacity-5 
                                 object-cover aspect-3/4"
                     src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     alt=""
@@ -247,7 +248,7 @@ const Careers = () => {
                 <div className="relative w-full max-w-[400px] mx-auto">
                   <img
                     className="absolute right-0 z-10 w-[15vw] max-w-[200px] translate-y-85 translate-x-[4vw]
-                                rounded-3xl opacity-10 
+                                rounded-3xl opacity-5 
                                 object-cover aspect-3/4"
                     src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     alt=""
