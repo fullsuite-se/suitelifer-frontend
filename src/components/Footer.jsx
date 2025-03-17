@@ -7,12 +7,27 @@ import logoTagline from "../assets/logos/logo-fs-tagline.svg";
 import FacebookIcon from "../assets/logos/Facebook.jsx";
 import InstagramIcon from "../assets/logos/Instagram.jsx";
 import LinkedlnIcon from "../assets/logos/Linkedln.jsx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import FetchLogos from "./footer/LogoSlideShow.jsx";
-import { NavLink } from "react-router-dom";
+import { getUserFromCookie } from "../utils/cookie.js";
+
+const handleLoginBtn = async (navigate) => {
+  try {
+    const user = await getUserFromCookie();
+    if (user) {
+      navigate("/app/blogs-feed");
+    } else {
+      navigate("/login");
+    }
+  } catch (error) {
+    console.log(err);
+    navigate("/login");
+  }
+};
 
 const Footer = () => {
+  const navigate = useNavigate();
   return (
     <footer className="relative pb-5 footer-container">
       <section className="flex flex-col px-4 my-3 gap-3">
@@ -63,37 +78,42 @@ const Footer = () => {
               <div>
                 <ul className="flex items-center gap-4 list-none! -ml-5">
                   <li className="hover:scale-150 transition-all duration-100">
-                    <Link 
+                    <Link
                       target="_blank"
                       to={"https://facebook.com/thefullsuitepod"}
                     >
                       <FacebookIcon color={"#0097b2"} height="20" width="20" />
                     </Link>
                   </li>
-                 
-                  <li className="hover:scale-150 transition-all duration-100"><Link target="_blank" to={"https://instagram.com/thefullsuitepod"}>
-                    <InstagramIcon color={"#0097b2"} height="20" width="20" /></Link>
-                  </li>
-              
+
                   <li className="hover:scale-150 transition-all duration-100">
-                    <Link target="_blank" to={"https://www.linkedin.com/company/fullsuite"}>
+                    <Link
+                      target="_blank"
+                      to={"https://instagram.com/thefullsuitepod"}
+                    >
+                      <InstagramIcon color={"#0097b2"} height="20" width="20" />
+                    </Link>
+                  </li>
+
+                  <li className="hover:scale-150 transition-all duration-100">
+                    <Link
+                      target="_blank"
+                      to={"https://www.linkedin.com/company/fullsuite"}
+                    >
                       <LinkedlnIcon color={"#0097b2"} height="20" width="20" />
                     </Link>
                   </li>
                 </ul>
               </div>
-
-              
-              <button className="group relative px-6 py-2 mt-5 text-primary text-md font-medium rounded-full overflow-hidden lg:w-40 xl:w-50 xl:text-lg transition-all duration-100 ">
-  <Link className="no-underline" target="_blank" to={"/login"}>
-    <div className="absolute inset-0 bg-primary opacity-10 rounded-full transition-all duration-100 group-hover:opacity-100"></div>
-    <span className="relative group-hover:!text-white">Suitelifer Login</span>
-  </Link>
-</button>
-
-            
-
-
+              <button
+                className="group relative px-6 py-2 mt-5 text-primary text-md font-medium rounded-full overflow-hidden lg:w-40 xl:w-50 xl:text-lg transition-all duration-100 cursor-pointer"
+                onClick={() => handleLoginBtn(navigate)}
+              >
+                <div className="absolute inset-0 bg-primary opacity-10 rounded-full transition-all duration-100 group-hover:opacity-100"></div>
+                <span className="relative group-hover:!text-white">
+                  Suitelifer Login
+                </span>
+              </button>
             </div>
           </section>
         </div>
@@ -117,7 +137,8 @@ const Footer = () => {
           </p>
 
           <p className="footer-text text-white text-sm">
-            <span>Interested in availing our services?</span> Check this out!&nbsp;
+            <span>Interested in availing our services?</span> Check this
+            out!&nbsp;
             <span>
               <Link
                 to="https://fullsuite.ph"
@@ -150,27 +171,31 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-               
-              <Link target="_blank" to={"https://www.linkedin.com/company/fullsuite"}>
-                      <LinkedlnIcon color={"white"} height="20" width="20" />
-                    </Link>
+                <Link
+                  target="_blank"
+                  to={"https://www.linkedin.com/company/fullsuite"}
+                >
+                  <LinkedlnIcon color={"white"} height="20" width="20" />
+                </Link>
               </li>
             </ul>
           </div>
         </div>
         {/* dito allen! */}
         <div className="basis-sm pr-2 self-start">
-        <FetchLogos size={22}/>
+          <FetchLogos size={22} />
         </div>
       </section>
       <section className="pl-5 mb-3">
-      <button className="group relative px-6 py-2 mt-5 text-white text-md font-medium rounded-full overflow-hidden lg:w-40 xl:w-50 xl:text-lg transition-all duration-100 ">
-  <Link className="no-underline" target="_blank" to={"/login"}>
-    <div className="absolute inset-0 bg-white opacity-30 rounded-full transition-all duration-100 group-hover:opacity-100"></div>
-    <span className="relative group-hover:!text-white">Suitelifer Login</span>
-  </Link>
-</button>
-
+        <button
+          className="group relative px-6 py-2 mt-5 text-white text-md font-medium rounded-full overflow-hidden lg:w-40 xl:w-50 xl:text-lg transition-all duration-100 "
+          onClick={() => handleLoginBtn(navigate)}
+        >
+          <div className="absolute inset-0 bg-white opacity-30 rounded-full transition-all duration-100 group-hover:opacity-100"></div>
+          <span className="relative group-hover:!text-white">
+            Suitelifer Login
+          </span>
+        </button>
       </section>
 
       <section className="footer-links flex justify-between px-7 pt-4">
@@ -302,7 +327,7 @@ const Footer = () => {
         </div>
       </section>
       <section className="soc-logo-container hidden">
-       <FetchLogos size={32}/>
+        <FetchLogos size={32} />
       </section>
     </footer>
   );
