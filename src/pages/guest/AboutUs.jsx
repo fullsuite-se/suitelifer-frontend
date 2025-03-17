@@ -195,7 +195,7 @@ const AboutUs = () => {
           <h2 className="font-avenir-black lg:text-4xl! text-center m-0!">
             The suitelifer...
           </h2>
-          <div className="flex flex-col lg:flex-row lg:justify-center lg:mb-[10%] py-[5%] gap-6 lg:gap-10">
+          <div className="flex flex-col lg:flex-row lg:justify-center lg:mb-[7%] py-[5%] gap-6 lg:gap-10">
             <div className="flex justify-evenly lg:flex-none lg:gap-10">
               {/* 1 */}
               <CoreValueCard
