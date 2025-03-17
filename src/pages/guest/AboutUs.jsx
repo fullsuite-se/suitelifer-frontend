@@ -177,7 +177,7 @@ const AboutUs = () => {
             </p>
           </section>
 
-          <section className="flex gap-2 my-5 justify-end">
+          <section className="flex gap-2 py-7 justify-end">
             <div className="h-2 w-2 lg:w-3 lg:h-3 rounded-full opacity-30 bg-primary"></div>
             <div className="h-2 w-2 lg:w-3 lg:h-3 rounded-full opacity-50 bg-primary"></div>
             <div className="h-2 w-2 lg:w-3 lg:h-3 rounded-full opacity-100 bg-primary"></div>
@@ -190,13 +190,12 @@ const AboutUs = () => {
             ></div>
           </section>
         </section>
-        <div className="py-20"></div>
         {/* Our Core Values Section */}
         <section className="overflow-hidden relative">
           <h2 className="font-avenir-black lg:text-4xl! text-center m-0!">
             The suitelifer...
           </h2>
-          <div className="flex flex-col lg:flex-row lg:justify-center lg:mb-[10%] my-[5%] gap-6 lg:gap-10">
+          <div className="flex flex-col lg:flex-row lg:justify-center lg:mb-[10%] py-[5%] gap-6 lg:gap-10">
             <div className="flex justify-evenly lg:flex-none lg:gap-10">
               {/* 1 */}
               <CoreValueCard
