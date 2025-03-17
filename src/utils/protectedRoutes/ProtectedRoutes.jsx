@@ -10,6 +10,7 @@ import OnLoadLayoutAnimation from "../../components/layout/OnLoadLayoutAnimation
 
 const ProtectedRoutes = () => {
   const setServices = useStore((state) => state.setServices);
+  const services = useStore((state) => state.services);
   const user = useStore((state) => state.user);
   const setUser = useStore((state) => state.setUser);
   const [loading, setLoading] = useState(true);
@@ -46,15 +47,15 @@ const ProtectedRoutes = () => {
     fetchData();
   }, []);
 
-  if (loading) {
-    return (
-      <section className="w-dvw h-dvh">
-        <OnLoadLayoutAnimation />
-      </section>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <section className="w-dvw h-dvh">
+  //       <OnLoadLayoutAnimation />
+  //     </section>
+  //   );
+  // }
 
-  return user ? <Outlet /> : <Navigate to="/login" />;
+  return user && services ? <Outlet /> : <Navigate to="/login" />;
 };
 
 export default ProtectedRoutes;
