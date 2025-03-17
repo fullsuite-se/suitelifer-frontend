@@ -11,8 +11,7 @@ import { useTheme } from "@mui/material/styles";
 import EditIcon from "@mui/icons-material/Edit";
 import { ToggleButton } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
-import axios from "axios";
-import config from "../../config";
+import api from "../../utils/axios";
 
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { ModuleRegistry } from "@ag-grid-community/core";
@@ -74,13 +73,13 @@ export default function AdminJobListing() {
       let response;
       if (jobDetails.job_id === null) {
         // ADD JOB LISTING
-        response = await axios.post(`${config.apiBaseUrl}/api/add-job`, {
+        response = await api.post("/api/add-job", {
           ...jobDetails,
           user_id: user.id,
         });
       } else {
         // EDIT JOB LISTING
-        response = await axios.post(`${config.apiBaseUrl}/api/edit-job`, {
+        response = await api.post("/api/edit-job", {
           ...jobDetails,
           user_id: user.id,
         });
@@ -167,13 +166,13 @@ export default function AdminJobListing() {
       let response;
       if (industryDetails.job_ind_id === null) {
         // ADD JOB LISTING
-        response = await axios.post(`${config.apiBaseUrl}/api/add-industry`, {
+        response = await api.post("/api/add-industry", {
           ...industryDetails,
           user_id: user.id,
         });
       } else {
         // EDIT JOB LISTING
-        response = await axios.post(`${config.apiBaseUrl}/api/edit-industry`, {
+        response = await api.post("/api/edit-industry", {
           ...industryDetails,
           user_id: user.id,
         });
@@ -243,9 +242,7 @@ export default function AdminJobListing() {
       // ADD SETUP
       if (newSetup.setup_name != "" && !setups.includes(newSetup)) {
         console.log(newSetup.user_id);
-        const response = (
-          await axios.post(`${config.apiBaseUrl}/api/add-setup`, newSetup)
-        ).data;
+        const response = (await api.post("/api/add-setup", newSetup)).data;
         if (response.success) {
           toast.success(response.message);
         } else {
@@ -470,18 +467,14 @@ export default function AdminJobListing() {
   // API CALLS
 
   const fetchIndustries = async () => {
-    const response = (
-      await axios.get(`${config.apiBaseUrl}/api/get-all-industries-hr`)
-    ).data;
+    const response = (await api.get("/api/get-all-industries-hr")).data;
 
     setIndustries((i) => (i = response.data));
     setRowIndustryData(response.data);
   };
 
   const fetchSetups = async () => {
-    const response = (
-      await axios.get(`${config.apiBaseUrl}/api/get-all-setups`)
-    ).data;
+    const response = (await api.get("/api/get-all-setups")).data;
 
     console.log(response.data);
 
@@ -490,8 +483,7 @@ export default function AdminJobListing() {
   };
 
   const fetchJobListings = async () => {
-    const response = (await axios.get(`${config.apiBaseUrl}/api/all-jobs`))
-      .data;
+    const response = (await api.get("/api/all-jobs")).data;
 
     setJobListings((jl) => (jl = response.data));
     setRowJobData(response.data);
