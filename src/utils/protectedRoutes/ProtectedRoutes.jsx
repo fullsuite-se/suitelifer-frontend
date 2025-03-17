@@ -47,7 +47,11 @@ const ProtectedRoutes = () => {
   }, []);
 
   if (loading) {
-    return <OnLoadLayoutAnimation />;
+    return (
+      <section className="w-dvw h-dvh">
+        <OnLoadLayoutAnimation />
+      </section>
+    );
   }
 
   return user ? <Outlet /> : <Navigate to="/login" />;
