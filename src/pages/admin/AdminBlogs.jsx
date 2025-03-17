@@ -283,12 +283,37 @@ const AdminBlog = () => {
                 rowData={rowBlogData}
                 columnDefs={[
                   {
+                    headerName: "Image",
+                    field: "image",
+                    flex: 1,
+                    filter: "agTextColumnFilter",
+                    headerClass: "text-primary font-bold bg-tertiary",
+                    cellRenderer: (params) => {
+                      if (!params.value) {
+                        return <span>No Image</span>;
+                      }
+                      return (
+                        <img
+                          src={params.value}
+                          alt="News"
+                          style={{
+                            width: "100px",
+                            height: "100px",
+                            borderRadius: "5px",
+                            objectFit: "cover",
+                          }}
+                        />
+                      );
+                    },
+                  },
+                  {
                     headerName: "Title",
                     field: "title",
                     flex: 2,
                     filter: "agTextColumnFilter",
                     headerClass: "text-primary font-bold bg-tertiary",
                   },
+                  
                   {
                     headerName: "Author",
                     field: "author",
@@ -305,6 +330,30 @@ const AdminBlog = () => {
                       new Date(
                         params.data.datePublished.seconds * 1000
                       ).toLocaleString(),
+                  },
+                  {
+                    headerName: "Views",
+                    field: "views",
+                    flex: 1,
+                    filter: "agTextColumnFilter",
+                    valueGetter: (params) => formatNumber(params.data.views),
+                    headerClass: "text-primary font-bold bg-tertiary",
+                  },
+                  {
+                    headerName: "Likes",
+                    field: "likes",
+                    flex: 1,
+                    filter: "agTextColumnFilter",
+                    headerClass: "text-primary font-bold bg-tertiary",
+                    valueGetter: (params) => formatNumber(params.data.likes),
+                  },
+                  {
+                    headerName: "Comments",
+                    field: "comments",
+                    flex: 2,
+                    filter: "agTextColumnFilter",
+                    headerClass: "text-primary font-bold bg-tertiary",
+                    valueGetter: (params) => formatNumber(params.data.comments),
                   },
                   {
                     headerName: "Action",
@@ -352,23 +401,28 @@ const AdminBlog = () => {
                   filter: "agTextColumnFilter",
                   floatingFilter: true,
                   sortable: true,
-                }}
-                gridOptions={{
-                  getRowStyle: (params) => {
-                    if (params.node.rowIndex % 2 === 0) {
-                      return { background: "#ECF1E3", color: "black" };
-                    } else {
-                      return { background: "white", color: "black" };
-                    }
+                  cellStyle: {
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "left",
                   },
                 }}
+                rowHeight={100}
+                gridOptions={{
+                  getRowStyle: () => ({
+                    height: "100px",
+                    display: "flex",
+                    alignItems: "left",
+                    justifyContent: "center",
+                  }),
+                }}
                 pagination
-                paginationPageSize={15}
+                paginationPageSize={6}
               />
             </div>
 
             {/* Recent Blogs Panel */}
-            <div className="w-full p-2 bg-white rounded-lg border-2 border-accent-2 h-full">
+            {/* <div className="w-full p-2 bg-white rounded-lg border-1 border-secondary h-full">
               <div className="p-2 text-center w-full flex justify-end">
                 <motion.span
                   initial={{ x: -200 }}
@@ -394,7 +448,7 @@ const AdminBlog = () => {
                 {rowBlogData.slice(0, 10).map((blog) => (
                   <div
                     key={blog.id}
-                    className="flex items-center gap-3 mb-4 p-3 bg-white rounded-lg shadow border-2 border-accent-2"
+                    className="flex items-center gap-3 mb-4 p-3 bg-white rounded-lg shadow border-1 border-secondary"
                   >
                     <img
                       src={blog.image}
@@ -421,7 +475,7 @@ const AdminBlog = () => {
                   </div>
                 ))}
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Add/Edit Blog Modal */}
