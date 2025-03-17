@@ -12,6 +12,9 @@ import EditIcon from "@mui/icons-material/Edit";
 import logofsfull from "../../assets/logos/logo-fs-full.svg";
 import FileUploaderProvider from "../../components/admin/FileUploader";
 import TextEditor from "../../components/TextEditor";
+import PreviewIcon from "@mui/icons-material/Preview";
+import formatTimestamp from "../../components/TimestampFormatter";
+import FeedIcon from "@mui/icons-material/Feed";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -20,120 +23,324 @@ const AdminNews = () => {
   const [showModal, setShowModal] = useState(false);
   const [editingNews, setEditingNews] = useState(null);
   const [newNews, setNewNews] = useState({ title: "", author: "", image: "" });
-  const [rowNewsData, setRowNewsData] = useState([]);
+
+  const formatNumber = (num) => {
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
+    } else if (num >= 1000) {
+      return (num / 1000).toFixed(1).replace(/\.0$/, "") + "K";
+    }
+    return num;
+  };
 
   const addOrUpdateNews = () => {
     if (editingNews) {
       setRowNewsData((prevData) =>
-        prevData.map((news) => (news.id === editingNews.id ? { ...editingNews } : news))
+        prevData.map((news) =>
+          news.id === editingNews.id ? { ...news, ...editingNews } : news
+        )
       );
     } else {
       const newEntry = {
         ...newNews,
-        id: Date.now().toString(),
+        id: formatTimestamp,
         datePublished: { seconds: Math.floor(Date.now() / 1000) },
         comments: 0,
         views: 0,
+        likes: 0,
         image: newNews.image || "https://via.placeholder.com/150",
       };
       setRowNewsData((prevData) => [...prevData, newEntry]);
     }
+
     setShowModal(false);
     setEditingNews(null);
     setNewNews({ title: "", author: "", image: "" });
   };
 
   const handleEdit = (news) => {
-    setEditingNews(news);
+    setEditingNews({ ...news });
     setShowModal(true);
   };
 
   const handleDelete = (id) => {
-    setRowNewsData(rowNewsData.filter((news) => news.id !== id));
+    setRowNewsData((prevData) => prevData.filter((news) => news.id !== id));
   };
+
+  const newsData = [
+    {
+      id: "",
+      title: "Marvin Bautista Wanted for Estafa",
+      author: "Melbraei Santiago",
+      datePublished: { seconds: 1716161616 },
+      comments: 1023,
+      views: 1025489,
+      likes: 4567,
+      image:
+        "https://media.licdn.com/dms/image/v2/D5603AQGic1L2sEBlGg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1707479304553?e=1747267200&v=beta&t=ZjrI_w18mjT_NlZpz34dVSolaLog44oyvCmcaSiqMZk",
+    },
+    {
+      id: "",
+      title: "Marvin Bautista Adonis Hunk",
+      author: "Melbraei Santiago",
+      datePublished: { seconds: 1716161626 },
+      comments: 874,
+      views: 65823,
+      likes: 2398,
+      image:
+        "https://img.mensxp.com/media/content/2020/Sep/Male-Celebrities-Who-Have-Dabbled-With-Some-Really-Outlandish-1_5f62130740f8d.jpeg?w=780&h=524&cc=1",
+    },
+    {
+      id: "",
+      title: "Viva Film Hunk ",
+      author: "Melbraei Santiago",
+      datePublished: { seconds: 1716161636 },
+      comments: 567,
+      views: 34876,
+      likes: 9873,
+      image: "https://i.mydramalist.com/jBq4b_5f.jpg",
+    },
+    {
+      id: "",
+      title: "Daddy Daddy, Yes Papa",
+      author: "Melbraei Santiago",
+      datePublished: { seconds: 1716161646 },
+      comments: 1345,
+      views: 89234,
+      likes: 13567,
+      image:
+        "https://od2-image-api.abs-cbn.com/prod/editorImage/1735922206940SHOWTIME-JM-On-Unforgettable-Firsts-Main.jpg",
+    },
+    {
+      id: "",
+      title: "Blockchain Beyond Cryptocurrency: Real-World Applications",
+      author: "Melbraei Santiago",
+      datePublished: { seconds: 1716161656 },
+      comments: 432,
+      views: 54321,
+      likes: 6789,
+      image:
+        "https://www.vivaartistsagency.ph/wp-content/uploads/2020/01/ANNE-CURTIS.jpg",
+    },
+    {
+      id: "",
+      title: "The Evolution of Smart Homes and IoT Devices",
+      author: "Melbraei Santiago",
+      datePublished: { seconds: 1716161676 },
+      comments: 789,
+      views: 74256,
+      likes: 5432,
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
+    },
+  ];
+
+  const [rowNewsData, setRowNewsData] = useState(newsData);
+
+  const totalNews = rowNewsData.length;
+  const totalComments = rowNewsData.reduce(
+    (sum, news) => sum + (news.comments || 0),
+    0
+  );
+  const totalViews = rowNewsData.reduce(
+    (sum, news) => sum + (news.views || 0),
+    0
+  );
+  const totalLikes = rowNewsData.reduce(
+    (sum, news) => sum + (news.likes || 0),
+    0
+  );
 
   return (
     <>
       {!location.pathname.includes("/news/details/") ? (
         <>
           <header className="container flex h-12 items-center justify-between flex-wrap">
-            <div className="flex gap-4 items-center">
-              <button className="sm:hidden">
-                <AppsIcon sx={{ fontSize: "48px" }} />
-              </button>
+            <div className="hidden lg:flex md-flex gap-4 items-center ">
               <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
             </div>
-            <button className="btn-primary" onClick={() => setShowModal(true)}>
-              + Add News
-            </button>
+
+            <div className="flex">
+              {/* Button for desktop */}
+              <button
+                className="hidden sm:block btn-primary"
+                onClick={() => setShowModal(true)}
+              >
+                + Add News
+              </button>
+
+              {/* Icon Button for Mobile */}
+              <button
+                className="sm:hidden p-2 btn-primary"
+                onClick={() => setShowModal(true)}
+              >
+                <span>+</span> <FeedIcon />
+              </button>
+            </div>
           </header>
 
+          <div className="flex flex-col md:grid md:grid-cols-2 lg:flex-row gap-4 p-4 bg-white shadow-md rounded-lg mb-4">
+            <div className="p-4 bg-gray-200 rounded-lg w-full h-10 flex items-center justify-between">
+              <span className="text-lg font-bold">News</span>
+              <span className="text-2xl">{formatNumber(totalNews)}</span>
+            </div>
+            <div className="p-4 bg-gray-200 rounded-lg w-full h-10 flex items-center justify-between">
+              <span className="text-lg font-bold">Total Comments</span>
+              <span className="text-2xl">{formatNumber(totalComments)}</span>
+            </div>
+            <div className="p-4 bg-gray-200 rounded-lg w-full h-10 flex items-center justify-between">
+              <span className="text-lg font-bold">Total Views</span>
+              <span className="text-2xl">{formatNumber(totalViews)}</span>
+            </div>
+            <div className="p-4 bg-gray-200 rounded-lg w-full h-10 flex items-center justify-between">
+              <span className="text-lg font-bold">Total Likes</span>
+              <span className="text-2xl">{formatNumber(totalLikes)}</span>
+            </div>
+          </div>
+
           <div className="flex gap-4">
-            <div className="ag-theme-quartz p-5 w-600" style={{ height: "800px" }}>
+            <div
+              className="ag-theme-quartz p-5 w-600"
+              style={{ height: "800px" }}
+            >
               <AgGridReact
                 rowData={rowNewsData}
                 columnDefs={[
-                  { headerName: "Title", field: "title", flex: 2, filter: "agTextColumnFilter" },
-                  { headerName: "Author", field: "author", flex: 1, filter: "agTextColumnFilter" },
+                  {
+                    headerName: "Image",
+                    field: "image",
+                    flex: 1,
+                    filter: "agTextColumnFilter",
+                    headerClass: "text-primary font-bold bg-tertiary",
+                    cellRenderer: (params) => {
+                      if (!params.value) {
+                        return <span>No Image</span>;
+                      }
+                      return (
+                        <img
+                          src={params.value}
+                          alt="News"
+                          className="w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-md object-cover"
+                        />
+                      );
+                    },
+                  },
+                  {
+                    headerName: "Title",
+                    field: "title",
+                    flex: 2,
+                    filter: "agTextColumnFilter",
+                    headerClass: "text-primary font-bold bg-tertiary",
+                    valueGetter: (params) =>
+                      params.data.title.replace(/<[^>]*>/g, ""),
+                  },
+                  {
+                    headerName: "Author",
+                    field: "author",
+                    flex: 1,
+                    filter: "agTextColumnFilter",
+                    headerClass: "text-primary font-bold bg-tertiary",
+                    hide: window.innerWidth < 640, 
+                  },
                   {
                     headerName: "Date Published",
                     field: "datePublished",
                     flex: 1,
+                    headerClass: "text-primary font-bold bg-tertiary",
                     valueGetter: (params) =>
-                      new Date(params.data.datePublished.seconds * 1000).toLocaleString(),
+                      new Date(
+                        params.data.datePublished.seconds * 1000
+                      ).toLocaleString(),
+                    hide: window.innerWidth < 768, 
+                  },
+                  {
+                    headerName: "Views",
+                    field: "views",
+                    flex: 1,
+                    filter: "agTextColumnFilter",
+                    headerClass: "text-primary font-bold bg-tertiary",
+                    valueGetter: (params) => formatNumber(params.data.views),
+                  },
+                  {
+                    headerName: "Likes",
+                    field: "likes",
+                    flex: 1,
+                    filter: "agTextColumnFilter",
+                    headerClass: "text-primary font-bold bg-tertiary",
+                    valueGetter: (params) => formatNumber(params.data.likes),
+                  },
+                  {
+                    headerName: "Comments",
+                    field: "comments",
+                    flex: 1,
+                    filter: "agTextColumnFilter",
+                    headerClass: "text-primary font-bold bg-tertiary",
+                    valueGetter: (params) => formatNumber(params.data.comments),
+                    hide: window.innerWidth < 768, // Hide on tablets and smaller
                   },
                   {
                     headerName: "Action",
                     field: "action",
                     flex: 1,
+                    headerClass: "text-primary font-bold bg-tertiary",
                     cellRenderer: (params) => (
-                      <div style={{ display: "flex", gap: "10px" }}>
-                        <button className="btn-update" onClick={() => handleEdit(params.data)}>
+                      <div className="flex gap-2">
+                        <button
+                          className="btn-update"
+                          onClick={() => handleEdit(params.data)}
+                        >
                           <EditIcon />
                         </button>
-                        <button className="btn-delete" onClick={() => handleDelete(params.data.id)}>
+                        <button
+                          className="btn-delete"
+                          onClick={() => handleDelete(params.data.id)}
+                        >
                           <DeleteIcon />
+                        </button>
+                        <button
+                          className="btn-preview"
+                          onClick={() => navigate(`details/${params.data.id}`)}
+                        >
+                          <PreviewIcon />
                         </button>
                       </div>
                     ),
                   },
                 ]}
-                defaultColDef={{ filter: "agTextColumnFilter", floatingFilter: true, sortable: true }}
+                defaultColDef={{
+                  filter: "agTextColumnFilter",
+                  floatingFilter: true,
+                  sortable: true,
+                  cellStyle: {
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "left",
+                  },
+                }}
+                domLayout="autoHeight" 
+                className="overflow-x-auto"
+                rowHeight={80} 
                 pagination
-                paginationPageSize={15}
+                paginationPageSize={6}
               />
-            </div>
-
-            <div className="w-full p-4 bg-white rounded-lg border-4 border-accent-2">
-              <h2 className="text-lg font-semibold mb-4">Recent News</h2>
-              <div className="overflow-y-auto" style={{ maxHeight: "700px", width: "400px" }}>
-                {rowNewsData.slice(0, 20).map((news) => (
-                  <div key={news.id} className="flex items-center gap-3 mb-4 p-3 bg-accent-2 rounded-lg shadow">
-                    <img
-                      src={news.image || "https://via.placeholder.com/150"}
-                      onError={(e) => (e.target.src = "https://via.placeholder.com/150")}
-                      alt={news.title}
-                      className="w-16 h-16 object-cover rounded-lg"
-                    />
-                    <div className="flex flex-col">
-                      <h3 className="text-sm font-bold text-white font-avenir-black">{news.title}</h3>
-                      <p className="text-xs text-secondary">by {news.author}</p>
-                      <div className="text-xs text-black flex gap-2 mt-1">
-                        <span>💬 {news.comments} comments</span>
-                        <span>👁 {news.views} views</span>
-                        <button className="font-avenir-black text-accent-1 text-xs" onClick={() => handleEdit(news)}>
-                          Edit
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
 
           <Dialog open={showModal} onClose={() => setShowModal(false)}>
-            <DialogTitle>{editingNews ? "Edit News" : "Add New News"}</DialogTitle>
+            <div className="relative p-6">
+              {" "}
+              {/* Container with padding */}
+              {/* Close Button */}
+              <button
+                className="absolute top-2 right-2 p-2 rounded-full hover:bg-gray-200"
+                onClick={() => setShowModal(false)}
+              >
+                ✖
+              </button>
+            </div>
+            <DialogTitle className="w-full text-center">
+              {editingNews ? "Edit News" : "Add News"}
+            </DialogTitle>
             <DialogContent>
               <TextField
                 label="Author"
@@ -146,9 +353,26 @@ const AdminNews = () => {
                     : setNewNews({ ...newNews, author: e.target.value })
                 }
               />
-              <TextEditor titleChange={(value) => setNewNews({ ...newNews, title: value })} />
-              <FileUploaderProvider onUpload={(fileUrl) => setNewNews({ ...newNews, image: fileUrl })} />
-              <button className="btn-primary flex-end w-full" onClick={addOrUpdateNews}>
+              <TextEditor
+                titleChange={(value) =>
+                  editingNews
+                    ? setEditingNews({ ...editingNews, title: value })
+                    : setNewNews({ ...newNews, title: value })
+                }
+              />
+
+              <FileUploaderProvider
+                onUpload={(fileUrl) =>
+                  editingNews
+                    ? setEditingNews({ ...editingNews, image: fileUrl })
+                    : setNewNews({ ...newNews, image: fileUrl })
+                }
+              />
+
+              <button
+                className="btn-primary flex-end w-full"
+                onClick={addOrUpdateNews}
+              >
                 {editingNews ? "Update" : "Add"}
               </button>
             </DialogContent>
