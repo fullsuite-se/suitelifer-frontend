@@ -2,8 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 import TextEditor from "../TextEditor";
-import axios from "axios";
-import config from "../../config";
+import api from "../../utils/axios";
 
 const BlogCreate = () => {
   const navigate = useNavigate();
@@ -64,22 +63,16 @@ const BlogCreate = () => {
 
     const uploadBlog = async () => {
       try {
-        const responseBlog = await axios.post(
-          `${config.apiBaseUrl}/api/add-employee-blog`,
-          eBlogData,
-          {
-            withCredentials: true,
-          }
+        const responseBlog = await api.post(
+          "/api/add-employee-blog",
+          eBlogData
+        );
+        const eblogId = responseBlog.data.eblog_id;
+        const responseImg = await api.post(
+          `/api/upload-image/blogs/${eblogId}`,
+          imagesData
         );
 
-        const eblogId = responseBlog.data.eblog_id;
-        const responseImg = await axios.post(
-          `${config.apiBaseUrl}/api/upload-image/blogs/${eblogId}`,
-          imagesData,
-          {
-            withCredentials: true,
-          }
-        );
         console.log("Blog uploaded successfully:", responseBlog.data);
         console.log("File uploaded successfully:", responseImg.data);
       } catch (error) {

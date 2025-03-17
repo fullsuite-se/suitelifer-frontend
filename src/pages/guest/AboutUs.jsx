@@ -3,8 +3,7 @@ import Footer from "../../components/Footer";
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
-import axios from "axios";
-import config from "../../config";
+import api from "../../utils/axios";
 import CoreValueCard from "../../components/about-us/CoreValueCard";
 import bgMaggieMobile from "../../assets/images/bg-mobile-chair-cutout.png";
 import bgMaggieDesktop from "../../assets/images/bg-desktop-chair-cutout.png";
@@ -24,7 +23,7 @@ import CoreValue01 from "../../assets/icons/core-value-01";
 import BackToTop from "../../components/BackToTop";
 import FocusedAthleteIcon from "../../assets/icons/FocusedAthleteIcon";
 import TeamPlayerIcon from "../../assets/icons/TeamPlayerIcon";
-import UnderstoodIcon from '../../assets/icons/UnderstoodIcon';
+import UnderstoodIcon from "../../assets/icons/UnderstoodIcon";
 import WorkLifeHarmonyIcon from "../../assets/icons/WorkLifeHarmonyIcon";
 import UpholdsIcon from "../../assets/icons/UpholdsIcon";
 
@@ -41,9 +40,7 @@ const AboutUs = () => {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const response = await axios.get(
-          `${config.apiBaseUrl}/api/get-about-us`
-        );
+        const response = await api.get("/api/get-about-us");
         console.log(response.data.data);
 
         setContent(response.data.data);
