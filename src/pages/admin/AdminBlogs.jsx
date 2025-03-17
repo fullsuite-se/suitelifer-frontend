@@ -231,10 +231,7 @@ const AdminBlog = () => {
       {!location.pathname.includes("/blog/details/") ? (
         <>
           <header className="container flex h-12 items-center justify-between flex-wrap">
-            <div className="flex gap-4 items-center">
-              <button className="sm:hidden">
-                <AppsIcon sx={{ fontSize: "48px" }} />
-              </button>
+            <div className="hidden lg:flex md-flex gap-4 items-center ">
               <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
             </div>
             <div className="flex gap-2">
@@ -254,20 +251,20 @@ const AdminBlog = () => {
             </div>
           </header>
 
-          <div className="flex gap-4 p-4 bg-white shadow-md rounded-lg mb-4">
-            <div className="p-4 bg-gray-200 rounded-lg w-80 h-10 items-center justify-between flex">
-              <span className="text-lg font-bold">Total Blogs</span>
+          <div className="flex flex-col md:grid md:grid-cols-2 lg:flex-row gap-4 p-4 bg-white shadow-md rounded-lg mb-4">
+            <div className="p-4 bg-gray-200 rounded-lg w-full h-10 flex items-center justify-between">
+              <span className="text-lg font-bold">News</span>
               <span className="text-2xl">{formatNumber(totalBlogs)}</span>
             </div>
-            <div className="p-4 bg-gray-200 rounded-lg w-80 h-10 items-center justify-between flex">
+            <div className="p-4 bg-gray-200 rounded-lg w-full h-10 flex items-center justify-between">
               <span className="text-lg font-bold">Total Comments</span>
               <span className="text-2xl">{formatNumber(totalComments)}</span>
             </div>
-            <div className="p-4 bg-gray-200 rounded-lg w-80 h-10 items-center justify-between flex">
+            <div className="p-4 bg-gray-200 rounded-lg w-full h-10 flex items-center justify-between">
               <span className="text-lg font-bold">Total Views</span>
               <span className="text-2xl">{formatNumber(totalViews)}</span>
             </div>
-            <div className="p-4 bg-gray-200 rounded-lg w-80 h-10 items-center justify-between flex">
+            <div className="p-4 bg-gray-200 rounded-lg w-full h-10 flex items-center justify-between">
               <span className="text-lg font-bold">Total Likes</span>
               <span className="text-2xl">{formatNumber(totalLikes)}</span>
             </div>
@@ -313,7 +310,7 @@ const AdminBlog = () => {
                     filter: "agTextColumnFilter",
                     headerClass: "text-primary font-bold bg-tertiary",
                   },
-                  
+
                   {
                     headerName: "Author",
                     field: "author",
@@ -480,7 +477,19 @@ const AdminBlog = () => {
 
           {/* Add/Edit Blog Modal */}
           <Dialog open={showModal} onClose={() => setShowModal(false)}>
-            <DialogTitle>
+            <div className="relative p-6">
+              {" "}
+              {/* Container with padding */}
+              {/* Close Button */}
+              <button
+                className="absolute top-2 right-2 p-2 rounded-full hover:bg-gray-200"
+                onClick={() => setShowModal(false)}
+              >
+                ✖ 
+              </button>
+            </div>
+
+            <DialogTitle className="w-full text-center">
               {editingBlog ? "Edit Blog" : "Add New Blog"}
             </DialogTitle>
             <DialogContent>

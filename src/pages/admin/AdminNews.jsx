@@ -13,6 +13,8 @@ import logofsfull from "../../assets/logos/logo-fs-full.svg";
 import FileUploaderProvider from "../../components/admin/FileUploader";
 import TextEditor from "../../components/TextEditor";
 import PreviewIcon from "@mui/icons-material/Preview";
+import formatTimestamp from "../../components/TimestampFormatter";
+import FeedIcon from "@mui/icons-material/Feed";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -41,7 +43,7 @@ const AdminNews = () => {
     } else {
       const newEntry = {
         ...newNews,
-        id: Date.now().toString(),
+        id: formatTimestamp,
         datePublished: { seconds: Math.floor(Date.now() / 1000) },
         comments: 0,
         views: 0,
@@ -72,7 +74,7 @@ const AdminNews = () => {
       author: "Melbraei Santiago",
       datePublished: { seconds: 1716161616 },
       comments: 1023,
-      views: 25489,
+      views: 1025489,
       likes: 4567,
       image:
         "https://media.licdn.com/dms/image/v2/D5603AQGic1L2sEBlGg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1707479304553?e=1747267200&v=beta&t=ZjrI_w18mjT_NlZpz34dVSolaLog44oyvCmcaSiqMZk",
@@ -154,31 +156,43 @@ const AdminNews = () => {
       {!location.pathname.includes("/news/details/") ? (
         <>
           <header className="container flex h-12 items-center justify-between flex-wrap">
-            <div className="flex gap-4 items-center">
-              <button className="sm:hidden">
-                <AppsIcon sx={{ fontSize: "48px" }} />
-              </button>
+            <div className="hidden lg:flex md-flex gap-4 items-center ">
               <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
             </div>
-            <button className="btn-primary" onClick={() => setShowModal(true)}>
-              + Add News
-            </button>
+
+            <div className="flex">
+              {/* Button for desktop */}
+              <button
+                className="hidden sm:block btn-primary"
+                onClick={() => setShowModal(true)}
+              >
+                + Add News
+              </button>
+
+              {/* Icon Button for Mobile */}
+              <button
+                className="sm:hidden p-2 btn-primary"
+                onClick={() => setShowModal(true)}
+              >
+                <span>+</span> <FeedIcon />
+              </button>
+            </div>
           </header>
 
-          <div className="flex gap-4 p-4 bg-white shadow-md rounded-lg mb-4">
-            <div className="p-4 bg-gray-200 rounded-lg w-80 h-10 items-center justify-between flex">
+          <div className="flex flex-col md:grid md:grid-cols-2 lg:flex-row gap-4 p-4 bg-white shadow-md rounded-lg mb-4">
+            <div className="p-4 bg-gray-200 rounded-lg w-full h-10 flex items-center justify-between">
               <span className="text-lg font-bold">News</span>
               <span className="text-2xl">{formatNumber(totalNews)}</span>
             </div>
-            <div className="p-4 bg-gray-200 rounded-lg w-80 h-10 items-center justify-between flex">
+            <div className="p-4 bg-gray-200 rounded-lg w-full h-10 flex items-center justify-between">
               <span className="text-lg font-bold">Total Comments</span>
               <span className="text-2xl">{formatNumber(totalComments)}</span>
             </div>
-            <div className="p-4 bg-gray-200 rounded-lg w-80 h-10 items-center justify-between flex">
+            <div className="p-4 bg-gray-200 rounded-lg w-full h-10 flex items-center justify-between">
               <span className="text-lg font-bold">Total Views</span>
               <span className="text-2xl">{formatNumber(totalViews)}</span>
             </div>
-            <div className="p-4 bg-gray-200 rounded-lg w-80 h-10 items-center justify-between flex">
+            <div className="p-4 bg-gray-200 rounded-lg w-full h-10 flex items-center justify-between">
               <span className="text-lg font-bold">Total Likes</span>
               <span className="text-2xl">{formatNumber(totalLikes)}</span>
             </div>
@@ -192,6 +206,25 @@ const AdminNews = () => {
               <AgGridReact
                 rowData={rowNewsData}
                 columnDefs={[
+                  {
+                    headerName: "Image",
+                    field: "image",
+                    flex: 1,
+                    filter: "agTextColumnFilter",
+                    headerClass: "text-primary font-bold bg-tertiary",
+                    cellRenderer: (params) => {
+                      if (!params.value) {
+                        return <span>No Image</span>;
+                      }
+                      return (
+                        <img
+                          src={params.value}
+                          alt="News"
+                          className="w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-md object-cover"
+                        />
+                      );
+                    },
+                  },
                   {
                     headerName: "Title",
                     field: "title",
@@ -207,6 +240,7 @@ const AdminNews = () => {
                     flex: 1,
                     filter: "agTextColumnFilter",
                     headerClass: "text-primary font-bold bg-tertiary",
+                    hide: window.innerWidth < 640, 
                   },
                   {
                     headerName: "Date Published",
@@ -217,6 +251,7 @@ const AdminNews = () => {
                       new Date(
                         params.data.datePublished.seconds * 1000
                       ).toLocaleString(),
+                    hide: window.innerWidth < 768, 
                   },
                   {
                     headerName: "Views",
@@ -241,40 +276,15 @@ const AdminNews = () => {
                     filter: "agTextColumnFilter",
                     headerClass: "text-primary font-bold bg-tertiary",
                     valueGetter: (params) => formatNumber(params.data.comments),
+                    hide: window.innerWidth < 768, // Hide on tablets and smaller
                   },
-                  {
-                    headerName: "Image",
-                    field: "image",
-                    flex: 1,
-                    filter: "agTextColumnFilter",
-                    headerClass: "text-primary font-bold bg-tertiary",
-                    cellRenderer: (params) => {
-                      if (!params.value) {
-                        return <span>No Image</span>;
-                      }
-                      return (
-                        <img
-                          src={params.value}
-                          alt="News"
-                          style={{
-                            width: "100%",
-                            maxWidth: "1000px", 
-                            height: "auto", 
-                            borderRadius: "5px",
-                            objectFit: "cover",
-                          }}
-                        />
-                      );
-                    },
-                  },
-
                   {
                     headerName: "Action",
                     field: "action",
                     flex: 1,
                     headerClass: "text-primary font-bold bg-tertiary",
                     cellRenderer: (params) => (
-                      <div style={{ display: "flex", gap: "10px" }}>
+                      <div className="flex gap-2">
                         <button
                           className="btn-update"
                           onClick={() => handleEdit(params.data)}
@@ -288,14 +298,10 @@ const AdminNews = () => {
                           <DeleteIcon />
                         </button>
                         <button
-                          className=""
-                          onClick={() => {
-                            navigate(`details/${params.data.id}`);
-                          }}
+                          className="btn-preview"
+                          onClick={() => navigate(`details/${params.data.id}`)}
                         >
-                          <span className="text-sm">
-                            <PreviewIcon />
-                          </span>
+                          <PreviewIcon />
                         </button>
                       </div>
                     ),
@@ -311,15 +317,9 @@ const AdminNews = () => {
                     justifyContent: "left",
                   },
                 }}
-                rowHeight={100}
-                gridOptions={{
-                  getRowStyle: () => ({
-                    height: "100px",
-                    display: "flex",
-                    alignItems: "left",
-                    justifyContent: "center",
-                  }),
-                }}
+                domLayout="autoHeight" 
+                className="overflow-x-auto"
+                rowHeight={80} 
                 pagination
                 paginationPageSize={6}
               />
@@ -327,8 +327,19 @@ const AdminNews = () => {
           </div>
 
           <Dialog open={showModal} onClose={() => setShowModal(false)}>
-            <DialogTitle>
-              {editingNews ? "Edit News" : "Add New News"}
+            <div className="relative p-6">
+              {" "}
+              {/* Container with padding */}
+              {/* Close Button */}
+              <button
+                className="absolute top-2 right-2 p-2 rounded-full hover:bg-gray-200"
+                onClick={() => setShowModal(false)}
+              >
+                ✖
+              </button>
+            </div>
+            <DialogTitle className="w-full text-center">
+              {editingNews ? "Edit News" : "Add News"}
             </DialogTitle>
             <DialogContent>
               <TextField

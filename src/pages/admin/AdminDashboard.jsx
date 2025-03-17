@@ -86,26 +86,44 @@ const AdminDashboard = () => {
     <div className="max-h-100vh bg-white p-4">
       {/* Header */}
       <header className="container flex h-12 items-center justify-between flex-wrap">
-        <div className="flex gap-4 items-center">
-          <button className="sm:hidden">
-            <AppsIcon sx={{ fontSize: "48px" }} />
-          </button>
+        <div className="hidden lg:flex md-flex gap-4 items-center ">
           <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
         </div>
+        
+        <div className="flex">
+              {/* Button for desktop */}
+              <button
+                className="hidden sm:block btn-primary"
+                // onClick={() => setShowModal(true)}
+              >
+                + Job Listing
+              </button>
+              <button
+                className="hidden sm:block btn-primary"
+                // onClick={() => setShowModal(true)}
+              >
+                + Industry
+              </button>
 
-        <div className="flex gap-2">
-          <button className="btn-primary">
-            <span className="mr-2">+</span> JOB LISTING
-          </button>
-          <button className="btn-primary">
-            <span className="mr-2">+</span> INDUSTRY
-          </button>
-        </div>
+              {/* Icon Button for Mobile */}
+              <button
+                className="sm:hidden p-2 btn-primary"
+                // onClick={() => setShowModal(true)}
+              >
+                <span>+</span> <AppsIcon />
+              </button>
+              <button
+                className="sm:hidden p-2 btn-primary"
+                // onClick={() => setShowModal(true)}
+              >
+                <span>+</span> <AppsIcon />
+              </button>
+            </div>
       </header>
 
-      <div className="border-primary p-4 rounded-2xl shadow-md justify-between gap-4 mx-auto mb-6 text-center bg-primary flex h-30">
+      <div className="border-primary p-4 rounded-2xl shadow-md mx-auto mb-6 text-center bg-primary flex flex-col gap-4 sm:grid sm:grid-cols-2 lg:flex lg:flex-row lg:justify-between">
         <button
-          className="p-4 rounded-lg shadow text-black text-xl font-semibold bg-white w-100"
+          className="p-4 rounded-lg shadow text-black text-xl font-semibold bg-white w-full lg:w-48"
           onClick={() =>
             handleDataChange(
               employeesData,
@@ -119,7 +137,7 @@ const AdminDashboard = () => {
         </button>
 
         <button
-          className="p-4 rounded-lg shadow text-black text-xl font-semibold bg-white w-100"
+          className="p-4 rounded-lg shadow text-black text-xl font-semibold bg-white w-full lg:w-48"
           onClick={() =>
             handleDataChange(applicationsData, "Total Applications", "#0097b2")
           }
@@ -127,35 +145,26 @@ const AdminDashboard = () => {
           <span className="text-3xl">917</span>
           <div className="text-sm text-gray-500">Total Applications</div>
         </button>
-        
-    
-       
-         
-          
-            <button
-              className="bg-secondary p-4 rounded-lg text-black-700 text-lg font-semibold w-45"
-              onClick={() =>
-                handleDataChange(openJobsData, "Open Job Listings", "#0097b2")
-              }
-            >
-              <span className="text-2xl">14</span>
-              <div className="text-sm">Open Job</div>
-            </button>
 
-            <button
-              className="bg-accent-2 p-4 rounded-lg text-white text-lg font-semibold w-45"
-              onClick={() =>
-                handleDataChange(
-                  closedJobsData,
-                  "Closed Job Listings",
-                  "#0097b2"
-                )
-              }
-            >
-              <span className="text-2xl">5</span>
-              <div className="text-sm">Closed Job</div>
-            </button>
+        <button
+          className="bg-secondary p-4 rounded-lg text-black-700 text-lg font-semibold w-full lg:w-48"
+          onClick={() =>
+            handleDataChange(openJobsData, "Open Job Listings", "#0097b2")
+          }
+        >
+          <span className="text-2xl">14</span>
+          <div className="text-sm">Open Job</div>
+        </button>
 
+        <button
+          className="bg-accent-2 p-4 rounded-lg text-white text-lg font-semibold w-full lg:w-48"
+          onClick={() =>
+            handleDataChange(closedJobsData, "Closed Job Listings", "#0097b2")
+          }
+        >
+          <span className="text-2xl">5</span>
+          <div className="text-sm">Closed Job</div>
+        </button>
       </div>
 
       {/* Chart Display */}
