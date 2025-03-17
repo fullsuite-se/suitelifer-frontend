@@ -30,6 +30,10 @@ export const refreshToken = async () => {
     return response.data.accessToken;
   } catch (error) {
     console.error("Failed to refresh token:", error);
+    if (error.response && error.response.status === 401) {
+      console.warn("Refresh token expired. Logging out...");
+      return null;
+    }
     return null;
   }
 };
