@@ -39,7 +39,6 @@ const Careers = () => {
       const response = await api.get("/api/get-all-industries");
       setIndustries((i) => response.data.data);
       console.log(response.data.data);
-      
     } catch (err) {
       console.log(err);
     }
@@ -59,12 +58,11 @@ const Careers = () => {
 
   const fetchFilteredJobListing = () => {
     //TODO Filtered Job Listing
-  }
+  };
 
   useEffect(() => {
-    window.scrollTo(0, 0);
     fetchFilteredJobListing();
-  })
+  }, [filter]);
 
   return (
     <>
