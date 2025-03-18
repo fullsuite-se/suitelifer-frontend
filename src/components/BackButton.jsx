@@ -6,9 +6,10 @@ const BackButton = ({ backPath, type, jobId }) => {
     <NavLink
       to={backPath}
       state={{ jobId }}
+      className="!no-underline"
     >
-      <button className="flex items-center no-underline gap-2 text-primary !text-[12px] md:text-base font-semibold transition active:font-avenir-black">
-        <ArrowLeft size={15} /> <span className="mt-1 no-underline">Back to {type}</span>
+      <button className="flex items-center gap-2 text-primary !text-[12px] md:text-base font-semibold transition active:font-avenir-black">
+        <ArrowLeft size={15} /> <span className="mt-1">Back to {type}</span>
       </button>
     </NavLink>
   );
