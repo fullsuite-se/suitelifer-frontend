@@ -6,6 +6,8 @@ import ArticleDetails from "../../components/news/ArticleDetails";
 
 
 const BlogDetails = () => {
+  window.scroll(0, 0);
+
   const { id } = useParams();
   const blogItem = BlogList.find((blog) => blog.id.toString() === id);
   const relatedBlogs = BlogList.filter(

@@ -11,6 +11,8 @@ import { toSlug } from "../../utils/slugUrl";
 import ArticleDetails from "../../components/news/ArticleDetails";
 import NewsList from "../../components/news/NewsList";
 const NewsDetails = () => {
+  window.scroll(0, 0);
+
   const { id } = useParams();
   const newsItem = NewsList.find((news) => news.id.toString() === id);
   const relatedNews = NewsList.filter(

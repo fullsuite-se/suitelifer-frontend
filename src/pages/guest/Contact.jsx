@@ -16,6 +16,8 @@ import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
 import { useEffect, useState } from "react";
 const Contact = () => {
+  window.scroll(0, 0);
+
   const fadeInUp = {
     hidden: { opacity: 0, y: 50 },
     visible: {

@@ -16,6 +16,8 @@ import { DefaultStepper } from "../../components/careers/ApplicationFormStepper"
 import FileUploadIcon from "../../assets/icons/file-upload";
 
 const CongratsApplicationForm = () => {
+  window.scroll(0, 0);
+
   const [testLink, setTestLink] = useState(" www.testgorilla.com/assessment");
 
   return (
