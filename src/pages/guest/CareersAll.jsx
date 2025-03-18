@@ -124,26 +124,25 @@ const CareersAll = () => {
                     <div className="absolute top-4 right-4 text-primary text-xl cursor-pointer group-hover:text-white">
                       &#8599;
                     </div>
-                    {job.isOpen === 0 || job.isOpen === false ? (
-                      <span className="absolute top-4 left-5 bg-red-100 text-red-700 text-xs font-bold px-7 py-1 rounded-xl">
-                        CLOSED
-                      </span>
-                    ) : null}
+
                     <p
-                      className={`text-xl ${
-                        job.isOpen === 0 || job.isOpen === false
-                          ? "mt-7"
-                          : "mt-3"
-                      } -mb-3 font-avenir-black text-gray-900 group-hover:text-white `}
+                      className={`mt-3 -mb-2 font-avenir-black text-gray-900 group-hover:text-white `}
                     >
                       {job.jobTitle}
                     </p>
-                    <span className="text-sm text-gray-400 uppercase group-hover:text-white group-hover:opacity-50">
+
+                    <div className="flex items-center gap-2 text-sm text-gray-400 uppercase group-hover:text-white group-hover:opacity-50">
                       <span className="text-secondary font-avenir-black">
                         |
-                      </span>{" "}
-                      {job.industryName}
-                    </span>
+                      </span>
+                      <span>{job.industryName}</span>
+                      {job.isOpen === 0 || job.isOpen === false ? (
+                        <span className="bg-red-100 text-red-700 text-xs font-bold px-3 py-1 rounded-xl">
+                          CLOSED
+                        </span>
+                      ) : null}
+                    </div>
+
                     <span className="text-primary font-avenir-black text-sm group-hover:text-white">
                       {job.employmentType}, {job.setupName}
                     </span>

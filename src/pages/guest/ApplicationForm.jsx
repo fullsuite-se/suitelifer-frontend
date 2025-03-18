@@ -88,7 +88,7 @@ const ApplicationForm = () => {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:mt-5">
                 <div>
                   <label className="block text-gray-700 font-avenir-black">
                     Birthdate<span className="text-primary">*</span>
@@ -97,7 +97,7 @@ const ApplicationForm = () => {
                     type="date"
                     name="birthdate"
                     required
-                    className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="text-primary w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
                 <div className="md:col-span-1">
@@ -128,7 +128,7 @@ const ApplicationForm = () => {
                   </div>
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:mt-5">
                 <div>
                   <label className="block text-gray-700 font-avenir-black">
                     Email Address<span className="text-primary">*</span>
@@ -152,28 +152,26 @@ const ApplicationForm = () => {
                     maxLength="9"
                     pattern="[0-9]{9}"
                     placeholder="Enter 9-digit number"
-                    className="w-full p-3 pl-18 border-none rounded-md  text-gray-700   bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full p-3 pl-14 border-none rounded-md  text-gray-700   bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
                   />
-                  <div className="absolute left-3 top-[65%] -translate-y-1/2  text-gray-700  flex items-center  space-x-1 font-avenir-black">
-                    <span>🇵🇭</span>
-                    <span>+639</span>
+                  <div className="absolute left-3 top-[65%]   -translate-y-1/2  text-gray-700  flex items-center  space-x-1 font-avenir-black">
+                    <span>🇵🇭&nbsp;</span>
+                    <span>09</span>
                   </div>
                 </div>
               </div>
-              <div className="md:col-span-2">
+              <div className="md:col-span-2 mt-10">
                 <label className="block text-gray-700 font-avenir-black">
                   How did you discover Fullsuite?
                   <span className="text-primary">*</span>
                 </label>
                 <div className="flex flex-col gap-3 mt-3">
                   {[
-                    "Indeed",
-                    "Jobstreet",
-                    "Referral",
-                    "Career fairs (university caravan, startup mixers, etc.)",
-                    "Social Media (Facebook, Instagram or LinkedIn)",
+                    "Through Referral",
+                    "Website",
+                    "Social Media",
                     "Podcast",
-                    "Fullsuite website",
+                    "Career Fair (Startup Caravan, University Visit, etc.)",
                   ].map((option) => (
                     <label key={option} className="flex items-center">
                       <input
@@ -183,7 +181,7 @@ const ApplicationForm = () => {
                         required
                         className="text-primary focus:ring-primary"
                         onChange={() =>
-                          setShowReferralInput(option === "Referral")
+                          setShowReferralInput(option === "Through Referral")
                         }
                       />
                       <span className="ml-2 text-gray-700">{option}</span>
@@ -205,7 +203,7 @@ const ApplicationForm = () => {
                   </div>
                 )}
               </div>
-              <div className="md:col-span-2">
+              {/* <div className="md:col-span-2">
                 <label className="block text-gray-700 font-avenir-black">
                   What are you applying for?
                   <span className="text-primary">*</span>
@@ -391,8 +389,8 @@ const ApplicationForm = () => {
                     </label>
                   ))}
                 </div>
-              </div>
-              <div>
+              </div> */}
+              <div className="mt-10">
                 <label className="block text-gray-700 font-avenir-black mb-3">
                   Upload your Curriculum Vitae here:{" "}
                   <span className="text-primary">*</span>
@@ -406,17 +404,17 @@ const ApplicationForm = () => {
               </div>
               <div className="py-5"></div>
               <button
-                type="button"
-                className="w-full font-avenir-black bg-gray-300 text-white py-3 rounded-md hover:bg-gray-400 transition"
-              >
-                Cancel
-              </button>{" "}
-              <button
                 type="submit"
                 className="w-full font-avenir-black bg-primary text-white py-3 rounded-md hover:bg-primary/90 transition"
               >
                 SUBMIT APPLICATION
               </button>
+              <button
+                type="button"
+                className="w-full   text-primary py-3 rounded-md hover:bg-primary/10 transition"
+              >
+                CANCEL
+              </button>{" "}
             </form>
           </div>
         </main>
