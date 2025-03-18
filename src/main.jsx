@@ -1,5 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { HelmetProvider } from "@dr.pogodin/react-helmet";
 
 // base folder contains the base styles
 import "./css/base/theme.css";
@@ -21,6 +22,13 @@ import App from "./App.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <App />
+    {/* TODO by Hernani: Use the original package of React Helmet when it supports React 19
+      See:
+      (Alternative) https://www.npmjs.com/package/@dr.pogodin/react-helmet
+      (Original) https://www.npmjs.com/package/react-helmet-async
+  */}
+    <HelmetProvider>
+      <App />
+    </HelmetProvider>
   </StrictMode>
 );
