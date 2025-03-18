@@ -1,50 +1,60 @@
-import React from "react";
+import React, { useState } from "react";
 import logoFull from "../../assets/logos/logo-fs-full.svg";
 import { XMarkIcon } from "@heroicons/react/20/solid";
-import { ArrowRightCircleIcon } from "@heroicons/react/24/outline";
-import IconBlogs from "../../assets/icons/IconBlogs";
-import IconNewspaper from "../../assets/icons/IconNewspaper";
 import { NavLink } from "react-router-dom";
-import IconMyBlogs from "../../assets/icons/IconMyBlogs";
-import IconPersonaTest from "../../assets/icons/IconPersonaTest";
-import IconThreads from "../../assets/icons/IconThreads";
-import IconWorkshops from "../../assets/icons/IconWorkshops";
-import IconEvents from "../../assets/icons/IconEvents";
+import {
+  ChartBarIcon,
+  ChatBubbleBottomCenterTextIcon,
+  NewspaperIcon,
+  CalendarIcon,
+  Bars3BottomLeftIcon,
+  ArrowRightCircleIcon,
+  BriefcaseIcon,
+  Square2StackIcon,
+  WrenchScrewdriverIcon,
+  ClipboardIcon,
+  UserIcon,
+  ArrowPathRoundedSquareIcon,
+  ChevronDownIcon,
+} from "@heroicons/react/20/solid";
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+} from "@headlessui/react";
+import { useStore } from "../../store/authStore";
+import { ModalLogout } from "../modals/ModalLogout";
 
-const sideBarLinks = [
+const iconMap = {
+  dashboard: { default: ChartBarIcon },
+  joblistings: { default: BriefcaseIcon },
+  blogs: { default: ChatBubbleBottomCenterTextIcon },
+  news: { default: NewspaperIcon },
+  events: { default: CalendarIcon },
+  contents: { default: Bars3BottomLeftIcon },
+};
+
+const regularServices = [
+  { feature_name: "Blogs Feed", path: "blogs-feed", icon: NewspaperIcon },
+  { feature_name: "My Blogs", path: "my-blogs", icon: ClipboardIcon },
   {
-    title: "Blogs Feed",
-    icon: IconBlogs,
-    path: "/employee/blogs-feed",
+    feature_name: "Threads",
+    path: "threads",
+    icon: ArrowPathRoundedSquareIcon,
   },
+  { feature_name: "Events", path: "company-events", icon: CalendarIcon },
+  { feature_name: "Workshops", path: "worshops", icon: WrenchScrewdriverIcon },
   {
-    title: "My Blogs",
-    icon: IconMyBlogs,
-    path: "/employee/my-blogs",
-  },
-  {
-    title: "Threads",
-    icon: IconThreads,
-    // path: "/employee/my-blogs",
-  },
-  {
-    title: "Events",
-    icon: IconEvents,
-    // path: "/employee/my-blogs",
-  },
-  {
-    title: "Workshops",
-    icon: IconWorkshops,
-    // path: "/employee/my-blogs",
-  },
-  {
-    title: "Personality Test",
-    icon: IconPersonaTest,
-    // path: "/employee/my-blogs",
+    feature_name: "Personality Test",
+    path: "personality-test",
+    icon: UserIcon,
   },
 ];
 
 const EmployeeDrawer = ({ onClose }) => {
+  const services = useStore((state) => state.services) || [];
+  const [isOpenModal, setIsOpenModal] = useState(false);
+
   const handleClose = () => {
     if (onClose) {
       onClose("-100%");
@@ -53,6 +63,10 @@ const EmployeeDrawer = ({ onClose }) => {
 
   return (
     <nav className="lg:hidden relative pb-10">
+      <ModalLogout
+        isOpen={isOpenModal}
+        handleClose={() => setIsOpenModal(false)}
+      />
       <section className="flex justify-between pt-5">
         <div className="w-20 h-auto">
           <img src={logoFull} alt="fullsuite" className="w-full h-full" />
@@ -60,35 +74,87 @@ const EmployeeDrawer = ({ onClose }) => {
         <XMarkIcon className="w-9 h-9 rounded-full p-1" onClick={handleClose} />
       </section>
       <section className="">
-        <ul className="list-none!">
-          {sideBarLinks.map((link, index) => {
-            return (
-              <li key={index}>
-                <NavLink
-                  to={`${link.path}`}
-                  className={({ isActive }) =>
-                    isActive
-                      ? "text-primary p-3 flex justify-center items-center gap-3 no-underline! transition-colors duration-200"
-                      : "text-gray-400 p-3 justify-center flex items-center gap-3 no-underline! transition-colors duration-200 hover:bg-blue-50"
-                  }
-                  onClick={handleClose}
-                >
-                  <link.icon
-                    color={"currentColor"}
-                    height={"20"}
-                    width={"20"}
-                  />
-                  <span className="no-underline! font-avenir-black text-sm">
-                    {link.title}
-                  </span>
-                </NavLink>
-              </li>
-            );
-          })}
-        </ul>
-        <section className="mt-5 text-sm flex justify-center items-center gap-2">
-          <ArrowRightCircleIcon className="w-5 h-5" />
-          <span>Sign out</span>
+        <section className=" flex-1 ">
+          <ul className="list-none!">
+            {regularServices.map((service, index) => {
+              return (
+                <li key={index}>
+                  <NavLink
+                    to={`/app/${service.path}`}
+                    className={({ isActive }) =>
+                      isActive
+                        ? "bg-primary text-white transition-none! p-3 rounded-lg flex items-center gap-3 no-underline!"
+                        : "bg-white text-primary transition-none! p-3 rounded-lg flex items-center gap-3 no-underline! hover:bg-blue-50"
+                    }
+                    onClick={handleClose}
+                  >
+                    {service ? (
+                      <service.icon className="size-4 group-hover:hidden" />
+                    ) : (
+                      <Square2StackIcon className="size-4 group-hover:hidden" />
+                    )}
+                    <span className="no-underline! font-avenir-black">
+                      {service.feature_name}
+                    </span>
+                  </NavLink>
+                </li>
+              );
+            })}
+            {services.length !== 0 && (
+              <Disclosure as="div" defaultOpen={true}>
+                <DisclosureButton className="group cursor-pointer flex w-full items-center justify-between">
+                  <p className="font-avenir-black text-primary p-3">
+                    Admin Tools
+                  </p>
+                  <ChevronDownIcon className="size-5 text-primary  group-data-[open]:rotate-180" />
+                </DisclosureButton>
+                <DisclosurePanel className="mt-1 ml-5 flex flex-col">
+                  {services.map(({ feature_name }, index) => {
+                    if (!feature_name) return null;
+                    const path = feature_name.toLowerCase().replace(" ", "");
+                    const iconKey = feature_name
+                      .toLowerCase()
+                      .replace(/\s+/g, "");
+                    const icons = iconMap[iconKey] || null;
+                    return (
+                      <li key={index}>
+                        <NavLink
+                          key={path}
+                          to={`/app/${path}`}
+                          className={({ isActive }) =>
+                            isActive
+                              ? "bg-primary text-white p-3 transition-none! rounded-lg flex items-center gap-3 no-underline!"
+                              : "bg-white text-primary p-3 transition-none! rounded-lg flex items-center gap-3 no-underline! hover:bg-blue-50"
+                          }
+                        >
+                          {icons ? (
+                            <icons.default className="size-4 group-hover:hidden" />
+                          ) : (
+                            <Square2StackIcon className="size-4 group-hover:hidden" />
+                          )}
+                          <span className="no-underline! font-avenir-black">
+                            {feature_name}
+                          </span>
+                        </NavLink>
+                      </li>
+                    );
+                  })}
+                </DisclosurePanel>
+              </Disclosure>
+            )}
+          </ul>
+        </section>
+        <section
+          className="mt-5 mx-auto cursor-pointer text-sm flex justify-center items-center gap-2 w-min"
+          onClick={() => {
+            setIsOpenModal(true);
+            handleClose();
+          }}
+        >
+          <span className="text-primary font-avenir-black">Logout</span>
+          <button className=" cursor-pointer">
+            <ArrowRightCircleIcon className="w-6 h-6 text-primary" />
+          </button>
         </section>
       </section>
     </nav>
