@@ -9,19 +9,18 @@ const FileUploaderProvider = ({ onUpload, children }) => {
   const [attachments, setAttachments] = useState([]);
   const [showModal, setShowModal] = useState(false);
 
-  // Handle File Upload
+
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    const fileURLs = files.map((file) => URL.createObjectURL(file)); // Convert files to URLs
+    const fileURLs = files.map((file) => URL.createObjectURL(file)); 
 
     setAttachments([...attachments, ...files]);
 
     if (onUpload) {
-      onUpload(fileURLs[0]); // Send first uploaded file to parent component
+      onUpload(fileURLs[0]); 
     }
   };
 
-  // Handle File Delete
   const handleDelete = (index) => {
     setAttachments(attachments.filter((_, i) => i !== index));
   };
@@ -30,7 +29,7 @@ const FileUploaderProvider = ({ onUpload, children }) => {
     <FileUploadContext.Provider value={{ attachments }}>
       {children}
       <div>
-        {/* Hidden File Input */}
+
         <input
           type="file"
           multiple
@@ -39,7 +38,7 @@ const FileUploaderProvider = ({ onUpload, children }) => {
           id="file-upload"
         />
 
-        {/* Upload Button */}
+
         <div className="flex mt-4">
           <label
             htmlFor="file-upload"
@@ -49,7 +48,6 @@ const FileUploaderProvider = ({ onUpload, children }) => {
           </label>
         </div>
 
-        {/* Display Uploaded Files */}
         <div
           style={{
             marginTop: "10px",

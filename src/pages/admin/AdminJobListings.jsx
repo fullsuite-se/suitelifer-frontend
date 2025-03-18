@@ -24,38 +24,19 @@ import SetupModal from "../../components/admin/SetupModal";
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 export default function AdminJobListing() {
-  // USER DETAILS
-  const user = useStore((state) => state.user);
-
   // JOB LISTINGS VARIABLES
-  const defaultJobDetails = {
-    job_id: null,
-    title: "",
-    industry_id: "",
-    industry_name: "",
-    employment_type: "",
-    setup_id: "",
-    description: "",
-    salary_min: 0,
-    salary_max: 0,
-    responsibility: "",
-    requirement: "",
-    preferred_qualification: "",
-    is_open: "",
-    is_shown: "",
-  };
-
   const [jobListings, setJobListings] = useState([]);
-  const [jobDetails, setJobDetails] = useState(defaultJobDetails);
+  const [newJobListing, setNewJobListing] = useState({});
   const [jobModalIsOpen, setJobModalIsOpen] = useState(false);
+  const [editJobDetails, setEditJobDetails] = useState(null);
 
   // JOB FUNCTIONS
   const handleAddJobListingButtonClick = () => {
     setJobModalIsOpen((io) => true);
   };
 
-  const handleJobDetailsChange = (e) => {
-    setJobDetails((jd) => ({ ...jd, [e.target.name]: e.target.value }));
+  const handleNewJobListingChange = (e) => {
+    setNewJobListing((ni) => ({ ...ni, [e.target.name]: e.target.value }));
   };
 
   const handleAddEditJobListing = async (e) => {
@@ -333,7 +314,7 @@ export default function AdminJobListing() {
         headerClass: "text-primary font-bold bg-tertiary",
       },
       {
-        headerName: "Setup",
+        headerName: "Set-Up",
         field: "setupName",
         flex: 1,
         filter: "agTextColumnFilter",
@@ -357,9 +338,7 @@ export default function AdminJobListing() {
           return (
             <button
               className="bg-transparent p-2 rounded w-8 h-8 flex justify-center items-center"
-              onClick={() => {
-                handleEditJobClick(params.data);
-              }}
+              onClick={() => handleEditJob(params.data)}
             >
               <EditIcon />
             </button>
@@ -391,7 +370,7 @@ export default function AdminJobListing() {
       {
         headerName: "Assessment URL",
         field: "assessmentUrl",
-        flex: 1,
+        flex: 2,
         filter: "agTextColumnFilter",
         headerClass: "text-primary font-bold bg-tertiary",
       },
@@ -406,9 +385,13 @@ export default function AdminJobListing() {
       {
         headerName: "Date Created",
         field: "createdAt",
-        flex: 1,
+        flex: 2,
         filter: "agTextColumnFilter",
         headerClass: "text-primary font-bold bg-tertiary",
+        valueGetter: (params) =>
+          params.data?.createdAt
+            ? new Date(params.data.createdAt).toLocaleString()
+            : "N/A",
       },
       {
         headerName: "Action",
@@ -484,7 +467,6 @@ export default function AdminJobListing() {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   // API CALLS
-
   const fetchIndustries = async () => {
     const response = (await api.get("/api/get-all-industries-hr")).data;
 
