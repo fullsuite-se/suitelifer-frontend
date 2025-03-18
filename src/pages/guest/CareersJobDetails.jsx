@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import api from "../../utils/axios.js";
 import config from "../../config.js";
 import MobileNav from "../../components/home/MobileNav.jsx";
@@ -7,7 +7,7 @@ import TabletNav from "../../components/home/TabletNav.jsx";
 import DesktopNav from "../../components/home/DesktopNav.jsx";
 import { toSlug } from "../../utils/slugUrl.js";
 import BackToTop from "../../components/BackToTop.jsx";
-import OnLoadLayoutAnimation from '../../components/layout/OnLoadLayoutAnimation';
+import OnLoadLayoutAnimation from "../../components/layout/OnLoadLayoutAnimation";
 import PageMeta from "../../components/layout/PageMeta.jsx";
 
 const CareersJobDetails = () => {
@@ -16,6 +16,7 @@ const CareersJobDetails = () => {
   const [jobDetails, setJobDetails] = useState(null);
   const location = useLocation();
   const { jobId } = location.state;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchJobDetails = async () => {
@@ -78,7 +79,7 @@ const CareersJobDetails = () => {
             <p className="text-primary mb-2">
               | {jobDetails.industryName.toUpperCase()}
             </p>
-            <p className="font-avenir-black text-primary mb-2">
+            <p className="text-primary mb-2">
               {jobDetails.employmentType}, {jobDetails.setupName}
             </p>
             {jobDetails.salaryMin != null && jobDetails.salaryMin != 0 && (
@@ -162,18 +163,17 @@ const CareersJobDetails = () => {
                 <br />
               </>
             )}
-
-            <Link
-              className="1fr flex no-underline"
-              to={`application-form/${jobId}/${toSlug(jobDetails.jobTitle)}`}
+            <button
+              className="cursor-pointer mx-auto font-avenir-black bg-primary py-2 text-white rounded-2xl min-w-52 mb-10"
+              type="button"
+              onClick={() => {
+                navigate(
+                  `/careers/application-form/${jobId}/${toSlug(jobDetails.jobTitle)}`
+                );
+              }}
             >
-              <button
-                className="mx-auto font-avenir-black bg-primary py-2 text-white rounded-2xl min-w-52 mb-10"
-                type="button"
-              >
-                APPLY NOW
-              </button>
-            </Link>
+              APPLY NOW
+            </button>
           </div>
         ) : (
           <section className="grid place-conte`nt-center h-dvh">

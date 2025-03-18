@@ -11,6 +11,8 @@ import {
 } from "@mui/material";
 import moment from "moment";
 import EventCalendar from "./../../components/admin/EventCalendar";
+import logofsfull from "../../assets/logos/logo-fs-full.svg";
+import EventIcon from '@mui/icons-material/Event';
 
 const AdminEvents = () => {
   const [openDialog, setOpenDialog] = useState(false);
@@ -80,11 +82,31 @@ const AdminEvents = () => {
 
   return (
     <div className="bg-white p-2">
-      <header className="flex justify-between items-center h-16">
-        <button className="btn-primary" onClick={() => setIsAddModalOpen(true)}>
-          + EVENT
-        </button>
-      </header>
+
+
+      <header className="container flex h-12 items-center justify-between flex-wrap">
+            <div className="hidden lg:flex md-flex gap-4 items-center ">
+              <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
+            </div>
+
+            <div className="flex">
+              {/* Button for desktop */}
+              <button
+                className="hidden sm:block btn-primary"
+                onClick={() => setIsAddModalOpen(true)}
+              >
+                + Add Event
+              </button>
+
+              {/* Icon Button for Mobile */}
+              <button
+                className="sm:hidden p-2 btn-primary"
+                onClick={() => setIsAddModalOpen(true)}
+              >
+                <span>+</span> <EventIcon/>
+              </button>
+            </div>
+          </header>
 
       <TextField label="Search Events" fullWidth margin="normal" />
 

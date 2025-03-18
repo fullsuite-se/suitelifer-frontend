@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
-import JobCarousel from "../../components/careers/JobCarousel";
 import Footer from "../../components/Footer";
 import SpotifyEmbed from "../../components/careers/SpotifyEmbed";
 import api from "../../utils/axios";
@@ -10,39 +9,67 @@ import JobCarouselVersion2 from "../../components/careers/JobCarouselVersion2";
 import { ChevronRightIcon } from "@heroicons/react/24/solid";
 import GuestIndustryTags from "../../components/careers/GuestIndustriesTags";
 import dotsLine from "../../assets/images/socials-dots-line.svg";
-import bgPodcast from "../../assets/images/bg-career-podcast.svg";
-import bgHero from "../../assets/images/bg-hero-careers.svg";
-import bgHeroTablet from "../../assets/images/bg-tablet-careers.svg";
 import BackToTop from "../../components/BackToTop";
 import PageMeta from "../../components/layout/PageMeta";
 
 const Careers = () => {
-  const [spotifyEpisodes, setEpisodes] = useState([]);
   const [jobs, setJobs] = useState([]);
-  window.scrollTo(0, 0);
-  
+  const fetchJobs = async () => {
+    try {
+      const response = await api.get("/api/all-jobs");
+      setJobs((j) => response.data.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const [spotifyEpisodes, setEpisodes] = useState([]);
+  const fetchEpisodes = async () => {
+    try {
+      const response = await api.get("/api/latest-three-episodes");
+      setEpisodes((e) => response.data.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const [industries, setIndustries] = useState([]);
+  const fetchIndustries = async () => {
+    try {
+      const response = await api.get("/api/get-all-industries");
+      setIndustries((i) => response.data.data);
+      console.log(response.data.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
-    const fetchEpisodes = async () => {
-      try {
-        const response = await api.get("/api/latest-three-episodes");
-        setEpisodes(response.data.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
+    window.scrollTo(0, 0);
     fetchEpisodes();
-
-    const fetchJobs = async () => {
-      try {
-        const response = await api.get("/api/all-jobs");
-        setJobs(response.data.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
     fetchJobs();
+    fetchIndustries();
   }, []);
+
+  const [filter, setFilter] = useState("All");
+  const handleFilterChange = (filter) => {
+    setFilter((f) => filter);
+  };
+
+  const fetchFilteredJobs = async () => {
+    try {
+      const response = await api.get(`/api/all-open-jobs/${filter}`);
+      console.log(filter);
+
+      setJobs((j) => response.data.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    filter === "All" ? fetchJobs() : fetchFilteredJobs();
+  }, [filter]);
 
   return (
     <>
@@ -324,8 +351,12 @@ const Careers = () => {
               </div>
               {/* Filter */}
               <div className="flex justify-center py-[3%] pl-[5%] pb-[5%]">
-                <div className="w-full max-w-3xl flex justify-center">
-                  <GuestIndustryTags />
+                <div className="w-full max-w-full flex justify-center">
+                  <GuestIndustryTags
+                    industries={industries}
+                    filter={filter}
+                    handleFilterChange={handleFilterChange}
+                  />
                 </div>
               </div>
             </div>
@@ -333,8 +364,18 @@ const Careers = () => {
             <div className="relative hidden lg:block">
               <div className="absolute overflow-hidden -translate-y-35 -z-50 w-[10%] h-30 bg-primary/5 rounded-r-4xl"></div>
             </div>
-            {/* <div className="">View all jobs</div> */}
-            <JobCarouselVersion2 jobs={jobs} />
+            {jobs.length === 0 ? (
+              <div className="grid place-content-center px-5 text-center text-2xl min-h-100 my-7">
+                <p>
+                  No job listings are available for this industry{" "}
+                  <span className="font-avenir-black">at the moment</span>—but
+                  stay tuned!
+                </p>
+                <p>Exciting <span className="text-primary font-avenir-black">opportunities</span> may be coming soon.</p>
+              </div>
+            ) : (
+              <JobCarouselVersion2 jobs={jobs} />
+            )}
           </section>
 
           <div className="-translate-y-27">

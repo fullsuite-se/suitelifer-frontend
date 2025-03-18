@@ -6,69 +6,67 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  Legend,
 } from "recharts";
-import AppsIcon from "@mui/icons-material/Apps";
 import logofsfull from "../../assets/logos/logo-fs-full.svg";
 
 const applicationsData = [
-  { month: 0, value: 2400 },
-  { month: 1, value: 2500 },
-  { month: 2, value: 2400 },
-  { month: 3, value: 2600 },
-  { month: 4, value: 2500 },
-  { month: 5, value: 2400 },
-  { month: 6, value: 2300 },
-  { month: 7, value: 2500 },
-  { month: 8, value: 2700 },
-  { month: 9, value: 2800 },
-  { month: 10, value: 2900 },
-  { month: 11, value: 2800 },
+  { month: "Jan", value: 1000 },
+  { month: "Feb", value: 123 },
+  { month: "Mar", value: 554 },
+  { month: "Apr", value: 167 },
+  { month: "May", value: 518 },
+  { month: "Jun", value: 20 },
+  { month: "Jul", value: 2002 },
+  { month: "Aug", value: 664 },
+  { month: "Sep", value: 26 },
+  { month: "Oct", value: 888 },
+  { month: "Nov", value: 30 },
+  { month: "Dec", value: 72 },
 ];
 
 const employeesData = [
-  { month: 0, value: 50 },
-  { month: 1, value: 52 },
-  { month: 2, value: 54 },
-  { month: 3, value: 56 },
-  { month: 4, value: 58 },
-  { month: 5, value: 60 },
-  { month: 6, value: 62 },
-  { month: 7, value: 64 },
-  { month: 8, value: 66 },
-  { month: 9, value: 68 },
-  { month: 10, value: 70 },
-  { month: 11, value: 72 },
-];
+  { month: "Jan", value: 7 },
+  { month: "Feb", value: 10 },
+  { month: "Mar", value: 8 },
+  { month: "Apr", value: 3 },
+  { month: "May", value: 2 },
+  { month: "Jun", value: 6 },
+  { month: "Jul", value: 8 },
+  { month: "Aug", value: 1 },
+  { month: "Sep", value: 5 },
+  { month: "Oct", value: 7 },
+  { month: "Nov", value: 2 },
+  { month: "Dec", value: 4 },
+];  
 
 const openJobsData = [
-  { month: 0, value: 10 },
-  { month: 1, value: 12 },
-  { month: 2, value: 14 },
-  { month: 3, value: 16 },
-  { month: 4, value: 18 },
-  { month: 5, value: 20 },
-  { month: 6, value: 22 },
-  { month: 7, value: 24 },
-  { month: 8, value: 26 },
-  { month: 9, value: 28 },
-  { month: 10, value: 30 },
-  { month: 11, value: 32 },
+  { month: "Jan", value: 1 },
+  { month: "Feb", value: 12 },
+  { month: "Mar", value: 4 },
+  { month: "Apr", value: 1 },
+  { month: "May", value: 1 },
+  { month: "Jun", value: 5  },
+  { month: "Jul", value: 2 },
+  { month: "Aug", value: 2 },
+  { month: "Sep", value: 26 },
+  { month: "Oct", value: 8 },
+  { month: "Nov", value: 3 },
+  { month: "Dec", value: 2 },
 ];
 
 const closedJobsData = [
-  { month: 0, value: 5 },
-  { month: 1, value: 6 },
-  { month: 2, value: 7 },
-  { month: 3, value: 8 },
-  { month: 4, value: 9 },
-  { month: 5, value: 10 },
-  { month: 6, value: 11 },
-  { month: 7, value: 12 },
-  { month: 8, value: 13 },
-  { month: 9, value: 14 },
-  { month: 10, value: 15 },
-  { month: 11, value: 16 },
+  { month: "Jan", value: 10 },
+  { month: "Feb", value: 1 },
+  { month: "Mar", value: 14 },
+  { month: "Apr", value: 6 },
+  { month: "May", value: 8 },
+  { month: "Jun", value: 20 },
+  { month: "Jul", value: 2 },
+  { month: "Aug", value: 24 },
+  { month: "Sep", value: 6 },
+  { month: "Oct", value: 8 },
+  { month: "Nov", value: 3 },
+  { month: "Dec", value: 2 },
 ];
 
 const AdminDashboard = () => {
@@ -89,41 +87,65 @@ const AdminDashboard = () => {
         <div className="hidden lg:flex md-flex gap-4 items-center ">
           <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
         </div>
-        
-        <div className="flex">
-              {/* Button for desktop */}
-              <button
-                className="hidden sm:block btn-primary"
-                // onClick={() => setShowModal(true)}
-              >
-                + Job Listing
-              </button>
-              <button
-                className="hidden sm:block btn-primary"
-                // onClick={() => setShowModal(true)}
-              >
-                + Industry
-              </button>
 
-              {/* Icon Button for Mobile */}
-              <button
-                className="sm:hidden p-2 btn-primary"
-                // onClick={() => setShowModal(true)}
-              >
-                <span>+</span> <AppsIcon />
-              </button>
-              <button
-                className="sm:hidden p-2 btn-primary"
-                // onClick={() => setShowModal(true)}
-              >
-                <span>+</span> <AppsIcon />
-              </button>
-            </div>
+        <div className="flex gap-3">
+          {/* Button for desktop */}
+          <button
+            className="hidden sm:block btn-primary"
+          >
+            + Job Listing
+          </button>
+          <button
+            className="hidden sm:block btn-primary"
+          >
+            + Industry
+          </button>
+
+          {/* Icon Button for Mobile */}
+          <button
+            className="sm:hidden p-2 btn-primary flex items-center gap-1"
+          >
+            <span>+</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 0 0 .75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 0 0-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0 1 12 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 0 1-.673-.38m0 0A2.18 2.18 0 0 1 3 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 0 1 3.413-.387m7.5 0V5.25A2.25 2.25 0 0 0 13.5 3h-3a2.25 2.25 0 0 0-2.25 2.25v.894m7.5 0a48.667 48.667 0 0 0-7.5 0M12 12.75h.008v.008H12v-.008Z"
+              />
+            </svg>
+          </button>
+          <button
+            className="sm:hidden p-2 btn-primary flex items-center gap-1"
+          >
+            <span>+</span>{" "}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"
+              />
+            </svg>
+          </button>
+        </div>
       </header>
 
       <div className="border-primary p-4 rounded-2xl shadow-md mx-auto mb-6 text-center bg-primary flex flex-col gap-4 sm:grid sm:grid-cols-2 lg:flex lg:flex-row lg:justify-between">
         <button
-          className="p-4 rounded-lg shadow text-black text-xl font-semibold bg-white w-full lg:w-48"
+          className="p-4 rounded-lg shadow text-black text-xl font-semibold bg-white w-full lg:w-100"
           onClick={() =>
             handleDataChange(
               employeesData,
@@ -137,7 +159,7 @@ const AdminDashboard = () => {
         </button>
 
         <button
-          className="p-4 rounded-lg shadow text-black text-xl font-semibold bg-white w-full lg:w-48"
+          className="p-4 rounded-lg shadow text-black text-xl font-semibold bg-white w-full lg:w-100"
           onClick={() =>
             handleDataChange(applicationsData, "Total Applications", "#0097b2")
           }
@@ -168,8 +190,9 @@ const AdminDashboard = () => {
       </div>
 
       {/* Chart Display */}
+
       <div className="border p-4 rounded shadow h-140">
-        <h2 className="text-lg font-medium">{selectedLabel}</h2>
+      <h2 className="text-lg font-medium">{selectedLabel}</h2>
         <div className="h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={selectedData}>
@@ -177,11 +200,9 @@ const AdminDashboard = () => {
                 dataKey="month"
                 tickLine={false}
                 axisLine={false}
-                tickFormatter={(value) => `${value + 1}`}
               />
-              <YAxis tickLine={false} axisLine={false} tickCount={8} />
+              <YAxis tickLine={false} axisLine={false}/>
               <Tooltip />
-              <Legend />
               <Area
                 type="monotone"
                 dataKey="value"
@@ -193,6 +214,7 @@ const AdminDashboard = () => {
             </AreaChart>
           </ResponsiveContainer>
         </div>
+
       </div>
     </div>
   );
