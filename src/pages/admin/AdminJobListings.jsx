@@ -25,18 +25,30 @@ ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 export default function AdminJobListing() {
   // JOB LISTINGS VARIABLES
+  const defaultJobDetails = {
+    job_id: null,
+    title: "",
+    industry_id: "",
+    industry_name: "",
+    setup_id: "",
+    employment_type: "",
+    description: "",
+    salary_min: null,
+    salary_max: null,
+    responsibility: "",
+    requirement: "",
+    preferred_qualification: "",
+    is_open: "",
+    is_shown: "",
+  };
+
   const [jobListings, setJobListings] = useState([]);
-  const [newJobListing, setNewJobListing] = useState({});
+  const [jobDetails, setJobDetails] = useState(defaultJobDetails);
   const [jobModalIsOpen, setJobModalIsOpen] = useState(false);
-  const [editJobDetails, setEditJobDetails] = useState(null);
 
   // JOB FUNCTIONS
   const handleAddJobListingButtonClick = () => {
     setJobModalIsOpen((io) => true);
-  };
-
-  const handleNewJobListingChange = (e) => {
-    setNewJobListing((ni) => ({ ...ni, [e.target.name]: e.target.value }));
   };
 
   const handleAddEditJobListing = async (e) => {
@@ -80,6 +92,10 @@ export default function AdminJobListing() {
     setJobDetails((jd) => defaultJobDetails);
     setJobModalIsOpen((io) => false);
     setDataUpdated((du) => !dataUpdated);
+  };
+
+  const handleJobDetailsChange = (e) => {
+    setJobDetails((jd) => ({ ...jd, [e.target.name]: e.target.value }));
   };
 
   const handleJobListingModalClose = () => {
@@ -338,7 +354,9 @@ export default function AdminJobListing() {
           return (
             <button
               className="bg-transparent p-2 rounded w-8 h-8 flex justify-center items-center"
-              onClick={() => handleEditJob(params.data)}
+              onClick={() => {
+                handleEditJobClick(params.data);
+              }}
             >
               <EditIcon />
             </button>
