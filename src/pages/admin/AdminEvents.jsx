@@ -83,6 +83,7 @@ const AdminEvents = () => {
   return (
     <div className="bg-white p-2">
 
+
       <header className="container flex h-12 items-center justify-between flex-wrap">
             <div className="hidden lg:flex md-flex gap-4 items-center ">
               <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
@@ -92,7 +93,7 @@ const AdminEvents = () => {
               {/* Button for desktop */}
               <button
                 className="hidden sm:block btn-primary"
-                onClick={() => setShowModal(true)}
+                onClick={() => setIsAddModalOpen(true)}
               >
                 + Add Event
               </button>
@@ -100,7 +101,7 @@ const AdminEvents = () => {
               {/* Icon Button for Mobile */}
               <button
                 className="sm:hidden p-2 btn-primary"
-                onClick={() => setShowModal(true)}
+                onClick={() => setIsAddModalOpen(true)}
               >
                 <span>+</span> <EventIcon/>
               </button>

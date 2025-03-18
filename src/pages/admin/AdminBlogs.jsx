@@ -372,8 +372,8 @@ const AdminBlog = () => {
         }}
         rowHeight={100}
         pagination
-        paginationPageSize={10}
-        paginationPageSizeSelector={[10, 20, 50]}
+        paginationPageSize={5}
+        paginationPageSizeSelector={[5, 10, 20, 50]}
       />
     </div>
   </div>

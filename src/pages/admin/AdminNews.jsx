@@ -36,17 +36,16 @@ const AdminNews = () => {
     if (editingNews) {
       setRowNewsData((prevData) =>
         prevData.map((news) =>
-          news.id === editingNews.id ? { ...news, ...editingNews } : news
+          news.id === editingNews.id ? { ...editingNews } : news
         )
       );
     } else {
       const newEntry = {
         ...newNews,
-        id: formatTimestamp,
+        id: Date.now().toString(),
         datePublished: { seconds: Math.floor(Date.now() / 1000) },
         comments: 0,
         views: 0,
-        likes: 0,
         image: newNews.image || "https://via.placeholder.com/150",
       };
       setRowNewsData((prevData) => [...prevData, newEntry]);
@@ -327,8 +326,8 @@ const AdminNews = () => {
                       : 80
                   }
                   pagination
-                  paginationPageSize={10}
-                  paginationPageSizeSelector={[10, 20, 50]}
+                  paginationPageSize={5}
+                  paginationPageSizeSelector={[5, 10, 20, 50]}
                 />
               </div>
             </div>
