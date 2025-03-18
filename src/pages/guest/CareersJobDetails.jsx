@@ -176,7 +176,7 @@ const CareersJobDetails = () => {
             </button>
           </div>
         ) : (
-          <section className="grid place-content-center h-dvh">
+          <section className="grid place-conte`nt-center h-dvh">
             <OnLoadLayoutAnimation />
           </section>
         )}
