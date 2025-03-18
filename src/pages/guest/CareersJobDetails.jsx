@@ -61,7 +61,7 @@ const CareersJobDetails = () => {
             <p className="font-avenir-black text-primary mb-2">
               {jobDetails.employmentType}, {jobDetails.setupName}
             </p>
-            {jobDetails.salaryMin && (
+            {jobDetails.salaryMin != null && jobDetails.salaryMin != 0 && (
               <p className="text-xs mb-5">
                 Expected Salary: <br />
                 <span className="font-avenir-black text-xl text-primary">
@@ -89,38 +89,33 @@ const CareersJobDetails = () => {
                 </p>
                 <ul>
                   {jobDetails.responsibility
-                    .split(". ")
-                    .map((responsibility, index) => {
-                      return (
-                        <li key={index}>
-                          {responsibility}
-                          {index !=
-                            jobDetails.responsibility.split(". ").length - 1 &&
-                            "."}
-                        </li>
-                      );
-                    })}
+                    .split(/\.\s+|\n/)
+                    .filter((responsibility) => responsibility.trim() !== "")
+                    .map((responsibility, index, arr) => (
+                      <li key={index}>
+                        {responsibility.trim()}
+                        {responsibility.trim().endsWith(".") ? "" : "."}{" "}
+                      </li>
+                    ))}
                 </ul>
                 <br />
               </>
             )}
             {jobDetails.requirement && (
               <>
-                <p className="text-primary font-avenir-black">Requirements:</p>
+                <p className="text-primary font-avenir-black">
+                  Requirements:
+                </p>
                 <ul>
-                  {jobDetails.requirement &&
-                    jobDetails.requirement
-                      .split(". ")
-                      .map((requirement, index) => {
-                        return (
-                          <li key={index}>
-                            {requirement}
-                            {index !=
-                              jobDetails.requirement.split(". ").length - 1 &&
-                              "."}
-                          </li>
-                        );
-                      })}
+                  {jobDetails.requirement
+                    .split(/\.\s+|\n/)
+                    .filter((requirement) => requirement.trim() !== "")
+                    .map((requirement, index, arr) => (
+                      <li key={index}>
+                        {requirement.trim()}
+                        {requirement.trim().endsWith(".") ? "" : "."}{" "}
+                      </li>
+                    ))}
                 </ul>
                 <br />
               </>
@@ -131,20 +126,15 @@ const CareersJobDetails = () => {
                   Preferred Qualifications:
                 </p>
                 <ul>
-                  {jobDetails.preferredQualification &&
-                    jobDetails.preferredQualification
-                      .split(". ")
-                      .map((preferredQualification, index) => {
-                        return (
-                          <li key={index}>
-                            {preferredQualification}
-                            {index !=
-                              jobDetails.preferredQualification.split(". ")
-                                .length -
-                                1 && "."}
-                          </li>
-                        );
-                      })}
+                  {jobDetails.preferredQualification
+                    .split(/\.\s+|\n/)
+                    .filter((preferredQualification) => preferredQualification.trim() !== "")
+                    .map((preferredQualification, index, arr) => (
+                      <li key={index}>
+                        {preferredQualification.trim()}
+                        {preferredQualification.trim().endsWith(".") ? "" : "."}{" "}
+                      </li>
+                    ))}
                 </ul>
                 <br />
               </>
