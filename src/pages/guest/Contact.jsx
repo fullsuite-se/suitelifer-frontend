@@ -15,6 +15,7 @@ import FAQ from "../../components/contact/FaqsDropDown";
 import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
 import { useEffect, useState } from "react";
+import PageMeta from "../../components/layout/PageMeta";
 const Contact = () => {
   window.scroll(0, 0);
 
@@ -192,6 +193,11 @@ const Contact = () => {
     // </>
 
     <>
+      <PageMeta
+        title="Contact - SuiteLifer"
+        desc="Your career rocket ship is fueled and ready. Want to hop on? Contact us now."
+        isDefer={false}
+      />
       {/* MOBILE NAV */}
       <div className="sm:hidden">
         <MobileNav />

@@ -15,6 +15,8 @@ import HomeBlogSpot from "../../components/home/HomeBlogSpot";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
+import { Helmet } from "@dr.pogodin/react-helmet";
+import PageMeta from "../../components/layout/PageMeta";
 
 const Home = () => {
   const [width, setWidth] = useState(window.innerWidth); //FOR DEBUGGING
@@ -36,6 +38,11 @@ const Home = () => {
       className="gap-4 overflow-hidden"
       style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
     >
+      <PageMeta
+        title="Home | Empowering Careers & Opportunities - SuiteLifer"
+        desc="Discover career opportunities, company insights, and the latest updates at FullSuite. Your journey to success starts here."
+        isDefer={false}
+      />
       {/* MOBILE NAV */}
       <div className="sm:hidden">
         <MobileNav />
@@ -185,7 +192,7 @@ const Home = () => {
       {/* FOR DEBUGGING ONLY */}
       {/* <div className="bg-red-900 h-50 text-white grid place-items-center">WIDTH: {width}</div> */}
       {/* <div className="h-40"></div> */}
-      <BackToTop/>
+      <BackToTop />
       <Footer />
     </section>
   );
