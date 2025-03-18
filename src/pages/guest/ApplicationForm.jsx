@@ -1,27 +1,76 @@
 import React, { useState } from "react";
-import Footer from "../../components/Footer";
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
-import bgBlogs from "../../assets/images/blogs-text-bg.svg";
-import guestBlogsList from "../../components/guest-blogs/GuestBlogsList";
-import GuestBlogLarge from "../../components/guest-blogs/GuestBlogLarge";
-import AnimatedText from "../../components/guest-blogs/AnimatedText";
-import GuestBlogTags from "../../components/guest-blogs/GuestBlogTags";
-import GuestBlogCard from "../../components/guest-blogs/GuestBlogCard";
-import ArticleSearchResults from "../../components/news/SearchingBlogOrNews";
 import BackButton from "../../components/BackButton";
-import { DefaultStepper } from "../../components/careers/ApplicationFormStepper";
 import FileUploadIcon from "../../assets/icons/file-upload";
 import { useParams } from "react-router-dom";
 import BackToTop from "../../components/BackToTop";
+import { toSlug, unSlug } from "../../utils/slugUrl";
+import axios from "axios";
+
 const ApplicationForm = () => {
   window.scroll(0, 0);
 
   const { id, jobPosition } = useParams();
   const [position, setPosition] = useState(jobPosition);
+  const [applicationDetails, setApplicationDetails] = useState({
+    first_name: "",
+    middle_name: "",
+    last_name: "",
+    birth_date: "",
+    gender: "",
+    email_1: "",
+    mobile_number_1: "",
+    discovered_at: "",
+    applied_source: "Suitelife",
+    referrer_name: "",
+    position_id: id,
+    created_by: import.meta.env.VITE_GUEST_USER,
+    updated_by: import.meta.env.VITE_GUEST_USER,
+  });
+
+  const handleApplicationDetailsChange = (e) => {
+    setApplicationDetails((ad) => ({ ...ad, [e.target.name]: e.target.value }));
+    console.log(applicationDetails);
+  };
 
   const [showReferralInput, setShowReferralInput] = useState(false);
+
+  const [file, setSelectedFile] = useState(null);
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setSelectedFile((f) => selectedFile);
+    console.log(selectedFile);
+  };
+
+  const handleSubmitApplication = async (e) => {
+    e.preventDefault();
+    try {
+      console.log(import.meta.env.VITE_ATS_API_BASE_URL);
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const upload_response = await axios.post(
+        `${import.meta.env.VITE_ATS_API_BASE_URL}/upload/cv`,
+        formData
+      );
+      console.log(upload_response.data.fileUrl);
+      setApplicationDetails((ad) => ({
+        ...ad,
+        cv_link: upload_response.data.fileUrl,
+      }));
+      console.log(applicationDetails);
+
+      const response = await axios.post(`${import.meta.env.VITE_ATS_API_BASE_URL}/applicants/add`, {
+        applicant: JSON.stringify(applicationDetails),
+      });
+      console.log(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <section
@@ -47,10 +96,14 @@ const ApplicationForm = () => {
         <main className="px-[5%]">
           <div className="md:px-5 lg:px-20 xl:px-50">
             {" "}
-            <BackButton type={position + "'s Details"} backPath={"/careers"} />
+            <BackButton
+              type={unSlug(position) + " Details"}
+              backPath={`/careers/${toSlug(position)}`}
+              jobId={id}
+            />
             <div className="py-5"></div>
             <form
-              action="#"
+              onSubmit={handleSubmitApplication}
               className="space-y-4 text-sm p-6 md:p-12 lg:p-15 shadow-sm border-primary border-1  rounded-lg bg-white"
             >
               <p className="!text-lg lg:!text-2xl font-avenir-black mb-10">
@@ -63,7 +116,9 @@ const ApplicationForm = () => {
                   </label>
                   <input
                     type="text"
-                    name="firstName"
+                    name="first_name"
+                    value={applicationDetails.first_name}
+                    onChange={handleApplicationDetailsChange}
                     required
                     className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
                   />
@@ -74,7 +129,9 @@ const ApplicationForm = () => {
                   </label>
                   <input
                     type="text"
-                    name="middleName"
+                    name="middle_name"
+                    value={applicationDetails.middle_name}
+                    onChange={handleApplicationDetailsChange}
                     className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
@@ -84,7 +141,9 @@ const ApplicationForm = () => {
                   </label>
                   <input
                     type="text"
-                    name="lastName"
+                    name="last_name"
+                    value={applicationDetails.last_name}
+                    onChange={handleApplicationDetailsChange}
                     required
                     className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
                   />
@@ -97,7 +156,9 @@ const ApplicationForm = () => {
                   </label>
                   <input
                     type="date"
-                    name="birthdate"
+                    name="birth_date"
+                    value={applicationDetails.birth_date}
+                    onChange={handleApplicationDetailsChange}
                     required
                     className="text-primary w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
                   />
@@ -111,7 +172,8 @@ const ApplicationForm = () => {
                       <input
                         type="radio"
                         name="gender"
-                        value="male"
+                        value="Male"
+                        onChange={handleApplicationDetailsChange}
                         required
                         className="text-primary focus:ring-primary"
                       />
@@ -121,7 +183,8 @@ const ApplicationForm = () => {
                       <input
                         type="radio"
                         name="gender"
-                        value="female"
+                        value="Female"
+                        onChange={handleApplicationDetailsChange}
                         required
                         className="text-primary focus:ring-primary"
                       />
@@ -137,7 +200,9 @@ const ApplicationForm = () => {
                   </label>
                   <input
                     type="email"
-                    name="email"
+                    name="email_1"
+                    value={applicationDetails.email_1}
+                    onChange={handleApplicationDetailsChange}
                     required
                     className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
                   />
@@ -149,7 +214,9 @@ const ApplicationForm = () => {
                   </label>
                   <input
                     type="tel"
-                    name="phone"
+                    name="mobile_number_1"
+                    value={applicationDetails.mobile_number_1}
+                    onChange={handleApplicationDetailsChange}
                     required
                     maxLength="9"
                     pattern="[0-9]{9}"
@@ -178,13 +245,14 @@ const ApplicationForm = () => {
                     <label key={option} className="flex items-center">
                       <input
                         type="radio"
-                        name="discovery"
+                        name="discovered_at"
                         value={option}
                         required
                         className="text-primary focus:ring-primary"
-                        onChange={() =>
-                          setShowReferralInput(option === "Through Referral")
-                        }
+                        onChange={(e) => {
+                          setShowReferralInput(option === "Through Referral");
+                          handleApplicationDetailsChange(e);
+                        }}
                       />
                       <span className="ml-2 text-gray-700">{option}</span>
                     </label>
@@ -198,7 +266,7 @@ const ApplicationForm = () => {
                     </label>
                     <input
                       type="text"
-                      name="referrer"
+                      name="referrer_name"
                       required={showReferralInput}
                       className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
                     />
@@ -397,14 +465,41 @@ const ApplicationForm = () => {
                   Upload your Curriculum Vitae here:{" "}
                   <span className="text-primary">*</span>
                 </label>
-                <div className="flex flex-col items-center justify-center p-10 border border-primary border-dashed rounded-lg text-primary cursor-pointer hover:bg-primary/10 ">
+
+                {/* Drag and Drop Container */}
+                <label
+                  htmlFor="fileUpload"
+                  className={`flex flex-col items-center justify-center p-10 border border-primary border-dashed rounded-lg cursor-pointer text-primary hover:bg-primary/10`}
+                  // onDragOver={handleDragOver}
+                  // onDragLeave={handleDragLeave}
+                  // onDrop={handleDrop}
+                >
                   <FileUploadIcon size={50} />
                   <span className="text-center mt-5">
-                    Click here to upload your resume or drag and drop it here
+                    {/* {isDragging
+                      ? "Drop your file here"
+                      : "Click to upload or drag and drop here"} */}
+                    Click here to upload your CV or drag and drop it here
                   </span>
-                </div>
+                </label>
+
+                {/* Hidden File Input */}
+                <input
+                  type="file"
+                  id="fileUpload"
+                  className="hidden"
+                  onChange={handleFileChange}
+                  accept=".pdf,.doc,.docx"
+                />
+
+                {/* Show Selected File */}
+                {file && (
+                  <p className="mt-3 text-gray-700">
+                    Selected file: {file.name}
+                  </p>
+                )}
               </div>
-              <div className="py-5"></div>
+              <div className="py-2"></div>
               <button
                 type="submit"
                 className="w-full font-avenir-black bg-primary text-white py-3 rounded-md hover:bg-primary/90 transition"
