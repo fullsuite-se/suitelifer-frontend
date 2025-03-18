@@ -15,7 +15,7 @@ import FAQ from "../../components/contact/FaqsDropDown";
 import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
 import { useEffect, useState } from "react";
-import { Helmet } from "@dr.pogodin/react-helmet";
+import PageMeta from "../../components/layout/PageMeta";
 const Contact = () => {
   const fadeInUp = {
     hidden: { opacity: 0, y: 50 },
@@ -191,13 +191,11 @@ const Contact = () => {
     // </>
 
     <>
-      <Helmet defer={false}>
-        <title>Contact | Suite</title>
-        <meta
-          name="description"
-          content="Learn more about our mission and values at Suite."
-        />
-      </Helmet>
+      <PageMeta
+        title="Contact - SuiteLifer"
+        desc="Your career rocket ship is fueled and ready. Want to hop on? Contact us now."
+        isDefer={false}
+      />
       {/* MOBILE NAV */}
       <div className="sm:hidden">
         <MobileNav />

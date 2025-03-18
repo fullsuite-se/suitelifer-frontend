@@ -13,7 +13,7 @@ import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
 import ArticleSearchResults from "../../components/news/SearchingBlogOrNews";
 import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
-import { Helmet } from "@dr.pogodin/react-helmet";
+import PageMeta from "../../components/layout/PageMeta";
 
 const Blog = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -38,14 +38,11 @@ const Blog = () => {
       className="gap-4 h-dvh"
       style={{ maxWidth: "1800px", margin: "0 auto" }}
     >
-      {/* !!! Content is subject to change */}
-      <Helmet defer={false}>
-        <title>Blogs | Suite</title>
-        <meta
-          name="description"
-          content="Learn more about our mission and values at Suite."
-        />
-      </Helmet>
+      <PageMeta
+        title="Blogs - SuiteLifer"
+        desc="Dive into our collection of valuable perspectives on all things Startup, Careers, Baguio, and Fullsuite."
+        isDefer={false}
+      />
       {/* MOBILE NAV */}
       <div className="sm:hidden">
         <MobileNav />

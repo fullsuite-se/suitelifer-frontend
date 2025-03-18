@@ -10,7 +10,7 @@ import NewsCardSmall from "../../components/news/NewsCardSmall";
 import ArticleSearchResults from "../../components/news/SearchingBlogOrNews";
 import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
-import { Helmet } from "@dr.pogodin/react-helmet";
+import PageMeta from "../../components/layout/PageMeta";
 
 const News = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -35,14 +35,11 @@ const News = () => {
       className="gap-4 h-dvh"
       style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
     >
-      {/* Content is subject to change */}
-      <Helmet defer={false}>
-        <title>Latest News - Suite</title>
-        <meta
-          name="description"
-          content="Stay updated with the latest news and trends."
-        />
-      </Helmet>
+      <PageMeta
+        title="News - SuiteLifer"
+        desc="Stay informed with company news, product launches, and industry insights from Fullsuite."
+        isDefer={false}
+      />
       {/* MOBILE NAV */}
       <div className="sm:hidden">
         <MobileNav />

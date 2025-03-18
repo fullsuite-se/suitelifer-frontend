@@ -26,7 +26,7 @@ import TeamPlayerIcon from "../../assets/icons/TeamPlayerIcon";
 import UnderstoodIcon from "../../assets/icons/UnderstoodIcon";
 import WorkLifeHarmonyIcon from "../../assets/icons/WorkLifeHarmonyIcon";
 import UpholdsIcon from "../../assets/icons/UpholdsIcon";
-import { Helmet } from "@dr.pogodin/react-helmet";
+import PageMeta from "../../components/layout/PageMeta";
 
 const AboutUs = () => {
   const [content, setContent] = useState({});
@@ -57,14 +57,11 @@ const AboutUs = () => {
       className="gap-4 h-dvh"
       style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
     >
-      {/* !!! Content is subject to change */}
-      <Helmet defer={false}>
-        <title>About Us | Suite</title>
-        <meta
-          name="description"
-          content="Learn more about our mission and values at Suite."
-        />
-      </Helmet>
+      <PageMeta
+        title="About Us - SuiteLifer"
+        desc="A launchpad that transforms careers. We'll help you pave the way to your professional success."
+        isDefer={false}
+      />
       {/* MOBILE NAV */}
       <div className="sm:hidden">
         <MobileNav />
