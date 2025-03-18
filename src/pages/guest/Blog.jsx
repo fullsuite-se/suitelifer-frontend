@@ -13,11 +13,14 @@ import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
 import ArticleSearchResults from "../../components/news/SearchingBlogOrNews";
 import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
+import PageMeta from "../../components/layout/PageMeta";
 
 const Blog = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+  window.scroll(0, 0);
+
 
   const handleSearch = () => {
     if (searchQuery.trim() !== "") {
@@ -34,9 +37,14 @@ const Blog = () => {
 
   return (
     <section
-      className="gap-4 h-dvh"
+      className="gap-4"
       style={{ maxWidth: "1800px", margin: "0 auto" }}
     >
+      <PageMeta
+        title="Blogs - SuiteLifer"
+        desc="Dive into our collection of valuable perspectives on all things Startup, Careers, Baguio, and Fullsuite."
+        isDefer={false}
+      />
       {/* MOBILE NAV */}
       <div className="sm:hidden">
         <MobileNav />

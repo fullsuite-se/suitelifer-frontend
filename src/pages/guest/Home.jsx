@@ -15,11 +15,25 @@ import HomeBlogSpot from "../../components/home/HomeBlogSpot";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
+import { Helmet } from "@dr.pogodin/react-helmet";
+import PageMeta from "../../components/layout/PageMeta";
 
 const Home = () => {
   const [width, setWidth] = useState(window.innerWidth); //FOR DEBUGGING
+  window.scroll(0, 0);
 
   useEffect(() => {
+    const left = document.getElementById("left-side");
+    if (!left) return; // Prevent errors if the element is not yet rendered
+
+    const handleOnMove = (e) => {
+      const p = (e.clientX / window.innerWidth) * 100;
+      left.style.width = `${p}%`; // Added '%' to properly apply width
+    };
+
+    document.addEventListener("mousemove", handleOnMove);
+    document.addEventListener("touchmove", (e) => handleOnMove(e.touches[0]));
+
     const handleResize = () => {
       setWidth(window.innerWidth);
     };
@@ -27,7 +41,9 @@ const Home = () => {
     window.addEventListener("resize", handleResize);
 
     // Clean up the event listener on unmount
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, [width]);
 
   return (
@@ -35,6 +51,11 @@ const Home = () => {
       className="gap-4 overflow-hidden"
       style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
     >
+      <PageMeta
+        title="Home | Empowering Careers & Opportunities - SuiteLifer"
+        desc="Discover career opportunities, company insights, and the latest updates at FullSuite. Your journey to success starts here."
+        isDefer={false}
+      />
       {/* MOBILE NAV */}
       <div className="sm:hidden">
         <MobileNav />
@@ -47,28 +68,11 @@ const Home = () => {
       <div className="desktop-nav">
         <DesktopNav />
       </div>
-      <div className="lg:flex lg:flex-row-reverse ">
+      <div className="lg:flex lg:flex-row-reverse hidden lg:hidden">
         {/* HERO SECTION */}
         <HeroSection />
         {/* BANNER SECTION */}
         <section className="flex pt-5 lg:w-2/5 ">
-          {/* <div className="banner ml-[9%] flex items-center">
-            <div>
-              <p className="text-primary text-lg md:text-3xl lg:text-3xl! ">
-                Welcome to
-              </p>
-              <div className="pb-5">
-                <img
-                  className="w-full h-full object-contain"
-                  src={fs_tagline}
-                  alt="Fullsuite tagline"
-                />
-              </div>
-              <button className="btn-primary text-sm sm:text-xl md:text-2xl">
-                Learn more
-              </button>
-            </div>
-          </div> */}
           {/* with animations eto */}
           <div className="banner ml-[9%] flex items-center overflow-hidden">
             <div>
@@ -134,22 +138,9 @@ const Home = () => {
         </section>
       </div>
       {/* ADD-ON (SHOWS ON MOBILE & TABLET) */}
-      {/* <div className="w-full relative lg:hidden overflow-hidden h-28 sm:h-48">
-        <img
-          className="absolute right-0 opacity-40 rounded-l-4xl object-cover"
-          src={kb_startup}
-          alt="A keyboard with a startup key"
-          style={{
-            height: "100%",
-            transform: "translateX(70%)",
-          }}
-        />
-      </div> */}
-
-      {/* may animations */}
-      <div className="w-full relative lg:hidden overflow-hidden h-28 sm:h-48">
+      <div className="relative lg:hidden overflow-hidden h-28 sm:h-34 hidden">
         <motion.img
-          className="absolute -right-33 opacity-40 rounded-l-4xl object-cover"
+          className="absolute w-[15vw] right-0 opacity-40 rounded-l-4xl object-cover"
           src={kb_startup}
           alt="A keyboard with a startup key"
           style={{
@@ -166,6 +157,43 @@ const Home = () => {
           }}
         />
       </div>
+
+      <section className="h-[100dvh] lg:mt-17 mb-[10%]">
+        {/* White */}
+        <div id="right-side" className="side pb-17">
+          <p className="title">
+            <div className="">
+              <span className="title-line-1">Do you feel like your</span> <br /> <br />
+            </div>
+            <div className="animate-fadeInUp">
+              <span className="title-line-2">
+                <span className="text-black">Career is going</span>{" "}
+                <span className="nowhere">nowhere?</span>
+              </span>
+            </div>{" "}
+            <div className="hidden">
+              <span className="title-line-3">We can help.</span>
+            </div>
+          </p>
+        </div>
+        {/* Blue */}
+        <div id="left-side" className="side pb-17">
+          <p className="title">
+            <div className="">
+              <span className="title-line-1">We can help.</span>{" "} <br /><br />
+            </div>
+            <div className="">
+              <span className="title-line-2">
+                <span className="text-white">Let's get you on the</span>{" "} <br />
+                <span className="text-black">right track.</span>
+              </span>
+            </div>{" "}
+            <div className="hidden">
+              <span className="title-line-3">Join us!</span>
+            </div>
+          </p>
+        </div>
+      </section>
 
       {/* GOAL AND OPERATIONS */}
       <HomeGoalsOperations />
@@ -184,7 +212,7 @@ const Home = () => {
       {/* FOR DEBUGGING ONLY */}
       {/* <div className="bg-red-900 h-50 text-white grid place-items-center">WIDTH: {width}</div> */}
       {/* <div className="h-40"></div> */}
-      <BackToTop/>
+      <BackToTop />
       <Footer />
     </section>
   );

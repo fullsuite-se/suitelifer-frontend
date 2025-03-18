@@ -10,11 +10,13 @@ import NewsCardSmall from "../../components/news/NewsCardSmall";
 import ArticleSearchResults from "../../components/news/SearchingBlogOrNews";
 import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
+import PageMeta from "../../components/layout/PageMeta";
 
 const News = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchTerm, setSearchTerm] = useState(""); // Stores search term when button is clicked
   const [isSearching, setIsSearching] = useState(false);
+  window.scroll(0, 0);
 
   const handleSearch = () => {
     if (searchQuery.trim() !== "") {
@@ -34,6 +36,11 @@ const News = () => {
       className="gap-4 h-dvh"
       style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
     >
+      <PageMeta
+        title="News - SuiteLifer"
+        desc="Stay informed with company news, product launches, and industry insights from Fullsuite."
+        isDefer={false}
+      />
       {/* MOBILE NAV */}
       <div className="sm:hidden">
         <MobileNav />
@@ -127,7 +134,6 @@ const News = () => {
         </div>
       </section>
       <div className="py-5"></div>
-
       {/* NEWS CONTENT */}
       <main className="px-[5%]">
         {isSearching ? (
@@ -153,7 +159,7 @@ const News = () => {
           </>
         )}
       </main>
-      <div className="h-20"></div> <BackToTop/>
+      <div className="h-20"></div> <BackToTop />
       <Footer />
     </section>
   );

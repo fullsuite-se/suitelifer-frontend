@@ -11,6 +11,8 @@ import BackToTop from "../../components/BackToTop";
 
 
 const TermsOfUse = () => {
+  window.scroll(0, 0);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
