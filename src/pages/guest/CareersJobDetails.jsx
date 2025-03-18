@@ -168,7 +168,7 @@ const CareersJobDetails = () => {
               type="button"
               onClick={() => {
                 navigate(
-                  `/application-form/${jobId}/${toSlug(jobDetails.jobTitle)}`
+                  `/careers/application-form/${jobId}/${toSlug(jobDetails.jobTitle)}`
                 );
               }}
             >
