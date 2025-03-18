@@ -165,7 +165,7 @@ const CareersJobDetails = () => {
 
             <Link
               className="1fr flex no-underline"
-              to={`/application-form/${jobId}/${toSlug(jobDetails.jobTitle)}`}
+              to={`application-form/${jobId}/${toSlug(jobDetails.jobTitle)}`}
             >
               <button
                 className="mx-auto font-avenir-black bg-primary py-2 text-white rounded-2xl min-w-52 mb-10"
@@ -176,7 +176,7 @@ const CareersJobDetails = () => {
             </Link>
           </div>
         ) : (
-          <section className="grid place-content-center h-dvh">
+          <section className="grid place-conte`nt-center h-dvh">
             <OnLoadLayoutAnimation />
           </section>
         )}

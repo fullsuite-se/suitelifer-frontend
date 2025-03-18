@@ -171,7 +171,7 @@ const Home = () => {
                 <span className="nowhere">nowhere?</span>
               </span>
             </div>{" "}
-            <div className="">
+            <div className="hidden">
               <span className="title-line-3">We can help.</span>
             </div>
           </p>
@@ -180,7 +180,7 @@ const Home = () => {
         <div id="left-side" className="side pb-17">
           <p className="title">
             <div className="">
-              <span className="title-line-1">Your journey starts now.</span>{" "}
+              <span className="title-line-1">We can help.</span>{" "}
             </div>
             <div className="">
               <span className="title-line-2">
@@ -188,7 +188,7 @@ const Home = () => {
                 <span className="text-black">right track.</span>
               </span>
             </div>{" "}
-            <div className="">
+            <div className="hidden">
               <span className="title-line-3">Join us!</span>
             </div>
           </p>
