@@ -15,6 +15,7 @@ import FAQ from "../../components/contact/FaqsDropDown";
 import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
 import { useEffect, useState } from "react";
+import { Helmet } from "@dr.pogodin/react-helmet";
 const Contact = () => {
   const fadeInUp = {
     hidden: { opacity: 0, y: 50 },
@@ -190,6 +191,13 @@ const Contact = () => {
     // </>
 
     <>
+      <Helmet defer={false}>
+        <title>Contact | Suite</title>
+        <meta
+          name="description"
+          content="Learn more about our mission and values at Suite."
+        />
+      </Helmet>
       {/* MOBILE NAV */}
       <div className="sm:hidden">
         <MobileNav />

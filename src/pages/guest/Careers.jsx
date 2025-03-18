@@ -14,6 +14,7 @@ import bgPodcast from "../../assets/images/bg-career-podcast.svg";
 import bgHero from "../../assets/images/bg-hero-careers.svg";
 import bgHeroTablet from "../../assets/images/bg-tablet-careers.svg";
 import BackToTop from "../../components/BackToTop";
+import { Helmet } from "@dr.pogodin/react-helmet";
 
 const Careers = () => {
   const [spotifyEpisodes, setEpisodes] = useState([]);
@@ -48,6 +49,13 @@ const Careers = () => {
         className="gap-4 overflow-hidden"
         style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
       >
+        <Helmet defer={false}>
+          <title>Careers | Suite</title>
+          <meta
+            name="description"
+            content="Learn more about our mission and values at Suite."
+          />
+        </Helmet>
         {/* MOBILE NAV */}
         <div className="sm:hidden">
           <MobileNav />
