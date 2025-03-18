@@ -65,7 +65,7 @@ const JobCarouselVersion2 = ({ jobs }) => {
                         {job.employmentType}
                       </span>
                     </div>
-                    {isActive && job.salaryMin && (
+                    {isActive && job.salaryMin != null && job.salaryMin > 0 && (
                       <>
                         <p className="text-[0.75em] text-gray-400">
                           Expected Salary

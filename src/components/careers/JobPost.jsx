@@ -8,7 +8,6 @@ const JobPost = ({
   jobTitle,
   employmentType,
   salaryMin,
-  salaryMax,
   description,
   setupName,
 }) => {
@@ -35,8 +34,9 @@ const JobPost = ({
         <p className="text-sm font-avenir-black">{employmentType}</p>
         <p className="text-sm font-avenir-roman mb-3">{setupName}</p>
       </div>
-      {isActive && salaryMin && (
+      {isActive && salaryMin != null && salaryMin > 0 && (
         <>
+          {salaryMin}
           <p className="text-[0.75em]">Expected Salary</p>
           <p className="text-base font-avenir-black mb-3">
             {Intl.NumberFormat("en-US", {
