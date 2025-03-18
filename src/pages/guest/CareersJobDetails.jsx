@@ -7,6 +7,7 @@ import TabletNav from "../../components/home/TabletNav.jsx";
 import DesktopNav from "../../components/home/DesktopNav.jsx";
 import { toSlug } from "../../utils/slugUrl.js";
 import BackToTop from "../../components/BackToTop.jsx";
+import PageMeta from "../../components/layout/PageMeta.jsx";
 
 const CareersJobDetails = () => {
   window.scroll(0, 0);
@@ -34,8 +35,26 @@ const CareersJobDetails = () => {
     fetchJobDetails();
   }, []);
 
+  useEffect(() => {
+    if (jobDetails?.jobTitle) {
+      const title = jobDetails?.jobTitle
+        ? `${jobDetails.jobTitle} | Join Us at FullSuite`
+        : "Job Opportunity | Suitelifer";
+      document.title = title;
+    }
+  }, [jobDetails, location]);
+
   return (
     <>
+      <PageMeta
+        isDefer={true}
+        title={
+          jobDetails?.jobTitle
+            ? `${jobDetails.jobTitle} | Join Us at FullSuite`
+            : "Job Opportunity | Suitelifer"
+        }
+        description={jobDetails?.description}
+      />
       {/* MOBILE NAV */}
       <div className="sm:hidden">
         <MobileNav />
@@ -103,9 +122,7 @@ const CareersJobDetails = () => {
             )}
             {jobDetails.requirement && (
               <>
-                <p className="text-primary font-avenir-black">
-                  Requirements:
-                </p>
+                <p className="text-primary font-avenir-black">Requirements:</p>
                 <ul>
                   {jobDetails.requirement
                     .split(/\.\s+|\n/)
@@ -128,11 +145,16 @@ const CareersJobDetails = () => {
                 <ul>
                   {jobDetails.preferredQualification
                     .split(/\.\s+|\n/)
-                    .filter((preferredQualification) => preferredQualification.trim() !== "")
+                    .filter(
+                      (preferredQualification) =>
+                        preferredQualification.trim() !== ""
+                    )
                     .map((preferredQualification, index, arr) => (
                       <li key={index}>
                         {preferredQualification.trim()}
-                        {preferredQualification.trim().endsWith(".") ? "" : "."}{" "}
+                        {preferredQualification.trim().endsWith(".")
+                          ? ""
+                          : "."}{" "}
                       </li>
                     ))}
                 </ul>
