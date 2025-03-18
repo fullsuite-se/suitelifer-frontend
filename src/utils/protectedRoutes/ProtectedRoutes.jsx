@@ -47,13 +47,13 @@ const ProtectedRoutes = () => {
     fetchData();
   }, []);
 
-  // if (loading) {
-  //   return (
-  //     <section className="w-dvw h-dvh">
-  //       <OnLoadLayoutAnimation />
-  //     </section>
-  //   );
-  // }
+  if (loading) {
+    return (
+      <section className="w-dvw h-dvh">
+        <OnLoadLayoutAnimation />
+      </section>
+    );
+  }
 
   return user && services ? <Outlet /> : <Navigate to="/login" />;
 };
