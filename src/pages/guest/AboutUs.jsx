@@ -26,6 +26,7 @@ import TeamPlayerIcon from "../../assets/icons/TeamPlayerIcon";
 import UnderstoodIcon from "../../assets/icons/UnderstoodIcon";
 import WorkLifeHarmonyIcon from "../../assets/icons/WorkLifeHarmonyIcon";
 import UpholdsIcon from "../../assets/icons/UpholdsIcon";
+import PageMeta from "../../components/layout/PageMeta";
 
 const AboutUs = () => {
   const [content, setContent] = useState({});
@@ -36,6 +37,8 @@ const AboutUs = () => {
   const handleClick = () => {
     setClickCount((prev) => (prev < 6 ? prev + 1 : 0)); // Reset after animation
   };
+
+  // window.scroll(0, 0);
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -53,9 +56,14 @@ const AboutUs = () => {
 
   return (
     <section
-      className="gap-4 h-dvh"
+      className="gap-4"
       style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
     >
+      <PageMeta
+        title="About Us - SuiteLifer"
+        desc="A launchpad that transforms careers. We'll help you pave the way to your professional success."
+        isDefer={false}
+      />
       {/* MOBILE NAV */}
       <div className="sm:hidden">
         <MobileNav />
@@ -67,7 +75,7 @@ const AboutUs = () => {
       <div className="desktop-nav">
         <DesktopNav />
       </div>
-      <main className="md:mt-20">
+      <main className="lg:mt-20">
         {/* Hero Section */}
         <section className="overflow-hidden about-container" id="our-story">
           <div className="h-56 w-72">
@@ -96,7 +104,7 @@ const AboutUs = () => {
               initial={{ x: 100, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
-              className="h-10 w-20 lg:h-20 lg:w-32 rounded-l-2xl bg-primary ml-auto"
+              className="h-10 w-20 lg:h-20 lg:w-32 rounded-l-2xl bg-primary ml-auto mb-2"
             />
           </motion.div>
 
@@ -134,40 +142,21 @@ const AboutUs = () => {
             </p>
           </section>
           <section>
-            {/* Decorative Elements */}
-            <div className="flex justify-between overflow-ellipsis mb-4 relative">
-              <div
-                className="h-10 w-20 lg:h-20 lg:w-32 rounded-r-full lg:rounded-full bg-secondary opacity-35"
-                onClick={handleClick}
-                style={
-                  clickCount === 6
-                    ? { animation: "spinCCW 3s ease-out forwards" }
-                    : {}
-                }
-              ></div>
-
-              <div
-                style={
-                  clickCount === 6
-                    ? { animation: "spinCCW 3s ease-out forwards" }
-                    : {}
-                }
-                className="h-20 w-20 lg:h-20 lg:w-32 rounded-2xl bg-primary opacity-15 absolute top-0 right-0"
-              ></div>
-            </div>
-
-            <div className="max-w-4xl h-72 lg:h-96 mx-5">
-              <video className="w-full h-full rounded-xl object-cover" controls>
+            <div className="max-w-4xl h-72 my-4 lg:h-96 mx-5">
+              <video
+                className="w-full h-full rounded-xl object-cover aspect-video"
+                controls
+              >
                 <source src="#" type="video/mp4" />
               </video>
             </div>
           </section>
 
-          <section className="!-px-200">
-            <p className=" xl:-ml-25 lg:mt-40 xl:mt-50 font-avenir-black px-5 py-3 !text-xl md:mt-10 lg:!text-2xl">
+          <section className="mx-8 flex flex-col justify-center">
+            <p className="font-avenir-black py-3 !text-xl lg:!text-2xl">
               “{videoTitle}”
             </p>
-            <p className="text-sm md:text-base mx-5 mb-10 xl:-ml-20 ">
+            <p className="text-sm md:text-base">
               In this exclusive podcast interview, Maggie, the CEO of FullSuite
               Company, shares her journey of resilience and leadership in the
               competitive world of BPO. From navigating challenges to redefining
@@ -177,7 +166,7 @@ const AboutUs = () => {
             </p>
           </section>
 
-          <section className="flex gap-2 py-7 justify-end">
+          <section className="flex gap-2 py-7 mt-4 justify-end">
             <div className="h-2 w-2 lg:w-3 lg:h-3 rounded-full opacity-30 bg-primary"></div>
             <div className="h-2 w-2 lg:w-3 lg:h-3 rounded-full opacity-50 bg-primary"></div>
             <div className="h-2 w-2 lg:w-3 lg:h-3 rounded-full opacity-100 bg-primary"></div>
@@ -191,11 +180,11 @@ const AboutUs = () => {
           </section>
         </section>
         {/* Our Core Values Section */}
-        <section className="overflow-hidden relative">
+        <section className="overflow-hidden relative pt-5">
           <h2 className="font-avenir-black lg:text-4xl! text-center m-0!">
             The suitelifer...
           </h2>
-          <div className="flex flex-col lg:flex-row lg:justify-center lg:mb-[7%] py-[5%] gap-6 lg:gap-10">
+          <div className="flex flex-col lg:flex-row lg:justify-center lg:mb-[7%] py-[5%] pb-[12%] md:pb-[4%] gap-6 lg:gap-10">
             <div className="flex justify-evenly lg:flex-none lg:gap-10">
               {/* 1 */}
               <CoreValueCard
@@ -276,15 +265,15 @@ const AboutUs = () => {
           </div>
         </section>
 
-        {/* Mission Vision */}
-        <section className="flex justify-center mb-[5%] md:mb-0">
-          <div className="grid grid-cols-2 grid-rows-2 px-[5%] max-h-[1600px]">
+        {/* Mission Vision LASTLY: CHANGE LAYOUT FOR MOBILE. BREAKPOINT: 480px */}
+        <section className="flex justify-center mb-[5%] md:mb-0 md:pb-[0%]">
+          <div className="grid grid-cols-2 grid-rows-2 px-[5%] lg:max-h-[1600px]">
             {/* Mission Image */}
-            <section id="our-mission">
-              <div className="flex justify-end">
-                <div className="md:translate-y-[10%] md:translate-x-[10%] bg-primary/50 p-[5%] max-h-[800px] rounded-2xl lg:rounded-4xl size-[50vw] md:aspect-4/3">
+            <section>
+              <div className="flex justify-end absolute md:relative">
+                <div className="-translate-x-[20%] md:translate-y-[10%] md:translate-x-[10%] bg-primary/50 p-[5%] max-h-[800px] rounded-2xl lg:rounded-4xl size-[50vw] md:aspect-4/3">
                   <img
-                    className="w-full h-full rounded-2xl lg:rounded-3xl object-cover"
+                    className="w-full h-full rounded-lg lg:rounded-2xl object-cover"
                     src={imgMeeting}
                     alt="Mission image"
                   />
@@ -293,8 +282,8 @@ const AboutUs = () => {
             </section>
 
             {/* Mission Text */}
-            <article className="mission-vision-text flex flex-col justify-center items-start text-end">
-              <div className="md:pl-[14%] pl-[7%]">
+            <article className=" mission-vision-text flex flex-col justify-center items-start text-end">
+              <div className="md:pl-[14%] pl-[0%]">
                 <p className="blue-text uppercase font-avenir-black text-primary">
                   FullSuite Mission
                 </p>
@@ -306,8 +295,8 @@ const AboutUs = () => {
             </article>
 
             {/* Vision Text */}
-            <section id="our-vision">
-              <article className="pt-[15%] md:pt-[18%] lg:pt-[23%] pr-[7%] md:pr-[13%] mission-vision-text flex flex-col justify-start items-start text-start">
+            <section>
+              <article className="pt-[15%] -mr-7 md:mr-1 md:pt-[18%] lg:pt-[23%] md:pr-[13%] mission-vision-text flex flex-col justify-start items-start text-start">
                 <p className="blue-text uppercase w-full font-avenir-black text-primary">
                   Fullsuite Vision
                 </p>
@@ -318,20 +307,22 @@ const AboutUs = () => {
               </article>
             </section>
             {/* Vision Image */}
-            <div className="flex">
-              <div className="md:-translate-y-[10%] md:-translate-x-[10%] bg-[#DFE8CF] p-[5%] max-h-[800px] rounded-2xl lg:rounded-4xl size-[50vw] md:aspect-4/3">
-                <img
-                  className="w-full h-full rounded-2xl lg:rounded-3xl object-cover"
-                  src={imgBuilding}
-                  alt="Mission image"
-                />
+            <section>
+              <div className="flex absolute md:relative overflow-hidden md:overflow-visible">
+                <div className="translate-x-[20%] md:-translate-y-[10%] md:-translate-x-[10%] bg-[#DFE8CF] p-[5%] max-h-[800px] rounded-2xl lg:rounded-4xl size-[50vw] md:aspect-4/3">
+                  <img
+                    className="w-full h-full rounded-lg lg:rounded-2xl object-cover"
+                    src={imgBuilding}
+                    alt="Mission image"
+                  />
+                </div>
               </div>
-            </div>
+            </section>
           </div>
         </section>
 
         {/* Message from the CEO */}
-        <section className="relative pb-20" id="ceo-message">
+        <section className="relative py-10" id="ceo-message">
           {/* Text overlay */}
           <article className="absolute text-end text-white">
             <div className="container-ceo-message pt-[22%] md:pt-[15%] pr-[5%] md:pr-[10%]">

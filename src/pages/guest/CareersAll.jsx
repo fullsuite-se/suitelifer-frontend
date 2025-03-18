@@ -2,24 +2,17 @@ import React, { useEffect, useState } from "react";
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
-import JobCarousel from "../../components/careers/JobCarousel";
-import Footer from "../../components/Footer";
-import SpotifyEmbed from "../../components/careers/SpotifyEmbed";
 import api from "../../utils/axios";
-import JobCarouselVersion2 from "../../components/careers/JobCarouselVersion2";
-import { ChevronRightIcon } from "@heroicons/react/24/solid";
 import GuestIndustryTags from "../../components/careers/GuestIndustriesTags";
-import dotsLine from "../../assets/images/socials-dots-line.svg";
-import bgPodcast from "../../assets/images/bg-career-podcast.svg";
 import bgHero from "../../assets/images/bg-hero-careers.svg";
-import bgHeroTablet from "../../assets/images/bg-tablet-careers.svg";
 import BackToTop from "../../components/BackToTop";
 import BackButton from "../../components/BackButton";
-import GuestBlogTags from "../../components/guest-blogs/GuestBlogTags";
 import { NavLink } from "react-router-dom";
 import { toSlug } from "../../utils/slugUrl";
 
 const CareersAll = () => {
+  window.scroll(0, 0);
+
   const [spotifyEpisodes, setEpisodes] = useState([]);
   const [jobs, setJobs] = useState([]);
 
@@ -120,30 +113,29 @@ const CareersAll = () => {
                     <div className="absolute top-4 right-4 text-primary text-xl cursor-pointer group-hover:text-white">
                       &#8599;
                     </div>
-                    {job.isOpen === 0 || job.isOpen === false ? (
-                      <span className="absolute top-4 left-5 bg-red-100 text-red-700 text-xs font-bold px-7 py-1 rounded-xl">
-                        CLOSED
-                      </span>
-                    ) : null}
+
                     <p
-                      className={`text-xl ${
-                        job.isOpen === 0 || job.isOpen === false
-                          ? "mt-7"
-                          : "mt-3"
-                      } -mb-3 font-avenir-black text-gray-900 group-hover:text-white `}
+                      className={`mt-3 -mb-2 font-avenir-black text-gray-900 group-hover:text-white `}
                     >
                       {job.jobTitle}
                     </p>
-                    <span className="text-sm text-gray-400 uppercase group-hover:text-white group-hover:opacity-50">
+
+                    <div className="flex items-center gap-2 text-sm text-gray-400 uppercase group-hover:text-white group-hover:opacity-50">
                       <span className="text-secondary font-avenir-black">
                         |
-                      </span>{" "}
-                      {job.industryName}
-                    </span>
+                      </span>
+                      <span>{job.industryName}</span>
+                      {job.isOpen === 0 || job.isOpen === false ? (
+                        <span className="bg-red-100 text-red-700 text-xs font-bold px-3 py-1 rounded-xl">
+                          CLOSED
+                        </span>
+                      ) : null}
+                    </div>
+
                     <span className="text-primary font-avenir-black text-sm group-hover:text-white">
                       {job.employmentType}, {job.setupName}
                     </span>
-                    {job.salaryMin && (
+                    {job.salaryMin != null && job.salaryMin > 0 && (
                       <>
                         <p className="text-sm text-gray-400 -mb-3 group-hover:text-white group-hover:opacity-50">
                           Expected Salary
@@ -153,7 +145,7 @@ const CareersAll = () => {
                             style: "currency",
                             currency: "PHP",
                             maximumFractionDigits: 0,
-                          }).format(job.salaryMin)}
+                          }).format(job.salaryMin)}<span className="text-xs font-avenir-roman"> min</span>
                         </p>
                       </>
                     )}

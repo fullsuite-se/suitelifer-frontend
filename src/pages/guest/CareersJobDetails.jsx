@@ -7,8 +7,12 @@ import TabletNav from "../../components/home/TabletNav.jsx";
 import DesktopNav from "../../components/home/DesktopNav.jsx";
 import { toSlug } from "../../utils/slugUrl.js";
 import BackToTop from "../../components/BackToTop.jsx";
+import OnLoadLayoutAnimation from '../../components/layout/OnLoadLayoutAnimation';
+import PageMeta from "../../components/layout/PageMeta.jsx";
 
 const CareersJobDetails = () => {
+  window.scroll(0, 0);
+
   const [jobDetails, setJobDetails] = useState(null);
   const location = useLocation();
   const { jobId } = location.state;
@@ -32,8 +36,26 @@ const CareersJobDetails = () => {
     fetchJobDetails();
   }, []);
 
+  useEffect(() => {
+    if (jobDetails?.jobTitle) {
+      const title = jobDetails?.jobTitle
+        ? `${jobDetails.jobTitle} | Join Us at FullSuite`
+        : "Job Opportunity | Suitelifer";
+      document.title = title;
+    }
+  }, [jobDetails, location]);
+
   return (
     <>
+      <PageMeta
+        isDefer={true}
+        title={
+          jobDetails?.jobTitle
+            ? `${jobDetails.jobTitle} | Join Us at FullSuite`
+            : "Job Opportunity | Suitelifer"
+        }
+        description={jobDetails?.description}
+      />
       {/* MOBILE NAV */}
       <div className="sm:hidden">
         <MobileNav />
@@ -59,7 +81,7 @@ const CareersJobDetails = () => {
             <p className="font-avenir-black text-primary mb-2">
               {jobDetails.employmentType}, {jobDetails.setupName}
             </p>
-            {jobDetails.salaryMin && (
+            {jobDetails.salaryMin != null && jobDetails.salaryMin != 0 && (
               <p className="text-xs mb-5">
                 Expected Salary: <br />
                 <span className="font-avenir-black text-xl text-primary">
@@ -87,17 +109,14 @@ const CareersJobDetails = () => {
                 </p>
                 <ul>
                   {jobDetails.responsibility
-                    .split(". ")
-                    .map((responsibility, index) => {
-                      return (
-                        <li key={index}>
-                          {responsibility}
-                          {index !=
-                            jobDetails.responsibility.split(". ").length - 1 &&
-                            "."}
-                        </li>
-                      );
-                    })}
+                    .split(/\.\s+|\n/)
+                    .filter((responsibility) => responsibility.trim() !== "")
+                    .map((responsibility, index, arr) => (
+                      <li key={index}>
+                        {responsibility.trim()}
+                        {responsibility.trim().endsWith(".") ? "" : "."}{" "}
+                      </li>
+                    ))}
                 </ul>
                 <br />
               </>
@@ -106,19 +125,15 @@ const CareersJobDetails = () => {
               <>
                 <p className="text-primary font-avenir-black">Requirements:</p>
                 <ul>
-                  {jobDetails.requirement &&
-                    jobDetails.requirement
-                      .split(". ")
-                      .map((requirement, index) => {
-                        return (
-                          <li key={index}>
-                            {requirement}
-                            {index !=
-                              jobDetails.requirement.split(". ").length - 1 &&
-                              "."}
-                          </li>
-                        );
-                      })}
+                  {jobDetails.requirement
+                    .split(/\.\s+|\n/)
+                    .filter((requirement) => requirement.trim() !== "")
+                    .map((requirement, index, arr) => (
+                      <li key={index}>
+                        {requirement.trim()}
+                        {requirement.trim().endsWith(".") ? "" : "."}{" "}
+                      </li>
+                    ))}
                 </ul>
                 <br />
               </>
@@ -129,20 +144,20 @@ const CareersJobDetails = () => {
                   Preferred Qualifications:
                 </p>
                 <ul>
-                  {jobDetails.preferredQualification &&
-                    jobDetails.preferredQualification
-                      .split(". ")
-                      .map((preferredQualification, index) => {
-                        return (
-                          <li key={index}>
-                            {preferredQualification}
-                            {index !=
-                              jobDetails.preferredQualification.split(". ")
-                                .length -
-                                1 && "."}
-                          </li>
-                        );
-                      })}
+                  {jobDetails.preferredQualification
+                    .split(/\.\s+|\n/)
+                    .filter(
+                      (preferredQualification) =>
+                        preferredQualification.trim() !== ""
+                    )
+                    .map((preferredQualification, index, arr) => (
+                      <li key={index}>
+                        {preferredQualification.trim()}
+                        {preferredQualification.trim().endsWith(".")
+                          ? ""
+                          : "."}{" "}
+                      </li>
+                    ))}
                 </ul>
                 <br />
               </>
@@ -150,7 +165,7 @@ const CareersJobDetails = () => {
 
             <Link
               className="1fr flex no-underline"
-              to={`/application-form/${jobId}/${toSlug(jobDetails.jobTitle)}`}
+              to={`application-form/${jobId}/${toSlug(jobDetails.jobTitle)}`}
             >
               <button
                 className="mx-auto font-avenir-black bg-primary py-2 text-white rounded-2xl min-w-52 mb-10"
@@ -161,7 +176,9 @@ const CareersJobDetails = () => {
             </Link>
           </div>
         ) : (
-          <p>Loading job details...</p>
+          <section className="grid place-conte`nt-center h-dvh">
+            <OnLoadLayoutAnimation />
+          </section>
         )}
       </div>
       <BackToTop />

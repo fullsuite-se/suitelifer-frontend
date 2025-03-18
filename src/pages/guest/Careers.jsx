@@ -14,11 +14,13 @@ import bgPodcast from "../../assets/images/bg-career-podcast.svg";
 import bgHero from "../../assets/images/bg-hero-careers.svg";
 import bgHeroTablet from "../../assets/images/bg-tablet-careers.svg";
 import BackToTop from "../../components/BackToTop";
+import PageMeta from "../../components/layout/PageMeta";
 
 const Careers = () => {
   const [spotifyEpisodes, setEpisodes] = useState([]);
   const [jobs, setJobs] = useState([]);
-
+  window.scrollTo(0, 0);
+  
   useEffect(() => {
     const fetchEpisodes = async () => {
       try {
@@ -48,6 +50,11 @@ const Careers = () => {
         className="gap-4 overflow-hidden"
         style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
       >
+        <PageMeta
+          title="Careers - SuiteLifer"
+          desc="Your career journey has to start somewhere. Grab the opportunity, start it with us."
+          isDefer={false}
+        />
         {/* MOBILE NAV */}
         <div className="sm:hidden">
           <MobileNav />
