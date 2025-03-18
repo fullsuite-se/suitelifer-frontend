@@ -5,19 +5,15 @@ import {
   DialogTitle,
   DialogPanel,
 } from "@headlessui/react";
-import axios from "axios";
+import api from "../../utils/axios";
 import React, { Fragment } from "react";
-import config from "../../config";
 
 export const ModalLogout = ({ isOpen, handleClose }) => {
   const handleLogout = async () => {
     handleClose();
     try {
-      const response = await axios.post(
-        `${config.apiBaseUrl}/api/logout`,
-        {},
-        { withCredentials: true }
-      );
+      const response = await api.post("/api/logout");
+
       if (response.data.isLoggedOut) {
         window.location.href = "/";
       } else {

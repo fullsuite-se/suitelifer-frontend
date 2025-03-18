@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
-import axios from "axios";
+import api from "../../utils/axios.js";
 import config from "../../config.js";
 import MobileNav from "../../components/home/MobileNav.jsx";
 import TabletNav from "../../components/home/TabletNav.jsx";
@@ -20,9 +20,7 @@ const CareersJobDetails = () => {
 
         console.log(config.apiBaseUrl);
 
-        const response = await axios.get(
-          `${config.apiBaseUrl}/api/get-job-details/${jobId}`
-        );
+        const response = await api.get(`/api/get-job-details/${jobId}`);
         setJobDetails(response.data.data);
 
         console.log(response.data.data);
@@ -149,26 +147,24 @@ const CareersJobDetails = () => {
                 <br />
               </>
             )}
-             
-             <Link 
-  className="1fr flex no-underline" 
-  to={`/application-form/${jobId}/${toSlug(jobDetails.jobTitle)}`} 
->
-  <button
-    className="mx-auto font-avenir-black bg-primary py-2 text-white rounded-2xl min-w-52 mb-10"
-    type="button"
-  >
-    APPLY NOW
-  </button>
-</Link>
 
-
+            <Link
+              className="1fr flex no-underline"
+              to={`/application-form/${jobId}/${toSlug(jobDetails.jobTitle)}`}
+            >
+              <button
+                className="mx-auto font-avenir-black bg-primary py-2 text-white rounded-2xl min-w-52 mb-10"
+                type="button"
+              >
+                APPLY NOW
+              </button>
+            </Link>
           </div>
         ) : (
           <p>Loading job details...</p>
         )}
       </div>
-      <BackToTop/>
+      <BackToTop />
     </>
   );
 };

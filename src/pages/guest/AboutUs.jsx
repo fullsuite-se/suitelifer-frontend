@@ -3,8 +3,7 @@ import Footer from "../../components/Footer";
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
-import axios from "axios";
-import config from "../../config";
+import api from "../../utils/axios";
 import CoreValueCard from "../../components/about-us/CoreValueCard";
 import bgMaggieMobile from "../../assets/images/bg-mobile-chair-cutout.png";
 import bgMaggieDesktop from "../../assets/images/bg-desktop-chair-cutout.png";
@@ -24,7 +23,7 @@ import CoreValue01 from "../../assets/icons/core-value-01";
 import BackToTop from "../../components/BackToTop";
 import FocusedAthleteIcon from "../../assets/icons/FocusedAthleteIcon";
 import TeamPlayerIcon from "../../assets/icons/TeamPlayerIcon";
-import UnderstoodIcon from '../../assets/icons/UnderstoodIcon';
+import UnderstoodIcon from "../../assets/icons/UnderstoodIcon";
 import WorkLifeHarmonyIcon from "../../assets/icons/WorkLifeHarmonyIcon";
 import UpholdsIcon from "../../assets/icons/UpholdsIcon";
 
@@ -41,9 +40,7 @@ const AboutUs = () => {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const response = await axios.get(
-          `${config.apiBaseUrl}/api/get-about-us`
-        );
+        const response = await api.get("/api/get-about-us");
         console.log(response.data.data);
 
         setContent(response.data.data);
@@ -180,7 +177,7 @@ const AboutUs = () => {
             </p>
           </section>
 
-          <section className="flex gap-2 my-5 justify-end">
+          <section className="flex gap-2 py-7 justify-end">
             <div className="h-2 w-2 lg:w-3 lg:h-3 rounded-full opacity-30 bg-primary"></div>
             <div className="h-2 w-2 lg:w-3 lg:h-3 rounded-full opacity-50 bg-primary"></div>
             <div className="h-2 w-2 lg:w-3 lg:h-3 rounded-full opacity-100 bg-primary"></div>
@@ -193,13 +190,12 @@ const AboutUs = () => {
             ></div>
           </section>
         </section>
-        <div className="py-20"></div>
         {/* Our Core Values Section */}
         <section className="overflow-hidden relative">
           <h2 className="font-avenir-black lg:text-4xl! text-center m-0!">
             The suitelifer...
           </h2>
-          <div className="flex flex-col lg:flex-row lg:justify-center lg:mb-[10%] my-[5%] gap-6 lg:gap-10">
+          <div className="flex flex-col lg:flex-row lg:justify-center lg:mb-[7%] py-[5%] gap-6 lg:gap-10">
             <div className="flex justify-evenly lg:flex-none lg:gap-10">
               {/* 1 */}
               <CoreValueCard
