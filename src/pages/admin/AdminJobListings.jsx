@@ -418,7 +418,7 @@ export default function AdminJobListing() {
             : "N/A",
       },
       {
-        headerName: "Action", 
+        headerName: "Action",
         field: "action",
         filter: false,
         headerClass: "text-primary font-bold bg-tertiary",
@@ -805,4 +805,4 @@ export default function AdminJobListing() {
       </Modal>
     </div>
   );
-}
+} 
