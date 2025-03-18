@@ -1,6 +1,5 @@
-
 import { ArrowLeft } from "lucide-react";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import React from "react";
 import Footer from "../Footer";
 import MobileNav from "../home/MobileNav";
@@ -12,11 +11,13 @@ import { toSlug } from "../../utils/slugUrl";
 import GuestBlogCardSmall from "../guest-blogs/GuestBlogCardSmall";
 import NewsCardNoSnippet from "./NewsCardNoSnippet";
 import formatTimestamp from "../../components/TimestampFormatter";
-import BackButton from "../BackButton";
 import BackToTop from "../BackToTop";
+import { Helmet } from "@dr.pogodin/react-helmet";
+import { useEffect } from "react";
 
 const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
-  const { id } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   if (!data) {
     return <h1 className="text-center text-red-500">Not found</h1>;
@@ -24,8 +25,41 @@ const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
 
   const { fullDate } = formatTimestamp(data.created_at);
 
+  useEffect(() => {
+    if (data?.title) {
+      document.title = data.title;
+    }
+  }, [data, location]);
+
+  const handleBackBtn = () => {
+    document.title = `SuiteLifer`;
+    navigate(backPath, { replace: true });
+  };
+
   return (
     <>
+      <Helmet>
+        <title>{data?.title || "SuiteLifer"}</title>
+        <meta
+          name="description"
+          content={
+            data?.article
+              ? data.article.substring(0, 150) + "..."
+              : "Read the latest articles on SuiteLifer."
+          }
+        />
+        <meta
+          name="keywords"
+          content={`${data?.title}, ${type}, SuiteLifer News, SuiteLifer Blogs, blog, news`}
+        />
+        {/* 
+          TODO :
+          <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={data?.title} />
+         <meta name="twitter:description" content={data?.snippet || data?.article?.substring(0, 150)} />
+        <meta name="twitter:image" content={data?.images?.[0] || "https://yourwebsite.com/default-image.jpg"} /> */}
+      </Helmet>
+
       <section
         className="gap-4 h-dvh"
         style={{ maxWidth: "2000px", margin: "0 auto" }}
@@ -39,7 +73,6 @@ const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
         <div className="desktop-nav">
           <DesktopNav />
         </div>
-
         <section className="pt-[10%] xl:pt-[8%] relative">
           <img
             className="-z-50 absolute w-[70%] transform translate-y-5 -translate-x-10 lg:-translate-x-20 xl:-translate-x-50 opacity-90"
@@ -47,14 +80,22 @@ const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
             alt=""
           />
         </section>
-
         <main className="px-[7%] text-sm md:text-base md:px-[5%] lg:px-[8%]">
-          <BackButton backPath={backPath} type={type}/>
+          <button
+            onClick={handleBackBtn}
+            className="flex cursor-pointer items-center gap-2 text-primary !text-[12px] md:text-base font-semibold transition active:font-avenir-black"
+          >
+            <ArrowLeft size={15} /> <span className="mt-1">Back to {type}</span>
+          </button>
           <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-10">
             {/* Main Article */}
             <div>
               <p className="text-[12px] text-gray-500 mt-5">{fullDate}</p>
-              <p className={`text-xl md:text-2xl lg:text-3xl font-avenir-black my-2 ${type === 'News' ? 'font-serif font-bold' : 'font-avenir-black'}`}>
+              <p
+                className={`text-xl md:text-2xl lg:text-3xl font-avenir-black my-2 ${
+                  type === "News" ? "font-serif font-bold" : "font-avenir-black"
+                }`}
+              >
                 {data.title}
               </p>
               <p className="text-[12px] text-gray-500">
@@ -70,10 +111,13 @@ const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
                 imagesWithCaption={data.imagesWithCaption}
               />
 
-<p className={`mt-4 text-gray-700 whitespace-pre-line ${type === "News" ? "font-serif" : ""}`}>
-  {data.article}
-</p>
-
+              <p
+                className={`mt-4 text-gray-700 whitespace-pre-line ${
+                  type === "News" ? "font-serif" : ""
+                }`}
+              >
+                {data.article}
+              </p>
             </div>
 
             {/* Related Articles */}
@@ -115,8 +159,7 @@ const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
             </div>
           </div>
         </main>
-
-        <div className="h-30"></div> <BackToTop/>
+        <div className="h-30"></div> <BackToTop />
         <Footer />
       </section>
     </>
