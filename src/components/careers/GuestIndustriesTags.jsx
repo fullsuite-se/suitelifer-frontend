@@ -18,7 +18,7 @@ const GuestIndustryTags = ({ industries, filter, handleFilterChange }) => {
         >
           All
         </button>
-        {industries.map((industry, index) => (
+        {industries?.map((industry, index) => (
           <button
             key={index}
             onClick={() => handleFilterChange(industry.industryId)}

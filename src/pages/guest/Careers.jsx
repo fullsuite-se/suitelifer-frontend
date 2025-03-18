@@ -56,12 +56,19 @@ const Careers = () => {
     setFilter((f) => filter);
   };
 
-  const fetchFilteredJobListing = () => {
-    //TODO Filtered Job Listing
+  const fetchFilteredJobs = async () => {
+    try {
+      const response = await api.get(`/api/all-open-jobs/${filter}`);
+      console.log(filter);
+
+      setJobs((j) => response.data.data);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
-    fetchFilteredJobListing();
+    filter === "All" ? fetchJobs() : fetchFilteredJobs();
   }, [filter]);
 
   return (
@@ -357,8 +364,18 @@ const Careers = () => {
             <div className="relative hidden lg:block">
               <div className="absolute overflow-hidden -translate-y-35 -z-50 w-[10%] h-30 bg-primary/5 rounded-r-4xl"></div>
             </div>
-            {/* <div className="">View all jobs</div> */}
-            <JobCarouselVersion2 jobs={jobs} />
+            {jobs.length === 0 ? (
+              <div className="grid place-content-center px-5 text-center text-2xl min-h-100 my-7">
+                <p>
+                  No job listings are available for this industry{" "}
+                  <span className="font-avenir-black">at the moment</span>—but
+                  stay tuned!
+                </p>
+                <p>Exciting <span className="text-primary font-avenir-black">opportunities</span> may be coming soon.</p>
+              </div>
+            ) : (
+              <JobCarouselVersion2 jobs={jobs} />
+            )}
           </section>
 
           <div className="-translate-y-27">
