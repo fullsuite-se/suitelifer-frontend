@@ -158,12 +158,12 @@ const Home = () => {
         />
       </div>
 
-      <section className="h-[90dvh] lg:mt-17 mb-[10%]">
+      <section className="h-[100dvh] lg:mt-17 mb-[10%]">
         {/* White */}
         <div id="right-side" className="side pb-17">
           <p className="title">
             <div className="">
-              <span className="title-line-1">Do you feel like your</span> <br />
+              <span className="title-line-1">Do you feel like your</span> <br /> <br />
             </div>
             <div className="animate-fadeInUp">
               <span className="title-line-2">
@@ -180,11 +180,11 @@ const Home = () => {
         <div id="left-side" className="side pb-17">
           <p className="title">
             <div className="">
-              <span className="title-line-1">We can help.</span>{" "}
+              <span className="title-line-1">We can help.</span>{" "} <br /><br />
             </div>
             <div className="">
               <span className="title-line-2">
-                <span className="text-white">Let's get you on the</span>{" "}
+                <span className="text-white">Let's get you on the</span>{" "} <br />
                 <span className="text-black">right track.</span>
               </span>
             </div>{" "}
