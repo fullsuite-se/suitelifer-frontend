@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/guest/Home";
 import AboutUs from "./pages/guest/AboutUs";
 import Careers from "./pages/guest/Careers";
+import CareersAll from "./pages/guest/CareersAll";
 import News from "./pages/guest/News";
 import Contact from "./pages/guest/Contact";
 import Blog from "./pages/guest/Blog";
@@ -37,7 +38,7 @@ import Login from "./components/auth/Login";
 
 // Others
 import { Toaster } from "react-hot-toast";
-import CareersAll from "./pages/guest/CareersAll";
+
 function App() {
   return (
     <>
