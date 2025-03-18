@@ -6,7 +6,6 @@ import { AgGridReact } from "@ag-grid-community/react";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
 import { Outlet, useLocation } from "react-router-dom";
-import AppsIcon from "@mui/icons-material/Apps";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import logofsfull from "../../assets/logos/logo-fs-full.svg";
@@ -161,7 +160,7 @@ const AdminNews = () => {
             </div>
 
             <div className="flex">
-              {/* Button for desktop */}
+              {/* desktop */}
               <button
                 className="hidden sm:block btn-primary"
                 onClick={() => setShowModal(true)}
@@ -169,7 +168,7 @@ const AdminNews = () => {
                 + Add News
               </button>
 
-              {/* Icon Button for Mobile */}
+              {/* Mobile */}
               <button
                 className="sm:hidden p-2 btn-primary"
                 onClick={() => setShowModal(true)}
@@ -199,138 +198,145 @@ const AdminNews = () => {
           </div>
 
           <div className="flex gap-4">
-            <div
-              className="ag-theme-quartz p-5 w-600"
-              style={{ height: "800px" }}
-            >
-              <AgGridReact
-                rowData={rowNewsData}
-                columnDefs={[
-                  {
-                    headerName: "Image",
-                    field: "image",
-                    flex: 1,
-                    filter: "agTextColumnFilter",
-                    headerClass: "text-primary font-bold bg-tertiary",
-                    cellRenderer: (params) => {
-                      if (!params.value) {
-                        return <span>No Image</span>;
-                      }
-                      return (
-                        <img
-                          src={params.value}
-                          alt="News"
-                          className="w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-md object-cover"
-                        />
-                      );
+            <div className="w-full overflow-x-auto">
+              <div
+                className="ag-theme-quartz p-3 sm:p-5 min-w-[600px] lg:w-full"
+                style={{ height: "auto" }}
+              >
+                <AgGridReact
+                  rowData={rowNewsData}
+                  columnDefs={[
+                    {
+                      headerName: "Image",
+                      field: "image",
+                      flex: 2,
+                      filter: "agTextColumnFilter",
+                      headerClass: "text-primary font-bold bg-tertiary",
+                      cellRenderer: (params) =>
+                        params.value ? (
+                          <img
+                            src={params.value}
+                            alt="News"
+                            className="w-[80px] h-[80px] sm:w-[100px] sm:h-[100px] rounded-md object-cover mx-auto"
+                          />
+                        ) : (
+                          <span>No Image</span>
+                        ),
                     },
-                  },
-                  {
-                    headerName: "Title",
-                    field: "title",
-                    flex: 2,
+                    {
+                      headerName: "Title",
+                      field: "title",
+                      flex: 2,
+                      filter: "agTextColumnFilter",
+                      headerClass: "text-primary font-bold bg-tertiary",
+                      valueGetter: (params) =>
+                        params.data.title.replace(/<[^>]*>/g, ""),
+                    },
+                    {
+                      headerName: "Author",
+                      field: "author",
+                      flex: 1,
+                      filter: "agTextColumnFilter",
+                      headerClass: "text-primary font-bold bg-tertiary",
+                      hide: window.innerWidth < 640,
+                    },
+                    {
+                      headerName: "Date Published",
+                      field: "datePublished",
+                      flex: 1,
+                      headerClass: "text-primary font-bold bg-tertiary",
+                      valueGetter: (params) =>
+                        new Date(
+                          params.data.datePublished.seconds * 1000
+                        ).toLocaleString(),
+                      hide: window.innerWidth < 768,
+                    },
+                    {
+                      headerName: "Views",
+                      field: "views",
+                      flex: 1,
+                      filter: "agTextColumnFilter",
+                      headerClass: "text-primary font-bold bg-tertiary",
+                      valueGetter: (params) => formatNumber(params.data.views),
+                    },
+                    {
+                      headerName: "Likes",
+                      field: "likes",
+                      flex: 1,
+                      filter: "agTextColumnFilter",
+                      headerClass: "text-primary font-bold bg-tertiary",
+                      valueGetter: (params) => formatNumber(params.data.likes),
+                    },
+                    {
+                      headerName: "Comments",
+                      field: "comments",
+                      flex: 1,
+                      filter: "agTextColumnFilter",
+                      headerClass: "text-primary font-bold bg-tertiary",
+                      valueGetter: (params) =>
+                        formatNumber(params.data.comments),
+                      hide: window.innerWidth < 768,
+                    },
+                    {
+                      headerName: "Action",
+                      field: "action",
+                      flex: 2,
+                      headerClass: "text-primary font-bold bg-tertiary",
+                      cellRenderer: (params) => (
+                        <div className="flex gap-2">
+                          <button
+                            className="btn-update"
+                            onClick={() => handleEdit(params.data)}
+                          >
+                            <EditIcon />
+                          </button>
+                          <button
+                            className="btn-delete"
+                            onClick={() => handleDelete(params.data.id)}
+                          >
+                            <DeleteIcon />
+                          </button>
+                          <button
+                            className="btn-preview"
+                            onClick={() =>
+                              navigate(`details/${params.data.id}`)
+                            }
+                          >
+                            <PreviewIcon />
+                          </button>
+                        </div>
+                      ),
+                    },
+                  ]}
+                  defaultColDef={{
                     filter: "agTextColumnFilter",
-                    headerClass: "text-primary font-bold bg-tertiary",
-                    valueGetter: (params) =>
-                      params.data.title.replace(/<[^>]*>/g, ""),
-                  },
-                  {
-                    headerName: "Author",
-                    field: "author",
-                    flex: 1,
-                    filter: "agTextColumnFilter",
-                    headerClass: "text-primary font-bold bg-tertiary",
-                    hide: window.innerWidth < 640, 
-                  },
-                  {
-                    headerName: "Date Published",
-                    field: "datePublished",
-                    flex: 1,
-                    headerClass: "text-primary font-bold bg-tertiary",
-                    valueGetter: (params) =>
-                      new Date(
-                        params.data.datePublished.seconds * 1000
-                      ).toLocaleString(),
-                    hide: window.innerWidth < 768, 
-                  },
-                  {
-                    headerName: "Views",
-                    field: "views",
-                    flex: 1,
-                    filter: "agTextColumnFilter",
-                    headerClass: "text-primary font-bold bg-tertiary",
-                    valueGetter: (params) => formatNumber(params.data.views),
-                  },
-                  {
-                    headerName: "Likes",
-                    field: "likes",
-                    flex: 1,
-                    filter: "agTextColumnFilter",
-                    headerClass: "text-primary font-bold bg-tertiary",
-                    valueGetter: (params) => formatNumber(params.data.likes),
-                  },
-                  {
-                    headerName: "Comments",
-                    field: "comments",
-                    flex: 1,
-                    filter: "agTextColumnFilter",
-                    headerClass: "text-primary font-bold bg-tertiary",
-                    valueGetter: (params) => formatNumber(params.data.comments),
-                    hide: window.innerWidth < 768, // Hide on tablets and smaller
-                  },
-                  {
-                    headerName: "Action",
-                    field: "action",
-                    flex: 1,
-                    headerClass: "text-primary font-bold bg-tertiary",
-                    cellRenderer: (params) => (
-                      <div className="flex gap-2">
-                        <button
-                          className="btn-update"
-                          onClick={() => handleEdit(params.data)}
-                        >
-                          <EditIcon />
-                        </button>
-                        <button
-                          className="btn-delete"
-                          onClick={() => handleDelete(params.data.id)}
-                        >
-                          <DeleteIcon />
-                        </button>
-                        <button
-                          className="btn-preview"
-                          onClick={() => navigate(`details/${params.data.id}`)}
-                        >
-                          <PreviewIcon />
-                        </button>
-                      </div>
-                    ),
-                  },
-                ]}
-                defaultColDef={{
-                  filter: "agTextColumnFilter",
-                  floatingFilter: true,
-                  sortable: true,
-                  cellStyle: {
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "left",
-                  },
-                }}
-                domLayout="autoHeight" 
-                className="overflow-x-auto"
-                rowHeight={80} 
-                pagination
-                paginationPageSize={6}
-              />
+                    floatingFilter: true,
+                    sortable: true,
+                    cellStyle: {
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "left",
+                    },
+                  }}
+                  domLayout="autoHeight"
+                  rowHeight={
+                    window.innerWidth < 640
+                      ? 60
+                      : window.innerWidth < 768
+                      ? 70
+                      : 80
+                  }
+                  pagination
+                  paginationPageSize={10}
+                  paginationPageSizeSelector={[10, 20, 50]}
+                />
+              </div>
             </div>
           </div>
 
           <Dialog open={showModal} onClose={() => setShowModal(false)}>
             <div className="relative p-6">
               {" "}
-              {/* Container with padding */}
-              {/* Close Button */}
               <button
                 className="absolute top-2 right-2 p-2 rounded-full hover:bg-gray-200"
                 onClick={() => setShowModal(false)}
