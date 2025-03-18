@@ -20,6 +20,8 @@ import { NavLink } from "react-router-dom";
 import { toSlug } from "../../utils/slugUrl";
 
 const CareersAll = () => {
+  window.scroll(0, 0);
+
   const [spotifyEpisodes, setEpisodes] = useState([]);
   const [jobs, setJobs] = useState([]);
 

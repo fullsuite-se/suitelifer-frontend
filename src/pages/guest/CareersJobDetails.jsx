@@ -9,6 +9,8 @@ import { toSlug } from "../../utils/slugUrl.js";
 import BackToTop from "../../components/BackToTop.jsx";
 
 const CareersJobDetails = () => {
+  window.scroll(0, 0);
+
   const [jobDetails, setJobDetails] = useState(null);
   const location = useLocation();
   const { jobId } = location.state;

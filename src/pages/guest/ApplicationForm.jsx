@@ -16,6 +16,8 @@ import FileUploadIcon from "../../assets/icons/file-upload";
 import { useParams } from "react-router-dom";
 import BackToTop from "../../components/BackToTop";
 const ApplicationForm = () => {
+  window.scroll(0, 0);
+
   const { id, jobPosition } = useParams();
   const [position, setPosition] = useState(jobPosition);
 

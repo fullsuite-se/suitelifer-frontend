@@ -18,7 +18,8 @@ import BackToTop from "../../components/BackToTop";
 const Careers = () => {
   const [spotifyEpisodes, setEpisodes] = useState([]);
   const [jobs, setJobs] = useState([]);
-
+  window.scrollTo(0, 0);
+  
   useEffect(() => {
     const fetchEpisodes = async () => {
       try {

@@ -18,6 +18,7 @@ import BackToTop from "../../components/BackToTop";
 
 const Home = () => {
   const [width, setWidth] = useState(window.innerWidth); //FOR DEBUGGING
+  window.scroll(0, 0);
 
   useEffect(() => {
     const handleResize = () => {

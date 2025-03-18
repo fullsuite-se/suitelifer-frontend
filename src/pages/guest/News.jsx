@@ -15,6 +15,7 @@ const News = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchTerm, setSearchTerm] = useState(""); // Stores search term when button is clicked
   const [isSearching, setIsSearching] = useState(false);
+  window.scroll(0, 0);
 
   const handleSearch = () => {
     if (searchQuery.trim() !== "") {
