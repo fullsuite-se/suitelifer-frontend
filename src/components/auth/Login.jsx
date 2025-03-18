@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
+import api from "../../utils/axios";
 import config from "../../config";
 import * as THREE from "three";
 import GLOBE from "vanta/dist/vanta.net.min";
@@ -21,17 +21,12 @@ const Login = () => {
   useEffect(() => {
     const fetchUser = async () => {
       const user = await getUserFromCookie();
-      if (!user) {
-        const newToken = await refreshToken();
-        if (newToken) {
-          window.location.reload();
-          user = await getUserFromCookie();
-        }
-      }
+
       if (user) {
         navigate("/app/blogs-feed");
       }
     };
+
     fetchUser();
   }, []);
 
@@ -77,11 +72,7 @@ const Login = () => {
 
     try {
       setLoading(true);
-      const response = await axios.post(
-        `${config.apiBaseUrl}/api/login`,
-        { email, password },
-        { withCredentials: true }
-      );
+      const response = await api.post("/api/login", { email, password });
 
       if (response.data.accessToken) {
         toast.success("Welcome back! You have successfully logged in.");
@@ -121,6 +112,7 @@ const Login = () => {
       id="vanta-bg"
       className="w-screen h-screen flex justify-start items-center bg-white"
     >
+      {}
       <div
         className="bg-white mx-auto rounded-2xl p-10 py-16 border border-gray-200"
         style={{ width: "min(90%, 600px)" }}
