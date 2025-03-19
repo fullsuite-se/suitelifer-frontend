@@ -148,19 +148,19 @@ function JobCourse() {
                 {
                   headerName: "Title",
                   field: "title",
-                  flex: 2,
+                  flex: 1,
                   headerClass: "text-primary font-bold bg-tertiary",
                 },
                 {
                   headerName: "Related Job",
                   field: "relatedJob",
-                  flex: 2,
+                  flex: 1,
                   headerClass: "text-primary font-bold bg-tertiary",
                 },
                 {
                   headerName: "URL",
                   field: "url",
-                  flex: 2,
+                  flex: 1,
                   headerClass: "text-primary font-bold bg-tertiary",
                 },
                 {
