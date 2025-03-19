@@ -120,8 +120,8 @@ const HomeGoalsOperations = () => {
             className="-z-10 w-[100%] hidden sm:block"
           />
         </MotionUp>
-
-        <section className="flex flex-col sm:flex-row justify-center items-center md:flex-row gap-3 lg:gap-8 xl:gap-10 px-4 max-h-min">
+{/* 
+        <section className="flex flex-col sm:flex-row justify-center items-start md:flex-row gap-3 lg:gap-8 xl:gap-10 px-4 max-h-min">
   {operations.slice(-3).map((op, index) => (
     <MotionUp
       key={index}
@@ -131,10 +131,11 @@ const HomeGoalsOperations = () => {
         px-[10%] 
         sm:px-0 
         flex flex-col items-center
-        ${index === 0 ? "sm:transform sm:-translate-y-[28%]" : ""}
-        ${index === 2 ? "admin-op sm:transform sm:-translate-y-[8%]" : ""}
+  
       `}
-    >
+    >     
+     ${index === 0 ? "sm:transform sm:-translate-y-[28%]" : ""}
+        ${index === 2 ? "admin-op sm:transform sm:-translate-y-[8%]" : ""}
       <img
         className="rounded-4xl sm:rounded-3xl size-[80%] lg:size-[60%] object-cover aspect-[3/4] transition-all duration-300 hover:scale-95"
         src={op.image}
@@ -145,7 +146,7 @@ const HomeGoalsOperations = () => {
       </p>
     </MotionUp>
   ))}
-</section>
+</section> */}
 
       </div>
 

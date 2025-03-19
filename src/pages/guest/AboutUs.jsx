@@ -77,37 +77,29 @@ const AboutUs = () => {
         <section className="overflow-hidden about-container" id="our-story">
           <div className="h-56 w-72">
             <img
-              style={{ animation: "slideInFromLeft 0.8s ease-out forwards" }}
+              // style={{ animation: "slideInFromLeft 0.8s ease-out forwards" }}
               className="w-full h-full object-cover rounded-r-3xl "
               src="https://images.unsplash.com/photo-1739382121445-19b3460a9e7a?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             />
           </div>
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="about-text-banner flex flex-col mb-2"
+          <div className="about-text-banner flex flex-col mb-2"
           >
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut", delay: 1 }}
-              className="font-avenir-black px-5"
+            <h2 className="font-avenir-black px-5"
             >
               {content.textBanner}
-            </motion.h2>
+            </h2>
 
-            <motion.div
+            {/* <motion.div
               initial={{ x: 100, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
               className="h-10 w-20 lg:h-20 lg:w-32 rounded-l-2xl bg-primary ml-auto mb-2"
-            />
-          </motion.div>
+            /> */}
+          </div>
 
           <div className="mx-5">
             <img
-              className="w-full h-full object-cover rounded-3xl animate-slideInLong"
+              className="w-full h-full object-cover rounded-3xl"
               src="https://images.unsplash.com/photo-1739382120576-b1434e8bc4d3?q=80&w=1975&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             />
           </div>
@@ -264,9 +256,9 @@ const AboutUs = () => {
 
         {/* Mission Vision LASTLY: CHANGE LAYOUT FOR MOBILE. BREAKPOINT: 480px */}
         <section className="flex justify-center mb-[5%] md:mb-0 md:pb-[0%]">
-          <div className="grid grid-cols-2 grid-rows-2 px-[5%] lg:max-h-[1600px]">
+          <div  className="grid grid-cols-2 grid-rows-2 px-[5%] lg:max-h-[1600px]">
             {/* Mission Image */}
-            <section>
+            <section id="our-mission">
               <div className="flex justify-end absolute md:relative">
                 <div className="-translate-x-[20%] md:translate-y-[10%] md:translate-x-[10%] bg-primary/50 p-[5%] max-h-[800px] rounded-2xl lg:rounded-4xl size-[50vw] md:aspect-4/3">
                   <img
@@ -279,7 +271,7 @@ const AboutUs = () => {
             </section>
 
             {/* Mission Text */}
-            <article className=" mission-vision-text flex flex-col justify-center items-start text-end">
+            <article  className=" mission-vision-text flex flex-col justify-center items-start text-end">
               <div className="md:pl-[14%] pl-[0%]">
                 <p className="blue-text uppercase font-avenir-black text-primary">
                   FullSuite Mission
@@ -292,7 +284,7 @@ const AboutUs = () => {
             </article>
 
             {/* Vision Text */}
-            <section>
+            <section id="our-vision">
               <article className="pt-[15%] -mr-7 md:mr-1 md:pt-[18%] lg:pt-[23%] md:pr-[13%] mission-vision-text flex flex-col justify-start items-start text-start">
                 <p className="blue-text uppercase w-full font-avenir-black text-primary">
                   Fullsuite Vision
@@ -455,7 +447,7 @@ const AboutUs = () => {
         </div> */}
       </main>
       <BackToTop />
-      
+
       <FooterNew />
     </section>
   );

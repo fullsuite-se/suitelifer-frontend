@@ -18,6 +18,7 @@ import BackToTop from "../../components/BackToTop";
 import { Helmet } from "@dr.pogodin/react-helmet";
 import PageMeta from "../../components/layout/PageMeta";
 import FooterNew from "../../components/FooterNew";
+import CareerCarousel from "../../components/home/CareerCarousel";
 
 const Home = () => {
   const [width, setWidth] = useState(window.innerWidth); //FOR DEBUGGING
@@ -178,7 +179,7 @@ const Home = () => {
           </p>
         </div>
         {/* Blue */}
-        <div id="left-side" className="side pb-17 relative">
+        <div id="left-side" className="side pb-17 relative rounded-r-4xl md:rounded-r-[50px]">
           <img
             src={rocketship}
             alt="Rocketship"
@@ -205,6 +206,18 @@ const Home = () => {
       {/* GOAL AND OPERATIONS */}
       <HomeGoalsOperations />
       {/* <div className="h-300 bg-red-900"></div> */}
+
+      <div className="mb-16 text-center">
+          <span className="text-sm text-primary  font-avenir-black block mb-4">
+            WHAT WE OFFER
+          </span>
+          <p className="text-4xl font-bold font-avenir-black text-dark">
+          Your Next Career Starts Here
+          </p>
+        </div>
+      <CareerCarousel />
+
+
       {/* NEWS SECTION */}
       <HomeNews />
 

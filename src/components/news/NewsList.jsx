@@ -11,17 +11,17 @@ const newsList = [
       {
         image:
           "https://about.fb.com/wp-content/uploads/2023/09/GettyImages-686732223.jpg",
-        caption: "FullSuite team discussing startup growth strategies",
+        // caption: "FullSuite team discussing startup growth strategies",
       },
       {
         image:
           "https://images.unsplash.com/photo-1579567761406-4684ee0c75b6?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fHRlY2h8ZW58MHx8MHx8fDA%3D",
-        caption: "Startups leveraging FullSuite’s financial solutions",
+        // caption: "Startups leveraging FullSuite’s financial solutions",
       },
       {
         image:
           "https://images.unsplash.com/photo-1541746972996-4e0b0f43e02a?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8c3RhcnR1cHxlbnwwfHwwfHx8MA%3D%3D",
-        caption: "FullSuite helping startups scale operations",
+        // caption: "FullSuite helping startups scale operations",
       },
     ],
   },
@@ -37,16 +37,16 @@ const newsList = [
       {
         image:
           "https://www.jeffbullas.com/wp-content/uploads/2020/06/Startup-Funding-%E2%80%93-A-Comprehensive-Guide-for-Entrepreneurs.jpg",
-        caption: "FullSuite’s financial services for startups",
+        // caption: "FullSuite’s financial services for startups",
       },
       {
         image:
           "https://media.licdn.com/dms/image/v2/D5612AQEubj8AkC71DA/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1714050908982?e=2147483647&v=beta&t=fTC9fr9fl9Ho5ZppHR76pTkWXNA4FDn69jc9v-Gdh4g",
-        caption: "Tech startups leveraging FullSuite’s expertise",
+        // caption: "Tech startups leveraging FullSuite’s expertise",
       },
       {
         image: "https://wallpaperaccess.com/full/1104816.jpg",
-        caption: "Navigating financial growth with FullSuite",
+        // caption: "Navigating financial growth with FullSuite",
       },
     ],
   },
@@ -62,17 +62,17 @@ const newsList = [
       {
         image:
           "https://www.ceo-review.com/wp-content/uploads/2022/11/Tech-Entrepreneur.jpg ",
-        caption: "FullSuite enabling smarter startup scaling",
+        // caption: "FullSuite enabling smarter startup scaling",
       },
       {
         image:
           "https://www.clicdata.com/wp-content/uploads/2020/01/blog-inside-story-tech-startup.png",
-        caption: "A startup leveraging FullSuite’s services",
+        // caption: "A startup leveraging FullSuite’s services",
       },
       {
         image:
           "https://media.licdn.com/dms/image/v2/D5612AQEubj8AkC71DA/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1714050908982?e=2147483647&v=beta&t=fTC9fr9fl9Ho5ZppHR76pTkWXNA4FDn69jc9v-Gdh4g",
-        caption: "FullSuite’s role in startup growth and operations",
+        // caption: "FullSuite’s role in startup growth and operations",
       },
     ],
   },
@@ -109,7 +109,7 @@ const newsList = [
       {
         image:
           "https://www.clicdata.com/wp-content/uploads/2020/01/blog-inside-story-tech-startup.png",
-        caption: "FullSuite supporting startups in global expansion",
+        // caption: "FullSuite supporting startups in global expansion",
       },
       { image: "", caption: "Managing international finances with FullSuite" },
       { image: "", caption: "How FullSuite aids startups in compliance" },
