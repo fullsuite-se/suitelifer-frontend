@@ -4,11 +4,12 @@ import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
 import BackButton from "../../components/BackButton";
 import FileUploadIcon from "../../assets/icons/file-upload";
-import { Navigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import BackToTop from "../../components/BackToTop";
 import { toSlug, unSlug } from "../../utils/slugUrl";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import atsAPI from "../../utils/atsAPI";
+import api from "../../utils/axios";
+import toast from "react-hot-toast";
 
 const ApplicationForm = () => {
   useEffect(() => {
@@ -33,8 +34,9 @@ const ApplicationForm = () => {
     applied_source: "Suitelife",
     referrer_name: "",
     position_id: id,
-    created_by: import.meta.env.VITE_GUEST_USER,
-    updated_by: import.meta.env.VITE_GUEST_USER,
+    test_result: null,
+    created_by: null,
+    updated_by: null,
   });
 
   const handleApplicationDetailsChange = (e) => {
@@ -59,10 +61,7 @@ const ApplicationForm = () => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const upload_response = await axios.post(
-        `${import.meta.env.VITE_ATS_API_BASE_URL}/upload/cv`,
-        formData
-      );
+      const upload_response = await atsAPI.post("/upload/cv", formData);
       console.log(upload_response.data.fileUrl);
       setApplicationDetails((ad) => ({
         ...ad,
@@ -70,17 +69,34 @@ const ApplicationForm = () => {
       }));
       console.log(applicationDetails);
 
-      const response = await axios.post(
-        `${import.meta.env.VITE_ATS_API_BASE_URL}/applicants/add`,
-        {
-          applicant: JSON.stringify(applicationDetails),
-        }
-      );
-      console.log(response.data);
+      const response = await atsAPI.post("/applicants/add", {
+        applicant: JSON.stringify(applicationDetails),
+      });
+
+      if (response.data.message === "successfully inserted") {
+        const res = await api.post("/api/get-job-assessment-url", {
+          job_id: id,
+        });
+
+        const assessmentUrl = res.data.data.assessmentUrl;
+
+        toast.success("Job Application Successful.");
+
+        navigate("/congrats-application-form", { state: { assessmentUrl } });
+      } else {
+        toast.error("Job Application Unsuccessful.");
+      }
     } catch (err) {
       console.log(err);
     }
   };
+
+  useEffect(() => {
+    window.scroll(0, 0);
+    console.log(id);
+  }, []);
+
+  const navigate = useNavigate();
 
   return (
     <section
@@ -283,193 +299,6 @@ const ApplicationForm = () => {
                   </div>
                 )}
               </div>
-              {/* <div className="md:col-span-2">
-                <label className="block text-gray-700 font-avenir-black">
-                  What are you applying for?
-                  <span className="text-primary">*</span>
-                </label>
-                <select
-                  name="applicationType"
-                  required
-                  defaultValue=""
-                  className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
-                >
-                  <option value="" disabled>
-                    Select an option
-                  </option>
-                  <option value="job">Job Position</option>
-                  <option value="internship">Internship</option>
-                </select>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-gray-700 font-avenir-black">
-                    Rate the shift you most prefer:
-                    <span className="text-primary">*</span>
-                  </label>
-                  <select
-                    name="applicationType"
-                    defaultValue=""
-                    required
-                    className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
-                  >
-                    <option value="" disabled>
-                      Select an option
-                    </option>
-
-                    <option value="day-shift">
-                      Day Shift (7:00 AM to 4:00 PM)
-                    </option>
-                    <option value="mid-shift">
-                      Mid Shift (2:00 AM to 11:00 PM)
-                    </option>
-                    <option value="night-shift">
-                      Night Shift (9:00 AM to 6:00 PM)
-                    </option>
-                  </select>{" "}
-                </div>
-                <div>
-                  <label className="block text-gray-700 font-avenir-black">
-                    Rate the shift you prefer second:
-                    <span className="text-primary">*</span>
-                  </label>
-                  <select
-                    name="applicationType"
-                    defaultValue=""
-                    required
-                    className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
-                  >
-                    <option value="" disabled>
-                      Select an option
-                    </option>
-
-                    <option value="day-shift">
-                      Day Shift (7:00 AM to 4:00 PM)
-                    </option>
-                    <option value="mid-shift">
-                      Mid Shift (2:00 AM to 11:00 PM)
-                    </option>
-                    <option value="night-shift">
-                      Night Shift (9:00 AM to 6:00 PM)
-                    </option>
-                  </select>
-                </div>
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-gray-700 font-avenir-black">
-                  If you are not a resident of Baguio City and its nearby areas,
-                  are you willing to shoulder your own living expenses should
-                  you be hired for a job or an internship?
-                  <span className="text-primary">*</span>
-                </label>
-                <div className="flex gap-4 mt-3">
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      name="residency"
-                      value="yes"
-                      required
-                      className="text-primary focus:ring-primary"
-                    />
-                    <span className="ml-2 text-gray-700">Yes</span>
-                  </label>
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      name="residency"
-                      value="no"
-                      required
-                      className="text-primary focus:ring-primary"
-                    />
-                    <span className="ml-2 text-gray-700">No</span>
-                  </label>
-                </div>
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-gray-700 font-avenir-black">
-                  What are the requirements you already posses? Just choose
-                  whichever you may already have.
-                  <span className="text-primary">*</span>
-                </label>
-                <div className="flex flex-col gap-3 mt-3">
-                  {[
-                    "  Birth Certificate",
-                    "  PhilHealth ID",
-                    "  PAGIBIG ID",
-                    "  SSS",
-                    "  Barangay Clearance",
-                    "  Police Clearance",
-                    "  NBI Clearance",
-                    "TIN",
-                    "RTC Clearance",
-                    "2 Government ID's",
-                    "Academic Record",
-                    "Certificate of Clearance",
-                    "Form 2316",
-                  ].map((requirement) => (
-                    <label key={requirement} className="flex items-center">
-                      <input
-                        type="checkbox"
-                        name="requirements"
-                        value={requirement}
-                        required
-                        className="text-primary focus:ring-primary"
-                      />
-                      <span className="ml-2 text-gray-700">{requirement}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-gray-700 font-avenir-black">
-                    When are you available for a face-to-face interview?
-                    (Primary Option) <span className="text-primary">*</span>
-                  </label>
-                  <input
-                    type="date"
-                    name="birthdate"
-                    required
-                    className="w-full p-3 border-none rounded-md mt-3 bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 font-avenir-black">
-                    When are you available for a face-to-face interview?
-                    (Secondary Option) <span className="text-primary">*</span>
-                  </label>
-                  <input
-                    type="date"
-                    name="birthdate"
-                    required
-                    className="w-full p-3 border-none mt-3 rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-gray-700 font-avenir-black">
-                  If hired, when can you start?
-                  <span className="text-primary">*</span>
-                </label>
-                <div className="flex flex-col gap-3 mt-3">
-                  {[
-                    "  Within the week",
-                    "Atleast one week from job offer",
-                    "  Atleast one month from job offer",
-                  ].map((option) => (
-                    <label key={option} className="flex items-center">
-                      <input
-                        type="radio"
-                        name="whenStart"
-                        value={option}
-                        required
-                        className="text-primary focus:ring-primary"
-                      />
-                      <span className="ml-2 text-gray-700">{option}</span>
-                    </label>
-                  ))}
-                </div>
-              </div> */}
               <div className="mt-10">
                 <label className="block text-gray-700 font-avenir-black mb-3">
                   Upload your Curriculum Vitae here:{" "}
@@ -489,7 +318,10 @@ const ApplicationForm = () => {
                     {/* {isDragging
                       ? "Drop your file here"
                       : "Click to upload or drag and drop here"} */}
-                    Click here to upload your CV or drag and drop it here
+
+                    {file == null
+                      ? "Click here to upload your CV or drag and drop it here"
+                      : `Selected file: ${file.name}`}
                   </span>
                 </label>
 
@@ -501,13 +333,6 @@ const ApplicationForm = () => {
                   onChange={handleFileChange}
                   accept=".pdf,.doc,.docx"
                 />
-
-                {/* Show Selected File */}
-                {file && (
-                  <p className="mt-3 text-gray-700">
-                    Selected file: {file.name}
-                  </p>
-                )}
               </div>
               <div className="py-2"></div>
               <button
