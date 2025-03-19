@@ -117,6 +117,7 @@ const BlogCreate = () => {
           handleTitleChange={handleTitleChange}
           handleDescriptionChange={handleDescriptionChange}
           handleSubmit={handleSubmit}
+          type={"eblog"}
         />
       </section>
     </section>
