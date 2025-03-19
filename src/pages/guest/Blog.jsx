@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../../components/Footer";
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
@@ -19,8 +19,6 @@ const Blog = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-  window.scroll(0, 0);
-
 
   const handleSearch = () => {
     if (searchQuery.trim() !== "") {
@@ -35,11 +33,14 @@ const Blog = () => {
     setIsSearching(false);
   };
 
+  useEffect(() => {
+    window.scroll(0, 0);
+
+    return () => {};
+  }, []);
+
   return (
-    <section
-      className="gap-4"
-      style={{ maxWidth: "1800px", margin: "0 auto" }}
-    >
+    <section className="gap-4" style={{ maxWidth: "1800px", margin: "0 auto" }}>
       <PageMeta
         title="Blogs - SuiteLifer"
         desc="Dive into our collection of valuable perspectives on all things Startup, Careers, Baguio, and Fullsuite."

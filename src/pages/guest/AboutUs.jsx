@@ -11,15 +11,12 @@ import imgBuilding from "../../assets/images/img-building.svg";
 import imgMeeting from "../../assets/images/img-meeting.svg";
 import dotsLine from "../../assets/images/socials-dots-line.svg";
 import Testimonials from "../../components/about-us/TestimonialSection";
-import MissionVisionList from "../../components/about-us/MissionVisionList";
 import FillerBoxes from "../../assets/images/about-filler-boxes.png";
 import YouTubeEmbed from "../../components/home/YoutubeEmbed";
 import largeBottomFiller from "../../assets/images/about-large-bottom-filler.svg";
 import smallBottomFiller from "../../assets/images/about-small-bottom-filler.svg";
 
 import { motion } from "framer-motion";
-// TEMPORARY ICON
-import CoreValue01 from "../../assets/icons/core-value-01";
 import BackToTop from "../../components/BackToTop";
 import FocusedAthleteIcon from "../../assets/icons/FocusedAthleteIcon";
 import TeamPlayerIcon from "../../assets/icons/TeamPlayerIcon";
@@ -39,9 +36,8 @@ const AboutUs = () => {
     setClickCount((prev) => (prev < 6 ? prev + 1 : 0)); // Reset after animation
   };
 
-  // window.scroll(0, 0);
-
   useEffect(() => {
+    window.scroll(0, 0);
     const fetchContent = async () => {
       try {
         const response = await api.get("/api/get-about-us");
@@ -289,9 +285,9 @@ const AboutUs = () => {
                   FullSuite Mission
                 </p>
                 <p className="title font-avenir-black">
-                  {MissionVisionList[0].title}
+                  {content.missionSlogan}
                 </p>
-                <p className="description">{MissionVisionList[0].content}</p>
+                <p className="description">{content.mission}</p>
               </div>
             </article>
 
@@ -302,9 +298,9 @@ const AboutUs = () => {
                   Fullsuite Vision
                 </p>
                 <p className="title font-avenir-black w-full">
-                  {MissionVisionList[1].title}
+                  {content.visionSlogan}
                 </p>
-                <p className="description">{MissionVisionList[1].content}</p>
+                <p className="description">{content.vision}</p>
               </article>
             </section>
             {/* Vision Image */}

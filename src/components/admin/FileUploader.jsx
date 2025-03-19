@@ -87,7 +87,6 @@ const FileUploaderProvider = ({ onUpload, children }) => {
           </div>
         </div>
 
-        {/* See More Button */}
         {attachments.length > 4 && (
           <div className="items-center justify-center flex">
             <button className="btn-light" onClick={() => setShowModal(true)}>
@@ -96,7 +95,7 @@ const FileUploaderProvider = ({ onUpload, children }) => {
           </div>
         )}
 
-        {/* Modal to View All Attachments */}
+        {/* View All Attachments */}
         <Dialog open={showModal} onClose={() => setShowModal(false)}>
           <DialogTitle>All Attachments</DialogTitle>
           <DialogContent>

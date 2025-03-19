@@ -84,7 +84,7 @@ const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
         <main className="px-[7%] text-sm md:text-base md:px-[5%] lg:px-[8%]">
           <button
             onClick={handleBackBtn}
-            className="flex cursor-pointer items-center gap-2 text-primary !text-[12px] md:text-base font-semibold transition active:font-avenir-black"
+            className="flex cursor-pointer hover:underline items-center gap-2 text-primary !text-[12px] md:text-base font-semibold transition active:font-avenir-black"
           >
             <ArrowLeft size={15} /> <span className="mt-1">Back to {type}</span>
           </button>

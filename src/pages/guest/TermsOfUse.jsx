@@ -12,7 +12,6 @@ import FooterNew from "../../components/FooterNew";
 
 
 const TermsOfUse = () => {
-  window.scroll(0, 0);
 
   useEffect(() => {
     window.scrollTo(0, 0);

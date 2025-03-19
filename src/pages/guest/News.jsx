@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../../components/Footer";
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
@@ -17,7 +17,6 @@ const News = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchTerm, setSearchTerm] = useState(""); // Stores search term when button is clicked
   const [isSearching, setIsSearching] = useState(false);
-  window.scroll(0, 0);
 
   const handleSearch = () => {
     if (searchQuery.trim() !== "") {
@@ -31,6 +30,10 @@ const News = () => {
     setSearchTerm("");
     setIsSearching(false);
   };
+
+  useEffect(() => {
+    window.scroll(0, 0);
+  }, []);
 
   return (
     <section

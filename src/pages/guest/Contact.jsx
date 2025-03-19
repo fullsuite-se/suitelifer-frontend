@@ -18,8 +18,6 @@ import { useEffect, useState } from "react";
 import PageMeta from "../../components/layout/PageMeta";
 import FooterNew from "../../components/FooterNew";
 const Contact = () => {
-  window.scroll(0, 0);
-
   const fadeInUp = {
     hidden: { opacity: 0, y: 50 },
     visible: {
@@ -32,6 +30,7 @@ const Contact = () => {
 
   useEffect(() => {
     setIsLoaded(true);
+    window.scroll(0, 0);
   }, []);
 
   return (

@@ -21,9 +21,9 @@ import FooterNew from "../../components/FooterNew";
 
 const Home = () => {
   const [width, setWidth] = useState(window.innerWidth); //FOR DEBUGGING
-  window.scroll(0, 0);
 
   useEffect(() => {
+    window.scroll(0, 0);
     const left = document.getElementById("left-side");
     if (!left) return; // Prevent errors if the element is not yet rendered
 
@@ -159,12 +159,12 @@ const Home = () => {
         />
       </div>
 
-      <section className="h-[90dvh] lg:mt-17 mb-[10%]">
+      <section className="h-[100dvh] lg:mt-17 mb-[10%]">
         {/* White */}
         <div id="right-side" className="side pb-17">
           <p className="title">
             <div className="">
-              <span className="title-line-1">Do you feel like your</span> <br />
+              <span className="title-line-1">Do you feel like your</span> <br /> <br />
             </div>
             <div className="animate-fadeInUp">
               <span className="title-line-2">
@@ -191,7 +191,7 @@ const Home = () => {
             </div>
             <div>
               <span className="title-line-2">
-                <span className="text-white">Let's get you on the</span>{" "}
+                <span className="text-white">Let's get you on the</span>{" "} <br />
                 <span className="text-black">right track.</span>
               </span>
             </div>

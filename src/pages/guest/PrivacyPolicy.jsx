@@ -10,7 +10,6 @@ import PrivacyPolicyContent from "../../components/legal/PrivacyPolicyContent";
 import BackToTop from "../../components/BackToTop";
 
 const PrivacyPolicy = () => {
-  window.scroll(0, 0);
 
   useEffect(() => {
     window.scrollTo(0, 0);
