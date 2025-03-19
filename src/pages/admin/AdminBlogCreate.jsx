@@ -4,6 +4,7 @@ import api from "../../utils/axios";
 import ContentEditor from "../../components/ContentEditor";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../../store/authStore";
+import toast from "react-hot-toast";
 
 const AdminBlogCreate = () => {
   const navigate = useNavigate();
@@ -24,8 +25,48 @@ const AdminBlogCreate = () => {
     setBlogDescription(content);
   };
 
-  const handleSubmit = () => {
-    alert("hello");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const data = {
+        title: blogTitle.trim(),
+        description: blogDescription.trim(),
+        userId: user.id,
+      };
+
+      const blogResponse = await api.post("/api/add-company-blog", data);
+
+      if (!blogResponse.data?.id) {
+        toast.error("Failed to create news. Please try again.");
+        return;
+      }
+
+      const blogId = blogResponse.data.id;
+      console.log(blogId);
+
+      if (files.length > 0) {
+        const formData = new FormData();
+        files.forEach((file) => formData.append("images", file));
+
+        await api.post(
+          `/api/upload-save-image/cBlog/blogs/${blogId}`,
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
+      }
+
+      if (blogResponse.data.isSuccess) {
+        toast.success(blogResponse.data.message || "Blog added successfully!");
+      } else {
+        toast.error(blogResponse.data.message || "Something went wrong.");
+      }
+    } catch (error) {
+      console.error("Error adding blog:", error);
+      toast.error("Something went wrong. Please try again.");
+    }
   };
 
   return (
@@ -49,23 +90,12 @@ const AdminBlogCreate = () => {
           boxShadow: "rgba(0, 0, 0, 0.08) 0px 4px 12px",
         }}
       >
-        <div className="flex items-center gap-4">
-          <div className="w-13 h-13 mb-3">
-            <img
-              src="http://sa.kapamilya.com/absnews/abscbnnews/media/2020/tvpatrol/06/01/james-reid.jpg"
-              alt="Hernani"
-              className="w-full h-full object-cover rounded-full"
-            />
-          </div>
-          <p className="font-avenir-black text-center">
-            {user.first_name} {user.last_name}
-          </p>
-        </div>
         <ContentEditor
           handleFileChange={handleFileChange}
           handleTitleChange={handleTitleChange}
           handleDescriptionChange={handleDescriptionChange}
           handleSubmit={handleSubmit}
+          type={"cblog"}
         />
       </section>
     </section>
