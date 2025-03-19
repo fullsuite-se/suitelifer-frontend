@@ -11,6 +11,7 @@ import GuestIndustryTags from "../../components/careers/GuestIndustriesTags";
 import dotsLine from "../../assets/images/socials-dots-line.svg";
 import BackToTop from "../../components/BackToTop";
 import PageMeta from "../../components/layout/PageMeta";
+import FooterNew from "../../components/FooterNew";
 import OnLoadLayoutAnimation from "../../components/layout/OnLoadLayoutAnimation";
 import { useLocation } from "react-router-dom";
 
@@ -466,7 +467,8 @@ const Careers = () => {
           </div>
         </main>
         <BackToTop />
-        <Footer />
+       
+        <FooterNew/>
       </section>
     </>
   );

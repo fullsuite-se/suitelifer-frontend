@@ -14,6 +14,7 @@ import formatTimestamp from "../../components/TimestampFormatter";
 import BackToTop from "../BackToTop";
 import { Helmet } from "@dr.pogodin/react-helmet";
 import { useEffect } from "react";
+import FooterNew from "../FooterNew";
 
 const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
   const location = useLocation();
@@ -160,7 +161,8 @@ const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
           </div>
         </main>
         <div className="h-30"></div> <BackToTop />
-        <Footer />
+        
+        <FooterNew />
       </section>
     </>
   );

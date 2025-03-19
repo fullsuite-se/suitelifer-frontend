@@ -8,6 +8,7 @@ import termsOfUseimg from "../../assets/images/terms-of-use.jpg";
 import LegalHeader from "../../components/legal/LegalHeader";
 import TermsOfUseContent from "../../components/legal/TermsOfUseContent";
 import BackToTop from "../../components/BackToTop";
+import FooterNew from "../../components/FooterNew";
 
 
 const TermsOfUse = () => {
@@ -55,7 +56,8 @@ const TermsOfUse = () => {
 
           </section>
           <BackToTop/>
-          <Footer />
+         
+          <FooterNew />
         </main>
       </div>
     </>

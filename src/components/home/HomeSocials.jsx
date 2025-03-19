@@ -11,6 +11,7 @@ import YoutubeIcon from "../../assets/logos/Youtube";
 import SpotifyIcon from "../../assets/logos/Spotify";
 import SocialButton from "./SocialButton";
 import { motion } from "framer-motion";
+import MotionUp from "../MotionUp";
 
 const videoId = ["1BsbVedEnwM"];
 
@@ -31,154 +32,96 @@ const HomeSocials = () => {
   return (
     <section>
       {/* HEADING */}
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        viewport={{ once: true, amount: 0.2 }} // Ensures animation triggers when 20% is in view
-        className="pt-10 xl:pt-25 pb-[32%] sm:pb-[22%] sm:pt-20"
+      <MotionUp  className="pt-10 xl:pt-25 pb-[32%] sm:pb-[22%] sm:pt-20"
       >
         <div className="relative">
           {/* Animated Background Title */}
-          <motion.img
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="absolute -z-10 transform -translate-y-2/5 -translate-x-[15%] sm:hidden"
-            src={socialTitleMobile}
-            alt="Socials Heading Title"
-          />
-          <motion.img
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="absolute -z-10 transform -translate-y-2/5 -translate-x-[19%] w-[80%] hidden sm:block"
-            src={socialTitleDesktop}
-            alt="Socials Heading Title"
-          />
+          <MotionUp className="absolute -z-10 transform -translate-y-2/5 -translate-x-[15%] sm:hidden" scale={0.9}>
+  <img src={socialTitleMobile} alt="Socials Heading Title" />
+</MotionUp>
+
+<MotionUp className="absolute -z-10 transform -translate-y-2/5 -translate-x-[19%] w-[80%] hidden sm:block" scale={0.9}>
+  <img src={socialTitleDesktop} alt="Socials Heading Title" />
+</MotionUp>
+
         </div>
 
         {/* Animated Dots Line */}
-        <motion.div
+        <MotionUp
           initial={{ opacity: 0, x: 50 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
           viewport={{ once: true, amount: 0.2 }}
-          className="flex justify-end"
+          className="flex justify-end -mr-5 overflow-hidden"
         >
           <img className="dots-line" src={dotsLine} alt="3 dots and a line" />
-        </motion.div>
-      </motion.div>
+        </MotionUp>
+      </MotionUp>
 
       <section className="pt-5 md:pt-0 px-7 xl:px-17">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          viewport={{ once: true, amount: 0.2 }}
-          className="flex flex-col md:flex-row gap-4 w-full"
-        >
-          <motion.div className="md:w-2/5 flex flex-col gap-4">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              viewport={{ once: true, amount: 0.2 }}
-            >
-              <YouTubeEmbed videoId={videoId[0]} />
-            </motion.div>
+  <MotionUp className="flex flex-col md:flex-row gap-4 w-full">
+    <div className="md:w-2/5 flex flex-col gap-4">
+      <MotionUp className="scale-90">
+        <YouTubeEmbed videoId={videoId[0]} />
+      </MotionUp>
 
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              viewport={{ once: true, amount: 0.2 }}
-            >
-              <SingleSpotifyEmbed spotifyId={spotifyId[0]} />
-            </motion.div>
-          </motion.div>
+      <MotionUp className="scale-90">
+        <SingleSpotifyEmbed spotifyId={spotifyId[0]} />
+      </MotionUp>
+    </div>
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            viewport={{ once: true, amount: 0.2 }}
-            className="md:w-3/5 rounded-2xl flex flex-col md:flex-row gap-4 pb-2 md:pb-0"
-          >
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              viewport={{ once: true, amount: 0.2 }}
-              className="h-full md:w-full"
-            >
-              <FacebookPostEmbed postId={facebookId[0]} />
-            </motion.div>
+    <MotionUp className="md:w-3/5 rounded-2xl flex flex-col md:flex-row gap-4 pb-2 md:pb-0 scale-90">
+      <MotionUp className="h-full md:w-full" scale={0.9}>
+        <FacebookPostEmbed postId={facebookId[0]} />
+      </MotionUp>
 
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              viewport={{ once: true, amount: 0.2 }}
-              className="h-full md:w-full"
-            >
-              <InstagramEmbed postId={instagramId[0]} />
-            </motion.div>
-          </motion.div>
-        </motion.div>
+      <MotionUp className="h-full md:w-full" scale={0.9}>
+        <InstagramEmbed postId={instagramId[0]} />
+      </MotionUp>
+    </MotionUp>
+  </MotionUp>
 
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut", staggerChildren: 0.2 }}
-          viewport={{ once: true, amount: 0.2 }}
-          className="flex flex-col md:flex-row md:justify-evenly md:pt-15 md:pb-5 pt-5 gap-2"
-        >
-          {[
-            {
-              href: "https://open.spotify.com/",
-              icon: SpotifyIcon,
-              text: "the Suite Spot",
-              delay: 0.1,
-            },
-            {
-              href: "https://www.youtube.com/",
-              icon: YoutubeIcon,
-              text: "the Suite Tube",
-              delay: 0.2,
-            },
-            {
-              href: "https://www.facebook.com/thefullsuitepod",
-              icon: FacebookIcon,
-              text: "the Suite FB",
-              delay: 0.3,
-            },
-            {
-              href: "https://www.instagram.com/thefullsuitepod/",
-              icon: InstagramIcon,
-              text: "the Suite IG",
-              delay: 0.4,
-            },
-          ].map(({ href, icon: Icon, text, delay }) => (
-            <SocialButton key={href} href={href}>
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay }}
-                viewport={{ once: true, amount: 0.2 }}
-                className="flex items-center gap-2"
-              >
-                <Icon
-                  color="group-hover:fill-white fill-primary"
-                  height="40"
-                  width="40"
-                />
-                <span className="text-sm sm:text-base">{text}</span>
-              </motion.div>
-            </SocialButton>
-          ))}
-        </motion.section>
-      </section>
+  <MotionUp className="flex flex-col md:flex-row md:justify-evenly md:pt-15 md:pb-5 pt-5 gap-2">
+    {[
+      {
+        href: "https://open.spotify.com/",
+        icon: SpotifyIcon,
+        text: "the Suite Spot",
+        delay: 0.1,
+      },
+      {
+        href: "https://www.youtube.com/",
+        icon: YoutubeIcon,
+        text: "the Suite Tube",
+        delay: 0.2,
+      },
+      {
+        href: "https://www.facebook.com/thefullsuitepod",
+        icon: FacebookIcon,
+        text: "the Suite FB",
+        delay: 0.3,
+      },
+      {
+        href: "https://www.instagram.com/thefullsuitepod/",
+        icon: InstagramIcon,
+        text: "the Suite IG",
+        delay: 0.4,
+      },
+    ].map(({ href, icon: Icon, text, delay }) => (
+      <SocialButton key={href} href={href}>
+        <MotionUp className="flex items-center gap-2">
+          <Icon
+            color="group-hover:fill-white fill-primary"
+            height="40"
+            width="40"
+          />
+          <span className="text-sm sm:text-base">{text}</span>
+        </MotionUp>
+      </SocialButton>
+    ))}
+  </MotionUp>
+</section>
+
     </section>
   );
 };
