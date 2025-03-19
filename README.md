@@ -8,10 +8,12 @@ This website is designed to streamline and enhance the job application and emplo
 
 Functional Requirements:
 - Content Management system
-- Job Application Automation
-- Blog Management
+- Company and Employee Blog Management
+- News Management
 - Event Management
+- Job Listing Management
 - Job Search and Filter Options
+- Job Application Automation
 - Audit Logs
 
 Non-Functional Requirements:
