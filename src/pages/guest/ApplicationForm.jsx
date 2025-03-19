@@ -4,10 +4,12 @@ import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
 import BackButton from "../../components/BackButton";
 import FileUploadIcon from "../../assets/icons/file-upload";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import BackToTop from "../../components/BackToTop";
 import { toSlug, unSlug } from "../../utils/slugUrl";
 import atsAPI from "../../utils/atsAPI";
+import api from "../../utils/axios";
+import toast from "react-hot-toast";
 
 const ApplicationForm = () => {
   const { id, jobPosition } = useParams();
@@ -64,8 +66,18 @@ const ApplicationForm = () => {
       });
       console.log(response.data);
 
-      if (response.data === 'successfully inserted') {
-        // TODO Navigate to congratulatory page
+      if (response.data.message === "successfully inserted") {
+        const res = await api.post("/api/get-job-assessment-url", {
+          job_id: id,
+        });
+
+        const assessmentUrl = res.data.data.assessmentUrl;
+
+        toast.success("Job Application Successful.");
+
+        navigate("/congrats-application-form", { state: { assessmentUrl } });
+      } else {
+        toast.error("Job Application Unsuccessful.");
       }
     } catch (err) {
       console.log(err);
@@ -74,7 +86,10 @@ const ApplicationForm = () => {
 
   useEffect(() => {
     window.scroll(0, 0);
+    console.log(id);
   }, []);
+
+  const navigate = useNavigate();
 
   return (
     <section
