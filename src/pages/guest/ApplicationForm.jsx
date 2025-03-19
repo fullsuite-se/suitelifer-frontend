@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
@@ -11,7 +11,11 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const ApplicationForm = () => {
-  window.scroll(0, 0);
+  useEffect(() => {
+    window.scroll(0, 0);
+
+    return () => {};
+  }, []);
 
   const navigate = useNavigate();
 
@@ -66,9 +70,12 @@ const ApplicationForm = () => {
       }));
       console.log(applicationDetails);
 
-      const response = await axios.post(`${import.meta.env.VITE_ATS_API_BASE_URL}/applicants/add`, {
-        applicant: JSON.stringify(applicationDetails),
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_ATS_API_BASE_URL}/applicants/add`,
+        {
+          applicant: JSON.stringify(applicationDetails),
+        }
+      );
       console.log(response.data);
     } catch (err) {
       console.log(err);
@@ -224,7 +231,7 @@ const ApplicationForm = () => {
                     maxLength="9"
                     pattern="[0-9]{9}"
                     placeholder="Enter 9-digit number"
-                    className="w-full p-3 pl-14 border-none rounded-md  text-gray-700   bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full p-3 pl-15 border-none rounded-md  text-gray-700   bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                   <div className="absolute left-3 top-[65%]   -translate-y-1/2  text-gray-700  flex items-center  space-x-1 font-avenir-black">
                     <span>🇵🇭&nbsp;</span>
