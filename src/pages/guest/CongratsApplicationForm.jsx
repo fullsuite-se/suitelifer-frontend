@@ -5,20 +5,15 @@ import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
 import congratsImg from "../../assets/images/congrats-app-form-illustration.jpg";
 import fullsuitelogo from "../../assets/logos/logo-fs-full.svg";
-import guestBlogsList from "../../components/guest-blogs/GuestBlogsList";
-import GuestBlogLarge from "../../components/guest-blogs/GuestBlogLarge";
-import AnimatedText from "../../components/guest-blogs/AnimatedText";
-import GuestBlogTags from "../../components/guest-blogs/GuestBlogTags";
-import GuestBlogCard from "../../components/guest-blogs/GuestBlogCard";
-import ArticleSearchResults from "../../components/news/SearchingBlogOrNews";
-import BackButton from "../../components/BackButton";
-import { DefaultStepper } from "../../components/careers/ApplicationFormStepper";
-import FileUploadIcon from "../../assets/icons/file-upload";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const CongratsApplicationForm = () => {
   window.scroll(0, 0);
 
-  const [testLink, setTestLink] = useState(" www.testgorilla.com/assessment");
+  const location = useLocation();
+  const assessmentUrl = location.state?.assessmentUrl;
+
+  const navigate = useNavigate();
 
   return (
     <section
@@ -37,8 +32,6 @@ const CongratsApplicationForm = () => {
       <div className="desktop-nav">
         <DesktopNav />
       </div>
-      {/* <div  className="-z-50 absolute w-[90%] transform translate-y-5 -translate-x-10 lg:-translate-x-20 xl:-translate-x-50 opacity-10 text-9xl font-avenir-black text-primary"
-         >APPLICATION FORM</div> */}
       {/* BLOGS HERO */}
       <section className="pt-[10%] xl:pt-[8%]">
         <main className="px-[5%]">
@@ -65,8 +58,13 @@ const CongratsApplicationForm = () => {
                 email inbox and click the link we have sent you there. Hope the
                 best for your initial test! Fighting!!
               </p>
-              <a className="md:text-lg font-avenir-black text-primary ">
-                {testLink}
+              <a
+                href={assessmentUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="md:text-lg font-avenir-black text-primary "
+              >
+                {assessmentUrl}
               </a>
               <div className="hidden lg:block"></div>
               <p className="text-gray-400 text-[12px] md:text-[14px] lg:text-base mb-2 mt-10">
@@ -78,7 +76,21 @@ const CongratsApplicationForm = () => {
         </main>
       </section>
 
+      <div className="grid place-content-center">
+        <button
+          className="group relative px-6 py-2 mt-5 text-primary text-md font-medium rounded-full overflow-hidden lg:w-40 xl:w-50 xl:text-lg transition-all duration-100 cursor-pointer"
+          onClick={() => navigate("/careers")}
+        >
+          <div className="absolute inset-0 bg-primary opacity-10 rounded-full transition-all duration-100 group-hover:opacity-100"></div>
+          <span className="relative group-hover:!text-white">
+            Back to Careers
+          </span>
+        </button>
+      </div>
+
       <div className="h-30"></div>
+
+      <Footer />
     </section>
   );
 };
