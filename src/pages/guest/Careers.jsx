@@ -15,6 +15,7 @@ import bgHero from "../../assets/images/bg-hero-careers.svg";
 import bgHeroTablet from "../../assets/images/bg-tablet-careers.svg";
 import BackToTop from "../../components/BackToTop";
 import PageMeta from "../../components/layout/PageMeta";
+import FooterNew from "../../components/FooterNew";
 
 const Careers = () => {
   const [spotifyEpisodes, setEpisodes] = useState([]);
@@ -401,7 +402,8 @@ const Careers = () => {
           </div>
         </main>
         <BackToTop />
-        <Footer />
+       
+        <FooterNew/>
       </section>
     </>
   );

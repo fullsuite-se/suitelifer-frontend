@@ -65,33 +65,29 @@ const CareersAll = () => {
           portrait: https://images.unsplash.com/photo-1554780336-390462301acf?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
           */}
 
-          <section>
+          {/* <section>
             <div className="relative -z-50 lg:block hidden w-full">
               <img className="absolute" src={bgHero} alt="" />
             </div>
-            {/* For mobile bg */}
             <section className=" relative lg:hidden">
-              {/* blue at top */}
+           
               <div className="">
                 <div className="absolute right-10 overflow-hidden -translate-x-10 sm:-translate-x-20 -translate-y-[23vw] z-50 w-[14%] h-[35vw] bg-primary/5 rounded-b-4xl"></div>
               </div>
-              {/* blue at top left */}
               <div className="">
                 <div className="w-[15%] h-[13vw] rounded-r-3xl absolute overflow-hidden -z-50  bg-primary/10 "></div>
               </div>
-              {/* green at top right */}
               <div className="">
                 <div className="right-0 w-[12%] h-[25vw] translate-y-10 rounded-l-3xl absolute overflow-hidden -z-50  bg-secondary/10 "></div>
               </div>
-              {/* blue at bottom */}
               <div className="">
                 <div className="w-[15%] h-[35vw] rounded-r-3xl translate-y-[80vw]  absolute overflow-hidden -z-50  bg-primary/10 "></div>
               </div>
             </section>
-          </section>
+          </section> */}
 
           <section className="pb-[7%] lg:pb-[5%]">
-            <main className="p-[10%]">
+            <main className="p-[10%] xl:px-[20%]">
               {" "}
               <div className="mb-2">
                 <BackButton backPath={"/careers"} type={"Careers"} />
@@ -158,7 +154,7 @@ const CareersAll = () => {
             </main>
           </section>
 
-          <div className="-translate-y-27">
+          {/* <div className="-translate-y-27">
             <div className="hidden lg:block">
               <div className="absolute overflow-hidden translate-x-[75%] -translate-y-15 -z-50 w-[10%] h-25 bg-secondary/5 rounded-2xl"></div>
             </div>
@@ -177,7 +173,7 @@ const CareersAll = () => {
 
           <div className="relative hidden sm:block">
             <div className="absolute -translate-y-30 -z-50 w-[15%] h-25 bg-primary/10 rounded-r-4xl"></div>
-          </div>
+          </div> */}
         </main>
         <BackToTop />
         {/* <Footer /> */}

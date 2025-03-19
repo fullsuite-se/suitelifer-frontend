@@ -11,12 +11,13 @@ import HomeGoalsOperations from "../../components/home/HomeGoalsOperations";
 import HomeNews from "../../components/home/HomeNews";
 import HomeSocials from "../../components/home/HomeSocials";
 import HomeBlogSpot from "../../components/home/HomeBlogSpot";
-
+import rocketship from "../../assets/gif/rocketlongergap.gif";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
 import { Helmet } from "@dr.pogodin/react-helmet";
 import PageMeta from "../../components/layout/PageMeta";
+import FooterNew from "../../components/FooterNew";
 
 const Home = () => {
   const [width, setWidth] = useState(window.innerWidth); //FOR DEBUGGING
@@ -177,17 +178,23 @@ const Home = () => {
           </p>
         </div>
         {/* Blue */}
-        <div id="left-side" className="side pb-17">
-          <p className="title">
-            <div className="">
-              <span className="title-line-1">We can help.</span>{" "}
+        <div id="left-side" className="side pb-17 relative">
+          <img
+            src={rocketship}
+            alt="Rocketship"
+            className="absolute inset-0 w-full h-full object-cover opacity-20"
+          />
+
+          <p className="title relative">
+            <div>
+              <span className="title-line-1">We can help.</span>
             </div>
-            <div className="">
+            <div>
               <span className="title-line-2">
                 <span className="text-white">Let's get you on the</span>{" "}
                 <span className="text-black">right track.</span>
               </span>
-            </div>{" "}
+            </div>
             <div className="hidden">
               <span className="title-line-3">Join us!</span>
             </div>
@@ -213,7 +220,8 @@ const Home = () => {
       {/* <div className="bg-red-900 h-50 text-white grid place-items-center">WIDTH: {width}</div> */}
       {/* <div className="h-40"></div> */}
       <BackToTop />
-      <Footer />
+
+      <FooterNew />
     </section>
   );
 };

@@ -11,6 +11,7 @@ import ArticleSearchResults from "../../components/news/SearchingBlogOrNews";
 import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
 import PageMeta from "../../components/layout/PageMeta";
+import FooterNew from "../../components/FooterNew";
 
 const News = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -160,7 +161,8 @@ const News = () => {
         )}
       </main>
       <div className="h-20"></div> <BackToTop />
-      <Footer />
+    
+      <FooterNew />
     </section>
   );
 };

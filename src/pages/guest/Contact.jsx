@@ -16,6 +16,7 @@ import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
 import { useEffect, useState } from "react";
 import PageMeta from "../../components/layout/PageMeta";
+import FooterNew from "../../components/FooterNew";
 const Contact = () => {
   window.scroll(0, 0);
 
@@ -214,7 +215,7 @@ const Contact = () => {
       </div>
       <div className="relative">
         {/* Background Boxes */}
-        <motion.div
+        {/* <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
@@ -234,7 +235,7 @@ const Contact = () => {
           viewport={{ once: true }}
           variants={fadeInUp}
           className="absolute top-270 left-5 w-20 h-20 bg-primary/10 -z-1 rounded-xl"
-        ></motion.div>
+        ></motion.div> */}
 
         <main className="mt-0 lg:mt-20 text-[12px] md:text-[14px] lg:text-[16px]">
           <motion.div
@@ -395,7 +396,7 @@ const Contact = () => {
             <FAQ />
           </section>
           <BackToTop />
-          <Footer />
+          <FooterNew />
         </main>
       </div>
     </>

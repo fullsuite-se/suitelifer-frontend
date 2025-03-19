@@ -27,6 +27,7 @@ import UnderstoodIcon from "../../assets/icons/UnderstoodIcon";
 import WorkLifeHarmonyIcon from "../../assets/icons/WorkLifeHarmonyIcon";
 import UpholdsIcon from "../../assets/icons/UpholdsIcon";
 import PageMeta from "../../components/layout/PageMeta";
+import FooterNew from "../../components/FooterNew";
 
 const AboutUs = () => {
   const [content, setContent] = useState({});
@@ -458,7 +459,8 @@ const AboutUs = () => {
         </div> */}
       </main>
       <BackToTop />
-      <Footer />
+      
+      <FooterNew />
     </section>
   );
 };
