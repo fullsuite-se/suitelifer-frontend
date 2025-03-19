@@ -96,8 +96,6 @@ const ApplicationForm = () => {
     console.log(id);
   }, []);
 
-  const navigate = useNavigate();
-
   return (
     <section
       className="gap-4 h-dvh"
