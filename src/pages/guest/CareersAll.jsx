@@ -112,7 +112,7 @@ const CareersAll = () => {
           <section className="pb-[7%] lg:pb-[5%]">
             <main className="p-[10%]">
               {" "}
-              <div className="mb-2">
+              <div className="w-fit mb-2">
                 <BackButton backPath={"/careers"} type={"Careers"} />
               </div>
               <p className="text-lg font-avenir-black mb-5  lg:mb-10 lg:text-3xl">
@@ -145,10 +145,10 @@ const CareersAll = () => {
                   <NavLink
                     key={index}
                     to={`/careers/${toSlug(job.jobTitle)}`}
-                    state={{ jobId: job.jobId }}
+                    state={{ jobId: job.jobId, from: location.pathname }}
                     className={`group no-underline`}
                   >
-                    <div className="group p-6 bg-white group-hover:bg-primary shadow-md rounded-lg transition-transform duration-300 hover:shadow-xl flex flex-col gap-3 relative mb-5">
+                    <div className="group p-6 bg-white group-hover:bg-primary shadow-md rounded-lg transition-transform duration-400 hover:shadow-xl hover:scale-102 flex flex-col gap-3 relative mb-5">
                       <div className="absolute top-4 right-4 text-primary text-xl cursor-pointer group-hover:text-white">
                         &#8599;
                       </div>
