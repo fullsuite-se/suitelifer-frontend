@@ -18,7 +18,6 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import AddIcon from "@mui/icons-material/Add";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { ModuleRegistry } from "@ag-grid-community/core";
 import { AgGridReact } from "@ag-grid-community/react";
@@ -132,7 +131,7 @@ function JobCourse() {
             className="btn-primary mb-2 "
           >
             <div className="flex items-center justify-center w-full gap-1">
-              <AddIcon fontSize="small" />
+              <ControlPointIcon fontSize="small" />
               <span className="text-sm flex items-center justify-center">
                 Course
               </span>
