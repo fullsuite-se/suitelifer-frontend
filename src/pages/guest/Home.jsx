@@ -20,9 +20,9 @@ import PageMeta from "../../components/layout/PageMeta";
 
 const Home = () => {
   const [width, setWidth] = useState(window.innerWidth); //FOR DEBUGGING
-  window.scroll(0, 0);
 
   useEffect(() => {
+    window.scroll(0, 0);
     const left = document.getElementById("left-side");
     if (!left) return; // Prevent errors if the element is not yet rendered
 

@@ -17,8 +17,6 @@ import BackToTop from "../../components/BackToTop";
 import { useEffect, useState } from "react";
 import PageMeta from "../../components/layout/PageMeta";
 const Contact = () => {
-  window.scroll(0, 0);
-
   const fadeInUp = {
     hidden: { opacity: 0, y: 50 },
     visible: {
@@ -31,6 +29,7 @@ const Contact = () => {
 
   useEffect(() => {
     setIsLoaded(true);
+    window.scroll(0, 0);
   }, []);
 
   return (

@@ -13,14 +13,13 @@ import BackButton from "../../components/BackButton.jsx";
 import { ArrowLeft } from "lucide-react";
 
 const CareersJobDetails = () => {
-  window.scroll(0, 0);
 
   const [jobDetails, setJobDetails] = useState(null);
   const location = useLocation();
   const { jobId } = location.state;
   const navigate = useNavigate();
   const previousPage = location.state?.from;
-  
+
   const handleBack = () => {
     if (previousPage?.startsWith("/careers/application-form/")) {
       console.log("Navigating back to careers page");
@@ -35,6 +34,7 @@ const CareersJobDetails = () => {
   };
 
   useEffect(() => {
+    window.scroll(0, 0);
     const fetchJobDetails = async () => {
       try {
         console.log("Fetching job details for jobId:", jobId);
