@@ -94,18 +94,6 @@ h6 {
 }
 
 /* For the WYSISYG */
-/* Bold text */
-strong,
-b {
-  font-family: "Avenir-Black", sans-serif;
-}
-
-/* Italic text */
-em,
-i {
-  font-family: "Avenir-RomanOblique", sans-serif;
-}
-
 ul {
   list-style-type: disc;
   padding-left: 20px;
@@ -116,19 +104,11 @@ ol {
   padding-left: 20px;
 }
 
-/* Bold + Italic */
-strong em,
-b i,
-strong i,
-b em {
-  font-family: "Avenir-BlackOblique", sans-serif;
-}
-
 /* Color Themes */
 @theme {
   --color-primary: #0097b2;
   --color-secondary: #bfd1a0;
-  --color-tertiary: #ECF1E3;
+  --color-tertiary: #ecf1e3;
   --color-dark: #1a0202;
   --color-light: #ffffff;
   --color-accent-1: #eee3e3;
