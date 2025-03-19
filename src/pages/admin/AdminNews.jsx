@@ -5,12 +5,12 @@ import { ModuleRegistry } from "@ag-grid-community/core";
 import { AgGridReact } from "@ag-grid-community/react";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import logofsfull from "../../assets/logos/logo-fs-full.svg";
 import FileUploaderProvider from "../../components/admin/FileUploader";
-import TextEditor from "../../components/TextEditor";
+import ContentEditor from "../../components/ContentEditor";
 import PreviewIcon from "@mui/icons-material/Preview";
 import formatTimestamp from "../../components/TimestampFormatter";
 import FeedIcon from "@mui/icons-material/Feed";
@@ -22,6 +22,7 @@ const AdminNews = () => {
   const [showModal, setShowModal] = useState(false);
   const [editingNews, setEditingNews] = useState(null);
   const [newNews, setNewNews] = useState({ title: "", author: "", image: "" });
+  const navigate = useNavigate();
 
   const formatNumber = (num) => {
     if (num >= 1000000) {
@@ -162,7 +163,9 @@ const AdminNews = () => {
               {/* desktop */}
               <button
                 className="hidden sm:block btn-primary"
-                onClick={() => setShowModal(true)}
+                onClick={() => {
+                  navigate("/app/news/new-news");
+                }}
               >
                 + Add News
               </button>
@@ -358,7 +361,7 @@ const AdminNews = () => {
                     : setNewNews({ ...newNews, author: e.target.value })
                 }
               />
-              <TextEditor
+              <ContentEditor
                 titleChange={(value) =>
                   editingNews
                     ? setEditingNews({ ...editingNews, title: value })
