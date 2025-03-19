@@ -4,13 +4,16 @@ import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
 import BackButton from "../../components/BackButton";
 import FileUploadIcon from "../../assets/icons/file-upload";
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import BackToTop from "../../components/BackToTop";
 import { toSlug, unSlug } from "../../utils/slugUrl";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const ApplicationForm = () => {
   window.scroll(0, 0);
+
+  const navigate = useNavigate();
 
   const { id, jobPosition } = useParams();
   const [position, setPosition] = useState(jobPosition);
@@ -502,13 +505,14 @@ const ApplicationForm = () => {
               <div className="py-2"></div>
               <button
                 type="submit"
-                className="w-full font-avenir-black bg-primary text-white py-3 rounded-md hover:bg-primary/90 transition"
+                className="w-full cursor-pointer font-avenir-black bg-primary text-white py-3 rounded-md hover:bg-primary/90 transition"
               >
                 SUBMIT APPLICATION
               </button>
               <button
                 type="button"
-                className="w-full   text-primary py-3 rounded-md hover:bg-primary/10 transition"
+                className="w-full cursor-pointer text-primary py-3 rounded-md hover:bg-primary/10 transition"
+                onClick={() => navigate(-1)}
               >
                 CANCEL
               </button>{" "}
