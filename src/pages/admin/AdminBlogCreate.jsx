@@ -1,17 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
-import { useNavigate } from "react-router-dom";
-import ContentEditor from "../ContentEditor";
 import api from "../../utils/axios";
+import ContentEditor from "../../components/ContentEditor";
+import { useNavigate } from "react-router-dom";
+import { useStore } from "../../store/authStore";
 
-const BlogCreate = () => {
+const AdminBlogCreate = () => {
   const navigate = useNavigate();
+  const user = useStore((state) => state.user);
   const [files, setFiles] = useState([]);
   const [blogTitle, setBlogTitle] = useState("");
   const [blogDescription, setBlogDescription] = useState("");
-
-  const refTitle = useRef();
-  const refDesc = useRef();
 
   const handleFileChange = (e) => {
     setFiles([...e.target.files]);
@@ -25,71 +24,19 @@ const BlogCreate = () => {
     setBlogDescription(content);
   };
 
-  useEffect(() => {
-    if (refTitle.current) {
-      refTitle.current.innerHTML = blogTitle;
-      refDesc.current.innerHTML = blogDescription;
-    }
-  }, [blogTitle, blogDescription]);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (!blogTitle.trim() || !blogDescription.trim()) {
-      alert("Please write something in the editor.");
-      return;
-    }
-
-    // console.log("Title: ", blogTitle);
-    // console.log("Desc: ", blogDescription);
-
-    // return;
-
-    // if (files.length === 0) {
-    //   alert("Please select at least one file before submitting.");
-    //   return;
-    // }
-
-    const eBlogData = {
-      title: blogTitle,
-      description: blogDescription,
-    };
-
-    console.log(eBlogData);
-    console.log(files);
-
-    return;
-
-    const uploadBlog = async () => {
-      try {
-        const responseBlog = await api.post(
-          "/api/add-employee-blog",
-          eBlogData
-        );
-        const eblogId = responseBlog.data.eblog_id;
-        const responseImg = await api.post(
-          `/api/upload-image/blogs/${eblogId}`,
-          imagesData
-        );
-
-        console.log("Blog uploaded successfully:", responseBlog.data);
-        console.log("File uploaded successfully:", responseImg.data);
-      } catch (error) {
-        console.error("Error uploading file:", error);
-      }
-    };
-    uploadBlog();
+  const handleSubmit = () => {
+    alert("hello");
   };
 
   return (
     <section className="p-2 xl:p-3">
       <div className="lg:flex items-center justify-between hidden">
         <div className="flex items-center gap-2">
-          <h2 className="font-avenir-black">Create New Blog</h2>
+          <h2 className="font-avenir-black">Create Company Blog</h2>
           <InformationCircleIcon className="w-4 h-4 text-gray-500" />
         </div>
         <span
-          onClick={() => navigate("/app/my-blogs")}
+          onClick={() => navigate("/app/news")}
           className="font-avenir-black text-red-400 text-sm cursor-pointer"
         >
           Discard Blog
@@ -110,7 +57,9 @@ const BlogCreate = () => {
               className="w-full h-full object-cover rounded-full"
             />
           </div>
-          <p className="font-avenir-black text-center">Hernani Domingo</p>
+          <p className="font-avenir-black text-center">
+            {user.first_name} {user.last_name}
+          </p>
         </div>
         <ContentEditor
           handleFileChange={handleFileChange}
@@ -123,4 +72,4 @@ const BlogCreate = () => {
   );
 };
 
-export default BlogCreate;
+export default AdminBlogCreate;
