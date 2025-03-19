@@ -12,6 +12,14 @@ import api from "../../utils/axios";
 import toast from "react-hot-toast";
 
 const ApplicationForm = () => {
+  useEffect(() => {
+    window.scroll(0, 0);
+
+    return () => {};
+  }, []);
+
+  const navigate = useNavigate();
+
   const { id, jobPosition } = useParams();
   const [position, setPosition] = useState(jobPosition);
   const [applicationDetails, setApplicationDetails] = useState({
@@ -64,7 +72,6 @@ const ApplicationForm = () => {
       const response = await atsAPI.post("/applicants/add", {
         applicant: JSON.stringify(applicationDetails),
       });
-      console.log(response.data);
 
       if (response.data.message === "successfully inserted") {
         const res = await api.post("/api/get-job-assessment-url", {
@@ -240,7 +247,7 @@ const ApplicationForm = () => {
                     maxLength="9"
                     pattern="[0-9]{9}"
                     placeholder="Enter 9-digit number"
-                    className="w-full p-3 pl-14 border-none rounded-md  text-gray-700   bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full p-3 pl-15 border-none rounded-md  text-gray-700   bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                   <div className="absolute left-3 top-[65%]   -translate-y-1/2  text-gray-700  flex items-center  space-x-1 font-avenir-black">
                     <span>🇵🇭&nbsp;</span>
@@ -330,13 +337,14 @@ const ApplicationForm = () => {
               <div className="py-2"></div>
               <button
                 type="submit"
-                className="w-full font-avenir-black bg-primary text-white py-3 rounded-md hover:bg-primary/90 transition"
+                className="w-full cursor-pointer font-avenir-black bg-primary text-white py-3 rounded-md hover:bg-primary/90 transition"
               >
                 SUBMIT APPLICATION
               </button>
               <button
                 type="button"
-                className="w-full   text-primary py-3 rounded-md hover:bg-primary/10 transition"
+                className="w-full cursor-pointer text-primary py-3 rounded-md hover:bg-primary/10 transition"
+                onClick={() => navigate(-1)}
               >
                 CANCEL
               </button>{" "}

@@ -35,9 +35,8 @@ const AboutUs = () => {
     setClickCount((prev) => (prev < 6 ? prev + 1 : 0)); // Reset after animation
   };
 
-  // window.scroll(0, 0);
-
   useEffect(() => {
+    window.scroll(0, 0);
     const fetchContent = async () => {
       try {
         const response = await api.get("/api/get-about-us");
