@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Area,
   AreaChart,
@@ -8,6 +8,8 @@ import {
   Tooltip,
 } from "recharts";
 import logofsfull from "../../assets/logos/logo-fs-full.svg";
+import api from "../../utils/axios";
+import atsAPI from "../../utils/atsAPI";
 
 const applicationsData = [
   { month: "Jan", value: 1000 },
@@ -37,7 +39,7 @@ const employeesData = [
   { month: "Oct", value: 7 },
   { month: "Nov", value: 2 },
   { month: "Dec", value: 4 },
-];  
+];
 
 const openJobsData = [
   { month: "Jan", value: 1 },
@@ -45,7 +47,7 @@ const openJobsData = [
   { month: "Mar", value: 4 },
   { month: "Apr", value: 1 },
   { month: "May", value: 1 },
-  { month: "Jun", value: 5  },
+  { month: "Jun", value: 5 },
   { month: "Jul", value: 2 },
   { month: "Aug", value: 2 },
   { month: "Sep", value: 26 },
@@ -80,6 +82,46 @@ const AdminDashboard = () => {
     setSelectedColor(color);
   };
 
+  const [totalApplications, setTotalApplications] = useState(0);
+  const [openJobs, setOpenJobs] = useState(null);
+  const [closedJobs, setClosedJobs] = useState(null);
+
+  const fetchTotalApplications = async () => {
+    try {
+      const response = await atsAPI.get("/fs-applicant-count");
+
+      setTotalApplications((ta) => response.data.fs_count);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchOpenJobs = async () => {
+    try {
+      const response = await api.get("api/get-open-jobs-count");
+
+      setOpenJobs((oj) => response.data.data.count);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchClosedJobs = async () => {
+    try {
+      const response = await api.get("api/get-closed-jobs-count");
+
+      setClosedJobs((cj) => response.data.data.count);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchTotalApplications();
+    fetchOpenJobs();
+    fetchClosedJobs();
+  }, []);
+
   return (
     <div className="max-h-100vh bg-white p-4">
       {/* Header */}
@@ -90,21 +132,11 @@ const AdminDashboard = () => {
 
         <div className="flex gap-3">
           {/* Button for desktop */}
-          <button
-            className="hidden sm:block btn-primary"
-          >
-            + Job Listing
-          </button>
-          <button
-            className="hidden sm:block btn-primary"
-          >
-            + Industry
-          </button>
+          <button className="hidden sm:block btn-primary">+ Job Listing</button>
+          <button className="hidden sm:block btn-primary">+ Industry</button>
 
           {/* Icon Button for Mobile */}
-          <button
-            className="sm:hidden p-2 btn-primary flex items-center gap-1"
-          >
+          <button className="sm:hidden p-2 btn-primary flex items-center gap-1">
             <span>+</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -121,9 +153,7 @@ const AdminDashboard = () => {
               />
             </svg>
           </button>
-          <button
-            className="sm:hidden p-2 btn-primary flex items-center gap-1"
-          >
+          <button className="sm:hidden p-2 btn-primary flex items-center gap-1">
             <span>+</span>{" "}
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -155,7 +185,7 @@ const AdminDashboard = () => {
           }
         >
           <span className="text-3xl">52</span>
-          <div className="text-sm text-gray-500">Total Employee Accounts</div>
+          <div className="text-sm text-gray-500">Total Active Employee Accounts</div>
         </button>
 
         <button
@@ -164,7 +194,7 @@ const AdminDashboard = () => {
             handleDataChange(applicationsData, "Total Applications", "#0097b2")
           }
         >
-          <span className="text-3xl">917</span>
+          <span className="text-3xl">{totalApplications}</span>
           <div className="text-sm text-gray-500">Total Applications</div>
         </button>
 
@@ -174,8 +204,8 @@ const AdminDashboard = () => {
             handleDataChange(openJobsData, "Open Job Listings", "#0097b2")
           }
         >
-          <span className="text-2xl">14</span>
-          <div className="text-sm">Open Job</div>
+          <span className="text-2xl">{openJobs}</span>
+          <div className="text-sm">Open Jobs</div>
         </button>
 
         <button
@@ -184,24 +214,20 @@ const AdminDashboard = () => {
             handleDataChange(closedJobsData, "Closed Job Listings", "#0097b2")
           }
         >
-          <span className="text-2xl">5</span>
-          <div className="text-sm">Closed Job</div>
+          <span className="text-2xl">{closedJobs}</span>
+          <div className="text-sm">Closed Jobs</div>
         </button>
       </div>
 
       {/* Chart Display */}
 
       <div className="border p-4 rounded shadow h-140">
-      <h2 className="text-lg font-medium">{selectedLabel}</h2>
+        <h2 className="text-lg font-medium">{selectedLabel}</h2>
         <div className="h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={selectedData}>
-              <XAxis
-                dataKey="month"
-                tickLine={false}
-                axisLine={false}
-              />
-              <YAxis tickLine={false} axisLine={false}/>
+              <XAxis dataKey="month" tickLine={false} axisLine={false} />
+              <YAxis tickLine={false} axisLine={false} />
               <Tooltip />
               <Area
                 type="monotone"
@@ -214,7 +240,6 @@ const AdminDashboard = () => {
             </AreaChart>
           </ResponsiveContainer>
         </div>
-
       </div>
     </div>
   );
