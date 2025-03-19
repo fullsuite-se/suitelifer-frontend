@@ -99,7 +99,7 @@ const CareersJobDetails = () => {
             <p className="text-primary mb-2">
               | {jobDetails.industryName.toUpperCase()}
             </p>
-            <p className="font-avenir-black text-primary mb-2">
+            <p className="text-primary mb-2">
               {jobDetails.employmentType}, {jobDetails.setupName}
             </p>
             {jobDetails.salaryMin != null && jobDetails.salaryMin != 0 && (

@@ -59,10 +59,10 @@ const JobCarouselVersion2 = ({ jobs }) => {
                     <div className="flex flex-col mb-4">
                       <span className="text-sm font-avenir-roman mb-3 text-gray-500">
                         <span className="text-secondary">|</span>{" "}
-                        {job.setupName}
+                        {job.industryName}
                       </span>
                       <span className={`text-primary `}>
-                        {job.employmentType}
+                        {job.employmentType}, {job.setupName}
                       </span>
                     </div>
                     {isActive && job.salaryMin != null && job.salaryMin > 0 && (

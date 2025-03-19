@@ -1,8 +1,32 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# SuiteLifer Website
 
-Currently, two official plugins are available:
+This website is designed to streamline and enhance the job application and employee engagement process for Offshore Concept BPO Services, Inc. - FullSuite.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+## Features
+
+Functional Requirements:
+- Content Management system
+- Company and Employee Blog Management
+- News Management
+- Event Management
+- Job Listing Management
+- Job Search and Filter Options
+- Job Application Automation
+- Audit Logs
+
+Non-Functional Requirements:
+- Scalability
+- Security
+- Performance
+- User Experience
+- Reliability and Availability
+
+## Authors
+
+- Allen James Alvaro [[@AllenJalvaro](https://github.com/AllenJalvaro)]
+- Hernani Domingo [[@domingohernani](https://github.com/domingohernani)]
+- Dan Hebron Galano [[@Dan-Galano](https://github.com/Dan-Galano)]
+- Lance Jericho Salcedo [[@ljsalcedo-dev](https://github.com/ljsalcedo-dev)]
+- Melbraei Santiago [[@MB-Tiago](https://github.com/MB-Tiago)]
