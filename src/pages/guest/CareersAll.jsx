@@ -9,6 +9,7 @@ import BackToTop from "../../components/BackToTop";
 import BackButton from "../../components/BackButton";
 import { NavLink } from "react-router-dom";
 import { toSlug } from "../../utils/slugUrl";
+import OnLoadLayoutAnimation from "../../components/layout/OnLoadLayoutAnimation";
 
 const CareersAll = () => {
   const [jobs, setJobs] = useState([]);
@@ -113,91 +114,99 @@ const CareersAll = () => {
             <main className="p-[10%]">
               {" "}
               <div className="w-fit mb-2">
-                <BackButton backPath={"/careers"} type={"Careers"} />
+                <BackButton backPath={"/careers/#current-job-openings"} type={"Careers"} />
               </div>
               <p className="text-lg font-avenir-black mb-5  lg:mb-10 lg:text-3xl">
                 All Jobs here at FullSuite
               </p>
-              <div className="mb-10">
-                <GuestIndustryTags
-                  industries={industries}
-                  filter={filter}
-                  handleFilterChange={handleFilterChange}
-                />
-              </div>
-              {jobs.length === 0 ? (
-                <div className="grid place-content-center px-5 text-center text-2xl min-h-100 my-7">
-                  <p>
-                    No job listings are available for this industry{" "}
-                    <span className="font-avenir-black">at the moment</span>—but
-                    stay tuned!
-                  </p>
-                  <p>
-                    Exciting{" "}
-                    <span className="text-primary font-avenir-black">
-                      opportunities
-                    </span>{" "}
-                    may be coming soon.
-                  </p>
-                </div>
+              {industries.length === 0 ? (
+                <section className="grid place-conte`nt-center h-[50dvh]">
+                  <OnLoadLayoutAnimation />
+                </section>
               ) : (
-                jobs.map((job, index) => (
-                  <NavLink
-                    key={index}
-                    to={`/careers/${toSlug(job.jobTitle)}`}
-                    state={{ jobId: job.jobId, from: location.pathname }}
-                    className={`group no-underline`}
-                  >
-                    <div className="group p-6 bg-white group-hover:bg-primary shadow-md rounded-lg transition-transform duration-400 hover:shadow-xl hover:scale-102 flex flex-col gap-3 relative mb-5">
-                      <div className="absolute top-4 right-4 text-primary text-xl cursor-pointer group-hover:text-white">
-                        &#8599;
-                      </div>
-
-                      <p
-                        className={`mt-3 -mb-2 font-avenir-black text-gray-900 group-hover:text-white `}
-                      >
-                        {job.jobTitle}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        {job.isOpen === 0 && (
-                          <span className="font-avenir-roman bg-red-100 text-red-700 text-xs font-bold px-3 py-1 rounded-xl">
-                            CLOSED
-                          </span>
-                        )}
+                <>
+                  <div className="mb-10">
+                    <GuestIndustryTags
+                      industries={industries}
+                      filter={filter}
+                      handleFilterChange={handleFilterChange}
+                    />
+                  </div>
+                  {jobs.length === 0 ? (
+                    <div className="grid place-content-center px-5 text-center text-2xl min-h-100 my-7">
+                      <p>
+                        No job listings are available for this industry{" "}
+                        <span className="font-avenir-black">at the moment</span>
+                        —but stay tuned!
                       </p>
-
-                      <div className="flex items-center gap-2 text-sm text-gray-400 uppercase group-hover:text-white group-hover:opacity-50">
-                        <span className="text-secondary font-avenir-black">
-                          |
-                        </span>
-                        <span>{job.industryName}</span>
-                      </div>
-
-                      <span className="text-primary text-sm group-hover:text-white">
-                        {job.employmentType}, {job.setupName}
-                      </span>
-                      {job.salaryMin != null && job.salaryMin > 0 && (
-                        <>
-                          <p className="text-sm text-gray-400 -mb-3 group-hover:text-white group-hover:opacity-50">
-                            Expected Salary
-                          </p>
-                          <p className="text-md font-avenir-black text-primary group-hover:text-white">
-                            {Intl.NumberFormat("en-US", {
-                              style: "currency",
-                              currency: "PHP",
-                              maximumFractionDigits: 0,
-                            }).format(job.salaryMin)}
-                            <span className="text-xs font-avenir-roman">
-                              {" "}
-                              min
-                            </span>
-                          </p>
-                        </>
-                      )}
-                      <p className="text-gray-700 text-sm line-clamp-5 group-hover:text-white">
-                        {job.description}
+                      <p>
+                        Exciting{" "}
+                        <span className="text-primary font-avenir-black">
+                          opportunities
+                        </span>{" "}
+                        may be coming soon.
                       </p>
                     </div>
-                  </NavLink>
-                ))
+                  ) : (
+                    jobs.map((job, index) => (
+                      <NavLink
+                        key={index}
+                        to={`/careers/${toSlug(job.jobTitle)}`}
+                        state={{ jobId: job.jobId, from: location.pathname }}
+                        className={`group no-underline`}
+                      >
+                        <div className="group p-6 bg-white group-hover:bg-primary shadow-md rounded-lg transition-transform duration-400 hover:shadow-xl hover:scale-102 flex flex-col gap-3 relative mb-5">
+                          <div className="absolute top-4 right-4 text-primary text-xl cursor-pointer group-hover:text-white">
+                            &#8599;
+                          </div>
+
+                          <p
+                            className={`mt-3 -mb-2 font-avenir-black text-gray-900 group-hover:text-white `}
+                          >
+                            {job.jobTitle}&nbsp; 
+                            {job.isOpen === 0 && (
+                              <span className="font-avenir-roman bg-red-100 text-red-700 text-xs font-bold px-3 py-1 rounded-xl">
+                                CLOSED
+                              </span>
+                            )}
+                          </p>
+
+                          <div className="flex items-center gap-2 text-sm text-gray-400 uppercase group-hover:text-white group-hover:opacity-50">
+                            <span className="text-secondary font-avenir-black">
+                              |
+                            </span>
+                            <span>{job.industryName}</span>
+                          </div>
+
+                          <span className="text-primary text-sm group-hover:text-white">
+                            {job.employmentType}, {job.setupName}
+                          </span>
+                          {job.salaryMin != null && job.salaryMin > 0 && (
+                            <>
+                              <p className="text-sm text-gray-400 -mb-3 group-hover:text-white group-hover:opacity-50">
+                                Expected Salary
+                              </p>
+                              <p className="text-md font-avenir-black text-primary group-hover:text-white">
+                                {Intl.NumberFormat("en-US", {
+                                  style: "currency",
+                                  currency: "PHP",
+                                  maximumFractionDigits: 0,
+                                }).format(job.salaryMin)}
+                                <span className="text-xs font-avenir-roman">
+                                  {" "}
+                                  min
+                                </span>
+                              </p>
+                            </>
+                          )}
+                          <p className="text-gray-700 text-sm line-clamp-5 group-hover:text-white">
+                            {job.description}
+                          </p>
+                        </div>
+                      </NavLink>
+                    ))
+                  )}
+                </>
               )}
             </main>
           </section>
