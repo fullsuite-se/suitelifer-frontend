@@ -51,21 +51,26 @@ const Home = () => {
     const left = document.getElementById("left-side");
     if (!left) return;
   
-    setTimeout(() => {
+    const transitionToBlue = () => {
       left.style.transition = "width 1s ease-in-out"; 
-      left.style.width = "100%";
-    }, 3000);
+      left.style.width = "100%"; 
   
-    const handleResize = () => {
-      setWidth(window.innerWidth);
+      setTimeout(() => {
+        left.style.transition = "width 1s ease-in-out";
+        left.style.width = "0%";
+      }, 10000); 
     };
   
-    window.addEventListener("resize", handleResize);
+    setTimeout(transitionToBlue, 5000); 
+  
+    const interval = setInterval(transitionToBlue, 15000); 
   
     return () => {
-      window.removeEventListener("resize", handleResize);
+      clearInterval(interval); 
     };
-  }, [width]);
+  }, []);
+  
+  
   
 
   return (
