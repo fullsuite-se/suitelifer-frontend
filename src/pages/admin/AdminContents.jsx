@@ -6,9 +6,12 @@ import SaveIcon from "@mui/icons-material/Save";
 import { EyeIcon, DocumentArrowUpIcon } from "@heroicons/react/24/outline";
 import Testimonials from "../../components/admin/Testimonials";
 import SpotifyEpisode from "../../components/admin/SpotifyEpisodes";
+import { Typography } from "@mui/material";
 
 const AdminContents = () => {
-  const [videoFile, setVideoFile] = useState(null);
+  const [videoFile, setVideoFile] = useState(
+    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+  );
   const [isPreviewShown, setIsPreviewShown] = useState(false);
 
   const handlePreview = () => {
@@ -18,7 +21,8 @@ const AdminContents = () => {
   const handleUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setVideoFile(URL.createObjectURL(file));
+      const videoURL = URL.createObjectURL(file);
+      setVideoFile(videoURL);
     }
   };
 
@@ -41,8 +45,13 @@ const AdminContents = () => {
           {/* Home Page */}
           <div className="home-page w-full">
             <div className="home-d-prev flex w-full gap-1 items-center">
-              <span className="text-xl">home</span>
-              <span className="text-xl font-black">page</span>
+              <Typography sx={{ fontSize: "18px", fontWeight: 400 }}>
+                home
+              </Typography>
+              <Typography sx={{ fontSize: "18px", fontWeight: 900 }}>
+                page
+              </Typography>
+
               <button
                 type="button"
                 onClick={handlePreview}
@@ -60,30 +69,36 @@ const AdminContents = () => {
                 className="hidden"
                 id="videoUpload"
               />
-              <label htmlFor="videoUpload">
-                <div className="cursor-pointer w-full min-w-xs sm:max-w-md md:max-w-lg aspect-video border-3 rounded-3xl flex items-center justify-center bg-gray-200 overflow-hidden">
-                  {videoFile ? (
-                    <video
-                      src={videoFile}
-                      className="w-full h-full object-cover"
-                      controls
-                    />
-                  ) : (
-                    <span className="text-center p-2 text-sm sm:text-base">
-                      Click to upload a video
-                      <DocumentArrowUpIcon className="flex size-20 items-center justify-center w-full" />
-                    </span>
-                  )}
-                </div>
-              </label>
+
+              <div className="w-full min-w-xs sm:max-w-md md:max-w-lg aspect-video border-3 rounded-3xl flex items-center justify-center bg-gray-200 overflow-hidden">
+                <video
+                  src={videoFile} 
+                  className="w-full h-full object-cover"
+                  controls
+                  autoPlay
+                  loop
+                  muted
+                />
+              </div>
+
+              <button
+                onClick={() => document.getElementById("videoUpload").click()}
+                className="mt-4 px-4 py-2 btn-primary rounded-lg"
+              >
+                Change Video
+              </button>
             </div>
           </div>
 
           {/* About Page */}
           <div className="about-page p-1">
             <div className="about-and-prev flex w-full gap-1">
-              <span className="text-xl">about us </span>
-              <span className="text-xl font-black">page</span>
+              <Typography sx={{ fontSize: "18px", fontWeight: 400 }}>
+                about us
+              </Typography>
+              <Typography sx={{ fontSize: "18px", fontWeight: 900 }}>
+                page
+              </Typography>
               <button
                 type="button"
                 onClick={handlePreview}
@@ -116,7 +131,7 @@ const AdminContents = () => {
             </div>
           </div>
         </div>
-
+        {/* Right Content */}
         <div
           className="right-content flex flex-col w-full xl:w-[40%] p-2 gap-y-2 
   overflow-y-auto overflow-x-auto min-h-0 min-w-[50%] md:min-w-[30%] whitespace-nowrap max-h-[900px]"
