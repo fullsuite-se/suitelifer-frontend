@@ -256,10 +256,9 @@ const Blog = () => {
                       key={index}
                       id={blog.cblogId}
                       title={blog.title}
-                      author={blog.createdBy.trim().split(" ")[0]}
+                      createdBy={blog.createdBy?.trim().split(" ")[0] ?? "Author"}
                       article={removeHtmlTags(companyBlogs[0]?.description && "Description")}
-                      readTime={readingTime(companyBlogs[0]?.description && "Description").text}
-                      created_at={blog.createdAt}
+                      createdAt={blog.createdAt}
                       imageUrl={blog.imageUrl}
                     />
                   ))}

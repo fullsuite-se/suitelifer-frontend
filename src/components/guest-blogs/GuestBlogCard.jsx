@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import formatTimestamp from "../TimestampFormatter";
 import { toSlug } from "../../utils/slugUrl";
 import { readingTime } from "reading-time-estimator";
-import { removeHtmlTags } from '../../utils/removeHTMLTags';
+import { removeHtmlTags } from "../../utils/removeHTMLTags";
 
 const GuestBlogCard = ({
   id,
@@ -41,12 +41,15 @@ const GuestBlogCard = ({
 
           <p className="!text-[12px] sm:!text-[14px]  mt-1">
             by
-            <span className="text-secondary font-avenir-black"> {createdBy.trim().split(" ")[0]}</span>{" "}
-            | {readingTime(description, 238).text}
+            <span className="text-secondary font-avenir-black">
+              {" "}
+              {createdBy?.trim().split(" ")[0]}
+            </span>{" "}
+            | {readingTime(removeHtmlTags(description ?? "Description"), 238).text}
           </p>
 
           <p className="mt-2 !text-[12px] sm:!text-[14px] text-gray-300 line-clamp-3">
-            {removeHtmlTags(description)}
+            {removeHtmlTags(description ?? "Description")}
           </p>
 
           <p className="text-xs text-gray-400 mt-2">{fullDate}</p>
