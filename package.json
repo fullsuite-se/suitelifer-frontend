@@ -50,6 +50,7 @@
     "react-router-dom": "^7.2.0",
     "react-router-hash-link": "^2.4.3",
     "react-transition-group": "^4.4.5",
+    "reading-time-estimator": "^1.11.0",
     "recharts": "^2.15.1",
     "styled-components": "^6.1.15",
     "swiper": "^11.2.4",
