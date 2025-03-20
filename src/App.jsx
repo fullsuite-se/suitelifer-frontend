@@ -38,11 +38,12 @@ import Login from "./components/auth/Login";
 
 // Others
 import { Toaster } from "react-hot-toast";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   return (
     <>
-      <BrowserRouter>
+      <BrowserRouter>  <ScrollToTop />
         <Toaster position="top-center" reverseOrder={false} />
         <Routes>
           {/* Routes that are publicly avaialable (guest) */}
