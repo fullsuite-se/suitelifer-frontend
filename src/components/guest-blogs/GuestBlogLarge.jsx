@@ -9,7 +9,7 @@ const GuestBlogLarge = ({
   readTime,
   article,
   created_at,
-  images,
+  imageUrl,
 }) => {
   const { day, fullDate, time } = formatTimestamp(created_at);
 
@@ -26,7 +26,7 @@ const GuestBlogLarge = ({
         <div className="relative">
           <img
             className="w-full h-100 md:h-130 object-cover rounded-3xl"
-            src={images[0].image}
+            src={imageUrl}
             alt="Blog Cover"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-80"></div>
