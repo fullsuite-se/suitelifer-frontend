@@ -51,7 +51,7 @@ const Home = () => {
   return (
     <section
       className="gap-4 overflow-hidden"
-      style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
+      // style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
     >
       <PageMeta
         title="Home | Empowering Careers & Opportunities - SuiteLifer"
@@ -163,7 +163,7 @@ const Home = () => {
       <section className="h-[100dvh] lg:mt-17 mb-[10%]">
         {/* White */}
         <div id="right-side" className="side pb-17">
-          <p className="title">
+          <div className="title">
             <div className="">
               <span className="title-line-1">Do you feel like your</span> <br /> <br />
             </div>
@@ -176,7 +176,7 @@ const Home = () => {
             <div className="hidden">
               <span className="title-line-3">We can help.</span>
             </div>
-          </p>
+          </div>
         </div>
         {/* Blue */}
         <div id="left-side" className="side pb-17 relative rounded-r-4xl md:rounded-r-[50px]">
@@ -186,7 +186,7 @@ const Home = () => {
             className="absolute inset-0 w-full h-full object-cover opacity-20"
           />
 
-          <p className="title relative">
+          <div className="title relative">
             <div>
               <span className="title-line-1">We can help.</span>
             </div>
@@ -199,7 +199,7 @@ const Home = () => {
             <div className="hidden">
               <span className="title-line-3">Join us!</span>
             </div>
-          </p>
+          </div>
         </div>
       </section>
 
@@ -207,7 +207,7 @@ const Home = () => {
       <HomeGoalsOperations />
       {/* <div className="h-300 bg-red-900"></div> */}
 
-      <div className="mb-16 text-center">
+      <div className="text-center">
           <span className="text-sm text-primary  font-avenir-black block mb-4">
             WHAT WE OFFER
           </span>

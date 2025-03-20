@@ -19,10 +19,8 @@ const Testimonials = () => {
         <Swiper
           modules={[Navigation, Pagination, Autoplay]}
           pagination={{ clickable: true }}
-          spaceBetween={20}
           slidesPerView={1}
           autoplay={{ delay: 5000 }}
-          loop
           breakpoints={{
             0: {
               slidesPerView: 1,
@@ -55,7 +53,7 @@ const Testimonials = () => {
                   <img
                     src={bgQuotes}
                     alt="quote"
-                    className="absolute translate-x-5 translate-y-22 -rotate-5 w-16 mx-auto mb-4"
+                    className="absolute translate-x-5 translate-y-22 -rotate-5 w-16  mb-4"
                   />
                   <img
                     src={testimonial.image}
