@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import logofsfull from "../../assets/logos/logo-fs-full.svg";
 import JobCourse from "../../components/admin/JobCourse";
 import PersonalityTest from "../../components/admin/PersonalityTest";
@@ -13,6 +13,8 @@ const AdminContents = () => {
     "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
   );
   const [isPreviewShown, setIsPreviewShown] = useState(false);
+  const [leftWidth, setLeftWidth] = useState(60);
+  const isResizing = useRef(false);
 
   const handlePreview = () => {
     setIsPreviewShown((prev) => !prev);
@@ -24,6 +26,24 @@ const AdminContents = () => {
       const videoURL = URL.createObjectURL(file);
       setVideoFile(videoURL);
     }
+  };
+
+  const startResize = (event) => {
+    isResizing.current = true;
+    document.addEventListener("mousemove", handleResize);
+    document.addEventListener("mouseup", stopResize);
+  };
+
+  const stopResize = () => {
+    isResizing.current = false;
+    document.removeEventListener("mousemove", handleResize);
+    document.removeEventListener("mouseup", stopResize);
+  };
+
+  const handleResize = (event) => {
+    if (!isResizing.current) return;
+    const newWidth = (event.clientX / window.innerWidth) * 100;
+    setLeftWidth(Math.max(30, Math.min(70, newWidth)));
   };
 
   return (
@@ -41,7 +61,10 @@ const AdminContents = () => {
       {/* Main Content */}
       <div className="admincontent-container flex flex-col xl:flex-row w-full justify-center gap-2 p-3 transition-all duration-300 ease-in-out">
         {/* Left Content */}
-        <div className="left-content flex flex-col p-2 gap-2 w-full xl:w-[60%]">
+        <div
+          className="left-content flex flex-col p-2 gap-2 w-full xl:w-[60%]"
+          style={{ width: `${leftWidth}%` }}
+        >
           {/* Home Page */}
           <div className="home-page w-full">
             <div className="home-d-prev flex w-full gap-1 items-center">
@@ -72,7 +95,7 @@ const AdminContents = () => {
 
               <div className="w-full min-w-xs sm:max-w-md md:max-w-lg aspect-video border-3 rounded-3xl flex items-center justify-center bg-gray-200 overflow-hidden">
                 <video
-                  src={videoFile} 
+                  src={videoFile}
                   className="w-full h-full object-cover"
                   controls
                   autoPlay
@@ -126,15 +149,22 @@ const AdminContents = () => {
               </p>
             </div>
             <div className="text-md p-1">Day in the Pod Video</div>
-            <div className="pod-video p-1 text-sm">
-              <label>https://youtu.be/choDMzlBpvs?feature=shared</label>
+            <div className="pod-video p-1 ml-2 text-sm">
+              <label>https://youtube/choDMzlBpvs?feature=shared</label>
             </div>
           </div>
         </div>
+
+        <div
+          className="resize-bar w-1 bg-primary cursor-ew-resize"
+          onMouseDown={startResize}
+        ></div>
+
         {/* Right Content */}
         <div
           className="right-content flex flex-col w-full xl:w-[40%] p-2 gap-y-2 
-  overflow-y-auto overflow-x-auto min-h-0 min-w-[50%] md:min-w-[30%] whitespace-nowrap max-h-[900px]"
+    overflow-y-auto overflow-x-auto min-h-0 min-w-[50%] md:min-w-[30%] whitespace-nowrap max-h-[900px]"
+          style={{ width: `${100 - leftWidth}%` }}
         >
           <div className="spotify-container">
             <SpotifyEpisode />
