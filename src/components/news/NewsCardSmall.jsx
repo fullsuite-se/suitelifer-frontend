@@ -1,17 +1,17 @@
 import { Link } from "react-router-dom";
 import formatTimestamp from "../TimestampFormatter";
 import { toSlug } from "../../utils/slugUrl";
+import { readingTime } from "reading-time-estimator";
 
 const NewsCardSmall = ({
   id,
   title,
-  author,
-  readTime,
   article,
-  created_at,
-  imagesWithCaption,
+  createdByName,
+  createdAt,
+  imgUrls,
 }) => {
-  const { fullDate } = formatTimestamp(created_at);
+  const { fullDate } = formatTimestamp(createdAt);
 
   return (
     <Link
@@ -20,7 +20,7 @@ const NewsCardSmall = ({
     >
       <img
         className="image-news-card-small size-[25vw] aspect-[3/2] object-cover "
-        src={imagesWithCaption[0].image}
+        src={imgUrls[0]}
         alt="News image"
       />
 
@@ -30,13 +30,18 @@ const NewsCardSmall = ({
             {title}
           </p>
 
-          <article className="article-news-card-small text-gray-400 line-clamp-4 my-2 font-serif ">
-            {article}
+          <article className="article-news-card-small text-gray-400 line-clamp-4 my-2 font-serif">
+            {article.replace(/<[^>]+>/g, "")}
           </article>
 
           <p className="text-[14px] author-news-card-small">
-            <span className="text-primary">{author}&nbsp;&nbsp;|</span>
-            &nbsp;&nbsp;<span className="text-gray-400">{readTime}</span>
+            <span className="text-primary">
+              {createdByName.split(" ")[0]}&nbsp;&nbsp;|
+            </span>
+            &nbsp;&nbsp;
+            <span className="text-gray-400">
+              {readingTime(article, 238).text}
+            </span>
           </p>
 
           <p className="text-xs text-gray-400 mt-2">{fullDate}</p>

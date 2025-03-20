@@ -1,13 +1,10 @@
 import { ArrowLeft } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import React from "react";
-import Footer from "../Footer";
 import MobileNav from "../home/MobileNav";
 import TabletNav from "../home/TabletNav";
 import DesktopNav from "../home/DesktopNav";
 import bgBlogs from "../../assets/images/blogs-text-bg.svg";
-import ImageCarousel from "../../components/news/ImageCarousel";
-import { toSlug } from "../../utils/slugUrl";
 import GuestBlogCardSmall from "../guest-blogs/GuestBlogCardSmall";
 import NewsCardNoSnippet from "./NewsCardNoSnippet";
 import formatTimestamp from "../../components/TimestampFormatter";
@@ -15,16 +12,19 @@ import BackToTop from "../BackToTop";
 import { Helmet } from "@dr.pogodin/react-helmet";
 import { useEffect } from "react";
 import FooterNew from "../FooterNew";
+import Carousel from "../Carousel";
 
 const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  console.log(data);
+
   if (!data) {
     return <h1 className="text-center text-red-500">Not found</h1>;
   }
 
-  const { fullDate } = formatTimestamp(data.created_at);
+  const { fullDate } = formatTimestamp(data.createdAt);
 
   useEffect(() => {
     if (data?.title) {
@@ -101,15 +101,19 @@ const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
               </p>
               <p className="text-[12px] text-gray-500">
                 <span className="text-primary font-avenir-black">
-                  {data.author}
+                  {data.createdByName}
                 </span>{" "}
                 | {data.readTime || data.read_time}
               </p>
 
               {/* Image Carousel */}
-              <ImageCarousel
-                images={data.images}
-                imagesWithCaption={data.imagesWithCaption}
+              {/* <ImageCarousel
+                images={Array.isArray(data?.imgUrls) ? data.imgUrls : []}
+                // imagesWithCaption={data.imagesWithCaption}
+              /> */}
+              <Carousel
+                images={Array.isArray(data?.imgUrls) ? data.imgUrls : []}
+                isButtonOutside={false}
               />
 
               <p
@@ -161,7 +165,6 @@ const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
           </div>
         </main>
         <div className="h-30"></div> <BackToTop />
-        
         <FooterNew />
       </section>
     </>
