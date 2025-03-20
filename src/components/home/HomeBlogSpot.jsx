@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 const HomeBlogSpot = () => {
   return (
-<MotionUp className="relative flex flex-col mb-5 "
+<MotionUp className="relative flex flex-col mb-10 "
 >
   <MotionUp
     initial={{ opacity: 0, scale: 0.95 }} 
@@ -15,11 +15,14 @@ const HomeBlogSpot = () => {
     viewport={{ once: true, amount: 0.2 }}
     className="w-full"
   >
-    <img className="w-full -z-20 md:hidden" src={mobileBgBlogSpot2} alt="" />
-    <img className="w-full -z-20 hidden md:block" src={desktopBgBlogSpot} alt="" />
+     <p className="ml-20 mt-10 text-4xl font-avenir-black text-primary">
+         Blog Spot
+          </p>
+    {/* <img className="w-full -z-20 md:hidden" src={mobileBgBlogSpot2} alt="" />
+    <img className="w-full -z-20 hidden md:block" src={desktopBgBlogSpot} alt="" /> */}
   </MotionUp>
 
-  <MotionUp  className="mt-[47%] sm:mt-[57%] md:mt-[8%] xl:mt-[10%] w-full absolute rounded-2xl"
+  <MotionUp  className=" w-full  rounded-2xl"
   >
     <BlogCarousel />
   </MotionUp>
