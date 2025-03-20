@@ -108,7 +108,8 @@ ol {
 @theme {
   --color-primary: #0097b2;
   --color-secondary: #bfd1a0;
-  --color-tertiary: #ecf1e3;
+  --color-secondarydark: #4FAFAB;
+  --color-tertiary: #ECF1E3;
   --color-dark: #1a0202;
   --color-light: #ffffff;
   --color-accent-1: #eee3e3;

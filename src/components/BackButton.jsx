@@ -5,10 +5,10 @@ const BackButton = ({ backPath, type, jobId }) => {
   return (
     <NavLink
       to={backPath}
-      state={{ jobId }}
+      state={{ jobId, from: location.pathname }}
       className="!no-underline"
     >
-      <button className="flex items-center gap-2 text-primary !text-[12px] md:text-base font-semibold transition active:font-avenir-black">
+      <button className="cursor-pointer hover:underline! flex items-center gap-2 text-primary !text-[12px] md:text-base font-semibold transition active:font-avenir-black">
         <ArrowLeft size={15} /> <span className="mt-1">Back to {type}</span>
       </button>
     </NavLink>

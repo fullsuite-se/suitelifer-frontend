@@ -11,6 +11,9 @@ import GuestIndustryTags from "../../components/careers/GuestIndustriesTags";
 import dotsLine from "../../assets/images/socials-dots-line.svg";
 import BackToTop from "../../components/BackToTop";
 import PageMeta from "../../components/layout/PageMeta";
+import FooterNew from "../../components/FooterNew";
+import OnLoadLayoutAnimation from "../../components/layout/OnLoadLayoutAnimation";
+import { useLocation } from "react-router-dom";
 
 const Careers = () => {
   const [jobs, setJobs] = useState([]);
@@ -45,7 +48,7 @@ const Careers = () => {
   };
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    // window.scrollTo(0, 0);
     fetchEpisodes();
     fetchJobs();
     fetchIndustries();
@@ -70,6 +73,18 @@ const Careers = () => {
   useEffect(() => {
     filter === "All" ? fetchJobs() : fetchFilteredJobs();
   }, [filter]);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash) {
+      const section = document.getElementById(location.hash.substring(1));
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [location]);
+
 
   return (
     <>
@@ -327,54 +342,64 @@ const Careers = () => {
           </div> */}
 
           {/* Three dots one line */}
-          <div className="flex justify-end scale-x-[-1] -translate-x-[1%] py-[12%] sm:py-[3%]">
+          <div className="flex justify-end scale-x-[-1] -translate-x-[1%] py-[12%] sm:py-[3%]" id="current-job-openings">
             <img className="dots-line" src={dotsLine} alt="3 dots and a line" />
           </div>
           {/* Current Job Openings */}
           <section className="pb-[7%] lg:pb-[5%]">
             {/* Top text */}
-            <div className="">
-              <p className="px-[5%] font-avenir-black flex justify-between items-center">
-                <span className="top-text">Current Job Openings</span>
-                <a
-                  href="/careers-all"
-                  className="animate-bounceCustom flex text-sm md:text-base no-underline text-primary hover:underline!"
-                >
-                  View all{" "}
-                  <span>
-                    {<ChevronRightIcon className="size-4 md:size-5" />}
-                  </span>
-                </a>
-              </p>
-              <div className="relative hidden lg:block">
-                <div className="absolute overflow-hidden right-0 translate-y-12 -z-50 w-[25%] h-25 bg-secondary/10 rounded-l-4xl"></div>
-              </div>
-              {/* Filter */}
-              <div className="flex justify-center py-[3%] pl-[5%] pb-[5%]">
-                <div className="w-full max-w-full flex justify-center">
-                  <GuestIndustryTags
-                    industries={industries}
-                    filter={filter}
-                    handleFilterChange={handleFilterChange}
-                  />
-                </div>
-              </div>
-            </div>
-
+            <p className="px-[5%] font-avenir-black flex justify-between items-center">
+              <span className="top-text">Current Job Openings</span>
+              <a
+                href="/careers-all"
+                className="animate-bounceCustom flex text-sm md:text-base no-underline text-primary hover:underline!"
+              >
+                View all{" "}
+                <span>{<ChevronRightIcon className="size-4 md:size-5" />}</span>
+              </a>
+            </p>
             <div className="relative hidden lg:block">
-              <div className="absolute overflow-hidden -translate-y-35 -z-50 w-[10%] h-30 bg-primary/5 rounded-r-4xl"></div>
+              <div className="absolute overflow-hidden right-0 translate-y-12 -z-50 w-[25%] h-25 bg-secondary/10 rounded-l-4xl"></div>
             </div>
-            {jobs.length === 0 ? (
-              <div className="grid place-content-center px-5 text-center text-2xl min-h-100 my-7">
-                <p>
-                  No job listings are available for this industry{" "}
-                  <span className="font-avenir-black">at the moment</span>—but
-                  stay tuned!
-                </p>
-                <p>Exciting <span className="text-primary font-avenir-black">opportunities</span> may be coming soon.</p>
-              </div>
+            {industries.length === 0 ? (
+              <section className="grid place-conte`nt-center h-dvh">
+                <OnLoadLayoutAnimation />
+              </section>
             ) : (
-              <JobCarouselVersion2 jobs={jobs} />
+              <div className="">
+                {/* Filter */}
+                <div className="flex justify-center py-[3%] pl-[5%] pb-[5%]">
+                  <div className="w-full max-w-full flex justify-center">
+                    <GuestIndustryTags
+                      industries={industries}
+                      filter={filter}
+                      handleFilterChange={handleFilterChange}
+                    />
+                  </div>
+                </div>
+
+                <div className="relative hidden lg:block">
+                  <div className="absolute overflow-hidden -translate-y-35 -z-50 w-[10%] h-30 bg-primary/5 rounded-r-4xl"></div>
+                </div>
+                {jobs.length === 0 ? (
+                  <div className="grid place-content-center px-5 text-center text-2xl min-h-100 my-7">
+                    <p>
+                      No job listings are available for this industry{" "}
+                      <span className="font-avenir-black">at the moment</span>
+                      —but stay tuned!
+                    </p>
+                    <p>
+                      Exciting{" "}
+                      <span className="text-primary font-avenir-black">
+                        opportunities
+                      </span>{" "}
+                      may be coming soon.
+                    </p>
+                  </div>
+                ) : (
+                  <JobCarouselVersion2 jobs={jobs} />
+                )}
+              </div>
             )}
           </section>
 
@@ -442,7 +467,8 @@ const Careers = () => {
           </div>
         </main>
         <BackToTop />
-        <Footer />
+       
+        <FooterNew/>
       </section>
     </>
   );

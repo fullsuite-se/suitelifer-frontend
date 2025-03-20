@@ -9,16 +9,32 @@ import { toSlug } from "../../utils/slugUrl.js";
 import BackToTop from "../../components/BackToTop.jsx";
 import OnLoadLayoutAnimation from "../../components/layout/OnLoadLayoutAnimation";
 import PageMeta from "../../components/layout/PageMeta.jsx";
+import BackButton from "../../components/BackButton.jsx";
+import { ArrowLeft } from "lucide-react";
 
 const CareersJobDetails = () => {
-  window.scroll(0, 0);
 
   const [jobDetails, setJobDetails] = useState(null);
   const location = useLocation();
   const { jobId } = location.state;
   const navigate = useNavigate();
+  const previousPage = location.state?.from;
+
+  const handleBack = () => {
+    if (previousPage?.startsWith("/careers/application-form/")) {
+      console.log("Navigating back to careers page");
+      navigate("/careers");
+    } else if (previousPage) {
+      console.log("Navigating back to:", previousPage);
+      navigate(-1);
+    } else {
+      console.log("No previous page, going to careers");
+      navigate("/careers"); // Default fallback if no previous state
+    }
+  };
 
   useEffect(() => {
+    window.scroll(0, 0);
     const fetchJobDetails = async () => {
       try {
         console.log("Fetching job details for jobId:", jobId);
@@ -70,9 +86,13 @@ const CareersJobDetails = () => {
         <DesktopNav />
       </div>
       <div className="px-7 max-w-4xl mx-auto lg:flex lg:flex-col lg:pt-20 lg:h-lvh">
-        <a href="/careers" className="text-primary no-underline text-xs">
-          ← Back
-        </a>
+        <button
+          className="w-fit flex gap-2 text-primary no-underline text-xs cursor-pointer hover:underline!"
+          onClick={handleBack} // Goes back to the last visited page
+        >
+          <ArrowLeft size={15} />
+          <span>Back</span>
+        </button>
         {jobDetails ? (
           <div className="flex flex-col mt-5">
             <p className="font-avenir-black text-2xl">{jobDetails.jobTitle}</p>
@@ -168,7 +188,9 @@ const CareersJobDetails = () => {
               type="button"
               onClick={() => {
                 navigate(
-                  `/careers/application-form/${jobId}/${toSlug(jobDetails.jobTitle)}`
+                  `/careers/application-form/${jobId}/${toSlug(
+                    jobDetails.jobTitle
+                  )}`
                 );
               }}
             >
