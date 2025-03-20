@@ -311,10 +311,14 @@ const AboutUs = () => {
         </section>
 
         {/* Message from the CEO */}
-        <section className="relative py-10" id="ceo-message">
+        <section className="relative" id="ceo-message">
           {/* Text overlay */}
-          <article className="absolute text-end text-white">
-            <div className="container-ceo-message pt-[22%] md:pt-[15%] pr-[5%] md:pr-[10%]">
+          <article className="absolute text-end text-white -mt-10">
+            <div className="container-ceo-message pt-[22%]  pr-[5%] md:pr-[10%]">
+              <div className="flex justify-end">
+                <p className="text-[12p] font-avenir-black text-secondary">MESSAGE FROM THE CEO</p>
+              </div>{" "}
+              <br />
               <div className="flex justify-end">
                 {/* Title */}
                 <p className="title w-[60%] font-avenir-black">
@@ -357,10 +361,15 @@ const AboutUs = () => {
                   FullSuite is here to help you achieve your goals.
                 </p>
               </div>
+              <div className="flex justify-end">
+                <p className="mt-2 md:mt-4 indent-8 text-[12px] md:text-[14px]  lg:text-[16px] font-avenir-roman-oblique">
+                  ~ Maggie
+                </p>
+              </div>
             </div>
           </article>
           {/* Image background */}
-          <div className="">
+          <div className="mt-20  md:-mt-20 md:mb-20">
             <img
               className="md:hidden h-full w-full"
               src={bgMaggieMobile}
@@ -385,7 +394,7 @@ const AboutUs = () => {
         {/* A Day in the Pod */}
         <section className="mb-[2%] relative">
           <div className="day-in-the-pod">
-            <div className="absolute pt-[4%] flex flex-col items-end">
+            <div className="relative pt-[4%] flex flex-col items-end">
               <img className="w-1/2" src={dotsLine} alt="3 dots and a line" />
               <div className="text-end pr-[7%] pt-[2%]">
                 <p className="more-about-us text-sm text-primary font-avenir-black">
@@ -396,15 +405,15 @@ const AboutUs = () => {
                 </p>
               </div>
             </div>
-            <div className="w-[45%]">
+            {/* <div className="w-[45%]">
               <img
                 className="object-cover"
                 src={FillerBoxes}
                 alt="filler boxes"
               />
-            </div>
+            </div> */}
           </div>
-          <div className="w-[80%] max-w-[1200px] pt-10 md:pt-20 mx-auto">
+          <div className="w-[80%] max-w-[1200px] pt-5 md:pt-20 mx-auto">
             <YouTubeEmbed videoId={"c6fs1gBpjQg"} />
           </div>
           <div className="absolute sm:hidden">
@@ -426,7 +435,8 @@ const AboutUs = () => {
               <button className="cursor-pointer">Check our careers</button>
             </a>
           </div>
-          <div className="mt-4 md:mt-0">
+          <div className="py-20"></div>
+          {/* <div className="mt-4 md:mt-0">
             <img
               className="md:hidden"
               src={smallBottomFiller}
@@ -437,7 +447,7 @@ const AboutUs = () => {
               src={largeBottomFiller}
               alt="bottom filler"
             />
-          </div>
+          </div> */}
         </section>
         {/* <div className="h-100 grid place-content-center bg-amber-100 text-center p-5">
           <i>

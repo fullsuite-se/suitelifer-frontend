@@ -83,15 +83,15 @@ const CareerCarousel = () => {
               <SwiperSlide key={career.id}>
         
                   <div
-                    className={`p-5 mt-4 ease-out bg-white shadow-lg rounded-2xl text-center transition-transform duration-300 scale-90
+                    className={`p-5 mt-4 ease-out bg-white shadow-lg rounded-[30px] text-center transition-transform duration-300 scale-90
                     `}
                   >
                      <img
                   src={career.image}
                   alt={career.name}
-                  className="w-full aspect-[3/4] object-cover rounded-lg"
+                  className="w-full aspect-[100/101] object-cover rounded-[25px]"
                 />
-                <p className="text-center mt-3 font-avenir-black text-lg sm:text-xl">
+                <p className="text-center mt-3 py-5 font-avenir-black text-lg sm:text-xl">
                   {career.name}
                 </p>
                   </div>

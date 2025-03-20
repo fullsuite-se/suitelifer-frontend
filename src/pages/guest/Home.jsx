@@ -22,31 +22,51 @@ import CareerCarousel from "../../components/home/CareerCarousel";
 
 const Home = () => {
   const [width, setWidth] = useState(window.innerWidth); //FOR DEBUGGING
+  // useEffect(() => {
+  //   window.scroll(0, 0);
+  //   const left = document.getElementById("left-side");
+  //   if (!left) return; // Prevent errors if the element is not yet rendered
 
+  //   const handleOnMove = (e) => {
+  //     const p = (e.clientX / window.innerWidth) * 100;
+  //     left.style.width = `${p}%`; // Added '%' to properly apply width
+  //   };
+
+  //   document.addEventListener("mousemove", handleOnMove);
+  //   document.addEventListener("touchmove", (e) => handleOnMove(e.touches[0]));
+
+  //   const handleResize = () => {
+  //     setWidth(window.innerWidth);
+  //   };
+
+  //   window.addEventListener("resize", handleResize);
+
+  //   // Clean up the event listener on unmount
+  //   return () => {
+  //     window.removeEventListener("resize", handleResize);
+  //   };
+  // }, [width]);
   useEffect(() => {
     window.scroll(0, 0);
     const left = document.getElementById("left-side");
-    if (!left) return; // Prevent errors if the element is not yet rendered
-
-    const handleOnMove = (e) => {
-      const p = (e.clientX / window.innerWidth) * 100;
-      left.style.width = `${p}%`; // Added '%' to properly apply width
-    };
-
-    document.addEventListener("mousemove", handleOnMove);
-    document.addEventListener("touchmove", (e) => handleOnMove(e.touches[0]));
-
+    if (!left) return;
+  
+    setTimeout(() => {
+      left.style.transition = "width 1s ease-in-out"; 
+      left.style.width = "100%";
+    }, 3000);
+  
     const handleResize = () => {
       setWidth(window.innerWidth);
     };
-
+  
     window.addEventListener("resize", handleResize);
-
-    // Clean up the event listener on unmount
+  
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, [width]);
+  
 
   return (
     <section
@@ -159,7 +179,11 @@ const Home = () => {
           }}
         />
       </div>
-
+     {/* <img
+            src={rocketship}
+            alt="Rocketship"
+            className="absolute inset-0 w-full h-full object-cover opacity-20"
+          /> */}
       <section className="h-[100dvh] lg:mt-17 mb-[10%]">
         {/* White */}
         <div id="right-side" className="side pb-17">
@@ -179,12 +203,8 @@ const Home = () => {
           </div>
         </div>
         {/* Blue */}
-        <div id="left-side" className="side pb-17 relative rounded-r-4xl md:rounded-r-[50px]">
-          <img
-            src={rocketship}
-            alt="Rocketship"
-            className="absolute inset-0 w-full h-full object-cover opacity-20"
-          />
+        <div id="left-side" className="side pb-17 relative ">
+     
 
           <div className="title relative">
             <div>
@@ -217,13 +237,12 @@ const Home = () => {
         </div>
       <CareerCarousel />
 
-
       {/* NEWS SECTION */}
       <HomeNews />
-
+<div className="relative bg-primary py-10 mt-10 rounded-t-30!">
       {/* SOCIALS SECTION */}
       <HomeSocials />
-
+</div>
       <div className="h-10"></div>
 
       {/* HOME BLOG SPOT */}
