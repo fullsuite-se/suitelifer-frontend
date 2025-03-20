@@ -126,53 +126,55 @@ function PersonalityTest() {
               </div>
             </button>
 
-            <div
-              className="ag-theme-quartz"
-              style={{ height: "400px", width: "100%" }}
-            >
-              <AgGridReact
-                rowData={rowTestData}
-                columnDefs={[
-                  {
-                    headerName: "Title",
-                    field: "title",
-                    flex: 1,
-                    headerClass: "text-primary font-bold bg-tertiary",
-                  },
-                  {
-                    headerName: "URL",
-                    field: "url",
-                    flex: 1,
-                    headerClass: "text-primary font-bold bg-tertiary",
-                  },
-                  {
-                    headerName: "Action",
-                    field: "action",
-                    flex: 1,
+            <div className="overflow-x-auto w-full">
+              <div
+                className="ag-theme-quartz p-3 sm:p-5 min-w-[600px] lg:w-full"
+                style={{ height: "400px" }}
+              >
+                <AgGridReact
+                  rowData={rowTestData}
+                  columnDefs={[
+                    {
+                      headerName: "Title",
+                      field: "title",
+                      flex: 2,
+                      headerClass: "text-primary font-bold bg-tertiary",
+                    },
+                    {
+                      headerName: "URL",
+                      field: "url",
+                      flex: 2,
+                      headerClass: "text-primary font-bold bg-tertiary",
+                    },
+                    {
+                      headerName: "Action",
+                      field: "action",
+                      flex: 1,
 
-                    headerClass: "text-primary font-bold bg-tertiary",
-                    cellRenderer: (params) => (
-                      <div className="flex gap-2">
-                        <IconButton onClick={() => handleEdit(params.data)}>
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton
-                          onClick={() => handleDelete(params.data.id)}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </div>
-                    ),
-                  },
-                ]}
-                defaultColDef={{ sortable: true, filter: true }}
-                rowHeight={50}
-                pagination={true}
-                paginationPageSize={5}
-                paginationPageSizeSelector={[5, 10, 20, 50]}
-                gridOptions={gridOptions}
-                ref={gridRef}
-              />
+                      headerClass: "text-primary font-bold bg-tertiary",
+                      cellRenderer: (params) => (
+                        <div className="flex gap-2">
+                          <IconButton onClick={() => handleEdit(params.data)}>
+                            <EditIcon />
+                          </IconButton>
+                          <IconButton
+                            onClick={() => handleDelete(params.data.id)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </div>
+                      ),
+                    },
+                  ]}
+                  defaultColDef={{ sortable: true, filter: true }}
+                  rowHeight={50}
+                  pagination={true}
+                  paginationPageSize={5}
+                  paginationPageSizeSelector={[5, 10, 20, 50]}
+                  gridOptions={gridOptions}
+                  ref={gridRef}
+                />
+              </div>
             </div>
           </CardContent>
         )}

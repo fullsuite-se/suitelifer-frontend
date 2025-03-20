@@ -134,42 +134,62 @@ function Testimonials() {
               </div>
             </button>
 
-            <div
-              className="ag-theme-quartz"
-              style={{ height: "400px", width: "100%" }}
-            >
-              <AgGridReact
-                rowData={rowTestimonialData}
-                columnDefs={[
-                  { headerName: "Name", field: "name", flex: 1 },
-                  { headerName: "Feedback", field: "feedback", flex: 1 },
-                  { headerName: "Company", field: "company", flex: 1 },
-                  {
-                    headerName: "Action",
-                    field: "action",
-                    flex: 1,
-                    cellRenderer: (params) => (
-                      <div className="flex gap-2">
-                        <IconButton onClick={() => handleEdit(params.data)}>
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton
-                          onClick={() => handleDelete(params.data.id)}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </div>
-                    ),
-                  },
-                ]}
-                defaultColDef={{ sortable: true, filter: true }}
-                rowHeight={50}
-                pagination={true}
-                paginationPageSize={5}
-                paginationPageSizeSelector={[5, 10, 20, 50]}
-                gridOptions={gridOptions}
-                ref={gridRef}
-              />
+            <div className="w-full overflow-x-auto">
+              <div
+                className="ag-theme-quartz p-3 sm:p-5 min-w-[600px] lg:w-full"
+                style={{ height: "400px", width: "100%" }}
+              >
+                <AgGridReact
+                  rowData={rowTestimonialData}
+                  columnDefs={[
+                    {
+                      headerName: "Name",
+                      field: "name",
+                      filter: "agTextColumnFilter",
+                      headerClass: "text-primary font-bold bg-tertiary",
+                      flex: 1,
+                    },
+                    {
+                      headerName: "Feedback",
+                      field: "feedback",
+                      filter: "agTextColumnFilter",
+                      headerClass: "text-primary font-bold bg-tertiary",
+                      flex: 1,
+                    },
+                    {
+                      headerName: "Company",
+                      field: "company",
+                      filter: "agTextColumnFilter",
+                      headerClass: "text-primary font-bold bg-tertiary",
+                      flex: 1,
+                    },
+                    {
+                      headerName: "Action",
+                      field: "action",
+                      flex: 1,
+                      cellRenderer: (params) => (
+                        <div className="flex gap-2">
+                          <IconButton onClick={() => handleEdit(params.data)}>
+                            <EditIcon />
+                          </IconButton>
+                          <IconButton
+                            onClick={() => handleDelete(params.data.id)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </div>
+                      ),
+                    },
+                  ]}
+                  defaultColDef={{ sortable: true, filter: true }}
+                  rowHeight={50}
+                  pagination={true}
+                  paginationPageSize={5}
+                  paginationPageSizeSelector={[5, 10, 20, 50]}
+                  gridOptions={gridOptions}
+                  ref={gridRef}
+                />
+              </div>
             </div>
           </CardContent>
         )}

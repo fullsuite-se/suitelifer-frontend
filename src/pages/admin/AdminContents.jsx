@@ -35,9 +35,9 @@ const AdminContents = () => {
       </header>
 
       {/* Main Content */}
-      <div className="admincontent-container flex flex-col md:flex-row w-full justify-center gap-2 p-3">
+      <div className="admincontent-container flex flex-col xl:flex-row w-full justify-center gap-2 p-3 transition-all duration-300 ease-in-out">
         {/* Left Content */}
-        <div className="left-content flex flex-col p-2 gap-2 w-full md:w-[60%]">
+        <div className="left-content flex flex-col p-2 gap-2 w-full xl:w-[60%]">
           {/* Home Page */}
           <div className="home-page w-full">
             <div className="home-d-prev flex w-full gap-1 items-center">
@@ -98,16 +98,16 @@ const AdminContents = () => {
             <div className="mission p-1">
               <p className="bg-accent-1 rounded-2xl p-2 text-sm">
                 Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry.
+                industry. Lorem Ipsum is simply dummy text of the printing and
+                typesetting industry.
               </p>
             </div>
             <div className="text-md p-1">Vision</div>
             <div className="vision p-1">
               <p className="bg-accent-1 rounded-2xl p-2 text-sm">
                 Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry.
+                industry. Lorem Ipsum is simply dummy text of the printing and
+                typesetting industry.
               </p>
             </div>
             <div className="text-md p-1">Day in the Pod Video</div>
@@ -117,8 +117,10 @@ const AdminContents = () => {
           </div>
         </div>
 
-        {/* Right Content (Scrollable) */}
-        <div className="right-content flex flex-col w-full md:w-[40%] h-[600px] md:h-[800px] p-2 gap-y-2 overflow-y-auto min-h-0">
+        <div
+          className="right-content flex flex-col w-full xl:w-[40%] p-2 gap-y-2 
+  overflow-y-auto overflow-x-auto min-h-0 min-w-[50%] md:min-w-[30%] whitespace-nowrap max-h-[900px]"
+        >
           <div className="spotify-container">
             <SpotifyEpisode />
           </div>
@@ -128,7 +130,7 @@ const AdminContents = () => {
           <div className="personalitytest-container w-full h-auto">
             <PersonalityTest />
           </div>
-          <div className="personalitytest-container w-full h-auto">
+          <div className="testimonial-container w-full h-auto">
             <Testimonials />
           </div>
         </div>

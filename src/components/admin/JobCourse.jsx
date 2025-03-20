@@ -72,7 +72,7 @@ function JobCourse() {
     },
   };
 
-  const gridRef = useRef(); 
+  const gridRef = useRef();
 
   const [openDialog, setOpenDialog] = useState(false);
   const [currentCourse, setCurrentCourse] = useState({
@@ -114,7 +114,7 @@ function JobCourse() {
 
   return (
     <div className="border-primary border-2 rounded-3xl w-full overflow-hidden">
-      <Card sx={{ boxShadow:"none" }}>
+      <Card sx={{ boxShadow: "none" }}>
         <div
           onClick={() => setIsExpanded(!isExpanded)}
           className="hover:bg-gray-100 rounded flex items-center p-4 cursor-pointer"
@@ -142,59 +142,60 @@ function JobCourse() {
               </div>
             </button>
 
-            <div
-              className="ag-theme-quartz"
-              style={{ height: "400px", width: "100%" }}
-            >
-              <AgGridReact
-                rowData={rowCourseData}
-                columnDefs={[
-                  {
-                    headerName: "Title",
-                    field: "title",
-                    flex: 1,
-                    headerClass: "text-primary font-bold bg-tertiary",
-                  },
-                  {
-                    headerName: "Related Job",
-                    field: "relatedJob",
-                    flex: 1,
-                    headerClass: "text-primary font-bold bg-tertiary",
-                  },
-                  {
-                    headerName: "URL",
-                    field: "url",
-                    flex: 1,
-                    headerClass: "text-primary font-bold bg-tertiary",
-                  },
-                  {
-                    headerName: "Action",
-                    field: "action",
-                    flex: 1,
-
-                    headerClass: "text-primary font-bold bg-tertiary",
-                    cellRenderer: (params) => (
-                      <div className="flex gap-2">
-                        <IconButton onClick={() => handleEdit(params.data)}>
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton
-                          onClick={() => handleDelete(params.data.id)}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </div>
-                    ),
-                  },
-                ]}
-                defaultColDef={{ sortable: true, filter: true }}
-                rowHeight={50}
-                pagination={true}
-                paginationPageSize={5}
-                paginationPageSizeSelector={[5, 10, 20, 50]}
-                gridOptions={gridOptions}
-                ref={gridRef}
-              />
+            <div className="w-full overflow-x-auto">
+              <div
+                className="ag-theme-quartz p-3 sm:p-5 min-w-[600px] lg:w-full overflow-x-auto"
+                style={{ height: "400px" }}
+              >
+                <AgGridReact
+                  rowData={rowCourseData}
+                  columnDefs={[
+                    {
+                      headerName: "Title",
+                      field: "title",
+                      flex: 2,
+                      headerClass: "text-primary font-bold bg-tertiary",
+                    },
+                    {
+                      headerName: "Related Job",
+                      field: "relatedJob",
+                      flex: 2,
+                      headerClass: "text-primary font-bold bg-tertiary",
+                    },
+                    {
+                      headerName: "URL",
+                      field: "url",
+                      flex: 2,
+                      headerClass: "text-primary font-bold bg-tertiary",
+                    },
+                    {
+                      headerName: "Action",
+                      field: "action",
+                      flex: 2,
+                      headerClass: "text-primary font-bold bg-tertiary",
+                      cellRenderer: (params) => (
+                        <div className="flex gap-2">
+                          <IconButton onClick={() => handleEdit(params.data)}>
+                            <EditIcon />
+                          </IconButton>
+                          <IconButton
+                            onClick={() => handleDelete(params.data.id)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </div>
+                      ),
+                    },
+                  ]}
+                  defaultColDef={{ sortable: true, filter: true }}
+                  rowHeight={50}
+                  pagination={true}
+                  paginationPageSize={5}
+                  paginationPageSizeSelector={[5, 10, 20, 50]}
+                  gridOptions={gridOptions}
+                  ref={gridRef}
+                />
+              </div>
             </div>
           </CardContent>
         )}
