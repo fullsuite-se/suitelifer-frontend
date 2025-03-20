@@ -10,7 +10,7 @@ import GuestBlogCard from "../guest-blogs/GuestBlogCard";
 
 const BlogCarousel = () => {
   return (
-    <div className="w-full max-w-[90%] mx-auto py-[20%] px-[10%] sm:px-[10%] xl:px-[0%]">
+    <div className="w-full max-w-[90%] mx-auto py-[10px] px-[10%] sm:px-[10%] xl:px-[0%]">
       <Swiper
         modules={[Navigation, Pagination, Autoplay]}
         spaceBetween={10}
@@ -20,8 +20,7 @@ const BlogCarousel = () => {
           768: {slidesPerView: 3},
           1024: { slidesPerView: 3 },
         }}
-        navigation
-        pagination={{ clickable: true, enabled: false }}
+        pagination={{ clickable: true, }}
         autoplay={{ delay: 5000 }}
         loop
         className="py-6"

@@ -18,39 +18,60 @@ import BackToTop from "../../components/BackToTop";
 import { Helmet } from "@dr.pogodin/react-helmet";
 import PageMeta from "../../components/layout/PageMeta";
 import FooterNew from "../../components/FooterNew";
+import CareerCarousel from "../../components/home/CareerCarousel";
 
 const Home = () => {
   const [width, setWidth] = useState(window.innerWidth); //FOR DEBUGGING
+  // useEffect(() => {
+  //   window.scroll(0, 0);
+  //   const left = document.getElementById("left-side");
+  //   if (!left) return; // Prevent errors if the element is not yet rendered
 
+  //   const handleOnMove = (e) => {
+  //     const p = (e.clientX / window.innerWidth) * 100;
+  //     left.style.width = `${p}%`; // Added '%' to properly apply width
+  //   };
+
+  //   document.addEventListener("mousemove", handleOnMove);
+  //   document.addEventListener("touchmove", (e) => handleOnMove(e.touches[0]));
+
+  //   const handleResize = () => {
+  //     setWidth(window.innerWidth);
+  //   };
+
+  //   window.addEventListener("resize", handleResize);
+
+  //   // Clean up the event listener on unmount
+  //   return () => {
+  //     window.removeEventListener("resize", handleResize);
+  //   };
+  // }, [width]);
   useEffect(() => {
     window.scroll(0, 0);
     const left = document.getElementById("left-side");
-    if (!left) return; // Prevent errors if the element is not yet rendered
-
-    const handleOnMove = (e) => {
-      const p = (e.clientX / window.innerWidth) * 100;
-      left.style.width = `${p}%`; // Added '%' to properly apply width
-    };
-
-    document.addEventListener("mousemove", handleOnMove);
-    document.addEventListener("touchmove", (e) => handleOnMove(e.touches[0]));
-
+    if (!left) return;
+  
+    setTimeout(() => {
+      left.style.transition = "width 1s ease-in-out"; 
+      left.style.width = "100%";
+    }, 3000);
+  
     const handleResize = () => {
       setWidth(window.innerWidth);
     };
-
+  
     window.addEventListener("resize", handleResize);
-
-    // Clean up the event listener on unmount
+  
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, [width]);
+  
 
   return (
     <section
       className="gap-4 overflow-hidden"
-      style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
+      // style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
     >
       <PageMeta
         title="Home | Empowering Careers & Opportunities - SuiteLifer"
@@ -158,11 +179,15 @@ const Home = () => {
           }}
         />
       </div>
-
+     {/* <img
+            src={rocketship}
+            alt="Rocketship"
+            className="absolute inset-0 w-full h-full object-cover opacity-20"
+          /> */}
       <section className="h-[100dvh] lg:mt-17 mb-[10%]">
         {/* White */}
         <div id="right-side" className="side pb-17">
-          <p className="title">
+          <div className="title">
             <div className="">
               <span className="title-line-1">Do you feel like your</span> <br /> <br />
             </div>
@@ -175,17 +200,13 @@ const Home = () => {
             <div className="hidden">
               <span className="title-line-3">We can help.</span>
             </div>
-          </p>
+          </div>
         </div>
         {/* Blue */}
-        <div id="left-side" className="side pb-17 relative">
-          <img
-            src={rocketship}
-            alt="Rocketship"
-            className="absolute inset-0 w-full h-full object-cover opacity-20"
-          />
+        <div id="left-side" className="side pb-17 relative ">
+     
 
-          <p className="title relative">
+          <div className="title relative">
             <div>
               <span className="title-line-1">We can help.</span>
             </div>
@@ -198,19 +219,30 @@ const Home = () => {
             <div className="hidden">
               <span className="title-line-3">Join us!</span>
             </div>
-          </p>
+          </div>
         </div>
       </section>
 
       {/* GOAL AND OPERATIONS */}
       <HomeGoalsOperations />
       {/* <div className="h-300 bg-red-900"></div> */}
+
+      <div className="text-center">
+          <span className="text-sm text-primary  font-avenir-black block mb-4">
+            WHAT WE OFFER
+          </span>
+          <p className="text-4xl font-bold font-avenir-black text-dark">
+          Your Next Career Starts Here
+          </p>
+        </div>
+      <CareerCarousel />
+
       {/* NEWS SECTION */}
       <HomeNews />
-
+<div className="relative bg-primary py-10 mt-10 rounded-t-30!">
       {/* SOCIALS SECTION */}
       <HomeSocials />
-
+</div>
       <div className="h-10"></div>
 
       {/* HOME BLOG SPOT */}
