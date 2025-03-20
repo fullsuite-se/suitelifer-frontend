@@ -98,6 +98,7 @@ const AdminContents = () => {
             <div className="mission p-1">
               <p className="bg-accent-1 rounded-2xl p-2 text-sm">
                 Lorem Ipsum is simply dummy text of the printing and typesetting
+                industry. Lorem Ipsum is simply dummy text of the printing and typesetting
                 industry.
               </p>
             </div>
@@ -105,6 +106,7 @@ const AdminContents = () => {
             <div className="vision p-1">
               <p className="bg-accent-1 rounded-2xl p-2 text-sm">
                 Lorem Ipsum is simply dummy text of the printing and typesetting
+                industry. Lorem Ipsum is simply dummy text of the printing and typesetting
                 industry.
               </p>
             </div>
