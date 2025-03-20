@@ -94,18 +94,6 @@ h6 {
 }
 
 /* For the WYSISYG */
-/* Bold text */
-strong,
-b {
-  font-family: "Avenir-Black", sans-serif;
-}
-
-/* Italic text */
-em,
-i {
-  font-family: "Avenir-RomanOblique", sans-serif;
-}
-
 ul {
   list-style-type: disc;
   padding-left: 20px;
@@ -114,14 +102,6 @@ ul {
 ol {
   list-style-type: decimal;
   padding-left: 20px;
-}
-
-/* Bold + Italic */
-strong em,
-b i,
-strong i,
-b em {
-  font-family: "Avenir-BlackOblique", sans-serif;
 }
 
 /* Color Themes */

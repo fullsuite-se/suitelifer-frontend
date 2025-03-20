@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React from "react";
 import {
   BoldIcon,
   ItalicIcon,
@@ -10,12 +10,18 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 
-const TextEditor = ({ titleChange, descChange }) => {
+const ContentEditor = ({
+  handleFileChange,
+  handleTitleChange,
+  handleDescriptionChange,
+  handleSubmit,
+  type,
+}) => {
   const editor = useEditor({
     extensions: [StarterKit, Underline],
     content: "<p></p>",
     onUpdate: ({ editor }) => {
-      descChange(editor.getHTML());
+      handleDescriptionChange(editor.getHTML());
     },
   });
 
@@ -24,12 +30,34 @@ const TextEditor = ({ titleChange, descChange }) => {
   }
   const handleTitleOnChange = (e) => {
     const value = e.target.value;
-    const text = ` <h3><strong>${value}</strong></h3>`;
-    titleChange(text);
+    const text = `${value}`;
+    handleTitleChange(text);
+  };
+
+  const handleFileOnChange = (e) => {
+    handleFileChange(e);
   };
 
   return (
-    <div className="">
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleFileOnChange}
+        className="border p-2 rounded w-full "
+        multiple
+      />
+
+      <input
+        type="text"
+        className="border p-2 font-serif font-bold w-full rounded-md"
+        onChange={handleTitleOnChange}
+        style={{
+          fontSize: "1.17em",
+          margin: "0.75em 0",
+        }}
+        placeholder="Write your title here"
+      />
       <div className="flex gap-3 mb-2 place-items-center">
         <BoldIcon
           className="size-5 cursor-pointer"
@@ -52,25 +80,25 @@ const TextEditor = ({ titleChange, descChange }) => {
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
         />
       </div>
-      <input
-        type="text"
-        className="border p-2 font-avenir-black w-full rounded-md"
-        onChange={handleTitleOnChange}
-        style={{
-          fontSize: "1.17em",
-          margin: "0.75em 0",
-        }}
-        placeholder="Write your title here"
-      />
       <EditorContent
         editor={editor}
         className="border p-2 rounded bg-[--color-accent-1] text-[--color-dark] 
-             font-[Avenir-Roman] 
+             font-serif
              [&_ul]:list-disc [&_ul]:pl-6 
-             [&_ol]:list-decimal [&_ol]:pl-6"
+             [&_ol]:list-decimal [&_ol]:pl-6
+             [&_em]:font-inherit
+             [&_strong]:font-bold
+             [&_strong_em]:font-inherit
+             [&_em_strong]:font-inherit"
       />
-    </div>
+
+      <section className="flex justify-center">
+        <button className="bg-primary p-3 rounded-md cursor-pointer w-full mx-auto text-white font-avenir-black">
+          Publish
+        </button>
+      </section>
+    </form>
   );
 };
 
-export default TextEditor;
+export default ContentEditor;
