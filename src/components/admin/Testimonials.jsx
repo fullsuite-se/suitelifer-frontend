@@ -27,38 +27,20 @@ import ControlPointIcon from "@mui/icons-material/ControlPoint";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
-function JobCourse() {
+function Testimonials() {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [rowCourseData, setRowCourseData] = useState([
+  const [rowTestimonialData, setRowTestimonialData] = useState([
     {
       id: "1",
-      title: "React Free Course",
-      relatedJob: "Junior Software Engineer",
-      url: "http://sampleurl.com/react",
+      name: "John Doe",
+      feedback: "Great service!",
+      company: "Tech Corp",
     },
     {
       id: "2",
-      title: "Tailwind Free Course",
-      relatedJob: "First Job Title",
-      url: "http://sampleurl.com/tailwind",
-    },
-    {
-      id: "3",
-      title: "Node.JS Free Course",
-      relatedJob: "Second Job Title",
-      url: "http://sampleurl.com/nodejs",
-    },
-    {
-      id: "4",
-      title: "Sample Course Title",
-      relatedJob: "Third Job Title",
-      url: "http://sampleurl.com/sample",
-    },
-    {
-      id: "5",
-      title: "Another Sample Course",
-      relatedJob: "Fourth Job Title",
-      url: "http://sampleurl.com/another",
+      name: "Jane Smith",
+      feedback: "Highly recommend!",
+      company: "Startup Inc.",
     },
   ]);
 
@@ -73,40 +55,43 @@ function JobCourse() {
   };
 
   const gridRef = useRef();
-
   const [openDialog, setOpenDialog] = useState(false);
-  const [currentCourse, setCurrentCourse] = useState({
+  const [currentTestimonial, setCurrentTestimonial] = useState({
     id: "",
-    title: "",
-    relatedJob: "",
-    url: "",
+    name: "",
+    feedback: "",
+    company: "",
   });
 
-  const handleEdit = (course) => {
-    setCurrentCourse(course);
+  const handleEdit = (testimonial) => {
+    setCurrentTestimonial(testimonial);
     setOpenDialog(true);
   };
 
   const handleDelete = (id) => {
-    setRowCourseData(rowCourseData.filter((course) => course.id !== id));
+    setRowTestimonialData(
+      rowTestimonialData.filter((testimonial) => testimonial.id !== id)
+    );
   };
 
   const handleAddNew = () => {
-    setCurrentCourse({ id: "", title: "", relatedJob: "", url: "" });
+    setCurrentTestimonial({ id: "", name: "", feedback: "", company: "" });
     setOpenDialog(true);
   };
 
   const handleSave = () => {
-    if (currentCourse.id) {
-      setRowCourseData(
-        rowCourseData.map((course) =>
-          course.id === currentCourse.id ? currentCourse : course
+    if (currentTestimonial.id) {
+      setRowTestimonialData(
+        rowTestimonialData.map((testimonial) =>
+          testimonial.id === currentTestimonial.id
+            ? currentTestimonial
+            : testimonial
         )
       );
     } else {
-      setRowCourseData([
-        ...rowCourseData,
-        { ...currentCourse, id: Date.now().toString() },
+      setRowTestimonialData([
+        ...rowTestimonialData,
+        { ...currentTestimonial, id: Date.now().toString() },
       ]);
     }
     setOpenDialog(false);
@@ -114,30 +99,37 @@ function JobCourse() {
 
   return (
     <div className="border-primary border-2 rounded-3xl w-full overflow-hidden">
-      <Card sx={{ boxShadow:"none" }}>
+      <Card sx={{ boxShadow: "none" }}>
         <div
           onClick={() => setIsExpanded(!isExpanded)}
-          className="hover:bg-gray-100 rounded flex items-center p-4 cursor-pointer"
+          style={{
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            padding: "16px",
+          }}
+          className="hover:bg-gray-100 rounded-xl"
         >
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            Job Courses
+            Testimonials
           </Typography>
           <IconButton>
             {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
           </IconButton>
         </div>
+
         {isExpanded && (
           <CardContent>
             <button
               variant="contained"
               onClick={handleAddNew}
               sx={{ mb: 2 }}
-              className="btn-primary mb-2 "
+              className="btn-primary mb-2"
             >
               <div className="flex items-center justify-center w-full gap-1">
                 <ControlPointIcon fontSize="small" />
                 <span className="text-sm flex items-center justify-center">
-                  Course
+                  Add Testimonial
                 </span>
               </div>
             </button>
@@ -147,32 +139,15 @@ function JobCourse() {
               style={{ height: "400px", width: "100%" }}
             >
               <AgGridReact
-                rowData={rowCourseData}
+                rowData={rowTestimonialData}
                 columnDefs={[
-                  {
-                    headerName: "Title",
-                    field: "title",
-                    flex: 1,
-                    headerClass: "text-primary font-bold bg-tertiary",
-                  },
-                  {
-                    headerName: "Related Job",
-                    field: "relatedJob",
-                    flex: 1,
-                    headerClass: "text-primary font-bold bg-tertiary",
-                  },
-                  {
-                    headerName: "URL",
-                    field: "url",
-                    flex: 1,
-                    headerClass: "text-primary font-bold bg-tertiary",
-                  },
+                  { headerName: "Name", field: "name", flex: 1 },
+                  { headerName: "Feedback", field: "feedback", flex: 1 },
+                  { headerName: "Company", field: "company", flex: 1 },
                   {
                     headerName: "Action",
                     field: "action",
                     flex: 1,
-
-                    headerClass: "text-primary font-bold bg-tertiary",
                     cellRenderer: (params) => (
                       <div className="flex gap-2">
                         <IconButton onClick={() => handleEdit(params.data)}>
@@ -199,40 +174,45 @@ function JobCourse() {
           </CardContent>
         )}
 
-        {/* Dialog for Add/Edit */}
         <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
           <DialogTitle>
-            {currentCourse.id ? "Edit Course" : "Add Course"}
+            {currentTestimonial.id ? "Edit Testimonial" : "Add Testimonial"}
           </DialogTitle>
           <DialogContent>
             <TextField
-              label="Title"
+              label="Name"
               fullWidth
               margin="dense"
-              value={currentCourse.title}
+              value={currentTestimonial.name}
               onChange={(e) =>
-                setCurrentCourse({ ...currentCourse, title: e.target.value })
-              }
-            />
-            <TextField
-              label="Related Job"
-              fullWidth
-              margin="dense"
-              value={currentCourse.relatedJob}
-              onChange={(e) =>
-                setCurrentCourse({
-                  ...currentCourse,
-                  relatedJob: e.target.value,
+                setCurrentTestimonial({
+                  ...currentTestimonial,
+                  name: e.target.value,
                 })
               }
             />
             <TextField
-              label="URL"
+              label="Feedback"
               fullWidth
               margin="dense"
-              value={currentCourse.url}
+              value={currentTestimonial.feedback}
               onChange={(e) =>
-                setCurrentCourse({ ...currentCourse, url: e.target.value })
+                setCurrentTestimonial({
+                  ...currentTestimonial,
+                  feedback: e.target.value,
+                })
+              }
+            />
+            <TextField
+              label="Company"
+              fullWidth
+              margin="dense"
+              value={currentTestimonial.company}
+              onChange={(e) =>
+                setCurrentTestimonial({
+                  ...currentTestimonial,
+                  company: e.target.value,
+                })
               }
             />
           </DialogContent>
@@ -254,4 +234,4 @@ function JobCourse() {
   );
 }
 
-export default JobCourse;
+export default Testimonials;
