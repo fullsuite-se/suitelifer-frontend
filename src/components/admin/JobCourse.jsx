@@ -72,7 +72,7 @@ function JobCourse() {
     },
   };
 
-  const gridRef = useRef();
+  const gridRef = useRef(); 
 
   const [openDialog, setOpenDialog] = useState(false);
   const [currentCourse, setCurrentCourse] = useState({
