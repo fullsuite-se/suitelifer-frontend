@@ -1,16 +1,7 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { ArrowLeft } from "lucide-react";
 import React from "react";
-import Footer from "../../components/Footer";
-import MobileNav from "../../components/home/MobileNav";
-import TabletNav from "../../components/home/TabletNav";
-import DesktopNav from "../../components/home/DesktopNav";
-import bgBlogs from "../../assets/images/blogs-text-bg.svg";
-
-import { toSlug } from "../../utils/slugUrl";
 import ArticleDetails from "../../components/news/ArticleDetails";
-import OnLoadLayoutAnimation from "../../components/layout/OnLoadLayoutAnimation";
 import NewsList from "../../components/news/NewsList";
 import api from "../../utils/axios";
 

@@ -1,13 +1,10 @@
 import { ArrowLeft } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import React from "react";
-import Footer from "../Footer";
 import MobileNav from "../home/MobileNav";
 import TabletNav from "../home/TabletNav";
 import DesktopNav from "../home/DesktopNav";
 import bgBlogs from "../../assets/images/blogs-text-bg.svg";
-import ImageCarousel from "../../components/news/ImageCarousel";
-import { toSlug } from "../../utils/slugUrl";
 import GuestBlogCardSmall from "../guest-blogs/GuestBlogCardSmall";
 import NewsCardNoSnippet from "./NewsCardNoSnippet";
 import formatTimestamp from "../../components/TimestampFormatter";
