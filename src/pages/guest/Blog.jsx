@@ -14,6 +14,9 @@ import ArticleSearchResults from "../../components/news/SearchingBlogOrNews";
 import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
 import PageMeta from "../../components/layout/PageMeta";
+import api from "../../utils/axios";
+import { removeHtmlTags } from "../../utils/removeHTMLTags";
+import { readingTime } from "reading-time-estimator";
 
 const Blog = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -35,9 +38,65 @@ const Blog = () => {
 
   useEffect(() => {
     window.scroll(0, 0);
-
-    return () => {};
   }, []);
+
+  const allTag = { tagId: "All", tagName: "All" };
+
+  const [companyBlogTags, setCompanyBlogTags] = useState([allTag]);
+
+  const [activeTag, setActiveTag] = useState("All");
+
+  const fetchCompanyBlogTags = async () => {
+    const response = await api.get("/api/all-tags");
+
+    setCompanyBlogTags((cbt) => [allTag, ...response.data.data]);
+  };
+
+  useEffect(() => {
+    fetchCompanyBlogTags();
+  }, []);
+
+  const [tagUpdated, setTagUpdated] = useState(false);
+
+  const handleTagClick = (val) => {
+    setActiveTag((at) => val);
+    setTagUpdated((tu) => !tu);
+  };
+
+  const [companyBlogs, setCompanyBlogs] = useState([]);
+
+  const fetchAllCompanyBlogs = async () => {
+    try {
+      const response = await api.get("/api/all-company-blogs");
+
+      setCompanyBlogs(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchFilteredCompanyBlogs = async () => {
+    try {
+      const response = await api.get(`/api/all-company-blogs/${activeTag}`);
+
+      setCompanyBlogs(response.data.data);
+      console.log(response.data.data[0].imageUrl);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    console.log(activeTag);
+
+    if (activeTag === "All") {
+      fetchAllCompanyBlogs();
+    } else {
+      fetchFilteredCompanyBlogs();
+    }
+
+    console.log(companyBlogs);
+  }, [tagUpdated]);
 
   return (
     <section className="gap-4" style={{ maxWidth: "1800px", margin: "0 auto" }}>
@@ -141,46 +200,72 @@ const Blog = () => {
             list={guestBlogsList}
             searchTerm={searchTerm}
           />
+        ) : companyBlogTags.length === 1 ? (
+          <div className="mt-20">
+            <TwoCirclesLoader
+              bg={"transparent"}
+              color1={"#0097b2"}
+              color2={"#bfd1a0"}
+              height={"35"}
+            />
+          </div>
         ) : (
           <>
             <div className="flex justify-center lg:p-10 mt-10">
               <div className="w-full max-w-3xl flex justify-center">
-                <GuestBlogTags />
+                <GuestBlogTags
+                  activeTag={activeTag}
+                  companyBlogTags={companyBlogTags}
+                  handleTagClick={handleTagClick}
+                />
               </div>
             </div>
 
             <div className="py-5"></div>
-
-            <p className="md:text-2xl uppercase font-avenir-black text-primary pb-3 lg:pb-4">
-              The latest
-            </p>
-            <GuestBlogLarge
-              id={guestBlogsList[0].id}
-              title={guestBlogsList[0].title}
-              author={guestBlogsList[0].author}
-              article={guestBlogsList[0].article}
-              readTime={guestBlogsList[0].readTime}
-              created_at={guestBlogsList[0].created_at}
-              images={guestBlogsList[0].images}
-            />
-
-            <p className="md:text-2xl font-avenir-black text-primary pb-3 mt-10 lg:pb-4">
-              More Blogs
-            </p>
-            <div className="h-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 justify-center items-center">
-              {guestBlogsList.slice(1).map((blog, index) => (
-                <GuestBlogCard
-                  key={blog.id || index}
-                  id={blog.id}
-                  title={blog.title}
-                  author={blog.author}
-                  article={blog.article}
-                  readTime={blog.readTime}
-                  created_at={blog.created_at}
-                  images={blog.images}
+            {companyBlogs.length === 0 ? (
+              <p className="text-center text-lg">
+                Looks like we’re out of blogs for this filter—
+                <span className="font-avenir-black text-primary">
+                  switch it up
+                </span>{" "}
+                and try again!
+              </p>
+            ) : (
+              <>
+                <p className="md:text-2xl uppercase font-avenir-black text-primary pb-3 lg:pb-4">
+                  The latest
+                </p>
+                <GuestBlogLarge
+                  id={guestBlogsList[0].id}
+                  title={companyBlogs[0]?.title ?? "Title"}
+                  author={companyBlogs[0]?.createdBy.trim().split(" ")[0] ?? "Author"}
+                  article={removeHtmlTags(
+                    companyBlogs[0]?.description && "Description"
+                  )}
+                  readTime={readingTime(companyBlogs[0]?.description && "Description", 238).text}
+                  created_at={companyBlogs[0].createdAt}
+                  imageUrl={companyBlogs[0].imageUrl}
                 />
-              ))}
-            </div>
+
+                <p className="md:text-2xl font-avenir-black text-primary pb-3 mt-10 lg:pb-4">
+                  {/* More Blogs */}
+                </p>
+                <div className="h-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 justify-center items-center">
+                  {companyBlogs.slice(1).map((blog, index) => (
+                    <GuestBlogCard
+                      key={index}
+                      id={blog.cblogId}
+                      title={blog.title}
+                      author={blog.createdBy.trim().split(" ")[0]}
+                      article={removeHtmlTags(companyBlogs[0]?.description && "Description")}
+                      readTime={readingTime(companyBlogs[0]?.description && "Description").text}
+                      created_at={blog.createdAt}
+                      imageUrl={blog.imageUrl}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
 
             <div className="h-10"></div>
             <div className="flex justify-center items-center w-full h-15 rounded-lg overflow-hidden">
