@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import api from "../../utils/axios";
 import ContentEditor from "../../components/ContentEditor";
+import BlogTags from "../../components/blog/BlogTags";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../../store/authStore";
 import toast from "react-hot-toast";
@@ -12,6 +13,7 @@ const AdminBlogCreate = () => {
   const [files, setFiles] = useState([]);
   const [blogTitle, setBlogTitle] = useState("");
   const [blogDescription, setBlogDescription] = useState("");
+  const [tag, setTag] = useState("");
 
   const handleFileChange = (e) => {
     setFiles([...e.target.files]);
@@ -25,14 +27,34 @@ const AdminBlogCreate = () => {
     setBlogDescription(content);
   };
 
+  const handleTagChange = (value) => {
+    setTag(value);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (tag.length === 0) {
+      toast.error("Please select at least 1 tag.");
+      return;
+    }
+
+    if (!blogTitle.trim() || !blogDescription.trim()) {
+      toast.error("Blog title and description cannot be empty.");
+      return;
+    }
+
+    if (files.length === 0) {
+      toast.error("Please upload at least 1 image.");
+      return;
+    }
 
     try {
       const data = {
         title: blogTitle.trim(),
         description: blogDescription.trim(),
         userId: user.id,
+        tags: tag,
       };
 
       const blogResponse = await api.post("/api/add-company-blog", data);
@@ -90,6 +112,9 @@ const AdminBlogCreate = () => {
           boxShadow: "rgba(0, 0, 0, 0.08) 0px 4px 12px",
         }}
       >
+        <section className="my-3">
+          <BlogTags onChange={handleTagChange} />
+        </section>
         <ContentEditor
           handleFileChange={handleFileChange}
           handleTitleChange={handleTitleChange}
