@@ -15,16 +15,17 @@ const GuestBlogLarge = ({
   const { day, fullDate, time } = formatTimestamp(createdAt);
 
   return (
-    <section
-      className="relative w-full h-100 md:h-130 rounded-3xl overflow-hidden  transform transition-all duration-300 ease-in-out group-hover:scale-105 
+    
+      <section
+        className="relative w-full h-100 md:h-130 rounded-3xl overflow-hidden  transform transition-all duration-300 ease-in-out group-hover:scale-105 
   group-hover:shadow-xl group-hover:shadow-secondary/50 active:scale-105 
   active:shadow-xl active:shadow-secondary/50"
-    >
-      <NavLink
-        to={{ pathname: `/blogs/${toSlug(title)}` }}
-        state={{ cblog_id: id }}
-        className="no-underline cursor-pointer group flex flex-col lg:flex-row-reverse lg:gap-10"
       >
+        <NavLink
+      to={{ pathname: `/blogs/${toSlug(title)}` }}
+      state={{ cblog_id: id }}
+      className="no-underline cursor-pointer group lg:gap-10"
+    >
         <div className="relative">
           <img
             className="w-full h-100 md:h-130 object-cover rounded-3xl"
@@ -49,8 +50,9 @@ const GuestBlogLarge = ({
 
           <p className="text-xs text-gray-400 mt-2">{fullDate}</p>
         </div>
-      </NavLink>
-    </section>
+        </NavLink>
+      </section>
+    
   );
 };
 
