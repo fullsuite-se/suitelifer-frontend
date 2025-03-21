@@ -61,7 +61,7 @@ const Home = () => {
       }, 10000); 
     };
   
-    setTimeout(transitionToBlue, 5000); 
+    setTimeout(transitionToBlue, 3000); 
   
     const interval = setInterval(transitionToBlue, 15000); 
   
@@ -76,7 +76,7 @@ const Home = () => {
   return (
     <section
       className="gap-4 overflow-hidden"
-      // style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
+      style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
     >
       <PageMeta
         title="Home | Empowering Careers & Opportunities - SuiteLifer"
@@ -189,7 +189,7 @@ const Home = () => {
             alt="Rocketship"
             className="absolute inset-0 w-full h-full object-cover opacity-20"
           /> */}
-      <section className="h-[100dvh] lg:mt-17 mb-[10%]">
+      <section className="h-[100dvh] relative lg:mt-17 mb-[10%]">
         {/* White */}
         <div id="right-side" className="side pb-17">
           <div className="title">

@@ -25,6 +25,10 @@
 .side .title {
   margin: 0px 15vw;
   width: 70vw;
+  @media (min-width: 2000px) {
+    width: 2000px;
+    margin: auto;
+  }
   .title-line-1 {
     font-size: clamp(12px, 4vw, 1.5rem);
   }

@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import {motion} from "framer-motion";
+import { motion } from "framer-motion";
 const fadeInUp = {
   hidden: { opacity: 0, y: 50 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
 };
-
 
 const faqs = [
   {
@@ -72,7 +71,6 @@ const FAQ = () => {
     //   </div>
     // </div>
 
-
     //with animat
 
     <motion.div
@@ -90,11 +88,15 @@ const FAQ = () => {
             key={index}
             initial={{ opacity: 0, y: 20 }}
             animate={isLoaded ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.1 }}
+            transition={{
+              duration: 0.5,
+              ease: "easeInOut",
+              delay: index * 0.1,
+            }}
             className="border-b border-primary"
           >
             <button
-              className="flex justify-between items-center w-full py-4 text-left text-black font-avenir-black text-xs md:text-sm lg:text-base"
+              className="text-gray-8  00 cursor-pointer flex justify-between items-center w-full py-4 text-left"
               onClick={() => toggleFAQ(index)}
             >
               <span>{faq.question}</span>
@@ -106,21 +108,23 @@ const FAQ = () => {
             </button>
             <motion.div
               initial={{ height: 0, opacity: 0 }}
-              animate={openIndex === index ? { height: "auto", opacity: 1 } : { height: 0, opacity: 0 }}
-              transition={{ duration: 0.4, ease: "easeInOut" }}
+              animate={
+                openIndex === index
+                  ? { height: "auto", opacity: 1 }
+                  : { height: 0, opacity: 0 }
+              }
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
               className="overflow-hidden"
             >
-              {openIndex === index && (
-                <p className="px-4 pb-4 text-black text-xs md:text-sm lg:text-base">
-                  {faq.answer}
-                </p>
-              )}
+              <p className="px-4 pb-4 mt-1 text-gray-800">
+                {faq.answer}
+              </p>
             </motion.div>
           </motion.div>
         ))}
       </div>
     </motion.div>
-  
   );
 };
 

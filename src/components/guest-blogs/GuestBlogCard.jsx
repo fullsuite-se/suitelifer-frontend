@@ -40,7 +40,6 @@ const GuestBlogCard = ({
           </h2>
 
           <p className="!text-[12px] sm:!text-[14px]  mt-1">
-            by
             <span className="text-secondary font-avenir-black">
               {" "}
               {createdBy?.trim().split(" ")[0]}
