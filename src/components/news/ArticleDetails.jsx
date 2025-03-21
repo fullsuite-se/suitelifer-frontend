@@ -13,24 +13,30 @@ import { Helmet } from "@dr.pogodin/react-helmet";
 import { useEffect } from "react";
 import FooterNew from "../FooterNew";
 import Carousel from "../Carousel";
+import { removeHtmlTags } from "../../utils/removeHTMLTags";
+import { readingTime } from "reading-time-estimator";
 
-const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
+const ArticleDetails = ({
+  id,
+  title,
+  content,
+  createdAt,
+  createdBy,
+  images,
+  relatedArticles,
+  backPath,
+  type,
+}) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  console.log(data);
-
-  if (!data) {
-    return <h1 className="text-center text-red-500">Not found</h1>;
-  }
-
-  const { fullDate } = formatTimestamp(data.createdAt);
+  const { fullDate } = formatTimestamp(createdAt);
 
   useEffect(() => {
-    if (data?.title) {
-      document.title = data.title;
+    if (title) {
+      document.title = title;
     }
-  }, [data, location]);
+  }, [id, location]);
 
   const handleBackBtn = () => {
     document.title = `SuiteLifer`;
@@ -40,18 +46,18 @@ const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
   return (
     <>
       <Helmet>
-        <title>{data?.title || "SuiteLifer"}</title>
+        <title>{title || "SuiteLifer"}</title>
         <meta
           name="description"
           content={
-            data?.article
-              ? data.article.substring(0, 150) + "..."
+            content
+              ? content.substring(0, 150) + "..."
               : "Read the latest articles on SuiteLifer."
           }
         />
         <meta
           name="keywords"
-          content={`${data?.title}, ${type}, SuiteLifer News, SuiteLifer Blogs, blog, news`}
+          content={`${title}, ${type}, SuiteLifer News, SuiteLifer Blogs, blog, news`}
         />
         {/* 
           TODO :
@@ -97,22 +103,18 @@ const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
                   type === "News" ? "font-serif font-bold" : "font-avenir-black"
                 }`}
               >
-                {data.title}
+                {title}
               </p>
               <p className="text-[12px] text-gray-500">
                 <span className="text-primary font-avenir-black">
-                  {data.createdByName}
+                  {createdBy}
                 </span>{" "}
-                | {data.readTime || data.read_time}
+                | {readingTime("Hello", 238).text}
               </p>
 
               {/* Image Carousel */}
-              {/* <ImageCarousel
-                images={Array.isArray(data?.imgUrls) ? data.imgUrls : []}
-                // imagesWithCaption={data.imagesWithCaption}
-              /> */}
               <Carousel
-                images={Array.isArray(data?.imgUrls) ? data.imgUrls : []}
+                images={Array.isArray(images) ? images : []}
                 isButtonOutside={false}
               />
 
@@ -121,7 +123,7 @@ const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
                   type === "News" ? "font-serif" : ""
                 }`}
               >
-                {data.article}
+                {removeHtmlTags(content)}
               </p>
             </div>
 
