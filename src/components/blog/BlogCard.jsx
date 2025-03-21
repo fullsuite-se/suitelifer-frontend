@@ -16,12 +16,7 @@ const BlogCard = ({ blog }) => {
   };
 
   return (
-    <section
-      className="rounded-lg p-5 xl:p-8 flex flex-col gap-6 shadow-md border border-gray-100"
-      style={{
-        boxShadow: "rgba(0, 0, 0, 0.08) 0px 4px 12px",
-      }}
-    >
+    <section className="rounded-lg p-5 xl:p-8 flex flex-col gap-6 border border-gray-100">
       <ModalFullImages
         viewFull={isFullImages}
         handleViewFull={handleViewImages}
