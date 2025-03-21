@@ -29,7 +29,7 @@ const NewsCardSmall = ({
 
       <div className="content-news-card-small flex flex-col justify-center">
         <div className="flex flex-col">
-          <p className="content-title line-clamp-3 font-serif italic font-bold sm:text-lg group-hover:!text-primary transition-all duration-100">
+          <p className="content-title line-clamp-3 font-serif font-bold sm:text-lg group-hover:!text-primary transition-all duration-100">
             {title}
           </p>
 
