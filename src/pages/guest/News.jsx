@@ -12,11 +12,15 @@ import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
 import PageMeta from "../../components/layout/PageMeta";
 import FooterNew from "../../components/FooterNew";
+import api from "../../utils/axios";
+import toast from "react-hot-toast";
 
 const News = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchTerm, setSearchTerm] = useState(""); // Stores search term when button is clicked
+  const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+  const [news, setNews] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const handleSearch = () => {
     if (searchQuery.trim() !== "") {
@@ -35,6 +39,22 @@ const News = () => {
     window.scroll(0, 0);
   }, []);
 
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get("/api/all-news");
+        setNews(response.data);
+      } catch (error) {
+        console.error("Error fetching news:", error);
+        toast.error("Failed to load news. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNews();
+  }, []);
   return (
     <section
       className="gap-4 h-dvh"
@@ -139,7 +159,7 @@ const News = () => {
       </section>
       <div className="py-5"></div>
       {/* NEWS CONTENT */}
-      <main className="px-[5%]">
+      <main className="px-[5%]">  
         {isSearching ? (
           <ArticleSearchResults
             type="news"
@@ -151,20 +171,20 @@ const News = () => {
             <p className="md:text-2xl uppercase font-avenir-black text-primary pb-3 lg:pb-4">
               The latest
             </p>
-            <NewsLarge {...newsList[0]} />
+            {loading || !news.length ? <div></div> : <NewsLarge {...news[0]} />}
             <p className="mt-10 md:text-xl font-avenir-black text-primary pb-3 lg:pb-4">
               More Articles
             </p>
             <div className="layout-small-news-cards gap-4 sm:gap-5">
-              {newsList.map((news, index) => (
-                <NewsCardSmall key={news.id || index} {...news} />
-              ))}
+              {news.length > 0 &&
+                news.map((news, index) => (
+                  <NewsCardSmall key={news.id || index} {...news} />
+                ))}
             </div>
           </>
         )}
       </main>
       <div className="h-20"></div> <BackToTop />
-    
       <FooterNew />
     </section>
   );

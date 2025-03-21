@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
@@ -10,15 +10,19 @@ import { toSlug, unSlug } from "../../utils/slugUrl";
 import atsAPI from "../../utils/atsAPI";
 import api from "../../utils/axios";
 import toast from "react-hot-toast";
+import { useDropzone } from "react-dropzone";
+import { DocumentPlusIcon } from "@heroicons/react/24/solid";
+import { ArrowUpOnSquareIcon } from "@heroicons/react/24/solid";
+import { DocumentTextIcon } from "@heroicons/react/24/solid";
+import {
+  ExclamationTriangleIcon,
+  ExclamationCircleIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 
 const ApplicationForm = () => {
-  useEffect(() => {
-    window.scroll(0, 0);
-
-    return () => {};
-  }, []);
-
   const navigate = useNavigate();
+  const [progress, setProgress] = useState(0);
 
   const { id, jobPosition } = useParams();
   const [position, setPosition] = useState(jobPosition);
@@ -44,8 +48,46 @@ const ApplicationForm = () => {
     console.log(applicationDetails);
   };
 
-  const [showReferralInput, setShowReferralInput] = useState(false);
+  // =========== START: drag and drop using dropzone ===========
 
+  const [dataURL, setDataURL] = useState(null);
+  const [uploadedURL, setUploadedURL] = useState(null);
+  const [CV, setCV] = useState(null);
+  const [isFileTooLarge, setIsFileTooLarge] = useState(false);
+  const [isFileRemovedOnce, setIsFileRemovedOnce] = useState(false);
+  const MAX_FILE_SIZE = 10 * 1024 * 1024;
+
+  const onDrop = useCallback((acceptedFiles) => {
+    // Here, you can do something with the files
+
+    const selectedFile = acceptedFiles[0];
+    if (selectedFile) {
+      if (selectedFile.size > MAX_FILE_SIZE) {
+        setIsFileTooLarge(true);
+        return;
+      }
+      setIsFileTooLarge(false);
+      setIsFileRemovedOnce(false);
+      setCV(selectedFile);
+      setProgress(0);
+      console.log(selectedFile);
+    }
+  }, []);
+
+  const { getRootProps, acceptedFiles, getInputProps, isDragActive } =
+    useDropzone({
+      onDrop,
+      maxFiles: MAX_FILE_SIZE,
+    });
+
+  const formatFileSize = (size) => {
+    if (size < 1024) return `${size} B`; // Bytes
+    if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`; // Kilobytes
+    return `${(size / (1024 * 1024)).toFixed(1)} MB`; // Megabytes
+  };
+  // ============================= END =============================
+
+  const [showReferralInput, setShowReferralInput] = useState(false);
   const [file, setSelectedFile] = useState(null);
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -55,11 +97,23 @@ const ApplicationForm = () => {
 
   const handleSubmitApplication = async (e) => {
     e.preventDefault();
+
+    if (CV === null) {
+      setIsFileRemovedOnce(true);
+      toast.error("Please attach your CV");
+      return;
+    }
+
+    if (progress != 100){
+      toast.error("Uploading... Please wait.");
+      return
+    }
+
     try {
       console.log(import.meta.env.VITE_ATS_API_BASE_URL);
 
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("file", CV);
 
       const upload_response = await atsAPI.post("/upload/cv", formData);
       console.log(upload_response.data.fileUrl);
@@ -90,10 +144,18 @@ const ApplicationForm = () => {
       console.log(err);
     }
   };
-
   useEffect(() => {
     window.scroll(0, 0);
     console.log(id);
+
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) return 100; // Stops at 50%
+        return prev + 1;
+      });
+    }, 20); // Adjust speed here
+
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -297,41 +359,123 @@ const ApplicationForm = () => {
                   </div>
                 )}
               </div>
-              <div className="mt-10">
-                <label className="block text-gray-700 font-avenir-black mb-3">
-                  Upload your Curriculum Vitae here:{" "}
-                  <span className="text-primary">*</span>
-                </label>
-
-                {/* Drag and Drop Container */}
-                <label
-                  htmlFor="fileUpload"
-                  className={`flex flex-col items-center justify-center p-10 border border-primary border-dashed rounded-lg cursor-pointer text-primary hover:bg-primary/10`}
-                  // onDragOver={handleDragOver}
-                  // onDragLeave={handleDragLeave}
-                  // onDrop={handleDrop}
-                >
-                  <FileUploadIcon size={50} />
-                  <span className="text-center mt-5">
-                    {/* {isDragging
-                      ? "Drop your file here"
-                      : "Click to upload or drag and drop here"} */}
-
-                    {file == null
-                      ? "Click here to upload your CV or drag and drop it here"
-                      : `Selected file: ${file.name}`}
-                  </span>
-                </label>
-
-                {/* Hidden File Input */}
+              {/* DAN: DRAG AND DROP */}
+              <label className="block mt-10 text-gray-700 font-avenir-black mb-3">
+                Upload your Curriculum Vitae here:{" "}
+                <span className="text-primary">*</span>
+              </label>
+              <div
+                className={`drop-zone ${
+                  isDragActive ? "bg-primary/10" : ""
+                } hover:bg-primary/10 cursor-pointer p-10 border ${
+                  isFileRemovedOnce && !isDragActive
+                    ? "border-[#d63e50] hover:bg-[#d63e50]/10"
+                    : "border-primary"
+                }  text-primary border-dashed rounded-lg`}
+                {...getRootProps()}
+              >
                 <input
                   type="file"
-                  id="fileUpload"
-                  className="hidden"
-                  onChange={handleFileChange}
+                  {...getInputProps()}
                   accept=".pdf,.doc,.docx"
                 />
+                {isDragActive ? (
+                  <div className="flex flex-col items-center justify-center">
+                    <ArrowUpOnSquareIcon className="size-15" />
+                    <span className="text-center mt-5">
+                      {/* {isDragging
+                      ? "Drop your file here"
+                      : "Click to upload or drag and drop here"} */}
+                      Drop your file here
+                    </span>
+                  </div>
+                ) : (
+                  <>
+                    {isFileRemovedOnce ? (
+                      <div className="flex flex-col items-center justify-center text-[#d63e50]">
+                        <DocumentPlusIcon className="size-15" />
+                        <span className="text-center mt-5">
+                          {/* {isDragging
+                      ? "Drop your file here"
+                      : "Click to upload or drag and drop here"} */}
+                          Please click here to upload your CV or drag and drop
+                          it here
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center">
+                        <DocumentPlusIcon className="size-15" />
+                        <span className="text-center mt-5">
+                          {/* {isDragging
+                      ? "Drop your file here"
+                      : "Click to upload or drag and drop here"} */}
+                          Click here to upload your CV or drag and drop it here
+                        </span>
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
+              {/* FILE CONSTRAINTS MESSAGE */}
+              <div className="flex justify-between text-gray-400 ">
+                <span className="flex ">
+                  {" "}
+                  <ExclamationCircleIcon className="size-5  text-primary/70" />
+                  &nbsp;Supported files: .pdf, .doc, .docx
+                </span>
+                <span>Maximum size: 10MB</span>
+              </div>
+              {/* ERROR MESSAGE */}
+              <div
+                id="file-error"
+                className={`${isFileTooLarge ? "block" : "hidden"}`}
+              >
+                <p className="flex gap-2 text-yellow-600/80 text-sm">
+                  <ExclamationTriangleIcon className="size-5" /> Oops! Your file
+                  is too large. Please upload a smaller file.
+                </p>
+              </div>
+              {/* PREVIEW */}
+              {CV != null ? (
+                <div className="flex flex-col bg-gray-100/50 p-4 gap-2 rounded-md">
+                  <div className="flex justify-between">
+                    <div className="flex gap-4">
+                      <div className="flex justify-center items-center bg-white aspect-square px-2 rounded-md">
+                        <DocumentTextIcon className="size-5 text-primary" />
+                      </div>
+                      <div className="flex flex-col">
+                        <p className="font-avenir-black">{CV.name}</p>
+                        <p className="text-gray-500">
+                          {formatFileSize(CV.size)}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      className="hover:bg-white duration-500 rounded-full h-fit p-1"
+                      onClick={() => {
+                        setCV(null);
+                        setIsFileTooLarge(false);
+                        setIsFileRemovedOnce(true);
+                      }}
+                    >
+                      <XMarkIcon className="size-5 cursor-pointer" />
+                    </button>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div class="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
+                      <div 
+                        className="bg-primary h-2 rounded-full transition-all duration-300 w-[40%]"
+                        style={{ width: `${progress}%` }}
+                      ></div>
+                    </div>
+                    <p className="text-gray-500">{progress}%</p>
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
+              {/* Drag and Drop Files */}
               <div className="py-2"></div>
               <button
                 type="submit"
