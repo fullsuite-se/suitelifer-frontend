@@ -9,10 +9,11 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
+import { CalendarIcon } from "@heroicons/react/20/solid";
 import moment from "moment";
 import EventCalendar from "./../../components/admin/EventCalendar";
 import logofsfull from "../../assets/logos/logo-fs-full.svg";
-import EventIcon from '@mui/icons-material/Event';
+import EventIcon from "@mui/icons-material/Event";
 
 const AdminEvents = () => {
   const [openDialog, setOpenDialog] = useState(false);
@@ -82,42 +83,41 @@ const AdminEvents = () => {
 
   return (
     <div className="bg-white p-2">
-
-
       <header className="container flex h-12 items-center justify-between flex-wrap">
-            <div className="hidden lg:flex md-flex gap-4 items-center ">
-              <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
-            </div>
+        <div className="flex">
+          {/* Button for desktop */}
+          <button
+            className="hidden cursor-pointer sm:block px-3 py-2 rounded-md border border-gray-200 bg-gray-100"
+            onClick={() => setIsAddModalOpen(true)}
+          >
+            + Add Event
+          </button>
 
-            <div className="flex">
-              {/* Button for desktop */}
-              <button
-                className="hidden sm:block btn-primary"
-                onClick={() => setIsAddModalOpen(true)}
-              >
-                + Add Event
-              </button>
+          {/* Icon Button for Mobile */}
+          <button
+            className="flex gap-2 cursor-pointer sm:hidden px-3 py-2 rounded-md border border-gray-200 bg-gray-100"
+            onClick={() => setIsAddModalOpen(true)}
+          >
+            <span>+</span> <CalendarIcon className="size-5" />
+          </button>
+        </div>
+      </header>
 
-              {/* Icon Button for Mobile */}
-              <button
-                className="sm:hidden p-2 btn-primary"
-                onClick={() => setIsAddModalOpen(true)}
-              >
-                <span>+</span> <EventIcon/>
-              </button>
-            </div>
-          </header>
+      <TextField
+        label="Search Events"
+        fullWidth
+        margin="normal"
+        className="border border-gray-200"
+      />
 
-      <TextField label="Search Events" fullWidth margin="normal" />
-
-      <div className="flex gap-8">
-        <div className="bg-white shadow-lg rounded-lg p-4 w-300">
+      <div className="flex gap-8 mt-4 h-full">
+        <div className="bg-white border border-gray-200 rounded-md p-4 w-full">
           <EventCalendar
             events={events}
             onSelectSlot={handleSelectSlot}
             onSelectEvent={handleEventClick}
             eventPropGetter={(event) => ({
-              className: "custom-event", 
+              className: "custom-event",
             })}
             dayPropGetter={(date) => {
               const today = new Date();
@@ -128,7 +128,7 @@ const AdminEvents = () => {
 
               return isToday ? { className: "custom-today" } : {};
             }}
-            style={{ height: 680, width: "100%" }}
+            // style={{ height: "100%", width: "100%" }}
           />
         </div>
       </div>
