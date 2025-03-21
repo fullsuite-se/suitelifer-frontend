@@ -14,7 +14,16 @@ import { useEffect } from "react";
 import FooterNew from "../FooterNew";
 import Carousel from "../Carousel";
 
-const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
+const ArticleDetails = ({
+  title,
+  content,
+  createdAt,
+  createdBy,
+  images,
+  relatedArticles,
+  backPath,
+  type,
+}) => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -107,10 +116,6 @@ const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
               </p>
 
               {/* Image Carousel */}
-              {/* <ImageCarousel
-                images={Array.isArray(data?.imgUrls) ? data.imgUrls : []}
-                // imagesWithCaption={data.imagesWithCaption}
-              /> */}
               <Carousel
                 images={Array.isArray(data?.imgUrls) ? data.imgUrls : []}
                 isButtonOutside={false}
@@ -121,7 +126,7 @@ const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
                   type === "News" ? "font-serif" : ""
                 }`}
               >
-                {data.article}
+                {data?.content?.replace(/<[^>]+>/g, "")}
               </p>
             </div>
 
