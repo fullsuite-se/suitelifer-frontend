@@ -94,11 +94,18 @@ const ApplicationForm = () => {
 
   const handleSubmitApplication = async (e) => {
     e.preventDefault();
+
+    if (CV === null) {
+      setIsFileRemovedOnce(true);
+      toast.error("Please attach your CV");
+      return;
+    }
+
     try {
       console.log(import.meta.env.VITE_ATS_API_BASE_URL);
 
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("file", CV);
 
       const upload_response = await atsAPI.post("/upload/cv", formData);
       console.log(upload_response.data.fileUrl);
@@ -343,7 +350,11 @@ const ApplicationForm = () => {
               <div
                 className={`drop-zone ${
                   isDragActive ? "bg-primary/10" : ""
-                } hover:bg-primary/10 cursor-pointer p-10 border ${isFileRemovedOnce && !isDragActive ? 'border-[#d63e50] hover:bg-[#d63e50]/10' : 'border-primary'}  text-primary border-dashed rounded-lg`}
+                } hover:bg-primary/10 cursor-pointer p-10 border ${
+                  isFileRemovedOnce && !isDragActive
+                    ? "border-[#d63e50] hover:bg-[#d63e50]/10"
+                    : "border-primary"
+                }  text-primary border-dashed rounded-lg`}
                 {...getRootProps()}
               >
                 <input
@@ -370,7 +381,8 @@ const ApplicationForm = () => {
                           {/* {isDragging
                       ? "Drop your file here"
                       : "Click to upload or drag and drop here"} */}
-                          Please click here to upload your CV or drag and drop it here
+                          Please click here to upload your CV or drag and drop
+                          it here
                         </span>
                       </div>
                     ) : (
