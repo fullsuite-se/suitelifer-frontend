@@ -5,7 +5,7 @@ const industries = ["All", "Business", "Operations", "Finance", "Software"];
 const GuestIndustryTags = ({ industries, filter, handleFilterChange }) => {
   return (
     <div className="w-full overflow-x-auto">
-      <div className="flex gap-2 sm:gap-3 md:gap-4 justify-start px-2 sm:px-3 md:px-4 whitespace-nowrap xl:justify-center">
+      <div className="flex gap-2 sm:gap-3 md:gap-4 justify-start px-2 sm:px-3 md:px-4 whitespace-nowrap 3xl:justify-center">
         <button
           key={-1}
           onClick={() => handleFilterChange("All")}
