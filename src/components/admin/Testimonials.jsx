@@ -98,101 +98,80 @@ function Testimonials() {
   };
 
   return (
-    <div className="border-primary border-2 rounded-3xl w-full overflow-hidden">
-      <Card sx={{ boxShadow: "none" }}>
-        <div
-          onClick={() => setIsExpanded(!isExpanded)}
-          style={{
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            padding: "16px",
-          }}
-          className="hover:bg-gray-100 rounded-xl"
+    <>
+    <div className="flex justify-end">
+    <button
+          variant="contained"
+          onClick={handleAddNew}
+          sx={{ mb: 2 }}
+          className="btn-primary mb-2"
         >
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            Testimonials
-          </Typography>
-          <IconButton>
-            {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-          </IconButton>
+          <div className="flex items-center justify-center w-full gap-1">
+            <ControlPointIcon fontSize="small" />
+            <span className="text-sm flex items-center justify-center">
+              Add Testimonial
+            </span>
+          </div>
+        </button>
+    </div>
+      <div className="border-primary border-2 rounded-3xl w-full overflow-hidden">
+        
+
+        <div className="w-full overflow-x-auto">
+          <div
+            className="ag-theme-quartz p-3 sm:p-5 min-w-[600px] lg:w-full"
+            style={{ height: "400px", width: "100%" }}
+          >
+            <AgGridReact
+              rowData={rowTestimonialData}
+              columnDefs={[
+                {
+                  headerName: "Name",
+                  field: "name",
+                  filter: "agTextColumnFilter",
+                  headerClass: "text-primary font-bold bg-tertiary",
+                  flex: 1,
+                },
+                {
+                  headerName: "Feedback",
+                  field: "feedback",
+                  filter: "agTextColumnFilter",
+                  headerClass: "text-primary font-bold bg-tertiary",
+                  flex: 1,
+                },
+                {
+                  headerName: "Company",
+                  field: "company",
+                  filter: "agTextColumnFilter",
+                  headerClass: "text-primary font-bold bg-tertiary",
+                  flex: 1,
+                },
+                {
+                  headerName: "Action",
+                  field: "action",
+                  flex: 1,
+                  cellRenderer: (params) => (
+                    <div className="flex gap-2">
+                      <IconButton onClick={() => handleEdit(params.data)}>
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton onClick={() => handleDelete(params.data.id)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </div>
+                  ),
+                },
+              ]}
+              defaultColDef={{ sortable: true, filter: true }}
+              rowHeight={50}
+              pagination={true}
+              paginationPageSize={5}
+              paginationPageSizeSelector={[5, 10, 20, 50]}
+              gridOptions={gridOptions}
+              ref={gridRef}
+            />
+          </div>
         </div>
-
-        {isExpanded && (
-          <CardContent>
-            <button
-              variant="contained"
-              onClick={handleAddNew}
-              sx={{ mb: 2 }}
-              className="btn-primary mb-2"
-            >
-              <div className="flex items-center justify-center w-full gap-1">
-                <ControlPointIcon fontSize="small" />
-                <span className="text-sm flex items-center justify-center">
-                  Add Testimonial
-                </span>
-              </div>
-            </button>
-
-            <div className="w-full overflow-x-auto">
-              <div
-                className="ag-theme-quartz p-3 sm:p-5 min-w-[600px] lg:w-full"
-                style={{ height: "400px", width: "100%" }}
-              >
-                <AgGridReact
-                  rowData={rowTestimonialData}
-                  columnDefs={[
-                    {
-                      headerName: "Name",
-                      field: "name",
-                      filter: "agTextColumnFilter",
-                      headerClass: "text-primary font-bold bg-tertiary",
-                      flex: 1,
-                    },
-                    {
-                      headerName: "Feedback",
-                      field: "feedback",
-                      filter: "agTextColumnFilter",
-                      headerClass: "text-primary font-bold bg-tertiary",
-                      flex: 1,
-                    },
-                    {
-                      headerName: "Company",
-                      field: "company",
-                      filter: "agTextColumnFilter",
-                      headerClass: "text-primary font-bold bg-tertiary",
-                      flex: 1,
-                    },
-                    {
-                      headerName: "Action",
-                      field: "action",
-                      flex: 1,
-                      cellRenderer: (params) => (
-                        <div className="flex gap-2">
-                          <IconButton onClick={() => handleEdit(params.data)}>
-                            <EditIcon />
-                          </IconButton>
-                          <IconButton
-                            onClick={() => handleDelete(params.data.id)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </div>
-                      ),
-                    },
-                  ]}
-                  defaultColDef={{ sortable: true, filter: true }}
-                  rowHeight={50}
-                  pagination={true}
-                  paginationPageSize={5}
-                  paginationPageSizeSelector={[5, 10, 20, 50]}
-                  gridOptions={gridOptions}
-                  ref={gridRef}
-                />
-              </div>
-            </div>
-          </CardContent>
-        )}
 
         <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
           <DialogTitle>
@@ -249,8 +228,8 @@ function Testimonials() {
             </button>
           </DialogActions>
         </Dialog>
-      </Card>
-    </div>
+      </div>
+    </>
   );
 }
 
