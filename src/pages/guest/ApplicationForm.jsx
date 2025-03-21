@@ -22,6 +22,7 @@ import {
 
 const ApplicationForm = () => {
   const navigate = useNavigate();
+  const [progress, setProgress] = useState(0);
 
   const { id, jobPosition } = useParams();
   const [position, setPosition] = useState(jobPosition);
@@ -48,6 +49,7 @@ const ApplicationForm = () => {
   };
 
   // =========== START: drag and drop using dropzone ===========
+
   const [dataURL, setDataURL] = useState(null);
   const [uploadedURL, setUploadedURL] = useState(null);
   const [CV, setCV] = useState(null);
@@ -67,6 +69,7 @@ const ApplicationForm = () => {
       setIsFileTooLarge(false);
       setIsFileRemovedOnce(false);
       setCV(selectedFile);
+      setProgress(0);
       console.log(selectedFile);
     }
   }, []);
@@ -99,6 +102,11 @@ const ApplicationForm = () => {
       setIsFileRemovedOnce(true);
       toast.error("Please attach your CV");
       return;
+    }
+
+    if (progress != 100){
+      toast.error("Uploading... Please wait.");
+      return
     }
 
     try {
@@ -139,6 +147,15 @@ const ApplicationForm = () => {
   useEffect(() => {
     window.scroll(0, 0);
     console.log(id);
+
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) return 100; // Stops at 50%
+        return prev + 1;
+      });
+    }, 20); // Adjust speed here
+
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -444,6 +461,15 @@ const ApplicationForm = () => {
                     >
                       <XMarkIcon className="size-5 cursor-pointer" />
                     </button>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div class="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
+                      <div 
+                        className="bg-primary h-2 rounded-full transition-all duration-300 w-[40%]"
+                        style={{ width: `${progress}%` }}
+                      ></div>
+                    </div>
+                    <p className="text-gray-500">{progress}%</p>
                   </div>
                 </div>
               ) : (
