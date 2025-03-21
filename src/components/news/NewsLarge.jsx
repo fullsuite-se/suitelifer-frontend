@@ -44,7 +44,7 @@ const NewsLarge = ({
 
           {/* Article */}
           <div className="hidden lg:block">
-            <p className="text-lg lg:line-clamp-6 lg:overflow-hidden text-gray-400 font-serif">
+            <p className="text-lg lg:line-clamp-6 lg:overflow-hidden text-gray-500 font-serif">
               {article.replace(/<[^>]+>/g, "")}
             </p>
             <p className=" text-gray-400 mt-2 !text-sm lg:!text-[14px] ">

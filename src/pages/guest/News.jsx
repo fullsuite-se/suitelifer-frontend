@@ -80,7 +80,7 @@ const News = () => {
       </div>
       {/* NEWS HERO */}
       <section className="pt-[10%] xl:pt-[8%]">
-        <div className="relative">
+        <div className="relative hidden">
           <img
             className="-z-50 absolute w-[90%] transform translate-y-5 -translate-x-6 lg:-translate-y-10  xl:-translate-y-15 lg:-translate-x-15 xl:-translate-x-40 opacity-90"
             src={bgNews}

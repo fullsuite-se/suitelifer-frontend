@@ -191,8 +191,10 @@ const Contact = () => {
     //     </main>
     //   </div>
     // </>
-
-    <>
+    <section
+      className="gap-4 overflow-hidden"
+      style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
+    >
       <PageMeta
         title="Contact - SuiteLifer"
         desc="Your career rocket ship is fueled and ready. Want to hop on? Contact us now."
@@ -248,12 +250,12 @@ const Contact = () => {
               className="relative p-8 pr-8 md:pr-16 rounded-tr-xl rounded-br-xl text-white mr-4 md:min-h-[500px] justify-center items-center flex flex-col 
           w-[98%] md:w-[60%] lg:w-[60%] xl:w-[50%] max-w-[90%] xl:max-w-[60%]"
               style={{
-                backgroundImage: `url(${bgimg})`,
+                // backgroundImage: `url(${bgimg})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
               }}
             >
-              <div className="absolute inset-0 bg-primary opacity-80 rounded-tr-xl rounded-br-xl"></div>
+              <div className="absolute inset-0 bg-primary rounded-tr-xl rounded-br-xl"></div>
               <div className="relative z-10">
                 <p className="font-avenir-black text-2xl md:!text-3xl text-white-300 lg:!text-4xl xl:!text-5xl">
                   Check your{" "}
@@ -398,7 +400,7 @@ const Contact = () => {
           <FooterNew />
         </main>
       </div>
-    </>
+    </section>
   );
 };
 

@@ -19,7 +19,7 @@ const NewsCardSmall = ({
         pathname: `/news/${toSlug(title)}`,
       }}
       state={{ id: id }}
-      className="group container-news-card-small rounded-2xl transition-all duration-300 flex gap-3 no-underline min-w-[0px] hover:scale-95"
+      className="group container-news-card-small rounded-2xl transition-all duration-300 flex gap-3 no-underline min-w-[0px] hover:scale-98"
     >
       <img
         className="image-news-card-small size-[25vw] aspect-[3/2] object-cover "
@@ -33,7 +33,7 @@ const NewsCardSmall = ({
             {title}
           </p>
 
-          <article className="article-news-card-small text-gray-400 line-clamp-4 my-2 font-serif">
+          <article className="article-news-card-small text-gray-500 line-clamp-4 my-2 font-serif">
             {article.replace(/<[^>]+>/g, "")}
           </article>
 
