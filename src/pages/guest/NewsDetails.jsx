@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import React from "react";
 import ArticleDetails from "../../components/news/ArticleDetails";
@@ -7,6 +7,9 @@ import api from "../../utils/axios";
 
 const NewsDetails = () => {
   const { id } = useParams();
+
+  const location = useLocation();
+  console.log(location.state?.id);
 
   // const newsItem = NewsList.find((news) => news.id.toString() === id);
   const relatedNews = NewsList.filter(
@@ -23,7 +26,11 @@ const NewsDetails = () => {
     const fetchNews = async () => {
       try {
         setLoading(true);
-        const response = await api.get(`/api/get-news/${id}`);
+
+        const newsId = location.state?.id || id;
+        if (!newsId) return;
+
+        const response = await api.get(`/api/get-news/${newsId}`);
         console.log(response.data);
 
         setNewsItem(response.data);
@@ -33,8 +40,9 @@ const NewsDetails = () => {
         setLoading(false);
       }
     };
+
     fetchNews();
-  }, []);
+  }, [location.state, id]); // ✅ Depend on state or fallback id
 
   if (loading) {
     return (
@@ -48,7 +56,11 @@ const NewsDetails = () => {
     <>
       {newsItem && (
         <ArticleDetails
-          data={newsItem}
+          id={newsItem.id}
+          content={newsItem.article}
+          createdAt={newsItem.createdAt}
+          createdBy={newsItem.createdBy}
+          images={newsItem.imgUrls}
           relatedArticles={relatedNews}
           backPath="/news"
           type="News"
