@@ -5,7 +5,7 @@ import { format } from "date-fns";
 const EventCard = ({ event, isUpcoming }) => {
   return (
     <section
-      className={`border border-gray-300 p-4 rounded-lg flex gap-4 items-center
+      className={`border border-gray-200 p-4 rounded-lg flex gap-4 items-center
       ${isUpcoming ? "flex gap-4 items-center" : ""}  
       `}
     >
