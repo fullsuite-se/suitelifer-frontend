@@ -43,7 +43,8 @@ import ScrollToTop from "./components/ScrollToTop";
 function App() {
   return (
     <>
-      <BrowserRouter>  <ScrollToTop />
+      <BrowserRouter>
+        <ScrollToTop />
         <Toaster position="top-center" reverseOrder={false} />
         <Routes>
           {/* Routes that are publicly avaialable (guest) */}
@@ -62,7 +63,7 @@ function App() {
           />
           <Route path="/careers/:slug" element={<CareersJobDetails />} />
           <Route path="/news" element={<News />} />
-          <Route path="/news/:id/:slug" element={<NewsDetails />} />
+          <Route path="/news/:slug" element={<NewsDetails />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/blogs" element={<Blog />} />
           <Route path="/blogs/:id/:slug" element={<BlogDetails />} />
