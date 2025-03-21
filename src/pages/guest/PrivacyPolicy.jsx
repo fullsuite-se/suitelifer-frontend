@@ -48,7 +48,8 @@ const PrivacyPolicy = () => {
 
             <PrivacyPolicyContent />
           </section> <BackToTop/>
-          <Footer />
+        
+          <FooterNeww />
         </main>
       </div>
     </>

@@ -12,7 +12,7 @@ const IndustryModal = ({
   return (
     <Modal open={industryModalIsOpen} onClose={handleIndustryModalClose}>
       <div className="fixed inset-0 flex items-center justify-center">
-        <Box className="modal-container px-10 bg-white rounded-lg w-full sm:w-96 max-h-[80vh] overflow-y-auto shadow-lg">
+        <Box className="modal-container px-10 bg-white rounded-lg w-96 max-h-[80vh] overflow-y-auto shadow-lg">
           <h2 className="mb-4 font-avenir-black text-lg text-center bg-white">
             {industryDetails.job_ind_id === null
               ? "Add Industry"
@@ -50,8 +50,8 @@ const IndustryModal = ({
                 className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
-            <div className="mt-6 flex justify-end gap-x-3 mb-5">
-              <button onClick={handleIndustryModalClose} className="btn-light">
+            <div className="mt-6 flex flex-col md:flex-row justify-end gap-x-3 mb-5">
+              <button onClick={handleIndustryModalClose} className="btn-light order-1 md:order-none">
                 Cancel
               </button>
               <button type="submit" variant="filled" className="btn-primary">

@@ -4,11 +4,12 @@ import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
 import BackButton from "../../components/BackButton";
 import FileUploadIcon from "../../assets/icons/file-upload";
-import { Navigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import BackToTop from "../../components/BackToTop";
 import { toSlug, unSlug } from "../../utils/slugUrl";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import atsAPI from "../../utils/atsAPI";
+import api from "../../utils/axios";
+import toast from "react-hot-toast";
 import { useDropzone } from "react-dropzone";
 import { DocumentPlusIcon } from "@heroicons/react/24/solid";
 import { ArrowUpOnSquareIcon } from "@heroicons/react/24/solid";
@@ -36,8 +37,9 @@ const ApplicationForm = () => {
     applied_source: "Suitelife",
     referrer_name: "",
     position_id: id,
-    created_by: import.meta.env.VITE_GUEST_USER,
-    updated_by: import.meta.env.VITE_GUEST_USER,
+    test_result: null,
+    created_by: null,
+    updated_by: null,
   });
 
   const handleApplicationDetailsChange = (e) => {
@@ -98,10 +100,7 @@ const ApplicationForm = () => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const upload_response = await axios.post(
-        `${import.meta.env.VITE_ATS_API_BASE_URL}/upload/cv`,
-        formData
-      );
+      const upload_response = await atsAPI.post("/upload/cv", formData);
       console.log(upload_response.data.fileUrl);
       setApplicationDetails((ad) => ({
         ...ad,
@@ -109,22 +108,30 @@ const ApplicationForm = () => {
       }));
       console.log(applicationDetails);
 
-      const response = await axios.post(
-        `${import.meta.env.VITE_ATS_API_BASE_URL}/applicants/add`,
-        {
-          applicant: JSON.stringify(applicationDetails),
-        }
-      );
-      console.log(response.data);
+      const response = await atsAPI.post("/applicants/add", {
+        applicant: JSON.stringify(applicationDetails),
+      });
+
+      if (response.data.message === "successfully inserted") {
+        const res = await api.post("/api/get-job-assessment-url", {
+          job_id: id,
+        });
+
+        const assessmentUrl = res.data.data.assessmentUrl;
+
+        toast.success("Job Application Successful.");
+
+        navigate("/congrats-application-form", { state: { assessmentUrl } });
+      } else {
+        toast.error("Job Application Unsuccessful.");
+      }
     } catch (err) {
       console.log(err);
     }
   };
-
   useEffect(() => {
     window.scroll(0, 0);
-    console.log(`Updated CV:`, CV);
-    return () => {};
+    console.log(id);
   }, []);
 
   return (

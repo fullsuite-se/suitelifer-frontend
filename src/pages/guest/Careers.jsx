@@ -11,7 +11,9 @@ import GuestIndustryTags from "../../components/careers/GuestIndustriesTags";
 import dotsLine from "../../assets/images/socials-dots-line.svg";
 import BackToTop from "../../components/BackToTop";
 import PageMeta from "../../components/layout/PageMeta";
+import FooterNew from "../../components/FooterNew";
 import OnLoadLayoutAnimation from "../../components/layout/OnLoadLayoutAnimation";
+import { useLocation } from "react-router-dom";
 
 const Careers = () => {
   const [jobs, setJobs] = useState([]);
@@ -71,6 +73,18 @@ const Careers = () => {
   useEffect(() => {
     filter === "All" ? fetchJobs() : fetchFilteredJobs();
   }, [filter]);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash) {
+      const section = document.getElementById(location.hash.substring(1));
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [location]);
+
 
   return (
     <>
@@ -328,7 +342,7 @@ const Careers = () => {
           </div> */}
 
           {/* Three dots one line */}
-          <div className="flex justify-end scale-x-[-1] -translate-x-[1%] py-[12%] sm:py-[3%]">
+          <div className="flex justify-end scale-x-[-1] -translate-x-[1%] py-[12%] sm:py-[3%]" id="current-job-openings">
             <img className="dots-line" src={dotsLine} alt="3 dots and a line" />
           </div>
           {/* Current Job Openings */}
@@ -453,7 +467,8 @@ const Careers = () => {
           </div>
         </main>
         <BackToTop />
-        <Footer />
+       
+        <FooterNew/>
       </section>
     </>
   );
