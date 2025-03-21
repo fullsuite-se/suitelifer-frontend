@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import formatTimestamp from "../TimestampFormatter";
 import { toSlug } from "../../utils/slugUrl";
 import { readingTime } from "reading-time-estimator";
@@ -14,8 +14,11 @@ const NewsCardSmall = ({
   const { fullDate } = formatTimestamp(createdAt);
 
   return (
-    <Link
-      to={`/news/${id}/${toSlug(title)}`}
+    <NavLink
+      to={{
+        pathname: `/news/${toSlug(title)}`,
+      }}
+      state={{ id: id }}
       className="group container-news-card-small rounded-2xl transition-all duration-300 flex gap-3 no-underline min-w-[0px] hover:scale-98"
     >
       <img
@@ -47,7 +50,7 @@ const NewsCardSmall = ({
           <p className="text-xs text-gray-400 mt-2">{fullDate}</p>
         </div>
       </div>
-    </Link>
+    </NavLink>
   );
 };
 

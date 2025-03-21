@@ -80,7 +80,6 @@ const Blog = () => {
       const response = await api.get(`/api/all-company-blogs/${activeTag}`);
 
       setCompanyBlogs(response.data.data);
-      console.log(response.data.data[0].imageUrl);
     } catch (err) {
       console.log(err);
     }
@@ -240,14 +239,12 @@ const Blog = () => {
                   The latest
                 </p>
                 <GuestBlogLarge
-                  id={guestBlogsList[0].id}
-                  title={companyBlogs[0]?.title ?? "Title"}
-                  author={companyBlogs[0]?.createdBy.trim().split(" ")[0] ?? "Author"}
-                  article={removeHtmlTags(
-                    companyBlogs[0]?.description && "Description"
-                  )}
-                  readTime={readingTime(companyBlogs[0]?.description && "Description", 238).text}
-                  created_at={companyBlogs[0].createdAt}
+                  id={companyBlogs[0].cblogId}
+                  title={companyBlogs[0].title}
+                  author={companyBlogs[0].createdBy}
+                  article={removeHtmlTags(companyBlogs[0].description)}
+                  readTime={readingTime(companyBlogs[0].description, 238).text}
+                  createdAt={companyBlogs[0].createdAt}
                   imageUrl={companyBlogs[0].imageUrl}
                 />
 
@@ -260,8 +257,8 @@ const Blog = () => {
                       key={index}
                       id={blog.cblogId}
                       title={blog.title}
-                      createdBy={blog.createdBy?.trim().split(" ")[0] ?? "Author"}
-                      article={removeHtmlTags(companyBlogs[0]?.description && "Description")}
+                      createdBy={blog.createdBy}
+                      description={removeHtmlTags(blog.description)}
                       createdAt={blog.createdAt}
                       imageUrl={blog.imageUrl}
                     />

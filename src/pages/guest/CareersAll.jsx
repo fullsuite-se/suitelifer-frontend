@@ -4,7 +4,6 @@ import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
 import api from "../../utils/axios";
 import GuestIndustryTags from "../../components/careers/GuestIndustriesTags";
-import bgHero from "../../assets/images/bg-hero-careers.svg";
 import BackToTop from "../../components/BackToTop";
 import BackButton from "../../components/BackButton";
 import { NavLink } from "react-router-dom";
@@ -107,10 +106,13 @@ const CareersAll = () => {
           </section> */}
 
           <section className="pb-[7%] lg:pb-[5%]">
-            <main className="p-[10%] xl:px-[20%]">
+            <main className="p-[5%] xl:px-[20%]">
               {" "}
               <div className="w-fit mb-2">
-                <BackButton backPath={"/careers/#current-job-openings"} type={"Careers"} />
+                <BackButton
+                  backPath={"/careers/#current-job-openings"}
+                  type={"Careers"}
+                />
               </div>
               <p className="text-lg font-avenir-black mb-5  lg:mb-10 lg:text-3xl">
                 All Jobs here at FullSuite
@@ -159,7 +161,7 @@ const CareersAll = () => {
                           <p
                             className={`mt-3 -mb-2 font-avenir-black text-gray-900 group-hover:text-white `}
                           >
-                            {job.jobTitle}&nbsp; 
+                            {job.jobTitle}&nbsp;
                             {job.isOpen === 0 && (
                               <span className="font-avenir-roman bg-red-100 text-red-700 text-xs font-bold px-3 py-1 rounded-xl">
                                 CLOSED
@@ -167,7 +169,7 @@ const CareersAll = () => {
                             )}
                           </p>
 
-                          <div className="flex items-center gap-2 text-sm text-gray-400 uppercase group-hover:text-white group-hover:opacity-50">
+                          <div className="flex items-center gap-2 text-sm text-gray-400 uppercase group-hover:text-white group-hover:opacity-75 group-hover:font-avenir-black">
                             <span className="text-secondary font-avenir-black">
                               |
                             </span>
@@ -179,7 +181,7 @@ const CareersAll = () => {
                           </span>
                           {job.salaryMin != null && job.salaryMin > 0 && (
                             <>
-                              <p className="text-sm text-gray-400 -mb-3 group-hover:text-white group-hover:opacity-50">
+                              <p className="text-sm text-gray-400 -mb-3 group-hover:text-white group-hover:opacity-75 group-hover:font-avenir-black">
                                 Expected Salary
                               </p>
                               <p className="text-md font-avenir-black text-primary group-hover:text-white">
