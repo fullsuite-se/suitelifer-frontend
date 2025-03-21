@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import formatTimestamp from "../TimestampFormatter";
 import { toSlug } from "../../utils/slugUrl";
 import { readingTime } from "reading-time-estimator";
@@ -12,16 +12,19 @@ const NewsLarge = ({
   createdAt,
   imgUrls,
 }) => {
-  const { day, fullDate, time } = formatTimestamp(createdAt);
-
-  // 238
+  const { fullDate } = formatTimestamp(createdAt);
 
   return (
     <section>
       {/* Image and article container */}
-      <Link
-        to={`/news/${id}/${toSlug(title)}`}
-        className="no-underline cursor-pointer group flex flex-col lg:flex-row-reverse lg:gap-10  hover:p-10 hover:shadow-lg hover:bg-white hover:rounded-xl transition-all duration-300"
+      <NavLink
+        to={{
+          pathname: `/news/${toSlug(title)}`,
+        }}
+        state={{ id: id }}
+        className="no-underline cursor-pointer group flex flex-col
+        lg:flex-row-reverse lg:gap-10 hover:p-10 hover:shadow-lg hover:bg-white
+        hover:rounded-xl transition-all duration-300"
       >
         <div className="lg:w-1/2 flex flex-col justify-center">
           {/* Title */}
@@ -49,22 +52,19 @@ const NewsLarge = ({
             </p>
           </div>
         </div>
-
         {/* Image */}
         <img
           className="my-2 w-full h-full aspect-[3/2] object-cover lg:w-1/2 rounded-2xl"
           src={imgUrls[0]}
           alt="News image"
         />
-
         {/* Gap */}
         <div className="h-2 lg:hidden"></div>
-
         {/* Article */}
         <article className="text-sm lg:hidden line-clamp-4 md:line-clamp-6 lg:line-clamp-1 lg:overflow-hidden text-gray-500 font-serif">
           {article.replace(/<[^>]+>/g, "")}
         </article>
-      </Link>
+      </NavLink>
     </section>
   );
 };
