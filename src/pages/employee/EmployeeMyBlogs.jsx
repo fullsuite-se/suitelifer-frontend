@@ -45,26 +45,9 @@ const blogFeeds = [
 ];
 
 const EmployeeMyBlogs = () => {
-  const navigate = useNavigate();
-
   return (
     <section>
       <div className="p-2 xl:p-3">
-        <div className="lg:flex items-center justify-between hidden">
-          <div className="flex items-center gap-2">
-            <h2 className="font-avenir-black">My Blogs</h2>
-            <span className="text-sm text-gray-500 font-avenir-roman">(6)</span>
-            <InformationCircleIcon className="w-4 h-4 text-gray-500" />
-          </div>
-          <span
-            onClick={() => {
-              navigate("/app/my-blogs/new-blog");
-            }}
-            className="font-avenir-black text-primary text-sm cursor-pointer"
-          >
-            + Create new blog
-          </span>
-        </div>
         <main>
           {blogFeeds.map((blog, index) => (
             <div key={index} className="mb-5">
