@@ -4,7 +4,6 @@ import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
 import api from "../../utils/axios";
 import GuestIndustryTags from "../../components/careers/GuestIndustriesTags";
-import bgHero from "../../assets/images/bg-hero-careers.svg";
 import BackToTop from "../../components/BackToTop";
 import BackButton from "../../components/BackButton";
 import { NavLink } from "react-router-dom";
