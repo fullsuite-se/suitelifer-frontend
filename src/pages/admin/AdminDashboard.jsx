@@ -123,17 +123,21 @@ const AdminDashboard = () => {
   }, []);
 
   return (
-    <div className="max-h-100vh bg-white p-4">
+    <div className="max-h-100vh">
       {/* Header */}
-      <header className="container flex h-12 items-center justify-between flex-wrap">
-        <div className="hidden lg:flex md-flex gap-4 items-center ">
+      <header className="container flex h-12 items-center justify-end flex-wrap">
+        {/* <div className="hidden lg:flex md-flex gap-4 items-center ">
           <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
-        </div>
+        </div> */}
 
         <div className="flex gap-3">
           {/* Button for desktop */}
-          <button className="hidden sm:block btn-primary">+ Job Listing</button>
-          <button className="hidden sm:block btn-primary">+ Industry</button>
+          <button className="text-gray-500 hidden sm:block border border-gray-200 bg-gray-100 px-3 py-2 rounded-md cursor-pointer">
+            + Job Listing
+          </button>
+          <button className="text-gray-500 hidden sm:block border border-gray-200 bg-gray-100 px-3 py-2 rounded-md cursor-pointer">
+            + Industry
+          </button>
 
           {/* Icon Button for Mobile */}
           <button className="sm:hidden p-2 btn-primary flex items-center gap-1">
@@ -173,9 +177,9 @@ const AdminDashboard = () => {
         </div>
       </header>
 
-      <div className="border-primary p-4 rounded-2xl shadow-md mx-auto mb-6 text-center bg-primary flex flex-col gap-4 sm:grid sm:grid-cols-2 lg:flex lg:flex-row lg:justify-between">
-        <button
-          className="p-4 rounded-lg shadow text-black text-xl font-semibold bg-white w-full lg:w-100"
+      <section className="mt-3 mb-4 grid grid-cols-4 grid-rows-[7rem] [&>*]:bg-gray-100 [&>*]:border [&>*]:border-gray-200 gap-4">
+        <div
+          className="rounded-md grid place-content-center cursor-pointer"
           onClick={() =>
             handleDataChange(
               employeesData,
@@ -184,45 +188,44 @@ const AdminDashboard = () => {
             )
           }
         >
-          <span className="text-3xl">52</span>
-          <div className="text-sm text-gray-500">Total Active Employee Accounts</div>
-        </button>
-
-        <button
-          className="p-4 rounded-lg shadow text-black text-xl font-semibold bg-white w-full lg:w-100"
+          <span className="text-3xl text-center">52</span>
+          <div className="text-sm text-gray-500 ">
+            Total Active Employee Accounts
+          </div>
+        </div>
+        <div
+          className="rounded-md grid place-content-center cursor-pointer"
           onClick={() =>
             handleDataChange(applicationsData, "Total Applications", "#0097b2")
           }
         >
           <span className="text-3xl">{totalApplications}</span>
           <div className="text-sm text-gray-500">Total Applications</div>
-        </button>
-
-        <button
-          className="bg-secondary p-4 rounded-lg text-black-700 text-lg font-semibold w-full lg:w-48"
+        </div>
+        <div
+          className="rounded-md grid place-content-center cursor-pointer"
           onClick={() =>
             handleDataChange(openJobsData, "Open Job Listings", "#0097b2")
           }
         >
-          <span className="text-2xl">{openJobs}</span>
-          <div className="text-sm">Open Jobs</div>
-        </button>
-
-        <button
-          className="bg-accent-2 p-4 rounded-lg text-white text-lg font-semibold w-full lg:w-48"
+          <span className="text-2xl text-center">{openJobs}</span>
+          <div className="text-sm text-gray-500">Open Jobs</div>
+        </div>
+        <div
+          className="rounded-md grid place-content-center cursor-pointer"
           onClick={() =>
             handleDataChange(closedJobsData, "Closed Job Listings", "#0097b2")
           }
         >
-          <span className="text-2xl">{closedJobs}</span>
-          <div className="text-sm">Closed Jobs</div>
-        </button>
-      </div>
+          <span className="text-2xl text-center">{closedJobs}</span>
+          <div className="text-sm text-gray-500 ">Closed Jobs</div>
+        </div>
+      </section>
 
       {/* Chart Display */}
 
-      <div className="border p-4 rounded shadow h-140">
-        <h2 className="text-lg font-medium">{selectedLabel}</h2>
+      <div className="border border-gray-200 p-4 rounded h-140">
+        <h4 className="text-gray-500">{selectedLabel}</h4>
         <div className="h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={selectedData}>
