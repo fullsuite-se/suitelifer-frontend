@@ -140,7 +140,7 @@ const AdminDashboard = () => {
           </button>
 
           {/* Icon Button for Mobile */}
-          <button className="sm:hidden p-2 btn-primary flex items-center gap-1">
+          <button className="text-gray-500 border rounded-md cursor-pointer bg-gray-100 border-gray-200 sm:hidden px-3 py-2 flex items-center gap-1">
             <span>+</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -148,7 +148,7 @@ const AdminDashboard = () => {
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="size-6"
+              className="size-5"
             >
               <path
                 strokeLinecap="round"
@@ -157,7 +157,7 @@ const AdminDashboard = () => {
               />
             </svg>
           </button>
-          <button className="sm:hidden p-2 btn-primary flex items-center gap-1">
+          <button className="text-gray-500 border rounded-md cursor-pointer bg-gray-100 border-gray-200 sm:hidden px-3 py-2 flex items-center gap-1">
             <span>+</span>{" "}
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -165,7 +165,7 @@ const AdminDashboard = () => {
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="size-6"
+              className="size-5"
             >
               <path
                 strokeLinecap="round"
@@ -189,8 +189,8 @@ const AdminDashboard = () => {
           }
         >
           <span className="text-3xl text-center">52</span>
-          <div className="text-sm text-gray-500 ">
-            Total Active Employee Accounts
+          <div className="text-sm text-gray-500 text-center">
+            Active Employee
           </div>
         </div>
         <div
@@ -200,7 +200,7 @@ const AdminDashboard = () => {
           }
         >
           <span className="text-3xl">{totalApplications}</span>
-          <div className="text-sm text-gray-500">Total Applications</div>
+          <div className="text-sm text-gray-500 text-center">Applications</div>
         </div>
         <div
           className="rounded-md grid place-content-center cursor-pointer"
@@ -209,7 +209,7 @@ const AdminDashboard = () => {
           }
         >
           <span className="text-2xl text-center">{openJobs}</span>
-          <div className="text-sm text-gray-500">Open Jobs</div>
+          <div className="text-sm text-gray-500 text-center">Open Jobs</div>
         </div>
         <div
           className="rounded-md grid place-content-center cursor-pointer"
@@ -218,7 +218,7 @@ const AdminDashboard = () => {
           }
         >
           <span className="text-2xl text-center">{closedJobs}</span>
-          <div className="text-sm text-gray-500 ">Closed Jobs</div>
+          <div className="text-sm text-gray-500 text-center">Closed Jobs</div>
         </div>
       </section>
 
