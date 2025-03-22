@@ -24,6 +24,9 @@ import SetupModal from "../../components/admin/SetupModal";
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 export default function AdminJobListing() {
+  // USER DETAILS
+  const user = useStore((state) => state.user);
+
   // JOB LISTINGS VARIABLES
   const defaultJobDetails = {
     job_id: null,
@@ -807,4 +810,4 @@ export default function AdminJobListing() {
       </Modal>
     </div>
   );
-} 
+}
