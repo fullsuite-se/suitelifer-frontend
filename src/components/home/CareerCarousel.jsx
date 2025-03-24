@@ -1,12 +1,7 @@
-// import { Swiper, SwiperSlide } from "swiper/react";
-// import { Pagination, Autoplay } from "swiper/modules"; // Import Autoplay
-// import "swiper/css";
-// import "swiper/css/pagination";
+
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
-import testimonials from "../about-us/TestimonialsList.jsx";
-import bgQuotes from "../../assets/images/bg-quotes.svg";
 import MotionUp from "../MotionUp.jsx";
 
 const careerIndustries = [
@@ -37,12 +32,6 @@ const careerIndustries = [
   {
     id:5,
     image:
-      "https://beta.tourism.gov.ph/wp-content/uploads/2024/06/FBSE_PHOTO_11-scaled.jpg",
-    name: "Culinary",
-  },
-  {
-    id:6,
-    image:
       "https://www.georginalittlephotography.co.uk/wp-content/uploads/2024/09/Alex-Chell-2-1080x675.jpg",
     name: "Branding",
   },
@@ -57,7 +46,6 @@ const CareerCarousel = () => {
         
         <Swiper
             modules={[Navigation, Pagination, Autoplay]}
-            // pagination={{ clickable: true }}
             slidesPerView={1}
             autoplay={{ delay: 5000 }}
             breakpoints={{

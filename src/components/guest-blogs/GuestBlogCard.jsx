@@ -14,7 +14,7 @@ const GuestBlogCard = ({
   created_at,
   imageUrl,
 }) => {
-  const { day, fullDate, time } = formatTimestamp(created_at);
+  const { fullDate } = formatTimestamp(created_at);
 
   return (
     <section

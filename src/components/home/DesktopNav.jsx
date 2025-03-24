@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import logo_fs_full from "../../assets/logos/logo-fs-full.svg";
-import { Bars2Icon, XMarkIcon } from "@heroicons/react/24/solid";
 import { NavLink } from "react-router-dom";
 
 export default function DesktopNav() {
@@ -179,16 +178,7 @@ export default function DesktopNav() {
           </div>
         </nav>
         <div>
-          {/* <NavLink
-            to="/login-employee"
-            className={({ isActive }) =>
-              `!no-underline bg-[#E5F5F7] px-4 p-3 rounded-4xl text-primary text-md font-md hover:text-[#007a8e] transition-all duration-300 ease-in-out ${
-                isActive ? "active-class" : ""
-              }`
-            }
-          >
-            Employee Login
-          </NavLink> */}
+        
         </div>
       </div>
     </>

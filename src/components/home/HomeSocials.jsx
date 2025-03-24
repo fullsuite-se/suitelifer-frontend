@@ -1,6 +1,5 @@
-import dotsLine from "../../assets/images/socials-dots-line.svg";
+
 import socialTitleDesktop from "../../assets/images/social-title-desktop.svg";
-import socialTitleMobile from "../../assets/images/social-title-mobile.svg";
 import YouTubeEmbed from "../../components/home/YoutubeEmbed";
 import SingleSpotifyEmbed from "../../components/home/SingleSpotifyEmbed";
 import FacebookPostEmbed from "./FacebookEmbed";
@@ -9,8 +8,6 @@ import FacebookIcon from "../../assets/logos/Facebook";
 import InstagramIcon from "../../assets/logos/Instagram";
 import YoutubeIcon from "../../assets/logos/Youtube";
 import SpotifyIcon from "../../assets/logos/Spotify";
-import SocialButton from "./SocialButton";
-import { motion } from "framer-motion";
 import MotionUp from "../MotionUp";
 import React from "react";
 
