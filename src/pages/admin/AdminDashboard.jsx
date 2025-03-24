@@ -82,8 +82,8 @@ const AdminDashboard = () => {
   };
 
   const [totalApplications, setTotalApplications] = useState(0);
-  const [openJobs, setOpenJobs] = useState(null);
-  const [closedJobs, setClosedJobs] = useState(null);
+  const [openJobs, setOpenJobs] = useState(0);
+  const [closedJobs, setClosedJobs] = useState(0);
 
   const fetchTotalApplications = async () => {
     try {
