@@ -23,7 +23,7 @@ const NewsLarge = ({
         }}
         state={{ id: id }}
         className="no-underline cursor-pointer group flex flex-col
-        lg:flex-row-reverse lg:gap-10 hover:p-10 hover:shadow-lg hover:bg-white
+        lg:flex-row-reverse lg:gap-10 hover:bg-white
         hover:rounded-xl transition-all duration-300"
       >
         <div className="lg:w-1/2 flex flex-col justify-center">
