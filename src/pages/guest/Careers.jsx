@@ -19,7 +19,7 @@ const Careers = () => {
   const [jobs, setJobs] = useState([]);
   const fetchJobs = async () => {
     try {
-      const response = await api.get("/api/all-jobs");
+      const response = await api.get("/api/all-open-jobs");
       setJobs((j) => response.data.data);
     } catch (err) {
       console.log(err);
