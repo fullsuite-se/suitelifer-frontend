@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 const HomeBlogSpot = () => {
   return (
-    <MotionUp className="relative flex flex-col mb-10 ">
+    <MotionUp className="relative flex flex-col ">
       <MotionUp
         initial={{ opacity: 0, scale: 0.95 }}
         whileInView={{ opacity: 1, scale: 1 }}
