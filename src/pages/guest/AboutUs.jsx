@@ -6,7 +6,7 @@ import DesktopNav from "../../components/home/DesktopNav";
 import api from "../../utils/axios";
 import CoreValueCard from "../../components/about-us/CoreValueCard";
 import bgMaggieMobile from "../../assets/images/bg-mobile-chair-cutout.png";
-import bgMaggieDesktop from "../../assets/images/bg-desktop-chair-cutout.png";
+import bgMaggieDesktop from "../../assets/images/bg-desktop-chair-cutout-2.png";
 import imgBuilding from "../../assets/images/img-building.svg";
 import imgMeeting from "../../assets/images/img-meeting.svg";
 import dotsLine from "../../assets/images/socials-dots-line.svg";
@@ -314,7 +314,7 @@ const AboutUs = () => {
         <section className="relative" id="ceo-message">
           {/* Text overlay */}
           <article className="absolute text-end text-white -mt-10">
-            <div className="container-ceo-message pt-[22%]  pr-[5%] md:pr-[10%]">
+            <div className="container-ceo-message pt-[18%]  pr-[5%] md:pr-[5%]">
               <div className="flex justify-end">
                 <p className="text-[12p] font-avenir-black text-secondary">MESSAGE FROM THE CEO</p>
               </div>{" "}
