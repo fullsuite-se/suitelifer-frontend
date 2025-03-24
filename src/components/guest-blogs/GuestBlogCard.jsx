@@ -8,8 +8,8 @@ import { NavLink } from "react-router-dom";
 const GuestBlogCard = ({
   id,
   title,
-  author,
-  readTime,
+  createdBy,
+  description,
   article,
   created_at,
   imageUrl,
