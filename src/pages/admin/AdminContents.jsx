@@ -46,11 +46,11 @@ const AdminContents = () => {
             variant="Scrollable"
             scrollButtons="auto"
             sx={{
-              // "& .MuiTabs-indicator": {
-              //   backgroundColor: "white", // Change active tab indicator color
-              // },
+              "& .MuiTabs-indicator": {
+                backgroundColor: "#bfd1a0", 
+              },
               "& .MuiTab-root": {
-                color: "black", // Default text color
+                color: "black",
                 fontWeight: 500,
                 textTransform: "none",
                 fontSize: 16,
