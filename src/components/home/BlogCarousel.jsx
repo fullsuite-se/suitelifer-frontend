@@ -24,7 +24,7 @@ const BlogCarousel = () => {
   }, []);
 
   return (
-    <div className="w-full max-w-[90%] mx-auto py-[20%] px-[10%] sm:px-[10%] xl:px-[0%]">
+    <div className="w-full max-w-[90%] mx-auto">
       {companyBlogs.length === 0 ? (
         <section className="grid place-conte`nt-center h-dvh">
           <OnLoadLayoutAnimation />
@@ -32,12 +32,11 @@ const BlogCarousel = () => {
       ) : (
         <Swiper
           modules={[Navigation, Pagination, Autoplay]}
-          spaceBetween={10}
-          slidesPerView={1}
           breakpoints={{
-            1280: { slidesPerView: 5 },
-            768: { slidesPerView: 3 },
+            1280: { slidesPerView: 4 },
             1024: { slidesPerView: 3 },
+            768: { slidesPerView: 2 },
+            0: { slidesPerView: 1, centeredSlides: true },
           }}
           navigation
           pagination={{ clickable: true, enabled: false }}
@@ -47,7 +46,7 @@ const BlogCarousel = () => {
         >
           {companyBlogs.slice(0, 5).map((blog) => (
             <SwiperSlide key={blog.cblogId}>
-              <div className="p-4">
+              <div className="p-4 px-[10%]">
                 <GuestBlogCard {...blog} />
               </div>
             </SwiperSlide>

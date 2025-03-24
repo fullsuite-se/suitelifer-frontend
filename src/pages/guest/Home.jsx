@@ -252,26 +252,32 @@ const Home = () => {
         </div>
       </section>
 
-      <div className="text-center px-7 xl:px-17">
-        <span className="text-sm text-primary  font-avenir-black block mb-4">
-          WHAT WE OFFER
-        </span>
-        <p className="title-header font-bold font-avenir-black text-dark">
-          Your Next Career Starts Here
-        </p>
-      </div>
-      <CareerCarousel />
+      <section className="bg-primary pt-[5%] mt-[7%] my-[5%]">
+        <div className="text-center text-white px-7 xl:px-17">
+          <p className="title-header font-bold font-avenir-black">
+            Your Next Career Starts Here
+          </p>
+          <p className="title-caption">
+            Watch the video below to see what makes us the perfect place to grow
+            your career!
+          </p>
+        </div>
+        <CareerCarousel />
+      </section>
 
       {/* NEWS SECTION */}
       <HomeNews />
-      <div className="relative bg-primary py-10 mt-10 rounded-t-30!">
+      {/* <div className="relative bg-primary py-10 mt-10 rounded-t-30!"> */}
         {/* SOCIALS SECTION */}
-        <HomeSocials />
-      </div>
+        {/* <HomeSocials /> */}
+      {/* </div> */}
       <div className="h-10"></div>
 
       {/* HOME BLOG SPOT */}
-      <HomeBlogSpot />
+      <div className="bg-primary rounded-4xl mx-[2%]">
+        <HomeBlogSpot />
+      </div>
+      
 
       {/* FOR DEBUGGING ONLY */}
       {/* <div className="bg-red-900 h-50 text-white grid place-items-center">WIDTH: {width}</div> */}
