@@ -17,7 +17,7 @@ const GuestBlogCard = ({
 
   return (
     <section
-      className="relative w-full h-80 lg:h-90 rounded-xl overflow-hidden 
+      className="relative md:max-w-[320px] w-full h-80 lg:h-90 rounded-xl overflow-hidden 
   transform transition-all duration-300 ease-in-out group-hover:scale-105 
   group-hover:shadow-xl group-hover:shadow-secondary/50 active:scale-105 
   active:shadow-xl active:shadow-secondary/50"
@@ -36,12 +36,12 @@ const GuestBlogCard = ({
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/80"></div>
         </div>
 
-        <div className="absolute bottom-0 p-4 text-white">
+        <div className="absolute left-0 bottom-0 p-4 text-white">
           <h2 className="font-avenir-black !text-base sm:!text-lg md:!text-lg  group-hover:text-secondary transition duration-300 ease-in-out">
             {title}
           </h2>
 
-          <p className="!text-[12px] sm:!text-[14px]  mt-1">
+          <p className="!text-[12px] sm:!text-[14px] line-clamp-1 mt-1">
             <span className="text-secondary font-avenir-black">
               {" "}
               {createdBy}
