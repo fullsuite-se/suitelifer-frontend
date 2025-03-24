@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Footer from "../../components/Footer";
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
@@ -25,7 +24,7 @@ import UnderstoodIcon from "../../assets/icons/UnderstoodIcon";
 import WorkLifeHarmonyIcon from "../../assets/icons/WorkLifeHarmonyIcon";
 import UpholdsIcon from "../../assets/icons/UpholdsIcon";
 import PageMeta from "../../components/layout/PageMeta";
-import FooterNew from "../../components/FooterNew";
+import Footer from "../../components/Footer";
 import MissionVision from "../../components/about-us/MissionVision";
 const AboutUs = () => {
   const [content, setContent] = useState({});
@@ -415,7 +414,7 @@ const AboutUs = () => {
       </main>
       <BackToTop />
 
-      <FooterNew />
+      <Footer />
     </section>
   );
 };
