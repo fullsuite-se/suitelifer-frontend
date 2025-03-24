@@ -267,14 +267,17 @@ const Home = () => {
 
       {/* NEWS SECTION */}
       <HomeNews />
-      <div className="relative bg-primary py-10 mt-10 rounded-t-30!">
+      {/* <div className="relative bg-primary py-10 mt-10 rounded-t-30!"> */}
         {/* SOCIALS SECTION */}
-        <HomeSocials />
-      </div>
+        {/* <HomeSocials /> */}
+      {/* </div> */}
       <div className="h-10"></div>
 
       {/* HOME BLOG SPOT */}
-      <HomeBlogSpot />
+      <div className="bg-primary rounded-4xl mx-[2%]">
+        <HomeBlogSpot />
+      </div>
+      
 
       {/* FOR DEBUGGING ONLY */}
       {/* <div className="bg-red-900 h-50 text-white grid place-items-center">WIDTH: {width}</div> */}
