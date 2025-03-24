@@ -22,22 +22,22 @@ const NewsCardSmall = ({
       className="group container-news-card-small rounded-2xl transition-all duration-300 flex gap-3 no-underline min-w-[0px] hover:scale-98"
     >
       <img
-        className="image-news-card-small size-[25vw] aspect-[3/2] object-cover "
+        className="h-1/2 image-news-card-small size-[25vw] aspect-[3/2] object-cover "
         src={imgUrls[0]}
         alt="News image"
       />
 
-      <div className="content-news-card-small flex flex-col justify-center">
+      <div className="w-1/2 md:w-full content-news-card-small flex flex-col justify-center ">
         <div className="flex flex-col">
-          <p className="content-title line-clamp-3 font-serif font-bold sm:text-lg group-hover:!text-primary transition-all duration-100">
+          <p className="content-title line-clamp-2 font-serif font-bold sm:text-lg group-hover:!text-primary transition-all duration-100">
             {title}
           </p>
 
-          <article className="article-news-card-small text-gray-500 line-clamp-4 my-2 font-serif">
+          <article className="article-news-card-small text-gray-500 my-2 font-serif">
             {article.replace(/<[^>]+>/g, "")}
           </article>
 
-          <p className="text-[14px] author-news-card-small">
+          <p className="author-news-card-small line-clamp-1">
             <span className="text-primary">
               {createdByName.split(" ")[0]}&nbsp;&nbsp;|
             </span>
