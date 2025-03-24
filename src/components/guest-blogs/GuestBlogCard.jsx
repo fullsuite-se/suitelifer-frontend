@@ -10,10 +10,11 @@ const GuestBlogCard = ({
   title,
   createdBy,
   description,
-  createdAt,
+  article,
+  created_at,
   imageUrl,
 }) => {
-  const { day, fullDate, time } = formatTimestamp(createdAt);
+  const { day, fullDate, time } = formatTimestamp(created_at);
 
   return (
     <section
@@ -54,7 +55,7 @@ const GuestBlogCard = ({
           </p>
 
           <p className="mt-2 !text-[12px] sm:!text-[14px] text-gray-300 line-clamp-3">
-            {removeHtmlTags(description ?? "Description")}
+            {article}
           </p>
 
           <p className="text-xs text-gray-400 mt-2">{fullDate}</p>

@@ -100,7 +100,7 @@ const ArticleDetails = ({
               <p className="text-[12px] text-gray-500 mt-5">{fullDate}</p>
               <p
                 className={`text-xl md:text-2xl lg:text-3xl font-avenir-black my-2 ${
-                  type === "News" ? "font-serif font-bold" : "font-avenir-black"
+                  type === "News" ? "font-avenir-black" : "font-avenir-black"
                 }`}
               >
                 {title}
@@ -120,7 +120,7 @@ const ArticleDetails = ({
 
               <p
                 className={`mt-4 text-gray-700 whitespace-pre-line ${
-                  type === "News" ? "font-serif" : ""
+                  type === "News" ? "font-avenir-black" : ""
                 }`}
               >
                 {removeHtmlTags(content)}

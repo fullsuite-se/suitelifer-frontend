@@ -3,26 +3,12 @@ import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import BlogCard from "./BlogCard";
+// import companyBlogs from "./CompanyBlogsList";
+import GuestBlogsList from "../guest-blogs/GuestBlogsList";
 import GuestBlogCard from "../guest-blogs/GuestBlogCard";
-import { useEffect, useState } from "react";
-import api from "../../utils/axios";
-import OnLoadLayoutAnimation from "../layout/OnLoadLayoutAnimation";
 
 const BlogCarousel = () => {
-  const [companyBlogs, setCompanyBlogs] = useState([]);
-
-  const fetchCompanyBlogs = async () => {
-    const response = await api.get("/api/all-company-blogs");
-
-    console.log(response.data);
-
-    setCompanyBlogs(response.data);
-  };
-
-  useEffect(() => {
-    fetchCompanyBlogs();
-  }, []);
-
   return (
     <div className="w-full max-w-[90%] mx-auto">
       {companyBlogs.length === 0 ? (

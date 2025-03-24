@@ -7,7 +7,8 @@ import api from "../../utils/axios";
 import CoreValueCard from "../../components/about-us/CoreValueCard";
 import bgMaggieMobile from "../../assets/images/bg-mobile-chair-cutout.png";
 import bgMaggieDesktop from "../../assets/images/bg-desktop-chair-cutout-2.png";
-import imgBuilding from "../../assets/images/img-building.svg";
+import imgMission from "../../assets/images/imgMission.svg";
+import imgVision from "../../assets/images/imgVision.svg";
 import imgMeeting from "../../assets/images/img-meeting.svg";
 import dotsLine from "../../assets/images/socials-dots-line.svg";
 import Testimonials from "../../components/about-us/TestimonialSection";
@@ -25,7 +26,7 @@ import WorkLifeHarmonyIcon from "../../assets/icons/WorkLifeHarmonyIcon";
 import UpholdsIcon from "../../assets/icons/UpholdsIcon";
 import PageMeta from "../../components/layout/PageMeta";
 import FooterNew from "../../components/FooterNew";
-
+import MissionVision from "../../components/about-us/MissionVision";
 const AboutUs = () => {
   const [content, setContent] = useState({});
   const [videoTitle, setVideoTitle] = useState("Thought it was over, but...");
@@ -82,12 +83,8 @@ const AboutUs = () => {
               src="https://images.unsplash.com/photo-1739382121445-19b3460a9e7a?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             />
           </div>
-          <div className="about-text-banner flex flex-col mb-2"
-          >
-            <h2 className="font-avenir-black px-5"
-            >
-              {content.textBanner}
-            </h2>
+          <div className="about-text-banner flex flex-col mb-2">
+            <h2 className="font-avenir-black px-5">{content.textBanner}</h2>
 
             {/* <motion.div
               initial={{ x: 100, opacity: 0 }}
@@ -253,62 +250,20 @@ const AboutUs = () => {
             </div>
           </div>
         </section>
-
+        <div className="py-10"></div>
+        <div className="flex justify-end scale-x-[-1]">
+          <img className="dots-line" src={dotsLine} alt="3 dots and a line" />
+        </div>
+        <div className="py-10"></div>
         {/* Mission Vision LASTLY: CHANGE LAYOUT FOR MOBILE. BREAKPOINT: 480px */}
-        <section className="flex justify-center mb-[5%] md:mb-0 md:pb-[0%]">
-          <div  className="grid grid-cols-2 grid-rows-2 px-[5%] lg:max-h-[1600px]">
-            {/* Mission Image */}
-            <section id="our-mission">
-              <div className="flex justify-end absolute md:relative">
-                <div className="-translate-x-[20%] md:translate-y-[10%] md:translate-x-[10%] bg-primary/50 p-[5%] max-h-[800px] rounded-2xl lg:rounded-4xl size-[50vw] md:aspect-4/3">
-                  <img
-                    className="w-full h-full rounded-lg lg:rounded-2xl object-cover"
-                    src={imgMeeting}
-                    alt="Mission image"
-                  />
-                </div>
-              </div>
-            </section>
-
-            {/* Mission Text */}
-            <article  className=" mission-vision-text flex flex-col justify-center items-start text-end">
-              <div className="md:pl-[14%] pl-[0%]">
-                <p className="blue-text uppercase font-avenir-black text-primary">
-                  FullSuite Mission
-                </p>
-                <p className="title font-avenir-black">
-                  {content.missionSlogan}
-                </p>
-                <p className="description">{content.mission}</p>
-              </div>
-            </article>
-
-            {/* Vision Text */}
-            <section id="our-vision">
-              <article className="pt-[15%] -mr-7 md:mr-1 md:pt-[18%] lg:pt-[23%] md:pr-[13%] mission-vision-text flex flex-col justify-start items-start text-start">
-                <p className="blue-text uppercase w-full font-avenir-black text-primary">
-                  Fullsuite Vision
-                </p>
-                <p className="title font-avenir-black w-full">
-                  {content.visionSlogan}
-                </p>
-                <p className="description">{content.vision}</p>
-              </article>
-            </section>
-            {/* Vision Image */}
-            <section>
-              <div className="flex absolute md:relative overflow-hidden md:overflow-visible">
-                <div className="translate-x-[20%] md:-translate-y-[10%] md:-translate-x-[10%] bg-[#DFE8CF] p-[5%] max-h-[800px] rounded-2xl lg:rounded-4xl size-[50vw] md:aspect-4/3">
-                  <img
-                    className="w-full h-full rounded-lg lg:rounded-2xl object-cover"
-                    src={imgBuilding}
-                    alt="Mission image"
-                  />
-                </div>
-              </div>
-            </section>
-          </div>
-        </section>
+        <MissionVision
+          imgMission={imgMission}
+          imgVision={imgVision}
+          missionContent={content.mission}
+          missionSlogan={content.missionSlogan}
+          visionContent={content.mission}
+          visionSlogan={content.visionSlogan}
+        />
 
         {/* Message from the CEO */}
         <section className="relative" id="ceo-message">
@@ -316,7 +271,9 @@ const AboutUs = () => {
           <article className="absolute text-end text-white -mt-10">
             <div className="container-ceo-message pt-[18%]  pr-[5%] md:pr-[5%]">
               <div className="flex justify-end">
-                <p className="text-[12p] font-avenir-black text-secondary">MESSAGE FROM THE CEO</p>
+                <p className="text-[12p] font-avenir-black text-secondary">
+                  MESSAGE FROM THE CEO
+                </p>
               </div>{" "}
               <br />
               <div className="flex justify-end">
