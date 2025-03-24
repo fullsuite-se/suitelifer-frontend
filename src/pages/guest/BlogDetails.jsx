@@ -1,24 +1,43 @@
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import React from "react";
 import { toSlug } from "../../utils/slugUrl";
 import BlogList from "../../components/guest-blogs/GuestBlogsList";
 import ArticleDetails from "../../components/news/ArticleDetails";
-
+import api from "../../utils/axios";
 
 const BlogDetails = () => {
-  window.scroll(0, 0);
+  const location = useLocation();
+  const cblog_id = location.state.cblog_id;
+  const relatedBlogs = BlogList;
 
-  const { id } = useParams();
-  const blogItem = BlogList.find((blog) => blog.id.toString() === id);
-  const relatedBlogs = BlogList.filter(
-    (blog) => blog.id.toString() !== id
-  ).slice(0, 5);
+  const [blogDetails, setBlogDetails] = useState({});
 
+  const fetchBlogDetails = async () => {
+    try {
+      const response = await api.get(`/api/get-company-blog/${cblog_id}`);
+
+      console.log(response.data.data);
+      
+      setBlogDetails(response.data.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchBlogDetails();
+  }, []);
 
   return (
     <>
       <ArticleDetails
-        data={blogItem}
+        id={blogDetails.cblogId}
+        title={blogDetails.title}
+        content={blogDetails.description}
+        createdAt={blogDetails.createdAt}
+        createdBy={blogDetails.createdBy}
+        images={blogDetails.images}
         relatedArticles={relatedBlogs}
         backPath="/blogs"
         type="Blog"

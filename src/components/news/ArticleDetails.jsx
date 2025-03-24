@@ -1,35 +1,42 @@
 import { ArrowLeft } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import React from "react";
-import Footer from "../Footer";
 import MobileNav from "../home/MobileNav";
 import TabletNav from "../home/TabletNav";
 import DesktopNav from "../home/DesktopNav";
 import bgBlogs from "../../assets/images/blogs-text-bg.svg";
-import ImageCarousel from "../../components/news/ImageCarousel";
-import { toSlug } from "../../utils/slugUrl";
 import GuestBlogCardSmall from "../guest-blogs/GuestBlogCardSmall";
 import NewsCardNoSnippet from "./NewsCardNoSnippet";
 import formatTimestamp from "../../components/TimestampFormatter";
 import BackToTop from "../BackToTop";
 import { Helmet } from "@dr.pogodin/react-helmet";
 import { useEffect } from "react";
+import FooterNew from "../FooterNew";
+import Carousel from "../Carousel";
+import { removeHtmlTags } from "../../utils/removeHTMLTags";
+import { readingTime } from "reading-time-estimator";
 
-const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
+const ArticleDetails = ({
+  id,
+  title,
+  content,
+  createdAt,
+  createdBy,
+  images,
+  relatedArticles,
+  backPath,
+  type,
+}) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  if (!data) {
-    return <h1 className="text-center text-red-500">Not found</h1>;
-  }
-
-  const { fullDate } = formatTimestamp(data.created_at);
+  const { fullDate } = formatTimestamp(createdAt);
 
   useEffect(() => {
-    if (data?.title) {
-      document.title = data.title;
+    if (title) {
+      document.title = title;
     }
-  }, [data, location]);
+  }, [id, location]);
 
   const handleBackBtn = () => {
     document.title = `SuiteLifer`;
@@ -39,18 +46,18 @@ const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
   return (
     <>
       <Helmet>
-        <title>{data?.title || "SuiteLifer"}</title>
+        <title>{title || "SuiteLifer"}</title>
         <meta
           name="description"
           content={
-            data?.article
-              ? data.article.substring(0, 150) + "..."
+            content
+              ? content.substring(0, 150) + "..."
               : "Read the latest articles on SuiteLifer."
           }
         />
         <meta
           name="keywords"
-          content={`${data?.title}, ${type}, SuiteLifer News, SuiteLifer Blogs, blog, news`}
+          content={`${title}, ${type}, SuiteLifer News, SuiteLifer Blogs, blog, news`}
         />
         {/* 
           TODO :
@@ -83,7 +90,7 @@ const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
         <main className="px-[7%] text-sm md:text-base md:px-[5%] lg:px-[8%]">
           <button
             onClick={handleBackBtn}
-            className="flex cursor-pointer items-center gap-2 text-primary !text-[12px] md:text-base font-semibold transition active:font-avenir-black"
+            className="flex cursor-pointer hover:underline items-center gap-2 text-primary !text-[12px] md:text-base font-semibold transition active:font-avenir-black"
           >
             <ArrowLeft size={15} /> <span className="mt-1">Back to {type}</span>
           </button>
@@ -96,19 +103,19 @@ const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
                   type === "News" ? "font-serif font-bold" : "font-avenir-black"
                 }`}
               >
-                {data.title}
+                {title}
               </p>
               <p className="text-[12px] text-gray-500">
                 <span className="text-primary font-avenir-black">
-                  {data.author}
+                  {createdBy}
                 </span>{" "}
-                | {data.readTime || data.read_time}
+                | {readingTime("Hello", 238).text}
               </p>
 
               {/* Image Carousel */}
-              <ImageCarousel
-                images={data.images}
-                imagesWithCaption={data.imagesWithCaption}
+              <Carousel
+                images={Array.isArray(images) ? images : []}
+                isButtonOutside={false}
               />
 
               <p
@@ -116,7 +123,7 @@ const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
                   type === "News" ? "font-serif" : ""
                 }`}
               >
-                {data.article}
+                {removeHtmlTags(content)}
               </p>
             </div>
 
@@ -160,7 +167,7 @@ const ArticleDetails = ({ data, relatedArticles, backPath, type }) => {
           </div>
         </main>
         <div className="h-30"></div> <BackToTop />
-        <Footer />
+        <FooterNew />
       </section>
     </>
   );

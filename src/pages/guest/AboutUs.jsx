@@ -6,20 +6,17 @@ import DesktopNav from "../../components/home/DesktopNav";
 import api from "../../utils/axios";
 import CoreValueCard from "../../components/about-us/CoreValueCard";
 import bgMaggieMobile from "../../assets/images/bg-mobile-chair-cutout.png";
-import bgMaggieDesktop from "../../assets/images/bg-desktop-chair-cutout.png";
+import bgMaggieDesktop from "../../assets/images/bg-desktop-chair-cutout-2.png";
 import imgBuilding from "../../assets/images/img-building.svg";
 import imgMeeting from "../../assets/images/img-meeting.svg";
 import dotsLine from "../../assets/images/socials-dots-line.svg";
 import Testimonials from "../../components/about-us/TestimonialSection";
-import MissionVisionList from "../../components/about-us/MissionVisionList";
 import FillerBoxes from "../../assets/images/about-filler-boxes.png";
 import YouTubeEmbed from "../../components/home/YoutubeEmbed";
 import largeBottomFiller from "../../assets/images/about-large-bottom-filler.svg";
 import smallBottomFiller from "../../assets/images/about-small-bottom-filler.svg";
 
 import { motion } from "framer-motion";
-// TEMPORARY ICON
-import CoreValue01 from "../../assets/icons/core-value-01";
 import BackToTop from "../../components/BackToTop";
 import FocusedAthleteIcon from "../../assets/icons/FocusedAthleteIcon";
 import TeamPlayerIcon from "../../assets/icons/TeamPlayerIcon";
@@ -27,6 +24,7 @@ import UnderstoodIcon from "../../assets/icons/UnderstoodIcon";
 import WorkLifeHarmonyIcon from "../../assets/icons/WorkLifeHarmonyIcon";
 import UpholdsIcon from "../../assets/icons/UpholdsIcon";
 import PageMeta from "../../components/layout/PageMeta";
+import FooterNew from "../../components/FooterNew";
 
 const AboutUs = () => {
   const [content, setContent] = useState({});
@@ -38,9 +36,8 @@ const AboutUs = () => {
     setClickCount((prev) => (prev < 6 ? prev + 1 : 0)); // Reset after animation
   };
 
-  // window.scroll(0, 0);
-
   useEffect(() => {
+    window.scroll(0, 0);
     const fetchContent = async () => {
       try {
         const response = await api.get("/api/get-about-us");
@@ -80,41 +77,33 @@ const AboutUs = () => {
         <section className="overflow-hidden about-container" id="our-story">
           <div className="h-56 w-72">
             <img
-              style={{ animation: "slideInFromLeft 0.8s ease-out forwards" }}
+              // style={{ animation: "slideInFromLeft 0.8s ease-out forwards" }}
               className="w-full h-full object-cover rounded-r-3xl "
               src="https://images.unsplash.com/photo-1739382121445-19b3460a9e7a?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             />
           </div>
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="about-text-banner flex flex-col mb-2"
+          <div className="about-text-banner flex flex-col mb-2"
           >
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut", delay: 1 }}
-              className="font-avenir-black px-5"
+            <h2 className="font-avenir-black px-5"
             >
               {content.textBanner}
-            </motion.h2>
+            </h2>
 
-            <motion.div
+            {/* <motion.div
               initial={{ x: 100, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
               className="h-10 w-20 lg:h-20 lg:w-32 rounded-l-2xl bg-primary ml-auto mb-2"
-            />
-          </motion.div>
+            /> */}
+          </div>
 
           <div className="mx-5">
             <img
-              className="w-full h-full object-cover rounded-3xl animate-slideInLong"
+              className="w-full h-full object-cover rounded-3xl"
               src="https://images.unsplash.com/photo-1739382120576-b1434e8bc4d3?q=80&w=1975&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             />
           </div>
-          <section className="flex flex-col gap-3 mt-5 mx-5">
+          <section className="flex flex-col gap-3 mt-5 mx-5 text-justify">
             <p className="text-primary text-center text-sm font-avenir-black">
               OUR STORY
             </p>
@@ -152,7 +141,7 @@ const AboutUs = () => {
             </div>
           </section>
 
-          <section className="mx-8 flex flex-col justify-center">
+          <section className="mx-8 flex flex-col justify-center text-justify">
             <p className="font-avenir-black py-3 !text-xl lg:!text-2xl">
               “{videoTitle}”
             </p>
@@ -267,9 +256,9 @@ const AboutUs = () => {
 
         {/* Mission Vision LASTLY: CHANGE LAYOUT FOR MOBILE. BREAKPOINT: 480px */}
         <section className="flex justify-center mb-[5%] md:mb-0 md:pb-[0%]">
-          <div className="grid grid-cols-2 grid-rows-2 px-[5%] lg:max-h-[1600px]">
+          <div  className="grid grid-cols-2 grid-rows-2 px-[5%] lg:max-h-[1600px]">
             {/* Mission Image */}
-            <section>
+            <section id="our-mission">
               <div className="flex justify-end absolute md:relative">
                 <div className="-translate-x-[20%] md:translate-y-[10%] md:translate-x-[10%] bg-primary/50 p-[5%] max-h-[800px] rounded-2xl lg:rounded-4xl size-[50vw] md:aspect-4/3">
                   <img
@@ -282,28 +271,28 @@ const AboutUs = () => {
             </section>
 
             {/* Mission Text */}
-            <article className=" mission-vision-text flex flex-col justify-center items-start text-end">
+            <article  className=" mission-vision-text flex flex-col justify-center items-start text-end">
               <div className="md:pl-[14%] pl-[0%]">
                 <p className="blue-text uppercase font-avenir-black text-primary">
                   FullSuite Mission
                 </p>
                 <p className="title font-avenir-black">
-                  {MissionVisionList[0].title}
+                  {content.missionSlogan}
                 </p>
-                <p className="description">{MissionVisionList[0].content}</p>
+                <p className="description">{content.mission}</p>
               </div>
             </article>
 
             {/* Vision Text */}
-            <section>
+            <section id="our-vision">
               <article className="pt-[15%] -mr-7 md:mr-1 md:pt-[18%] lg:pt-[23%] md:pr-[13%] mission-vision-text flex flex-col justify-start items-start text-start">
                 <p className="blue-text uppercase w-full font-avenir-black text-primary">
                   Fullsuite Vision
                 </p>
                 <p className="title font-avenir-black w-full">
-                  {MissionVisionList[1].title}
+                  {content.visionSlogan}
                 </p>
-                <p className="description">{MissionVisionList[1].content}</p>
+                <p className="description">{content.vision}</p>
               </article>
             </section>
             {/* Vision Image */}
@@ -322,10 +311,14 @@ const AboutUs = () => {
         </section>
 
         {/* Message from the CEO */}
-        <section className="relative py-10" id="ceo-message">
+        <section className="relative" id="ceo-message">
           {/* Text overlay */}
-          <article className="absolute text-end text-white">
-            <div className="container-ceo-message pt-[22%] md:pt-[15%] pr-[5%] md:pr-[10%]">
+          <article className="absolute text-end text-white -mt-10">
+            <div className="container-ceo-message pt-[18%]  pr-[5%] md:pr-[5%]">
+              <div className="flex justify-end">
+                <p className="text-[12p] font-avenir-black text-secondary">MESSAGE FROM THE CEO</p>
+              </div>{" "}
+              <br />
               <div className="flex justify-end">
                 {/* Title */}
                 <p className="title w-[60%] font-avenir-black">
@@ -368,10 +361,15 @@ const AboutUs = () => {
                   FullSuite is here to help you achieve your goals.
                 </p>
               </div>
+              <div className="flex justify-end">
+                <p className="mt-2 md:mt-4 indent-8 text-[12px] md:text-[14px]  lg:text-[16px] font-avenir-roman-oblique">
+                  ~ Maggie
+                </p>
+              </div>
             </div>
           </article>
           {/* Image background */}
-          <div className="">
+          <div className="mt-20  md:-mt-20 md:mb-20">
             <img
               className="md:hidden h-full w-full"
               src={bgMaggieMobile}
@@ -396,7 +394,7 @@ const AboutUs = () => {
         {/* A Day in the Pod */}
         <section className="mb-[2%] relative">
           <div className="day-in-the-pod">
-            <div className="absolute pt-[4%] flex flex-col items-end">
+            <div className="relative pt-[4%] flex flex-col items-end">
               <img className="w-1/2" src={dotsLine} alt="3 dots and a line" />
               <div className="text-end pr-[7%] pt-[2%]">
                 <p className="more-about-us text-sm text-primary font-avenir-black">
@@ -407,15 +405,15 @@ const AboutUs = () => {
                 </p>
               </div>
             </div>
-            <div className="w-[45%]">
+            {/* <div className="w-[45%]">
               <img
                 className="object-cover"
                 src={FillerBoxes}
                 alt="filler boxes"
               />
-            </div>
+            </div> */}
           </div>
-          <div className="w-[80%] max-w-[1200px] pt-10 md:pt-20 mx-auto">
+          <div className="w-[80%] max-w-[1200px] pt-5 md:pt-20 mx-auto">
             <YouTubeEmbed videoId={"c6fs1gBpjQg"} />
           </div>
           <div className="absolute sm:hidden">
@@ -437,7 +435,8 @@ const AboutUs = () => {
               <button className="cursor-pointer">Check our careers</button>
             </a>
           </div>
-          <div className="mt-4 md:mt-0">
+          <div className="py-20"></div>
+          {/* <div className="mt-4 md:mt-0">
             <img
               className="md:hidden"
               src={smallBottomFiller}
@@ -448,7 +447,7 @@ const AboutUs = () => {
               src={largeBottomFiller}
               alt="bottom filler"
             />
-          </div>
+          </div> */}
         </section>
         {/* <div className="h-100 grid place-content-center bg-amber-100 text-center p-5">
           <i>
@@ -458,7 +457,8 @@ const AboutUs = () => {
         </div> */}
       </main>
       <BackToTop />
-      <Footer />
+
+      <FooterNew />
     </section>
   );
 };

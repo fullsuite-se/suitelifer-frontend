@@ -11,7 +11,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import logofsfull from "../../assets/logos/logo-fs-full.svg";
 import FileUploaderProvider from "../../components/admin/FileUploader";
-import TextEditor from "../../components/TextEditor";
+import ContentEditor from "../../components/ContentEditor";
 import { motion } from "framer-motion";
 import PreviewIcon from "@mui/icons-material/Preview";
 
@@ -244,6 +244,11 @@ const AdminBlog = () => {
                   setEditingBlog(null);
                   setNewBlog({ title: "", author: "" });
                   setShowModal(true);
+                  if (selectedBlog === "company") {
+                    navigate("/app/blogs/new-company-blog");
+                  } else {
+                    navigate("/app/my-blogs/new-blog");
+                  }
                 }}
               >
                 + Add Blog
@@ -271,123 +276,140 @@ const AdminBlog = () => {
           </div>
 
           <div className="flex gap-4">
-  {/* Enable horizontal scrolling on mobile & tablet */}
-  <div className="w-full overflow-x-auto">
-    <div className="ag-theme-quartz p-3 sm:p-5 min-w-[800px] lg:w-full" style={{ height: "700px" }}>
-      <AgGridReact
-        rowData={rowBlogData}
-        columnDefs={[
-          {
-            headerName: "Image",
-            field: "image",
-            flex: 2,
-            filter: "agTextColumnFilter",
-            headerClass: "text-primary font-bold bg-tertiary",
-            cellRenderer: (params) =>
-              params.value ? (
-                <img
-                  src={params.value}
-                  alt="News"
-                  className="w-[80px] h-[80px] sm:w-[100px] sm:h-[100px] rounded-md object-cover mx-auto"
+            {/* Enable horizontal scrolling on mobile & tablet */}
+            <div className="w-full overflow-x-auto">
+              <div
+                className="ag-theme-quartz p-3 sm:p-5 min-w-[800px] lg:w-full"
+                style={{ height: "700px" }}
+              >
+                <AgGridReact
+                  rowData={rowBlogData}
+                  columnDefs={[
+                    {
+                      headerName: "Image",
+                      field: "image",
+                      flex: 2,
+                      filter: "agTextColumnFilter",
+                      headerClass: "text-primary font-bold bg-tertiary",
+                      cellRenderer: (params) =>
+                        params.value ? (
+                          <img
+                            src={params.value}
+                            alt="News"
+                            className="w-[80px] h-[80px] sm:w-[100px] sm:h-[100px] rounded-md object-cover mx-auto"
+                          />
+                        ) : (
+                          <span>No Image</span>
+                        ),
+                    },
+                    {
+                      headerName: "Title",
+                      field: "title",
+                      flex: 2,
+                      filter: "agTextColumnFilter",
+                      headerClass: "text-primary font-bold bg-tertiary",
+                    },
+                    {
+                      headerName: "Author",
+                      field: "author",
+                      flex: 1,
+                      filter: "agTextColumnFilter",
+                      headerClass: "text-primary font-bold bg-tertiary",
+                    },
+                    {
+                      headerName: "Date Published",
+                      field: "datePublished",
+                      flex: 1,
+                      headerClass: "text-primary font-bold bg-tertiary",
+                      valueGetter: (params) =>
+                        new Date(
+                          params.data.datePublished.seconds * 1000
+                        ).toLocaleString(),
+                    },
+                    {
+                      headerName: "Views",
+                      field: "views",
+                      flex: 1,
+                      filter: "agTextColumnFilter",
+                      valueGetter: (params) => formatNumber(params.data.views),
+                      headerClass: "text-primary font-bold bg-tertiary",
+                    },
+                    {
+                      headerName: "Likes",
+                      field: "likes",
+                      flex: 1,
+                      filter: "agTextColumnFilter",
+                      headerClass: "text-primary font-bold bg-tertiary",
+                      valueGetter: (params) => formatNumber(params.data.likes),
+                    },
+                    {
+                      headerName: "Comments",
+                      field: "comments",
+                      flex: 1,
+                      filter: "agTextColumnFilter",
+                      headerClass: "text-primary font-bold bg-tertiary",
+                      valueGetter: (params) =>
+                        formatNumber(params.data.comments),
+                    },
+                    {
+                      headerName: "Action",
+                      field: "action",
+                      flex: 2,
+                      headerClass:
+                        "text-primary font-bold bg-tertiary text-center",
+                      cellRenderer: (params) => (
+                        <div className="flex justify-center items-center gap-2">
+                          <button
+                            className="btn-update"
+                            onClick={() => handleEdit(params.data)}
+                          >
+                            <EditIcon />
+                          </button>
+                          <button
+                            className="btn-delete"
+                            onClick={() => handleDelete(params.data.id)}
+                          >
+                            <DeleteIcon />
+                          </button>
+                          <button
+                            className="btn-view"
+                            onClick={() =>
+                              navigate(`details/${params.data.id}`)
+                            }
+                          >
+                            <PreviewIcon />
+                          </button>
+                        </div>
+                      ),
+                    },
+                  ]}
+                  defaultColDef={{
+                    filter: "agTextColumnFilter",
+                    floatingFilter: true,
+                    sortable: true,
+                    cellStyle: {
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "left",
+                    },
+                  }}
+                  rowHeight={100}
+                  pagination
+                  paginationPageSize={5}
+                  paginationPageSizeSelector={[5, 10, 20, 50]}
                 />
-              ) : (
-                <span>No Image</span>
-              ),
-          },
-          {
-            headerName: "Title",
-            field: "title",
-            flex: 2,
-            filter: "agTextColumnFilter",
-            headerClass: "text-primary font-bold bg-tertiary",
-          },
-          {
-            headerName: "Author",
-            field: "author",
-            flex: 1,
-            filter: "agTextColumnFilter",
-            headerClass: "text-primary font-bold bg-tertiary",
-          },
-          {
-            headerName: "Date Published",
-            field: "datePublished",
-            flex: 1,
-            headerClass: "text-primary font-bold bg-tertiary",
-            valueGetter: (params) =>
-              new Date(params.data.datePublished.seconds * 1000).toLocaleString(),
-          },
-          {
-            headerName: "Views",
-            field: "views",
-            flex: 1,
-            filter: "agTextColumnFilter",
-            valueGetter: (params) => formatNumber(params.data.views),
-            headerClass: "text-primary font-bold bg-tertiary",
-          },
-          {
-            headerName: "Likes",
-            field: "likes",
-            flex: 1,
-            filter: "agTextColumnFilter",
-            headerClass: "text-primary font-bold bg-tertiary",
-            valueGetter: (params) => formatNumber(params.data.likes),
-          },
-          {
-            headerName: "Comments",
-            field: "comments",
-            flex: 1,
-            filter: "agTextColumnFilter",
-            headerClass: "text-primary font-bold bg-tertiary",
-            valueGetter: (params) => formatNumber(params.data.comments),
-          },
-          {
-            headerName: "Action",
-            field: "action",
-            flex: 2,
-            headerClass: "text-primary font-bold bg-tertiary text-center",
-            cellRenderer: (params) => (
-              <div className="flex justify-center items-center gap-2">
-                <button className="btn-update" onClick={() => handleEdit(params.data)}>
-                  <EditIcon />
-                </button>
-                <button className="btn-delete" onClick={() => handleDelete(params.data.id)}>
-                  <DeleteIcon />
-                </button>
-                <button className="btn-view" onClick={() => navigate(`details/${params.data.id}`)}>
-                  <PreviewIcon />
-                </button>
               </div>
-            ),
-          },
-        ]}
-        defaultColDef={{
-          filter: "agTextColumnFilter",
-          floatingFilter: true,
-          sortable: true,
-          cellStyle: {
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "left",
-          },
-        }}
-        rowHeight={100}
-        pagination
-        paginationPageSize={5}
-        paginationPageSizeSelector={[5, 10, 20, 50]}
-      />
-    </div>
-  </div>
-</div>
+            </div>
+          </div>
 
           <Dialog open={showModal} onClose={() => setShowModal(false)}>
             <div className="relative p-6">
               {" "}
-
               <button
                 className="absolute top-2 right-2 p-2 rounded-full hover:bg-gray-200"
                 onClick={() => setShowModal(false)}
               >
-                ✖ 
+                ✖
               </button>
             </div>
 
@@ -406,7 +428,7 @@ const AdminBlog = () => {
                     : setNewBlog({ ...newBlog, author: e.target.value })
                 }
               />
-              <TextEditor
+              <ContentEditor
                 titleChange={(value) => {
                   const plainText = value.replace(/<\/?[^>]+(>|$)/g, "");
                   editingBlog

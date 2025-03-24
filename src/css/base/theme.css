@@ -49,9 +49,6 @@ a {
   /* color: #646cff; */
   text-decoration: underline;
 }
-a:hover {
-  /* color: #535bf2; */
-}
 
 h1,
 h2,
@@ -94,18 +91,6 @@ h6 {
 }
 
 /* For the WYSISYG */
-/* Bold text */
-strong,
-b {
-  font-family: "Avenir-Black", sans-serif;
-}
-
-/* Italic text */
-em,
-i {
-  font-family: "Avenir-RomanOblique", sans-serif;
-}
-
 ul {
   list-style-type: disc;
   padding-left: 20px;
@@ -116,18 +101,11 @@ ol {
   padding-left: 20px;
 }
 
-/* Bold + Italic */
-strong em,
-b i,
-strong i,
-b em {
-  font-family: "Avenir-BlackOblique", sans-serif;
-}
-
 /* Color Themes */
 @theme {
   --color-primary: #0097b2;
   --color-secondary: #bfd1a0;
+  --color-secondarydark: #4FAFAB;
   --color-tertiary: #ECF1E3;
   --color-dark: #1a0202;
   --color-light: #ffffff;

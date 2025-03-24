@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
-import TextEditor from "../TextEditor";
+import ContentEditor from "../ContentEditor";
 import api from "../../utils/axios";
 
 const BlogCreate = () => {
   const navigate = useNavigate();
-  const [files, setFiles] = useState(null);
+  const [files, setFiles] = useState([]);
   const [blogTitle, setBlogTitle] = useState("");
   const [blogDescription, setBlogDescription] = useState("");
 
@@ -40,9 +40,6 @@ const BlogCreate = () => {
       return;
     }
 
-    console.log(blogTitle);
-    console.log(blogDescription);
-
     // console.log("Title: ", blogTitle);
     // console.log("Desc: ", blogDescription);
 
@@ -53,13 +50,15 @@ const BlogCreate = () => {
     //   return;
     // }
 
-    const imagesData = new FormData();
-    files.forEach((file) => imagesData.append("images", file));
-
     const eBlogData = {
       title: blogTitle,
       description: blogDescription,
     };
+
+    console.log(eBlogData);
+    console.log(files);
+
+    return;
 
     const uploadBlog = async () => {
       try {
@@ -113,26 +112,13 @@ const BlogCreate = () => {
           </div>
           <p className="font-avenir-black text-center">Hernani Domingo</p>
         </div>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="border p-2 rounded w-full "
-            multiple
-          />
-          <TextEditor
-            titleChange={handleTitleChange}
-            descChange={handleDescriptionChange}
-          />
-
-          <button
-            type="submit"
-            className="bg-primary text-white px-4 py-2 rounded"
-          >
-            Publish Blog
-          </button>
-        </form>
+        <ContentEditor
+          handleFileChange={handleFileChange}
+          handleTitleChange={handleTitleChange}
+          handleDescriptionChange={handleDescriptionChange}
+          handleSubmit={handleSubmit}
+          type={"eblog"}
+        />
       </section>
     </section>
   );

@@ -16,9 +16,8 @@ import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
 import { useEffect, useState } from "react";
 import PageMeta from "../../components/layout/PageMeta";
+import FooterNew from "../../components/FooterNew";
 const Contact = () => {
-  window.scroll(0, 0);
-
   const fadeInUp = {
     hidden: { opacity: 0, y: 50 },
     visible: {
@@ -31,6 +30,7 @@ const Contact = () => {
 
   useEffect(() => {
     setIsLoaded(true);
+    window.scroll(0, 0);
   }, []);
 
   return (
@@ -191,8 +191,10 @@ const Contact = () => {
     //     </main>
     //   </div>
     // </>
-
-    <>
+    <section
+      className="gap-4 overflow-hidden"
+      style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
+    >
       <PageMeta
         title="Contact - SuiteLifer"
         desc="Your career rocket ship is fueled and ready. Want to hop on? Contact us now."
@@ -214,7 +216,7 @@ const Contact = () => {
       </div>
       <div className="relative">
         {/* Background Boxes */}
-        <motion.div
+        {/* <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
@@ -234,7 +236,7 @@ const Contact = () => {
           viewport={{ once: true }}
           variants={fadeInUp}
           className="absolute top-270 left-5 w-20 h-20 bg-primary/10 -z-1 rounded-xl"
-        ></motion.div>
+        ></motion.div> */}
 
         <main className="mt-0 lg:mt-20 text-[12px] md:text-[14px] lg:text-[16px]">
           <motion.div
@@ -248,12 +250,12 @@ const Contact = () => {
               className="relative p-8 pr-8 md:pr-16 rounded-tr-xl rounded-br-xl text-white mr-4 md:min-h-[500px] justify-center items-center flex flex-col 
           w-[98%] md:w-[60%] lg:w-[60%] xl:w-[50%] max-w-[90%] xl:max-w-[60%]"
               style={{
-                backgroundImage: `url(${bgimg})`,
+                // backgroundImage: `url(${bgimg})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
               }}
             >
-              <div className="absolute inset-0 bg-primary opacity-80 rounded-tr-xl rounded-br-xl"></div>
+              <div className="absolute inset-0 bg-primary rounded-tr-xl rounded-br-xl"></div>
               <div className="relative z-10">
                 <p className="font-avenir-black text-2xl md:!text-3xl text-white-300 lg:!text-4xl xl:!text-5xl">
                   Check your{" "}
@@ -395,10 +397,10 @@ const Contact = () => {
             <FAQ />
           </section>
           <BackToTop />
-          <Footer />
+          <FooterNew />
         </main>
       </div>
-    </>
+    </section>
   );
 };
 

@@ -5,6 +5,7 @@ import logoFull from "../../assets/logos/logo-fs-full.svg";
 import { Bars2Icon } from "@heroicons/react/20/solid";
 import EmployeeDrawer from "../../components/employee/EmployeeDrawer";
 import CMSNavigation from "../navigation/CMSNavigation";
+import CMSTopNavigation from "../navigation/CMSTopNavigation";
 
 const RootLayout = () => {
   const drawerRef = useRef();
@@ -27,6 +28,7 @@ const RootLayout = () => {
       <section className="hidden lg:block">
         <CMSNavigation />
       </section>
+
       <section className="lg:hidden flex justify-between pt-5 px-2">
         <div className="w-20 h-auto">
           <img src={logoFull} alt="fullsuite" className="w-full h-full" />
@@ -36,9 +38,14 @@ const RootLayout = () => {
           onClick={() => handleDrawer("0%")}
         />
       </section>
-      <main className="flex-1 overflow-y-auto">
-        <Outlet />
-      </main>
+
+      <section className="flex-1">
+        <CMSTopNavigation />
+        <main className="overflow-y-auto h-dvh">
+          <Outlet />
+        </main>
+      </section>
+
       <section className="hidden lg:block">
         <EmployeeAside />
       </section>

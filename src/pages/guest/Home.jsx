@@ -11,40 +11,67 @@ import HomeGoalsOperations from "../../components/home/HomeGoalsOperations";
 import HomeNews from "../../components/home/HomeNews";
 import HomeSocials from "../../components/home/HomeSocials";
 import HomeBlogSpot from "../../components/home/HomeBlogSpot";
-
+import rocketship from "../../assets/gif/rocketlongergap.gif";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
 import { Helmet } from "@dr.pogodin/react-helmet";
 import PageMeta from "../../components/layout/PageMeta";
+import FooterNew from "../../components/FooterNew";
+import CareerCarousel from "../../components/home/CareerCarousel";
 
 const Home = () => {
   const [width, setWidth] = useState(window.innerWidth); //FOR DEBUGGING
-  window.scroll(0, 0);
+  // useEffect(() => {
+  //   window.scroll(0, 0);
+  //   const left = document.getElementById("left-side");
+  //   if (!left) return; // Prevent errors if the element is not yet rendered
 
+  //   const handleOnMove = (e) => {
+  //     const p = (e.clientX / window.innerWidth) * 100;
+  //     left.style.width = `${p}%`; // Added '%' to properly apply width
+  //   };
+
+  //   document.addEventListener("mousemove", handleOnMove);
+  //   document.addEventListener("touchmove", (e) => handleOnMove(e.touches[0]));
+
+  //   const handleResize = () => {
+  //     setWidth(window.innerWidth);
+  //   };
+
+  //   window.addEventListener("resize", handleResize);
+
+  //   // Clean up the event listener on unmount
+  //   return () => {
+  //     window.removeEventListener("resize", handleResize);
+  //   };
+  // }, [width]);
   useEffect(() => {
+    window.scroll(0, 0);
     const left = document.getElementById("left-side");
-    if (!left) return; // Prevent errors if the element is not yet rendered
-
-    const handleOnMove = (e) => {
-      const p = (e.clientX / window.innerWidth) * 100;
-      left.style.width = `${p}%`; // Added '%' to properly apply width
+    if (!left) return;
+  
+    const transitionToBlue = () => {
+      left.style.transition = "width 1s ease-in-out"; 
+      left.style.width = "100%"; 
+  
+      setTimeout(() => {
+        left.style.transition = "width 1s ease-in-out";
+        left.style.width = "0%";
+      }, 10000); 
     };
-
-    document.addEventListener("mousemove", handleOnMove);
-    document.addEventListener("touchmove", (e) => handleOnMove(e.touches[0]));
-
-    const handleResize = () => {
-      setWidth(window.innerWidth);
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    // Clean up the event listener on unmount
+  
+    setTimeout(transitionToBlue, 3000); 
+  
+    const interval = setInterval(transitionToBlue, 15000); 
+  
     return () => {
-      window.removeEventListener("resize", handleResize);
+      clearInterval(interval); 
     };
-  }, [width]);
+  }, []);
+  
+  
+  
 
   return (
     <section
@@ -157,11 +184,15 @@ const Home = () => {
           }}
         />
       </div>
-
-      <section className="h-[100dvh] lg:mt-17 mb-[10%]">
+     {/* <img
+            src={rocketship}
+            alt="Rocketship"
+            className="absolute inset-0 w-full h-full object-cover opacity-20"
+          /> */}
+      <section className="h-[100dvh] relative lg:mt-17 mb-[10%]">
         {/* White */}
         <div id="right-side" className="side pb-17">
-          <p className="title">
+          <div className="title">
             <div className="">
               <span className="title-line-1">Do you feel like your</span> <br /> <br />
             </div>
@@ -174,36 +205,49 @@ const Home = () => {
             <div className="hidden">
               <span className="title-line-3">We can help.</span>
             </div>
-          </p>
+          </div>
         </div>
         {/* Blue */}
-        <div id="left-side" className="side pb-17">
-          <p className="title">
-            <div className="">
-              <span className="title-line-1">We can help.</span>{" "} <br /><br />
+        <div id="left-side" className="side pb-17 relative ">
+     
+
+          <div className="title relative">
+            <div>
+              <span className="title-line-1">We can help.</span>
             </div>
-            <div className="">
+            <div>
               <span className="title-line-2">
                 <span className="text-white">Let's get you on the</span>{" "} <br />
                 <span className="text-black">right track.</span>
               </span>
-            </div>{" "}
+            </div>
             <div className="hidden">
               <span className="title-line-3">Join us!</span>
             </div>
-          </p>
+          </div>
         </div>
       </section>
 
       {/* GOAL AND OPERATIONS */}
       <HomeGoalsOperations />
       {/* <div className="h-300 bg-red-900"></div> */}
+
+      <div className="text-center">
+          <span className="text-sm text-primary  font-avenir-black block mb-4">
+            WHAT WE OFFER
+          </span>
+          <p className="text-4xl font-bold font-avenir-black text-dark">
+          Your Next Career Starts Here
+          </p>
+        </div>
+      <CareerCarousel />
+
       {/* NEWS SECTION */}
       <HomeNews />
-
+<div className="relative bg-primary py-10 mt-10 rounded-t-30!">
       {/* SOCIALS SECTION */}
       <HomeSocials />
-
+</div>
       <div className="h-10"></div>
 
       {/* HOME BLOG SPOT */}
@@ -213,7 +257,8 @@ const Home = () => {
       {/* <div className="bg-red-900 h-50 text-white grid place-items-center">WIDTH: {width}</div> */}
       {/* <div className="h-40"></div> */}
       <BackToTop />
-      <Footer />
+
+      <FooterNew />
     </section>
   );
 };

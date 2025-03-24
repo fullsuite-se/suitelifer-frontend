@@ -24,6 +24,9 @@ import SetupModal from "../../components/admin/SetupModal";
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 export default function AdminJobListing() {
+  // USER DETAILS
+  const user = useStore((state) => state.user);
+
   // JOB LISTINGS VARIABLES
   const defaultJobDetails = {
     job_id: null,
@@ -304,7 +307,7 @@ export default function AdminJobListing() {
       {
         headerName: "Job Title",
         field: "jobTitle",
-        flex: 3,
+        flex: 2,
         filter: "agTextColumnFilter",
         headerClass: "text-primary bg-tertiary font-bold",
       },
@@ -388,22 +391,21 @@ export default function AdminJobListing() {
       {
         headerName: "Industry Name",
         field: "industryName",
-        flex: 1,
+        flex: 3,
         headerClass: "text-primary font-bold bg-tertiary",
       },
       {
         headerName: "Assessment URL",
         field: "assessmentUrl",
-        flex: 2,
+        flex: 3,
         filter: "agTextColumnFilter",
         headerClass: "text-primary font-bold bg-tertiary",
       },
       {
         headerName: "Created By",
         field: "createdBy",
-        flex: 1,
+        flex: 2,
         filter: "agTextColumnFilter",
-        valueFormatter: (params) => (params.value === 1 ? "Open" : "Closed"),
         headerClass: "text-primary font-bold bg-tertiary",
       },
       {
@@ -422,7 +424,7 @@ export default function AdminJobListing() {
         field: "action",
         filter: false,
         headerClass: "text-primary font-bold bg-tertiary",
-        flex: 2,
+        flex: 1,
         cellRenderer: (params) => {
           return (
             <button
@@ -446,7 +448,7 @@ export default function AdminJobListing() {
       {
         headerName: "Setup Name",
         field: "setupName",
-        flex: 1,
+        flex: 2,
         headerClass: "text-primary font-bold bg-tertiary",
       },
       {
@@ -461,7 +463,10 @@ export default function AdminJobListing() {
         field: "createdAt",
         flex: 1,
         filter: "agTextColumnFilter",
-        valueFormatter: (params) => (params.value === 1 ? "Open" : "Closed"),
+        valueGetter: (params) =>
+          params.data?.createdAt
+            ? new Date(params.data.createdAt).toLocaleString()
+            : "N/A",
         headerClass: "text-primary font-bold bg-tertiary",
       },
       {
@@ -713,7 +718,7 @@ export default function AdminJobListing() {
         open={industryMgmtModalIsOpen}
         onClose={() => setIndustryMgmtModalIsOpen(false)}
       >
-        <Box className="modal-container bg-white p-4 rounded-lg mx-auto mt-12 w-250 h-200">
+        <Box className="modal-container bg-white p-4 rounded-lg mx-auto mt-12 w-[75dvw] h-[85dvh] overflow-y-scroll">
           <div className="flex items-center gap-5 w-full justify-between p-2">
             <ToggleButton
               onClick={handleToggle}
@@ -805,4 +810,4 @@ export default function AdminJobListing() {
       </Modal>
     </div>
   );
-} 
+}
