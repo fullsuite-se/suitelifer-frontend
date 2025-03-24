@@ -15,10 +15,10 @@ const HomeBlogSpot = () => {
         className="w-full"
       >
         <div className="ml-[6%] mt-10 mb-[2%] text-white">
-          <p className=" text-4xl font-avenir-black">
+          <p className="title-header font-avenir-black">
             New Blog Posts
           </p>
-          <p>Insights, tips, and stories—read the latest from our team!</p>
+          <p className="title-caption">Insights, tips, and stories—read the latest from our team!</p>
         </div>
 
         {/* <img className="w-full -z-20 md:hidden" src={mobileBgBlogSpot2} alt="" />
