@@ -5,9 +5,8 @@ import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
 import bgNews from "../../assets/images/bg-news.svg";
 import NewsLarge from "../../components/news/NewsLarge";
-import newsList from "../../components/news/NewsList";
 import NewsCardSmall from "../../components/news/NewsCardSmall";
-import ArticleSearchResults from "../../components/news/SearchingBlogOrNews";
+import SearchingBlogOrNews from "../../components/news/SearchingBlogOrNews";
 import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
 import PageMeta from "../../components/layout/PageMeta";
@@ -15,25 +14,30 @@ import FooterNew from "../../components/FooterNew";
 import api from "../../utils/axios";
 import toast from "react-hot-toast";
 import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
+import { useStore } from "../../store/authStore";
 
 const News = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
+  const setSearchValue = useStore((state) => state.setSearchValue);
+  const [inputValue, setInputValue] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const handleSearch = () => {
-    if (searchQuery.trim() !== "") {
-      setSearchTerm(searchQuery);
+    if (inputValue.trim() !== "") {
+      setSearchValue(inputValue);
       setIsSearching(true);
     }
   };
 
   const handleClearSearch = () => {
-    setSearchQuery("");
-    setSearchTerm("");
+    setInputValue("");
+    setSearchValue("");
     setIsSearching(false);
+  };
+
+  const handleInputSearch = (e) => {
+    setInputValue(e.target.value);
   };
 
   useEffect(() => {
@@ -136,12 +140,12 @@ const News = () => {
             </svg>
             <input
               type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              value={inputValue}
+              onChange={handleInputSearch}
               placeholder="Search news..."
               className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md pl-10 pr-7 py-2 focus:outline-none focus:border-primary-400"
             />
-            {searchQuery && (
+            {inputValue && (
               <button
                 onClick={handleClearSearch}
                 className="absolute right-24 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
@@ -162,11 +166,7 @@ const News = () => {
       {/* NEWS CONTENT */}
       <main className="px-[5%]">
         {isSearching ? (
-          <ArticleSearchResults
-            type="news"
-            list={newsList}
-            searchTerm={searchTerm}
-          />
+          <SearchingBlogOrNews type="news" />
         ) : (
           <>
             <p className="md:text-2xl uppercase font-avenir-black text-primary pb-3 lg:pb-4">

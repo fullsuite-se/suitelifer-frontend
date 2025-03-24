@@ -20,9 +20,41 @@ import PageMeta from "../../components/layout/PageMeta";
 import FooterNew from "../../components/FooterNew";
 import CareerCarousel from "../../components/home/CareerCarousel";
 import videoTemplate from "../../assets/videos/video-template.mp4";
+import Spotify from "../../assets/logos/Spotify";
+import MotionUp from "../../components/MotionUp";
+import FacebookIcon from "../../assets/logos/Facebook";
+import InstagramIcon from "../../assets/logos/Instagram";
+import YoutubeIcon from "../../assets/logos/Youtube";
+import SpotifyIcon from "../../assets/logos/Spotify";
 
 const Home = () => {
   const [width, setWidth] = useState(window.innerWidth); //FOR DEBUGGING
+  const socmedPlatforms = [
+    {
+      href: "https://www.youtube.com/",
+      icon: YoutubeIcon,
+      text: "the Suite Tube",
+      delay: 0.2,
+    },
+    {
+      href: "https://open.spotify.com/",
+      icon: SpotifyIcon,
+      text: "the Suite Spot",
+      delay: 0.1,
+    },
+    {
+      href: "https://www.facebook.com/thefullsuitepod",
+      icon: FacebookIcon,
+      text: "the FullSuite Pod",
+      delay: 0.3,
+    },
+    {
+      href: "https://www.instagram.com/thefullsuitepod/",
+      icon: InstagramIcon,
+      text: "@thefullsuitepod",
+      delay: 0.4,
+    },
+  ];
   // useEffect(() => {
   //   window.scroll(0, 0);
   //   const left = document.getElementById("left-side");
@@ -252,26 +284,97 @@ const Home = () => {
         </div>
       </section>
 
-      <div className="text-center px-7 xl:px-17">
-        <span className="text-sm text-primary  font-avenir-black block mb-4">
-          WHAT WE OFFER
-        </span>
-        <p className="title-header font-bold font-avenir-black text-dark">
-          Your Next Career Starts Here
-        </p>
-      </div>
-      <CareerCarousel />
+      <section className="bg-primary pt-[5%] mt-[7%] my-[5%]">
+        <div className="text-center text-white px-7 xl:px-17">
+          <p className="title-header font-bold font-avenir-black">
+            Your Next Career Starts Here
+          </p>
+          <p className="title-caption">
+            Watch the video below to see what makes us the perfect place to grow
+            your career!
+          </p>
+        </div>
+        <CareerCarousel />
+      </section>
 
       {/* NEWS SECTION */}
       <HomeNews />
-      <div className="relative bg-primary py-10 mt-10 rounded-t-30!">
-        {/* SOCIALS SECTION */}
-        <HomeSocials />
-      </div>
+      {/* <div className="relative bg-primary py-10 mt-10 rounded-t-30!"> */}
+      {/* SOCIALS SECTION */}
+      {/* <HomeSocials /> */}
+      {/* </div> */}
       <div className="h-10"></div>
 
       {/* HOME BLOG SPOT */}
-      <HomeBlogSpot />
+      <div className="bg-primary rounded-4xl mx-7 lg:mx-17">
+        <HomeBlogSpot />
+      </div>
+
+      <section className="relative py-15 md:py-[5%] px-7 ">
+        <p className="font-avenir-black text-lg text-center pb-7">Follow Our Socials</p>
+        <div className="flex justify-center gap-7 md:gap-15">
+          <a
+            href={socmedPlatforms[0].href}
+            title={socmedPlatforms[0].href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group no-underline group-hover:text-secondary cursor-pointer"
+          >
+            <MotionUp className="flex items-center gap-2">
+              <YoutubeIcon
+                color="duration-500 group-hover:fill-secondary fill-primary"
+                height="40"
+                width="40"
+              />
+            </MotionUp>
+          </a>
+          <a
+            href={socmedPlatforms[1].href}
+            title={socmedPlatforms[1].href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group no-underline group-hover:text-secondary cursor-pointer"
+          >
+            <MotionUp className="flex items-center gap-2">
+              <Spotify
+                color="duration-500 group-hover:fill-secondary fill-primary"
+                height="40"
+                width="40"
+              />
+            </MotionUp>
+          </a>
+          <a
+            href={socmedPlatforms[2].href}
+            title={socmedPlatforms[2].href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group no-underline group-hover:text-secondary cursor-pointer"
+          >
+            <MotionUp className="flex items-center gap-2">
+              <FacebookIcon
+                color="duration-500 group-hover:fill-secondary fill-primary"
+                height="40"
+                width="40"
+              />
+            </MotionUp>
+          </a>
+          <a
+            href={socmedPlatforms[3].href}
+            title={socmedPlatforms[3].href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group no-underline group-hover:text-secondary cursor-pointer"
+          >
+            <MotionUp className="flex items-center gap-2">
+              <InstagramIcon
+                color="duration-500 group-hover:fill-secondary fill-primary"
+                height="40"
+                width="40"
+              />
+            </MotionUp>
+          </a>
+        </div>
+      </section>
 
       {/* FOR DEBUGGING ONLY */}
       {/* <div className="bg-red-900 h-50 text-white grid place-items-center">WIDTH: {width}</div> */}

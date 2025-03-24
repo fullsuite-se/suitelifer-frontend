@@ -57,7 +57,7 @@ const CareerCarousel = () => {
         
         <Swiper
             modules={[Navigation, Pagination, Autoplay]}
-            pagination={{ clickable: true }}
+            // pagination={{ clickable: true }}
             slidesPerView={1}
             autoplay={{ delay: 5000 }}
             breakpoints={{

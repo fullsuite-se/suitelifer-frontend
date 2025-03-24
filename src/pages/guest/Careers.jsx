@@ -19,7 +19,7 @@ const Careers = () => {
   const [jobs, setJobs] = useState([]);
   const fetchJobs = async () => {
     try {
-      const response = await api.get("/api/all-jobs");
+      const response = await api.get("/api/all-open-jobs");
       setJobs((j) => response.data.data);
     } catch (err) {
       console.log(err);
@@ -182,6 +182,7 @@ const Careers = () => {
               </p>
               {/* MOBILE background images */}
               <section className="bg-mobile-images relative md:hidden">
+                {/* upper left image MAIN */}
                 <img
                   className="absolute w-[30vw] max-w-[220px] -translate-y-[13vw] -translate-x-[30%] rounded-2xl opacity-60 object-cover aspect-3/4"
                   src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -234,7 +235,7 @@ const Careers = () => {
               {/* TABLET + DESKTOP background images */}
               <section className="relative hidden md:block mx-auto">
                 {/* left image MAIN */}
-                <div className="relative w-full max-w-[400px] mx-auto">
+                <div className="hidden relative w-full max-w-[400px] mx-auto">
                   <img
                     className="absolute z-10 w-[160px] lg:w-[15vw] max-w-[190px] translate-y-15 -translate-x-[15vw]
                                 rounded-3xl opacity-60 
@@ -245,7 +246,7 @@ const Careers = () => {
                 </div>
 
                 {/* right image MAIN */}
-                <div className="relative w-full max-w-[400px] mx-auto">
+                <div className="hidden relative w-full max-w-[400px] mx-auto">
                   <img
                     className="right-0 absolute z-10 w-[45%] lg:w-[15vw] max-w-[250px] translate-y-40 lg:translate-y-50 translate-x-[18vw] lg:translate-x-[17vw]
                                 rounded-3xl opacity-60 
@@ -311,9 +312,19 @@ const Careers = () => {
                 </div> */}
               </section>
               {/* Main Image (CENTER) */}
-              <div className="flex justify-center md:py-4">
+              <div className="flex justify-center md:py-4 gap-10">
+                <img
+                  className="hidden md:block size-[18%] z-20 xl:max-w-[200px] object-cover aspect-3/4 rounded-2xl md:rounded-2xl"
+                  src="https://images.unsplash.com/photo-1579389083395-4507e98b5e67?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  alt=""
+                />
                 <img
                   className="size-[40%] md:size-[35%] z-20 max-w-[350px] xl:max-w-[380px] object-cover aspect-3/4 rounded-2xl md:rounded-4xl"
+                  src="https://images.unsplash.com/photo-1579389083395-4507e98b5e67?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  alt=""
+                />
+                <img
+                  className="hidden md:block self-end z-20 size-[20%] xl:max-w-[220px] object-cover aspect-3/4 rounded-2xl md:rounded-2xl"
                   src="https://images.unsplash.com/photo-1579389083395-4507e98b5e67?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                   alt=""
                 />

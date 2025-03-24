@@ -21,11 +21,13 @@ const NewsCardSmall = ({
       state={{ id: id }}
       className="group container-news-card-small rounded-2xl transition-all duration-300 flex gap-3 no-underline min-w-[0px] hover:scale-98"
     >
-      <img
-        className="h-1/2 image-news-card-small size-[25vw] aspect-[3/2] object-cover "
-        src={imgUrls[0]}
-        alt="News image"
-      />
+      {imgUrls && (
+        <img
+          className="h-1/2 image-news-card-small size-[25vw] aspect-[3/2] object-cover "
+          src={imgUrls[0]}
+          alt="News image"
+        />
+      )}
 
       <div className="w-1/2 md:w-full content-news-card-small flex flex-col justify-center ">
         <div className="flex flex-col">

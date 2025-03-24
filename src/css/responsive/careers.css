@@ -1,5 +1,6 @@
 .hero-container{
-    padding-block: 30%;
+    /* padding-block: 30%;  */
+    padding-block: 25%; 
 
     @media (min-width: 768px){
         padding-block: 0%;
