@@ -118,7 +118,7 @@ const Careers = () => {
 
           <section>
             {/* Mobile Hero Background */}
-            <section className=" relative md:hidden">
+            <section className=" relative md:hidden hidden!">
               {/* blue at top */}
               <div className="">
                 <div className="absolute right-10 overflow-hidden -translate-x-[10vw] -translate-y-[23vw] z-50 w-[14%] h-[35vw] bg-primary/5 rounded-b-4xl"></div>
@@ -138,7 +138,7 @@ const Careers = () => {
             </section>
 
             {/* Tablet Hero Background */}
-            <section className=" relative hidden md:block lg:hidden">
+            <section className="relative hidden! md:block lg:hidden">
               {/* blue at top */}
               <div className="">
                 <div className="absolute w-[8%] h-[20vw] max-w-[150px] max-h-[450px] -translate-x-[25px] lg:-translate-y-[5vw] -translate-y-[13vw] right-10 overflow-hidden z-10 bg-primary/5 rounded-b-4xl"></div>
@@ -169,7 +169,7 @@ const Careers = () => {
             {/* <img src="https://images.unsplash.com/photo-1541746972996-4e0b0f43e02a?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8c3RhcnR1cHxlbnwwfHwwfHx8MA%3D%3Dhttps://images.unsplash.com/photo-1554780336-390462301acf?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" /> */}
             <div className="hero-container">
               {/* Desktop Hero Background */}
-              <section className="relative hidden lg:block">
+              <section className="relative hidden! lg:block">
                 <div className="absolute overflow-hidden right-0 -translate-y-10 -z-50 w-[25%] h-25 bg-secondary/10 rounded-l-4xl"></div>
                 <div className="absolute overflow-hidden right-0 translate-y-95 xl:translate-y-110 -z-50 w-[12%] h-50 bg-primary/5 rounded-l-4xl"></div>
                 <div className="absolute overflow-hidden translate-y-30 -z-50 w-[13%] h-40 bg-primary/10 rounded-r-4xl"></div>
@@ -182,6 +182,7 @@ const Careers = () => {
               </p>
               {/* MOBILE background images */}
               <section className="bg-mobile-images relative md:hidden">
+                {/* upper left image MAIN */}
                 <img
                   className="absolute w-[30vw] max-w-[220px] -translate-y-[13vw] -translate-x-[30%] rounded-2xl opacity-60 object-cover aspect-3/4"
                   src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -196,28 +197,28 @@ const Careers = () => {
 
                 {/* lower left image 1 */}
                 <img
-                  className="absolute w-[30vw] max-w-[220px] translate-y-[35vw] translate-x-[15vw] rounded-xl opacity-15 object-cover aspect-3/4"
+                  className="hidden absolute w-[30vw] max-w-[220px] translate-y-[35vw] translate-x-[15vw] rounded-xl opacity-15 object-cover aspect-3/4"
                   src="https://images.unsplash.com/photo-1606836591695-4d58a73eba1e?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                   alt=""
                 />
 
                 {/* lower right image 2 */}
                 <img
-                  className="absolute right-0 w-[20vw] max-w-[120px] translate-y-[36vw] -translate-x-[25vw] rounded-lg opacity-5 object-cover aspect-3/4"
+                  className="hidden absolute right-0 w-[20vw] max-w-[120px] translate-y-[36vw] -translate-x-[25vw] rounded-lg opacity-5 object-cover aspect-3/4"
                   src="https://images.unsplash.com/photo-1496851473196-e26508c21494?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                   alt=""
                 />
 
                 {/* upper right image 2 */}
                 <img
-                  className="absolute w-[28vw] max-w-[180px] -translate-y-[14vw] translate-x-[55vw] rounded-2xl opacity-10 object-cover aspect-3/4"
+                  className="hidden absolute w-[28vw] max-w-[180px] -translate-y-[14vw] translate-x-[55vw] rounded-2xl opacity-10 object-cover aspect-3/4"
                   src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                   alt=""
                 />
 
                 {/* upper left image 1 */}
                 <img
-                  className="absolute w-[25vw] max-w-[180px] -translate-y-[27vw] translate-x-[22vw] rounded-2xl opacity-5 object-cover aspect-3/4"
+                  className="hidden absolute w-[25vw] max-w-[180px] -translate-y-[27vw] translate-x-[22vw] rounded-2xl opacity-5 object-cover aspect-3/4"
                   src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                   alt=""
                 />
@@ -234,7 +235,7 @@ const Careers = () => {
               {/* TABLET + DESKTOP background images */}
               <section className="relative hidden md:block mx-auto">
                 {/* left image MAIN */}
-                <div className="relative w-full max-w-[400px] mx-auto">
+                <div className="hidden relative w-full max-w-[400px] mx-auto">
                   <img
                     className="absolute z-10 w-[160px] lg:w-[15vw] max-w-[190px] translate-y-15 -translate-x-[15vw]
                                 rounded-3xl opacity-60 
@@ -245,7 +246,7 @@ const Careers = () => {
                 </div>
 
                 {/* right image MAIN */}
-                <div className="relative w-full max-w-[400px] mx-auto">
+                <div className="hidden relative w-full max-w-[400px] mx-auto">
                   <img
                     className="right-0 absolute z-10 w-[45%] lg:w-[15vw] max-w-[250px] translate-y-40 lg:translate-y-50 translate-x-[18vw] lg:translate-x-[17vw]
                                 rounded-3xl opacity-60 
@@ -256,7 +257,7 @@ const Careers = () => {
                 </div>
 
                 {/* upper right image 1 */}
-                <div className="relative w-full max-w-[400px] mx-auto">
+                <div className="hidden relative w-full max-w-[400px] mx-auto">
                   <img
                     className="right-0 top-0 absolute z-10 w-[18vw] max-w-[260px] -translate-y-40 lg:-translate-y-50 translate-x-[7vw]
                                 rounded-b-3xl opacity-10 
@@ -267,7 +268,7 @@ const Careers = () => {
                 </div>
 
                 {/* upper right image 2 */}
-                <div className="relative w-full max-w-[400px] mx-auto">
+                <div className="hidden relative w-full max-w-[400px] mx-auto">
                   <img
                     className="right-0 absolute z-10 w-[15vw] max-w-[240px] -translate-y-none translate-x-[18vw] lg:translate-x-[24vw]
                                 rounded-3xl opacity-5 
@@ -278,7 +279,7 @@ const Careers = () => {
                 </div>
 
                 {/* bottom image 1 */}
-                <div className="relative w-full max-w-[400px] mx-auto">
+                <div className="hidden relative w-full max-w-[400px] mx-auto">
                   <img
                     className="absolute z-10 w-[15vw] max-w-[200px] translate-y-100 -translate-x-[4vw]
                                 rounded-3xl opacity-10 
@@ -289,7 +290,7 @@ const Careers = () => {
                 </div>
 
                 {/* bottom image right 2 */}
-                <div className="relative w-full max-w-[400px] mx-auto">
+                <div className="hidden relative w-full max-w-[400px] mx-auto">
                   <img
                     className="absolute right-0 z-10 w-[15vw] max-w-[200px] translate-y-85 translate-x-[4vw]
                                 rounded-3xl opacity-5 
@@ -300,7 +301,7 @@ const Careers = () => {
                 </div>
 
                 {/* bottom image leftest 2 */}
-                <div className="relative w-full max-w-[400px] mx-auto">
+                <div className="hidden relative w-full max-w-[400px] mx-auto">
                   <img
                     className="absolute z-10 w-[15vw] max-w-[280px] translate-y-65 -translate-x-[24vw]
                                 rounded-3xl opacity-5 
@@ -311,9 +312,19 @@ const Careers = () => {
                 </div>
               </section>
               {/* Main Image (CENTER) */}
-              <div className="flex justify-center md:py-4">
+              <div className="flex justify-center md:py-4 gap-10">
+                <img
+                  className="hidden md:block size-[18%] z-20 xl:max-w-[200px] object-cover aspect-3/4 rounded-2xl md:rounded-2xl"
+                  src="https://images.unsplash.com/photo-1579389083395-4507e98b5e67?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  alt=""
+                />
                 <img
                   className="size-[40%] md:size-[35%] z-20 max-w-[350px] xl:max-w-[380px] object-cover aspect-3/4 rounded-2xl md:rounded-4xl"
+                  src="https://images.unsplash.com/photo-1579389083395-4507e98b5e67?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  alt=""
+                />
+                <img
+                  className="hidden md:block self-end z-20 size-[20%] xl:max-w-[220px] object-cover aspect-3/4 rounded-2xl md:rounded-2xl"
                   src="https://images.unsplash.com/photo-1579389083395-4507e98b5e67?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                   alt=""
                 />
