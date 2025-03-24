@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import logofsfull from "../../assets/logos/logo-fs-full.svg";
 import JobCourse from "../../components/admin/JobCourse";
 import PersonalityTest from "../../components/admin/PersonalityTest";
@@ -6,131 +6,78 @@ import SaveIcon from "@mui/icons-material/Save";
 import { EyeIcon, DocumentArrowUpIcon } from "@heroicons/react/24/outline";
 import Testimonials from "../../components/admin/Testimonials";
 import SpotifyEpisode from "../../components/admin/SpotifyEpisodes";
-
+import AdminHomePage from "../../components/admin/AdminHomePage";
+import AdminAboutPage from "../../components/admin/AdminAboutPage";
+import { Tabs, Tab } from "@mui/material";
 const AdminContents = () => {
-  const [videoFile, setVideoFile] = useState(null);
-  const [isPreviewShown, setIsPreviewShown] = useState(false);
+  const [videoFile, setVideoFile] = useState(
+    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+  );
 
   const handlePreview = () => {
     setIsPreviewShown((prev) => !prev);
   };
 
-  const handleUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setVideoFile(URL.createObjectURL(file));
-    }
+  const [activeTab, setActiveTab] = useState(0);
+
+  const handleChange = (event, newValue) => {
+    setActiveTab(newValue);
   };
 
   return (
     <>
       {/* Header */}
-      <header className="container flex h-16 items-center justify-between px-4 md:px-6">
+      {/* <header className="container flex h-16 items-center justify-between px-4 md:px-6">
         <div className="hidden md:flex gap-4 items-center">
           <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
         </div>
         <button className="btn-primary flex items-center p-2 gap-2">
           <SaveIcon /> <span>PUBLISH CHANGES</span>
         </button>
-      </header>
+      </header> */}
 
       {/* Main Content */}
-      <div className="admincontent-container flex flex-col md:flex-row w-full justify-center gap-2 p-3">
-        {/* Left Content */}
-        <div className="left-content flex flex-col p-2 gap-2 w-full md:w-[60%]">
-          {/* Home Page */}
-          <div className="home-page w-full">
-            <div className="home-d-prev flex w-full gap-1 items-center">
-              <span className="text-xl">home</span>
-              <span className="text-xl font-black">page</span>
-              <button
-                type="button"
-                onClick={handlePreview}
-                className="ml-auto flex gap-2 p-1 text-sm items-center"
-              >
-                <EyeIcon className="size-5" />
-                Preview Changes
-              </button>
-            </div>
-            <div className="video-frame w-full flex flex-col items-center">
-              <input
-                type="file"
-                accept="video/*"
-                onChange={handleUpload}
-                className="hidden"
-                id="videoUpload"
-              />
-              <label htmlFor="videoUpload">
-                <div className="cursor-pointer w-full min-w-xs sm:max-w-md md:max-w-lg aspect-video border-3 rounded-3xl flex items-center justify-center bg-gray-200 overflow-hidden">
-                  {videoFile ? (
-                    <video
-                      src={videoFile}
-                      className="w-full h-full object-cover"
-                      controls
-                    />
-                  ) : (
-                    <span className="text-center p-2 text-sm sm:text-base">
-                      Click to upload a video
-                      <DocumentArrowUpIcon className="flex size-20 items-center justify-center w-full" />
-                    </span>
-                  )}
-                </div>
-              </label>
-            </div>
-          </div>
 
-          {/* About Page */}
-          <div className="about-page p-1">
-            <div className="about-and-prev flex w-full gap-1">
-              <span className="text-xl">about us </span>
-              <span className="text-xl font-black">page</span>
-              <button
-                type="button"
-                onClick={handlePreview}
-                className="ml-auto flex gap-2 p-1 text-sm items-center"
-              >
-                <EyeIcon className="size-5" />
-                Preview Changes
-              </button>
-            </div>
-
-            <div className="text-md p-1">Mission</div>
-            <div className="mission p-1">
-              <p className="bg-accent-1 rounded-2xl p-2 text-sm">
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry.
-              </p>
-            </div>
-            <div className="text-md p-1">Vision</div>
-            <div className="vision p-1">
-              <p className="bg-accent-1 rounded-2xl p-2 text-sm">
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry.
-              </p>
-            </div>
-            <div className="text-md p-1">Day in the Pod Video</div>
-            <div className="pod-video p-1 text-sm">
-              <label>https://youtu.be/choDMzlBpvs?feature=shared</label>
-            </div>
-          </div>
+      <div className="">
+        <div className=" w-full flex justify-between items-center p-2">
+          <Tabs
+            value={activeTab}
+            onChange={handleChange}
+            variant="Scrollable"
+            scrollButtons="auto"
+            sx={{
+              // "& .MuiTabs-indicator": {
+              //   backgroundColor: "white", // Change active tab indicator color
+              // },
+              "& .MuiTab-root": {
+                color: "black", // Default text color
+                fontWeight: 500,
+                textTransform: "none",
+                fontSize: 16,
+                display: "flex",
+                width: "full",
+              },
+              "& .MuiTab-root.Mui-selected": {
+                color: "#0097b2",
+                fontWeight: 900 ,
+              },
+            }}
+          >
+            <Tab label="Home" value={0} />
+            <Tab label="About" value={1} />
+            <Tab label="Spotify" value={2} />
+            <Tab label="Job Course" value={3} />
+            <Tab label="Personality Test" value={4} />
+            <Tab label="Testimonials" value={5} />
+          </Tabs>
         </div>
-
-        {/* Right Content (Scrollable) */}
-        <div className="right-content flex flex-col w-full md:w-[40%] h-[600px] md:h-[800px] p-2 gap-y-2 overflow-y-auto min-h-0">
-          <div className="spotify-container">
-            <SpotifyEpisode />
-          </div>
-          <div className="jobcourse-container">
-            <JobCourse />
-          </div>
-          <div className="personalitytest-container w-full h-auto">
-            <PersonalityTest />
-          </div>
-          <div className="personalitytest-container w-full h-auto">
-            <Testimonials />
-          </div>
+        <div className="tab-content p-4">
+          {activeTab === 0 && <AdminHomePage />}
+          {activeTab === 1 && <AdminAboutPage />}
+          {activeTab === 2 && <SpotifyEpisode />}
+          {activeTab === 3 && <JobCourse />}
+          {activeTab === 4 && <PersonalityTest />}
+          {activeTab === 5 && <Testimonials />}
         </div>
       </div>
     </>
