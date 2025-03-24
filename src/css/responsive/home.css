@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+.title-caption{
+  font-size: clamp(14px, 1vw, 1.8rem);
+  /* word-break: break-all; */
+}
+
+.title-header{
+  font-size: clamp(28px, 5.3vw, 2.5rem);
+}
+
 .side {
   height: 100vh;
 
@@ -25,6 +34,10 @@
 .side .title {
   margin: 0px 15vw;
   width: 70vw;
+  @media (min-width: 2000px) {
+    width: 2000px;
+    margin: auto;
+  }
   .title-line-1 {
     font-size: clamp(12px, 4vw, 1.5rem);
   }

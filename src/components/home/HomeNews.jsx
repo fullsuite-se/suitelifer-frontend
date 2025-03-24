@@ -41,37 +41,32 @@ const HomeNews = () => {
       {/* CONTENTS */}
       <section className="flex flex-col lg:flex-row gap-0 lg:gap-10">
         {/* MAIN NEWS (First Item) */}
-        <MotionUp
-          className="lg:w-1/2 flex px-2 flex-col items-center justify-center"
-        >
+        <MotionUp className="lg:w-1/2 flex px-2 flex-col items-center justify-center">
           {newsList.length > 0 && (
             <Link
               to={`/news/${newsList[0].id}/${toSlug(newsList[0].title)}`}
-              className="no-underline rounded-2xl cursor-pointer group transition-all duration-300 hover:shadow-md hover:bg-white hover:p-5"
+              className="no-underline rounded-2xl cursor-pointer group  hover:bg-white"
             >
               <div className="group-hover:!text-primary">
                 {/* IMAGE */}
-                <MotionUp className="mb-5"
-                >
+                <MotionUp className="mb-5">
                   <img
                     className="aspect-video object-cover rounded-2xl lg:w-full xl:h-[400px]!"
                     src={newsList[0].imagesWithCaption[2].image}
                     alt="Main content news image"
                   />
                 </MotionUp>
-
                 {/* TITLE */}
                 <MotionUp
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, ease: "easeOut" }}
-                  className="title"
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                  className="title w-fit hover:text-primary!"
                 >
                   <p className="font-avenir-black  sm:text-xl lg:text-2xl line-clamp-2">
                     {newsList[0].title}
                   </p>
                 </MotionUp>
-
                 {/* AUTHOR AND READ TIME */}
                 <MotionUp
                   initial={{ opacity: 0, y: 20 }}
@@ -79,7 +74,7 @@ const HomeNews = () => {
                   transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
                   className="news-info py-1 md:py-2 mb-2 no-underline!"
                 >
-                  <p className="text-sm">
+                  <p className="text-[12px]">
                     <span className="text-primary">{newsList[0].author}</span>
                     <span className="text-primary">&nbsp; |</span>
                     <span className="text-gray-400">
@@ -95,11 +90,11 @@ const HomeNews = () => {
             </Link>
           )}
         </MotionUp>
-<br />
+        <br />
         {/* OTHER NEWS (Remaining Items) */}
         <div className="lg:w-1/2 flex flex-col max-h-full overflow-y-auto gap-2 pb-2">
           <a
-            className=" text-[10px] z-10 md:mt-2 pr-2 lg:mt-2 sm:text-[16px] no-underline text-primary font-avenir-black flex items-center justify-end gap-1"
+            className="text-[12px] z-10 md:mt-2 pr-2 lg:mt-2 sm:text-[14px] no-underline text-primary font-avenir-black flex items-center justify-end gap-1"
             href="news"
           >
             <span className="flex items-end ">View all</span>
@@ -109,9 +104,8 @@ const HomeNews = () => {
             <Link
               key={news.id}
               to={`/news/${news.id}/${toSlug(newsList[0].title)}`}
-              className="group no-underline rounded-2xl cursor-pointer px-2 py-3 lg:px-4 transition-all duration-300 hover:shadow-md hover:bg-white hover:p-3"
+              className="group no-underline rounded-2xl cursor-pointer px-2 py-3 lg:px-4 transition-all duration-300 hover:shadow-sm hover:bg-white "
             >
-              
               <MotionUp>
                 <div className="other-news flex justify-center items-center gap-2 ">
                   {/* CONTENT */}

@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 import formatTimestamp from "../TimestampFormatter";
 import { toSlug } from "../../utils/slugUrl";
+import { readingTime } from "reading-time-estimator";
+import { removeHtmlTags } from "../../utils/removeHTMLTags";
+import { NavLink } from "react-router-dom";
 
 const GuestBlogCard = ({
   id,
@@ -14,15 +17,16 @@ const GuestBlogCard = ({
   const { day, fullDate, time } = formatTimestamp(created_at);
 
   return (
-    <Link
-      to={`/blogs/${id}/${toSlug(title)}`}
-      className="no-underline cursor-pointer group flex flex-col lg:flex-row-reverse lg:gap-10"
-    >
-      <section
-        className="relative w-full h-80 lg:h-90 rounded-xl overflow-hidden 
+    <section
+      className="relative w-full h-80 lg:h-90 rounded-xl overflow-hidden 
   transform transition-all duration-300 ease-in-out group-hover:scale-105 
   group-hover:shadow-xl group-hover:shadow-secondary/50 active:scale-105 
   active:shadow-xl active:shadow-secondary/50"
+    >
+      <NavLink
+        to={{ pathname: `/blogs/${toSlug(title)}` }}
+        state={{ cblog_id: id }}
+        className="no-underline cursor-pointer group flex flex-col lg:flex-row-reverse lg:gap-10"
       >
         <div className="relative">
           <img
@@ -39,9 +43,15 @@ const GuestBlogCard = ({
           </h2>
 
           <p className="!text-[12px] sm:!text-[14px]  mt-1">
-            by
-            <span className="text-secondary font-avenir-black"> {author}</span>{" "}
-            | {readTime}
+            <span className="text-secondary font-avenir-black">
+              {" "}
+              {createdBy}
+            </span>{" "}
+            |{" "}
+            {
+              readingTime(removeHtmlTags(description ?? "Description"), 238)
+                .text
+            }
           </p>
 
           <p className="mt-2 !text-[12px] sm:!text-[14px] text-gray-300 line-clamp-3">
@@ -50,8 +60,8 @@ const GuestBlogCard = ({
 
           <p className="text-xs text-gray-400 mt-2">{fullDate}</p>
         </div>
-      </section>
-    </Link>
+      </NavLink>
+    </section>
   );
 };
 

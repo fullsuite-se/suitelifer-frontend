@@ -8,12 +8,12 @@ const NewsCardNoSnippet = ({ id, title, author, readTime, created_at, imagesWith
   return (
     <Link 
       to={`/news/${id}/${toSlug(title)}`} 
-      className="flex gap-4 sm:gap-5 items-center no-underline group"
+      className="flex gap-4 sm:gap-5 items-center no-underline group rounded-2xl transition-all duration-300 hover:shadow-sm hover:bg-white p-2"
     >
       {/* Responsive Image Sizing */}
-      <div className="w-full max-w-[130px] sm:max-w-[160px] md:max-w-[140px] aspect-[3/2] rounded-2xl overflow-hidden flex-shrink-0 transition-all duration-300 ease-in-out">
+      <div className="w-full max-w-[130px] sm:max-w-[160px] md:max-w-[140px] aspect-[3/2] rounded-xl overflow-hidden flex-shrink-0 transition-all duration-300 ease-in-out">
         <img
-          className="w-full h-full object-cover group-hover:scale-105 group-hover:shadow-lg"
+          className="w-full h-full object-cover group-hover:shadow-lg"
           src={imagesWithCaption[0].image}
           alt={title}
         />

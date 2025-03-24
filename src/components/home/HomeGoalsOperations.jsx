@@ -106,7 +106,7 @@ const HomeGoalsOperations = () => {
     // </section>
 
     // with animationsss
-    <section className="relative mb-10 sm:mb-15 lg:mb-20 xl:mb-30 flex flex-col">
+    <section className="relative mb-[5%] flex flex-col">
       <div className="block">
         <MotionUp className="cutout-maggie mb-6">
           <img

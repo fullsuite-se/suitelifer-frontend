@@ -29,6 +29,7 @@ export const refreshToken = async () => {
     const response = await api.get("/api/refresh-token");
     return response.data.accessToken;
   } catch (error) {
+    window.location.href = "/login";
     console.error("Failed to refresh token:", error);
     if (error.response && error.response.status === 401) {
       console.warn("Refresh token expired. Logging out...");

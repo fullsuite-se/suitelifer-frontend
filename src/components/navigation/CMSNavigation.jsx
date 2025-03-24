@@ -62,7 +62,7 @@ const CMSNavigation = () => {
           isOpen={isOpenModal}
           handleClose={() => setIsOpenModal(false)}
         />
-        <section className="py-11">
+        <section className="py-5">
           <div className="w-20 h-20 mx-auto mb-3">
             <img
               src="http://sa.kapamilya.com/absnews/abscbnnews/media/2020/tvpatrol/06/01/james-reid.jpg"

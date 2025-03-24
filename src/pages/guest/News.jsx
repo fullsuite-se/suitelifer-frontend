@@ -14,6 +14,7 @@ import PageMeta from "../../components/layout/PageMeta";
 import FooterNew from "../../components/FooterNew";
 import api from "../../utils/axios";
 import toast from "react-hot-toast";
+import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
 
 const News = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -79,7 +80,7 @@ const News = () => {
       </div>
       {/* NEWS HERO */}
       <section className="pt-[10%] xl:pt-[8%]">
-        <div className="relative">
+        <div className="relative hidden">
           <img
             className="-z-50 absolute w-[90%] transform translate-y-5 -translate-x-6 lg:-translate-y-10  xl:-translate-y-15 lg:-translate-x-15 xl:-translate-x-40 opacity-90"
             src={bgNews}
@@ -159,7 +160,7 @@ const News = () => {
       </section>
       <div className="py-5"></div>
       {/* NEWS CONTENT */}
-      <main className="px-[5%]">  
+      <main className="px-[5%]">
         {isSearching ? (
           <ArticleSearchResults
             type="news"
@@ -171,16 +172,29 @@ const News = () => {
             <p className="md:text-2xl uppercase font-avenir-black text-primary pb-3 lg:pb-4">
               The latest
             </p>
-            {loading || !news.length ? <div></div> : <NewsLarge {...news[0]} />}
-            <p className="mt-10 md:text-xl font-avenir-black text-primary pb-3 lg:pb-4">
-              More Articles
-            </p>
-            <div className="layout-small-news-cards gap-4 sm:gap-5">
-              {news.length > 0 &&
-                news.map((news, index) => (
-                  <NewsCardSmall key={news.id || index} {...news} />
-                ))}
-            </div>
+            {loading || !news.length ? (
+              <div className="mt-20">
+                <TwoCirclesLoader
+                  bg={"transparent"}
+                  color1={"#0097b2"}
+                  color2={"#bfd1a0"}
+                  height={"35"}
+                />
+              </div>
+            ) : (
+              <>
+                <NewsLarge {...news[0]} />
+                <p className="mt-10 md:text-xl font-avenir-black text-primary pb-3 lg:pb-4">
+                  More Articles
+                </p>
+                <div className="layout-small-news-cards gap-4 sm:gap-5">
+                  {news.length > 0 &&
+                    news.map((news, index) => (
+                      <NewsCardSmall key={news.id || index} {...news} />
+                    ))}
+                </div>
+              </>
+            )}
           </>
         )}
       </main>

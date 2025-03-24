@@ -83,7 +83,7 @@ const Login = () => {
     } catch (error) {
       setLoading(false);
       if (error.response) {
-        if (error.response.status === 401) {
+        if (error.response.status === 400) {
           toast.error("Invalid email or password. Please try again.");
           setEmail("");
           setPassword("");

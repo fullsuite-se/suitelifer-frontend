@@ -80,7 +80,6 @@ const Blog = () => {
       const response = await api.get(`/api/all-company-blogs/${activeTag}`);
 
       setCompanyBlogs(response.data.data);
-      console.log(response.data.data[0].imageUrl);
     } catch (err) {
       console.log(err);
     }
@@ -99,7 +98,7 @@ const Blog = () => {
   }, [tagUpdated]);
 
   return (
-    <section className="gap-4" style={{ maxWidth: "1800px", margin: "0 auto" }}>
+    <section className="gap-4" style={{ maxWidth: "2000px", margin: "0 auto" }}>
       <PageMeta
         title="Blogs - SuiteLifer"
         desc="Dive into our collection of valuable perspectives on all things Startup, Careers, Baguio, and Fullsuite."
@@ -118,18 +117,22 @@ const Blog = () => {
         <DesktopNav />
       </div>
       {/* BLOGS HERO */}
-      <section className="pt-[10%] xl:pt-[8%]">
+      <section className="pt-[10%] xl:pt-[8%] relative">
         <img
-          className="-z-50 absolute w-[90%] transform translate-y-5 -translate-x-6 lg:-translate-y-10  xl:-translate-y-15 lg:-translate-x-15 xl:-translate-x-40 opacity-90"
+          className="hidden -z-50 absolute w-[90%] transform translate-y-5 -translate-x-6 lg:-translate-y-10  xl:-translate-y-15 lg:-translate-x-15 xl:-translate-x-40 opacity-90"
           src={bgBlogs}
           alt=""
         />
         {/* BANNER */}
         <div className="grid grid-cols-2 items-center gap-3">
-          <div className="relative flex items-center justify-end">
+          <div className="flex items-center justify-end">
+            {/* Blue Thing */}
             <div
-              className="absolute bg-primary h-15 md:h-25 w-[200%] rounded-br-2xl rounded-tr-2xl"
-              style={{ animation: "slideInFromLeft 0.8s ease-out forwards" }}
+              className="absolute bg-primary h-15 md:h-25 w-[49.7%] rounded-br-2xl rounded-tr-2xl"
+              style={{ 
+                animation: "slideInFromLeft 0.8s ease-out forwards",
+                left: 0,
+              }}
             ></div>
             <AnimatedText text="blog" color="white" />
           </div>
@@ -236,14 +239,12 @@ const Blog = () => {
                   The latest
                 </p>
                 <GuestBlogLarge
-                  id={guestBlogsList[0].id}
-                  title={companyBlogs[0]?.title ?? "Title"}
-                  author={companyBlogs[0]?.createdBy.trim().split(" ")[0] ?? "Author"}
-                  article={removeHtmlTags(
-                    companyBlogs[0]?.description && "Description"
-                  )}
-                  readTime={readingTime(companyBlogs[0]?.description && "Description", 238).text}
-                  created_at={companyBlogs[0].createdAt}
+                  id={companyBlogs[0].cblogId}
+                  title={companyBlogs[0].title}
+                  author={companyBlogs[0].createdBy}
+                  article={removeHtmlTags(companyBlogs[0].description)}
+                  readTime={readingTime(companyBlogs[0].description, 238).text}
+                  createdAt={companyBlogs[0].createdAt}
                   imageUrl={companyBlogs[0].imageUrl}
                 />
 
@@ -256,10 +257,9 @@ const Blog = () => {
                       key={index}
                       id={blog.cblogId}
                       title={blog.title}
-                      author={blog.createdBy.trim().split(" ")[0]}
-                      article={removeHtmlTags(companyBlogs[0]?.description && "Description")}
-                      readTime={readingTime(companyBlogs[0]?.description && "Description").text}
-                      created_at={blog.createdAt}
+                      createdBy={blog.createdBy}
+                      description={removeHtmlTags(blog.description)}
+                      createdAt={blog.createdAt}
                       imageUrl={blog.imageUrl}
                     />
                   ))}
