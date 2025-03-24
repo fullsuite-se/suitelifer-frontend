@@ -29,11 +29,11 @@ const NewsCardSmall = ({
 
       <div className="content-news-card-small flex flex-col justify-center">
         <div className="flex flex-col">
-          <p className="content-title line-clamp-3 font-serif font-bold sm:text-lg group-hover:!text-primary transition-all duration-100">
+          <p className="content-title line-clamp-3 font-avenir-black sm:text-lg group-hover:!text-primary transition-all duration-100">
             {title}
           </p>
 
-          <article className="article-news-card-small text-gray-400 line-clamp-4 my-2 font-serif">
+          <article className="article-news-card-small text-gray-400 line-clamp-4 my-2 font-avenir">
             {article.replace(/<[^>]+>/g, "")}
           </article>
 

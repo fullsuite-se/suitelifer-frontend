@@ -61,9 +61,9 @@ const Home = () => {
       }, 10000); 
     };
   
-    setTimeout(transitionToBlue, 5000); 
+    setTimeout(transitionToBlue, 3000); 
   
-    const interval = setInterval(transitionToBlue, 15000); 
+    const interval = setInterval(transitionToBlue, 13000); 
   
     return () => {
       clearInterval(interval); 
@@ -101,13 +101,13 @@ const Home = () => {
         {/* BANNER SECTION */}
         <section className="flex pt-5 lg:w-2/5 ">
           {/* with animations eto */}
-          <div className="banner ml-[9%] flex items-center overflow-hidden">
+          {/* <div className="banner ml-[9%] flex items-center overflow-hidden">
             <div>
               <motion.p
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, ease: "easeOut" }}
-                className="text-primary font-sansita- text-lg md:text-3xl lg:text-3xl"
+                className="text-primary font-avenir text-lg md:text-3xl lg:text-3xl"
               >
                 Welcome to
               </motion.p>
@@ -134,7 +134,7 @@ const Home = () => {
                 Learn more
               </motion.button>
             </div>
-          </div>
+          </div> */}
           {/* Column 2 */}
           {/* <div className="flex justify-end items-start ml-5 pb-3 lg:hidden">
             <img
@@ -233,9 +233,9 @@ const Home = () => {
       {/* <div className="h-300 bg-red-900"></div> */}
 
       <div className="text-center">
-          <span className="text-sm text-primary  font-avenir-black block mb-4">
+          {/* <span className="text-sm text-primary  font-avenir-black block mb-4">
             WHAT WE OFFER
-          </span>
+          </span> */}
           <p className="text-4xl font-bold font-avenir-black text-dark">
           Your Next Career Starts Here
           </p>

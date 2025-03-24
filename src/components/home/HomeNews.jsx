@@ -33,7 +33,7 @@ const HomeNews = () => {
         >
           NEWS
         </p> */}
-   <MotionUp className="font-serif font-black text-2xl lg:mb-15 sm:text-4xl md:text-4xl lg:text-5xl xl:text-7xl">
+   <MotionUp className=" font-avenir-black text-2xl lg:mb-15 sm:text-4xl md:text-4xl lg:text-5xl xl:text-7xl">
   <span className="text-primary">Latest</span> Company News
 </MotionUp>
 
@@ -67,7 +67,7 @@ const HomeNews = () => {
                   transition={{ duration: 0.6, ease: "easeOut" }}
                   className="title"
                 >
-                  <p className="font-serif font-bold sm:text-xl lg:text-2xl line-clamp-2">
+                  <p className="font-avenir-black  sm:text-xl lg:text-2xl line-clamp-2">
                     {newsList[0].title}
                   </p>
                 </MotionUp>
@@ -87,7 +87,7 @@ const HomeNews = () => {
                     </span>
                   </p>
                 </MotionUp> <div className="news-desc pr-2 mb-2">
-                        <p className="font-serif text-[10px] line-clamp-3  md:line-clamp-5! xl:line-clamp-3! sm:text-[12px] md:text-sm text-gray-500 ">
+                        <p className="font-avenir text-[10px] line-clamp-3  md:line-clamp-5! xl:line-clamp-3! sm:text-[12px] md:text-sm text-gray-500 ">
                           {newsList[0].article}
                         </p>
                       </div>
@@ -121,14 +121,14 @@ const HomeNews = () => {
                       <div className="mb-1 ">
                         <p
                           title={news.title}
-                          className="font-serif font-bold  text-[12px] line-clamp-2 sm:text-[16px] md:text-lg pr-2 font-avenir-black"
+                          className="font-avenir-black  text-[12px] line-clamp-2 sm:text-[16px] md:text-lg pr-2 font-avenir-black"
                         >
                           {news.title}
                         </p>
                       </div>
                       {/* DESCRIPTION */}
                       <div className="news-desc pr-2 mb-2">
-                        <p className="font-serif text-[10px] line-clamp-2 sm:text-[12px] md:text-sm sm:line-clamp-3   text-gray-500">
+                        <p className="font-avenir text-[10px] line-clamp-2 sm:text-[12px] md:text-sm sm:line-clamp-3   text-gray-500">
                           {news.article}
                         </p>
                       </div>

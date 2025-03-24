@@ -89,7 +89,7 @@ const News = () => {
 
         {/* BANNER */}
         <div className="text-center overflow-hidden">
-          <p className="text-4xl md:text-7xl font-serif font-extrabold flex justify-center gap-4 md:gap-8 flex-nowrap">
+          <p className="text-4xl md:text-7xl font-avenir-black flex justify-center gap-4 md:gap-8 flex-nowrap">
             <motion.span
               initial={{ x: "-100vw", opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
