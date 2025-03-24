@@ -2,20 +2,16 @@
 
 import { useState, useRef } from "react";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  Typography,
   IconButton,
-  Button,
   TextField,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
@@ -28,38 +24,25 @@ import ControlPointIcon from "@mui/icons-material/ControlPoint";
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 function JobCourse() {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [jobs] = useState([
+    "Information Technology",
+    "Software Engineer",
+    "Web Developer",
+    "Data Analyst",
+    "Data Scientist",
+  ]);
   const [rowCourseData, setRowCourseData] = useState([
     {
       id: "1",
       title: "React Free Course",
       relatedJob: "Junior Software Engineer",
       url: "http://sampleurl.com/react",
+      description: "This is a sample description",
+      jobTitle: "Software Engineer",
+      createdAt: "2022-10-10",
+      createdBy: "John Doe",
     },
-    {
-      id: "2",
-      title: "Tailwind Free Course",
-      relatedJob: "First Job Title",
-      url: "http://sampleurl.com/tailwind",
-    },
-    {
-      id: "3",
-      title: "Node.JS Free Course",
-      relatedJob: "Second Job Title",
-      url: "http://sampleurl.com/nodejs",
-    },
-    {
-      id: "4",
-      title: "Sample Course Title",
-      relatedJob: "Third Job Title",
-      url: "http://sampleurl.com/sample",
-    },
-    {
-      id: "5",
-      title: "Another Sample Course",
-      relatedJob: "Fourth Job Title",
-      url: "http://sampleurl.com/another",
-    },
+    // other course objects here...
   ]);
 
   const gridOptions = {
@@ -78,9 +61,20 @@ function JobCourse() {
   const [currentCourse, setCurrentCourse] = useState({
     id: "",
     title: "",
+    description: "",
     relatedJob: "",
+    jobTitle: "",
     url: "",
+    createdAT: "",
+    createdBy: "",
   });
+
+  const handleInputChange = (field) => (event) => {
+    setCurrentCourse((prevCourse) => ({
+      ...prevCourse,
+      [field]: event.target.value,
+    }));
+  };
 
   const handleEdit = (course) => {
     setCurrentCourse(course);
@@ -92,7 +86,16 @@ function JobCourse() {
   };
 
   const handleAddNew = () => {
-    setCurrentCourse({ id: "", title: "", relatedJob: "", url: "" });
+    setCurrentCourse({
+      id: "",
+      title: "",
+      relatedJob: "",
+      url: "",
+      description: "",
+      jobTitle: "",
+      createdAT: "",
+      createdBy: "",
+    });
     setOpenDialog(true);
   };
 
@@ -139,27 +142,52 @@ function JobCourse() {
               rowData={rowCourseData}
               columnDefs={[
                 {
-                  headerName: "Title",
+                  headerName: "Course Title",
                   field: "title",
                   flex: 2,
                   headerClass: "text-primary font-bold bg-tertiary",
                 },
                 {
-                  headerName: "Related Job",
-                  field: "relatedJob",
+                  headerName: "Description",
+                  field: "description",
                   flex: 2,
                   headerClass: "text-primary font-bold bg-tertiary",
                 },
+
                 {
                   headerName: "URL",
                   field: "url",
-                  flex: 2,
+                  flex: 1,
+                  headerClass: "text-primary font-bold bg-tertiary",
+                },
+                {
+                  headerName: "Related Job",
+                  field: "relatedJob",
+                  flex: 1,
+                  headerClass: "text-primary font-bold bg-tertiary",
+                },
+
+                {
+                  headerName: "Date Created",
+                  field: "createdAt",
+                  flex: 1,
+                  filter: "agTextColumnFilter",
+                  headerClass: "text-primary font-bold bg-tertiary",
+                  valueGetter: (params) =>
+                    params.data?.createdAt
+                      ? new Date(params.data.createdAt).toLocaleString()
+                      : "N/A",
+                },
+                {
+                  headerName: "Created By",
+                  field: "createdBy",
+                  flex: 1,
                   headerClass: "text-primary font-bold bg-tertiary",
                 },
                 {
                   headerName: "Action",
                   field: "action",
-                  flex: 2,
+                  flex: 1,
                   headerClass: "text-primary font-bold bg-tertiary",
                   cellRenderer: (params) => (
                     <div className="flex gap-2">
@@ -191,7 +219,7 @@ function JobCourse() {
           </DialogTitle>
           <DialogContent>
             <TextField
-              label="Title"
+              label="Course Title"
               fullWidth
               margin="dense"
               value={currentCourse.title}
@@ -200,17 +228,42 @@ function JobCourse() {
               }
             />
             <TextField
-              label="Related Job"
+              label="Description"
               fullWidth
               margin="dense"
-              value={currentCourse.relatedJob}
+              value={currentCourse.description}
               onChange={(e) =>
                 setCurrentCourse({
                   ...currentCourse,
-                  relatedJob: e.target.value,
+                  description: e.target.value,
                 })
               }
             />
+            <FormGroup>
+              <label>Related Job</label>
+              {jobs.map((job) => (
+                <FormControlLabel
+                  key={job}
+                  control={
+                    <Checkbox
+                      checked={currentCourse.relatedJob.includes(job)}
+                      onChange={(e) => {
+                        const updatedRelatedJob = e.target.checked
+                          ? [...currentCourse.relatedJob, job]
+                          : currentCourse.relatedJob.filter(
+                              (item) => item !== job
+                            );
+                        handleInputChange("relatedJob")({
+                          target: { value: updatedRelatedJob },
+                        });
+                      }}
+                    />
+                  }
+                  label={job}
+                />
+              ))}
+            </FormGroup>
+
             <TextField
               label="URL"
               fullWidth

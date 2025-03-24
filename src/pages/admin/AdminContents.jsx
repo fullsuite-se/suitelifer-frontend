@@ -27,14 +27,14 @@ const AdminContents = () => {
   return (
     <>
       {/* Header */}
-      <header className="container flex h-16 items-center justify-between px-4 md:px-6">
+      {/* <header className="container flex h-16 items-center justify-between px-4 md:px-6">
         <div className="hidden md:flex gap-4 items-center">
           <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
         </div>
         <button className="btn-primary flex items-center p-2 gap-2">
           <SaveIcon /> <span>PUBLISH CHANGES</span>
         </button>
-      </header>
+      </header> */}
 
       {/* Main Content */}
 
