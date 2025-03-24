@@ -12,7 +12,7 @@ const api = axios.create({
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response?.status === 400) {
+    if (error.response?.status === 401) {
       try {
         await api.get("/api/refresh-token");
         return api(error.config);
