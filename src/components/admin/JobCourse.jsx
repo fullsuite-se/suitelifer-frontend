@@ -25,24 +25,22 @@ ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 function JobCourse() {
   const [jobs] = useState([
-    "Information Technology",
-    "Software Engineer",
-    "Web Developer",
-    "Data Analyst",
-    "Data Scientist",
+    { id: 1, title: "Software Engineer" },
+    { id: 2, title: "Web Developer" },
+    { id: 3, title: "Data Analyst" },
+    { id: 4, title: "Data Scientist" },
   ]);
   const [rowCourseData, setRowCourseData] = useState([
     {
       id: "1",
       title: "React Free Course",
-      relatedJob: "Junior Software Engineer",
+      relatedJob: [1],
       url: "http://sampleurl.com/react",
       description: "This is a sample description",
       jobTitle: "Software Engineer",
       createdAt: "2022-10-10",
       createdBy: "John Doe",
     },
-    // other course objects here...
   ]);
 
   const gridOptions = {
@@ -165,8 +163,11 @@ function JobCourse() {
                   field: "relatedJob",
                   flex: 1,
                   headerClass: "text-primary font-bold bg-tertiary",
+                  valueFormatter: (params) =>
+                    params.value
+                      .map((jobId) => jobs.find((job) => job.id === jobId).title)
+                      .join(", "),
                 },
-
                 {
                   headerName: "Date Created",
                   field: "createdAt",
@@ -243,23 +244,26 @@ function JobCourse() {
               <label>Related Job</label>
               {jobs.map((job) => (
                 <FormControlLabel
-                  key={job}
+                  key={job.id}
                   control={
                     <Checkbox
-                      checked={currentCourse.relatedJob.includes(job)}
+                      checked={currentCourse.relatedJob.includes(job.id)}
                       onChange={(e) => {
+                        console.log(currentCourse.relatedJob);
                         const updatedRelatedJob = e.target.checked
-                          ? [...currentCourse.relatedJob, job]
+                          ? [...currentCourse.relatedJob, job.id]
                           : currentCourse.relatedJob.filter(
-                              (item) => item !== job
+                              (item) => item !== job.id
                             );
+
                         handleInputChange("relatedJob")({
                           target: { value: updatedRelatedJob },
                         });
                       }}
                     />
                   }
-                  label={job}
+                  label={job.title}
+                  value={job.id}
                 />
               ))}
             </FormGroup>
