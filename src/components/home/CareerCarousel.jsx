@@ -57,7 +57,7 @@ const CareerCarousel = () => {
         
         <Swiper
             modules={[Navigation, Pagination, Autoplay]}
-            pagination={{ clickable: true }}
+            // pagination={{ clickable: true }}
             slidesPerView={1}
             autoplay={{ delay: 5000 }}
             breakpoints={{
@@ -83,13 +83,13 @@ const CareerCarousel = () => {
               <SwiperSlide key={career.id}>
         
                   <div
-                    className={`p-5 mt-4 ease-out bg-white shadow-lg rounded-[30px] text-center transition-transform duration-300 scale-90
+                    className={`p-5 mt-4 ease-out bg-white shadow-lg rounded-2xl text-center transition-transform duration-300 scale-90
                     `}
                   >
                      <img
                   src={career.image}
                   alt={career.name}
-                  className="w-full aspect-[100/101] object-cover rounded-[25px]"
+                  className="w-full aspect-[100/101] object-cover rounded-xl"
                 />
                 <p className="text-center mt-3 py-5 font-avenir-black text-lg sm:text-xl">
                   {career.name}
