@@ -67,6 +67,52 @@ function JobCourse() {
     createdBy: "",
   });
 
+  const handleEdit = (course) => {
+    setCurrentCourse({
+      ...course,
+      relatedJob: course.relatedJob || [],
+    });
+    setOpenDialog(true);
+  };
+
+  const handleDelete = (id) => {
+    setRowCourseData((prevData) =>
+      prevData.filter((course) => course.id !== id)
+    );
+  };
+
+  const handleAddNew = () => {
+    setCurrentCourse({
+      id: "",
+      title: "",
+      relatedJob: [],
+      url: "",
+      description: "",
+      jobTitle: "",
+      createdAt: new Date().toISOString(), // Set a valid created date
+      createdBy: "Admin", // Replace with dynamic user if needed
+    });
+    setOpenDialog(true);
+  };
+
+  const handleSave = () => {
+    if (currentCourse.id) {
+      // Update an existing course
+      setRowCourseData((prevData) =>
+        prevData.map((course) =>
+          course.id === currentCourse.id ? currentCourse : course
+        )
+      );
+    } else {
+      // Add a new course
+      setRowCourseData((prevData) => [
+        ...prevData,
+        { ...currentCourse, id: Date.now().toString() },
+      ]);
+    }
+    setOpenDialog(false);
+  };
+
   const handleInputChange = (field) => (event) => {
     setCurrentCourse((prevCourse) => ({
       ...prevCourse,
@@ -74,43 +120,18 @@ function JobCourse() {
     }));
   };
 
-  const handleEdit = (course) => {
-    setCurrentCourse(course);
-    setOpenDialog(true);
-  };
+  // Handle checkboxes properly
+  const handleCheckboxChange = (jobId) => (event) => {
+    setCurrentCourse((prevCourse) => {
+      const updatedRelatedJob = event.target.checked
+        ? [...prevCourse.relatedJob, jobId]
+        : prevCourse.relatedJob.filter((id) => id !== jobId);
 
-  const handleDelete = (id) => {
-    setRowCourseData(rowCourseData.filter((course) => course.id !== id));
-  };
-
-  const handleAddNew = () => {
-    setCurrentCourse({
-      id: "",
-      title: "",
-      relatedJob: "",
-      url: "",
-      description: "",
-      jobTitle: "",
-      createdAT: "",
-      createdBy: "",
+      return {
+        ...prevCourse,
+        relatedJob: updatedRelatedJob,
+      };
     });
-    setOpenDialog(true);
-  };
-
-  const handleSave = () => {
-    if (currentCourse.id) {
-      setRowCourseData(
-        rowCourseData.map((course) =>
-          course.id === currentCourse.id ? currentCourse : course
-        )
-      );
-    } else {
-      setRowCourseData([
-        ...rowCourseData,
-        { ...currentCourse, id: Date.now().toString() },
-      ]);
-    }
-    setOpenDialog(false);
   };
 
   return (
@@ -163,10 +184,15 @@ function JobCourse() {
                   field: "relatedJob",
                   flex: 1,
                   headerClass: "text-primary font-bold bg-tertiary",
-                  valueFormatter: (params) =>
-                    params.value
-                      .map((jobId) => jobs.find((job) => job.id === jobId).title)
-                      .join(", "),
+                  valueGetter: (params) =>
+                    params.data?.relatedJob
+                      ? params.data.relatedJob
+                          .map(
+                            (jobId) =>
+                              jobs.find((job) => job.id === jobId).title
+                          )
+                          .join(", ")
+                      : "N/A",
                 },
                 {
                   headerName: "Date Created",
@@ -214,36 +240,55 @@ function JobCourse() {
         </div>
 
         {/* Dialog for Add/Edit */}
-        <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-          <DialogTitle>
+        <Dialog
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          sx={{
+            "& .MuiDialog-paper": {
+              borderRadius: "16px",
+              padding: "20px",
+              width: "500px",
+            },
+          }}
+        >
+          <DialogTitle className="flex w-full justify-center items-center">
             {currentCourse.id ? "Edit Course" : "Add Course"}
           </DialogTitle>
           <DialogContent>
-            <TextField
-              label="Course Title"
-              fullWidth
-              margin="dense"
-              value={currentCourse.title}
-              onChange={(e) =>
-                setCurrentCourse({ ...currentCourse, title: e.target.value })
-              }
-            />
-            <TextField
-              label="Description"
-              fullWidth
-              margin="dense"
-              value={currentCourse.description}
-              onChange={(e) =>
-                setCurrentCourse({
-                  ...currentCourse,
-                  description: e.target.value,
-                })
-              }
-            />
+            <div className="w-full">
+              <label className="block text-gray-700 font-avenir-black">
+                Title<span className="text-primary">*</span>
+              </label>
+              <input
+                name="title"
+                required
+                value={setCurrentCourse.title}
+                onChange={(e) => handleInputChange(e)}
+                rows={3}
+                className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+              ></input>
+            </div>
+            <div>
+              <label className="block text-gray-700 font-avenir-black">
+                Description<span className="text-primary">*</span>
+              </label>
+              <textarea
+                name="description"
+                required
+                value={setCurrentCourse.description}
+                onChange={(e) => handleInputChange(e)}
+                rows={3}
+                className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+              ></textarea>
+            </div>
+
             <FormGroup>
-              <label>Related Job</label>
+              <label className="block text-gray-700 font-avenir-black">
+                Related Job<span className="text-primary">*</span>
+              </label>
               {jobs.map((job) => (
                 <FormControlLabel
+                  className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
                   key={job.id}
                   control={
                     <Checkbox
@@ -268,15 +313,19 @@ function JobCourse() {
               ))}
             </FormGroup>
 
-            <TextField
-              label="URL"
-              fullWidth
-              margin="dense"
-              value={currentCourse.url}
-              onChange={(e) =>
-                setCurrentCourse({ ...currentCourse, url: e.target.value })
-              }
-            />
+            <div>
+              <label className="block text-gray-700 font-avenir-black">
+                URL<span className="text-primary">*</span>
+              </label>
+              <input
+                name="url"
+                required
+                value={setCurrentCourse.url}
+                onChange={(e) => handleAddNew(e)}
+                rows={3}
+                className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+              ></input>
+            </div>
           </DialogContent>
           <DialogActions>
             <button className="btn-light" onClick={() => setOpenDialog(false)}>
