@@ -274,7 +274,7 @@ const Home = () => {
       <div className="h-10"></div>
 
       {/* HOME BLOG SPOT */}
-      <div className="bg-primary rounded-4xl mx-[2%]">
+      <div className="bg-primary rounded-4xl mx-7 lg:mx-17">
         <HomeBlogSpot />
       </div>
       
