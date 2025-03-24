@@ -1,7 +1,6 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
-import testimonials from "../about-us/TestimonialsList";
 import { toSlug } from "../../utils/slugUrl";
 import { NavLink } from "react-router-dom";
 
