@@ -62,7 +62,7 @@ const HomeNews = () => {
                   transition={{ duration: 0.4, ease: "easeOut" }}
                   className="title w-fit hover:text-primary!"
                 >
-                  <p className="font-serif font-bold sm:text-xl lg:text-2xl line-clamp-2">
+                  <p className="font-serif font-bold text-lg sm:text-xl lg:text-2xl line-clamp-2">
                     {newsList[0].title}
                   </p>
                 </MotionUp>
@@ -94,7 +94,7 @@ const HomeNews = () => {
         {/* OTHER NEWS (Remaining Items) */}
         <div className="lg:w-1/2 flex flex-col max-h-full overflow-y-auto gap-2 pb-2">
           <a
-            className="text-[12px] z-10 md:mt-2 pr-2 lg:mt-2 sm:text-[16px] no-underline text-primary font-avenir-black flex items-center justify-end gap-1"
+            className="text-[12px] z-10 md:mt-2 pr-2 lg:mt-2 sm:text-[14px] no-underline text-primary font-avenir-black flex items-center justify-end gap-1"
             href="news"
           >
             <span className="flex items-end ">View all</span>
