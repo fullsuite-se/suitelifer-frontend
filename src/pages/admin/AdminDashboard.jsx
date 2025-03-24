@@ -88,7 +88,7 @@ const AdminDashboard = () => {
 
   const fetchTotalApplications = async () => {
     try {
-      const response = await atsAPI.get("/fs-applicant-count");
+      const response = await atsAPI.get("/analytic/metrics/fs-applicant-count");
 
       setTotalApplications((ta) => response.data.fs_count);
     } catch (err) {
@@ -199,7 +199,7 @@ const AdminDashboard = () => {
             handleDataChange(applicationsData, "Total Applications", "#0097b2")
           }
         >
-          <span className="text-3xl">{totalApplications}</span>
+          <span className="text-3xl text-center">{totalApplications}</span>
           <div className="text-sm text-gray-500 text-center">Applications</div>
         </div>
         <div
