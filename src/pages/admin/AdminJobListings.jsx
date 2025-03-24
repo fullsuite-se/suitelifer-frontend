@@ -1,15 +1,12 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import logofsfull from "../../assets/logos/logo-fs-full.svg";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import EditIcon from "@mui/icons-material/Edit";
 import { ToggleButton } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import api from "../../utils/axios";
-
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { ModuleRegistry } from "@ag-grid-community/core";
 import { AgGridReact } from "@ag-grid-community/react";
@@ -20,12 +17,52 @@ import { useStore } from "../../store/authStore";
 import JobListingModal from "../../components/admin/JobListingModal";
 import IndustryModal from "../../components/admin/IndustryModal";
 import SetupModal from "../../components/admin/SetupModal";
+import atsAPI from "../../utils/atsAPI";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 export default function AdminJobListing() {
   // USER DETAILS
   const user = useStore((state) => state.user);
+
+  // NUMBER OF APPLICATIONS
+  const [totalApplications, setTotalApplications] = useState(0);
+  const [openJobs, setOpenJobs] = useState(0);
+  const [closedJobs, setClosedJobs] = useState(0);
+
+  const fetchTotalApplications = async () => {
+    try {
+      const response = await atsAPI.get("/analytic/metrics/fs-applicant-count");
+
+      setTotalApplications(response.data.fs_count);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchOpenJobs = async () => {
+    try {
+      const response = await api.get("api/get-open-jobs-count");
+
+      setOpenJobs((oj) => response.data.data.count);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchClosedJobs = async () => {
+    try {
+      const response = await api.get("api/get-closed-jobs-count");
+
+      setClosedJobs((cj) => response.data.data.count);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchTotalApplications();
+  }, []);
 
   // JOB LISTINGS VARIABLES
   const defaultJobDetails = {
@@ -124,6 +161,23 @@ export default function AdminJobListing() {
       is_shown: job.isShown,
     }));
     setJobModalIsOpen(true);
+  };
+
+  const [statusFilter, setStatusFilter] = useState(null);
+
+  const fetchJobListingsByStatus = async (status) => {
+    console.log("Clicked");
+
+    try {
+      const response = await api.get(
+        `/api/get-jobs-filtered-by-status/${status}`
+      );
+
+      setJobListings(response.data.data);
+      setRowJobData(response.data.data);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   // INDUSTRY VARIABLES
@@ -515,6 +569,7 @@ export default function AdminJobListing() {
 
     setJobListings((jl) => response.data);
     setRowJobData(response.data);
+    setStatusFilter(null);
   };
 
   const [dataUpdated, setDataUpdated] = useState(false);
@@ -523,15 +578,11 @@ export default function AdminJobListing() {
     fetchIndustries();
     fetchSetups();
     fetchJobListings();
+    fetchOpenJobs();
+    fetchClosedJobs();
   }, [dataUpdated]);
 
   const totalJobListings = jobListings.length;
-  const openJobListings = jobListings.filter(
-    (value) => value.isOpen === 1
-  ).length;
-  const closedJobListings = jobListings.filter(
-    (value) => value.isOpen === 0
-  ).length;
 
   const handleToggle = () => {
     setSelectedOption((prev) =>
@@ -542,11 +593,8 @@ export default function AdminJobListing() {
   return (
     <div className="flex flex-col p-2 mx-auto space-y-6">
       {/* Header */}
-      <header className="container flex h-16 items-center justify-between">
-        <div className="hidden lg:flex md-flex gap-4 items-center ">
-          <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
-        </div>
-        <div className="flex gap-1">
+      <header className="container flex h-10 items-center justify-between">
+        <div className="flex ms-auto gap-1">
           {/* Desktop & Tablet Buttons */}
           <button
             variant="outlined"
@@ -643,27 +691,47 @@ export default function AdminJobListing() {
         </div>
       </header>
       {/* Stats */}
-      <div className="flex flex-wrap gap-4">
-        <div className="bg-primary text-white px-4 py-2 rounded-2xl w-80 h-10 flex items-center justify-between">
-          <span>{`Total Applications`}</span>
-          <span className="text-2xl">{`${jobListings.length}`}</span>
+      <section className="mb-4 grid grid-cols-4 grid-rows-[7rem] [&>*]:border [&>*]:border-gray-200 gap-4">
+        <div className="rounded-md grid place-content-center bg-gray-100">
+          <span className="text-3xl text-center">{totalApplications}</span>
+          <div className="text-sm text-gray-500 text-center">Applications</div>
         </div>
-        <div className="border-2 text-dark px-4 py-2 rounded-2xl w-80 h-10 flex items-center justify-between">
-          <span>{`Industries`}</span>
-          <span className="text-2xl">{`${industries.length}`}</span>
+        <div
+          className="rounded-md grid place-content-center cursor-pointer bg-gray-100"
+          onClick={() => setIndustryMgmtModalIsOpen(true)}
+        >
+          <span className="text-3xl text-center">{industries.length}</span>
+          <div className="text-sm text-gray-500 text-center">Industries</div>
         </div>
-
-        <div className="border-2 text-dark px-4 py-2 rounded-2xl w-136 h-10 flex items-center justify-between">
-          <span>{`Job Listings`}</span>
-          <span className="text-2xl">{`${totalJobListings}`}</span>
-          <div className="border-l-2 text-dark px-4 py-2 rounded-2xl w-80 h-10 flex items-center justify-between flex-end">
-            <span className="">Open</span>
-            <span className="text-2xl font-bold">{openJobListings}</span>
-            <span className="">Closed</span>
-            <span className="text-2xl font-bold">{closedJobListings}</span>
-          </div>
+        <div
+          className={`rounded-md grid place-content-center cursor-pointer ${
+            statusFilter === 1 ? "bg-gray-300" : "bg-gray-100"
+          }`}
+          onClick={() => {
+            statusFilter === 1
+              ? fetchJobListings()
+              : fetchJobListingsByStatus(1);
+            setStatusFilter(1);
+          }}
+        >
+          <span className="text-2xl text-center">{openJobs}</span>
+          <div className="text-sm text-gray-500 text-center">Open Jobs</div>
         </div>
-      </div>
+        <div
+          className={`rounded-md grid place-content-center cursor-pointer ${
+            statusFilter === 0 ? "bg-gray-300" : "bg-gray-100"
+          }`}
+          onClick={() => {
+            statusFilter === 0
+              ? fetchJobListings()
+              : fetchJobListingsByStatus(0);
+            setStatusFilter(0);
+          }}
+        >
+          <span className="text-2xl text-center">{closedJobs}</span>
+          <div className="text-sm text-gray-500 text-center">Closed Jobs</div>
+        </div>
+      </section>
       {/* Search and Filter */}
 
       <div
