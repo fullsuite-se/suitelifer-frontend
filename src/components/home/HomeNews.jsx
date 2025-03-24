@@ -73,7 +73,7 @@ const HomeNews = () => {
                   transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
                   className="news-info py-1 md:py-2 mb-2 no-underline!"
                 >
-                  <p className="text-sm">
+                  <p className="text-[12px]">
                     <span className="text-primary">{newsList[0].author}</span>
                     <span className="text-primary">&nbsp; |</span>
                     <span className="text-gray-400">
@@ -82,7 +82,7 @@ const HomeNews = () => {
                   </p>
                 </MotionUp>{" "}
                 <div className="news-desc pr-2 mb-2">
-                  <p className="font-serif text-[10px] line-clamp-3  md:line-clamp-5! xl:line-clamp-3! sm:text-[12px] md:text-sm text-gray-500 ">
+                  <p className="font-serif text-[14px] line-clamp-3  md:line-clamp-5! xl:line-clamp-3! sm:text-[12px] md:text-[16px] text-gray-500">
                     {newsList[0].article}
                   </p>
                 </div>
@@ -94,7 +94,7 @@ const HomeNews = () => {
         {/* OTHER NEWS (Remaining Items) */}
         <div className="lg:w-1/2 flex flex-col max-h-full overflow-y-auto gap-2 pb-2">
           <a
-            className=" text-[10px] z-10 md:mt-2 pr-2 lg:mt-2 sm:text-[16px] no-underline text-primary font-avenir-black flex items-center justify-end gap-1"
+            className="text-[12px] z-10 md:mt-2 pr-2 lg:mt-2 sm:text-[16px] no-underline text-primary font-avenir-black flex items-center justify-end gap-1"
             href="news"
           >
             <span className="flex items-end ">View all</span>
@@ -115,14 +115,14 @@ const HomeNews = () => {
                       <div className="mb-1 ">
                         <p
                           title={news.title}
-                          className="font-serif font-bold  text-[12px] line-clamp-2 sm:text-[16px] md:text-lg pr-2 font-avenir-black"
+                          className="font-serif font-bold  text-[14px] line-clamp-2 sm:text-[16px] md:text-lg pr-2 font-avenir-black"
                         >
                           {news.title}
                         </p>
                       </div>
                       {/* DESCRIPTION */}
                       <div className="news-desc pr-2 mb-2">
-                        <p className="font-serif text-[10px] line-clamp-2 sm:text-[12px] md:text-sm sm:line-clamp-3   text-gray-500">
+                        <p className="font-serif text-[12px] line-clamp-2 sm:text-[12px] md:text-[16px] sm:line-clamp-3 text-gray-500">
                           {news.article}
                         </p>
                       </div>
