@@ -241,7 +241,7 @@ const Home = () => {
         </div>
         <div className="flex justify-center">
           <video
-            className=" aspect-16/9 rounded-4xl object-cover"
+            className="aspect-16/9 rounded-xl md:rounded-2xl lg:rounded-4xl object-cover"
             autoPlay
             loop
             muted
