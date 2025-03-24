@@ -1,10 +1,10 @@
 import React from "react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { useLocation } from "react-router-dom";
+import TopBarGeneratedFunction from "../buttons/TopBarGeneratedFunction";
 
 const CMSTopNavigation = () => {
   const location = useLocation();
-
   const path = location.pathname.split("/");
   const currentPage = path[path.length - 1];
 
@@ -22,14 +22,7 @@ const CMSTopNavigation = () => {
           <span className="text-sm text-gray-500 font-avenir-roman">(6)</span>
           <InformationCircleIcon className="w-4 h-4 text-gray-500" />
         </div>
-        <span
-          // onClick={() => {
-          //   navigate("/app/my-blogs/new-blog");
-          // }}
-          className="font-avenir-black text-primary text-sm cursor-pointer"
-        >
-          + Create new blog
-        </span>
+        <TopBarGeneratedFunction page={formatTitle(currentPage)} />
       </div>
     </nav>
   );
