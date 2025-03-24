@@ -19,6 +19,7 @@ import { Helmet } from "@dr.pogodin/react-helmet";
 import PageMeta from "../../components/layout/PageMeta";
 import FooterNew from "../../components/FooterNew";
 import CareerCarousel from "../../components/home/CareerCarousel";
+import videoTemplate from "../../assets/videos/video-template.mp4";
 
 const Home = () => {
   const [width, setWidth] = useState(window.innerWidth); //FOR DEBUGGING
@@ -50,28 +51,25 @@ const Home = () => {
     window.scroll(0, 0);
     const left = document.getElementById("left-side");
     if (!left) return;
-  
+
     const transitionToBlue = () => {
-      left.style.transition = "width 1s ease-in-out"; 
-      left.style.width = "100%"; 
-  
+      left.style.transition = "width 1s ease-in-out";
+      left.style.width = "100%";
+
       setTimeout(() => {
         left.style.transition = "width 1s ease-in-out";
         left.style.width = "0%";
-      }, 10000); 
+      }, 10000);
     };
-  
-    setTimeout(transitionToBlue, 3000); 
-  
-    const interval = setInterval(transitionToBlue, 15000); 
-  
+
+    setTimeout(transitionToBlue, 3000);
+
+    const interval = setInterval(transitionToBlue, 15000);
+
     return () => {
-      clearInterval(interval); 
+      clearInterval(interval);
     };
   }, []);
-  
-  
-  
 
   return (
     <section
@@ -184,7 +182,7 @@ const Home = () => {
           }}
         />
       </div>
-     {/* <img
+      {/* <img
             src={rocketship}
             alt="Rocketship"
             className="absolute inset-0 w-full h-full object-cover opacity-20"
@@ -194,7 +192,8 @@ const Home = () => {
         <div id="right-side" className="side pb-17">
           <div className="title">
             <div className="">
-              <span className="title-line-1">Do you feel like your</span> <br /> <br />
+              <span className="title-line-1">Do you feel like your</span> <br />{" "}
+              <br />
             </div>
             <div className="animate-fadeInUp">
               <span className="title-line-2">
@@ -209,15 +208,13 @@ const Home = () => {
         </div>
         {/* Blue */}
         <div id="left-side" className="side pb-17 relative ">
-     
-
           <div className="title relative">
             <div>
               <span className="title-line-1">We can help.</span>
             </div>
             <div>
               <span className="title-line-2">
-                <span className="text-white">Let's get you on the</span>{" "} <br />
+                <span className="text-white">Let's get you on the</span> <br />
                 <span className="text-black">right track.</span>
               </span>
             </div>
@@ -232,22 +229,45 @@ const Home = () => {
       <HomeGoalsOperations />
       {/* <div className="h-300 bg-red-900"></div> */}
 
-      <div className="text-center">
-          <span className="text-sm text-primary  font-avenir-black block mb-4">
-            WHAT WE OFFER
-          </span>
-          <p className="text-4xl font-bold font-avenir-black text-dark">
-          Your Next Career Starts Here
+      <section className="px-10 xl:px-17 pb-[5%]">
+        <div className="text-center pb-7">
+          <p className="title-header font-bold font-avenir-black text-dark">
+            Kickstart Your Career With Us!
+          </p>
+          <p className="title-caption text-gray-500">
+            Watch the video below to see what makes us the perfect place to grow
+            your career!
           </p>
         </div>
+        <div className="flex justify-center">
+          <video
+            className=" aspect-16/9 rounded-4xl object-cover"
+            autoPlay
+            loop
+            muted
+            controls
+          >
+            <source src={videoTemplate} type="video/mp4" />
+          </video>
+        </div>
+      </section>
+
+      <div className="text-center px-7 xl:px-17">
+        <span className="text-sm text-primary  font-avenir-black block mb-4">
+          WHAT WE OFFER
+        </span>
+        <p className="title-header font-bold font-avenir-black text-dark">
+          Your Next Career Starts Here
+        </p>
+      </div>
       <CareerCarousel />
 
       {/* NEWS SECTION */}
       <HomeNews />
-<div className="relative bg-primary py-10 mt-10 rounded-t-30!">
-      {/* SOCIALS SECTION */}
-      <HomeSocials />
-</div>
+      <div className="relative bg-primary py-10 mt-10 rounded-t-30!">
+        {/* SOCIALS SECTION */}
+        <HomeSocials />
+      </div>
       <div className="h-10"></div>
 
       {/* HOME BLOG SPOT */}
