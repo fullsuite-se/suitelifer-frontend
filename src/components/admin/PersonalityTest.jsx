@@ -23,22 +23,40 @@ ModuleRegistry.registerModules([ClientSideRowModelModule]);
 function PersonalityTest() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [rowTestData, setRowTestData] = useState([
-    { id: "1", title: "Horoscope", url: "http://sampleurl.com/horoscope" },
-    { id: "2", title: "MBTI", url: "http://sampleurl.com/mbti" },
+    {
+      id: "1",
+      title: "Horoscope",
+      url: "http://sampleurl.com/horoscope",
+      createdAt: "2022-10-10",
+      createdBy: "John Doe",
+    },
+    {
+      id: "2",
+      title: "MBTI",
+      url: "http://sampleurl.com/mbti",
+      createdAt: "2022-10-10",
+      createdBy: "John Doe",
+    },
     {
       id: "3",
       title: "Sample Title",
       url: "http://sampleurl.com/sample-test",
+      createdAt: "2022-10-10",
+      createdBy: "John Doe",
     },
     {
       id: "4",
       title: "Another Sample Test Title",
       url: "http://sampleurl.com/another-test",
+      createdAt: "2022-10-10",
+      createdBy: "John Doe",
     },
     {
       id: "5",
       title: "What is this test title?",
       url: "http://sampleurl.com/what-test",
+      createdAt: "2022-10-10",
+      createdBy: "John Doe",
     },
   ]);
   const gridOptions = {
@@ -125,6 +143,23 @@ function PersonalityTest() {
                   headerName: "URL",
                   field: "url",
                   flex: 2,
+                  headerClass: "text-primary font-bold bg-tertiary",
+                },
+                {
+                  headerName: "Date Created",
+                  field: "createdAt",
+                  flex: 1,
+                  filter: "agTextColumnFilter",
+                  headerClass: "text-primary font-bold bg-tertiary",
+                  valueGetter: (params) =>
+                    params.data?.createdAt
+                      ? new Date(params.data.createdAt).toLocaleString()
+                      : "N/A",
+                },
+                {
+                  headerName: "Created By",
+                  field: "createdBy",
+                  flex: 1,
                   headerClass: "text-primary font-bold bg-tertiary",
                 },
                 {
