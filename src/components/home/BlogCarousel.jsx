@@ -5,11 +5,30 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import companyBlogs from "./CompanyBlogsList";
 import GuestBlogCard from "../guest-blogs/GuestBlogCard";
+import api from "../../utils/axios";
+import { useState, useEffect } from "react";
+import OnLoadLayoutAnimation from "../layout/OnLoadLayoutAnimation";
 
 const BlogCarousel = () => {
+  const [companyBlogs, setCompanyBlogs] = useState([]);
+
+  const fetchCompanyBlogs = async () => {
+    try {
+      const response = await api.get("/api/all-company-blogs");      
+
+      setCompanyBlogs(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchCompanyBlogs();
+  }, []);
+
   return (
     <div className="w-full max-w-[90%] mx-auto">
-      {companyBlogs.length === 0 ? (
+      {companyBlogs?.length === 0 ? (
         <section className="grid place-conte`nt-center h-dvh">
           <OnLoadLayoutAnimation />
         </section>
@@ -28,7 +47,7 @@ const BlogCarousel = () => {
           loop
           className="py-6"
         >
-          {companyBlogs.slice(0, 5).map((blog) => (
+          {companyBlogs?.slice(0, 5).map((blog) => (
             <SwiperSlide key={blog.cblogId}>
               <div className="p-4 px-[10%]">
                 <GuestBlogCard {...blog} />
