@@ -261,7 +261,7 @@ const AboutUs = () => {
           imgVision={imgVision}
           missionContent={content.mission}
           missionSlogan={content.missionSlogan}
-          visionContent={content.mission}
+          visionContent={content.vision}
           visionSlogan={content.visionSlogan}
         />
 
