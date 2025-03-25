@@ -244,7 +244,7 @@ function JobCourse() {
             "& .MuiDialog-paper": {
               borderRadius: "16px",
               padding: "20px",
-              width: "500px",
+              width: "600px",
             },
           }}
         >

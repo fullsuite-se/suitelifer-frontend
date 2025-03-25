@@ -192,27 +192,54 @@ function PersonalityTest() {
         </div>
 
         {/* Dialog for Add/Edit */}
-        <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-          <DialogTitle>{currentTest.id ? "Edit Test" : "Add Test"}</DialogTitle>
-          <DialogContent>
-            <TextField
-              label="Title"
-              fullWidth
-              margin="dense"
-              value={currentTest.title}
-              onChange={(e) =>
-                setCurrentTest({ ...currentTest, title: e.target.value })
-              }
-            />
-            <TextField
-              label="URL"
-              fullWidth
-              margin="dense"
-              value={currentTest.url}
-              onChange={(e) =>
-                setCurrentTest({ ...currentTest, url: e.target.value })
-              }
-            />
+        <Dialog
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          sx={{
+            "& .MuiDialog-paper": {
+              borderRadius: "16px",
+              padding: "20px",
+              width: "500px",
+            },
+          }}
+        >
+          <DialogTitle className="flex w-full justify-center items-center">
+            {currentTest.id ? "Edit Test" : "Add Test"}
+          </DialogTitle>
+          <DialogContent className="">
+            <div className="w-full mb-3">
+              <label className="block text-gray-700 font-avenir-black">
+                Title<span className="text-primary">*</span>
+              </label>
+
+              <input
+                name="title"
+                required
+                value={currentTest.title}
+                onChange={(e) =>
+                  setCurrentTest({ ...currentTest, title: e.target.value })
+                }
+                rows={3}
+                className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+              />
+            </div>
+
+            <div className="w-full">
+              <label className="block text-gray-700 font-avenir-black">
+                URL<span className="text-primary">*</span>
+              </label>
+
+              <input
+                name="url"
+                required
+                value={currentTest.url}
+                onChange={(e) =>
+                  setCurrentTest({ ...currentTest, url: e.target.value })
+                }
+                rows={3}
+                className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+              />
+            </div>
           </DialogContent>
           <DialogActions>
             <button className="btn-light" onClick={() => setOpenDialog(false)}>

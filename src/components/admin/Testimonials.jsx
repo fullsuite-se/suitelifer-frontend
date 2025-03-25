@@ -251,11 +251,11 @@ function Testimonials() {
         </div>
 
         <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-          <DialogTitle>
+          <DialogTitle className="w-full text-center justify-center">
             {currentTestimonial.id ? "Edit Testimonial" : "Add Testimonial"}
           </DialogTitle>
           <DialogContent>
-            <TextField
+            {/* <TextField
               label="Employee Name"
               fullWidth
               margin="dense"
@@ -267,8 +267,27 @@ function Testimonials() {
                   employee_name: e.target.value,
                 })
               }
-            />
-            <TextField
+            /> */}
+            <div className="w-full mb-3">
+              <label className="block text-gray-700 font-avenir-black">
+                Employee Name<span className="text-primary">*</span>
+              </label>
+
+              <input
+                name="name"
+                required
+                value={currentTestimonial.employee_name}
+                onChange={(e) =>
+                  setCurrentTestimonial({
+                    ...currentTestimonial,
+                    employee_name: e.target.value,
+                  })
+                }
+                rows={3}
+                className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+              />
+            </div>
+            {/* <TextField
               label="Testimony"
               fullWidth
               margin="dense"
@@ -280,8 +299,27 @@ function Testimonials() {
                   testimony: e.target.value,
                 })
               }
-            />
-            <TextField
+            /> */}
+            <div className="w-full mb-3">
+              <label className="block text-gray-700 font-avenir-black">
+                Testimony<span className="text-primary">*</span>
+              </label>
+
+              <input
+                name="testimony"
+                required
+                value={currentTestimonial.testimony}
+                onChange={(e) =>
+                  setCurrentTestimonial({
+                    ...currentTestimonial,
+                    testimony: e.target.value,
+                  })
+                }
+                rows={3}
+                className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+              />
+            </div>
+            {/* <TextField
               label="Position"
               fullWidth
               margin="dense"
@@ -293,7 +331,26 @@ function Testimonials() {
                   position: e.target.value,
                 })
               }
-            />
+            /> */}
+            <div className="w-full mb-3">
+              <label className="block text-gray-700 font-avenir-black">
+              Position<span className="text-primary">*</span>
+              </label>
+
+              <input
+                name="position"
+                required
+                value={currentTestimonial.position}
+                onChange={(e) =>
+                  setCurrentTestimonial({
+                    ...currentTestimonial,
+                    position: e.target.value,
+                  })
+                }
+                rows={3}
+                className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+              />
+            </div>
             <div>
               <label className="block text-gray-700 font-avenir-black">
                 Visibility<span className="text-primary">*</span>
