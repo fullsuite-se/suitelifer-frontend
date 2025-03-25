@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { EyeIcon, BookmarkSquareIcon } from "@heroicons/react/24/outline";
+import {
+  EyeIcon,
+  BookmarkSquareIcon,
+  ArrowPathIcon,
+} from "@heroicons/react/24/outline";
 
 const VideoPreview = ({ handlePreview }) => {
   const [videoFile, setVideoFile] = useState(
@@ -14,11 +18,20 @@ const VideoPreview = ({ handlePreview }) => {
     }
   };
 
+  const handleSave = () => {
+    const data = {
+      videoFile,
+    };
+    console.log(data);
+  };
   return (
     <>
       <div className="video-preview w-full">
         <div className="flex justify-end px-4 py-2">
-          <button className="btn-primary flex items-center p-2 gap-2">
+          <button
+            className="btn-primary flex items-center p-2 gap-2"
+            onClick={handleSave}
+          >
             <BookmarkSquareIcon className="size-5" />{" "}
             <span>Publish Changes</span>
           </button>
@@ -49,16 +62,16 @@ const VideoPreview = ({ handlePreview }) => {
             <button
               type="button"
               onClick={handlePreview}
-              className="ml-auto flex justify-end gap-2 p-1 text-sm items-center btn-light"
+              className="ml-auto flex justify-end gap-1 p-1 text-sm items-center btn-light"
             >
               <EyeIcon className="size-5" />
               Preview Changes
             </button>
             <button
               onClick={() => document.getElementById("videoUpload").click()}
-              className=" btn-light rounded-lg text-bold flex justify-end w-fit"
+              className=" btn-light rounded-lg text-bold flex justify-end w-fit gap-1 p-1"
             >
-              Change Video
+              <ArrowPathIcon className="size-5" /> <span>Change Video</span>
             </button>
           </div>
         </div>
