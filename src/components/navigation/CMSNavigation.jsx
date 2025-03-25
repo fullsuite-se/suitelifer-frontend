@@ -56,8 +56,12 @@ const CMSNavigation = () => {
   const services = useStore((state) => state.services) || [];
   const [isOpenModal, setIsOpenModal] = useState(false);
   const user = useStore((state) => state.user);
-  const [isCollapse, setCollapse] = useState(false);
-  const [showTool, setShowTool] = useState(true);
+  const [isCollapse, setCollapse] = useState(
+    JSON.parse(localStorage.getItem("isCollapsed")) ?? false
+  );
+  const [showTool, setShowTool] = useState(
+    JSON.parse(localStorage.getItem("showTools")) ?? true
+  );
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
