@@ -13,6 +13,8 @@ import { format } from "date-fns";
 const EmployeeAside = () => {
   const [events, setEvents] = useState([]);
   const [eventDates, setEventDates] = useState([]);
+  const [todayEventCount, setTodayEventCount] = useState(0);
+  const [upcommingEventCount, setUpcommingEventCount] = useState(0);
   const [showTodayEvent, setShowTodayEvent] = useState(
     JSON.parse(localStorage.getItem("showTodayEvent")) ?? true
   );
@@ -35,7 +37,14 @@ const EmployeeAside = () => {
           acc.push(formattedDate);
           return acc;
         }, []);
+
         setEventDates(dates);
+
+        const today = new Date().toISOString().split("T")[0];
+        const todayCount = dates.filter((date) => date === today).length;
+        setTodayEventCount(todayCount);
+        const upcomingCount = dates.filter((date) => date > today).length;
+        setUpcommingEventCount(upcomingCount);
       } catch (error) {
         console.log(error);
       }
@@ -88,15 +97,25 @@ const EmployeeAside = () => {
                 className="group flex w-full items-center justify-between"
                 onClick={handleTodayDisclosureBtn}
               >
-                <p className="font-avenir-black text-primary">Today</p>
+                <p className="font-avenir-black text-primary">
+                  Today ({todayEventCount})
+                </p>
                 <ChevronDownIcon className="size-5 text-primary cursor-pointer group-data-[open]:rotate-180" />
               </DisclosureButton>
               <DisclosurePanel className="mt-3 flex flex-col gap-3">
-                {events.map((event, index) => (
-                  <div key={index}>
-                    <EventCard event={event} />
-                  </div>
-                ))}
+                {events
+                  .filter((event) => {
+                    const today = new Date().toISOString().split("T")[0];
+                    const eventDate = new Date(event.date_time)
+                      .toISOString()
+                      .split("T")[0];
+                    return eventDate === today;
+                  })
+                  .map((event, index) => (
+                    <div key={index}>
+                      <EventCard event={event} />
+                    </div>
+                  ))}
               </DisclosurePanel>
             </Disclosure>
             <Disclosure as="div" defaultOpen={showUpcommingEvent}>
@@ -104,15 +123,33 @@ const EmployeeAside = () => {
                 className="group my-3 flex w-full items-center justify-between"
                 onClick={handleUpcommingDisclosureBtn}
               >
-                <p className="font-avenir-black text-black">Upcoming</p>
+                <p className="font-avenir-black text-black">
+                  Upcoming ({upcommingEventCount})
+                </p>
                 <ChevronDownIcon className="size-5 text-primary cursor-pointer group-data-[open]:rotate-180" />
               </DisclosureButton>
               <DisclosurePanel className="mt-3 flex flex-col gap-3">
-                {events.map((event, index) => (
-                  <div key={index}>
-                    <EventCard event={event} isUpcoming={true} />
-                  </div>
-                ))}
+                {events
+                  .filter((event) => {
+                    const today = new Date().toISOString().split("T")[0]; // Get today's date (YYYY-MM-DD)
+                    const eventDate = new Date(event.date_time)
+                      .toISOString()
+                      .split("T")[0];
+                    return eventDate >= today;
+                  })
+                  .map((event, index) => (
+                    <div key={index}>
+                      <EventCard
+                        event={event}
+                        isUpcoming={
+                          new Date(event.date_time)
+                            .toISOString()
+                            .split("T")[0] >
+                          new Date().toISOString().split("T")[0]
+                        }
+                      />
+                    </div>
+                  ))}
               </DisclosurePanel>
             </Disclosure>
           </div>
