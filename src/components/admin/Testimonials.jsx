@@ -109,7 +109,11 @@ function Testimonials() {
 
       setRowTestimonialData((prevData) => [...prevData, newEntry]);
     }
-
+    setRowTestimonialData((prevData) =>
+      prevData.map((item) =>
+        item.id === currentTestimonial.id ? currentTestimonial : item
+      )
+    );
     setOpenDialog(false);
   };
 
