@@ -5,18 +5,14 @@ import DesktopNav from "../../components/home/DesktopNav";
 import api from "../../utils/axios";
 import CoreValueCard from "../../components/about-us/CoreValueCard";
 import bgMaggieMobile from "../../assets/images/bg-mobile-chair-cutout.png";
+import bgMaggieTablet from "../../assets/images/bg-desktop-chair-cutout-4.png";
+import bgMaggieLg from "../../assets/images/bg-desktop-chair-cutout-lg.png";
 import bgMaggieDesktop from "../../assets/images/bg-desktop-chair-cutout-2.png";
 import imgMission from "../../assets/images/imgMission.svg";
 import imgVision from "../../assets/images/imgVision.svg";
-import imgMeeting from "../../assets/images/img-meeting.svg";
 import dotsLine from "../../assets/images/socials-dots-line.svg";
 import Testimonials from "../../components/about-us/TestimonialSection";
-import FillerBoxes from "../../assets/images/about-filler-boxes.png";
 import YouTubeEmbed from "../../components/home/YoutubeEmbed";
-import largeBottomFiller from "../../assets/images/about-large-bottom-filler.svg";
-import smallBottomFiller from "../../assets/images/about-small-bottom-filler.svg";
-
-import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
 import FocusedAthleteIcon from "../../assets/icons/FocusedAthleteIcon";
 import TeamPlayerIcon from "../../assets/icons/TeamPlayerIcon";
@@ -100,13 +96,13 @@ const AboutUs = () => {
             />
           </div>
           <section className="flex flex-col gap-3 mt-5 mx-5 text-justify">
-            <p className="text-primary text-center text-sm font-avenir-black">
+            <p className="text-primary text-center text-small font-avenir-black">
               OUR STORY
             </p>
             {/* <h2 className="font-avenir-black lg:text-4xl! text-center m-0!">
               Lorem, ipsum dolor it
             </h2> */}
-            <p className="text-base sm:text-lg md:text-xl mb-5">
+            <p className="text-body mb-5">
               FullSuite was originally founded by Maggie Po on October 8, 2014
               as Offshore Concept Consulting, Inc. In 2018, the founder acquired
               full ownership of the brand name, FullSuite because it embodied
@@ -117,7 +113,7 @@ const AboutUs = () => {
               operational functions—especially the ones their AI systems can’t
               yet automate.
             </p>
-            <p className="text-base sm:text-lg md:text-xl">
+            <p className="text-body">
               In 2020, the legal entity was changed to Offshore Concept BPO
               Services, Inc. to reflect in the name the more accurate
               representation of its services. But, the brand name is still in
@@ -138,10 +134,8 @@ const AboutUs = () => {
           </section>
 
           <section className="mx-8 flex flex-col justify-center text-justify">
-            <p className="font-avenir-black py-3 !text-xl lg:!text-2xl">
-              “{videoTitle}”
-            </p>
-            <p className="text-base sm:text-lg md:text-xl">
+            <p className="font-avenir-black py-3 text-h6">“{videoTitle}”</p>
+            <p className="text-body">
               In this exclusive podcast interview, Maggie, the CEO of FullSuite
               Company, shares her journey of resilience and leadership in the
               competitive world of BPO. From navigating challenges to redefining
@@ -151,24 +145,17 @@ const AboutUs = () => {
             </p>
           </section>
 
-          <section className="flex gap-2 py-7 mt-4 justify-end">
-            <div className="h-2 w-2 lg:w-3 lg:h-3 rounded-full opacity-30 bg-primary"></div>
-            <div className="h-2 w-2 lg:w-3 lg:h-3 rounded-full opacity-50 bg-primary"></div>
-            <div className="h-2 w-2 lg:w-3 lg:h-3 rounded-full opacity-100 bg-primary"></div>
-            <div
-              className="w-32 lg:w-44 lg:h-3 rounded-l-xl h-2"
-              style={{
-                background:
-                  "linear-gradient(90deg, rgba(0,151,178,1) 0%, rgba(0,151,178,0.7455357142857143) 50%, rgba(0,151,178,0.33657212885154064) 100%)",
-              }}
-            ></div>
-          </section>
-        </section>
+         
+
+
+        </section>           <div className="py-5"></div>    <div className="flex justify-end scale-x-[-1] rotate-180">
+          <img className="dots-line" src={dotsLine} alt="3 dots and a line" />
+        </div>   <div className="py-5"></div>
         {/* Our Core Values Section */}
         <section className="overflow-hidden relative pt-5">
-          <h2 className="font-avenir-black lg:text-4xl! text-center m-0!">
+          <p className="font-avenir-black text-h4 text-center m-0!">
             The suitelifer...
-          </h2>
+          </p>
           <div className="flex flex-col lg:flex-row lg:justify-center lg:mb-[7%] py-[5%] pb-[12%] md:pb-[4%] gap-6 lg:gap-10 text-base sm:text-lg md:text-xl">
             <div className="flex justify-evenly lg:flex-none lg:gap-10">
               {/* 1 */}
@@ -180,7 +167,7 @@ const AboutUs = () => {
                   />
                 }
                 text={
-                  <p >
+                  <p className="text-body">
                     is a <br />
                     <b>team player</b>
                   </p>
@@ -196,7 +183,7 @@ const AboutUs = () => {
                   />
                 }
                 text={
-                  <p>
+                  <p className="text-body">
                     is <br />
                     <b>understood</b>
                   </p>
@@ -217,7 +204,7 @@ const AboutUs = () => {
                   />
                 }
                 text={
-                  <p>
+                  <p className="text-body">
                     is a <br />
                     <b>focused athlete</b>
                   </p>
@@ -234,7 +221,7 @@ const AboutUs = () => {
                     size={"45%"}
                   />
                 }
-                text={<b>upholds</b>}
+                text={<b className="text-body">upholds</b>}
               />
               {/* 5 */}
               <CoreValueCard
@@ -244,16 +231,20 @@ const AboutUs = () => {
                     size={"45%"}
                   />
                 }
-                text={<b>values work/life harmony</b>}
+                text={
+                  <b className="text-body">
+                    values <br /> work/life harmony
+                  </b>
+                }
               />
             </div>
           </div>
         </section>
-        <div className="py-10"></div>
+        <div className="py-5"></div>
         <div className="flex justify-end scale-x-[-1]">
           <img className="dots-line" src={dotsLine} alt="3 dots and a line" />
         </div>
-        <div className="py-10"></div>
+        <div className="py-5"></div>
         {/* Mission Vision LASTLY: CHANGE LAYOUT FOR MOBILE. BREAKPOINT: 480px */}
         <MissionVision
           imgMission={imgMission}
@@ -264,20 +255,21 @@ const AboutUs = () => {
           visionSlogan={content.visionSlogan}
         />
 
+        <div className="py-5"></div>
         {/* Message from the CEO */}
         <section className="relative" id="ceo-message">
           {/* Text overlay */}
           <article className="absolute text-end text-white -mt-10">
             <div className="container-ceo-message pt-[18%]  pr-[5%] md:pr-[5%]">
               <div className="flex justify-end">
-                <p className="text-[12p] font-avenir-black text-secondary">
+                <p className="text-small font-avenir-black text-secondary">
                   MESSAGE FROM THE CEO
                 </p>
               </div>{" "}
               <br />
               <div className="flex justify-end">
                 {/* Title */}
-                <p className="title w-[60%] font-avenir-black ">
+                <p className="text-h4 w-[60%] font-avenir-black ">
                   Scaling Smarter, Growing Faster
                 </p>
               </div>{" "}
@@ -285,7 +277,7 @@ const AboutUs = () => {
               {/* First paragraph bolded */}
               <div className="flex justify-end">
                 {/* Title */}
-                <p className="quote w-[50%] md:quote md:w-[55%]">
+                <p className="text-body w-[50%] md:w-[40%]">
                   <i className="font-avenir-black indent-8">
                     At FullSuite, we are redefining how startups scale—offering
                     seamless, cost-efficient solutions to help you grow with
@@ -296,7 +288,7 @@ const AboutUs = () => {
               <p className=""></p> <br />
               <div className="flex justify-end">
                 {/* Second paragraph */}
-                <p className="w-1/2 md:w-[55%] indent-8 text-base sm:text-lg md:text-xl">
+                <p className="w-[60%] md:w-[55%] indent-8 text-body">
                   FullSuite was built to empower venture-backed startups with
                   the operational and financial expertise they need to scale
                   efficiently. Our team understands the challenges of rapid
@@ -318,7 +310,7 @@ const AboutUs = () => {
                 </p>
               </div>
               <div className="flex justify-end">
-                <p className="mt-2 md:mt-4 indent-8 text-[12px] md:text-[14px]  lg:text-[16px] font-avenir-roman-oblique">
+                <p className="mt-2 md:mt-4 indent-8 text-small font-avenir-roman-oblique">
                   ~ Maggie
                 </p>
               </div>
@@ -332,50 +324,54 @@ const AboutUs = () => {
               alt=""
             />
             <img
-              className="hidden md:block h-full w-full"
+             className="hidden md:block lg:hidden h-full w-full"
+             src={bgMaggieTablet}
+             alt=""
+           />
+           <img
+            className="hidden md:block lg:block xl:hidden h-full w-full"
+            src={bgMaggieLg}
+            alt=""
+          />
+            <img
+              className="hidden lg:hidden xl:block h-full w-full"
               src={bgMaggieDesktop}
               alt=""
             />
           </div>
         </section>
-
+        <div className="py-5"></div>    <div className="flex justify-end scale-x-[-1]">
+          <img className="dots-line" src={dotsLine} alt="3 dots and a line" />
+        </div> 
         {/* Testimonials */}
         <section id="testimonials">
           <div className="flex justify-end scale-x-[-1]">
-            <img className="dots-line" src={dotsLine} alt="3 dots and a line" />
+         
           </div>
           <Testimonials />
         </section>
-
+         <div className="flex justify-end scale-x-[-1] rotate-180">
+          <img className="dots-line" src={dotsLine} alt="3 dots and a line" />
+        </div>   <div className="py-5"></div>
         {/* A Day in the Pod */}
         <section className="mb-[2%] relative">
           <div className="day-in-the-pod">
-            <div className="relative pt-[4%] flex flex-col items-end">
-              <img className="w-1/2" src={dotsLine} alt="3 dots and a line" />
+            <div className="relative pt-[4%] flex flex-col items-end mr-5 xl:mr-60">
               <div className="text-end pr-[7%] pt-[2%]">
-                <p className="more-about-us text-sm text-primary font-avenir-black">
+                <p className=" text-small text-primary font-avenir-black">
                   More about us
                 </p>
-                <p className="title text-lg font-avenir-black">
+                <p className="text-h4 font-avenir-black">
                   A Day in the Pod!
                 </p>
               </div>
             </div>
-            {/* <div className="w-[45%]">
-              <img
-                className="object-cover"
-                src={FillerBoxes}
-                alt="filler boxes"
-              />
-            </div> */}
           </div>
           <div className="w-[80%] max-w-[1200px] pt-5 md:pt-20 mx-auto">
             <YouTubeEmbed videoId={"c6fs1gBpjQg"} />
           </div>
-          <div className="absolute sm:hidden">
-            <div className="w-[15vw] h-13 translate-y-3 -z-50 rounded-r-4xl bg-primary/5 "></div>
-          </div>
-          <div className="text-sm sm:text-lg mt-10 md:mt-[3%] xl: flex flex-col items-center mx-[10%]">
+         
+          <div className="text-body mt-10 md:mt-[3%] flex flex-col items-center mx-[10%]">
             <div className="mb-5">
               <p className="">
                 Feel like you belong to{" "}
@@ -388,7 +384,7 @@ const AboutUs = () => {
               className="font-avenir-black transition-all duration-300 cursor-pointer hover:bg-[#007a8e] w-full max-w-[200px] rounded-2xl text-white text-center no-underline bg-primary p-3"
               href="careers"
             >
-              <button className="cursor-pointer">Check our careers</button>
+              <button className="cursor-pointer text-small">Check our careers</button>
             </a>
           </div>
           <div className="py-20"></div>

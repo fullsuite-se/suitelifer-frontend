@@ -301,7 +301,7 @@ const Home = () => {
         <MotionUp>
           <div className="text-center pb-7">
             <p className="text-h4 font-avenir-black">
-              <span className="text-primary">Follow</span> our Socials!
+              <span className="text-primary">Follow</span> our Socials
             </p>
             <p className="text-small text-gray-500">
               Join the conversation and never miss an update!

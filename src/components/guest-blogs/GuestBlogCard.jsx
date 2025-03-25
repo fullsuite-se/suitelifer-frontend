@@ -1,4 +1,3 @@
-
 import formatTimestamp from "../TimestampFormatter";
 import { toSlug } from "../../utils/slugUrl";
 import { readingTime } from "reading-time-estimator";
@@ -55,7 +54,7 @@ const GuestBlogCard = ({
           </p>
 
           <p className="mt-2 !text-[12px] sm:!text-[14px] text-gray-300 line-clamp-3">
-            {article}
+            {removeHtmlTags(description)}
           </p>
 
           <p className="text-small text-gray-400 mt-2">{fullDate}</p>
