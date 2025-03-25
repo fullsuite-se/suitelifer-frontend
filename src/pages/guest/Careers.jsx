@@ -14,6 +14,7 @@ import PageMeta from "../../components/layout/PageMeta";
 import Footer from "../../components/Footer";
 import OnLoadLayoutAnimation from "../../components/layout/OnLoadLayoutAnimation";
 import { useLocation } from "react-router-dom";
+import DynamicLink from "../../components/buttons/ViewAll";
 
 const Careers = () => {
   const [jobs, setJobs] = useState([]);
@@ -363,13 +364,8 @@ const Careers = () => {
             {/* Top text */}
             <p className="px-[5%] font-avenir-black flex justify-between items-center">
               <span className="top-text">Current Job Openings</span>
-              <a
-                href="/careers-all"
-                className="animate-bounceCustom flex text-sm md:text-base no-underline text-primary hover:underline!"
-              >
-                View all{" "}
-                <span>{<ChevronRightIcon className="size-4 md:size-5" />}</span>
-              </a>
+              <DynamicLink text="View All Jobs"       href="/careers-all" className="custom-class" iconSize={5} />
+
             </p>
             {/* <div className="relative hidden lg:block">
               <div className="absolute overflow-hidden right-0 translate-y-12 -z-50 w-[25%] h-25 bg-secondary/10 rounded-l-4xl"></div>
@@ -416,22 +412,7 @@ const Careers = () => {
             )}
           </section>
 
-          {/* <div className="-translate-y-27">
-            <div className="hidden lg:block">
-              <div className="absolute overflow-hidden translate-x-[75%] -translate-y-15 -z-50 w-[10%] h-25 bg-secondary/5 rounded-2xl"></div>
-            </div>
-
-            <div className="hidden lg:block">
-              <div className="absolute overflow-hidden -z-50 w-[10%] h-25 bg-primary/5 rounded-2xl"></div>
-            </div>
-          </div>
-          <div className="hidden sm:block lg:hidden">
-            <div className="absolute right-0 verflow-hidden -translate-y-25 -z-50 w-[18%] h-40 bg-primary/5 rounded-l-4xl"></div>
-          </div>
-
-          <div className="hidden lg:block">
-            <div className="absolute right-0 overflow-hidden -translate-x-10 -translate-y-15 -z-50 w-[14%] h-40 bg-primary/5 rounded-4xl"></div>
-          </div> */}
+     
 
           {/* Podcasts */}
           <section className="pb-[7%] lg:pb-[5%] px-[5%]">

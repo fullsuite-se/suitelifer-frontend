@@ -3,15 +3,20 @@ import newsList from "../news/NewsList";
 import { Link } from "react-router-dom";
 import { toSlug } from "../../utils/slugUrl";
 import MotionUp from "../MotionUp";
+import DynamicLink from "../buttons/ViewAll";
 
 const HomeNews = () => {
   return (
     <section className="px-7 xl:px-17">
       <div className="mb-5 relative">
      
-   <MotionUp className=" font-avenir-black text-2xl lg:mb-15 sm:text-4xl md:text-4xl lg:text-5xl xl:text-7xl">
-  <span className="text-primary">Latest</span> Company News
+   <MotionUp className="mb-10 md:mb-5">
+  <div className="font-avenir-black text-h4 "><span className="text-primary">Latest</span> Company News</div>
+  <p className="text-small text-gray-500">
+  Stay updated with our latest achievements, events, and announcements!
+          </p>
 </MotionUp>
+
 
       </div>
       {/* CONTENTS */}
@@ -39,7 +44,7 @@ const HomeNews = () => {
                   transition={{ duration: 0.4, ease: "easeOut" }}
                   className="title w-fit hover:text-primary!"
                 >
-                  <p className="font-avenir-black  sm:text-xl lg:text-2xl line-clamp-2">
+                  <p className="font-avenir-black text-body line-clamp-2">
                     {newsList[0].title}
                   </p>
                 </MotionUp>
@@ -50,7 +55,7 @@ const HomeNews = () => {
                   transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
                   className="news-info py-1 md:py-2 mb-2 no-underline!"
                 >
-                  <p className="text-[12px]">
+                  <p className="text-small">
                     <span className="text-primary">{newsList[0].author}</span>
                     <span className="text-primary">&nbsp; |</span>
                     <span className="text-gray-400">
@@ -58,7 +63,7 @@ const HomeNews = () => {
                     </span>
                   </p>
                 </MotionUp> <div className="news-desc pr-2 mb-2">
-                        <p className="font-avenir text-[10px] line-clamp-3  md:line-clamp-5! xl:line-clamp-3! sm:text-[12px] md:text-sm text-gray-500 ">
+                        <p className="font-avenir line-clamp-3  md:line-clamp-5! xl:line-clamp-3! text-body text-gray-500 ">
                           {newsList[0].article}
                         </p>
                       </div>
@@ -69,13 +74,9 @@ const HomeNews = () => {
         <br />
         {/* OTHER NEWS (Remaining Items) */}
         <div className="lg:w-1/2 flex flex-col max-h-full overflow-y-auto gap-2 pb-2">
-          <a
-            className="text-[12px] z-10 md:mt-2 pr-2 lg:mt-2 sm:text-[14px] no-underline text-primary font-avenir-black flex items-center justify-end gap-1"
-            href="news"
-          >
-            <span className="flex items-end ">View all</span>
-            <ChevronRightIcon className="size-4 sm:size-5 mb-1" />
-          </a>
+        
+        <DynamicLink text="See More News" href="/news" className="custom-class" iconSize={5} />
+
           {newsList.slice(1, 4).map((news) => (
             <Link
               key={news.id}
@@ -91,20 +92,20 @@ const HomeNews = () => {
                       <div className="mb-1 ">
                         <p
                           title={news.title}
-                          className="font-avenir-black  text-[12px] line-clamp-2 sm:text-[16px] md:text-lg pr-2 font-avenir-black"
+                          className="font-avenir-black  text-body pr-2 font-avenir-black"
                         >
                           {news.title}
                         </p>
                       </div>
                       {/* DESCRIPTION */}
-                      <div className="news-desc pr-2 mb-2">
-                        <p className="font-avenir text-[10px] line-clamp-2 sm:text-[12px] md:text-sm sm:line-clamp-3   text-gray-500">
+                      <div className="hidden md:block news-desc pr-2 mb-2">
+                        <p className="font-avenir line-clamp-2 text-body sm:line-clamp-3   text-gray-500">
                           {news.article}
                         </p>
                       </div>
                       {/* AUTHOR AND READ TIME */}
                       <div className="news-info">
-                        <p className="text-sm text-[10px] sm:text-[12px] md:text-sm">
+                        <p className="text-small">
                           <span className="text-primary">
                             {news.author} &nbsp; |
                           </span>

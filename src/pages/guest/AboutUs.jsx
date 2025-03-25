@@ -82,7 +82,7 @@ const AboutUs = () => {
               src="https://images.unsplash.com/photo-1739382121445-19b3460a9e7a?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             />
           </div>
-          <div className="about-text-banner flex flex-col mb-2">
+          <div className="about-text-banner flex flex-col mb-2 xl:pl-10">
             <h2 className="font-avenir-black px-5">{content.textBanner}</h2>
 
             {/* <motion.div
@@ -106,7 +106,7 @@ const AboutUs = () => {
             {/* <h2 className="font-avenir-black lg:text-4xl! text-center m-0!">
               Lorem, ipsum dolor it
             </h2> */}
-            <p className="text-sm md:text-base mb-5">
+            <p className="text-base sm:text-lg md:text-xl mb-5">
               FullSuite was originally founded by Maggie Po on October 8, 2014
               as Offshore Concept Consulting, Inc. In 2018, the founder acquired
               full ownership of the brand name, FullSuite because it embodied
@@ -117,7 +117,7 @@ const AboutUs = () => {
               operational functions—especially the ones their AI systems can’t
               yet automate.
             </p>
-            <p className="text-sm md:text-base">
+            <p className="text-base sm:text-lg md:text-xl">
               In 2020, the legal entity was changed to Offshore Concept BPO
               Services, Inc. to reflect in the name the more accurate
               representation of its services. But, the brand name is still in
@@ -141,7 +141,7 @@ const AboutUs = () => {
             <p className="font-avenir-black py-3 !text-xl lg:!text-2xl">
               “{videoTitle}”
             </p>
-            <p className="text-sm md:text-base">
+            <p className="text-base sm:text-lg md:text-xl">
               In this exclusive podcast interview, Maggie, the CEO of FullSuite
               Company, shares her journey of resilience and leadership in the
               competitive world of BPO. From navigating challenges to redefining
@@ -169,7 +169,7 @@ const AboutUs = () => {
           <h2 className="font-avenir-black lg:text-4xl! text-center m-0!">
             The suitelifer...
           </h2>
-          <div className="flex flex-col lg:flex-row lg:justify-center lg:mb-[7%] py-[5%] pb-[12%] md:pb-[4%] gap-6 lg:gap-10">
+          <div className="flex flex-col lg:flex-row lg:justify-center lg:mb-[7%] py-[5%] pb-[12%] md:pb-[4%] gap-6 lg:gap-10 text-base sm:text-lg md:text-xl">
             <div className="flex justify-evenly lg:flex-none lg:gap-10">
               {/* 1 */}
               <CoreValueCard
@@ -180,7 +180,7 @@ const AboutUs = () => {
                   />
                 }
                 text={
-                  <p>
+                  <p >
                     is a <br />
                     <b>team player</b>
                   </p>
@@ -277,7 +277,7 @@ const AboutUs = () => {
               <br />
               <div className="flex justify-end">
                 {/* Title */}
-                <p className="title w-[60%] font-avenir-black">
+                <p className="title w-[60%] font-avenir-black ">
                   Scaling Smarter, Growing Faster
                 </p>
               </div>{" "}
@@ -296,7 +296,7 @@ const AboutUs = () => {
               <p className=""></p> <br />
               <div className="flex justify-end">
                 {/* Second paragraph */}
-                <p className="w-1/2 md:w-[55%] indent-8">
+                <p className="w-1/2 md:w-[55%] indent-8 text-base sm:text-lg md:text-xl">
                   FullSuite was built to empower venture-backed startups with
                   the operational and financial expertise they need to scale
                   efficiently. Our team understands the challenges of rapid
@@ -308,7 +308,7 @@ const AboutUs = () => {
               <br />
               {/* Third paragraph */}
               <div className="flex justify-end">
-                <p className="w-[48%] md:w-[55%] indent-8">
+                <p className="w-[48%] md:w-[55%] indent-8 text-base sm:text-lg md:text-xl">
                   We take pride in being the trusted partner of some of the most
                   ambitious startups, ensuring they have the support and
                   infrastructure needed to thrive in a competitive market.

@@ -13,10 +13,10 @@ const HomeBlogSpot = () => {
         className="w-full"
       >
         <div className="ml-[6%] mt-10 mb-[2%] text-white">
-          <p className="title-header font-avenir-black">
-            New Blog Posts
+          <p className="text-h4 font-avenir-black">
+            <span className="text-secondary">New</span> Blog Posts
           </p>
-          <p className="title-caption">Insights, tips, and stories—read the latest from our team!</p>
+          <p className="text-small">Insights, tips, and stories—read the latest from our team!</p>
         </div>
 
       </MotionUp>

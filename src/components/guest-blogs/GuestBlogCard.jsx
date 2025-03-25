@@ -38,11 +38,11 @@ const GuestBlogCard = ({
         </div>
 
         <div className="absolute left-0 bottom-0 p-4 text-white">
-          <h2 className="font-avenir-black !text-base sm:!text-lg md:!text-lg  group-hover:text-secondary transition duration-300 ease-in-out">
+          <p className="font-avenir-black text-body group-hover:text-secondary transition duration-300 ease-in-out">
             {title}
-          </h2>
+          </p>
 
-          <p className="!text-[12px] sm:!text-[14px] line-clamp-1 mt-1">
+          <p className="text-small line-clamp-1 mt-1">
             <span className="text-secondary font-avenir-black">
               {" "}
               {createdBy}
@@ -58,7 +58,7 @@ const GuestBlogCard = ({
             {article}
           </p>
 
-          <p className="text-xs text-gray-400 mt-2">{fullDate}</p>
+          <p className="text-small text-gray-400 mt-2">{fullDate}</p>
         </div>
       </NavLink>
     </section>
