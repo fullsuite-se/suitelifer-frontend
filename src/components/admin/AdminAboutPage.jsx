@@ -1,28 +1,34 @@
 import { useState } from "react";
 import { Typography } from "@mui/material";
 import { EyeIcon } from "lucide-react";
+import { BookmarkSquareIcon } from "@heroicons/react/24/outline";
 
 const AboutPage = ({ handlePreview }) => {
   const [mission, setMission] = useState(
-    "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+    "Love is the most powerful force in the universe. It is the heartbeat of the moral cosmos. SABI NI MAMA."
+    
   );
   const [vision, setVision] = useState(
-    "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+    "Goal is to create a world where everyone has a sense of belonging."
   );
   const [podVideoUrl, setPodVideoUrl] = useState(
     "https://youtube/choDMzlBpvs?feature=shared"
   );
 
+  const handleSave = () => {
+    const data = {
+      mission,
+      vision,
+      podVideoUrl,
+    };
+    console.log(data);
+  };
+
   return (
     <div className="about-page p-1">
-      <div className="about-and-prev flex w-full gap-1">
-        <button
-          type="button"
-          onClick={handlePreview}
-          className="ml-auto flex gap-2 p-1 text-sm items-center"
-        >
-          <EyeIcon className="size-5" />
-          Preview Changes
+      <div className="flex justify-end px-4 py-2">
+        <button className="btn-primary flex items-center p-2 gap-2" onClick={handleSave}>
+          <BookmarkSquareIcon className="size-5" /> <span>Publish Changes</span>
         </button>
       </div>
 
@@ -54,6 +60,17 @@ const AboutPage = ({ handlePreview }) => {
         value={podVideoUrl}
         onChange={(e) => setPodVideoUrl(e.target.value)}
       />
+
+      <div className="about-and-prev flex w-full gap-1">
+        <button
+          type="button"
+          onClick={handlePreview}
+          className="ml-auto flex gap-2 p-1 text-sm items-center mt-5"
+        >
+          <EyeIcon className="size-5" />
+          Preview Changes
+        </button>
+      </div>
     </div>
   );
 };
