@@ -55,30 +55,6 @@ const Home = () => {
       delay: 0.4,
     },
   ];
-  // useEffect(() => {
-  //   window.scroll(0, 0);
-  //   const left = document.getElementById("left-side");
-  //   if (!left) return; // Prevent errors if the element is not yet rendered
-
-  //   const handleOnMove = (e) => {
-  //     const p = (e.clientX / window.innerWidth) * 100;
-  //     left.style.width = `${p}%`; // Added '%' to properly apply width
-  //   };
-
-  //   document.addEventListener("mousemove", handleOnMove);
-  //   document.addEventListener("touchmove", (e) => handleOnMove(e.touches[0]));
-
-  //   const handleResize = () => {
-  //     setWidth(window.innerWidth);
-  //   };
-
-  //   window.addEventListener("resize", handleResize);
-
-  //   // Clean up the event listener on unmount
-  //   return () => {
-  //     window.removeEventListener("resize", handleResize);
-  //   };
-  // }, [width]);
   useEffect(() => {
     window.scroll(0, 0);
     const left = document.getElementById("left-side");
@@ -261,40 +237,51 @@ const Home = () => {
       <HomeGoalsOperations />
       {/* <div className="h-300 bg-red-900"></div> */}
 
-      <section className="px-10 xl:px-17 pb-[5%]">
-        <div className="text-center pb-7">
-          <p className="title-header font-bold font-avenir-black text-dark">
-            Kickstart Your Career With Us!
-          </p>
-          <p className="title-caption text-gray-500">
-            Watch the video below to see what makes us the perfect place to grow
-            your career!
-          </p>
-        </div>
-        <div className="flex justify-center">
-          <video
-            className="aspect-16/9 rounded-xl md:rounded-2xl lg:rounded-4xl object-cover"
-            autoPlay
-            loop
-            muted
-            controls
-          >
-            <source src={videoTemplate} type="video/mp4" />
-          </video>
-        </div>
+      <section className="px-5 xl:px-17 pb-[5%]">
+        <MotionUp>
+          <div className="text-center pb-7">
+            <p className="text-h4 font-avenir-black">
+              <span className="text-primary">Kickstart</span> Your Career With
+              Us!
+            </p>
+            <p className="text-small text-gray-500">
+              Watch the video below to see what makes us the perfect place to
+              grow your career!
+            </p>
+          </div>
+        </MotionUp>
+        <MotionUp>
+          <div className="flex justify-center">
+            <video
+              className="aspect-16/9 rounded-xl md:rounded-2xl lg:rounded-4xl object-cover"
+              autoPlay
+              loop
+              muted
+              controls
+            >
+              <source src={videoTemplate} type="video/mp4" />
+            </video>
+          </div>
+        </MotionUp>
       </section>
 
-      <section className="bg-primary pt-[5%] mt-[7%] my-[5%]">
-        <div className="text-center text-white px-7 xl:px-17">
-          <p className="title-header font-bold font-avenir-black">
-            Your Next Career Starts Here
-          </p>
-          <p className="title-caption">
-            Watch the video below to see what makes us the perfect place to grow
-            your career!
-          </p>
-        </div>
-        <CareerCarousel />
+      <section className="bg-primary pt-[15%] md:pt-[10%] lg:pt-[5%] mt-[20%] md:mt-[7%] my-[5%]">
+        <MotionUp>
+          <div className="text-center text-white px-7 xl:px-17">
+            <p className="text-h4 font-avenir-black">
+              Your Next <span className="text-secondary">Career</span> Starts
+              Here
+            </p>
+            <p className="text-small">
+              Watch the video below to see what makes us the perfect place to
+              grow your career!
+            </p>
+          </div>
+        </MotionUp>
+        <br />
+        <MotionUp>
+          <CareerCarousel />
+        </MotionUp>
       </section>
 
       {/* NEWS SECTION */}
@@ -311,10 +298,17 @@ const Home = () => {
       </div>
 
       <section className="relative py-15 md:py-[5%] px-7 ">
-        <p className="font-avenir-black text-lg text-center pb-7">
-          Follow Our Socials
-        </p>
-        <div className="flex justify-center gap-7 md:gap-15">
+        <MotionUp>
+          <div className="text-center pb-7">
+            <p className="text-h4 font-avenir-black">
+              <span className="text-primary">Follow</span> our Socials!
+            </p>
+            <p className="text-small text-gray-500">
+              Join the conversation and never miss an update!
+            </p>
+          </div>
+        </MotionUp>
+        <div className="flex justify-center gap-7 md:gap-15 mt-5">
           <a
             href={socmedPlatforms[0].href}
             title={socmedPlatforms[0].href}

@@ -109,7 +109,7 @@ const CareerCarousel = () => {
                         </div>
                       </>
                     )}
-                    <p className="text-center mt-3 py-5 font-avenir-black text-lg sm:text-xl">
+                    <p className="text-center mt-3 py-5 font-avenir-black text-body">
                       {career.name || <Skeleton width={"50%"} />}
                     </p>
                   </div>

@@ -3,7 +3,6 @@ import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
 import BackButton from "../../components/BackButton";
-import FileUploadIcon from "../../assets/icons/file-upload";
 import { useNavigate, useParams } from "react-router-dom";
 import BackToTop from "../../components/BackToTop";
 import { toSlug, unSlug } from "../../utils/slugUrl";
@@ -25,7 +24,6 @@ const ApplicationForm = () => {
   const [progress, setProgress] = useState(0);
 
   const { id, jobPosition } = useParams();
-  const [position, setPosition] = useState(jobPosition);
   const [applicationDetails, setApplicationDetails] = useState({
     first_name: "",
     middle_name: "",
@@ -50,16 +48,12 @@ const ApplicationForm = () => {
 
   // =========== START: drag and drop using dropzone ===========
 
-  const [dataURL, setDataURL] = useState(null);
-  const [uploadedURL, setUploadedURL] = useState(null);
   const [CV, setCV] = useState(null);
   const [isFileTooLarge, setIsFileTooLarge] = useState(false);
   const [isFileRemovedOnce, setIsFileRemovedOnce] = useState(false);
   const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
   const onDrop = useCallback((acceptedFiles) => {
-    // Here, you can do something with the files
-
     const selectedFile = acceptedFiles[0];
     if (selectedFile) {
       if (selectedFile.size > MAX_FILE_SIZE) {
@@ -88,12 +82,6 @@ const ApplicationForm = () => {
   // ============================= END =============================
 
   const [showReferralInput, setShowReferralInput] = useState(false);
-  const [file, setSelectedFile] = useState(null);
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    setSelectedFile((f) => selectedFile);
-    console.log(selectedFile);
-  };
 
   const handleSubmitApplication = async (e) => {
     e.preventDefault();
@@ -104,13 +92,48 @@ const ApplicationForm = () => {
       return;
     }
 
-    if (progress != 100){
+    if (progress != 100) {
       toast.error("Uploading... Please wait.");
-      return
+      return;
     }
 
     try {
-      console.log(import.meta.env.VITE_ATS_API_BASE_URL);
+      const blackListPayload = {
+        applicant: JSON.stringify({
+          first_name: applicationDetails.first_name,
+          middle_name: applicationDetails.middle_name ?? "",
+          last_name: applicationDetails.last_name,
+          birth_date: applicationDetails.birth_date,
+          gender: applicationDetails.gender,
+          email_1: applicationDetails.email_1,
+          mobile_number_1: applicationDetails.mobile_number_1,
+        }),
+      };
+
+      const blacklistResponse = await atsAPI.post(
+        "/applicants/add/check-if-blacklisted",
+        blackListPayload
+      );
+
+      if (blacklistResponse.data.isBlacklisted) {
+        toast(
+          (t) => (
+            <span className="flex flex-row">
+              We have sent a notification to the email address you provided
+              regarding the status of your application.
+              <button
+                className="flex items-center justify-center w-fit h-[35%] my-auto ms-5 bg-gray-200 rounded px-2"
+                onClick={() => toast.dismiss(t.id)}
+              >
+                Dismiss
+              </button>
+            </span>
+          ),
+          { icon: "✉️" }
+        );
+        navigate("/careers");
+        return;
+      }
 
       const formData = new FormData();
       formData.append("file", CV);
@@ -121,7 +144,6 @@ const ApplicationForm = () => {
         ...ad,
         cv_link: upload_response.data.fileUrl,
       }));
-      console.log(applicationDetails);
 
       const response = await atsAPI.post("/applicants/add", {
         applicant: JSON.stringify(applicationDetails),
@@ -137,11 +159,10 @@ const ApplicationForm = () => {
         toast.success("Job Application Successful.");
 
         navigate("/congrats-application-form", { state: { assessmentUrl } });
-      } else {
-        toast.error("Job Application Unsuccessful.");
       }
     } catch (err) {
       console.log(err);
+      toast.error("Job Application Unsuccessful.");
     }
   };
   useEffect(() => {
@@ -183,8 +204,8 @@ const ApplicationForm = () => {
           <div className="md:px-5 lg:px-20 xl:px-50">
             {" "}
             <BackButton
-              type={unSlug(position) + " Details"}
-              backPath={`/careers/${toSlug(position)}`}
+              type={unSlug(jobPosition) + " Details"}
+              backPath={`/careers/${toSlug(jobPosition)}`}
               jobId={id}
             />
             <div className="py-5"></div>
@@ -464,7 +485,7 @@ const ApplicationForm = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <div class="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
-                      <div 
+                      <div
                         className="bg-primary h-2 rounded-full transition-all duration-300 w-[40%]"
                         style={{ width: `${progress}%` }}
                       ></div>

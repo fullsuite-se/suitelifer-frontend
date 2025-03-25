@@ -5,6 +5,7 @@ import { HelmetProvider } from "@dr.pogodin/react-helmet";
 // base folder contains the base styles
 import "./css/base/theme.css";
 import "./css/base/typography.css";
+import "./css/base/fontsizes.css";
 
 // responsive folder contains the responsive styles
 import "./css/responsive/footer.css";

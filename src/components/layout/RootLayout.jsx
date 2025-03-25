@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Outlet } from "react-router-dom";
 import EmployeeAside from "../../components/employee/EmployeeAside";
 import logoFull from "../../assets/logos/logo-fs-full.svg";
@@ -16,7 +16,7 @@ const RootLayout = () => {
 
   return (
     <section
-      className="flex gap-4 h-dvh flex-col lg:flex-row"
+      className="flex gap-4 h-dvh flex-col lg:flex-row overflow-hidden"
       style={{ maxWidth: "1800px", margin: "0 auto", padding: "0 1rem" }}
     >
       <section
@@ -25,7 +25,7 @@ const RootLayout = () => {
       >
         <EmployeeDrawer onClose={handleDrawer} />
       </section>
-      <section className="hidden lg:block">
+      <section className="hidden lg:block overflow-y-auto pr-3">
         <CMSNavigation />
       </section>
 
@@ -46,7 +46,7 @@ const RootLayout = () => {
         </main>
       </section>
 
-      <section className="hidden lg:block">
+      <section className="hidden lg:block overflow-y-auto">
         <EmployeeAside />
       </section>
     </section>

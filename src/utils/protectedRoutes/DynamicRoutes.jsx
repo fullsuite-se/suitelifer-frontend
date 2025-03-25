@@ -5,6 +5,7 @@ import AdminNewsCreate from "../../pages/admin/AdminNewsCreate.jsx";
 import AdminBlog from "../../pages/admin/AdminBlogs.jsx";
 import AdminNews from "../../pages/admin/AdminNews.jsx";
 import AdminBlogCreate from "../../pages/admin/AdminBlogCreate";
+import OnLoadLayoutAnimation from "../../components/layout/OnLoadLayoutAnimation.jsx";
 
 const DynamicRoutes = () => {
   const services = useStore((state) => state.services) || [];
@@ -12,8 +13,8 @@ const DynamicRoutes = () => {
   return (
     <Suspense
       fallback={
-        <div className="h-dvh w-dvw grid place-content-center">
-          <p>Loading...</p>
+        <div className="h-full w-full grid place-content-center">
+          <OnLoadLayoutAnimation />
         </div>
       }
     >

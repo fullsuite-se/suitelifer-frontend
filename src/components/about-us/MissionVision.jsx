@@ -7,7 +7,7 @@ const MissionVision = ({ imgMission, imgVision, missionSlogan, visionSlogan, mis
             OUR <span className="text-[#0097B2]">MISSION</span>
           </h2><br />
           <h3 className="font-avenir-black mt-4">{missionSlogan}</h3>
-          <p className="mt-4 text-gray-600  leading-7 md:leading-10 ">
+          <p className="mt-4 text-gray-600 text-base sm:text-lg md:text-xl  leading-7 md:leading-10 ">
             {missionContent}
           </p>
         </div>
@@ -21,7 +21,7 @@ const MissionVision = ({ imgMission, imgVision, missionSlogan, visionSlogan, mis
             OUR <span className="text-[#0097B2]">VISION</span>
           </h2><br />
           <h3 className="font-avenir-black mt-4">{visionSlogan}</h3>
-          <p className="mt-4 text-gray-600 leading-7 md:leading-10 ">
+          <p className="mt-4 text-gray-600 text-base sm:text-lg md:text-xl leading-7 md:leading-10 ">
            {visionContent}
           </p>
         </div>

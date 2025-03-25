@@ -50,7 +50,7 @@ const BlogCarousel = () => {
           {companyBlogs?.slice(0, 5).map((blog) => (
             <SwiperSlide key={blog.cblogId}>
               <div className="p-4 px-[10%]">
-                <GuestBlogCard {...blog} id={blog.cblogId} />
+                <GuestBlogCard {...blog} created_at={blog.createdAt} id={blog.cblogId} />
               </div>
             </SwiperSlide>
           ))}
