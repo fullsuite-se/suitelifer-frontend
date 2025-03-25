@@ -1,111 +1,114 @@
-import React, { useState, useEffect } from "react";
-import api from "../../utils/axios";
-import JobPost from "./JobPost";
-import { Swiper, SwiperSlide, useSwiperSlide } from "swiper/react";
-
-import {
-  Navigation,
-  Pagination,
-  EffectCoverflow,
-  EffectCards,
-} from "swiper/modules";
-
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import "swiper/css/effect-coverflow";
-import "swiper/css/effect-cards";
+import { toSlug } from "../../utils/slugUrl";
+import { NavLink } from "react-router-dom";
 
-// const jobs = [
-//   {
-//     title: "Software Developer",
-//     employmentType: "Full-time",
-//     salary: "50,000",
-//     description:
-//       "We are seeking a skilled Software Developer to join our team and contribute to the development of innovative software solutions. You will work on designing, coding, testing, and maintaining applications while collaborating with cross-functional teams to meet business and technical requirements. This role requires problem-solving skills, attention to detail, and a passion for technology.",
-//     setup: "On-site",
-//   },
-//   {
-//     title: "Project Manager",
-//     employmentType: "Part-time",
-//     description:
-//       "Project manager needed to oversee software development projects. Must have experience with Agile methodologies and excellent communication skills.",
-//     setup: "On-site",
-//   },
-//   {
-//     title: "UX Designer",
-//     employmentType: "Contract",
-//     salary: "60,000",
-//     description:
-//       "Seeking a creative UX Designer to improve user experience for our web and mobile applications. Must have a strong portfolio and experience with Figma.",
-//     setup: "On-site",
-//   },
-//   {
-//     title: "Data Scientist",
-//     employmentType: "Full-time",
-//     salary: "70,000",
-//     description:
-//       "Data Scientist needed to analyze large datasets and provide insights to drive business decisions. Must have experience with Python and machine learning.",
-//     setup: "On-site",
-//   },
-//   {
-//     title: "DevOps Engineer",
-//     employmentType: "Full-time",
-//     description:
-//       "DevOps Engineer needed to manage CI/CD pipelines and ensure smooth deployment of applications. Must have experience with AWS and Docker.",
-//     setup: "On-site",
-//   },
-// ];
-
-export default function JobCarousel() {
-  const [jobs, setJobs] = useState([]);
-
-  useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        const response = await api.get("/api/all-jobs");
-
-        setJobs(response.data.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    fetchJobs();
-  }, []);
-
+const JobCarouselVersion2 = ({ jobs }) => {
   return (
-    <>
-      <Swiper
-        effect={"coverflow"}
-        grabCursor={false}
-        draggable={false}
-        allowTouchMove={false}
-        centeredSlides={true}
-        loop={jobs.length > 3}
-        modules={[Navigation, Pagination, EffectCoverflow]}
-        slidesPerView={2}
-        // slidesPerGroup={1}
-        autoplay={{ delay: 300 }}
-        spaceBetween={0}
-        // coverflowEffect={{ rotate: 0, stretch: 0, depth: 50, modifier: 0.25 }}
-        pagination={{
-          el: ".swiper-pagination",
-          clickable: true,
-          dynamicBullets: true,
-        }}
-        navigation
-        className="flex flex-col justify-center max-w-4xl xl:max-w-5xl"
-      >
-        {jobs.map((job, index) => {
-          return (
-            <SwiperSlide key={index}>
-              <JobPost {...job} />
-            </SwiperSlide>
-          );
-        })}
-        <div className="swiper-pagination"></div>
-      </Swiper>
-    </>
+    <section className="">
+      <div className="mx-auto max-w-[1550px] px-4 sm:px-6 lg:px-8">
+        <Swiper
+          modules={[Navigation, Pagination, Autoplay]}
+          pagination={{ clickable: true, enabled: true }}
+          spaceBetween={20}
+          slidesPerView={1}
+          autoplay={{ delay: 5000 }}
+          loop
+          // navigation={true}
+          breakpoints={{
+            0: {
+              slidesPerView: 1,
+              spaceBetween: 20,
+              centeredSlides: true,
+            },
+            600: {
+              slidesPerView: 2,
+              spaceBetween: 28,
+              centeredSlides: true,
+            },
+            768: {
+              slidesPerView: 2,
+              spaceBetween: 28,
+              centeredSlides: true,
+            },
+            1024: {
+              slidesPerView: 3,
+              spaceBetween: 32,
+              centeredSlides: true,
+            },
+          }}
+          className="w-full"
+        >
+          {jobs
+            .filter((_, index) => index < 4) 
+            .map((job, index) => (
+              <SwiperSlide key={index}>
+                {({ isActive }) => (
+                  <div
+                    className={`p-7 ease-out min-h-100 flex flex-col justify-center bg-white shadow-lg rounded-lg transition-transform duration-300 ${
+                      isActive
+                        ? "scale-90 md:scale-110 bg-primary md:hover:scale-115"
+                        : "scale-90 opacity-75 hover:-translate-y-2"
+                    }`}
+                  >
+                    <p className="text-lg font-avenir-black font-semibold text-gray-900">
+                      {job.jobTitle}
+                    </p>
+                    <div className="flex flex-col mb-4">
+                      <span className="text-sm font-avenir-roman mb-3 text-gray-500">
+                        <span className="text-secondary">|</span>{" "}
+                        {job.industryName}
+                      </span>
+                      <span className={`text-primary `}>
+                        {job.employmentType}, {job.setupName}
+                      </span>
+                    </div>
+                    {isActive && job.salaryMin != null && job.salaryMin > 0 && (
+                      <>
+                        <p className="text-[0.75em] text-gray-400">
+                          Expected Salary
+                        </p>
+                        <p className="text-[18px] font-avenir-black mb-3 text-primary">
+                          {Intl.NumberFormat("en-US", {
+                            style: "currency",
+                            currency: "PHP",
+                            maximumFractionDigits: 0,
+                          }).format(job.salaryMin)}
+                          <span className="text-xs font-avenir-roman">
+                            {" "}
+                            min
+                          </span>
+                        </p>
+                      </>
+                    )}
+                    {isActive && (
+                      <p
+                        className={`mb-3 text-gray-700 ${
+                          job.salaryMin ? "line-clamp-5" : "line-clamp-7"
+                        }`}
+                      >
+                        {job.description}
+                      </p>
+                    )}
+                    {isActive && (
+                      <NavLink
+                        to={`/careers/${toSlug(job.jobTitle)}`}
+                        state={{ jobId: job.jobId }}
+                      >
+                        <button className="bg-primary cursor-pointer transition-all duration-300 ease-in-out hover:bg-[#007a8e] text-white p-2 rounded-xl w-full mt-auto">
+                          View Full Details
+                        </button>
+                      </NavLink>
+                    )}
+                  </div>
+                )}
+              </SwiperSlide>
+            ))}
+        </Swiper>
+      </div>
+    </section>
   );
-}
+};
+
+export default JobCarouselVersion2;

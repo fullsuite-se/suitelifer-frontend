@@ -7,7 +7,6 @@ const GuestBlogCardSmall = ({
   title,
   author,
   readTime,
-  article,
   created_at,
   images,
 }) => {

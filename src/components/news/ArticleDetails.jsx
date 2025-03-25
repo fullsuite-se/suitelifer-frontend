@@ -11,7 +11,7 @@ import formatTimestamp from "../../components/TimestampFormatter";
 import BackToTop from "../BackToTop";
 import { Helmet } from "@dr.pogodin/react-helmet";
 import { useEffect } from "react";
-import FooterNew from "../FooterNew";
+import Footer from "../Footer";
 import Carousel from "../Carousel";
 import { removeHtmlTags } from "../../utils/removeHTMLTags";
 import { readingTime } from "reading-time-estimator";
@@ -167,7 +167,7 @@ const ArticleDetails = ({
           </div>
         </main>
         <div className="h-30"></div> <BackToTop />
-        <FooterNew />
+        <Footer />
       </section>
     </>
   );

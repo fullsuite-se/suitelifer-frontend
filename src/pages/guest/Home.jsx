@@ -5,7 +5,7 @@ import HeroSection from "../../components/home/HomeHeroSection";
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
-import Footer from "../../components/Footer";
+
 import kb_startup from "../../assets/images/keyboard-startup.svg";
 import HomeGoalsOperations from "../../components/home/HomeGoalsOperations";
 import HomeNews from "../../components/home/HomeNews";
@@ -17,7 +17,7 @@ import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
 import { Helmet } from "@dr.pogodin/react-helmet";
 import PageMeta from "../../components/layout/PageMeta";
-import FooterNew from "../../components/FooterNew";
+import Footer from "../../components/Footer";
 import CareerCarousel from "../../components/home/CareerCarousel";
 import videoTemplate from "../../assets/videos/video-template.mp4";
 import Spotify from "../../assets/logos/Spotify";
@@ -93,11 +93,11 @@ const Home = () => {
         left.style.width = "0%";
       }, 10000);
     };
-  
-    setTimeout(transitionToBlue, 3000); 
-  
-    const interval = setInterval(transitionToBlue, 13000); 
-  
+
+    setTimeout(transitionToBlue, 3000);
+
+    const interval = setInterval(transitionToBlue, 13000);
+
     return () => {
       clearInterval(interval);
     };
@@ -311,7 +311,9 @@ const Home = () => {
       </div>
 
       <section className="relative py-15 md:py-[5%] px-7 ">
-        <p className="font-avenir-black text-lg text-center pb-7">Follow Our Socials</p>
+        <p className="font-avenir-black text-lg text-center pb-7">
+          Follow Our Socials
+        </p>
         <div className="flex justify-center gap-7 md:gap-15">
           <a
             href={socmedPlatforms[0].href}
@@ -381,7 +383,7 @@ const Home = () => {
       {/* <div className="h-40"></div> */}
       <BackToTop />
 
-      <FooterNew />
+      <Footer />
     </section>
   );
 };

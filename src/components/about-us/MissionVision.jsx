@@ -12,7 +12,7 @@ const MissionVision = ({ imgMission, imgVision, missionSlogan, visionSlogan, mis
           </p>
         </div>
         
-        <div className="hidden lg:block w-px h-150 mx-8 bg-gradient-to-b from-transparent via-[#0097B2] lg:-mt-10 to-transparent"></div>
+        <div className="hidden lg:block w-px h-150 mx-8 bg-gradient-to-b from-transparent via-[#0097B2] -mt-10 to-transparent"></div>
         
         
         <div className="text-center max-w-md space-y-4">
