@@ -7,7 +7,7 @@ import {
 
 const VideoPreview = ({ handlePreview }) => {
   const [videoFile, setVideoFile] = useState(
-    "blob:http://localhost:5173/f9c56911-0435-40d5-a144-063c5f718b8e"
+    "blob:http://localhost:5173/50af3f9f-0268-42ee-96c5-f9ecf0d644da"
   );
 
   const handleUpload = (event) => {
@@ -16,6 +16,13 @@ const VideoPreview = ({ handlePreview }) => {
       const videoURL = URL.createObjectURL(file);
       setVideoFile(videoURL);
     }
+  };
+
+  const extractYouTubeID = (url) => {
+    const match = url.match(
+      /(?:youtube\.com\/(?:.*v=|.*\/)|youtu\.be\/)([^"&?/ ]{11})/
+    );
+    return match ? match[1] : null;
   };
 
   const handleSave = () => {
@@ -45,20 +52,38 @@ const VideoPreview = ({ handlePreview }) => {
             className="hidden"
             id="videoUpload"
           />
-          <div className=" max-w-[1000px] aspect-video border-3 rounded-3xl bg-gray-200 overflow-hidden">
+          <div className="min-w-[1000px] aspect-video border-3 rounded-3xl bg-gray-200 overflow-hidden">
             {videoFile ? (
-              <video
-                src={videoFile}
-                className="w-full h-full object-cover"
-                controls
-                autoPlay
-                loop
-                muted
-              />
+              videoFile.includes("youtube.com") ||
+              videoFile.includes("youtu.be") ? (
+                <iframe
+                  className="w-full h-full"
+                  src={`https://www.youtube.com/embed/${extractYouTubeID(
+                    videoFile
+                  )}`}
+                  title="YouTube video"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  loop
+                  muted
+                  autoPlay
+                ></iframe>
+              ) : (
+                <video
+                  src={videoFile}
+                  className="w-full h-full object-cover"
+                  controls
+                  autoPlay
+                  loop
+                  muted
+                />
+              )
             ) : (
               <p className="text-gray-500">No video selected</p>
             )}
           </div>
+
           <div className="mt-4 flex w-full gap-1 items-center">
             <button
               type="button"
