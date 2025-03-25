@@ -89,22 +89,20 @@ function JobCourse() {
       url: "",
       description: "",
       jobTitle: "",
-      createdAt: new Date().toISOString(), // Set a valid created date
-      createdBy: "Admin", // Replace with dynamic user if needed
+      createdAt: new Date().toISOString(),
+      createdBy: "Admin",
     });
     setOpenDialog(true);
   };
 
   const handleSave = () => {
     if (currentCourse.id) {
-      // Update an existing course
       setRowCourseData((prevData) =>
         prevData.map((course) =>
           course.id === currentCourse.id ? currentCourse : course
         )
       );
     } else {
-      // Add a new course
       setRowCourseData((prevData) => [
         ...prevData,
         { ...currentCourse, id: Date.now().toString() },
@@ -120,7 +118,6 @@ function JobCourse() {
     }));
   };
 
-  // Handle checkboxes properly
   const handleCheckboxChange = (jobId) => (event) => {
     setCurrentCourse((prevCourse) => {
       const updatedRelatedJob = event.target.checked
@@ -259,14 +256,15 @@ function JobCourse() {
               <label className="block text-gray-700 font-avenir-black">
                 Title<span className="text-primary">*</span>
               </label>
+
               <input
                 name="title"
                 required
-                value={setCurrentCourse.title}
-                onChange={(e) => handleInputChange(e)}
+                value={currentCourse.title}
+                onChange={handleInputChange("title")}
                 rows={3}
                 className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
-              ></input>
+              />
             </div>
             <div>
               <label className="block text-gray-700 font-avenir-black">
@@ -275,8 +273,8 @@ function JobCourse() {
               <textarea
                 name="description"
                 required
-                value={setCurrentCourse.description}
-                onChange={(e) => handleInputChange(e)}
+                value={currentCourse.description}
+                onChange={handleInputChange("description")} 
                 rows={3}
                 className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
               ></textarea>
@@ -320,11 +318,10 @@ function JobCourse() {
               <input
                 name="url"
                 required
-                value={setCurrentCourse.url}
-                onChange={(e) => handleAddNew(e)}
-                rows={3}
+                value={currentCourse.url}
+                onChange={handleInputChange("url")}
                 className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
-              ></input>
+              />
             </div>
           </DialogContent>
           <DialogActions>
