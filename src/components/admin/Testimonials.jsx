@@ -255,7 +255,6 @@ function Testimonials() {
             {currentTestimonial.id ? "Edit Testimonial" : "Add Testimonial"}
           </DialogTitle>
           <DialogContent>
-     
             <div className="w-full mb-3">
               <label className="block text-gray-700 font-avenir-black">
                 Employee Name<span className="text-primary">*</span>
@@ -298,7 +297,7 @@ function Testimonials() {
 
             <div className="w-full mb-3">
               <label className="block text-gray-700 font-avenir-black">
-              Position<span className="text-primary">*</span>
+                Position<span className="text-primary">*</span>
               </label>
 
               <input
@@ -323,7 +322,12 @@ function Testimonials() {
                 name="visibility"
                 required
                 value={currentTestimonial.is_shown}
-                onChange={(e) => handleEdit(e)}
+                onChange={(e) =>
+                  setCurrentTestimonial({
+                    ...currentTestimonial,
+                    is_shown: Number(e.target.value), 
+                  })
+                }
                 className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
               >
                 <option value="" disabled>
