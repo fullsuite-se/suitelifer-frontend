@@ -68,17 +68,17 @@ const CMSNavigation = () => {
           isOpen={isOpenModal}
           handleClose={() => setIsOpenModal(false)}
         />
-        <section className={`relative ${isCollapse ? "pt-4" : "py-5"}`}>
+        <section className={`relative ${isCollapse ? "pt-8" : "py-5"}`}>
           <section
-            className="absolute top-8 right-0"
+            className={`${
+              isCollapse ? "flex justify-center" : "absolute top-8 right-0"
+            }`}
             onClick={handleCollapseBtn}
           >
             <SidebarCollapse direction={"left"} />
           </section>
           <div
-            className={`size-20 mx-auto mb-3 ${
-              isCollapse ? "mb-0 mt-10" : "mb-3"
-            }`}
+            className={`size-20 mx-auto mb-3 ${isCollapse ? "mt-3" : "mb-3"}`}
           >
             <img
               src="http://sa.kapamilya.com/absnews/abscbnnews/media/2020/tvpatrol/06/01/james-reid.jpg"
