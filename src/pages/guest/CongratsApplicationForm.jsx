@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Footer from "../../components/Footer";
+
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";

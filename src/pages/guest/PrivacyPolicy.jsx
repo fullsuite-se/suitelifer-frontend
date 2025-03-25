@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import Footer from "../../components/Footer";
+
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
@@ -10,7 +10,6 @@ import PrivacyPolicyContent from "../../components/legal/PrivacyPolicyContent";
 import BackToTop from "../../components/BackToTop";
 
 const PrivacyPolicy = () => {
-
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -40,16 +39,11 @@ const PrivacyPolicy = () => {
             sectionId="privacy-policy-content"
             classNameValue="w-32 md:w-40 lg:w-48"
           /> */}
-
-
-
           <section id="privacy-policy-content" className="mb-20">
-            
-
             <PrivacyPolicyContent />
-          </section> <BackToTop/>
-        
-          <FooterNeww />
+          </section>{" "}
+          <BackToTop />
+          <Footerw />
         </main>
       </div>
     </>

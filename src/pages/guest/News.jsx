@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Footer from "../../components/Footer";
+
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
@@ -10,7 +10,7 @@ import SearchingBlogOrNews from "../../components/news/SearchingBlogOrNews";
 import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
 import PageMeta from "../../components/layout/PageMeta";
-import FooterNew from "../../components/FooterNew";
+import Footer from "../../components/Footer";
 import api from "../../utils/axios";
 import toast from "react-hot-toast";
 import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
@@ -199,7 +199,7 @@ const News = () => {
         )}
       </main>
       <div className="h-20"></div> <BackToTop />
-      <FooterNew />
+      <Footer />
     </section>
   );
 };

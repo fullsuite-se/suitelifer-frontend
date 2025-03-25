@@ -1,38 +1,14 @@
 import { ChevronRightIcon } from "@heroicons/react/24/solid";
-import mo from "../../assets/images/mo.jpg";
-import financeOp from "../../assets/images/finance-op.svg";
-import kb_startup from "../../assets/images/keyboard-startup.svg";
-import adminOp from "../../assets/images/admin-op.svg";
 import newsList from "../news/NewsList";
 import { Link } from "react-router-dom";
 import { toSlug } from "../../utils/slugUrl";
-import { motion } from "framer-motion";
 import MotionUp from "../MotionUp";
 
 const HomeNews = () => {
   return (
     <section className="px-7 xl:px-17">
-      {/* TITLE: "LATEST COMPANY NEWS" */}
       <div className="mb-5 relative">
-        {/* <p
-          className="
-            absolute -z-10 
-            text-[100px] 
-            sm:text-[180px] 
-            md:text-[200px] 
-            lg:text-[280px] 
-            xl:text-[380px] 
-            -left-5 
-            lg:-left-13
-            xl:-left-15 transform 
-            -translate-y-[60px]
-            sm:-translate-y-[90px] 
-            md:-translate-y-[100px] 
-            lg:-translate-y-[150px] 
-            xl:-translate-y-[200px] font-avenir-black text-primary opacity-5"
-        >
-          NEWS
-        </p> */}
+     
    <MotionUp className=" font-avenir-black text-2xl lg:mb-15 sm:text-4xl md:text-4xl lg:text-5xl xl:text-7xl">
   <span className="text-primary">Latest</span> Company News
 </MotionUp>

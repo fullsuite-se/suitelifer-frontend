@@ -1,6 +1,4 @@
-import { useState } from "react";
 
-const industries = ["All", "Business", "Operations", "Finance", "Software"];
 
 const GuestIndustryTags = ({ industries, filter, handleFilterChange }) => {
   return (

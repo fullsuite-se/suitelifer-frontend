@@ -3,9 +3,7 @@ import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import BlogCard from "./BlogCard";
-// import companyBlogs from "./CompanyBlogsList";
-import GuestBlogsList from "../guest-blogs/GuestBlogsList";
+import companyBlogs from "./CompanyBlogsList";
 import GuestBlogCard from "../guest-blogs/GuestBlogCard";
 import api from "../../utils/axios";
 import { useState, useEffect } from "react";
@@ -52,7 +50,7 @@ const BlogCarousel = () => {
           {companyBlogs?.slice(0, 5).map((blog) => (
             <SwiperSlide key={blog.cblogId}>
               <div className="p-4 px-[10%]">
-                <GuestBlogCard {...blog} />
+                <GuestBlogCard {...blog} id={blog.cblogId} />
               </div>
             </SwiperSlide>
           ))}

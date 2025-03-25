@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Footer from "../../components/Footer";
+
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
@@ -129,7 +129,7 @@ const Blog = () => {
             {/* Blue Thing */}
             <div
               className="absolute bg-primary h-15 md:h-25 w-[49.7%] rounded-br-2xl rounded-tr-2xl"
-              style={{ 
+              style={{
                 animation: "slideInFromLeft 0.8s ease-out forwards",
                 left: 0,
               }}

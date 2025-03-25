@@ -1,5 +1,5 @@
 import React from "react";
-import Footer from "../../components/Footer";
+
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
@@ -16,7 +16,7 @@ import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
 import { useEffect, useState } from "react";
 import PageMeta from "../../components/layout/PageMeta";
-import FooterNew from "../../components/FooterNew";
+import Footer from "../../components/Footer";
 const Contact = () => {
   const fadeInUp = {
     hidden: { opacity: 0, y: 50 },
@@ -397,7 +397,7 @@ const Contact = () => {
             <FAQ />
           </section>
           <BackToTop />
-          <FooterNew />
+          <Footer />
         </main>
       </div>
     </section>

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import Footer from "../../components/Footer";
+
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
@@ -8,11 +8,9 @@ import termsOfUseimg from "../../assets/images/terms-of-use.jpg";
 import LegalHeader from "../../components/legal/LegalHeader";
 import TermsOfUseContent from "../../components/legal/TermsOfUseContent";
 import BackToTop from "../../components/BackToTop";
-import FooterNew from "../../components/FooterNew";
-
+import Footer from "../../components/Footer";
 
 const TermsOfUse = () => {
-
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -46,18 +44,16 @@ const TermsOfUse = () => {
           /> */}
 
           <section id="terms-of-use-content" className="mb-20">
-           
-              {/* <br />
+            {/* <br />
               <br />
               <br />
               <br /> */}
-       
-           <TermsOfUseContent />
 
+            <TermsOfUseContent />
           </section>
-          <BackToTop/>
-         
-          <FooterNew />
+          <BackToTop />
+
+          <Footer />
         </main>
       </div>
     </>

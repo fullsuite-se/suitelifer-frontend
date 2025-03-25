@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+
 import formatTimestamp from "../TimestampFormatter";
 import { toSlug } from "../../utils/slugUrl";
 import { readingTime } from "reading-time-estimator";
@@ -14,7 +14,7 @@ const GuestBlogCard = ({
   created_at,
   imageUrl,
 }) => {
-  const { day, fullDate, time } = formatTimestamp(created_at);
+  const { fullDate } = formatTimestamp(created_at);
 
   return (
     <section

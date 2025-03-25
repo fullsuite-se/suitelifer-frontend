@@ -2,16 +2,16 @@ import React, { useEffect, useState } from "react";
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
-import Footer from "../../components/Footer";
+
 import SpotifyEmbed from "../../components/careers/SpotifyEmbed";
 import api from "../../utils/axios";
-import JobCarouselVersion2 from "../../components/careers/JobCarouselVersion2";
+import JobCarousel from "../../components/careers/JobCarousel";
 import { ChevronRightIcon } from "@heroicons/react/24/solid";
 import GuestIndustryTags from "../../components/careers/GuestIndustriesTags";
 import dotsLine from "../../assets/images/socials-dots-line.svg";
 import BackToTop from "../../components/BackToTop";
 import PageMeta from "../../components/layout/PageMeta";
-import FooterNew from "../../components/FooterNew";
+import Footer from "../../components/Footer";
 import OnLoadLayoutAnimation from "../../components/layout/OnLoadLayoutAnimation";
 import { useLocation } from "react-router-dom";
 
@@ -85,7 +85,6 @@ const Careers = () => {
     }
   }, [location]);
 
-
   return (
     <>
       <section
@@ -119,50 +118,50 @@ const Careers = () => {
           <section>
             {/* Mobile Hero Background */}
             {/* <section className=" relative md:hidden"> */}
-              {/* blue at top */}
-              {/* <div className="">
+            {/* blue at top */}
+            {/* <div className="">
                 <div className="absolute right-10 overflow-hidden -translate-x-[10vw] -translate-y-[23vw] z-50 w-[14%] h-[35vw] bg-primary/5 rounded-b-4xl"></div>
               </div> */}
-              {/* blue at top left */}
-              {/* <div className="">
+            {/* blue at top left */}
+            {/* <div className="">
                 <div className="w-[15%] h-[13vw] rounded-r-3xl absolute overflow-hidden -z-50  bg-primary/10 "></div>
               </div> */}
-              {/* green at top right */}
-              {/* <div className="">
+            {/* green at top right */}
+            {/* <div className="">
                 <div className="right-0 w-[12%] h-[25vw] translate-y-10 rounded-l-3xl absolute overflow-hidden -z-50  bg-secondary/10 "></div>
               </div> */}
-              {/* blue at bottom */}
-              {/* <div className="md:hidden">
+            {/* blue at bottom */}
+            {/* <div className="md:hidden">
                 <div className="w-[15%] h-[35vw] rounded-r-2xl -translate-x-[7vw] translate-y-[80vw]  absolute overflow-hidden -z-50  bg-primary/10 "></div>
               </div>
             </section> */}
 
             {/* Tablet Hero Background */}
             {/* <section className=" relative hidden md:block lg:hidden"> */}
-              {/* blue at top */}
-              {/* <div className="">
+            {/* blue at top */}
+            {/* <div className="">
                 <div className="absolute w-[8%] h-[20vw] max-w-[150px] max-h-[450px] -translate-x-[25px] lg:-translate-y-[5vw] -translate-y-[13vw] right-10 overflow-hidden z-10 bg-primary/5 rounded-b-4xl"></div>
               </div> */}
-              {/* blue at top left */}
-              {/* <div className="">
+            {/* blue at top left */}
+            {/* <div className="">
                 <div className="w-[18%] h-[7vw] max-h-[100px] translate-y-[8vw] lg:translate-y-[15vw] xl:translate-y-[12vw] rounded-r-3xl absolute overflow-hidden -z-50  bg-primary/10 "></div>
               </div> */}
-              {/* green at top right */}
-              {/* <div className="">
+            {/* green at top right */}
+            {/* <div className="">
                 <div className="right-0 w-[12%] h-[25vw] max-h-[300px] translate-y-10 lg:translate-y-[12vw] rounded-l-3xl absolute overflow-hidden -z-50  bg-secondary/10 "></div>
               </div> */}
-              {/* blue at bottom left */}
-              {/* <div className="">
+            {/* blue at bottom left */}
+            {/* <div className="">
                 <div className="w-[15%] h-[14vw] rounded-r-2xl -translate-x-[7vw] translate-y-[500px]  absolute overflow-hidden -z-50  bg-secondary/5 "></div>
               </div> */}
 
-              {/* blue at bottom right */}
-              {/* <div className="">
+            {/* blue at bottom right */}
+            {/* <div className="">
                 <div className="right-0 w-[15%] h-[5vw] rounded-l-2xl -translate-x-[] translate-y-[65vw]  absolute overflow-hidden -z-50  bg-primary/15 "></div>
               </div> */}
 
-              {/* green at bottom right */}
-              {/* <div className="">
+            {/* green at bottom right */}
+            {/* <div className="">
                 <div className="right-0 w-[13%] h-[9vw] rounded-2xl -translate-x-[44vw] translate-y-[65vw]  absolute overflow-hidden -z-50  bg-secondary/10 "></div>
               </div>
             </section> */}
@@ -353,7 +352,10 @@ const Careers = () => {
           </div> */}
 
           {/* Three dots one line */}
-          <div className="flex justify-end scale-x-[-1] -translate-x-[1%] py-[12%] sm:py-[3%]" id="current-job-openings">
+          <div
+            className="flex justify-end scale-x-[-1] -translate-x-[1%] py-[12%] sm:py-[3%]"
+            id="current-job-openings"
+          >
             <img className="dots-line" src={dotsLine} alt="3 dots and a line" />
           </div>
           {/* Current Job Openings */}
@@ -408,7 +410,7 @@ const Careers = () => {
                     </p>
                   </div>
                 ) : (
-                  <JobCarouselVersion2 jobs={jobs} />
+                  <JobCarousel jobs={jobs} />
                 )}
               </div>
             )}
@@ -478,8 +480,8 @@ const Careers = () => {
           </div> */}
         </main>
         <BackToTop />
-       
-        <FooterNew/>
+
+        <Footer />
       </section>
     </>
   );
