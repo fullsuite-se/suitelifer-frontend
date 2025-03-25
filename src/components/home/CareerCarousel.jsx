@@ -79,7 +79,7 @@ const CareerCarousel = () => {
                   alt={career.name}
                   className="w-full aspect-[100/101] object-cover rounded-xl"
                 />
-                <p className="text-center mt-3 py-5 font-avenir-black text-lg sm:text-xl">
+                <p className="text-center mt-3 py-5 font-avenir-black text-body">
                   {career.name}
                 </p>
                   </div>

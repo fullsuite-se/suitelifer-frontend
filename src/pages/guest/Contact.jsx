@@ -187,7 +187,7 @@ const Contact = () => {
     //       </div>
 
     //       <FAQ />
-    //       <Footer />
+    //       < />
     //     </main>
     //   </div>
     // </>

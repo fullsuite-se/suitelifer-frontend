@@ -1,0 +1,38 @@
+@layer utilities {
+    /* Headings */
+    .text-h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem); 
+    }
+    .text-h2 {
+      font-size: clamp(2rem, 5.5vw, 3.5rem); 
+    }
+    .text-h3 {
+      font-size: clamp(1.75rem, 5vw, 3rem); 
+    }
+    .text-h4 {
+      font-size: clamp(1.5rem, 4.5vw, 2.5rem); 
+    }
+    .text-h5 {
+      font-size: clamp(1.25rem, 4vw, 2rem); 
+    }
+    .text-h6 {
+      font-size: clamp(1.125rem, 3.5vw, 1.75rem); 
+    }
+    
+    /* Body Text */
+    .text-body {
+      font-size: clamp(1rem, 2.5vw, 1.25rem); 
+    }
+    .text-body-lg {
+        font-size: clamp(1.5rem, 4vw, 2.25rem); 
+    }
+    
+    /* Small Text */
+    .text-small {
+      font-size: clamp(0.875rem, 2vw, 1rem); 
+    }
+    .text-xs {
+        font-size: clamp(0.625rem, 1.25vw, 0.75rem); 
+      }
+  }
+  
