@@ -9,6 +9,7 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import EventCard from "../events/EventCard";
 import api from "../../utils/axios";
 import { format } from "date-fns";
+import SidebarCollapse from "../../assets/icons/SidebarCollapse";
 
 const EmployeeAside = () => {
   const [events, setEvents] = useState([]);
@@ -39,7 +40,10 @@ const EmployeeAside = () => {
 
   return (
     <aside className="w-52 md:w-64 lg:w-72 h-dvh flex flex-col p-2 xl:p-3">
-      <h2 className="font-avenir-black">Events</h2>
+      <section className="flex justify-between items-baseline">
+        <h2 className="font-avenir-black">Events</h2>
+        <SidebarCollapse direction={"right"} />
+      </section>
       <Calendar eventDates={eventDates} />
       <section className="mt-5">
         <div className="w-full">
