@@ -29,6 +29,7 @@ function JobCourse() {
     { id: 2, title: "Web Developer" },
     { id: 3, title: "Data Analyst" },
     { id: 4, title: "Data Scientist" },
+    
   ]);
   const [rowCourseData, setRowCourseData] = useState([
     {
@@ -253,7 +254,7 @@ function JobCourse() {
           </DialogTitle>
           <DialogContent>
             <div className="w-full">
-              <label className="block text-gray-700 font-avenir-black">
+              <label className="block text-gray-700 font-avenir-black mt-2">
                 Title<span className="text-primary">*</span>
               </label>
 
@@ -263,36 +264,35 @@ function JobCourse() {
                 value={currentCourse.title}
                 onChange={handleInputChange("title")}
                 rows={3}
-                className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary "
               />
             </div>
             <div>
-              <label className="block text-gray-700 font-avenir-black">
+              <label className="block text-gray-700 font-avenir-black mt-2">
                 Description<span className="text-primary">*</span>
               </label>
               <textarea
                 name="description"
                 required
                 value={currentCourse.description}
-                onChange={handleInputChange("description")} 
+                onChange={handleInputChange("description")}
                 rows={3}
-                className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
               ></textarea>
             </div>
 
-            <FormGroup>
-              <label className="block text-gray-700 font-avenir-black">
+            <div className="w-full">
+              <label className="block text-gray-700 font-avenir-black mt-2">
                 Related Job<span className="text-primary">*</span>
               </label>
-              {jobs.map((job) => (
-                <FormControlLabel
-                  className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
-                  key={job.id}
-                  control={
-                    <Checkbox
+              <div className="flex flex-col bg-primary/10 p-2 rounded-md max-h-50 overflow-auto">
+                {jobs.map((job) => (
+                  <label key={job.id} className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      value={job.id}
                       checked={currentCourse.relatedJob.includes(job.id)}
                       onChange={(e) => {
-                        console.log(currentCourse.relatedJob);
                         const updatedRelatedJob = e.target.checked
                           ? [...currentCourse.relatedJob, job.id]
                           : currentCourse.relatedJob.filter(
@@ -303,16 +303,16 @@ function JobCourse() {
                           target: { value: updatedRelatedJob },
                         });
                       }}
+                      className="accent-primary"
                     />
-                  }
-                  label={job.title}
-                  value={job.id}
-                />
-              ))}
-            </FormGroup>
+                    <span>{job.title}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
 
             <div>
-              <label className="block text-gray-700 font-avenir-black">
+              <label className="block text-gray-700 font-avenir-black mt-2">
                 URL<span className="text-primary">*</span>
               </label>
               <input
@@ -320,7 +320,7 @@ function JobCourse() {
                 required
                 value={currentCourse.url}
                 onChange={handleInputChange("url")}
-                className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
           </DialogContent>

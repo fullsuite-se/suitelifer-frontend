@@ -3,7 +3,6 @@
 import { useState, useRef } from "react";
 import {
   IconButton,
-  TextField,
   Dialog,
   DialogActions,
   DialogContent,
@@ -44,26 +43,6 @@ function Testimonials() {
       created_at: "2022-10-10",
       created_by: "Melbraei Santiago",
     },
-    {
-      id: "3",
-      employee_image: "https://img.bomboradyo.com/butuan/2024/05/Kathryn.jpg",
-      employee_name: "John Doe",
-      testimony: "This is a sample testimonial",
-      position: "Software Engineer",
-      is_shown: 0,
-      created_at: "2022-10-10",
-      created_by: "Melbraei Santiago",
-    },
-    {
-      id: "4",
-      employee_image: "https://img.bomboradyo.com/butuan/2024/05/Kathryn.jpg",
-      employee_name: "John Doe",
-      testimony: "This is a sample testimonial",
-      position: "Software Engineer",
-      is_shown: 0,
-      created_at: "2022-10-10",
-      created_by: "Melbraei Santiago",
-    },
   ]);
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -78,6 +57,19 @@ function Testimonials() {
     created_by: "Melbraei Santiago",
   });
 
+  const positionOptions = [
+    { value: "Software Engineer", label: "Software Engineer" },
+    { value: "Data Analyst", label: "Data Analyst" },
+    { value: "Web Developer", label: "Web Developer" },
+    { value: "Product Manager", label: "Product Manager" },
+    { value: "UI/UX Designer", label: "UI/UX Designer" },
+    { value: "Quality Assurance", label: "Quality Assurance" },
+    { value: "DevOps Engineer", label: "DevOps Engineer" },
+    { value: "Scrum Master", label: "Scrum Master" },
+    { value: "Business Analyst", label: "Business Analyst" },
+    { value: "Technical Support", label: "Technical Support" },
+  ];
+
   const gridOptions = {
     getRowStyle: (params) => {
       if (params.node.rowIndex % 2 === 0) {
@@ -86,6 +78,23 @@ function Testimonials() {
         return { background: "white", color: "black" };
       }
     },
+  };
+
+  const handlePositionChange = (e) => {
+    setCurrentTestimonial({
+      ...currentTestimonial,
+      position: e.target.value,
+    });
+  };
+
+  const validatePosition = () => {
+    const isValid = positionOptions.some(
+      (option) => option.value === currentTestimonial.position
+    );
+
+    if (!isValid) {
+      setCurrentTestimonial({ ...currentTestimonial, position: "" }); 
+    }
   };
 
   const gridRef = useRef();
@@ -109,7 +118,7 @@ function Testimonials() {
 
       setRowTestimonialData((prevData) => [...prevData, newEntry]);
     }
-
+    setCurrentTestimonial("");
     setOpenDialog(false);
   };
 
@@ -255,7 +264,6 @@ function Testimonials() {
             {currentTestimonial.id ? "Edit Testimonial" : "Add Testimonial"}
           </DialogTitle>
           <DialogContent>
-     
             <div className="w-full mb-3">
               <label className="block text-gray-700 font-avenir-black">
                 Employee Name<span className="text-primary">*</span>
@@ -298,23 +306,26 @@ function Testimonials() {
 
             <div className="w-full mb-3">
               <label className="block text-gray-700 font-avenir-black">
-              Position<span className="text-primary">*</span>
+                Position<span className="text-primary">*</span>
               </label>
 
               <input
                 name="position"
                 required
+                list="position-options"
                 value={currentTestimonial.position}
-                onChange={(e) =>
-                  setCurrentTestimonial({
-                    ...currentTestimonial,
-                    position: e.target.value,
-                  })
-                }
-                rows={3}
-                className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                onChange={handlePositionChange} 
+                onBlur={validatePosition}
+                className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
               />
+
+              <datalist id="position-options">
+                {positionOptions.map((option) => (
+                  <option key={option.value} value={option.value} />
+                ))}
+              </datalist>
             </div>
+
             <div>
               <label className="block text-gray-700 font-avenir-black">
                 Visibility<span className="text-primary">*</span>
@@ -323,7 +334,12 @@ function Testimonials() {
                 name="visibility"
                 required
                 value={currentTestimonial.is_shown}
-                onChange={(e) => handleEdit(e)}
+                onChange={(e) =>
+                  setCurrentTestimonial({
+                    ...currentTestimonial,
+                    is_shown: Number(e.target.value),
+                  })
+                }
                 className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
               >
                 <option value="" disabled>
