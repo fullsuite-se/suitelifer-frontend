@@ -7,7 +7,7 @@ import {
 
 const VideoPreview = ({ handlePreview }) => {
   const [videoFile, setVideoFile] = useState(
-    "blob:http://localhost:5173/50af3f9f-0268-42ee-96c5-f9ecf0d644da"
+    "blob:http://localhost:5173/8f9a369f-5c05-419c-a951-b9447f0366ca"
   );
 
   const handleUpload = (event) => {
@@ -52,7 +52,7 @@ const VideoPreview = ({ handlePreview }) => {
             className="hidden"
             id="videoUpload"
           />
-          <div className="min-w-[1000px] aspect-video border-3 rounded-3xl bg-gray-200 overflow-hidden">
+          <div className="max-w-[1000px] aspect-video border-3 rounded-3xl bg-gray-200 overflow-hidden">
             {videoFile ? (
               videoFile.includes("youtube.com") ||
               videoFile.includes("youtu.be") ? (
