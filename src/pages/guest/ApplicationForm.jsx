@@ -24,7 +24,6 @@ const ApplicationForm = () => {
   const [progress, setProgress] = useState(0);
 
   const { id, jobPosition } = useParams();
-  const [position, setPosition] = useState(jobPosition);
   const [applicationDetails, setApplicationDetails] = useState({
     first_name: "",
     middle_name: "",
@@ -145,7 +144,6 @@ const ApplicationForm = () => {
         ...ad,
         cv_link: upload_response.data.fileUrl,
       }));
-      console.log(applicationDetails);
 
       const response = await atsAPI.post("/applicants/add", {
         applicant: JSON.stringify(applicationDetails),
@@ -161,11 +159,10 @@ const ApplicationForm = () => {
         toast.success("Job Application Successful.");
 
         navigate("/congrats-application-form", { state: { assessmentUrl } });
-      } else {
-        toast.error("Job Application Unsuccessful.");
       }
     } catch (err) {
       console.log(err);
+      toast.error("Job Application Unsuccessful.");
     }
   };
   useEffect(() => {
@@ -207,8 +204,8 @@ const ApplicationForm = () => {
           <div className="md:px-5 lg:px-20 xl:px-50">
             {" "}
             <BackButton
-              type={unSlug(position) + " Details"}
-              backPath={`/careers/${toSlug(position)}`}
+              type={unSlug(jobPosition) + " Details"}
+              backPath={`/careers/${toSlug(jobPosition)}`}
               jobId={id}
             />
             <div className="py-5"></div>
