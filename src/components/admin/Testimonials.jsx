@@ -44,6 +44,26 @@ function Testimonials() {
       created_at: "2022-10-10",
       created_by: "Melbraei Santiago",
     },
+    {
+      id: "3",
+      employee_image: "https://img.bomboradyo.com/butuan/2024/05/Kathryn.jpg",
+      employee_name: "John Doe",
+      testimony: "This is a sample testimonial",
+      position: "Software Engineer",
+      is_shown: 0,
+      created_at: "2022-10-10",
+      created_by: "Melbraei Santiago",
+    },
+    {
+      id: "4",
+      employee_image: "https://img.bomboradyo.com/butuan/2024/05/Kathryn.jpg",
+      employee_name: "John Doe",
+      testimony: "This is a sample testimonial",
+      position: "Software Engineer",
+      is_shown: 0,
+      created_at: "2022-10-10",
+      created_by: "Melbraei Santiago",
+    },
   ]);
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -125,7 +145,7 @@ function Testimonials() {
         <div className="w-full overflow-x-auto">
           <div
             className="ag-theme-quartz p-3 sm:p-5 min-w-[600px] lg:w-full"
-            style={{ height: "400px", width: "100%" }}
+            style={{ height: "600px", width: "100%" }}
           >
             <AgGridReact
               rowData={rowTestimonialData}
@@ -133,7 +153,7 @@ function Testimonials() {
                 {
                   headerName: "Image",
                   field: "employee_image",
-                  flex: 1,
+                  flex: 2,
                   filter: "agTextColumnFilter",
                   headerClass: "text-primary font-bold bg-tertiary",
                   cellRenderer: (params) =>
@@ -141,14 +161,7 @@ function Testimonials() {
                       <img
                         src={params.value}
                         alt="Employee"
-                        style={{
-                          width: "80px",
-                          height: "80px",
-                          objectFit: "cover",
-                          borderRadius: "8px",
-                          display: "block",
-                          margin: "auto",
-                        }}
+                        className="w-[80px] h-[80px] sm:w-[80px] sm:h-[80px] rounded-md object-cover mx-auto"
                       />
                     ) : (
                       <span>No Image</span>
