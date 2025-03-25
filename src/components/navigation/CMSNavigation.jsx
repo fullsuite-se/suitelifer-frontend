@@ -24,6 +24,7 @@ import {
   DisclosurePanel,
 } from "@headlessui/react";
 import SidebarCollapse from "../../assets/icons/SidebarCollapse";
+import { useEffect } from "react";
 
 const iconMap = {
   dashboard: { default: ChartBarIcon },
@@ -55,11 +56,41 @@ const CMSNavigation = () => {
   const services = useStore((state) => state.services) || [];
   const [isOpenModal, setIsOpenModal] = useState(false);
   const user = useStore((state) => state.user);
-  const [isCollapse, setCollapse] = useState(false);
+  const [isCollapse, setCollapse] = useState(
+    JSON.parse(localStorage.getItem("isCollapsed")) ?? false
+  );
+  const [showTool, setShowTool] = useState(
+    JSON.parse(localStorage.getItem("showTools")) ?? true
+  );
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    try {
+      setIsLoading(true);
+      const isCollaped =
+        JSON.parse(localStorage.getItem("isCollapsed")) ?? false;
+      const showTools = JSON.parse(localStorage.getItem("showTools")) ?? true;
+      setCollapse(isCollaped);
+      setShowTool(showTools);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   const handleCollapseBtn = () => {
+    localStorage.setItem("isCollapsed", !isCollapse);
     setCollapse((prev) => !prev);
   };
+
+  const handleDisclosureBtn = () => {
+    const updatedShowTool = !showTool;
+    localStorage.setItem("showTools", updatedShowTool);
+    setShowTool(updatedShowTool);
+  };
+
+  if (isLoading) return null;
 
   return (
     <section>
@@ -133,8 +164,11 @@ const CMSNavigation = () => {
               );
             })}
             {services.length !== 0 && (
-              <Disclosure as="div" defaultOpen={true}>
-                <DisclosureButton className="group cursor-pointer flex w-full items-center justify-between">
+              <Disclosure as="div" defaultOpen={showTool}>
+                <DisclosureButton
+                  className="group cursor-pointer flex w-full items-center justify-between"
+                  onClick={handleDisclosureBtn}
+                >
                   {!isCollapse && (
                     <p className="font-avenir-black text-primary p-3">
                       Admin Tools

@@ -13,6 +13,13 @@ import { format } from "date-fns";
 const EmployeeAside = () => {
   const [events, setEvents] = useState([]);
   const [eventDates, setEventDates] = useState([]);
+  const [showTodayEvent, setShowTodayEvent] = useState(
+    JSON.parse(localStorage.getItem("showTodayEvent")) ?? true
+  );
+  const [showUpcommingEvent, setShowUpcommingEvent] = useState(
+    JSON.parse(localStorage.getItem("showUpcommingEvent")) ?? false
+  );
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -37,6 +44,36 @@ const EmployeeAside = () => {
     fetchEvents();
   }, []);
 
+  useEffect(() => {
+    try {
+      setLoading(true);
+      const showToday =
+        JSON.parse(localStorage.getItem("showTodayEvent")) ?? true;
+      const showUpcomming =
+        JSON.parse(localStorage.getItem("showUpcommingEvent")) ?? false;
+      setShowTodayEvent(showToday);
+      setShowUpcommingEvent(showUpcomming);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const handleTodayDisclosureBtn = () => {
+    const updatedShowToday = !showTodayEvent;
+    localStorage.setItem("showTodayEvent", updatedShowToday);
+    setShowTodayEvent(updatedShowToday);
+  };
+
+  const handleUpcommingDisclosureBtn = () => {
+    const updatedShowUpcomming = !showUpcommingEvent;
+    localStorage.setItem("showUpcommingEvent", updatedShowUpcomming);
+    setShowUpcommingEvent(updatedShowUpcomming);
+  };
+
+  if (loading) return null;
+
   return (
     <aside className="w-52 md:w-64 lg:w-72 h-dvh flex flex-col p-2 xl:p-3">
       <section className="flex justify-between items-baseline">
@@ -46,8 +83,11 @@ const EmployeeAside = () => {
       <section className="mt-5">
         <div className="w-full">
           <div className="">
-            <Disclosure as="div" defaultOpen={true}>
-              <DisclosureButton className="group flex w-full items-center justify-between">
+            <Disclosure as="div" defaultOpen={showTodayEvent}>
+              <DisclosureButton
+                className="group flex w-full items-center justify-between"
+                onClick={handleTodayDisclosureBtn}
+              >
                 <p className="font-avenir-black text-primary">Today</p>
                 <ChevronDownIcon className="size-5 text-primary cursor-pointer group-data-[open]:rotate-180" />
               </DisclosureButton>
@@ -59,8 +99,11 @@ const EmployeeAside = () => {
                 ))}
               </DisclosurePanel>
             </Disclosure>
-            <Disclosure as="div" defaultOpen={true}>
-              <DisclosureButton className="group my-3 flex w-full items-center justify-between">
+            <Disclosure as="div" defaultOpen={showUpcommingEvent}>
+              <DisclosureButton
+                className="group my-3 flex w-full items-center justify-between"
+                onClick={handleUpcommingDisclosureBtn}
+              >
                 <p className="font-avenir-black text-black">Upcoming</p>
                 <ChevronDownIcon className="size-5 text-primary cursor-pointer group-data-[open]:rotate-180" />
               </DisclosureButton>
