@@ -255,19 +255,7 @@ function Testimonials() {
             {currentTestimonial.id ? "Edit Testimonial" : "Add Testimonial"}
           </DialogTitle>
           <DialogContent>
-            {/* <TextField
-              label="Employee Name"
-              fullWidth
-              margin="dense"
-              className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
-              value={currentTestimonial.employee_name}
-              onChange={(e) =>
-                setCurrentTestimonial({
-                  ...currentTestimonial,
-                  employee_name: e.target.value,
-                })
-              }
-            /> */}
+     
             <div className="w-full mb-3">
               <label className="block text-gray-700 font-avenir-black">
                 Employee Name<span className="text-primary">*</span>
@@ -287,19 +275,7 @@ function Testimonials() {
                 className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
               />
             </div>
-            {/* <TextField
-              label="Testimony"
-              fullWidth
-              margin="dense"
-              className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
-              value={currentTestimonial.testimony}
-              onChange={(e) =>
-                setCurrentTestimonial({
-                  ...currentTestimonial,
-                  testimony: e.target.value,
-                })
-              }
-            /> */}
+
             <div className="w-full mb-3">
               <label className="block text-gray-700 font-avenir-black">
                 Testimony<span className="text-primary">*</span>
@@ -319,19 +295,7 @@ function Testimonials() {
                 className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
               />
             </div>
-            {/* <TextField
-              label="Position"
-              fullWidth
-              margin="dense"
-              className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
-              value={currentTestimonial.position}
-              onChange={(e) =>
-                setCurrentTestimonial({
-                  ...currentTestimonial,
-                  position: e.target.value,
-                })
-              }
-            /> */}
+
             <div className="w-full mb-3">
               <label className="block text-gray-700 font-avenir-black">
               Position<span className="text-primary">*</span>
@@ -356,10 +320,10 @@ function Testimonials() {
                 Visibility<span className="text-primary">*</span>
               </label>
               <select
-                name="is_shown"
+                name="visibility"
                 required
                 value={currentTestimonial.is_shown}
-                onChange={(e) => handleJobDetailsChange(e)}
+                onChange={(e) => handleEdit(e)}
                 className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
               >
                 <option value="" disabled>

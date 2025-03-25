@@ -7,7 +7,7 @@ import {
 
 const VideoPreview = ({ handlePreview }) => {
   const [videoFile, setVideoFile] = useState(
-    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+    "blob:http://localhost:5173/f9c56911-0435-40d5-a144-063c5f718b8e"
   );
 
   const handleUpload = (event) => {
