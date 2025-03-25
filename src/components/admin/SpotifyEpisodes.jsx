@@ -1,15 +1,13 @@
 import { useState } from "react";
-import { Card, CardContent, Typography, IconButton } from "@mui/material";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SingleSpotifyEmbed from "../../components/home/SingleSpotifyEmbed";
 
 const SpotifyEpisodes = () => {
-  const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className="border-primary border-2 rounded-3xl w-full overflow-hidden">
+    <div className="border-primary border-2 rounded-3xl w-full overflow-hidden p-2 flex flex-col gap-2">
       <SingleSpotifyEmbed />
+      <SingleSpotifyEmbed />
+      <SingleSpotifyEmbed />  
     </div>
   );
 };

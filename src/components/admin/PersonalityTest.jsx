@@ -23,22 +23,40 @@ ModuleRegistry.registerModules([ClientSideRowModelModule]);
 function PersonalityTest() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [rowTestData, setRowTestData] = useState([
-    { id: "1", title: "Horoscope", url: "http://sampleurl.com/horoscope" },
-    { id: "2", title: "MBTI", url: "http://sampleurl.com/mbti" },
+    {
+      id: "1",
+      title: "Horoscope",
+      url: "http://sampleurl.com/horoscope",
+      createdAt: "2022-10-10",
+      createdBy: "John Doe",
+    },
+    {
+      id: "2",
+      title: "MBTI",
+      url: "http://sampleurl.com/mbti",
+      createdAt: "2022-10-10",
+      createdBy: "John Doe",
+    },
     {
       id: "3",
       title: "Sample Title",
       url: "http://sampleurl.com/sample-test",
+      createdAt: "2022-10-10",
+      createdBy: "John Doe",
     },
     {
       id: "4",
       title: "Another Sample Test Title",
       url: "http://sampleurl.com/another-test",
+      createdAt: "2022-10-10",
+      createdBy: "John Doe",
     },
     {
       id: "5",
       title: "What is this test title?",
       url: "http://sampleurl.com/what-test",
+      createdAt: "2022-10-10",
+      createdBy: "John Doe",
     },
   ]);
   const gridOptions = {
@@ -128,6 +146,23 @@ function PersonalityTest() {
                   headerClass: "text-primary font-bold bg-tertiary",
                 },
                 {
+                  headerName: "Date Created",
+                  field: "createdAt",
+                  flex: 1,
+                  filter: "agTextColumnFilter",
+                  headerClass: "text-primary font-bold bg-tertiary",
+                  valueGetter: (params) =>
+                    params.data?.createdAt
+                      ? new Date(params.data.createdAt).toLocaleString()
+                      : "N/A",
+                },
+                {
+                  headerName: "Created By",
+                  field: "createdBy",
+                  flex: 1,
+                  headerClass: "text-primary font-bold bg-tertiary",
+                },
+                {
                   headerName: "Action",
                   field: "action",
                   flex: 1,
@@ -157,27 +192,54 @@ function PersonalityTest() {
         </div>
 
         {/* Dialog for Add/Edit */}
-        <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-          <DialogTitle>{currentTest.id ? "Edit Test" : "Add Test"}</DialogTitle>
-          <DialogContent>
-            <TextField
-              label="Title"
-              fullWidth
-              margin="dense"
-              value={currentTest.title}
-              onChange={(e) =>
-                setCurrentTest({ ...currentTest, title: e.target.value })
-              }
-            />
-            <TextField
-              label="URL"
-              fullWidth
-              margin="dense"
-              value={currentTest.url}
-              onChange={(e) =>
-                setCurrentTest({ ...currentTest, url: e.target.value })
-              }
-            />
+        <Dialog
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          sx={{
+            "& .MuiDialog-paper": {
+              borderRadius: "16px",
+              padding: "20px",
+              width: "500px",
+            },
+          }}
+        >
+          <DialogTitle className="flex w-full justify-center items-center">
+            {currentTest.id ? "Edit Test" : "Add Test"}
+          </DialogTitle>
+          <DialogContent className="">
+            <div className="w-full mb-3">
+              <label className="block text-gray-700 font-avenir-black">
+                Title<span className="text-primary">*</span>
+              </label>
+
+              <input
+                name="title"
+                required
+                value={currentTest.title}
+                onChange={(e) =>
+                  setCurrentTest({ ...currentTest, title: e.target.value })
+                }
+                rows={3}
+                className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+              />
+            </div>
+
+            <div className="w-full">
+              <label className="block text-gray-700 font-avenir-black">
+                URL<span className="text-primary">*</span>
+              </label>
+
+              <input
+                name="url"
+                required
+                value={currentTest.url}
+                onChange={(e) =>
+                  setCurrentTest({ ...currentTest, url: e.target.value })
+                }
+                rows={3}
+                className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+              />
+            </div>
           </DialogContent>
           <DialogActions>
             <button className="btn-light" onClick={() => setOpenDialog(false)}>
