@@ -11,7 +11,6 @@ const NewsDetails = () => {
   const location = useLocation();
   console.log(location.state?.id);
 
-  // const newsItem = NewsList.find((news) => news.id.toString() === id);
   const relatedNews = NewsList.filter(
     (news) => news.id.toString() !== id
   ).slice(0, 5);
@@ -47,7 +46,6 @@ const NewsDetails = () => {
   if (loading) {
     return (
       <section className="w-full h-full">
-        {/* <OnLoadLayoutAnimation /> */}
       </section>
     );
   }

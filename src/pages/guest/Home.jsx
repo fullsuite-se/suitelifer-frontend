@@ -1,5 +1,4 @@
 import React from "react";
-import fs_tagline from "../../assets/logos/logo-fs-tagline.svg";
 import banner_img from "../../assets/images/banner-img.svg";
 import HeroSection from "../../components/home/HomeHeroSection";
 import MobileNav from "../../components/home/MobileNav";
@@ -9,13 +8,10 @@ import DesktopNav from "../../components/home/DesktopNav";
 import kb_startup from "../../assets/images/keyboard-startup.svg";
 import HomeGoalsOperations from "../../components/home/HomeGoalsOperations";
 import HomeNews from "../../components/home/HomeNews";
-import HomeSocials from "../../components/home/HomeSocials";
 import HomeBlogSpot from "../../components/home/HomeBlogSpot";
-import rocketship from "../../assets/gif/rocketlongergap.gif";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
-import { Helmet } from "@dr.pogodin/react-helmet";
 import PageMeta from "../../components/layout/PageMeta";
 import Footer from "../../components/Footer";
 import CareerCarousel from "../../components/home/CareerCarousel";
@@ -28,7 +24,6 @@ import YoutubeIcon from "../../assets/logos/Youtube";
 import SpotifyIcon from "../../assets/logos/Spotify";
 
 const Home = () => {
-  const [width, setWidth] = useState(window.innerWidth); //FOR DEBUGGING
   const socmedPlatforms = [
     {
       href: "https://www.youtube.com/",
@@ -106,51 +101,7 @@ const Home = () => {
         <HeroSection />
         {/* BANNER SECTION */}
         <section className="flex pt-5 lg:w-2/5 ">
-          {/* with animations eto */}
-          {/* <div className="banner ml-[9%] flex items-center overflow-hidden">
-            <div>
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
-                className="text-primary font-avenir text-lg md:text-3xl lg:text-3xl"
-              >
-                Welcome to
-              </motion.p>
-
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
-                className="pb-5"
-              >
-                <img
-                  className="w-full h-full object-contain"
-                  src={fs_tagline}
-                  alt="Fullsuite tagline"
-                />
-              </motion.div>
-
-              <motion.button
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3, delay: 0.3, ease: "easeOut" }}
-                className="btn-primary text-sm sm:text-xl md:text-2xl"
-              >
-                Learn more
-              </motion.button>
-            </div>
-          </div> */}
-          {/* Column 2 */}
-          {/* <div className="flex justify-end items-start ml-5 pb-3 lg:hidden">
-            <img
-              className="opacity-70 -z-10 rounded-l-4xl object-cover h-full w-full"
-              src={banner_img}
-              alt="Banner image"
-            />
-          </div> */}
-
-          {/* with animations naman ito */}
+       
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.7 }}
@@ -190,11 +141,7 @@ const Home = () => {
           }}
         />
       </div>
-      {/* <img
-            src={rocketship}
-            alt="Rocketship"
-            className="absolute inset-0 w-full h-full object-cover opacity-20"
-          /> */}
+    
       <section className="h-[100dvh] relative lg:mt-17 mb-[10%]">
         {/* White */}
         <div id="right-side" className="side pb-17">
@@ -372,9 +319,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* FOR DEBUGGING ONLY */}
-      {/* <div className="bg-red-900 h-50 text-white grid place-items-center">WIDTH: {width}</div> */}
-      {/* <div className="h-40"></div> */}
       <BackToTop />
 
       <Footer />

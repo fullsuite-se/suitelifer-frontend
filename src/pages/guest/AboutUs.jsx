@@ -144,13 +144,12 @@ const AboutUs = () => {
               perseverance, innovation, and the future of FullSuite.
             </p>
           </section>
-
-         
-
-
-        </section>           <div className="py-5"></div>    <div className="flex justify-end scale-x-[-1] rotate-180">
+        </section>{" "}
+        <div className="py-5"></div>{" "}
+        <div className="flex justify-end scale-x-[-1] rotate-180">
           <img className="dots-line" src={dotsLine} alt="3 dots and a line" />
-        </div>   <div className="py-5"></div>
+        </div>{" "}
+        <div className="py-5"></div>
         {/* Our Core Values Section */}
         <section className="overflow-hidden relative pt-5">
           <p className="font-avenir-black text-h4 text-center m-0!">
@@ -254,7 +253,6 @@ const AboutUs = () => {
           visionContent={content.vision}
           visionSlogan={content.visionSlogan}
         />
-
         <div className="py-5"></div>
         {/* Message from the CEO */}
         <section className="relative" id="ceo-message">
@@ -324,15 +322,15 @@ const AboutUs = () => {
               alt=""
             />
             <img
-             className="hidden md:block lg:hidden h-full w-full"
-             src={bgMaggieTablet}
-             alt=""
-           />
-           <img
-            className="hidden md:block lg:block xl:hidden h-full w-full"
-            src={bgMaggieLg}
-            alt=""
-          />
+              className="hidden md:block lg:hidden h-full w-full"
+              src={bgMaggieTablet}
+              alt=""
+            />
+            <img
+              className="hidden md:block lg:block xl:hidden h-full w-full"
+              src={bgMaggieLg}
+              alt=""
+            />
             <img
               className="hidden lg:hidden xl:block h-full w-full"
               src={bgMaggieDesktop}
@@ -340,19 +338,19 @@ const AboutUs = () => {
             />
           </div>
         </section>
-        <div className="py-5"></div>    <div className="flex justify-end scale-x-[-1]">
+        <div className="py-5"></div>{" "}
+        <div className="flex justify-end scale-x-[-1]">
           <img className="dots-line" src={dotsLine} alt="3 dots and a line" />
-        </div> 
+        </div>
         {/* Testimonials */}
         <section id="testimonials">
-          <div className="flex justify-end scale-x-[-1]">
-         
-          </div>
+          <div className="flex justify-end scale-x-[-1]"></div>
           <Testimonials />
         </section>
-         <div className="flex justify-end scale-x-[-1] rotate-180">
+        <div className="flex justify-end scale-x-[-1] rotate-180">
           <img className="dots-line" src={dotsLine} alt="3 dots and a line" />
-        </div>   <div className="py-5"></div>
+        </div>{" "}
+        <div className="py-5"></div>
         {/* A Day in the Pod */}
         <section className="mb-[2%] relative">
           <div className="day-in-the-pod">
@@ -361,16 +359,14 @@ const AboutUs = () => {
                 <p className=" text-small text-primary font-avenir-black">
                   More about us
                 </p>
-                <p className="text-h4 font-avenir-black">
-                  A Day in the Pod!
-                </p>
+                <p className="text-h4 font-avenir-black">A Day in the Pod!</p>
               </div>
             </div>
           </div>
           <div className="w-[80%] max-w-[1200px] pt-5 md:pt-20 mx-auto">
             <YouTubeEmbed videoId={"c6fs1gBpjQg"} />
           </div>
-         
+
           <div className="text-body mt-10 md:mt-[3%] flex flex-col items-center mx-[10%]">
             <div className="mb-5">
               <p className="">
@@ -384,29 +380,15 @@ const AboutUs = () => {
               className="font-avenir-black transition-all duration-300 cursor-pointer hover:bg-[#007a8e] w-full max-w-[200px] rounded-2xl text-white text-center no-underline bg-primary p-3"
               href="careers"
             >
-              <button className="cursor-pointer text-small">Check our careers</button>
+              <button className="cursor-pointer text-small">
+                Check our careers
+              </button>
             </a>
           </div>
-          <div className="py-20"></div>
-          {/* <div className="mt-4 md:mt-0">
-            <img
-              className="md:hidden"
-              src={smallBottomFiller}
-              alt="bottom filler"
-            />
-            <img
-              className="hidden md:block"
-              src={largeBottomFiller}
-              alt="bottom filler"
-            />
-          </div> */}
+          <div className="py-10"></div>
+       
         </section>
-        {/* <div className="h-100 grid place-content-center bg-amber-100 text-center p-5">
-          <i>
-            This height is but an illusion, a mere construct of perception,
-            bound by the limits we choose to accept.
-          </i>
-        </div> */}
+       
       </main>
       <BackToTop />
 

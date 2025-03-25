@@ -109,74 +109,12 @@ const Careers = () => {
         <div className="desktop-nav">
           <DesktopNav />
         </div>
-        <main className="">
-          {/* 
-          landscape:https://images.unsplash.com/photo-1541746972996-4e0b0f43e02a?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8c3RhcnR1cHxlbnwwfHwwfHx8MA%3D%3D
-          // https://images.unsplash.com/photo-1554780336-390462301acf?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
-          portrait: https://images.unsplash.com/photo-1554780336-390462301acf?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
-          */}
+        <main >
+         
 
           <section>
-            {/* Mobile Hero Background */}
-            {/* <section className=" relative md:hidden"> */}
-            {/* blue at top */}
-            {/* <div className="">
-                <div className="absolute right-10 overflow-hidden -translate-x-[10vw] -translate-y-[23vw] z-50 w-[14%] h-[35vw] bg-primary/5 rounded-b-4xl"></div>
-              </div> */}
-            {/* blue at top left */}
-            {/* <div className="">
-                <div className="w-[15%] h-[13vw] rounded-r-3xl absolute overflow-hidden -z-50  bg-primary/10 "></div>
-              </div> */}
-            {/* green at top right */}
-            {/* <div className="">
-                <div className="right-0 w-[12%] h-[25vw] translate-y-10 rounded-l-3xl absolute overflow-hidden -z-50  bg-secondary/10 "></div>
-              </div> */}
-            {/* blue at bottom */}
-            {/* <div className="md:hidden">
-                <div className="w-[15%] h-[35vw] rounded-r-2xl -translate-x-[7vw] translate-y-[80vw]  absolute overflow-hidden -z-50  bg-primary/10 "></div>
-              </div>
-            </section> */}
-
-            {/* Tablet Hero Background */}
-            {/* <section className=" relative hidden md:block lg:hidden"> */}
-            {/* blue at top */}
-            {/* <div className="">
-                <div className="absolute w-[8%] h-[20vw] max-w-[150px] max-h-[450px] -translate-x-[25px] lg:-translate-y-[5vw] -translate-y-[13vw] right-10 overflow-hidden z-10 bg-primary/5 rounded-b-4xl"></div>
-              </div> */}
-            {/* blue at top left */}
-            {/* <div className="">
-                <div className="w-[18%] h-[7vw] max-h-[100px] translate-y-[8vw] lg:translate-y-[15vw] xl:translate-y-[12vw] rounded-r-3xl absolute overflow-hidden -z-50  bg-primary/10 "></div>
-              </div> */}
-            {/* green at top right */}
-            {/* <div className="">
-                <div className="right-0 w-[12%] h-[25vw] max-h-[300px] translate-y-10 lg:translate-y-[12vw] rounded-l-3xl absolute overflow-hidden -z-50  bg-secondary/10 "></div>
-              </div> */}
-            {/* blue at bottom left */}
-            {/* <div className="">
-                <div className="w-[15%] h-[14vw] rounded-r-2xl -translate-x-[7vw] translate-y-[500px]  absolute overflow-hidden -z-50  bg-secondary/5 "></div>
-              </div> */}
-
-            {/* blue at bottom right */}
-            {/* <div className="">
-                <div className="right-0 w-[15%] h-[5vw] rounded-l-2xl -translate-x-[] translate-y-[65vw]  absolute overflow-hidden -z-50  bg-primary/15 "></div>
-              </div> */}
-
-            {/* green at bottom right */}
-            {/* <div className="">
-                <div className="right-0 w-[13%] h-[9vw] rounded-2xl -translate-x-[44vw] translate-y-[65vw]  absolute overflow-hidden -z-50  bg-secondary/10 "></div>
-              </div>
-            </section> */}
-            {/* <img src="https://images.unsplash.com/photo-1541746972996-4e0b0f43e02a?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8c3RhcnR1cHxlbnwwfHwwfHx8MA%3D%3Dhttps://images.unsplash.com/photo-1554780336-390462301acf?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" /> */}
-            <div className="hero-container">
-              {/* Desktop Hero Background */}
-              {/* <section className="relative hidden lg:block">
-                <div className="absolute overflow-hidden right-0 -translate-y-10 -z-50 w-[25%] h-25 bg-secondary/10 rounded-l-4xl"></div>
-                <div className="absolute overflow-hidden right-0 translate-y-95 xl:translate-y-110 -z-50 w-[12%] h-50 bg-primary/5 rounded-l-4xl"></div>
-                <div className="absolute overflow-hidden translate-y-30 -z-50 w-[13%] h-40 bg-primary/10 rounded-r-4xl"></div>
-                <div className="absolute overflow-hidden translate-y-150 -z-10 w-[8%] h-40 bg-secondary/10 rounded-r-4xl"></div>
-                <div className="absolute overflow-hidden right-0 translate-y-170 xl:translate-y-185 -z-50 w-[25%] h-20 bg-primary/10 rounded-l-4xl"></div>
-              </section> */}
-
+     <div className="hero-container">
+            
               <p className="pl-[5%] career-hero-text-desktop font-avenir-black max-w-[1800px] mx-auto">
                 Let's <span className="text-primary">launch</span> your career,
               </p>

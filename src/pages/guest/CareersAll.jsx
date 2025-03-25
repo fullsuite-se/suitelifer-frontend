@@ -77,33 +77,8 @@ const CareersAll = () => {
         <div className="desktop-nav">
           <DesktopNav />
         </div>
-        <main className="">
-          {/* 
-          landscape:https://images.unsplash.com/photo-1541746972996-4e0b0f43e02a?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8c3RhcnR1cHxlbnwwfHwwfHx8MA%3D%3D
-          // https://images.unsplash.com/photo-1554780336-390462301acf?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
-          portrait: https://images.unsplash.com/photo-1554780336-390462301acf?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
-          */}
-
-          {/* <section>
-            <div className="relative -z-50 lg:block hidden w-full">
-              <img className="absolute" src={bgHero} alt="" />
-            </div>
-            <section className=" relative lg:hidden">
-           
-              <div className="">
-                <div className="absolute right-10 overflow-hidden -translate-x-10 sm:-translate-x-20 -translate-y-[23vw] z-50 w-[14%] h-[35vw] bg-primary/5 rounded-b-4xl"></div>
-              </div>
-              <div className="">
-                <div className="w-[15%] h-[13vw] rounded-r-3xl absolute overflow-hidden -z-50  bg-primary/10 "></div>
-              </div>
-              <div className="">
-                <div className="right-0 w-[12%] h-[25vw] translate-y-10 rounded-l-3xl absolute overflow-hidden -z-50  bg-secondary/10 "></div>
-              </div>
-              <div className="">
-                <div className="w-[15%] h-[35vw] rounded-r-3xl translate-y-[80vw]  absolute overflow-hidden -z-50  bg-primary/10 "></div>
-              </div>
-            </section>
-          </section> */}
+        <main >
+        
 
           <section className="pb-[7%] lg:pb-[5%]">
             <main className="p-[5%] xl:px-[20%]">
