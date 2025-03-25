@@ -24,6 +24,7 @@ const VideoPreview = ({ handlePreview }) => {
     };
     console.log(data);
   };
+
   return (
     <>
       <div className="video-preview w-full">

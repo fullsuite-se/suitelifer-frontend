@@ -161,7 +161,7 @@ function Testimonials() {
                       <img
                         src={params.value}
                         alt="Employee"
-                        className="w-[80px] h-[80px] sm:w-[80px] sm:h-[80px] rounded-md object-cover mx-auto"
+                        className="w-[80px] h-[80px] sm:w-[80px] sm:h-[80px] rounded-md object-cover mx-auto "
                       />
                     ) : (
                       <span>No Image</span>
