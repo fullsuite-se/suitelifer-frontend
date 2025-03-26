@@ -1,14 +1,33 @@
-import { useState } from "react";
+import { useState, useRef} from "react";
 import {
   EyeIcon,
   BookmarkSquareIcon,
   ArrowPathIcon,
+  ArrowUpOnSquareIcon,
 } from "@heroicons/react/24/outline";
 
 const VideoPreview = ({ handlePreview }) => {
   const [videoFile, setVideoFile] = useState(
     "blob:http://localhost:5173/4ef3993a-efae-4c70-9dab-55dc833cd04b"
   );
+  const [heroImage, setHeroImage] = useState();
+  const [storyImage, setStoryImage] = useState();
+
+  const heroRef = useRef(null);
+  const storyRef = useRef(null);
+
+  const handleImageChange = (file, setImage) => {
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setImage(imageUrl);
+    }
+  };
+
+  const handleDrop = (event, setImage) => {
+    event.preventDefault();
+    const file = event.dataTransfer.files[0];
+    handleImageChange(file, setImage);
+  };
 
   const handleUpload = (event) => {
     const file = event.target.files[0];
@@ -52,7 +71,7 @@ const VideoPreview = ({ handlePreview }) => {
             className="hidden"
             id="videoUpload"
           />
-          <div className="max-w-[1000px] aspect-video border-3 rounded-3xl bg-gray-200 overflow-hidden">
+          <div className="max-w-[500px] aspect-video border-3 rounded-3xl bg-gray-200 overflow-hidden">
             {videoFile ? (
               videoFile.includes("youtube.com") ||
               videoFile.includes("youtu.be") ? (
@@ -100,6 +119,59 @@ const VideoPreview = ({ handlePreview }) => {
               <ArrowPathIcon className="size-5" /> <span>Change Video</span>
             </button>
           </div>
+        </div>
+
+        <div className="p-4 space-y-4 flex-row flex gap-4">
+          <div
+            className="w-120 h-80 rounded border-2 flex items-center justify-center cursor-pointer"
+            onClick={() => heroRef.current.click()}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => handleDrop(e, setHeroImage)}
+          >
+            {heroImage ? (
+              <img
+                src={heroImage}
+                alt="Hero Preview"
+                className="w-full h-full object-cover rounded"
+                
+              />
+            ) : (
+              <ArrowUpOnSquareIcon className="size-40"/>
+            )}
+          </div>
+          <input
+            type="file"
+            accept="image/*"
+            ref={heroRef}
+            className="hidden"
+            onChange={(e) => handleImageChange(e.target.files[0], setHeroImage)}
+          />
+
+          <div
+            className="w-120 h-80 rounded border-2 flex items-center justify-center cursor-pointer"
+            onClick={() => storyRef.current.click()}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => handleDrop(e, setStoryImage)}
+          >
+            {storyImage ? (
+              <img
+                src={storyImage}
+                alt="Story Preview"
+                className="w-full h-full object-cover rounded"
+              />
+            ) : (
+              <ArrowUpOnSquareIcon className="size-40"/>
+            )}
+          </div>
+          <input
+            type="file"
+            accept="image/*"
+            ref={storyRef}
+            className="hidden"
+            onChange={(e) =>
+              handleImageChange(e.target.files[0], setStoryImage)
+            }
+          />
         </div>
       </div>
     </>

@@ -132,17 +132,17 @@ const SpotifyEpisodes = () => {
               key={episode.id}
               className="border rounded-2xl p-2 flex gap-2"
             >
-              <div className="w-[94%]"><SingleSpotifyEmbed spotifyId={spotifyId} /></div>
-              <div className="w-[6%] flex flex-col mx-auto justify-evenly items-center gap-2">
+              <div className="w-[96%]"><SingleSpotifyEmbed spotifyId={spotifyId} /></div>
+              <div className="w-[4%] sm:min-w-[5%] flex flex-col mx-auto justify-evenly items-center gap-2">
                 <button
                   onClick={() => editEpisode(episode.id)}
-                  className="bg-primary text-white w-full h-full rounded-2xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e]"
+                  className="bg-primary text-white w-full rounded-2xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e] h-[50%]"
                 >
                   <EditIcon className="size-7" />
                 </button>
                 <button
                   onClick={() => deleteEpisode(episode.id)}
-                  className="bg-primary text-white w-full h-full rounded-2xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e]"
+                  className="bg-primary text-white w-full rounded-2xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e] h-[50%]"
                 >
                   <DeleteIcon className="size-7" />
                 </button>

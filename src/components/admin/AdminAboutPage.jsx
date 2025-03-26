@@ -13,9 +13,10 @@ const AboutPage = ({ handlePreview }) => {
   const [vision, setVision] = useState(
     "Goal is to create a world where everyone has a sense of belonging."
   );
-  const [visionSlogan, setVisionSlogan] = useState(
-    "Goooooood vibes only."
+  const [textBanner, setTextBanner] = useState(
+    "Go Suited. Go Lifer. Go SuiteLifer."
   );
+  const [visionSlogan, setVisionSlogan] = useState("Goooooood vibes only.");
   const [podVideoUrl, setPodVideoUrl] = useState(
     "https://youtube/choDMzlBpvs?feature=shared"
   );
@@ -27,6 +28,7 @@ const AboutPage = ({ handlePreview }) => {
       vision,
       visionSlogan,
       podVideoUrl,
+      textBanner,
     };
     console.log(data);
   };
@@ -49,7 +51,7 @@ const AboutPage = ({ handlePreview }) => {
         required
         value={mission}
         onChange={(e) => setMission(e.target.value)}
-        rows={3}
+        rows={2}
         className="w-full p-3 resize-none border-1 border-primary rounded-md bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary mb-2"
       ></textarea>
       <div className="text-md p-1 font-avenir-black">Mission Slogan</div>
@@ -59,7 +61,7 @@ const AboutPage = ({ handlePreview }) => {
         required
         value={missionSlogan}
         onChange={(e) => setMissionSlogan(e.target.value)}
-        rows={2}
+        rows={1}
         className="w-full p-3 resize-none border-1 border-primary rounded-md bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary mb-2"
       ></textarea>
 
@@ -70,7 +72,7 @@ const AboutPage = ({ handlePreview }) => {
         required
         value={vision}
         onChange={(e) => setVision(e.target.value)}
-        rows={3}
+        rows={2}
         className="w-full p-3 resize-none border-1 border-primary rounded-md bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary mb-2"
       ></textarea>
       <div className="text-md p-1 font-avenir-black">Vision Slogan</div>
@@ -80,7 +82,7 @@ const AboutPage = ({ handlePreview }) => {
         required
         value={visionSlogan}
         onChange={(e) => setVisionSlogan(e.target.value)}
-        rows={2}
+        rows={1}
         className="w-full p-3 resize-none border-1 border-primary rounded-md bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary mb-2"
       ></textarea>
 
@@ -91,6 +93,17 @@ const AboutPage = ({ handlePreview }) => {
         value={podVideoUrl}
         onChange={(e) => setPodVideoUrl(e.target.value)}
       />
+
+      <div className="text-md p-1 font-avenir-black">Text Banner</div>
+
+      <textarea
+        name="text banner"
+        required
+        value={textBanner}
+        onChange={(e) => setTextBanner(e.target.value)}
+        rows={1}
+        className="w-full p-3 resize-none border-1 border-primary rounded-md bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary mb-2"
+      ></textarea>
 
       <div className="about-and-prev flex w-full gap-1">
         <button
