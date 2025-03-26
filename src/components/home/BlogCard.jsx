@@ -44,7 +44,7 @@ const BlogCard = ({
               {article}
             </p>
           </div>
-          <p className="text-xs text-gray-400 mt-2">{fullDate}</p>
+          <p className="text-xss text-gray-400 mt-2">{fullDate}</p>
         </div>
       </Link>
     </div>

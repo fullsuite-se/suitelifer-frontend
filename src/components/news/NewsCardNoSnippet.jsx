@@ -21,13 +21,13 @@ const NewsCardNoSnippet = ({ id, title, author, readTime, created_at, imagesWith
 
       {/* Content */}
       <div className="flex flex-col justify-center">
-        <h2 className="font-avenir-black !text-sm sm:text-base md:!text-sm md:line-clamp-2 lg:line-clamp-2 xl:line-clamp-none leading-tight group-hover:text-primary transition duration-300 ease-in-out ">
+        <p className="font-avenir-black text-small md:line-clamp-2 lg:line-clamp-2 xl:line-clamp-none leading-tight group-hover:text-primary transition duration-300 ease-in-out ">
           {title}
-        </h2>
-        <div className=" sm:text-sm text-gray-500 !text-sm">
+        </p>
+        <div className="  text-gray-500 text-xss">
           <span className="text-primary  ">{author}</span> &nbsp;|&nbsp; {readTime}
         </div>
-        <p className="!text-xs text-gray-400">{fullDate}</p>
+        <p className="text-xss text-gray-400">{fullDate}</p>
       </div>
     </Link>
   );

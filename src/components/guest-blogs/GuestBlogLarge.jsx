@@ -48,7 +48,7 @@ const GuestBlogLarge = ({
           </p>
           <p className="mt-2 text-sm text-gray-300 line-clamp-3">{article}</p>
 
-          <p className="text-xs text-gray-400 mt-2">{fullDate}</p>
+          <p className="text-xss text-gray-400 mt-2">{fullDate}</p>
         </div>
         </NavLink>
       </section>

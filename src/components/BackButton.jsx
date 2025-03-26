@@ -17,7 +17,7 @@ const BackButton = ({ backPath, type }) => {
   return (
     <button
       onClick={handleNavigation}
-      className="group cursor-pointer flex items-center gap-2 text-primary !text-xs transition active:font-avenir-black"
+      className="group cursor-pointer flex items-center gap-2 text-primary text-xss transition active:font-avenir-black"
     >
       <ArrowLeft size={15} />
       <span className="mt-1 group-hover:font-avenir-black">

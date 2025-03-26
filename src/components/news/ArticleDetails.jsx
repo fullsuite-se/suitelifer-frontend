@@ -94,7 +94,7 @@ const ArticleDetails = ({
                 </span>{" "}
                 | {readingTime("Hello", 238).text}
               </p>
-              <p className="text-xs text-gray-400 mt-1 mb-10">{fullDate}</p>
+              <p className="text-xss text-gray-400 mt-1 mb-10">{fullDate}</p>
             
               {/* Image Carousel */}
               <Carousel
@@ -111,27 +111,28 @@ const ArticleDetails = ({
 
             {/* Related Articles */}
             <div className="overflow-y-auto lg:px-5 lg:h-[100vh]">
-              <p className="mt-5 font-avenir-black text-primary pb-3 lg:pb-4">
+              <p className="text-small mt-5 font-avenir-black text-primary pb-3 lg:pb-4">
                 Read More {type}
               </p>
               <div className="grid grid-cols-1 gap-2 justify-center items-center">
                 {type === "Blog" ? (
-                  relatedArticles.map((article, index) => (
-                    <div key={article.id || index}>
-                      <GuestBlogCardSmall
-                        id={article.id}
-                        title={article.title}
-                        author={article.author}
-                        article={article.article}
-                        readTime={article.readTime || article.read_time}
-                        created_at={article.created_at}
-                        images={article.images || article.imagesWithCaption}
-                      />
-                    </div>
-                  ))
+                relatedArticles.slice(0, 5).map((article, index) => (
+                  <div key={article.id || index}>
+                    <GuestBlogCardSmall
+                      id={article.id}
+                      title={article.title}
+                      author={article.author}
+                      article={article.article}
+                      readTime={article.readTime || article.read_time}
+                      created_at={article.created_at}
+                      images={article.images || article.imagesWithCaption}
+                    />
+                  </div>
+                ))
+                
                 ) : (
                   <div className="grid grid-cols-1 gap-4 justify-center items-center">
-                    {relatedArticles.map((news, index) => (
+                    {relatedArticles.slice(0,5).map((news, index) => (
                       <NewsCardNoSnippet
                         key={news.id || index}
                         id={news.id}
