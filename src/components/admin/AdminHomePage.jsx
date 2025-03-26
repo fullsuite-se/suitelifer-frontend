@@ -112,6 +112,6 @@ const AdminHomePage = ({ handlePreview }) => {
       </div>
     </>
   );
-};
+}; 
 
 export default AdminHomePage;
