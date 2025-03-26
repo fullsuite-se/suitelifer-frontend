@@ -9,12 +9,13 @@ import GuestBlogCardSmall from "../guest-blogs/GuestBlogCardSmall";
 import NewsCardNoSnippet from "./NewsCardNoSnippet";
 import formatTimestamp from "../../components/TimestampFormatter";
 import BackToTop from "../BackToTop";
-import { Helmet } from "@dr.pogodin/react-helmet";
+import { Helmet } from "react-helmet-async";
 import { useEffect } from "react";
 import Footer from "../Footer";
 import Carousel from "../Carousel";
 import { removeHtmlTags } from "../../utils/removeHTMLTags";
 import { readingTime } from "reading-time-estimator";
+import BackButton from "../BackButton";
 
 const ArticleDetails = ({
   id,
@@ -28,7 +29,6 @@ const ArticleDetails = ({
   type,
 }) => {
   const location = useLocation();
-  const navigate = useNavigate();
 
   const { fullDate } = formatTimestamp(createdAt);
 
@@ -38,10 +38,6 @@ const ArticleDetails = ({
     }
   }, [id, location]);
 
-  const handleBackBtn = () => {
-    document.title = `SuiteLifer`;
-    navigate(backPath, { replace: true });
-  };
 
   return (
     <>
@@ -80,32 +76,26 @@ const ArticleDetails = ({
         <div className="desktop-nav">
           <DesktopNav />
         </div>
-        <section className="pt-[10%] xl:pt-[8%] relative"></section>
-        <main className="px-[7%] text-sm md:text-base md:px-[5%] lg:px-[8%]">
-          <button
-            onClick={handleBackBtn}
-            className="flex cursor-pointer hover:underline items-center gap-2 text-primary !text-[12px] md:text-base font-semibold transition active:font-avenir-black"
-          >
-            <ArrowLeft size={15} /> <span className="mt-1">Back to {type}</span>
-          </button>
+   
+        <main className="px-[7%] pt-[10%] xl:pt-[8%] md:px-[5%] lg:px-[8%]">
+         <BackButton backPath={-1}/>
           <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-10">
             {/* Main Article */}
             <div>
-              <p className="text-[12px] text-gray-500 mt-5">{fullDate}</p>
+              <p className="text-gray-400 font-avenir-roman-oblique uppercase mt-5">{type}</p>
               <p
-                className={`text-xl md:text-2xl lg:text-3xl font-avenir-black my-2 ${
-                  type === "News" ? "font-avenir-black" : "font-avenir-black"
-                }`}
+                className="text-h4  my-1 font-avenir-black"
               >
                 {title}
               </p>
-              <p className="text-[12px] text-gray-500">
+              <p className="text-small text-gray-400">
                 <span className="text-primary font-avenir-black">
                   {createdBy}
                 </span>{" "}
                 | {readingTime("Hello", 238).text}
               </p>
-
+              <p className="text-xs text-gray-400 mt-1 mb-10">{fullDate}</p>
+            
               {/* Image Carousel */}
               <Carousel
                 images={Array.isArray(images) ? images : []}
@@ -113,9 +103,7 @@ const ArticleDetails = ({
               />
 
               <p
-                className={`mt-4 text-gray-700 whitespace-pre-line ${
-                  type === "News" ? "font-avenir-black" : ""
-                }`}
+                className="mt-10 text-body text-gray-700 whitespace-pre-line"
               >
                 {removeHtmlTags(content)}
               </p>

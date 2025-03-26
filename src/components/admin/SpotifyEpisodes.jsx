@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SingleSpotifyEmbed from "../../components/home/SingleSpotifyEmbed";
 import {
   TrashIcon,
@@ -6,23 +6,47 @@ import {
   XCircleIcon,
   ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import api from "../../utils/axios";
+import toast from "react-hot-toast";
+import { useStore } from "../../store/authStore";
+import { showConfirmationToast } from "../toasts/confirm";
 
 const extractSpotifyId = (url) => {
-  const match = url.match(/episode\/([^?]+)/);
-  return match ? match[1] : null;
+  return url.split("episode/")[1].split("?")[0];
+};
+
+const isValidEpisodeUrl = (url) => {
+  try {
+    const parsedUrl = new URL(url);
+
+    if (!parsedUrl.hostname.endsWith("spotify.com")) return false;
+
+    const episodeRegex = /^\/episode\/[a-zA-Z0-9]{22}$/;
+
+    return episodeRegex.test(parsedUrl.pathname);
+  } catch (error) {
+    return false;
+  }
 };
 
 const SpotifyEpisodes = () => {
-  const [episodes, setEpisodes] = useState([
-    {
-      id: 1,
-      url: "https://open.spotify.com/episode/1P8NLsRXlIcTiG6mobhC4m?si=54cbb1bb38fb4365",
-    },
-  ]);
-  const [editingId, setEditingId] = useState(null);
-  const [newUrl, setNewUrl] = useState("");
+  // USER DETAILS
+  const user = useStore((state) => state.user);
+
+  // DATA UPDATES
+  const [dataUpdated, setDataUpdated] = useState(false);
+
+  // SPOTIFY VARIABLES
+  const defaultEpisodeDetails = {
+    episode_id: null,
+    id: "",
+  };
+
+  const [episodes, setEpisodes] = useState([]);
+  const [episodeDetails, setEpisodeDetails] = useState(defaultEpisodeDetails);
+
   const [error, setError] = useState(null);
 
   const showError = (message) => {
@@ -33,50 +57,119 @@ const SpotifyEpisodes = () => {
     setError(null);
   };
 
-  const addEpisode = () => {
-    const spotifyId = extractSpotifyId(newUrl);
-    if (!spotifyId) return showError("Invalid Spotify episode URL.");
-    if (episodes.some((ep) => ep.url === newUrl))
-      return showError("Episode already added!");
+  const handleAddEditEpisode = async (e) => {
+    e.preventDefault();
 
-    setEpisodes([...episodes, { id: Date.now(), url: newUrl }]);
-    setNewUrl("");
-  };
-
-  const editEpisode = (id) => {
-    const episode = episodes.find((ep) => ep.id === id);
-    if (episode) {
-      setNewUrl(episode.url);
-      setEditingId(id);
+    if (!isValidEpisodeUrl(episodeDetails.id)) {
+      setEpisodeDetails(defaultEpisodeDetails);
+      return showError("Invalid Spotify episode URL.");
     }
-  };
 
-  const saveEdit = () => {
-    const spotifyId = extractSpotifyId(newUrl);
-    if (!spotifyId) return showError("Invalid Spotify episode URL.");
+    if (episodeDetails.episode_id !== null) {
+      const index = episodes.findIndex(
+        (episode) => episode.episodeId === episodeDetails.episode_id
+      );
+      if (
+        episodeDetails.id ===
+        `https://open.spotify.com/episode/${episodes[index].spotifyId}`
+      ) {
+        setEpisodeDetails(defaultEpisodeDetails);
+        return;
+      }
+    }
 
-    setEpisodes(
-      episodes.map((ep) => (ep.id === editingId ? { ...ep, url: newUrl } : ep))
-    );
-    setEditingId(null);
-    setNewUrl("");
+    if (
+      episodes.some(
+        (ep) => ep.spotifyId === extractSpotifyId(episodeDetails.id)
+      )
+    ) {
+      setEpisodeDetails(defaultEpisodeDetails);
+      return showError("Episode already added!");
+    }
+
+    try {
+      if (episodeDetails.episode_id === null) {
+        // ADD SPOTIFY EPISODE
+        const response = await api.post("/api/add-episode", {
+          url: episodeDetails.id,
+          user_id: user.id,
+        });
+
+        toast.success(response.data.message);
+
+        setDataUpdated(!dataUpdated);
+      } else {
+        const response = await api.post("/api/edit-episode", {
+          episode_id: episodeDetails.episode_id,
+          url: episodeDetails.id,
+          user_id: user.id,
+        });
+
+        toast.success(response.data.message);
+
+        setDataUpdated(!dataUpdated);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+
+    setEpisodes((e) => [...e, episodeDetails]);
+    setEpisodeDetails(defaultEpisodeDetails);
   };
 
   const cancelEdit = () => {
-    setEditingId(null);
-    setNewUrl("");
+    setEpisodeDetails(defaultEpisodeDetails);
   };
 
   const deleteEpisode = (id) => {
-    setEpisodes(episodes.filter((ep) => ep.id !== id));
+    setEpisodes(episodes.filter((ep) => ep.episode_id !== id));
   };
 
+  const handleDeleteClick = (episode_id) => {
+    showConfirmationToast({
+      message: "Delete spotify episode?",
+      onConfirm: () => handleDelete(episode_id),
+      onCancel: null,
+    });
+  };
+
+  const handleDelete = async (episode_id) => {
+    try {
+      const response = await api.post("/api/delete-episode", {
+        episode_id,
+        user_id: user.id,
+      });
+
+      toast.success(response.data.message);
+
+      setDataUpdated(!dataUpdated);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchSpotifyEpisodes = async () => {
+    try {
+      const response = await api.get("/api/all-episodes");
+
+      console.log(response.data.data);
+
+      setEpisodes(response.data.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchSpotifyEpisodes();
+  }, [dataUpdated]);
+
   return (
-    <div className="border-primary border-2 rounded-3xl w-full p-4 space-y-4">
+    <div className="border-primary border-2 rounded-2xl w-full p-4 space-y-4">
       {error && (
         <div className="fixed inset-0 flex items-center justify-center ">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full border-2 border-red-500/95 ">
-            <div className="flex items-center justify-center gap-2 text-lg font-semibold p-3 rounded-md">
+          <div className="bg-white p-6 rounded-2xl shadow-lg max-w-md w-full border-2 border-red-500/95 ">
+            <div className="flex items-center justify-center gap-2 text-lg font-semibold p-3 rounded-2xl">
               <ExclamationTriangleIcon className="size-12 text-red-500" />
               <span className="text-red-500 text-2xl">Error</span>
             </div>
@@ -86,7 +179,7 @@ const SpotifyEpisodes = () => {
             <div className="flex justify-center mt-4">
               <button
                 onClick={closeError}
-                className="btn-light text-white px-4 py-2 rounded-md"
+                className="btn-light text-white px-4 py-2 rounded-4xl"
               >
                 Close
               </button>
@@ -98,22 +191,30 @@ const SpotifyEpisodes = () => {
       <div className="flex gap-2">
         <input
           type="text"
-          value={newUrl}
-          onChange={(e) => setNewUrl(e.target.value)}
+          value={episodeDetails.id}
+          onChange={(e) =>
+            setEpisodeDetails((ed) => ({ ...ed, id: e.target.value }))
+          }
           placeholder="Enter Spotify episode URL"
-          className="border p-2 rounded-md w-full"
+          className="border p-2 rounded-2xl w-full"
         />
-        {editingId ? (
+        {episodeDetails.episode_id !== null ? (
           <>
-            <button onClick={saveEdit} className="btn-primary p-2 rounded-md">
+            <button
+              onClick={(e) => handleAddEditEpisode(e)}
+              className="btn-primary p-2"
+            >
               Save
             </button>
-            <button onClick={cancelEdit} className="btn-light p-2 rounded-md">
+            <button onClick={cancelEdit} className="btn-light p-2">
               <XCircleIcon className="size-6" />
             </button>
           </>
         ) : (
-          <button onClick={addEpisode} className="btn-light rounded-md">
+          <button
+            onClick={(e) => handleAddEditEpisode(e)}
+            className="btn-light"
+          >
             <PlusIcon className="size-7" />
           </button>
         )}
@@ -126,25 +227,31 @@ const SpotifyEpisodes = () => {
         </div>
       ) : (
         episodes.map((episode) => {
-          const spotifyId = extractSpotifyId(episode.url);
           return (
             <div
-              key={episode.id}
-              className="border rounded-xl p-2 flex items-center gap-2"
+              key={episode.episodeId}
+              className="border rounded-2xl p-2 flex gap-2"
             >
-              <SingleSpotifyEmbed spotifyId={spotifyId} />
-              <div className="flex flex-col space-y-2">
+              <div className="w-[96%]">
+                <SingleSpotifyEmbed spotifyId={episode.spotifyId} />
+              </div>
+              <div className="w-[4%] sm:min-w-[5%] flex flex-col mx-auto justify-evenly items-center gap-2">
                 <button
-                  onClick={() => editEpisode(episode.id)}
-                  className="btn-primary p-1 rounded-md"
+                  onClick={() => {
+                    setEpisodeDetails({
+                      episode_id: episode.episodeId,
+                      id: `https://open.spotify.com/episode/${episode.spotifyId}`,
+                    });
+                  }}
+                  className="bg-primary text-white w-full rounded-2xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e] h-[50%]"
                 >
-                  <EditIcon className="size-6" />
+                  <EditIcon className="size-7" />
                 </button>
                 <button
-                  onClick={() => deleteEpisode(episode.id)}
-                  className="btn-primary p-1 rounded-md"
+                  onClick={() => handleDeleteClick(episode.episodeId)}
+                  className="bg-primary text-white w-full rounded-2xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e] h-[50%]"
                 >
-                  <DeleteIcon className="size-6" />
+                  <DeleteIcon className="size-7" />
                 </button>
               </div>
             </div>

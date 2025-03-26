@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import FacebookIcon from "../assets/logos/Facebook.jsx";
 import InstagramIcon from "../assets/logos/Instagram.jsx";
@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import { getUserFromCookie } from "../utils/cookie.js";
 import Certifications from "./footer/Certifications.jsx";
+import api from "../utils/axios";
 
 const handleLoginBtn = async (navigate) => {
   try {
@@ -23,24 +24,45 @@ const handleLoginBtn = async (navigate) => {
 };
 
 const Footer = () => {
-  const navigate = useNavigate();
-  const industryNameList = [
-    "Data Operations",
-    "Finance Operations",
-    "Administrative Operations",
-    "Marketing",
-    "Human Resources",
-    "Software Development",
-  ];
 
+
+
+  const [industries, setIndustries] = useState([]);
+  const fetchIndustries = async () => {
+    try {
+      const response = await api.get("/api/get-all-industries");
+      setIndustries((i) => response.data.data);
+      console.log(response.data.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchIndustries();
+  }, []);
+
+
+
+
+
+
+
+
+
+
+
+
+  const navigate = useNavigate();
+  
   const maxItems = 5;
-  const showSeeAll = industryNameList.length > maxItems;
+  const showSeeAll = industries.length > maxItems;
 
   return (
     <footer className="relative p-8 pb-20 bg-gradient-to-t from-primary to-secondarydark text-white ">
       <div className="flex flex-col md:flex-row justify-between md:justify-center items-center md:items-start mt-2 gap-4">
         <div className="md:w-[40%]! md:mr-5 lg:mr-10">
-          <div>
+          <div className="text-small">
             <p>
               FullSuite is the remote operations concierge of choice of
               venture-backed startups in the US.
@@ -101,8 +123,8 @@ const Footer = () => {
                 className="group relative px-6 py-2 text-sm md:text-sm md:px-6 md:py-2 lg:px-7 lg:py-2  text-white transition-all duration-100 cursor-pointer"
                 onClick={() => handleLoginBtn(navigate)}
               >
-                <div className="absolute inset-0 bg-secondary rounded-full transition-all duration-100 group-hover:bg-secondarydark"></div>
-                <span className="relative group-hover:text-white">
+                <div className="absolute inset-0 bg-secondary rounded-full transition-all duration-100 group-hover:bg-accent-2"></div>
+                <span className="relative group-hover:text-white text-small">
                   Suitelifer Login
                 </span>
               </button>
@@ -111,13 +133,13 @@ const Footer = () => {
         </div>
 
         <div>
-          <div className="md:3fr grid grid-cols-3 grid-rows-1 mt-15 md:mt-0 mb-10 md:gap-10 gap-4">
+          <div className="md:3fr grid grid-cols-3 grid-rows-1 mt-15 md:mt-0 mb-10 md:gap-10 gap-4 text-small">
             <div>
-              <span className="no-underline text-[14px]! md:text-[16px]! text-white font-avenir-black">
+              <span className="no-underline  text-white font-avenir-black">
                 About Us
               </span>
               <ul className="flex flex-wrap gap-1 flex-col mt-3 list-none! -ml-5">
-                <li className="text-[12px]! md:text-[14px]! text-white ">
+                <li className=" text-white ">
                   <HashLink
                     to="/about-us#our-story"
                     className="no-underline hover:!text-secondary"
@@ -125,7 +147,7 @@ const Footer = () => {
                     Our Story
                   </HashLink>
                 </li>
-                <li className="text-[12px]! text-white md:text-[14px]!">
+                <li className=" text-white ">
                   <HashLink
                     to="/about-us#our-mission"
                     className="no-underline hover:!text-secondary"
@@ -133,7 +155,7 @@ const Footer = () => {
                     Mission
                   </HashLink>
                 </li>
-                <li className="text-[12px]! text-white md:text-[14px]!">
+                <li className=" text-white ">
                   <HashLink
                     to="/about-us#our-vision"
                     className="no-underline hover:!text-secondary"
@@ -141,7 +163,7 @@ const Footer = () => {
                     Vision
                   </HashLink>
                 </li>
-                <li className="text-[12px]! text-white md:text-[14px]!">
+                <li className=" text-white ">
                   <HashLink
                     to={"/about-us/#ceo-message"}
                     className="no-underline hover:!text-secondary"
@@ -149,7 +171,7 @@ const Footer = () => {
                     CEO's message
                   </HashLink>
                 </li>
-                <li className="text-[12px]! text-white md:text-[14px]!">
+                <li className=" text-white ">
                   <HashLink
                     to={"/about-us/#testimonials"}
                     className="no-underline hover:!text-secondary"
@@ -160,22 +182,22 @@ const Footer = () => {
               </ul>
             </div>
             <div>
-              <span className="no-underline text-[14px]! md:text-[16px]! text-white font-avenir-black">
+              <span className="no-underline  text-white font-avenir-black">
                 Careers
               </span>
               <ul className="flex flex-wrap gap-1 flex-col mt-3 list-none! -ml-5">
-                {industryNameList.slice(0, maxItems).map((industry, index) => (
+                {industries.slice(0, maxItems).map((industry, index) => (
                   <li
-                    key={index}
-                    className="text-[12px]  md:text-[14px]! text-white"
+                    key={industry.industryId}
+                    className="   text-white"
                   >
                     <Link to={""} className="no-underline hover:text-secondary">
-                      {industry}
+                      {industry.industryName}
                     </Link>
                   </li>
                 ))}
                 {showSeeAll && (
-                  <li className="text-[12px] text-white  md:text-[14px]!">
+                  <li className=" text-white  ">
                     <Link
                       to="/careers-all"
                       className="no-underline hover:text-secondary font-avenir-black"
@@ -187,11 +209,11 @@ const Footer = () => {
               </ul>
             </div>
             <div>
-              <span className="text-[14px]! text-white font-avenir-black  md:text-[16px]!">
+              <span className=" text-white font-avenir-black ">
                 Legal
               </span>
               <ul className="flex-wrap flex gap-1 mt-3 flex-col list-none! -ml-5">
-                <li className="text-[12px]!  md:text-[14px]!">
+                <li className="  ">
                   <Link
                     to={"/privacy-policy"}
                     className="no-underline text-white hover:!text-secondary"
@@ -199,7 +221,7 @@ const Footer = () => {
                     Privacy Policy
                   </Link>
                 </li>
-                <li className="text-[12px]! text-white md:text-[14px]!">
+                <li className=" text-white ">
                   <Link
                     to={"/terms-of-use"}
                     className="no-underline text-white hover:!text-secondary"
@@ -207,7 +229,7 @@ const Footer = () => {
                     Terms of Use
                   </Link>
                 </li>
-                <li className="text-[12px]! text-white md:text-[14px]!">
+                <li className=" text-white ">
                   <HashLink
                     to={"/contact#faqs"}
                     className="no-underline hover:!text-secondary"

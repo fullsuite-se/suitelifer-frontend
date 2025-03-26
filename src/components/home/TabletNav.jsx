@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
 import logo_fs_full from "../../assets/logos/logo-fs-full.svg";
 import { Bars2Icon, XMarkIcon } from "@heroicons/react/24/solid";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
 export default function TabletNav() {
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const location = useLocation();
+  const isPathActive = location.pathname.startsWith("/careers");
 
   // Function to handle close animation
   const handleClose = () => {
@@ -138,7 +140,7 @@ export default function TabletNav() {
                         to="/careers"
                         className={({ isActive }) =>
                           `!no-underline text-black text-lg font-medium hover:text-[#007a8e] ${
-                            isActive ? "active-class" : ""
+                            isPathActive ? "active-class text-[#007a8e]" : ""
                           }`
                         }
                         onClick={handleClose}

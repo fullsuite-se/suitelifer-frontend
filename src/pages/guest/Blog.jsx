@@ -39,7 +39,6 @@ const Blog = () => {
   };
 
   useEffect(() => {
-    window.scroll(0, 0);
   }, []);
 
   const allTag = { tagId: "All", tagName: "All" };
@@ -143,7 +142,7 @@ const Blog = () => {
         </div>
 
         <div className="text-center mt-3 md:mt-5">
-          <p className="text-gray-400 text-[12px] md:text-[14px] lg:text-[16px]">
+          <p className="text-gray-400 text-small">
             <motion.span
               initial={{ width: 0 }}
               animate={{ width: "100%" }}

@@ -43,9 +43,6 @@ const News = () => {
     setInputValue(e.target.value);
   };
 
-  useEffect(() => {
-    window.scroll(0, 0);
-  }, []);
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -86,7 +83,7 @@ const News = () => {
         <DesktopNav />
       </div>
       {/* NEWS HERO */}
-      <section className="pt-[10%] xl:pt-[8%]">
+      <section className="pt-[10%] xl:pt-[8%] ">
         <div className="relative hidden">
           <img
             className="-z-50 absolute w-[90%] transform translate-y-5 -translate-x-6 lg:-translate-y-10  xl:-translate-y-15 lg:-translate-x-15 xl:-translate-x-40 opacity-90"
@@ -114,7 +111,7 @@ const News = () => {
               news
             </motion.span>
           </p>
-          <p className="text-gray-400 text-[12px] md:text-[14px] lg:text-[16px]">
+          <p className="text-gray-400 text-small">
             <motion.span
               initial={{ width: 0 }}
               animate={{ width: "100%" }}
@@ -167,12 +164,12 @@ const News = () => {
       </section>
       <div className="py-5"></div>
       {/* NEWS CONTENT */}
-      <main className="px-[5%]">
+      <main className="px-[5%] md:px-[10%] xl:px-[15%]">
         {isSearching ? (
           <SearchingBlogOrNews type="news" />
         ) : (
           <>
-            <p className="md:text-2xl uppercase font-avenir-black text-primary pb-3 lg:pb-4">
+            <p className="text-small uppercase font-avenir-black text-primary pb-3 lg:pb-4">
               The latest
             </p>
             {loading || !news.length ? (
@@ -190,7 +187,7 @@ const News = () => {
             ) : (
               <>
                 <NewsLarge {...news[0]} />
-                <p className="mt-10 md:text-xl font-avenir-black text-primary pb-3 lg:pb-4">
+                <p className="mt-10 text-small font-avenir-black text-primary pb-3 lg:pb-4">
                   More Articles
                 </p>
                 <div className="layout-small-news-cards gap-4 sm:gap-5">
