@@ -47,51 +47,54 @@ const FAQ = () => {
       transition={{ duration: 0.6, ease: "easeOut" }}
       className="max-w-2xl mx-auto mt-10 px-4 mb-20 lg:max-w-4xl xl:max-w-7xl"
     >
-      <h2 className="font-avenir-black text-lg md:text-xl text-primary">
-        Frequently Asked Questions
-      </h2>
-      <div className="border-t border-primary">
-        {faqs.map((faq, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 20 }}
-            animate={isLoaded ? { opacity: 1, y: 0 } : {}}
-            transition={{
-              duration: 0.5,
-              ease: "easeInOut",
-              delay: index * 0.1,
-            }}
-            className="border-b border-primary"
-          >
-            <button
-              className="text-gray-8  00 cursor-pointer flex justify-between items-center w-full py-4 text-left"
-              onClick={() => toggleFAQ(index)}
-            >
-              <span>{faq.question}</span>
-              {openIndex === index ? (
-                <ChevronUp className="w-5 h-5 text-primary" />
-              ) : (
-                <ChevronDown className="w-5 h-5 text-primary" />
-              )}
-            </button>
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={
-                openIndex === index
-                  ? { height: "auto", opacity: 1 }
-                  : { height: 0, opacity: 0 }
-              }
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
-              className="overflow-hidden"
-            >
-              <p className="px-4 pb-4 mt-1 text-gray-800">
-                {faq.answer}
+       <p className="font-avenir-black text-h4 mb-10">
+                 <span className="text-primary">Frequently</span> Asked Questions
               </p>
-            </motion.div>
-          </motion.div>
-        ))}
-      </div>
+              <div className="border-t border-primary">
+  {faqs.map((faq, index) => (
+    <motion.div
+      key={index}
+      initial={{ opacity: 0, y: 20 }}
+      animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+      transition={{
+        duration: 0.5,
+        ease: "easeInOut",
+        delay: index * 0.1,
+      }}
+      className="border-b border-primary"
+    >
+      <button
+        className="cursor-pointer flex justify-between items-center w-full py-4 text-left transition-colors"
+        onClick={() => toggleFAQ(index)}
+      >
+        <span className={`text-body ${openIndex === index ? "text-primary font-avenir-black" : "text-gray-800"}`}>
+          {faq.question}
+        </span>
+        {openIndex === index ? (
+          <ChevronUp className="w-5 h-5 text-primary" />
+        ) : (
+          <ChevronDown className="w-5 h-5 text-primary" />
+        )}
+      </button>
+      <motion.div
+        initial={{ height: 0, opacity: 0 }}
+        animate={
+          openIndex === index
+            ? { height: "auto", opacity: 1 }
+            : { height: 0, opacity: 0 }
+        }
+        exit={{ height: 0, opacity: 0 }}
+        transition={{ duration: 0.2, ease: "easeInOut" }}
+        className="overflow-hidden"
+      >
+        <p className="px-4 pb-4 mt-1 text-gray-800 text-body">
+          {faq.answer}
+        </p>
+      </motion.div>
+    </motion.div>
+  ))}
+</div>
+
     </motion.div>
   );
 };

@@ -23,7 +23,7 @@ const BlogComment = ({
             <span className="text-primary font-avenir-black">
               {firstName} {lastName}
             </span>
-            <span className="text-xs text-gray-500">{createdAt}</span>
+            <span className="text-xss text-gray-500">{createdAt}</span>
           </div>
           <p>{content}</p>
         </div>

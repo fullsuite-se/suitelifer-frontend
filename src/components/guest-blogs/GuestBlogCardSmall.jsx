@@ -35,12 +35,12 @@ const GuestBlogCardSmall = ({
         </div>
 
         <div className="absolute bottom-0 p-4 text-white">
-          <h2 className="font-avenir-black !text-[14px] lg:!text-[16px] group-hover:text-secondary   transition duration-300 ease-in-out line-clamp-2">
+          <p className="font-avenir-black text-small group-hover:text-secondary   transition duration-300 ease-in-out line-clamp-2">
             {title}
-          </h2>
+          </p>
 
-          <p className="!text-[12px] ">
-            <span className="text-secondary font-avenir-black !text-[12px]">{author}</span> |{" "}
+          <p className="text-xss">
+            <span className="text-secondary font-avenir-black">{author}</span> |{" "}
             {readTime}
           </p>
 

@@ -105,7 +105,7 @@ const HomeNews = () => {
                   className="news-info py-1 md:py-2 mb-2 no-underline!"
                 >
                   {mainAuthor && mainReadTime ? (
-                    <p className="text-xs">
+                    <p className="text-xss">
                       <span className="text-primary">{mainAuthor}</span>
                       <span className="text-primary">&nbsp; |</span>
                       <span className="text-gray-400">
@@ -180,7 +180,7 @@ const HomeNews = () => {
                        
                       </div>
                       <div> {/* AUTHOR AND READ TIME */}
-                        <p className="text-xs">
+                        <p className="text-xss">
                           {newsAuthor && newsReadTime ? (
                             <>
                               <span className="text-primary">

@@ -67,7 +67,7 @@ const Testimonials = () => {
              <p className="text-small font-avenir-black text-primary">
                {testimonial.name}
              </p>
-             <p className="text-xs! text-gray-400">
+             <p className="text-xss text-gray-400">
                {testimonial.position}
              </p>
            </div>

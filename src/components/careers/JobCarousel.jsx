@@ -56,7 +56,7 @@ const JobCarouselVersion2 = ({ jobs }) => {
                       {job.jobTitle}
                     </p>
                     <div className="flex flex-col mb-4">
-                      <span className="text-xs font-avenir-roman mb-3 text-gray-500">
+                      <span className="text-xss font-avenir-roman mb-3 text-gray-500">
                         <span className="text-secondary">|</span>{" "}
                         {job.industryName}
                       </span>
@@ -66,7 +66,7 @@ const JobCarouselVersion2 = ({ jobs }) => {
                     </div>
                     {isActive && job.salaryMin != null && job.salaryMin > 0 && (
                       <>
-                        <p className="text-xs text-gray-400">
+                        <p className="text-xss text-gray-400">
                           Expected Salary
                         </p>
                         <p className="text-body font-avenir-black mb-3 text-primary">
