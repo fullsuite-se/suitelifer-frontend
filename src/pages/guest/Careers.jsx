@@ -16,7 +16,10 @@ import OnLoadLayoutAnimation from "../../components/layout/OnLoadLayoutAnimation
 import { useLocation } from "react-router-dom";
 import DynamicLink from "../../components/buttons/ViewAll";
 import LoadingJobCarousel from "../../components/careers/LoadingJobCarousel";
+
 import Skeleton from "react-loading-skeleton";
+import LoadingLargeSpotify from "../../components/careers/LoadingLargeSpotify";
+import LoadingSmallSpotify from "../../components/careers/LoadingSmallSpotify";
 
 const Careers = () => {
   const [jobs, setJobs] = useState([]);
@@ -383,8 +386,8 @@ const Careers = () => {
                 <div className="flex justify-center py-[3%] pl-[5%] pb-[5%]">
                   <div className="w-full max-w-full flex justify-center">
                     <div className="w-full">
-                      <Skeleton height={"55%"} width={"80%"} />
-                      <Skeleton height={"55%"} width={"40%"} />
+                      <Skeleton width={"80%"} />
+                      <Skeleton width={"40%"} />
                     </div>
                   </div>
                 </div>
@@ -439,59 +442,70 @@ const Careers = () => {
             {/* Spotify Episodes */}
             {isSpotifyLoading ? (
               <section>
-                <div className="sm:hidden">
-                  <Skeleton height={352} />
-                  <Skeleton height={152} />
-                  <Skeleton height={152} />
+                <div className="sm:hidden flex flex-col gap-4">
+                  <LoadingLargeSpotify />
+                  <LoadingSmallSpotify />
+                  <LoadingSmallSpotify />
                 </div>
                 <div className="hidden sm:flex gap-4">
                   <div className="w-1/2">
-                    <Skeleton height={352} />
+                    <LoadingLargeSpotify />
                   </div>
                   <div className="w-1/2 flex flex-col justify-center gap-4">
-                    <Skeleton height={152} />
-                    <Skeleton height={152} />
+                    <LoadingSmallSpotify />
+                    <LoadingSmallSpotify />
                   </div>
                 </div>
               </section>
             ) : (
-              <section className="">
-                {/* Mobile View: Display all in a column */}
-                <div className="sm:hidden">
-                  {spotifyEpisodes.map(({ spotifyId }, index) => (
-                    <div className="p-1" key={index}>
-                      <SpotifyEmbed id={spotifyId} index={index} />
-                    </div>
-                  ))}
-                </div>
+              <>
+                {spotifyEpisodes.length > 0 ? (
+                  <>
+                    <section className="">
+                      {/* Mobile View: Display all in a column */}
+                      <div className="sm:hidden">
+                        {spotifyEpisodes.map(({ spotifyId }, index) => (
+                          <div className="p-1" key={index}>
+                            <SpotifyEmbed id={spotifyId} index={index} />
+                          </div>
+                        ))}
+                      </div>
 
-                {/* Small Screens and Up: Two-column layout */}
-                <div className="hidden sm:flex gap-4">
-                  {/* Left Column: Large Embed */}
-                  <div className="w-1/2">
-                    <SpotifyEmbed
-                      id={spotifyEpisodes[0]?.spotifyId}
-                      index={0}
-                    />
-                  </div>
+                      {/* Small Screens and Up: Two-column layout */}
+                      <div className="hidden sm:flex gap-4">
+                        {/* Left Column: Large Embed */}
+                        <div className="w-1/2">
+                          <SpotifyEmbed
+                            id={spotifyEpisodes[0]?.spotifyId}
+                            index={0}
+                          />
+                        </div>
 
-                  {/* Right Column: Two Smaller Embeds */}
-                  <div className="w-1/2 flex flex-col justify-center gap-4">
-                    {spotifyEpisodes.slice(1, 3).map(({ spotifyId }, index) => (
-                      <SpotifyEmbed
-                        key={index + 1}
-                        id={spotifyId}
-                        index={index + 1}
-                      />
-                    ))}
+                        {/* Right Column: Two Smaller Embeds */}
+                        <div className="w-1/2 flex flex-col justify-center gap-4">
+                          {spotifyEpisodes
+                            .slice(1, 3)
+                            .map(({ spotifyId }, index) => (
+                              <SpotifyEmbed
+                                key={index + 1}
+                                id={spotifyId}
+                                index={index + 1}
+                              />
+                            ))}
+                        </div>
+                      </div>
+                    </section>
+                  </>
+                ) : (
+                  <>
+                  <div className="text-center text-gray-500">
+                    Oops! It looks like there are no spotify podcasts available yet. Stay tuned!
                   </div>
-                </div>
-              </section>
+                  </>
+                )}
+              </>
             )}
           </section>
-          {/* <div className="relative hidden sm:block">
-            <div className="absolute -translate-y-30 -z-50 w-[15%] h-25 bg-primary/10 rounded-r-4xl"></div>
-          </div> */}
         </main>
         <BackToTop />
 
