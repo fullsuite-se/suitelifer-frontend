@@ -11,7 +11,6 @@ export const showConfirmationToast = ({ message, onConfirm, onCancel }) => {
             onClick={() => {
               toast.dismiss(t.id);
               if (onConfirm) onConfirm();
-              toast.success("Action confirmed.");
             }}
           >
             Confirm
