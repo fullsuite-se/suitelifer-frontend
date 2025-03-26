@@ -9,7 +9,7 @@ import GuestBlogCardSmall from "../guest-blogs/GuestBlogCardSmall";
 import NewsCardNoSnippet from "./NewsCardNoSnippet";
 import formatTimestamp from "../../components/TimestampFormatter";
 import BackToTop from "../BackToTop";
-import { Helmet } from "@dr.pogodin/react-helmet";
+import { Helmet } from "react-helmet-async";
 import { useEffect } from "react";
 import Footer from "../Footer";
 import Carousel from "../Carousel";
