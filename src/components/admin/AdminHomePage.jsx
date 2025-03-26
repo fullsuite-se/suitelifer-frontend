@@ -7,7 +7,7 @@ import {
 
 const VideoPreview = ({ handlePreview }) => {
   const [videoFile, setVideoFile] = useState(
-    "blob:http://localhost:5173/8f9a369f-5c05-419c-a951-b9447f0366ca"
+    "blob:http://localhost:5173/4ef3993a-efae-4c70-9dab-55dc833cd04b"
   );
 
   const handleUpload = (event) => {
