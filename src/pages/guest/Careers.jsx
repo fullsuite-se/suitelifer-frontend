@@ -386,7 +386,7 @@ const Careers = () => {
             </div>
             {/* Spotify Episodes */}
             {isSpotifyLoading ? (
-              <section>
+              <section className="mt-20 px-[5%] md:px-[10%] lg:px-[15%]">
                 <div className="sm:hidden flex flex-col gap-4">
                   <LoadingLargeSpotify />
                   <LoadingSmallSpotify />
