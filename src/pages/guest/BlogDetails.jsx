@@ -13,6 +13,8 @@ const BlogDetails = () => {
 
   const [blogDetails, setBlogDetails] = useState({});
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const fetchBlogDetails = async () => {
     try {
       const response = await api.get(`/api/get-company-blog/${cblog_id}`);
@@ -20,6 +22,8 @@ const BlogDetails = () => {
       console.log(response.data.data);
       
       setBlogDetails(response.data.data);
+      setIsLoading(false);
+      
     } catch (err) {
       console.log(err);
     }
