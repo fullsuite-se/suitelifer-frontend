@@ -10,7 +10,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import api from "../../utils/axios";
 import toast from "react-hot-toast";
-import { useStore } from '../../store/authStore';
+import { useStore } from "../../store/authStore";
 
 const extractSpotifyId = (url) => {
   return url.split("episode/")[1].split("?")[0];
@@ -56,35 +56,56 @@ const SpotifyEpisodes = () => {
     setError(null);
   };
 
-  const handleAddEditEpisode = async () => {
-    if (episodeDetails.id === "") {
-      return;
-    }
+  const handleAddEditEpisode = async (e) => {
+    e.preventDefault();
 
     if (!isValidEpisodeUrl(episodeDetails.id)) {
       setEpisodeDetails(defaultEpisodeDetails);
       return showError("Invalid Spotify episode URL.");
     }
 
+    if (
+      episodes.some(
+        (ep) => ep.spotifyId === extractSpotifyId(episodeDetails.id)
+      )
+    ) {
+      setEpisodeDetails(defaultEpisodeDetails);
+      return showError("Episode already added!");
+    }
+
     try {
       if (episodeDetails.episode_id === null) {
         // ADD SPOTIFY EPISODE
-        if (
-          episodes.some(
-            (ep) => ep.spotifyId === extractSpotifyId(episodeDetails.id)
-          )
-        ) {
-          setEpisodeDetails(defaultEpisodeDetails);
-          return showError("Episode already added!");
-        }
-
-        const response = await api.post("/api/add-episode", {url: episodeDetails.id, user_id: user.id});
+        const response = await api.post("/api/add-episode", {
+          url: episodeDetails.id,
+          user_id: user.id,
+        });
 
         toast.success(response.data.message);
 
         setDataUpdated(!dataUpdated);
       } else {
-        // EDIT SPOTIFY EPISODE
+        const index = episodes.findIndex(
+          (episode) => episode.episodeId === episodeDetails.episode_id
+        );
+
+        if (
+          episodeDetails.id ===
+          `https://open.spotify.com/episode/${episodes[index].spotifyId}`
+        ) {
+          setEpisodeDetails(defaultEpisodeDetails);
+          return;
+        }
+
+        const response = await api.post("/api/edit-episode", {
+          episode_id: episodeDetails.episode_id,
+          url: episodeDetails.id,
+          user_id: user.id,
+        });
+
+        toast.success(response.data.message);
+
+        setDataUpdated(!dataUpdated);
       }
     } catch (err) {
       console.log(err);
@@ -92,14 +113,6 @@ const SpotifyEpisodes = () => {
 
     setEpisodes((e) => [...e, episodeDetails]);
     setEpisodeDetails(defaultEpisodeDetails);
-  };
-
-  const editEpisode = (id) => {
-    const episode = episodes.find((ep) => ep.episode_id === id);
-    if (episode) {
-      setNewUrl(episode.id);
-      setEditingId(id);
-    }
   };
 
   const saveEdit = () => {
@@ -116,8 +129,7 @@ const SpotifyEpisodes = () => {
   };
 
   const cancelEdit = () => {
-    setEditingId(null);
-    setNewUrl("");
+    setEpisodeDetails(defaultEpisodeDetails);
   };
 
   const deleteEpisode = (id) => {
@@ -176,7 +188,10 @@ const SpotifyEpisodes = () => {
         />
         {episodeDetails.episode_id !== null ? (
           <>
-            <button onClick={saveEdit} className="btn-primary p-2">
+            <button
+              onClick={(e) => handleAddEditEpisode(e)}
+              className="btn-primary p-2"
+            >
               Save
             </button>
             <button onClick={cancelEdit} className="btn-light p-2">
@@ -184,7 +199,10 @@ const SpotifyEpisodes = () => {
             </button>
           </>
         ) : (
-          <button onClick={handleAddEditEpisode} className="btn-light">
+          <button
+            onClick={(e) => handleAddEditEpisode(e)}
+            className="btn-light"
+          >
             <PlusIcon className="size-7" />
           </button>
         )}
@@ -207,7 +225,12 @@ const SpotifyEpisodes = () => {
               </div>
               <div className="w-[4%] sm:min-w-[5%] flex flex-col mx-auto justify-evenly items-center gap-2">
                 <button
-                  onClick={() => editEpisode(episode.episode_id)}
+                  onClick={() => {
+                    setEpisodeDetails({
+                      episode_id: episode.episodeId,
+                      id: `https://open.spotify.com/episode/${episode.spotifyId}`,
+                    });
+                  }}
                   className="bg-primary text-white w-full rounded-2xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e] h-[50%]"
                 >
                   <EditIcon className="size-7" />
