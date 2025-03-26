@@ -16,6 +16,9 @@ import toast from "react-hot-toast";
 import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
 import { useStore } from "../../store/authStore";
 
+import LoadingNewsLarge from "../../components/news/LoadingNewsLarge";
+import LoadingNewsCardSmall from "../../components/news/LoadingNewsCardSmall";
+
 const News = () => {
   const setSearchValue = useStore((state) => state.setSearchValue);
   const [inputValue, setInputValue] = useState("");
@@ -173,13 +176,16 @@ const News = () => {
               The latest
             </p>
             {loading || !news.length ? (
-              <div className="mt-20">
-                <TwoCirclesLoader
-                  bg={"transparent"}
-                  color1={"#0097b2"}
-                  color2={"#bfd1a0"}
-                  height={"35"}
-                />
+              <div className="">
+                <LoadingNewsLarge />
+                <p className="mt-10 md:text-xl font-avenir-black text-primary pb-3 lg:pb-4">
+                  More Articles
+                </p>
+                <div className="layout-small-news-cards gap-4 sm:gap-5">
+                  {[...Array(2)].map((_, index) => (
+                    <LoadingNewsCardSmall/>
+                  ))}
+                </div>
               </div>
             ) : (
               <>
