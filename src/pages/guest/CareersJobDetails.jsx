@@ -34,7 +34,7 @@ const CareersJobDetails = () => {
   };
 
   useEffect(() => {
-    window.scroll(0, 0);
+   
     const fetchJobDetails = async () => {
       try {
         console.log("Fetching job details for jobId:", jobId);
@@ -85,14 +85,8 @@ const CareersJobDetails = () => {
       <div className="desktop-nav">
         <DesktopNav />
       </div>
-      <div className="px-7 max-w-4xl mx-auto lg:flex lg:flex-col lg:pt-20 lg:h-lvh">
-        <button
-          className="w-fit flex gap-2 text-primary no-underline text-xs cursor-pointer hover:underline!"
-          onClick={handleBack} // Goes back to the last visited page
-        >
-          <ArrowLeft size={15} />
-          <span>Back</span>
-        </button>
+      <div className="pt-[10%] xl:pt-[8%] px-7 max-w-3xl! mx-auto lg:flex lg:flex-col lg:h-lvh md:max-w-2xl! lg:max-w-4xl!">
+      <BackButton backPath={handleBack}/>
         {jobDetails ? (
           <div className="flex flex-col mt-5">
             <p className="font-avenir-black text-2xl">{jobDetails.jobTitle}</p>
@@ -184,7 +178,7 @@ const CareersJobDetails = () => {
               </>
             )}
             <button
-              className="cursor-pointer mx-auto font-avenir-black bg-primary py-2 text-white rounded-2xl min-w-52 mb-10"
+              className="cursor-pointer mx-auto font-avenir-black bg-primary mt-10 py-2 text-white rounded-2xl min-w-52 mb-10"
               type="button"
               onClick={() => {
                 navigate(

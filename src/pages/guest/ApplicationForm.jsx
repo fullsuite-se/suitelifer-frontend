@@ -166,7 +166,6 @@ const ApplicationForm = () => {
     }
   };
   useEffect(() => {
-    window.scroll(0, 0);
     console.log(id);
 
     const interval = setInterval(() => {
@@ -205,7 +204,7 @@ const ApplicationForm = () => {
             {" "}
             <BackButton
               type={unSlug(jobPosition) + " Details"}
-              backPath={`/careers/${toSlug(jobPosition)}`}
+              backPath={-1}
               jobId={id}
             />
             <div className="py-5"></div>

@@ -33,7 +33,6 @@ const AboutUs = () => {
   };
 
   useEffect(() => {
-    window.scroll(0, 0);
     const fetchContent = async () => {
       try {
         const response = await api.get("/api/get-about-us");

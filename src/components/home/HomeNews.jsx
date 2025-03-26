@@ -105,7 +105,7 @@ const HomeNews = () => {
                   className="news-info py-1 md:py-2 mb-2 no-underline!"
                 >
                   {mainAuthor && mainReadTime ? (
-                    <p className="text-small">
+                    <p className="text-xs">
                       <span className="text-primary">{mainAuthor}</span>
                       <span className="text-primary">&nbsp; |</span>
                       <span className="text-gray-400">
@@ -120,7 +120,7 @@ const HomeNews = () => {
                 {/* DESCRIPTION */}
                 <div className="news-desc pr-2 mb-2">
                   {mainArticle ? (
-                    <p className="font-avenir line-clamp-3 md:line-clamp-5! xl:line-clamp-3! text-body text-gray-500">
+                    <p className="font-avenir line-clamp-3 md:line-clamp-5! xl:line-clamp-3! text-small text-gray-500">
                       {mainArticle}
                     </p>
                   ) : (
@@ -173,14 +173,14 @@ const HomeNews = () => {
                       </div>
                       {/* DESCRIPTION */}
                       <div className="hidden md:block news-desc pr-2 mb-2">
-                        <p className="font-avenir line-clamp-2 text-body sm:line-clamp-3   text-gray-500">
+                        <p className="font-avenir line-clamp-2 text-small sm:line-clamp-3   text-gray-500">
                           {newsArticle || <Skeleton count={2} />}
                         </p>
 
                        
                       </div>
                       <div> {/* AUTHOR AND READ TIME */}
-                        <p className="text-small">
+                        <p className="text-xs">
                           {newsAuthor && newsReadTime ? (
                             <>
                               <span className="text-primary">

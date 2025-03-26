@@ -8,7 +8,7 @@ import fullsuitelogo from "../../assets/logos/logo-fs-full.svg";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const CongratsApplicationForm = () => {
-  window.scroll(0, 0);
+
 
   const location = useLocation();
   const assessmentUrl = location.state?.assessmentUrl;

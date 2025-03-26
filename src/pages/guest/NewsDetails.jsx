@@ -17,9 +17,6 @@ const NewsDetails = () => {
   const [loading, setLoading] = useState(false);
   const [newsItem, setNewsItem] = useState({});
 
-  useEffect(() => {
-    window.scroll(0, 0);
-  }, []);
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -55,6 +52,7 @@ const NewsDetails = () => {
       {newsItem && (
         <ArticleDetails
           id={newsItem.id}
+          title={newsItem.title}
           content={newsItem.article}
           createdAt={newsItem.createdAt}
           createdBy={newsItem.createdBy}

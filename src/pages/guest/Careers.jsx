@@ -109,12 +109,9 @@ const Careers = () => {
         <div className="desktop-nav">
           <DesktopNav />
         </div>
-        <main >
-         
-
+        <main>
           <section>
-     <div className="hero-container">
-            
+            <div className="hero-container">
               <p className="pl-[5%] career-hero-text-desktop font-avenir-black max-w-[1800px] mx-auto">
                 Let's <span className="text-primary">launch</span> your career,
               </p>
@@ -300,11 +297,25 @@ const Careers = () => {
           {/* Current Job Openings */}
           <section className="pb-[7%] lg:pb-[5%]">
             {/* Top text */}
-            <p className="px-[5%] font-avenir-black flex justify-between items-center">
-              <span className="top-text">Current Job Openings</span>
-              <DynamicLink text="View All Jobs"       href="/careers-all" className="custom-class" iconSize={5} />
-
-            </p>
+            <div className="px-[5%] flex justify-between items-center">
+              <div className="text-start pb-7">
+                <p className="text-h4 font-avenir-black">
+                  <span className="text-primary">Current</span> Job Openings
+                </p>
+                <p className="text-small text-gray-500">
+                  Explore exciting career opportunities and find your perfect
+                  role with us.
+                </p>
+              </div>
+            </div>{" "}
+            <div className="px-[5%] lg:px-[10%] flex justify-end items-end">
+              <DynamicLink
+                text="View All Jobs"
+                href="/careers-all"
+                className="custom-class"
+                iconSize={5}
+              />{" "}
+            </div>
             {/* <div className="relative hidden lg:block">
               <div className="absolute overflow-hidden right-0 translate-y-12 -z-50 w-[25%] h-25 bg-secondary/10 rounded-l-4xl"></div>
             </div> */}
@@ -350,21 +361,19 @@ const Careers = () => {
             )}
           </section>
 
-     
-
           {/* Podcasts */}
           <section className="pb-[7%] lg:pb-[5%] px-[5%]">
-            <div className="podcast-container pb-[4%]">
-              <div className="top-text font-avenir-black text-center">
+            <div className="text-center pb-7">
+              <p className="text-h4 font-avenir-black">
                 Want to <span className="text-primary">learn more</span> about
                 our careers?
-              </div>
-              <div className="text-gray-500 text-center">
+              </p>
+              <p className="text-small text-gray-500">
                 Check out the Suite Spot podcast below
-              </div>
+              </p>
             </div>
             {/* Spotify Episodes */}
-            <div className="">
+            <div className="mt-20 px-[5%] md:px-[10%] lg:px-[15%]">
               {/* Mobile View: Display all in a column */}
               <div className="sm:hidden">
                 {spotifyEpisodes.map(({ spotifyId }, index) => (
@@ -375,14 +384,14 @@ const Careers = () => {
               </div>
 
               {/* Small Screens and Up: Two-column layout */}
-              <div className="hidden sm:flex gap-4">
+              <div className="hidden sm:flex gap-7">
                 {/* Left Column: Large Embed */}
                 <div className="w-1/2">
                   <SpotifyEmbed id={spotifyEpisodes[0]?.spotifyId} index={0} />
                 </div>
 
                 {/* Right Column: Two Smaller Embeds */}
-                <div className="w-1/2 flex flex-col justify-center gap-4">
+                <div className="w-1/2 flex flex-col justify-center gap-7">
                   {spotifyEpisodes.slice(1, 3).map(({ spotifyId }, index) => (
                     <SpotifyEmbed
                       key={index + 1}

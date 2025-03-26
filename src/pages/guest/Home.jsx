@@ -22,36 +22,37 @@ import FacebookIcon from "../../assets/logos/Facebook";
 import InstagramIcon from "../../assets/logos/Instagram";
 import YoutubeIcon from "../../assets/logos/Youtube";
 import SpotifyIcon from "../../assets/logos/Spotify";
+import LinkedlnIcon from "../../assets/logos/Linkedln";
 
 const Home = () => {
   const socmedPlatforms = [
     {
-      href: "https://www.youtube.com/",
-      icon: YoutubeIcon,
-      text: "the Suite Tube",
-      delay: 0.2,
-    },
-    {
-      href: "https://open.spotify.com/",
-      icon: SpotifyIcon,
-      text: "the Suite Spot",
-      delay: 0.1,
-    },
-    {
       href: "https://www.facebook.com/thefullsuitepod",
       icon: FacebookIcon,
       text: "the FullSuite Pod",
-      delay: 0.3,
     },
     {
       href: "https://www.instagram.com/thefullsuitepod/",
       icon: InstagramIcon,
       text: "@thefullsuitepod",
-      delay: 0.4,
+    },
+    {
+      href: "https://www.linkedin.com/company/fullsuite",
+      icon: LinkedlnIcon,
+      text: "@thefullsuitepod",
+    },
+    {
+      href: "https://open.spotify.com/",
+      icon: SpotifyIcon,
+      text: "the Suite Spot",
+    },
+    {
+      href: "https://www.youtube.com/",
+      icon: YoutubeIcon,
+      text: "the Suite Tube",
     },
   ];
   useEffect(() => {
-    window.scroll(0, 0);
     const left = document.getElementById("left-side");
     if (!left) return;
 
@@ -101,7 +102,6 @@ const Home = () => {
         <HeroSection />
         {/* BANNER SECTION */}
         <section className="flex pt-5 lg:w-2/5 ">
-       
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.7 }}
@@ -141,7 +141,7 @@ const Home = () => {
           }}
         />
       </div>
-    
+
       <section className="h-[100dvh] relative lg:mt-17 mb-[10%]">
         {/* White */}
         <div id="right-side" className="side pb-17">
@@ -220,8 +220,8 @@ const Home = () => {
               Here
             </p>
             <p className="text-small">
-              Watch the video below to see what makes us the perfect place to
-              grow your career!
+              Explore diverse industries and career paths—find the perfect fit
+              for your future!
             </p>
           </div>
         </MotionUp>
@@ -240,7 +240,7 @@ const Home = () => {
       <div className="h-10"></div>
 
       {/* HOME BLOG SPOT */}
-      <div className="bg-primary rounded-4xl mx-7 lg:mx-17">
+      <div className="bg-primary rounded-2xl md:rounded-3xl mx-7 lg:mx-17">
         <HomeBlogSpot />
       </div>
 
@@ -264,7 +264,7 @@ const Home = () => {
             className="group no-underline group-hover:text-secondary cursor-pointer"
           >
             <MotionUp className="flex items-center gap-2">
-              <YoutubeIcon
+              <FacebookIcon
                 color="duration-500 group-hover:fill-secondary fill-primary"
                 height="40"
                 width="40"
@@ -279,7 +279,7 @@ const Home = () => {
             className="group no-underline group-hover:text-secondary cursor-pointer"
           >
             <MotionUp className="flex items-center gap-2">
-              <Spotify
+              <InstagramIcon
                 color="duration-500 group-hover:fill-secondary fill-primary"
                 height="40"
                 width="40"
@@ -294,7 +294,7 @@ const Home = () => {
             className="group no-underline group-hover:text-secondary cursor-pointer"
           >
             <MotionUp className="flex items-center gap-2">
-              <FacebookIcon
+              <LinkedlnIcon
                 color="duration-500 group-hover:fill-secondary fill-primary"
                 height="40"
                 width="40"
@@ -309,7 +309,21 @@ const Home = () => {
             className="group no-underline group-hover:text-secondary cursor-pointer"
           >
             <MotionUp className="flex items-center gap-2">
-              <InstagramIcon
+              <Spotify
+                color="duration-500 group-hover:fill-secondary fill-primary"
+                height="40"
+                width="40"
+              />
+            </MotionUp>
+          </a> <a
+            href={socmedPlatforms[4].href}
+            title={socmedPlatforms[4].href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group no-underline group-hover:text-secondary cursor-pointer"
+          >
+            <MotionUp className="flex items-center gap-2">
+              <YoutubeIcon
                 color="duration-500 group-hover:fill-secondary fill-primary"
                 height="40"
                 width="40"
@@ -318,6 +332,7 @@ const Home = () => {
           </a>
         </div>
       </section>
+             
 
       <BackToTop />
 

@@ -36,7 +36,6 @@ const CareersAll = () => {
   useEffect(() => {
     fetchJobs();
     fetchIndustries();
-    window.scroll(0, 0);
   }, []);
 
   const [filter, setFilter] = useState("All");
