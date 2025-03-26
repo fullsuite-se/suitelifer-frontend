@@ -72,11 +72,11 @@ const SpotifyEpisodes = () => {
   };
 
   return (
-    <div className="border-primary border-2 rounded-3xl w-full p-4 space-y-4">
+    <div className="border-primary border-2 rounded-2xl w-full p-4 space-y-4">
       {error && (
         <div className="fixed inset-0 flex items-center justify-center ">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full border-2 border-red-500/95 ">
-            <div className="flex items-center justify-center gap-2 text-lg font-semibold p-3 rounded-md">
+          <div className="bg-white p-6 rounded-2xl shadow-lg max-w-md w-full border-2 border-red-500/95 ">
+            <div className="flex items-center justify-center gap-2 text-lg font-semibold p-3 rounded-2xl">
               <ExclamationTriangleIcon className="size-12 text-red-500" />
               <span className="text-red-500 text-2xl">Error</span>
             </div>
@@ -86,7 +86,7 @@ const SpotifyEpisodes = () => {
             <div className="flex justify-center mt-4">
               <button
                 onClick={closeError}
-                className="btn-light text-white px-4 py-2 rounded-md"
+                className="btn-light text-white px-4 py-2 rounded-4xl"
               >
                 Close
               </button>
@@ -101,19 +101,19 @@ const SpotifyEpisodes = () => {
           value={newUrl}
           onChange={(e) => setNewUrl(e.target.value)}
           placeholder="Enter Spotify episode URL"
-          className="border p-2 rounded-md w-full"
+          className="border p-2 rounded-2xl w-full"
         />
         {editingId ? (
           <>
-            <button onClick={saveEdit} className="btn-primary p-2 rounded-md">
+            <button onClick={saveEdit} className="btn-primary p-2">
               Save
             </button>
-            <button onClick={cancelEdit} className="btn-light p-2 rounded-md">
+            <button onClick={cancelEdit} className="btn-light p-2">
               <XCircleIcon className="size-6" />
             </button>
           </>
         ) : (
-          <button onClick={addEpisode} className="btn-light rounded-md">
+          <button onClick={addEpisode} className="btn-light">
             <PlusIcon className="size-7" />
           </button>
         )}
@@ -130,21 +130,21 @@ const SpotifyEpisodes = () => {
           return (
             <div
               key={episode.id}
-              className="border rounded-xl p-2 flex items-center gap-2"
+              className="border rounded-2xl p-2 flex gap-2"
             >
-              <SingleSpotifyEmbed spotifyId={spotifyId} />
-              <div className="flex flex-col space-y-2">
+              <div className="w-[94%]"><SingleSpotifyEmbed spotifyId={spotifyId} /></div>
+              <div className="w-[6%] flex flex-col mx-auto justify-evenly items-center gap-2">
                 <button
                   onClick={() => editEpisode(episode.id)}
-                  className="btn-primary p-1 rounded-md"
+                  className="bg-primary text-white w-full h-full rounded-2xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e]"
                 >
-                  <EditIcon className="size-6" />
+                  <EditIcon className="size-7" />
                 </button>
                 <button
                   onClick={() => deleteEpisode(episode.id)}
-                  className="btn-primary p-1 rounded-md"
+                  className="bg-primary text-white w-full h-full rounded-2xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e]"
                 >
-                  <DeleteIcon className="size-6" />
+                  <DeleteIcon className="size-7" />
                 </button>
               </div>
             </div>
