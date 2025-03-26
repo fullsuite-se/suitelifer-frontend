@@ -109,8 +109,15 @@ function PersonalityTest() {
     setOpenDialog(true);
   };
 
-  const handleDeleteClick = (id) => {
-    setRowData(rowData.filter((test) => test.testId !== id));
+  const handleDeleteClick = async (test_id) => {
+    try {
+      const response = await api.post("/api/delete-personality-test", { test_id });
+
+      toast.success(response.data.message);
+    } catch (err) {
+      toast.error("Encountered an error deleting personality test");
+    }
+    setDataUpdated(!dataUpdated);
   };
 
   const handleModalClose = () => {
@@ -198,9 +205,7 @@ function PersonalityTest() {
                       <IconButton onClick={() => handleEditClick(params.data)}>
                         <EditIcon />
                       </IconButton>
-                      <IconButton
-                        onClick={() => handleDeleteClick(params.data.id)}
-                      >
+                      <IconButton onClick={() => handleDeleteClick(params.data.testId)}>
                         <DeleteIcon />
                       </IconButton>
                     </div>
