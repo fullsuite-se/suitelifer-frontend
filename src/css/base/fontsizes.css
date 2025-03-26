@@ -32,7 +32,8 @@
       font-size: clamp(0.875rem, 2vw, 1rem); 
     }
     .text-xs {
-        font-size: clamp(0.625rem, 1.25vw, 0.75rem); 
-      }
+      font-size: clamp(0.7rem, 1.5vw, 0.85rem);
+  }
+  
   }
   

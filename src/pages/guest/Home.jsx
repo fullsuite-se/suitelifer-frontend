@@ -1,5 +1,4 @@
 import React from "react";
-import fs_tagline from "../../assets/logos/logo-fs-tagline.svg";
 import banner_img from "../../assets/images/banner-img.svg";
 import HeroSection from "../../components/home/HomeHeroSection";
 import MobileNav from "../../components/home/MobileNav";
@@ -9,10 +8,8 @@ import DesktopNav from "../../components/home/DesktopNav";
 import kb_startup from "../../assets/images/keyboard-startup.svg";
 import HomeGoalsOperations from "../../components/home/HomeGoalsOperations";
 import HomeNews from "../../components/home/HomeNews";
-import HomeSocials from "../../components/home/HomeSocials";
 import HomeBlogSpot from "../../components/home/HomeBlogSpot";
-import rocketship from "../../assets/gif/rocketlongergap.gif";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
 import PageMeta from "../../components/layout/PageMeta";
@@ -25,37 +22,37 @@ import FacebookIcon from "../../assets/logos/Facebook";
 import InstagramIcon from "../../assets/logos/Instagram";
 import YoutubeIcon from "../../assets/logos/Youtube";
 import SpotifyIcon from "../../assets/logos/Spotify";
+import LinkedlnIcon from "../../assets/logos/Linkedln";
 
 const Home = () => {
-  const [width, setWidth] = useState(window.innerWidth); //FOR DEBUGGING
   const socmedPlatforms = [
-    {
-      href: "https://www.youtube.com/",
-      icon: YoutubeIcon,
-      text: "the Suite Tube",
-      delay: 0.2,
-    },
-    {
-      href: "https://open.spotify.com/",
-      icon: SpotifyIcon,
-      text: "the Suite Spot",
-      delay: 0.1,
-    },
     {
       href: "https://www.facebook.com/thefullsuitepod",
       icon: FacebookIcon,
       text: "the FullSuite Pod",
-      delay: 0.3,
     },
     {
       href: "https://www.instagram.com/thefullsuitepod/",
       icon: InstagramIcon,
       text: "@thefullsuitepod",
-      delay: 0.4,
+    },
+    {
+      href: "https://www.linkedin.com/company/fullsuite",
+      icon: LinkedlnIcon,
+      text: "@thefullsuitepod",
+    },
+    {
+      href: "https://open.spotify.com/",
+      icon: SpotifyIcon,
+      text: "the Suite Spot",
+    },
+    {
+      href: "https://www.youtube.com/",
+      icon: YoutubeIcon,
+      text: "the Suite Tube",
     },
   ];
   useEffect(() => {
-    window.scroll(0, 0);
     const left = document.getElementById("left-side");
     if (!left) return;
 
@@ -105,51 +102,6 @@ const Home = () => {
         <HeroSection />
         {/* BANNER SECTION */}
         <section className="flex pt-5 lg:w-2/5 ">
-          {/* with animations eto */}
-          {/* <div className="banner ml-[9%] flex items-center overflow-hidden">
-            <div>
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
-                className="text-primary font-avenir text-lg md:text-3xl lg:text-3xl"
-              >
-                Welcome to
-              </motion.p>
-
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
-                className="pb-5"
-              >
-                <img
-                  className="w-full h-full object-contain"
-                  src={fs_tagline}
-                  alt="Fullsuite tagline"
-                />
-              </motion.div>
-
-              <motion.button
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3, delay: 0.3, ease: "easeOut" }}
-                className="btn-primary text-sm sm:text-xl md:text-2xl"
-              >
-                Learn more
-              </motion.button>
-            </div>
-          </div> */}
-          {/* Column 2 */}
-          {/* <div className="flex justify-end items-start ml-5 pb-3 lg:hidden">
-            <img
-              className="opacity-70 -z-10 rounded-l-4xl object-cover h-full w-full"
-              src={banner_img}
-              alt="Banner image"
-            />
-          </div> */}
-
-          {/* with animations naman ito */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.7 }}
@@ -189,11 +141,7 @@ const Home = () => {
           }}
         />
       </div>
-      {/* <img
-            src={rocketship}
-            alt="Rocketship"
-            className="absolute inset-0 w-full h-full object-cover opacity-20"
-          /> */}
+
       <section className="h-[100dvh] relative lg:mt-17 mb-[10%]">
         {/* White */}
         <div id="right-side" className="side pb-17">
@@ -272,8 +220,8 @@ const Home = () => {
               Here
             </p>
             <p className="text-small">
-              Watch the video below to see what makes us the perfect place to
-              grow your career!
+              Explore diverse industries and career paths—find the perfect fit
+              for your future!
             </p>
           </div>
         </MotionUp>
@@ -292,7 +240,7 @@ const Home = () => {
       <div className="h-10"></div>
 
       {/* HOME BLOG SPOT */}
-      <div className="bg-primary rounded-4xl mx-7 lg:mx-17">
+      <div className="bg-primary rounded-2xl md:rounded-3xl mx-7 lg:mx-17">
         <HomeBlogSpot />
       </div>
 
@@ -300,7 +248,7 @@ const Home = () => {
         <MotionUp>
           <div className="text-center pb-7">
             <p className="text-h4 font-avenir-black">
-              <span className="text-primary">Follow</span> our Socials!
+              <span className="text-primary">Follow</span> our Socials
             </p>
             <p className="text-small text-gray-500">
               Join the conversation and never miss an update!
@@ -316,7 +264,7 @@ const Home = () => {
             className="group no-underline group-hover:text-secondary cursor-pointer"
           >
             <MotionUp className="flex items-center gap-2">
-              <YoutubeIcon
+              <FacebookIcon
                 color="duration-500 group-hover:fill-secondary fill-primary"
                 height="40"
                 width="40"
@@ -331,7 +279,7 @@ const Home = () => {
             className="group no-underline group-hover:text-secondary cursor-pointer"
           >
             <MotionUp className="flex items-center gap-2">
-              <Spotify
+              <InstagramIcon
                 color="duration-500 group-hover:fill-secondary fill-primary"
                 height="40"
                 width="40"
@@ -346,7 +294,7 @@ const Home = () => {
             className="group no-underline group-hover:text-secondary cursor-pointer"
           >
             <MotionUp className="flex items-center gap-2">
-              <FacebookIcon
+              <LinkedlnIcon
                 color="duration-500 group-hover:fill-secondary fill-primary"
                 height="40"
                 width="40"
@@ -361,7 +309,21 @@ const Home = () => {
             className="group no-underline group-hover:text-secondary cursor-pointer"
           >
             <MotionUp className="flex items-center gap-2">
-              <InstagramIcon
+              <Spotify
+                color="duration-500 group-hover:fill-secondary fill-primary"
+                height="40"
+                width="40"
+              />
+            </MotionUp>
+          </a> <a
+            href={socmedPlatforms[4].href}
+            title={socmedPlatforms[4].href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group no-underline group-hover:text-secondary cursor-pointer"
+          >
+            <MotionUp className="flex items-center gap-2">
+              <YoutubeIcon
                 color="duration-500 group-hover:fill-secondary fill-primary"
                 height="40"
                 width="40"
@@ -370,10 +332,8 @@ const Home = () => {
           </a>
         </div>
       </section>
+             
 
-      {/* FOR DEBUGGING ONLY */}
-      {/* <div className="bg-red-900 h-50 text-white grid place-items-center">WIDTH: {width}</div> */}
-      {/* <div className="h-40"></div> */}
       <BackToTop />
 
       <Footer />

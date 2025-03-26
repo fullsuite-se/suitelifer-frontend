@@ -14,7 +14,7 @@ const JobCarouselVersion2 = ({ jobs }) => {
           spaceBetween={20}
           slidesPerView={1}
           autoplay={{ delay: 5000 }}
-          loop
+          // loop
           // navigation={true}
           breakpoints={{
             0: {
@@ -46,36 +46,36 @@ const JobCarouselVersion2 = ({ jobs }) => {
               <SwiperSlide key={index}>
                 {({ isActive }) => (
                   <div
-                    className={`p-7 ease-out min-h-100 flex flex-col justify-center bg-white shadow-lg rounded-lg transition-transform duration-300 ${
+                    className={`p-7 ease-out min-h-100 flex flex-col justify-center bg-white shadow-lg rounded-xl transition-transform duration-300 ${
                       isActive
                         ? "scale-90 md:scale-110 bg-primary md:hover:scale-115"
                         : "scale-90 opacity-75 hover:-translate-y-2"
                     }`}
                   >
-                    <p className="text-lg font-avenir-black font-semibold text-gray-900">
+                    <p className="text-body font-avenir-black text-gray-900">
                       {job.jobTitle}
                     </p>
                     <div className="flex flex-col mb-4">
-                      <span className="text-sm font-avenir-roman mb-3 text-gray-500">
+                      <span className="text-xs font-avenir-roman mb-3 text-gray-500">
                         <span className="text-secondary">|</span>{" "}
                         {job.industryName}
                       </span>
-                      <span className={`text-primary `}>
+                      <span className={`text-primary text-small`}>
                         {job.employmentType}, {job.setupName}
                       </span>
                     </div>
                     {isActive && job.salaryMin != null && job.salaryMin > 0 && (
                       <>
-                        <p className="text-[0.75em] text-gray-400">
+                        <p className="text-xs text-gray-400">
                           Expected Salary
                         </p>
-                        <p className="text-[18px] font-avenir-black mb-3 text-primary">
+                        <p className="text-body font-avenir-black mb-3 text-primary">
                           {Intl.NumberFormat("en-US", {
                             style: "currency",
                             currency: "PHP",
                             maximumFractionDigits: 0,
                           }).format(job.salaryMin)}
-                          <span className="text-xs font-avenir-roman">
+                          <span className="text-small font-avenir-roman">
                             {" "}
                             min
                           </span>
@@ -84,7 +84,7 @@ const JobCarouselVersion2 = ({ jobs }) => {
                     )}
                     {isActive && (
                       <p
-                        className={`mb-3 text-gray-700 ${
+                        className={`mb-3 text-small text-gray-700 ${
                           job.salaryMin ? "line-clamp-5" : "line-clamp-7"
                         }`}
                       >
@@ -95,8 +95,9 @@ const JobCarouselVersion2 = ({ jobs }) => {
                       <NavLink
                         to={`/careers/${toSlug(job.jobTitle)}`}
                         state={{ jobId: job.jobId }}
+                        className={`mt-5`}
                       >
-                        <button className="bg-primary cursor-pointer transition-all duration-300 ease-in-out hover:bg-[#007a8e] text-white p-2 rounded-xl w-full mt-auto">
+                        <button className="bg-primary cursor-pointer transition-all duration-300 ease-in-out hover:bg-[#007a8e] text-white p-2 rounded-xl w-full mt-auto text-small">
                           View Full Details
                         </button>
                       </NavLink>

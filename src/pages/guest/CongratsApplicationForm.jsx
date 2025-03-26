@@ -9,7 +9,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Footer from '../../components/Footer';
 
 const CongratsApplicationForm = () => {
-  window.scroll(0, 0);
+
 
   const location = useLocation();
   const assessmentUrl = location.state?.assessmentUrl;

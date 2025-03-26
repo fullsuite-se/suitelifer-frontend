@@ -27,7 +27,7 @@ const Carousel = ({ images, isButtonOutside }) => {
         >
           <ChevronLeftIcon
             onClick={prevSlide}
-            className="w-6 h-6 md:w-8 md:h-8 opacity-30 bg-primary cursor-pointer text-white hover:text-white hover:bg-primary hover:opacity-100 rounded-full"
+            className="w-6 h-6 md:w-8 md:h-8 opacity-30 bg-black cursor-pointer text-white hover:text-white hover:bg-primary hover:opacity-100 rounded-full"
           />
         </button>
       )}
@@ -72,7 +72,7 @@ const Carousel = ({ images, isButtonOutside }) => {
           >
             <ChevronRightIcon
               onClick={nextSlide}
-              className="w-6 h-6 md:w-8 md:h-8 opacity-30 bg-primary cursor-pointer text-white hover:text-white hover:bg-primary hover:opacity-100 rounded-full"
+              className="w-6 h-6 md:w-8 md:h-8 opacity-30 bg-black cursor-pointer text-white hover:text-white hover:bg-primary hover:opacity-100 rounded-full"
             />
           </button>
         </>

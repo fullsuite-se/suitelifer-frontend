@@ -30,7 +30,6 @@ const Contact = () => {
 
   useEffect(() => {
     setIsLoaded(true);
-    window.scroll(0, 0);
   }, []);
 
   return (

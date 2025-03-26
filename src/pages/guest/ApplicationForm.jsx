@@ -190,7 +190,6 @@ const Form = () => {
     }
   };
   useEffect(() => {
-    window.scroll(0, 0);
     console.log(id);
 
     const interval = setInterval(() => {
@@ -522,7 +521,7 @@ const ApplicationForm = () => {
           <DesktopNav />
         </div>
         {/* <div  className="-z-50 absolute w-[90%] transform translate-y-5 -translate-x-10 lg:-translate-x-20 xl:-translate-x-50 opacity-10 text-9xl font-avenir-black text-primary"
-       >APPLICATION FORM</div> */}
+         >APPLICATION FORM</div> */}
         {/* BLOGS HERO */}
         <section className="pt-[10%] xl:pt-[8%]">
           <main className="px-[5%]">
@@ -530,7 +529,7 @@ const ApplicationForm = () => {
               {" "}
               <BackButton
                 type={unSlug(jobPosition) + " Details"}
-                backPath={`/careers/${toSlug(jobPosition)}`}
+                backPath={-1}
                 jobId={id}
               />
               <div className="py-5"></div>

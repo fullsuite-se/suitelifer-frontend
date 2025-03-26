@@ -11,14 +11,29 @@ const HomeNews = () => {
   if (!newsList || newsList.length === 0) {
     return (
       <section className="px-7 xl:px-17 text-center">
-        <MotionUp className="font-avenir-black text-2xl lg:mb-15 sm:text-4xl md:text-4xl lg:text-5xl xl:text-7xl">
-          <span className="text-primary">Latest</span> Company News
+        <div className="mb-5 relative">
+        <MotionUp className="mb-10 md:mb-5 text-start">
+          <div className="font-avenir-black text-h4 ">
+            <span className="text-primary">Latest</span> Company News
+          </div>
+          <p className="text-small text-gray-500">
+            Stay updated with our latest achievements, events, and
+            announcements!
+          </p>
         </MotionUp>
-        <div className="py-10 text-gray-500">No news articles available.</div>
-      </section>
+      </div>
+      <div className="py-10 text-gray-500 flex flex-col items-center">
+  <img
+    src="src/assets/gif/nothing-found-icon.gif" 
+    alt="No articles illustration"
+    className="w-40 h-40 mb-4 opacity-50"
+  />
+  <p>No news articles available.</p>
+</div>
+ </section>
     );
   }
-  
+
   const mainNews = newsList?.[0]; // Get the first news item
   const mainImage = mainNews?.imagesWithCaption?.[0]?.image?.trim();
   const mainTitle = mainNews?.title;
@@ -32,15 +47,15 @@ const HomeNews = () => {
   return (
     <section className="px-7 xl:px-17">
       <div className="mb-5 relative">
-     
-   <MotionUp className="mb-10 md:mb-5">
-  <div className="font-avenir-black text-h4 "><span className="text-primary">Latest</span> Company News</div>
-  <p className="text-small text-gray-500">
-  Stay updated with our latest achievements, events, and announcements!
+        <MotionUp className="mb-10 md:mb-5">
+          <div className="font-avenir-black text-h4 ">
+            <span className="text-primary">Latest</span> Company News
+          </div>
+          <p className="text-small text-gray-500">
+            Stay updated with our latest achievements, events, and
+            announcements!
           </p>
-</MotionUp>
-
-
+        </MotionUp>
       </div>
 
       {/* CONTENTS */}
@@ -90,7 +105,7 @@ const HomeNews = () => {
                   className="news-info py-1 md:py-2 mb-2 no-underline!"
                 >
                   {mainAuthor && mainReadTime ? (
-                    <p className="text-small">
+                    <p className="text-xs">
                       <span className="text-primary">{mainAuthor}</span>
                       <span className="text-primary">&nbsp; |</span>
                       <span className="text-gray-400">
@@ -105,22 +120,27 @@ const HomeNews = () => {
                 {/* DESCRIPTION */}
                 <div className="news-desc pr-2 mb-2">
                   {mainArticle ? (
-                    <p className="font-avenir line-clamp-3 md:line-clamp-5! xl:line-clamp-3! text-body text-gray-500">
+                    <p className="font-avenir line-clamp-3 md:line-clamp-5! xl:line-clamp-3! text-small text-gray-500">
                       {mainArticle}
                     </p>
                   ) : (
-                    <Skeleton count={3}/>
+                    <Skeleton count={3} />
                   )}
                 </div>
               </div>
             </Link>
           )}
         </MotionUp>
+        <div className="py-5"></div>
 
         {/* OTHER NEWS (Remaining Items) */}
         <div className="lg:w-1/2 flex flex-col max-h-full overflow-y-auto gap-2 pb-2">
-        <DynamicLink text="See More News" href="/news" className="custom-class" iconSize={5} />
-
+          <DynamicLink
+            text="See More News"
+            href="/news"
+            className="custom-class"
+            iconSize={5}
+          />
 
           {newsList.slice(1, 4).map((news) => {
             const newsImage = news?.imagesWithCaption?.[0]?.image?.trim();
@@ -153,12 +173,14 @@ const HomeNews = () => {
                       </div>
                       {/* DESCRIPTION */}
                       <div className="hidden md:block news-desc pr-2 mb-2">
-                        <p className="font-avenir line-clamp-2 text-body sm:line-clamp-3   text-gray-500">
+                        <p className="font-avenir line-clamp-2 text-small sm:line-clamp-3   text-gray-500">
                           {newsArticle || <Skeleton count={2} />}
                         </p>
 
-                        {/* AUTHOR AND READ TIME */}
-                        <p className="text-small">
+                       
+                      </div>
+                      <div> {/* AUTHOR AND READ TIME */}
+                        <p className="text-xs">
                           {newsAuthor && newsReadTime ? (
                             <>
                               <span className="text-primary">
@@ -172,8 +194,7 @@ const HomeNews = () => {
                           ) : (
                             <Skeleton width={"30%"} />
                           )}
-                        </p>
-                      </div>
+                        </p></div>
                     </div>
                     {/* IMAGE */}
                     <div className="w-[50%] sm:w-[40%] h-full flex items-center">
