@@ -31,7 +31,7 @@ const AdminHomePage = ({ handlePreview }) => {
 
   return (
     <>
-      <div className="text-md p-1 font-avenir-black">Home Page Video</div>
+      
       <div className="video-preview w-full">
         <div className="flex justify-end px-4 py-2 gap-2">
         <button
@@ -49,6 +49,7 @@ const AdminHomePage = ({ handlePreview }) => {
             <span>Publish Changes</span>
           </button>
         </div>
+        <div className="text-md p-1 font-avenir-black">Home Page Video</div>
         <div className="flex flex-col items-center p-4">
           <input
             type="file"
