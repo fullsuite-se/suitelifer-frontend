@@ -80,13 +80,7 @@ const ArticleDetails = ({
         <div className="desktop-nav">
           <DesktopNav />
         </div>
-        <section className="pt-[10%] xl:pt-[8%] relative">
-          <img
-            className="-z-50 absolute w-[70%] transform translate-y-5 -translate-x-10 lg:-translate-x-20 xl:-translate-x-50 opacity-90"
-            src={bgBlogs}
-            alt=""
-          />
-        </section>
+        <section className="pt-[10%] xl:pt-[8%] relative"></section>
         <main className="px-[7%] text-sm md:text-base md:px-[5%] lg:px-[8%]">
           <button
             onClick={handleBackBtn}
