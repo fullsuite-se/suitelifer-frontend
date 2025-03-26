@@ -15,7 +15,6 @@ import rocketship from "../../assets/gif/rocketlongergap.gif";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
-import { Helmet } from "@dr.pogodin/react-helmet";
 import PageMeta from "../../components/layout/PageMeta";
 import Footer from "../../components/Footer";
 import CareerCarousel from "../../components/home/CareerCarousel";

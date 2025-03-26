@@ -1,4 +1,4 @@
-import { Helmet } from "@dr.pogodin/react-helmet";
+import { Helmet } from "react-helmet-async";
 
 const PageMeta = ({ title, description, isDefer }) => {
   /* TODO by Hernani: Use the original package of React Helmet when it supports React 19
