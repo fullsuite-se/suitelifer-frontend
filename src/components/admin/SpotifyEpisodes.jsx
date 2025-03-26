@@ -65,6 +65,19 @@ const SpotifyEpisodes = () => {
       return showError("Invalid Spotify episode URL.");
     }
 
+    if (episodeDetails.episode_id !== null) {
+      const index = episodes.findIndex(
+        (episode) => episode.episodeId === episodeDetails.episode_id
+      );
+      if (
+        episodeDetails.id ===
+        `https://open.spotify.com/episode/${episodes[index].spotifyId}`
+      ) {
+        setEpisodeDetails(defaultEpisodeDetails);
+        return;
+      }
+    }
+
     if (
       episodes.some(
         (ep) => ep.spotifyId === extractSpotifyId(episodeDetails.id)
@@ -86,18 +99,6 @@ const SpotifyEpisodes = () => {
 
         setDataUpdated(!dataUpdated);
       } else {
-        const index = episodes.findIndex(
-          (episode) => episode.episodeId === episodeDetails.episode_id
-        );
-
-        if (
-          episodeDetails.id ===
-          `https://open.spotify.com/episode/${episodes[index].spotifyId}`
-        ) {
-          setEpisodeDetails(defaultEpisodeDetails);
-          return;
-        }
-
         const response = await api.post("/api/edit-episode", {
           episode_id: episodeDetails.episode_id,
           url: episodeDetails.id,
