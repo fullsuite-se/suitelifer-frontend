@@ -20,11 +20,11 @@ const LoadingBlogCard = ({
       className="relative md:max-w-[320px] w-full h-80 lg:h-90 rounded-xl overflow-hidden 
   transform transition-all duration-300 ease-in-out group-hover:scale-105 
   group-hover:shadow-xl group-hover:shadow-secondary/50 active:scale-105 
-  active:shadow-xl active:shadow-secondary/50"
+  active:shadow-xl active:shadow-secondary/50 "
     >
-      <div className="no-underline bg-white cursor-pointer flex flex-col h-full">       
+      <div className="no-underline bg-gray-50 cursor-pointer flex flex-col h-full">       
         <div className="h-1/2">
-          <Skeleton className="h-full"/>
+          {/* <Skeleton className="h-full"/> */}
         </div>
         <div className="h-1/2 p-4 text-white">          
           <Skeleton width={"50%"} />
