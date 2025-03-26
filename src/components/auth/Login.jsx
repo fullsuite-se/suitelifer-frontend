@@ -47,6 +47,8 @@ const LoginForm = () => {
       if (response.data.accessToken) {
         toast.success("Welcome back! You have successfully logged in.");
         navigate("/app/blogs-feed");
+      } else if (response.data.recaptchaError) {
+        toast.success(response.data.message);
       } else {
         toast.error("Login failed. Please check your credentials.");
       }
