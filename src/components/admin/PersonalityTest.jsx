@@ -17,6 +17,7 @@ import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import api from "../../utils/axios";
 import { useStore } from "../../store/authStore";
 import toast from "react-hot-toast";
+import { showConfirmationToast } from "../toasts/confirm";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -24,25 +25,22 @@ function PersonalityTest() {
   // USER DETAILS
   const user = useStore((state) => state.user);
 
-  const [dataUpdated, setDataUpdated] = useState(false);
-
+  // PERSONALITY TEST VARIABLES
   const [personalityTests, setPersonalityTests] = useState([]);
 
-  const fetchPersonalityTests = async () => {
-    try {
-      const response = await api.get("/api/get-all-personality-tests");
-
-      setRowData(response.data.data);
-    } catch (err) {
-      console.log(err);
-    }
+  const defaultPersonalityTestDetails = {
+    test_id: null,
+    test_title: "",
+    url: "",
   };
 
-  useEffect(() => {
-    fetchPersonalityTests();
-  }, [dataUpdated]);
+  const [personalityTestDetails, setPTDetails] = useState(
+    defaultPersonalityTestDetails
+  );
 
+  // PERSONALITY TEST TABLE VARIABLES
   const [rowData, setRowData] = useState([]);
+
   const gridOptions = {
     getRowStyle: (params) => {
       if (params.node.rowIndex % 2 === 0) {
@@ -57,72 +55,100 @@ function PersonalityTest() {
 
   const [openDialog, setOpenDialog] = useState(false);
 
-  const defaultPersonalityTestDetails = {
-    test_id: null,
-    test_title: "",
-    url: "",
-  };
-
-  const [personalityTestDetails, setPersonalityTestDetails] = useState(
-    defaultPersonalityTestDetails
-  );
+  // PERSONALITY TEST FUNCTIONS
 
   const handlePersonalityTestDetailsChange = (e) => {
-    setPersonalityTestDetails((pd) => ({
+    setPTDetails((pd) => ({
       ...pd,
       [e.target.name]: e.target.value,
     }));
   };
 
-  const handlePersonalityTestSubmit = async (e) => {
+  const [dataUpdated, setDataUpdated] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (personalityTestDetails.test_id === null) {
-        console.log("clicked");
-
         const response = await api.post("/api/add-personality-test", {
           ...personalityTestDetails,
           user_id: user.id,
         });
 
-        if (response.data.success) {
-          toast.success(response.data.message);
-          if (personalityTestDetails.test_id === null) {
-            // setSetups((s) => [...s, setupDetails]);
-          } else {
-            // const updatedSetups = setups.map((setup) =>
-            //   setup.setupId === setupDetails.setup_id
-            //     ? { ...setupDetails }
-            //     : setup
-            // );
-            // setSetups((s) => updatedSetups);
-          }
-        }
+        toast.success(response.data.message);
+        setPersonalityTests((pt) => [...pt, personalityTestDetails]);
       } else {
-        // TODO edit
+        const response = await api.post("/api/edit-personality-test", {
+          ...personalityTestDetails,
+          user_id: user.id,
+        });
+
+        toast.success(response.data.message);
+        const updatedPersonalityTests = personalityTests.map((pt) =>
+          pt.testId === personalityTestDetails.test_id
+            ? { ...personalityTestDetails }
+            : pt
+        );
+        setPersonalityTests(updatedPersonalityTests);
       }
+
+      setDataUpdated(!dataUpdated);
     } catch (err) {
       toast.error("Encountered an error");
     }
 
-    setPersonalityTestDetails(defaultPersonalityTestDetails);
+    setPTDetails(defaultPersonalityTestDetails);
     setOpenDialog(false);
-    setDataUpdated(!dataUpdated);
   };
 
   const handleEditClick = (test) => {
-    setPersonalityTestDetails({ test_title: test.testTitle, url: test.url });
+    setPTDetails({
+      test_id: test.testId,
+      test_title: test.testTitle,
+      url: test.url,
+    });
     setOpenDialog(true);
   };
 
-  const handleDelete = (id) => {
-    setRowData(rowData.filter((test) => test.testId !== id));
+  const handleDeleteClick = (test_id) => {
+    showConfirmationToast({
+      message: "Delete personality test?",
+      onConfirm: () => handleDelete(test_id),
+      onCancel: null,
+    });
+  };
+
+  const handleDelete = async (test_id) => {
+    try {
+      const response = await api.post("/api/delete-personality-test", {
+        test_id,
+      });
+
+      toast.success(response.data.message);
+    } catch (err) {
+      toast.error("Encountered an error deleting personality test");
+    }
+    setDataUpdated(!dataUpdated);
   };
 
   const handleModalClose = () => {
-    setPersonalityTestDetails(defaultPersonalityTestDetails);
+    setPTDetails(defaultPersonalityTestDetails);
     setOpenDialog(false);
   };
+
+  const fetchPersonalityTests = async () => {
+    try {
+      const response = await api.get("/api/get-all-personality-tests");
+
+      setRowData(response.data.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchPersonalityTests();
+  }, [dataUpdated]);
 
   return (
     <>
@@ -190,7 +216,9 @@ function PersonalityTest() {
                       <IconButton onClick={() => handleEditClick(params.data)}>
                         <EditIcon />
                       </IconButton>
-                      <IconButton onClick={() => handleDelete(params.data.id)}>
+                      <IconButton
+                        onClick={() => handleDeleteClick(params.data.testId)}
+                      >
                         <DeleteIcon />
                       </IconButton>
                     </div>
@@ -220,7 +248,7 @@ function PersonalityTest() {
             },
           }}
         >
-          <form onSubmit={(e) => handlePersonalityTestSubmit(e)}>
+          <form onSubmit={(e) => handleSubmit(e)}>
             <DialogTitle className="flex w-full justify-center items-center">
               {personalityTestDetails.id ? "Edit Test" : "Add Test"}
             </DialogTitle>
