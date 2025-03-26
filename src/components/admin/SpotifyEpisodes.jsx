@@ -11,6 +11,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import api from "../../utils/axios";
 import toast from "react-hot-toast";
 import { useStore } from "../../store/authStore";
+import { showConfirmationToast } from "../toasts/confirm";
 
 const extractSpotifyId = (url) => {
   return url.split("episode/")[1].split("?")[0];
@@ -115,25 +116,35 @@ const SpotifyEpisodes = () => {
     setEpisodeDetails(defaultEpisodeDetails);
   };
 
-  const saveEdit = () => {
-    const spotifyId = extractSpotifyId(newUrl);
-    if (!spotifyId) return showError("Invalid Spotify episode URL.");
-
-    setEpisodes(
-      episodes.map((ep) =>
-        ep.episode_id === editingId ? { ...ep, id: newUrl } : ep
-      )
-    );
-    setEditingId(null);
-    setNewUrl("");
-  };
-
   const cancelEdit = () => {
     setEpisodeDetails(defaultEpisodeDetails);
   };
 
   const deleteEpisode = (id) => {
     setEpisodes(episodes.filter((ep) => ep.episode_id !== id));
+  };
+
+  const handleDeleteClick = (episode_id) => {
+    showConfirmationToast({
+      message: "Delete spotify episode?",
+      onConfirm: () => handleDelete(episode_id),
+      onCancel: null,
+    });
+  };
+
+  const handleDelete = async (episode_id) => {
+    try {
+      const response = await api.post("/api/delete-episode", {
+        episode_id,
+        user_id: user.id,
+      });
+
+      toast.success(response.data.message);
+
+      setDataUpdated(!dataUpdated);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const fetchSpotifyEpisodes = async () => {
@@ -236,7 +247,7 @@ const SpotifyEpisodes = () => {
                   <EditIcon className="size-7" />
                 </button>
                 <button
-                  onClick={() => deleteEpisode(episode.episode_id)}
+                  onClick={() => handleDeleteClick(episode.episodeId)}
                   className="bg-primary text-white w-full rounded-2xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e] h-[50%]"
                 >
                   <DeleteIcon className="size-7" />
