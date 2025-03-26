@@ -1,9 +1,6 @@
-"use client";
-
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   IconButton,
-  TextField,
   Dialog,
   DialogActions,
   DialogContent,
@@ -17,48 +14,35 @@ import { AgGridReact } from "@ag-grid-community/react";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
+import api from "../../utils/axios";
+import { useStore } from "../../store/authStore";
+import toast from "react-hot-toast";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 function PersonalityTest() {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [rowTestData, setRowTestData] = useState([
-    {
-      id: "1",
-      title: "Horoscope",
-      url: "http://sampleurl.com/horoscope",
-      createdAt: "2022-10-10",
-      createdBy: "John Doe",
-    },
-    {
-      id: "2",
-      title: "MBTI",
-      url: "http://sampleurl.com/mbti",
-      createdAt: "2022-10-10",
-      createdBy: "John Doe",
-    },
-    {
-      id: "3",
-      title: "Sample Title",
-      url: "http://sampleurl.com/sample-test",
-      createdAt: "2022-10-10",
-      createdBy: "John Doe",
-    },
-    {
-      id: "4",
-      title: "Another Sample Test Title",
-      url: "http://sampleurl.com/another-test",
-      createdAt: "2022-10-10",
-      createdBy: "John Doe",
-    },
-    {
-      id: "5",
-      title: "What is this test title?",
-      url: "http://sampleurl.com/what-test",
-      createdAt: "2022-10-10",
-      createdBy: "John Doe",
-    },
-  ]);
+  // USER DETAILS
+  const user = useStore((state) => state.user);
+
+  const [dataUpdated, setDataUpdated] = useState(false);
+
+  const [personalityTests, setPersonalityTests] = useState([]);
+
+  const fetchPersonalityTests = async () => {
+    try {
+      const response = await api.get("/api/get-all-personality-tests");
+
+      setRowData(response.data.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchPersonalityTests();
+  }, [dataUpdated]);
+
+  const [rowData, setRowData] = useState([]);
   const gridOptions = {
     getRowStyle: (params) => {
       if (params.node.rowIndex % 2 === 0) {
@@ -72,38 +56,71 @@ function PersonalityTest() {
   const gridRef = useRef();
 
   const [openDialog, setOpenDialog] = useState(false);
-  const [currentTest, setCurrentTest] = useState({
-    title: "",
-    url: "",
-  });
 
-  const handleEdit = (test) => {
-    setCurrentTest(test);
+  const defaultPersonalityTestDetails = {
+    test_id: null,
+    test_title: "",
+    url: "",
+  };
+
+  const [personalityTestDetails, setPersonalityTestDetails] = useState(
+    defaultPersonalityTestDetails
+  );
+
+  const handlePersonalityTestDetailsChange = (e) => {
+    setPersonalityTestDetails((pd) => ({
+      ...pd,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handlePersonalityTestSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (personalityTestDetails.test_id === null) {
+        console.log("clicked");
+
+        const response = await api.post("/api/add-personality-test", {
+          ...personalityTestDetails,
+          user_id: user.id,
+        });
+
+        if (response.data.success) {
+          toast.success(response.data.message);
+          if (personalityTestDetails.test_id === null) {
+            // setSetups((s) => [...s, setupDetails]);
+          } else {
+            // const updatedSetups = setups.map((setup) =>
+            //   setup.setupId === setupDetails.setup_id
+            //     ? { ...setupDetails }
+            //     : setup
+            // );
+            // setSetups((s) => updatedSetups);
+          }
+        }
+      } else {
+        // TODO edit
+      }
+    } catch (err) {
+      toast.error("Encountered an error");
+    }
+
+    setPersonalityTestDetails(defaultPersonalityTestDetails);
+    setOpenDialog(false);
+    setDataUpdated(!dataUpdated);
+  };
+
+  const handleEditClick = (test) => {
+    setPersonalityTestDetails({ test_title: test.testTitle, url: test.url });
     setOpenDialog(true);
   };
 
   const handleDelete = (id) => {
-    setRowTestData(rowTestData.filter((test) => test.id !== id));
+    setRowData(rowData.filter((test) => test.testId !== id));
   };
 
-  const handleAddNew = () => {
-    setCurrentTest({ id: "", title: "", url: "" });
-    setOpenDialog(true);
-  };
-
-  const handleSave = () => {
-    if (currentTest.id) {
-      setCurrentTest(
-        rowTestData.map((test) =>
-          test.id === currentTest.id ? currentTest : test
-        )
-      );
-    } else {
-      setRowTestData([
-        ...rowTestData,
-        { ...currentTest, id: Date.now().toString() },
-      ]);
-    }
+  const handleModalClose = () => {
+    setPersonalityTestDetails(defaultPersonalityTestDetails);
     setOpenDialog(false);
   };
 
@@ -112,7 +129,7 @@ function PersonalityTest() {
       <div className="w-full flex justify-end items-end">
         <button
           variant="contained"
-          onClick={handleAddNew}
+          onClick={() => setOpenDialog(true)}
           sx={{ mb: 2 }}
           className="btn-primary mb-2 "
         >
@@ -131,11 +148,11 @@ function PersonalityTest() {
             style={{ height: "400px" }}
           >
             <AgGridReact
-              rowData={rowTestData}
+              rowData={rowData}
               columnDefs={[
                 {
                   headerName: "Title",
-                  field: "title",
+                  field: "testTitle",
                   flex: 2,
                   headerClass: "text-primary font-bold bg-tertiary",
                 },
@@ -170,7 +187,7 @@ function PersonalityTest() {
                   headerClass: "text-primary font-bold bg-tertiary",
                   cellRenderer: (params) => (
                     <div className="flex gap-2">
-                      <IconButton onClick={() => handleEdit(params.data)}>
+                      <IconButton onClick={() => handleEditClick(params.data)}>
                         <EditIcon />
                       </IconButton>
                       <IconButton onClick={() => handleDelete(params.data.id)}>
@@ -194,7 +211,7 @@ function PersonalityTest() {
         {/* Dialog for Add/Edit */}
         <Dialog
           open={openDialog}
-          onClose={() => setOpenDialog(false)}
+          onClose={handleModalClose}
           sx={{
             "& .MuiDialog-paper": {
               borderRadius: "16px",
@@ -203,56 +220,50 @@ function PersonalityTest() {
             },
           }}
         >
-          <DialogTitle className="flex w-full justify-center items-center">
-            {currentTest.id ? "Edit Test" : "Add Test"}
-          </DialogTitle>
-          <DialogContent className="">
-            <div className="w-full mb-3">
-              <label className="block text-gray-700 font-avenir-black">
-                Title<span className="text-primary">*</span>
-              </label>
+          <form onSubmit={(e) => handlePersonalityTestSubmit(e)}>
+            <DialogTitle className="flex w-full justify-center items-center">
+              {personalityTestDetails.id ? "Edit Test" : "Add Test"}
+            </DialogTitle>
+            <DialogContent className="">
+              <div className="w-full mb-3">
+                <label className="block text-gray-700 font-avenir-black">
+                  Title<span className="text-primary">*</span>
+                </label>
 
-              <input
-                name="title"
-                required
-                value={currentTest.title}
-                onChange={(e) =>
-                  setCurrentTest({ ...currentTest, title: e.target.value })
-                }
-                rows={3}
-                className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
-              />
-            </div>
+                <input
+                  name="test_title"
+                  required
+                  value={personalityTestDetails.test_title}
+                  onChange={(e) => handlePersonalityTestDetailsChange(e)}
+                  rows={3}
+                  className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                />
+              </div>
 
-            <div className="w-full">
-              <label className="block text-gray-700 font-avenir-black">
-                URL<span className="text-primary">*</span>
-              </label>
+              <div className="w-full">
+                <label className="block text-gray-700 font-avenir-black">
+                  URL<span className="text-primary">*</span>
+                </label>
 
-              <input
-                name="url"
-                required
-                value={currentTest.url}
-                onChange={(e) =>
-                  setCurrentTest({ ...currentTest, url: e.target.value })
-                }
-                rows={3}
-                className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
-              />
-            </div>
-          </DialogContent>
-          <DialogActions>
-            <button className="btn-light" onClick={() => setOpenDialog(false)}>
-              Cancel
-            </button>
-            <button
-              className="btn-primary"
-              onClick={handleSave}
-              variant="contained"
-            >
-              Save
-            </button>
-          </DialogActions>
+                <input
+                  name="url"
+                  required
+                  value={personalityTestDetails.url}
+                  onChange={(e) => handlePersonalityTestDetailsChange(e)}
+                  rows={3}
+                  className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                />
+              </div>
+            </DialogContent>
+            <DialogActions>
+              <button className="btn-light" onClick={handleModalClose}>
+                Cancel
+              </button>
+              <button className="btn-primary" type="submit" variant="contained">
+                Save
+              </button>
+            </DialogActions>
+          </form>
         </Dialog>
       </div>
     </>

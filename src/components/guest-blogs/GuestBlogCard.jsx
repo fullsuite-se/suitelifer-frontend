@@ -54,7 +54,7 @@ const GuestBlogCard = ({
           </p>
 
           <p className="mt-2 !text-[12px] sm:!text-[14px] text-gray-300 line-clamp-3">
-            {removeHtmlTags(description)}
+            {description}
           </p>
 
           <p className="text-small text-gray-400 mt-2">{fullDate}</p>
