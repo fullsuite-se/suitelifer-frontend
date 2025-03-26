@@ -1,33 +1,12 @@
-import { useState, useRef} from "react";
+import { useState, useRef } from "react";
 import {
   EyeIcon,
   BookmarkSquareIcon,
   ArrowPathIcon,
-  ArrowUpOnSquareIcon,
 } from "@heroicons/react/24/outline";
 
 const VideoPreview = ({ handlePreview }) => {
-  const [videoFile, setVideoFile] = useState(
-    "blob:http://localhost:5173/4ef3993a-efae-4c70-9dab-55dc833cd04b"
-  );
-  const [heroImage, setHeroImage] = useState();
-  const [storyImage, setStoryImage] = useState();
-
-  const heroRef = useRef(null);
-  const storyRef = useRef(null);
-
-  const handleImageChange = (file, setImage) => {
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setImage(imageUrl);
-    }
-  };
-
-  const handleDrop = (event, setImage) => {
-    event.preventDefault();
-    const file = event.dataTransfer.files[0];
-    handleImageChange(file, setImage);
-  };
+  const [videoFile, setVideoFile] = useState("");
 
   const handleUpload = (event) => {
     const file = event.target.files[0];
@@ -53,6 +32,7 @@ const VideoPreview = ({ handlePreview }) => {
 
   return (
     <>
+    <div className="text-md p-1 font-avenir-black">Home Page Video</div>
       <div className="video-preview w-full">
         <div className="flex justify-end px-4 py-2">
           <button
@@ -71,12 +51,12 @@ const VideoPreview = ({ handlePreview }) => {
             className="hidden"
             id="videoUpload"
           />
-          <div className="max-w-[500px] aspect-video border-3 rounded-3xl bg-gray-200 overflow-hidden">
+          <div className="max-w-[70%] sm:w-[100%] sm:h-auto border-3 rounded-3xl bg-gray-200 overflow-hidden aspect-video">
             {videoFile ? (
               videoFile.includes("youtube.com") ||
               videoFile.includes("youtu.be") ? (
                 <iframe
-                  className="w-full h-full"
+                  className="w-full h-full object-cover"
                   src={`https://www.youtube.com/embed/${extractYouTubeID(
                     videoFile
                   )}`}
@@ -84,9 +64,6 @@ const VideoPreview = ({ handlePreview }) => {
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
-                  loop
-                  muted
-                  autoPlay
                 ></iframe>
               ) : (
                 <video
@@ -99,7 +76,9 @@ const VideoPreview = ({ handlePreview }) => {
                 />
               )
             ) : (
-              <p className="text-gray-500">No video selected</p>
+              <div className="flex items-center justify-center w-full h-full text-gray-500">
+                No video selected
+              </div>
             )}
           </div>
 
@@ -112,67 +91,18 @@ const VideoPreview = ({ handlePreview }) => {
               <EyeIcon className="size-5" />
               Preview Changes
             </button>
+          
             <button
+              type="button"
               onClick={() => document.getElementById("videoUpload").click()}
-              className=" btn-light rounded-lg text-bold flex justify-end w-fit gap-1 p-1"
+              className="ml-auto flex justify-end gap-1 p-1 text-sm items-center btn-light"
             >
-              <ArrowPathIcon className="size-5" /> <span>Change Video</span>
+              <ArrowPathIcon className="size-5" />
+              Change Video
             </button>
           </div>
         </div>
 
-        <div className="p-4 space-y-4 flex-row flex gap-4">
-          <div
-            className="w-120 h-80 rounded border-2 flex items-center justify-center cursor-pointer"
-            onClick={() => heroRef.current.click()}
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => handleDrop(e, setHeroImage)}
-          >
-            {heroImage ? (
-              <img
-                src={heroImage}
-                alt="Hero Preview"
-                className="w-full h-full object-cover rounded"
-                
-              />
-            ) : (
-              <ArrowUpOnSquareIcon className="size-40"/>
-            )}
-          </div>
-          <input
-            type="file"
-            accept="image/*"
-            ref={heroRef}
-            className="hidden"
-            onChange={(e) => handleImageChange(e.target.files[0], setHeroImage)}
-          />
-
-          <div
-            className="w-120 h-80 rounded border-2 flex items-center justify-center cursor-pointer"
-            onClick={() => storyRef.current.click()}
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => handleDrop(e, setStoryImage)}
-          >
-            {storyImage ? (
-              <img
-                src={storyImage}
-                alt="Story Preview"
-                className="w-full h-full object-cover rounded"
-              />
-            ) : (
-              <ArrowUpOnSquareIcon className="size-40"/>
-            )}
-          </div>
-          <input
-            type="file"
-            accept="image/*"
-            ref={storyRef}
-            className="hidden"
-            onChange={(e) =>
-              handleImageChange(e.target.files[0], setStoryImage)
-            }
-          />
-        </div>
       </div>
     </>
   );

@@ -1,7 +1,10 @@
-import { useState } from "react";
-import { Typography } from "@mui/material";
+import { useState, useRef } from "react";
 import { EyeIcon } from "lucide-react";
-import { BookmarkSquareIcon } from "@heroicons/react/24/outline";
+import {
+  BookmarkSquareIcon,
+  ArrowUpOnSquareIcon,
+  ArrowPathIcon,
+} from "@heroicons/react/24/outline";
 
 const AboutPage = ({ handlePreview }) => {
   const [mission, setMission] = useState(
@@ -20,6 +23,19 @@ const AboutPage = ({ handlePreview }) => {
   const [podVideoUrl, setPodVideoUrl] = useState(
     "https://youtube/choDMzlBpvs?feature=shared"
   );
+  const [videoFile, setVideoFile] = useState("");
+  const [heroImage, setHeroImage] = useState("");
+  const [storyImage, setStoryImage] = useState("");
+
+  const heroRef = useRef(null);
+  const storyRef = useRef(null);
+
+  const extractYouTubeID = (url) => {
+    const match = url.match(
+      /(?:youtube\.com\/(?:.*v=|.*\/)|youtu\.be\/)([^"&?/ ]{11})/
+    );
+    return match ? match[1] : null;
+  };
 
   const handleSave = () => {
     const data = {
@@ -29,13 +45,44 @@ const AboutPage = ({ handlePreview }) => {
       visionSlogan,
       podVideoUrl,
       textBanner,
+      heroImage,
+      storyImage,
+      videoFile,
     };
     console.log(data);
   };
 
+  const handleImageChange = (file, setImage) => {
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setImage(imageUrl);
+    }
+  };
+
+  const handleDrop = (event, setImage) => {
+    event.preventDefault();
+    const file = event.dataTransfer.files[0];
+    handleImageChange(file, setImage);
+  };
+
+  const handleUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const videoURL = URL.createObjectURL(file);
+      setVideoFile(videoURL);
+    }
+  };
+
   return (
-    <div className="about-page p-1 flex flex-col">
-      <div className="flex justify-end px-4 py-2">
+    <div className="overflow-x-auto min-h-screen px-4 sm:px-6 lg:px-8">
+      <div className="flex justify-end py-2 gap-2">
+        <button
+          onClick={handlePreview}
+          className="btn-primary flex items-center p-2 gap-2"
+        >
+          <EyeIcon className="size-5" />
+          Preview Changes
+        </button>
         <button
           className="btn-primary flex items-center p-2 gap-2"
           onClick={handleSave}
@@ -44,77 +91,170 @@ const AboutPage = ({ handlePreview }) => {
         </button>
       </div>
 
-      <div className="text-md p-1 font-avenir-black">Mission</div>
+      <div className="text-md font-bold pb-2 font-avenir-black">
+        About Page Video
+      </div>
+      <div className="flex flex-col items-center">
+        <input
+          type="file"
+          accept="video/*"
+          onChange={handleUpload}
+          className="hidden"
+          id="videoUpload"
+        />
 
+        <div className="w-full sm:max-w-[40%] md:max-w-[40%] border rounded-xl bg-gray-200 overflow-hidden aspect-video">
+          {videoFile ? (
+            videoFile.includes("youtube.com") ||
+            videoFile.includes("youtu.be") ? (
+              <iframe
+                className="w-full h-full"
+                src={`https://www.youtube.com/embed/${extractYouTubeID(
+                  videoFile
+                )}`}
+                title="YouTube video"
+                allowFullScreen
+              ></iframe>
+            ) : (
+              <video
+                src={videoFile}
+                className="w-full h-full"
+                controls
+                autoPlay
+                loop
+                muted
+              />
+            )
+          ) : (
+            <div className="flex items-center justify-center w-full h-full text-gray-500">
+              No video selected
+            </div>
+          )}
+        </div>
+
+        <div className="mt-4 flex flex-wrap w-full justify-center gap-2">
+          <button
+            onClick={() => document.getElementById("videoUpload").click()}
+            className="btn-light flex items-center p-2"
+          >
+            <div className="gap-2 flex">
+              <ArrowPathIcon className="size-5" /> <span>Change Video</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <div className="text-md font-bold pt-4 font-avenir-black">
+        Text Banner
+      </div>
       <textarea
-        name="mission"
-        required
-        value={mission}
-        onChange={(e) => setMission(e.target.value)}
-        rows={2}
-        className="w-full p-3 resize-none border-1 border-primary rounded-md bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary mb-2"
-      ></textarea>
-      <div className="text-md p-1 font-avenir-black">Mission Slogan</div>
-
-      <textarea
-        name="mission slogan"
-        required
-        value={missionSlogan}
-        onChange={(e) => setMissionSlogan(e.target.value)}
-        rows={1}
-        className="w-full p-3 resize-none border-1 border-primary rounded-md bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary mb-2"
-      ></textarea>
-
-      <div className="text-md p-1 font-avenir-black">Vision</div>
-
-      <textarea
-        name="vision"
-        required
-        value={vision}
-        onChange={(e) => setVision(e.target.value)}
-        rows={2}
-        className="w-full p-3 resize-none border-1 border-primary rounded-md bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary mb-2"
-      ></textarea>
-      <div className="text-md p-1 font-avenir-black">Vision Slogan</div>
-
-      <textarea
-        name="vision slogan"
-        required
-        value={visionSlogan}
-        onChange={(e) => setVisionSlogan(e.target.value)}
-        rows={1}
-        className="w-full p-3 resize-none border-1 border-primary rounded-md bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary mb-2"
-      ></textarea>
-
-      <div className="text-md p-1 font-avenir-black">Day in the Pod Video</div>
-      <input
-        type="text"
-        className="w-full p-3 resize-none border-1 border-primary rounded-md bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary mb-2"
-        value={podVideoUrl}
-        onChange={(e) => setPodVideoUrl(e.target.value)}
-      />
-
-      <div className="text-md p-1 font-avenir-black">Text Banner</div>
-
-      <textarea
-        name="text banner"
-        required
         value={textBanner}
         onChange={(e) => setTextBanner(e.target.value)}
         rows={1}
-        className="w-full p-3 resize-none border-1 border-primary rounded-md bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary mb-2"
+        className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
       ></textarea>
 
-      <div className="about-and-prev flex w-full gap-1">
-        <button
-          type="button"
-          onClick={handlePreview}
-          className="ml-auto flex gap-2 p-1 text-sm items-center mt-5"
-        >
-          <EyeIcon className="size-5" />
-          Preview Changes
-        </button>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {[
+          {
+            label: "Hero Image",
+            ref: heroRef,
+            image: heroImage,
+            setImage: setHeroImage,
+          },
+          {
+            label: "Story Image",
+            ref: storyRef,
+            image: storyImage,
+            setImage: setStoryImage,
+          },
+        ].map((item, index) => (
+          <div key={index} className="flex flex-col gap-2 items-center">
+            <label className="block text-md font-avenir-black">
+              {item.label}
+            </label>
+            <div
+              className="border rounded-xl flex items-center justify-center cursor-pointer aspect-square w-full max-w-xs mx-auto relative group"
+              onClick={() => item.ref.current.click()}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => handleDrop(e, item.setImage)}
+            >
+              {item.image ? (
+                <>
+                  <img
+                    src={item.image}
+                    alt="Preview"
+                    className="w-full h-full object-cover rounded-xl"
+                  />
+
+                  <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="text-white text-sm font-semibold">
+                      Edit Image
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <div className="flex flex-col text-center items-center">
+                  <ArrowUpOnSquareIcon className="size-12 text-gray-500" />
+                  <span className="mt-2 text-lg">{"Upload " + item.label}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+
+        <input
+          type="file"
+          accept="image/*"
+          ref={heroRef}
+          className="hidden"
+          onChange={(e) => handleImageChange(e.target.files[0], setHeroImage)}
+        />
+
+        <input
+          type="file"
+          accept="image/*"
+          ref={storyRef}
+          className="hidden"
+          onChange={(e) => handleImageChange(e.target.files[0], setStoryImage)}
+        />
       </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 ">
+        {[
+          {
+            label: "Mission Slogan",
+            value: missionSlogan,
+            setValue: setMissionSlogan,
+          },
+          {
+            label: "Vision Slogan",
+            value: visionSlogan,
+            setValue: setVisionSlogan,
+          },
+          { label: "Mission", value: mission, setValue: setMission },
+          { label: "Vision", value: vision, setValue: setVision },
+        ].map(({ label, value, setValue }) => (
+          <div key={label}>
+            <div className="text-md font-bold font-avenir-black">{label}</div>
+            <textarea
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              rows={2}
+              className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+            ></textarea>
+          </div>
+        ))}
+      </div>
+      <div className="text-md font-bold pt-4 font-avenir-black">
+        Pod Video Url
+      </div>
+      <textarea
+        value={podVideoUrl}
+        onChange={(e) => setPodVideoUrl(e.target.value)}
+        rows={1}
+        className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-20"
+      />
     </div>
   );
 };
