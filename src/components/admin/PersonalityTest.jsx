@@ -17,6 +17,7 @@ import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import api from "../../utils/axios";
 import { useStore } from "../../store/authStore";
 import toast from "react-hot-toast";
+import { showConfirmationToast } from "../toasts/confirm";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -109,9 +110,19 @@ function PersonalityTest() {
     setOpenDialog(true);
   };
 
-  const handleDeleteClick = async (test_id) => {
+  const handleDeleteClick = (test_id) => {
+    showConfirmationToast({
+      message: "Delete personality test?",
+      onConfirm: () => handleDelete(test_id),
+      onCancel: null,
+    });
+  };
+
+  const handleDelete = async (test_id) => {
     try {
-      const response = await api.post("/api/delete-personality-test", { test_id });
+      const response = await api.post("/api/delete-personality-test", {
+        test_id,
+      });
 
       toast.success(response.data.message);
     } catch (err) {
@@ -205,7 +216,9 @@ function PersonalityTest() {
                       <IconButton onClick={() => handleEditClick(params.data)}>
                         <EditIcon />
                       </IconButton>
-                      <IconButton onClick={() => handleDeleteClick(params.data.testId)}>
+                      <IconButton
+                        onClick={() => handleDeleteClick(params.data.testId)}
+                      >
                         <DeleteIcon />
                       </IconButton>
                     </div>
