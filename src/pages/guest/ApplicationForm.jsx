@@ -203,191 +203,162 @@ const Form = () => {
   }, []);
 
   return (
-    <section
-      className="gap-4 h-dvh"
-      style={{ maxWidth: "1800px", margin: "0 auto" }}
+    <form
+      onSubmit={handleSubmitApplication}
+      className="space-y-4 text-sm p-6 md:p-12 lg:p-15 shadow-sm border-primary border-1  rounded-lg bg-white"
     >
-      {/* MOBILE NAV */}
-      <div className="sm:hidden">
-        <MobileNav />
+      <p className="!text-lg lg:!text-2xl font-avenir-black mb-10">
+        Job Application Form
+      </p>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label className="block text-gray-700 font-avenir-black">
+            First Name<span className="text-primary">*</span>
+          </label>
+          <input
+            type="text"
+            name="first_name"
+            value={applicationDetails.first_name}
+            onChange={handleApplicationDetailsChange}
+            required
+            className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+        </div>
+        <div>
+          <label className="block text-gray-700 font-avenir-black">
+            Middle Name
+          </label>
+          <input
+            type="text"
+            name="middle_name"
+            value={applicationDetails.middle_name}
+            onChange={handleApplicationDetailsChange}
+            className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+        </div>
+        <div>
+          <label className="block text-gray-700 font-avenir-black">
+            Last Name<span className="text-primary">*</span>
+          </label>
+          <input
+            type="text"
+            name="last_name"
+            value={applicationDetails.last_name}
+            onChange={handleApplicationDetailsChange}
+            required
+            className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+        </div>
       </div>
-      {/* TABLET NAV */}
-      <div className="tablet-nav">
-        <TabletNav />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:mt-5">
+        <div>
+          <label className="block text-gray-700 font-avenir-black">
+            Birthdate<span className="text-primary">*</span>
+          </label>
+          <input
+            type="date"
+            name="birth_date"
+            value={applicationDetails.birth_date}
+            onChange={handleApplicationDetailsChange}
+            required
+            className="text-primary w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+        </div>
+        <div className="md:col-span-1">
+          <label className="block text-gray-700 font-avenir-black">
+            Sex<span className="text-primary">*</span>
+          </label>
+          <div className="flex gap-4 mt-3">
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="gender"
+                value="Male"
+                onChange={handleApplicationDetailsChange}
+                required
+                className="text-primary focus:ring-primary"
+              />
+              <span className="ml-2 text-gray-700">Male</span>
+            </label>
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="gender"
+                value="Female"
+                onChange={handleApplicationDetailsChange}
+                required
+                className="text-primary focus:ring-primary"
+              />
+              <span className="ml-2 text-gray-700">Female</span>
+            </label>
+          </div>
+        </div>
       </div>
-      {/* DESKTOP NAV */}
-      <div className="desktop-nav">
-        <DesktopNav />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:mt-5">
+        <div>
+          <label className="block text-gray-700 font-avenir-black">
+            Email Address<span className="text-primary">*</span>
+          </label>
+          <input
+            type="email"
+            name="email_1"
+            value={applicationDetails.email_1}
+            onChange={handleApplicationDetailsChange}
+            required
+            className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+        </div>
+        <div className="relative">
+          {" "}
+          <label className="block text-gray-700 font-avenir-black">
+            Phone Number<span className="text-primary">*</span>
+          </label>
+          <input
+            type="tel"
+            name="mobile_number_1"
+            value={applicationDetails.mobile_number_1}
+            onChange={handleApplicationDetailsChange}
+            required
+            maxLength="9"
+            pattern="[0-9]{9}"
+            placeholder="Enter 9-digit number"
+            className="w-full p-3 pl-15 border-none rounded-md  text-gray-700   bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+          <div className="absolute left-3 top-[65%]   -translate-y-1/2  text-gray-700  flex items-center  space-x-1 font-avenir-black">
+            <span>🇵🇭&nbsp;</span>
+            <span>09</span>
+          </div>
+        </div>
       </div>
-      {/* <div  className="-z-50 absolute w-[90%] transform translate-y-5 -translate-x-10 lg:-translate-x-20 xl:-translate-x-50 opacity-10 text-9xl font-avenir-black text-primary"
-         >APPLICATION FORM</div> */}
-      {/* BLOGS HERO */}
-      <section className="pt-[10%] xl:pt-[8%]">
-        <main className="px-[5%]">
-          <div className="md:px-5 lg:px-20 xl:px-50">
-            {" "}
-            <BackButton
-              type={unSlug(jobPosition) + " Details"}
-              backPath={-1}
-              jobId={id}
-            />
-            <div className="py-5"></div>
-            <form
-              onSubmit={handleSubmitApplication}
-              className="space-y-4 text-sm p-6 md:p-12 lg:p-15 shadow-sm border-primary border-1  rounded-lg bg-white"
-            >
-              <p className="!text-lg lg:!text-2xl font-avenir-black mb-10">
-                Job Application Form
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-gray-700 font-avenir-black">
-                    First Name<span className="text-primary">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="first_name"
-                    value={applicationDetails.first_name}
-                    onChange={handleApplicationDetailsChange}
-                    required
-                    className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 font-avenir-black">
-                    Middle Name
-                  </label>
-                  <input
-                    type="text"
-                    name="middle_name"
-                    value={applicationDetails.middle_name}
-                    onChange={handleApplicationDetailsChange}
-                    className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 font-avenir-black">
-                    Last Name<span className="text-primary">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="last_name"
-                    value={applicationDetails.last_name}
-                    onChange={handleApplicationDetailsChange}
-                    required
-                    className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:mt-5">
-                <div>
-                  <label className="block text-gray-700 font-avenir-black">
-                    Birthdate<span className="text-primary">*</span>
-                  </label>
-                  <input
-                    type="date"
-                    name="birth_date"
-                    value={applicationDetails.birth_date}
-                    onChange={handleApplicationDetailsChange}
-                    required
-                    className="text-primary w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <div className="md:col-span-1">
-                  <label className="block text-gray-700 font-avenir-black">
-                    Sex<span className="text-primary">*</span>
-                  </label>
-                  <div className="flex gap-4 mt-3">
-                    <label className="flex items-center">
-                      <input
-                        type="radio"
-                        name="gender"
-                        value="Male"
-                        onChange={handleApplicationDetailsChange}
-                        required
-                        className="text-primary focus:ring-primary"
-                      />
-                      <span className="ml-2 text-gray-700">Male</span>
-                    </label>
-                    <label className="flex items-center">
-                      <input
-                        type="radio"
-                        name="gender"
-                        value="Female"
-                        onChange={handleApplicationDetailsChange}
-                        required
-                        className="text-primary focus:ring-primary"
-                      />
-                      <span className="ml-2 text-gray-700">Female</span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:mt-5">
-                <div>
-                  <label className="block text-gray-700 font-avenir-black">
-                    Email Address<span className="text-primary">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    name="email_1"
-                    value={applicationDetails.email_1}
-                    onChange={handleApplicationDetailsChange}
-                    required
-                    className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <div className="relative">
-                  {" "}
-                  <label className="block text-gray-700 font-avenir-black">
-                    Phone Number<span className="text-primary">*</span>
-                  </label>
-                  <input
-                    type="tel"
-                    name="mobile_number_1"
-                    value={applicationDetails.mobile_number_1}
-                    onChange={handleApplicationDetailsChange}
-                    required
-                    maxLength="9"
-                    pattern="[0-9]{9}"
-                    placeholder="Enter 9-digit number"
-                    className="w-full p-3 pl-15 border-none rounded-md  text-gray-700   bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                  <div className="absolute left-3 top-[65%]   -translate-y-1/2  text-gray-700  flex items-center  space-x-1 font-avenir-black">
-                    <span>🇵🇭&nbsp;</span>
-                    <span>09</span>
-                  </div>
-                </div>
-              </div>
-              <div className="md:col-span-2 mt-10">
-                <label className="block text-gray-700 font-avenir-black">
-                  How did you discover Fullsuite?
-                  <span className="text-primary">*</span>
-                </label>
-                <div className="flex flex-col gap-3 mt-3">
-                  {[
-                    "Through Referral",
-                    "Website",
-                    "Social Media",
-                    "Podcast",
-                    "Career Fair (Startup Caravan, University Visit, etc.)",
-                  ].map((option) => (
-                    <label key={option} className="flex items-center">
-                      <input
-                        type="radio"
-                        name="discovered_at"
-                        value={option}
-                        required
-                        className="text-primary focus:ring-primary"
-                        onChange={(e) => {
-                          setShowReferralInput(option === "Through Referral");
-                          handleApplicationDetailsChange(e);
-                        }}
-                      />
-                      <span className="ml-2 text-gray-700">{option}</span>
-                    </label>
-                  ))}
-                </div>
+      <div className="md:col-span-2 mt-10">
+        <label className="block text-gray-700 font-avenir-black">
+          How did you discover Fullsuite?
+          <span className="text-primary">*</span>
+        </label>
+        <div className="flex flex-col gap-3 mt-3">
+          {[
+            "Through Referral",
+            "Website",
+            "Social Media",
+            "Podcast",
+            "Career Fair (Startup Caravan, University Visit, etc.)",
+          ].map((option) => (
+            <label key={option} className="flex items-center">
+              <input
+                type="radio"
+                name="discovered_at"
+                value={option}
+                required
+                className="text-primary focus:ring-primary"
+                onChange={(e) => {
+                  setShowReferralInput(option === "Through Referral");
+                  handleApplicationDetailsChange(e);
+                }}
+              />
+              <span className="ml-2 text-gray-700">{option}</span>
+            </label>
+          ))}
+        </div>
 
         {showReferralInput && (
           <div className="mt-3">
@@ -532,9 +503,7 @@ const ApplicationForm = () => {
   const { id, jobPosition } = useParams();
 
   return (
-    <GoogleReCaptchaProvider
-      reCaptchaKey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
-    >
+    <GoogleReCaptchaProvider reCaptchaKey={import.meta.env.VITE_RECAPTCHA_SITE}>
       <section
         className="gap-4 h-dvh"
         style={{ maxWidth: "1800px", margin: "0 auto" }}
@@ -552,7 +521,7 @@ const ApplicationForm = () => {
           <DesktopNav />
         </div>
         {/* <div  className="-z-50 absolute w-[90%] transform translate-y-5 -translate-x-10 lg:-translate-x-20 xl:-translate-x-50 opacity-10 text-9xl font-avenir-black text-primary"
-       >APPLICATION FORM</div> */}
+         >APPLICATION FORM</div> */}
         {/* BLOGS HERO */}
         <section className="pt-[10%] xl:pt-[8%]">
           <main className="px-[5%]">
@@ -560,7 +529,7 @@ const ApplicationForm = () => {
               {" "}
               <BackButton
                 type={unSlug(jobPosition) + " Details"}
-                backPath={`/careers/${toSlug(jobPosition)}`}
+                backPath={-1}
                 jobId={id}
               />
               <div className="py-5"></div>
