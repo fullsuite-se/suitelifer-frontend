@@ -94,55 +94,69 @@ const AboutPage = ({ handlePreview }) => {
       <div className="text-md font-bold pb-2 font-avenir-black">
         About Page Video
       </div>
-      <div className="flex flex-col items-center">
-        <input
-          type="file"
-          accept="video/*"
-          onChange={handleUpload}
-          className="hidden"
-          id="videoUpload"
-        />
-
-        <div className="w-full sm:max-w-[40%] md:max-w-[40%] border rounded-xl bg-gray-200 overflow-hidden aspect-video">
-          {videoFile ? (
-            videoFile.includes("youtube.com") ||
-            videoFile.includes("youtu.be") ? (
-              <iframe
-                className="w-full h-full"
-                src={`https://www.youtube.com/embed/${extractYouTubeID(
-                  videoFile
-                )}`}
-                title="YouTube video"
-                allowFullScreen
-              ></iframe>
-            ) : (
-              <video
-                src={videoFile}
-                className="w-full h-full"
-                controls
-                autoPlay
-                loop
-                muted
-              />
-            )
-          ) : (
-            <div className="flex items-center justify-center w-full h-full text-gray-500">
-              No video selected
-            </div>
-          )}
-        </div>
-
-        <div className="mt-4 flex flex-wrap w-full justify-center gap-2">
-          <button
-            onClick={() => document.getElementById("videoUpload").click()}
-            className="btn-light flex items-center p-2"
+      <div className="video-preview w-full">
+        
+        <div className="flex flex-col items-center p-4">
+          <input
+            type="file"
+            accept="video/*"
+            onChange={handleUpload}
+            className="hidden"
+            id="videoUpload"
+          />
+          <div
+            className="max-w-[70%] sm:w-[100%] sm:h-auto border-3 rounded-3xl bg-gray-200 overflow-hidden aspect-video cursor-pointer flex items-center justify-center"
+            onClick={() =>
+              !videoFile && document.getElementById("videoUpload").click()
+            }
           >
-            <div className="gap-2 flex">
-              <ArrowPathIcon className="size-5" /> <span>Change Video</span>
-            </div>
-          </button>
+            {videoFile ? (
+              videoFile.includes("youtube.com") ||
+              videoFile.includes("youtu.be") ? (
+                <iframe
+                  className="w-full h-full object-cover"
+                  src={`https://www.youtube.com/embed/${extractYouTubeID(
+                    videoFile
+                  )}`}
+                  title="YouTube video"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              ) : (
+                <video
+                  src={videoFile}
+                  className="w-full h-full object-cover"
+                  controls
+                  autoPlay
+                  loop
+                  muted
+                />
+              )
+            ) : (
+              <div className=" flex items-center justify-center text-center w-full p-3">
+                <ArrowUpOnSquareIcon className="size-20 " />
+                <span className="text-center text-xl">Upload Video</span>
+              </div>
+            )}
+          </div>
+
+          <div className="flex mt-6 gap-2">
+           
+
+            {videoFile && (
+              <button
+                type="button"
+                onClick={() => document.getElementById("videoUpload").click()}
+                className="flex gap-1 p-2 text-sm items-center btn-light"
+              >
+                <ArrowPathIcon className="size-5" />
+                Change Video
+              </button>
+            )}
+          </div>
         </div>
-      </div>
+          </div>
 
       <div className="text-md font-bold pt-4 font-avenir-black">
         Text Banner
@@ -150,7 +164,7 @@ const AboutPage = ({ handlePreview }) => {
       <textarea
         value={textBanner}
         onChange={(e) => setTextBanner(e.target.value)}
-        rows={1}
+        rows={2}
         className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
       ></textarea>
 
@@ -240,7 +254,7 @@ const AboutPage = ({ handlePreview }) => {
             <textarea
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              rows={2}
+              rows={3}
               className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
             ></textarea>
           </div>
@@ -252,7 +266,7 @@ const AboutPage = ({ handlePreview }) => {
       <textarea
         value={podVideoUrl}
         onChange={(e) => setPodVideoUrl(e.target.value)}
-        rows={1}
+        rows={3}
         className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-20"
       />
     </div>

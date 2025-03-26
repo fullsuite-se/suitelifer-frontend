@@ -1,11 +1,12 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import {
   EyeIcon,
   BookmarkSquareIcon,
   ArrowPathIcon,
+  ArrowUpOnSquareIcon,
 } from "@heroicons/react/24/outline";
 
-const VideoPreview = ({ handlePreview }) => {
+const AdminHomePage = ({ handlePreview }) => {
   const [videoFile, setVideoFile] = useState("");
 
   const handleUpload = (event) => {
@@ -24,22 +25,20 @@ const VideoPreview = ({ handlePreview }) => {
   };
 
   const handleSave = () => {
-    const data = {
-      videoFile,
-    };
+    const data = { videoFile };
     console.log(data);
   };
 
   return (
     <>
-    <div className="text-md p-1 font-avenir-black">Home Page Video</div>
+      <div className="text-md p-1 font-avenir-black">Home Page Video</div>
       <div className="video-preview w-full">
         <div className="flex justify-end px-4 py-2">
           <button
             className="btn-primary flex items-center p-2 gap-2"
             onClick={handleSave}
           >
-            <BookmarkSquareIcon className="size-5" />{" "}
+            <BookmarkSquareIcon className="size-5" />
             <span>Publish Changes</span>
           </button>
         </div>
@@ -51,7 +50,12 @@ const VideoPreview = ({ handlePreview }) => {
             className="hidden"
             id="videoUpload"
           />
-          <div className="max-w-[70%] sm:w-[100%] sm:h-auto border-3 rounded-3xl bg-gray-200 overflow-hidden aspect-video">
+          <div
+            className="max-w-[70%] sm:w-[100%] sm:h-auto border-3 rounded-3xl bg-gray-200 overflow-hidden aspect-video cursor-pointer flex items-center justify-center"
+            onClick={() =>
+              !videoFile && document.getElementById("videoUpload").click()
+            }
+          >
             {videoFile ? (
               videoFile.includes("youtube.com") ||
               videoFile.includes("youtu.be") ? (
@@ -76,36 +80,38 @@ const VideoPreview = ({ handlePreview }) => {
                 />
               )
             ) : (
-              <div className="flex items-center justify-center w-full h-full text-gray-500">
-                No video selected
+              <div className=" flex items-center justify-center text-center w-full p-3">
+                <ArrowUpOnSquareIcon className="size-20"/>
+                <span className="text-center text-xl">Upload Video</span>
               </div>
             )}
           </div>
 
-          <div className="mt-4 flex w-full gap-1 items-center">
+          <div className="flex mt-6 gap-2">
             <button
               type="button"
               onClick={handlePreview}
-              className="ml-auto flex justify-end gap-1 p-1 text-sm items-center btn-light"
+              className="flex gap-1 p-2 text-sm items-center btn-light"
             >
               <EyeIcon className="size-5" />
-              Preview Changes
+              Preview
             </button>
-          
-            <button
-              type="button"
-              onClick={() => document.getElementById("videoUpload").click()}
-              className="ml-auto flex justify-end gap-1 p-1 text-sm items-center btn-light"
-            >
-              <ArrowPathIcon className="size-5" />
-              Change Video
-            </button>
+
+            {videoFile && (
+              <button
+                type="button"
+                onClick={() => document.getElementById("videoUpload").click()}
+                className="flex gap-1 p-2 text-sm items-center btn-light"
+              >
+                <ArrowPathIcon className="size-5" />
+                Change Video
+              </button>
+            )}
           </div>
         </div>
-
       </div>
     </>
   );
 };
 
-export default VideoPreview;
+export default AdminHomePage;
