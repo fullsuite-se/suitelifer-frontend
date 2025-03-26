@@ -168,9 +168,7 @@ const Login = () => {
   }, []);
 
   return (
-    <GoogleReCaptchaProvider
-      reCaptchaKey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
-    >
+    <GoogleReCaptchaProvider reCaptchaKey={import.meta.env.VITE_RECAPTCHA_SITE}>
       <div
         id="vanta-bg"
         className="w-screen h-screen flex justify-start items-center bg-white"
