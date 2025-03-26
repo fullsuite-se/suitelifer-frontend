@@ -1,13 +1,12 @@
 import { useState } from "react";
 import SingleSpotifyEmbed from "../../components/home/SingleSpotifyEmbed";
 import {
-  TrashIcon,
   PlusIcon,
   XCircleIcon,
   ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const extractSpotifyId = (url) => {
   const match = url.match(/episode\/([^?]+)/);
@@ -25,13 +24,8 @@ const SpotifyEpisodes = () => {
   const [newUrl, setNewUrl] = useState("");
   const [error, setError] = useState(null);
 
-  const showError = (message) => {
-    setError(message);
-  };
-
-  const closeError = () => {
-    setError(null);
-  };
+  const showError = (message) => setError(message);
+  const closeError = () => setError(null);
 
   const addEpisode = () => {
     const spotifyId = extractSpotifyId(newUrl);
@@ -74,15 +68,13 @@ const SpotifyEpisodes = () => {
   return (
     <div className="border-primary border-2 rounded-2xl w-full p-4 space-y-4">
       {error && (
-        <div className="fixed inset-0 flex items-center justify-center ">
-          <div className="bg-white p-6 rounded-2xl shadow-lg max-w-md w-full border-2 border-red-500/95 ">
+        <div className="fixed inset-0 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-2xl shadow-lg max-w-md w-full border-2 border-red-500/95">
             <div className="flex items-center justify-center gap-2 text-lg font-semibold p-3 rounded-2xl">
               <ExclamationTriangleIcon className="size-12 text-red-500" />
               <span className="text-red-500 text-2xl">Error</span>
             </div>
-
             <p className="text-gray-800 mt-4 text-center text-xl">{error}</p>
-
             <div className="flex justify-center mt-4">
               <button
                 onClick={closeError}
@@ -114,12 +106,11 @@ const SpotifyEpisodes = () => {
           </>
         ) : (
           <button onClick={addEpisode} className="btn-light">
-            <PlusIcon className="size-7" />
+            <PlusIcon className="size-5" />
           </button>
         )}
       </div>
 
-      {/* Episodes List */}
       {episodes.length === 0 ? (
         <div className="p-4 text-center text-gray-600">
           No episodes added yet.
@@ -128,21 +119,20 @@ const SpotifyEpisodes = () => {
         episodes.map((episode) => {
           const spotifyId = extractSpotifyId(episode.url);
           return (
-            <div
-              key={episode.id}
-              className="border rounded-2xl p-2 flex gap-2"
-            >
-              <div className="w-[96%]"><SingleSpotifyEmbed spotifyId={spotifyId} /></div>
-              <div className="w-[4%] sm:min-w-[5%] flex flex-col mx-auto justify-evenly items-center gap-2">
+            <div key={episode.id} className="flex flex-col sm:flex-row gap-2">
+              <div className="w-full sm:w-[96%]">
+                <SingleSpotifyEmbed spotifyId={spotifyId} />
+              </div>
+              <div className="w-full sm:w-[4%] sm:min-w-[5%] flex flex-row sm:flex-col mx-auto justify-evenly items-center gap-2">
                 <button
                   onClick={() => editEpisode(episode.id)}
-                  className="bg-primary text-white w-full rounded-2xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e] h-[50%]"
+                  className="bg-primary text-white w-[48%] sm:w-full rounded-2xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e] h-[50%]"
                 >
                   <EditIcon className="size-7" />
                 </button>
                 <button
                   onClick={() => deleteEpisode(episode.id)}
-                  className="bg-primary text-white w-full rounded-2xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e] h-[50%]"
+                  className="bg-primary text-white w-[48%] sm:w-full rounded-2xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e] h-[50%]"
                 >
                   <DeleteIcon className="size-7" />
                 </button>

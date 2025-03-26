@@ -33,7 +33,14 @@ const AdminHomePage = ({ handlePreview }) => {
     <>
       <div className="text-md p-1 font-avenir-black">Home Page Video</div>
       <div className="video-preview w-full">
-        <div className="flex justify-end px-4 py-2">
+        <div className="flex justify-end px-4 py-2 gap-2">
+        <button
+            className="btn-primary flex items-center p-2 gap-2"
+            onClick={handleSave}
+          >
+            <ArrowPathIcon className="size-5" />
+            <span>Preview Changes</span>
+          </button>
           <button
             className="btn-primary flex items-center p-2 gap-2"
             onClick={handleSave}
@@ -88,14 +95,6 @@ const AdminHomePage = ({ handlePreview }) => {
           </div>
 
           <div className="flex mt-6 gap-2">
-            <button
-              type="button"
-              onClick={handlePreview}
-              className="flex gap-1 p-2 text-sm items-center btn-light"
-            >
-              <EyeIcon className="size-5" />
-              Preview
-            </button>
 
             {videoFile && (
               <button
