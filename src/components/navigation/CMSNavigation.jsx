@@ -63,6 +63,9 @@ const CMSNavigation = () => {
     JSON.parse(localStorage.getItem("showTools")) ?? true
   );
   const [isLoading, setIsLoading] = useState(true);
+  // For PWA
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [showInstallPrompt, setShowInstallPrompt] = useState(false);
 
   useEffect(() => {
     try {
@@ -79,6 +82,23 @@ const CMSNavigation = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (event) => {
+      event.preventDefault();
+      setDeferredPrompt(event);
+      setShowInstallPrompt(true);
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener(
+        "beforeinstallprompt",
+        handleBeforeInstallPrompt
+      );
+    };
+  }, []);
+
   const handleCollapseBtn = () => {
     localStorage.setItem("isCollapsed", !isCollapse);
     setCollapse((prev) => !prev);
@@ -88,6 +108,21 @@ const CMSNavigation = () => {
     const updatedShowTool = !showTool;
     localStorage.setItem("showTools", updatedShowTool);
     setShowTool(updatedShowTool);
+  };
+
+  const handleInstallClick = () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === "accepted") {
+          console.log("User accepted PWA install");
+        } else {
+          console.log("User dismissed PWA install");
+        }
+        setDeferredPrompt(null);
+        setShowInstallPrompt(false);
+      });
+    }
   };
 
   if (isLoading) return null;
@@ -220,20 +255,34 @@ const CMSNavigation = () => {
             )}
           </ul>
         </section>
-        <section className="p-5 py-7 flex gap-12">
-          {!isCollapse && (
-            <img
-              src={fullsuitelogo}
-              alt="fullsuitelogo"
-              className="w-20 h-auto"
-            />
+
+        <section className="p-5 py-7 flex flex-col gap-4">
+          {showInstallPrompt && (
+            <div className="mx-auto">
+              <button
+                className="bg-primary text-sm px-3 py-1 rounded-md text-white cursor-pointer"
+                onClick={handleInstallClick}
+              >
+                Install App
+              </button>
+            </div>
           )}
-          <button
-            className=" cursor-pointer"
-            onClick={() => setIsOpenModal(true)}
-          >
-            <ArrowRightCircleIcon className="w-6 h-6 text-primary" />
-          </button>
+
+          <div className="flex justify-between">
+            {!isCollapse && (
+              <img
+                src={fullsuitelogo}
+                alt="fullsuitelogo"
+                className="w-20 h-auto"
+              />
+            )}
+            <button
+              className=" cursor-pointer"
+              onClick={() => setIsOpenModal(true)}
+            >
+              <ArrowRightCircleIcon className="w-6 h-6 text-primary" />
+            </button>
+          </div>
         </section>
       </nav>
     </section>
