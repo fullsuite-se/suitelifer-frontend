@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import SingleSpotifyEmbed from "../../components/home/SingleSpotifyEmbed";
 import {
-  TrashIcon,
   PlusIcon,
   XCircleIcon,
   ExclamationTriangleIcon,
@@ -167,15 +166,13 @@ const SpotifyEpisodes = () => {
   return (
     <div className="border-primary border-2 rounded-2xl w-full p-4 space-y-4">
       {error && (
-        <div className="fixed inset-0 flex items-center justify-center ">
-          <div className="bg-white p-6 rounded-2xl shadow-lg max-w-md w-full border-2 border-red-500/95 ">
+        <div className="fixed inset-0 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-2xl shadow-lg max-w-md w-full border-2 border-red-500/95">
             <div className="flex items-center justify-center gap-2 text-lg font-semibold p-3 rounded-2xl">
               <ExclamationTriangleIcon className="size-12 text-red-500" />
               <span className="text-red-500 text-2xl">Error</span>
             </div>
-
             <p className="text-gray-800 mt-4 text-center text-xl">{error}</p>
-
             <div className="flex justify-center mt-4">
               <button
                 onClick={closeError}
@@ -220,7 +217,6 @@ const SpotifyEpisodes = () => {
         )}
       </div>
 
-      {/* Episodes List */}
       {episodes.length === 0 ? (
         <div className="p-4 text-center text-gray-600">
           No episodes added yet.

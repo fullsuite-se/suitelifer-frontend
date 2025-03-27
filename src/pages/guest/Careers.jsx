@@ -6,13 +6,11 @@ import DesktopNav from "../../components/home/DesktopNav";
 import SpotifyEmbed from "../../components/careers/SpotifyEmbed";
 import api from "../../utils/axios";
 import JobCarousel from "../../components/careers/JobCarousel";
-import { ChevronRightIcon } from "@heroicons/react/24/solid";
 import GuestIndustryTags from "../../components/careers/GuestIndustriesTags";
 import dotsLine from "../../assets/images/socials-dots-line.svg";
 import BackToTop from "../../components/BackToTop";
 import PageMeta from "../../components/layout/PageMeta";
 import Footer from "../../components/Footer";
-import OnLoadLayoutAnimation from "../../components/layout/OnLoadLayoutAnimation";
 import { useLocation } from "react-router-dom";
 import DynamicLink from "../../components/buttons/ViewAll";
 import LoadingJobCarousel from "../../components/careers/LoadingJobCarousel";
@@ -20,6 +18,10 @@ import LoadingJobCarousel from "../../components/careers/LoadingJobCarousel";
 import Skeleton from "react-loading-skeleton";
 import LoadingLargeSpotify from "../../components/careers/LoadingLargeSpotify";
 import LoadingSmallSpotify from "../../components/careers/LoadingSmallSpotify";
+
+import careersLeft from "../../assets/images/careers-hero-images/careers-left.jpg";
+import careersRight from "../../assets/images/careers-hero-images/careers-right.jpg";
+import careersMain from "../../assets/images/careers-hero-images/careers-main.jpg";
 
 const Careers = () => {
   const [jobs, setJobs] = useState([]);
@@ -56,7 +58,6 @@ const Careers = () => {
   };
 
   useEffect(() => {
-    // window.scrollTo(0, 0);
     fetchEpisodes();
     fetchJobs();
     fetchIndustries();
@@ -253,21 +254,23 @@ const Careers = () => {
                   />
                 </div> */}
               </section>
-              {/* Main Image (CENTER) */}
               <div className="flex justify-center md:py-4 gap-10">
+                {/* Left Image */}
                 <img
                   className="hidden md:block size-[18%] z-20 xl:max-w-[200px] object-cover aspect-3/4 rounded-2xl md:rounded-2xl"
-                  src="https://images.unsplash.com/photo-1579389083395-4507e98b5e67?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  src={careersLeft}
                   alt=""
                 />
+                {/* Main Image (CENTER) */}
                 <img
                   className="size-[40%] md:size-[35%] z-20 max-w-[350px] xl:max-w-[380px] object-cover aspect-3/4 rounded-2xl md:rounded-4xl"
-                  src="https://images.unsplash.com/photo-1579389083395-4507e98b5e67?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  src={careersMain}
                   alt=""
                 />
+                {/* Right Image */}
                 <img
                   className="hidden md:block self-end z-20 size-[20%] xl:max-w-[220px] object-cover aspect-3/4 rounded-2xl md:rounded-2xl"
-                  src="https://images.unsplash.com/photo-1579389083395-4507e98b5e67?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  src={careersRight}
                   alt=""
                 />
               </div>
@@ -386,7 +389,7 @@ const Careers = () => {
             </div>
             {/* Spotify Episodes */}
             {isSpotifyLoading ? (
-              <section>
+              <section className="mt-20 px-[5%] md:px-[10%] lg:px-[15%]">
                 <div className="sm:hidden flex flex-col gap-4">
                   <LoadingLargeSpotify />
                   <LoadingSmallSpotify />
@@ -443,9 +446,10 @@ const Careers = () => {
                   </>
                 ) : (
                   <>
-                  <div className="text-center text-gray-500">
-                    Oops! It looks like there are no spotify podcasts available yet. Stay tuned!
-                  </div>
+                    <div className="text-center text-gray-500">
+                      Oops! It looks like there are no spotify podcasts
+                      available yet. Stay tuned!
+                    </div>
                   </>
                 )}
               </>
