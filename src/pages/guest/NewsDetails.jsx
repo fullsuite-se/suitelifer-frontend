@@ -4,7 +4,7 @@ import React from "react";
 import ArticleDetails from "../../components/news/ArticleDetails";
 import NewsList from "../../components/news/NewsList";
 import api from "../../utils/axios";
-import LoadingArticleDetails from "../../components/news/LOADINGArticleDetails";
+import LoadingArticleDetails from "../../components/news/LoadingArticleDetails";
 
 const NewsDetails = () => {
   const { id } = useParams();

@@ -5,7 +5,7 @@ import { toSlug } from "../../utils/slugUrl";
 import BlogList from "../../components/guest-blogs/GuestBlogsList";
 import ArticleDetails from "../../components/news/ArticleDetails";
 import api from "../../utils/axios";
-import LoadingArticleDetails from "../../components/news/LOADINGArticleDetails";
+import LoadingArticleDetails from "../../components/news/LoadingArticleDetails";
 
 const BlogDetails = () => {
   const location = useLocation();
