@@ -4,6 +4,7 @@ import React from "react";
 import ArticleDetails from "../../components/news/ArticleDetails";
 import NewsList from "../../components/news/NewsList";
 import api from "../../utils/axios";
+import LoadingArticleDetails from "../../components/news/LOADINGArticleDetails";
 
 const NewsDetails = () => {
   const { id } = useParams();
@@ -42,8 +43,7 @@ const NewsDetails = () => {
 
   if (loading) {
     return (
-      <section className="w-full h-full">
-      </section>
+      <LoadingArticleDetails/>
     );
   }
 

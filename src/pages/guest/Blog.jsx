@@ -3,13 +3,14 @@ import React, { useEffect, useState } from "react";
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
+import Footer from "../../components/Footer";
+
 import bgBlogs from "../../assets/images/blogs-text-bg.svg";
 import guestBlogsList from "../../components/guest-blogs/GuestBlogsList";
 import GuestBlogLarge from "../../components/guest-blogs/GuestBlogLarge";
 import AnimatedText from "../../components/guest-blogs/AnimatedText";
 import GuestBlogTags from "../../components/guest-blogs/GuestBlogTags";
 import GuestBlogCard from "../../components/guest-blogs/GuestBlogCard";
-import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
 import ArticleSearchResults from "../../components/news/SearchingBlogOrNews";
 import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
@@ -17,6 +18,7 @@ import PageMeta from "../../components/layout/PageMeta";
 import api from "../../utils/axios";
 import { removeHtmlTags } from "../../utils/removeHTMLTags";
 import { readingTime } from "reading-time-estimator";
+import Skeleton from "react-loading-skeleton";
 import LoadingBlogLarge from "../../components/guest-blogs/LoadingBlogLarge";
 import LoadingBlogCard from "../../components/guest-blogs/LoadingBlogCard";
 
@@ -38,8 +40,7 @@ const Blog = () => {
     setIsSearching(false);
   };
 
-  useEffect(() => {
-  }, []);
+  useEffect(() => {}, []);
 
   const allTag = { tagId: "All", tagName: "All" };
 
@@ -206,13 +207,28 @@ const Blog = () => {
             searchTerm={searchTerm}
           />
         ) : companyBlogTags.length === 1 ? (
-          <div className="mt-20">
-            <TwoCirclesLoader
-              bg={"transparent"}
-              color1={"#0097b2"}
-              color2={"#bfd1a0"}
-              height={"35"}
-            />
+          <div className="mt-28">
+            <div className="mx-[25vw] -translate-y-10">
+              <div className="w-full">
+                <Skeleton />
+                <Skeleton width={"40%"} />
+              </div>
+            </div>
+            <div className="py-5"></div>
+            <section>
+              <p className="md:text-2xl uppercase font-avenir-black text-primary pb-3 lg:pb-4">
+                The latest
+              </p>
+              <LoadingBlogLarge />
+              <p className="md:text-2xl font-avenir-black text-primary pb-3 mt-10 lg:pb-4">
+                {/* More Blogs */}
+              </p>
+              <div className="h-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 justify-center items-center">
+                {[...Array(2)].map((_, index) => (
+                  <LoadingBlogCard key={index} />
+                ))}
+              </div>
+            </section>
           </div>
         ) : (
           <>
@@ -291,22 +307,13 @@ const Blog = () => {
                 )}
               </>
             )}
-
-            {/* <div className="h-10"></div>
-            <div className="flex justify-center items-center w-full h-15 rounded-lg overflow-hidden">
-              <TwoCirclesLoader
-                bg={"transparent"}
-                color1={"#0097b2"}
-                color2={"#bfd1a0"}
-                height={"35"}
-              />
-            </div> */}
           </>
         )}
       </main>
 
       <div className="h-30"></div>
       <BackToTop />
+      <Footer />
     </section>
   );
 };

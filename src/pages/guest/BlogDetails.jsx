@@ -5,6 +5,7 @@ import { toSlug } from "../../utils/slugUrl";
 import BlogList from "../../components/guest-blogs/GuestBlogsList";
 import ArticleDetails from "../../components/news/ArticleDetails";
 import api from "../../utils/axios";
+import LoadingArticleDetails from "../../components/news/LOADINGArticleDetails";
 
 const BlogDetails = () => {
   const location = useLocation();
@@ -20,10 +21,9 @@ const BlogDetails = () => {
       const response = await api.get(`/api/get-company-blog/${cblog_id}`);
 
       console.log(response.data.data);
-      
+
       setBlogDetails(response.data.data);
       setIsLoading(false);
-      
     } catch (err) {
       console.log(err);
     }
@@ -35,17 +35,21 @@ const BlogDetails = () => {
 
   return (
     <>
-      <ArticleDetails
-        id={blogDetails.cblogId}
-        title={blogDetails.title}
-        content={blogDetails.description}
-        createdAt={blogDetails.createdAt}
-        createdBy={blogDetails.createdBy}
-        images={blogDetails.images}
-        relatedArticles={relatedBlogs}
-        backPath="/blogs"
-        type="Blog"
-      />
+      {isLoading ? (
+        <LoadingArticleDetails />
+      ) : (
+        <ArticleDetails
+          id={blogDetails.cblogId}
+          title={blogDetails.title}
+          content={blogDetails.description}
+          createdAt={blogDetails.createdAt}
+          createdBy={blogDetails.createdBy}
+          images={blogDetails.images}
+          relatedArticles={relatedBlogs}
+          backPath="/blogs"
+          type="Blog"
+        />
+      )}
     </>
   );
 };
