@@ -182,9 +182,9 @@ export default function AdminJobListing() {
 
   // INDUSTRY VARIABLES
   const defaultIndustryDetails = {
-    job_ind_id: null,
-    industry_name: "",
-    assessment_url: "",
+    jobIndId: null,
+    industryName: "",
+    assessmentUrl: "",
   };
 
   const [industries, setIndustries] = useState([]);
@@ -207,27 +207,27 @@ export default function AdminJobListing() {
 
     try {
       let response;
-      if (industryDetails.job_ind_id === null) {
+      if (industryDetails.jobIndId === null) {
         // ADD INDUSTRY
         response = await api.post("/api/add-industry", {
           ...industryDetails,
-          user_id: user.id,
+          userId: user.id,
         });
       } else {
         // EDIT INDUSTRY
         response = await api.post("/api/edit-industry", {
           ...industryDetails,
-          user_id: user.id,
+          userId: user.id,
         });
       }
 
       if (response.data.success) {
         toast.success(response.data.message);
-        if (industryDetails.job_ind_id === null) {
+        if (industryDetails.jobIndId === null) {
           setIndustries((i) => [...i, industryDetails]);
         } else {
           const updatedIndustries = industries.map((industry) =>
-            industry.industryId === industryDetails.job_ind_id
+            industry.industryId === industryDetails.jobIndId
               ? { ...industryDetails }
               : industry
           );
@@ -257,9 +257,9 @@ export default function AdminJobListing() {
 
   const handleEditIndustryClick = (industry) => {
     setIndustryDetails((id) => ({
-      job_ind_id: industry.industryId,
-      industry_name: industry.industryName,
-      assessment_url: industry.assessmentUrl,
+      jobIndId: industry.industryId,
+      industryName: industry.industryName,
+      assessmentUrl: industry.assessmentUrl,
     }));
     setIndustryModalIsOpen((io) => true);
   };

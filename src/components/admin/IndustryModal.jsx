@@ -14,7 +14,7 @@ const IndustryModal = ({
       <div className="fixed inset-0 flex items-center justify-center">
         <Box className="modal-container px-10 bg-white rounded-lg w-96 max-h-[80vh] overflow-y-auto shadow-lg">
           <h2 className="mb-4 font-avenir-black text-lg text-center bg-white">
-            {industryDetails.job_ind_id === null
+            {industryDetails.jobIndId === null
               ? "Add Industry"
               : "Edit Industry"}
           </h2>
@@ -30,9 +30,9 @@ const IndustryModal = ({
               </label>
               <input
                 type="text"
-                name="industry_name"
+                name="industryName"
                 required
-                value={industryDetails.industry_name}
+                value={industryDetails.industryName}
                 onChange={(e) => handleIndustryDetailsChange(e)}
                 className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
               />
@@ -43,9 +43,9 @@ const IndustryModal = ({
               </label>
               <input
                 type="text"
-                name="assessment_url"
+                name="assessmentUrl"
                 required
-                value={industryDetails.assessment_url}
+                value={industryDetails.assessmentUrl}
                 onChange={(e) => handleIndustryDetailsChange(e)}
                 className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
               />
@@ -55,7 +55,7 @@ const IndustryModal = ({
                 Cancel
               </button>
               <button type="submit" variant="filled" className="btn-primary">
-                {industryDetails.job_ind_id === null
+                {industryDetails.jobIndId === null
                   ? "ADD INDUSTRY"
                   : "SAVE CHANGES"}
               </button>
