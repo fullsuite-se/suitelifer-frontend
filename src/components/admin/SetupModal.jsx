@@ -28,9 +28,9 @@ const SetupModal = ({
               </label>
               <input
                 type="text"
-                name="setup_name"
+                name="setupName"
                 required
-                value={setupDetails.setup_name}
+                value={setupDetails.setupName}
                 onChange={(e) => handleSetupDetailsChange(e)}
                 className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
               />
