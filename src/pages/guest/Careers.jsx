@@ -19,9 +19,9 @@ import Skeleton from "react-loading-skeleton";
 import LoadingLargeSpotify from "../../components/careers/LoadingLargeSpotify";
 import LoadingSmallSpotify from "../../components/careers/LoadingSmallSpotify";
 
-import careersLeft from "../../assets/images/careers-hero-images/careers-left.jpg";
-import careersRight from "../../assets/images/careers-hero-images/careers-right.jpg";
-import careersMain from "../../assets/images/careers-hero-images/careers-main.jpg";
+import careersLeft from "../../assets/images/careers-hero-images/careers-left.png";
+import careersRight from "../../assets/images/careers-hero-images/careers-right.png";
+import careersMain from "../../assets/images/careers-hero-images/careers-main.png";
 
 const Careers = () => {
   const [jobs, setJobs] = useState([]);
