@@ -66,20 +66,20 @@ export default function AdminJobListing() {
 
   // JOB LISTINGS VARIABLES
   const defaultJobDetails = {
-    job_id: null,
+    jobId: null,
     title: "",
-    industry_id: "",
-    industry_name: "",
-    setup_id: "",
-    employment_type: "",
+    industryId: "",
+    industryName: "",
+    setupId: "",
+    employmentType: "",
     description: "",
-    salary_min: null,
-    salary_max: null,
+    salaryMin: null,
+    salaryMax: null,
     responsibility: "",
     requirement: "",
-    preferred_qualification: "",
-    is_open: "",
-    is_shown: "",
+    preferredQualification: "",
+    isOpen: "",
+    isShown: "",
   };
 
   const [jobListings, setJobListings] = useState([]);
@@ -97,27 +97,27 @@ export default function AdminJobListing() {
 
     try {
       let response;
-      if (jobDetails.job_id === null) {
+      if (jobDetails.jobId === null) {
         // ADD JOB LISTING
         response = await api.post("/api/add-job", {
           ...jobDetails,
-          user_id: user.id,
+          userId: user.id,
         });
       } else {
         // EDIT JOB LISTING
         response = await api.post("/api/edit-job", {
           ...jobDetails,
-          user_id: user.id,
+          userId: user.id,
         });
       }
 
       if (response.data.success) {
         toast.success(response.data.message);
-        if (jobDetails.job_id === null) {
+        if (jobDetails.jobId === null) {
           setJobListings((jl) => [...jl, jobDetails]);
         } else {
           const updatedJobListings = jobListings.map((job) =>
-            job.jobId === jobDetails.job_id ? { ...jobDetails } : job
+            job.jobId === jobDetails.jobId ? { ...jobDetails } : job
           );
           setJobListings((jl) => updatedJobListings);
         }
@@ -145,20 +145,20 @@ export default function AdminJobListing() {
 
   const handleEditJobClick = (job) => {
     setJobDetails((jd) => ({
-      job_id: job.jobId,
+      jobId: job.jobId,
       title: job.jobTitle,
-      industry_id: job.industryId,
-      industry_name: job.industryName,
-      setup_id: job.setupId,
-      employment_type: job.employmentType,
+      industryId: job.industryId,
+      industryName: job.industryName,
+      setupId: job.setupId,
+      employmentType: job.employmentType,
       description: job.description,
-      salary_min: job.salaryMin,
-      salary_max: job.salaryMax,
+      salaryMin: job.salaryMin,
+      salaryMax: job.salaryMax,
       responsibility: job.responsibility,
       requirement: job.requirement,
-      preferred_qualification: job.preferredQualification,
-      is_open: job.isOpen,
-      is_shown: job.isShown,
+      preferredQualification: job.preferredQualification,
+      isOpen: job.isOpen,
+      isShown: job.isShown,
     }));
     setJobModalIsOpen(true);
   };

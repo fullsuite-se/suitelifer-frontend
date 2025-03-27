@@ -16,7 +16,7 @@ const JobListingModal = ({
       <div className="fixed inset-0 flex items-center justify-center">
         <Box className="modal-container px-10 py-3 bg-white rounded-lg w-full sm:w-250 max-h-[80vh] overflow-hidden shadow-lg flex flex-col">
           <h2 className="mb-4 font-avenir-black text-lg text-center bg-white">
-            {jobDetails.job_id === null
+            {jobDetails.jobId === null
               ? "Add Job Listing"
               : "Edit Job Listing"}
           </h2>
@@ -45,10 +45,10 @@ const JobListingModal = ({
                     Industry<span className="text-primary">*</span>
                   </label>
                   <select
-                    name="industry_id"
+                    name="industryId"
                     required
-                    disabled={jobDetails.job_id !== null}
-                    value={jobDetails.industry_id}
+                    disabled={jobDetails.jobId !== null}
+                    value={jobDetails.industryId}
                     onChange={(e) => handleJobDetailsChange(e)}
                     className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
                   >
@@ -89,8 +89,8 @@ const JobListingModal = ({
                   </label>
                   <input
                     type="number"
-                    name="salary_min"
-                    value={jobDetails.salary_min}
+                    name="salaryMin"
+                    value={jobDetails.salaryMin}
                     onChange={(e) => handleJobDetailsChange(e)}
                     className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
                   />
@@ -102,8 +102,8 @@ const JobListingModal = ({
                   </label>
                   <input
                     type="number"
-                    name="salary_max"
-                    value={jobDetails.salary_max}
+                    name="salaryMax"
+                    value={jobDetails.salaryMax}
                     onChange={(e) => handleJobDetailsChange(e)}
                     className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
                   />
@@ -114,9 +114,9 @@ const JobListingModal = ({
                     Employment Type<span className="text-primary">*</span>
                   </label>
                   <select
-                    name="employment_type"
+                    name="employmentType"
                     required
-                    value={jobDetails.employment_type}
+                    value={jobDetails.employmentType}
                     onChange={(e) => handleJobDetailsChange(e)}
                     className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
                   >
@@ -133,9 +133,9 @@ const JobListingModal = ({
                     Setup<span className="text-primary">*</span>
                   </label>
                   <select
-                    name="setup_id"
+                    name="setupId"
                     required
-                    value={jobDetails.setup_id}
+                    value={jobDetails.setupId}
                     onChange={(e) => handleJobDetailsChange(e)}
                     className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
                   >
@@ -189,8 +189,8 @@ const JobListingModal = ({
                     Preferred Qualifications
                   </label>
                   <textarea
-                    name="preferred_qualification"
-                    value={jobDetails.preferred_qualification}
+                    name="preferredQualification"
+                    value={jobDetails.preferredQualification}
                     onChange={(e) => handleJobDetailsChange(e)}
                     rows={3}
                     className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
@@ -203,9 +203,9 @@ const JobListingModal = ({
                     Status<span className="text-primary">*</span>
                   </label>
                   <select
-                    name="is_open"
+                    name="isOpen"
                     required
-                    value={jobDetails.is_open}
+                    value={jobDetails.isOpen}
                     onChange={(e) => handleJobDetailsChange(e)}
                     className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
                   >
@@ -221,9 +221,9 @@ const JobListingModal = ({
                     Visibility<span className="text-primary">*</span>
                   </label>
                   <select
-                    name="is_shown"
+                    name="isShown"
                     required
-                    value={jobDetails.is_shown}
+                    value={jobDetails.isShown}
                     onChange={(e) => handleJobDetailsChange(e)}
                     className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
                   >
@@ -244,7 +244,7 @@ const JobListingModal = ({
                 Cancel
               </button>
               <button type="submit" variant="filled" className="btn-primary">
-                {jobDetails.job_id === null
+                {jobDetails.jobId === null
                   ? "ADD JOB LISTING"
                   : "SAVE CHANGES"}
               </button>
