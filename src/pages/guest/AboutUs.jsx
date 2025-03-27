@@ -35,7 +35,7 @@ const AboutUs = () => {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const response = await api.get("/api/get-about-us");
+        const response = await api.get("/api/get-content");
         console.log(response.data.data);
 
         setContent(response.data.data);
