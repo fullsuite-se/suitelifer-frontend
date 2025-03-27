@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { EyeIcon } from "lucide-react";
 import {
   BookmarkSquareIcon,
@@ -7,9 +7,9 @@ import {
 } from "@heroicons/react/24/outline";
 
 const AboutPage = ({ handlePreview }) => {
-  const [mission, setMission] = useState(
-    "Love is the most powerful force in the universe. It is the heartbeat of the moral cosmos. SABI NI MAMA."
-  );
+  const [mission, setMission] = useState(() => {
+    return localStorage.getItem("mission" || "");
+  });
   const [missionSlogan, setMissionSlogan] = useState(
     "Great things are done by a series of small things brought together."
   );
@@ -23,19 +23,30 @@ const AboutPage = ({ handlePreview }) => {
   const [podVideoUrl, setPodVideoUrl] = useState(
     "https://youtube/choDMzlBpvs?feature=shared"
   );
-  const [videoFile, setVideoFile] = useState("");
+  const [videoFile, setVideoFile] = useState(() => {
+    return localStorage.getItem("videoFile") || "";
+  });
+
   const [heroImage, setHeroImage] = useState("");
   const [storyImage, setStoryImage] = useState("");
 
   const heroRef = useRef(null);
   const storyRef = useRef(null);
 
-  const extractYouTubeID = (url) => {
-    const match = url.match(
-      /(?:youtube\.com\/(?:.*v=|.*\/)|youtu\.be\/)([^"&?/ ]{11})/
-    );
-    return match ? match[1] : null;
-  };
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem("savedData"));
+    if (savedData) {
+      setMission(savedData.mission || "");
+      setMissionSlogan(savedData.missionSlogan || "");
+      setVision(savedData.vision || "");
+      setVisionSlogan(savedData.visionSlogan || "");
+      setTextBanner(savedData.textBanner || "");
+      setPodVideoUrl(savedData.podVideoUrl || "");
+      setVideoFile(savedData.videoFile || "");
+      setHeroImage(savedData.heroImage || "");
+      setStoryImage(savedData.storyImage || "");
+    }
+  }, []);
 
   const handleSave = () => {
     const data = {
@@ -43,13 +54,15 @@ const AboutPage = ({ handlePreview }) => {
       missionSlogan,
       vision,
       visionSlogan,
-      podVideoUrl,
       textBanner,
+      podVideoUrl,
+      videoFile,
       heroImage,
       storyImage,
-      videoFile,
     };
-    console.log(data);
+
+    localStorage.setItem("savedData", JSON.stringify(data));
+    console.log("Data saved:", data);
   };
 
   const handleImageChange = (file, setImage) => {
@@ -104,34 +117,20 @@ const AboutPage = ({ handlePreview }) => {
             id="videoUpload"
           />
           <div
-            className="max-w-[70%] sm:w-[100%] sm:h-auto border-1 rounded-3xl bg-gray-200 overflow-hidden aspect-video cursor-pointer flex items-center justify-center"
+            className="max-w-[70%] sm:w-[100%] sm:h-auto border-3 rounded-3xl bg-gray-200 overflow-hidden aspect-video cursor-pointer flex items-center justify-center"
             onClick={() =>
               !videoFile && document.getElementById("videoUpload").click()
             }
           >
             {videoFile ? (
-              videoFile.includes("youtube.com") ||
-              videoFile.includes("youtu.be") ? (
-                <iframe
-                  className="w-full h-full object-cover"
-                  src={`https://www.youtube.com/embed/${extractYouTubeID(
-                    videoFile
-                  )}`}
-                  title="YouTube video"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
-              ) : (
-                <video
-                  src={videoFile}
-                  className="w-full h-full object-cover"
-                  controls
-                  autoPlay
-                  loop
-                  muted
-                />
-              )
+              <video
+                src={videoFile}
+                className="w-full h-full object-cover"
+                controls
+                autoPlay
+                loop
+                muted
+              />
             ) : (
               <div className="flex flex-col sm:flex-row items-center justify-center text-center w-full p-3 gap-2">
                 <ArrowUpOnSquareIcon className="size-5 sm:size-20" />
