@@ -1,19 +1,48 @@
 import React, { useState } from "react";
-import logofsfull from "../../assets/logos/logo-fs-full.svg";
 import JobCourse from "../../components/admin/JobCourse";
 import PersonalityTest from "../../components/admin/PersonalityTest";
-import SaveIcon from "@mui/icons-material/Save";
 import Testimonials from "../../components/admin/Testimonials";
 import SpotifyEpisode from "../../components/admin/SpotifyEpisodes";
 import AdminHomePage from "../../components/admin/AdminHomePage";
 import AdminAboutPage from "../../components/admin/AdminAboutPage";
-import { Tabs, Tab } from "@mui/material";
+import {
+  Tabs,
+  Tab,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  Button,
+} from "@mui/material";
 
 const AdminContents = () => {
   const [activeTab, setActiveTab] = useState(0);
+  const [unsavedChanges, setUnsavedChanges] = useState(false);
+  const [pendingTab, setPendingTab] = useState(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleChange = (event, newValue) => {
-    setActiveTab(newValue);
+    if (unsavedChanges) {
+      setPendingTab(newValue);
+      setDialogOpen(true); 
+    } else {
+      setActiveTab(newValue); 
+    }
+  };
+
+  const handleSave = () => {
+    
+    console.log("Changes saved!");
+    setUnsavedChanges(false);
+    setDialogOpen(false);
+    setActiveTab(pendingTab);
+    setPendingTab(null);
+  };
+
+  const handleDiscard = () => {
+    setUnsavedChanges(false);
+    setDialogOpen(false);
+    setActiveTab(pendingTab); 
+    setPendingTab(null);
   };
 
   return (
@@ -25,9 +54,7 @@ const AdminContents = () => {
           variant="scrollable"
           scrollButtons="auto"
           sx={{
-            "& .MuiTabs-indicator": {
-              backgroundColor: "#0097b2",
-            },
+            "& .MuiTabs-indicator": { backgroundColor: "#0097b2" },
             "& .MuiTab-root": {
               color: "black",
               fontWeight: 500,
@@ -52,13 +79,39 @@ const AdminContents = () => {
       </div>
 
       <div className="p-4">
-        {activeTab === 0 && <AdminHomePage />}
-        {activeTab === 1 && <AdminAboutPage />}
-        {activeTab === 2 && <SpotifyEpisode />}
-        {activeTab === 3 && <JobCourse />}
-        {activeTab === 4 && <PersonalityTest />}
-        {activeTab === 5 && <Testimonials />}
+        {activeTab === 0 && (
+          <AdminHomePage setUnsavedChanges={setUnsavedChanges} />
+        )}
+        {activeTab === 1 && (
+          <AdminAboutPage setUnsavedChanges={setUnsavedChanges} />
+        )}
+        {activeTab === 2 && (
+          <SpotifyEpisode setUnsavedChanges={setUnsavedChanges} />
+        )}
+        {activeTab === 3 && <JobCourse setUnsavedChanges={setUnsavedChanges} />}
+        {activeTab === 4 && (
+          <PersonalityTest setUnsavedChanges={setUnsavedChanges} />
+        )}
+        {activeTab === 5 && (
+          <Testimonials setUnsavedChanges={setUnsavedChanges} />
+        )}
       </div>
+
+      {/* Confirmation Dialog */}
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+        <DialogTitle>
+          You have unsaved changes. What do you want to do?
+        </DialogTitle>
+        <DialogActions>
+          <Button onClick={handleDiscard} color="error">
+            Discard
+          </Button>
+          <Button onClick={handleSave} color="primary">
+            Save
+          </Button>
+          <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

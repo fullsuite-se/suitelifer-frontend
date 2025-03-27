@@ -95,7 +95,6 @@ const AboutPage = ({ handlePreview }) => {
         About Page Video
       </div>
       <div className="video-preview w-full">
-        
         <div className="flex flex-col items-center p-4">
           <input
             type="file"
@@ -134,16 +133,14 @@ const AboutPage = ({ handlePreview }) => {
                 />
               )
             ) : (
-              <div className=" flex items-center justify-center text-center w-full p-3">
-                <ArrowUpOnSquareIcon className="size-20 " />
-                <span className="text-center text-xl">Upload Video</span>
+              <div className="flex flex-col sm:flex-row items-center justify-center text-center w-full p-3 gap-2">
+                <ArrowUpOnSquareIcon className="size-5 sm:size-20" />
+                <span className="text-sm sm:text-xl">Upload Video</span>
               </div>
             )}
           </div>
 
           <div className="flex mt-6 gap-2">
-           
-
             {videoFile && (
               <button
                 type="button"
@@ -156,7 +153,7 @@ const AboutPage = ({ handlePreview }) => {
             )}
           </div>
         </div>
-          </div>
+      </div>
 
       <div className="text-md font-bold pt-4 font-avenir-black">
         Text Banner

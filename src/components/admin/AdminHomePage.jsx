@@ -31,22 +31,21 @@ const AdminHomePage = ({ handlePreview }) => {
 
   return (
     <>
-      
       <div className="video-preview w-full">
         <div className="flex justify-end px-4 py-2 gap-2">
-        <button
+          <button
             className="btn-primary flex items-center p-2 gap-2"
             onClick={handleSave}
           >
-            <ArrowPathIcon className="size-5" />
-            <span>Preview Changes</span>
+            <EyeIcon className="size-7 sm:size-5" />
+            <span className="hidden sm:flex w-full items-centerjustify-center">Preview</span>
           </button>
           <button
             className="btn-primary flex items-center p-2 gap-2"
             onClick={handleSave}
           >
-            <BookmarkSquareIcon className="size-5" />
-            <span>Publish Changes</span>
+            <BookmarkSquareIcon className="size-7 sm:size-5" />
+            <span className="hidden sm:flex">Publish Changes</span>
           </button>
         </div>
         <div className="text-md p-1 font-avenir-black">Home Page Video</div>
@@ -88,15 +87,14 @@ const AdminHomePage = ({ handlePreview }) => {
                 />
               )
             ) : (
-              <div className=" flex items-center justify-center text-center w-full p-3">
-                <ArrowUpOnSquareIcon className="size-20"/>
-                <span className="text-center text-xl">Upload Video</span>
+              <div className="flex flex-col sm:flex-row items-center justify-center text-center w-full p-3 gap-2">
+                <ArrowUpOnSquareIcon className="size-5 sm:size-20" />
+                <span className="text-sm sm:text-xl">Upload Video</span>
               </div>
             )}
           </div>
 
           <div className="flex mt-6 gap-2">
-
             {videoFile && (
               <button
                 type="button"
@@ -112,6 +110,6 @@ const AdminHomePage = ({ handlePreview }) => {
       </div>
     </>
   );
-}; 
+};
 
 export default AdminHomePage;
