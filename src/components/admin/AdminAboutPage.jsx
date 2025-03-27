@@ -1,28 +1,51 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { EyeIcon } from "lucide-react";
 import {
   BookmarkSquareIcon,
   ArrowUpOnSquareIcon,
   ArrowPathIcon,
 } from "@heroicons/react/24/outline";
+import api from "../../utils/axios";
+import toast from "react-hot-toast";
+import { useStore } from "../../store/authStore";
 
 const AboutPage = ({ handlePreview }) => {
-  const [mission, setMission] = useState(
-    "Love is the most powerful force in the universe. It is the heartbeat of the moral cosmos. SABI NI MAMA."
-  );
-  const [missionSlogan, setMissionSlogan] = useState(
-    "Great things are done by a series of small things brought together."
-  );
-  const [vision, setVision] = useState(
-    "Goal is to create a world where everyone has a sense of belonging."
-  );
-  const [textBanner, setTextBanner] = useState(
-    "Go Suited. Go Lifer. Go SuiteLifer."
-  );
-  const [visionSlogan, setVisionSlogan] = useState("Goooooood vibes only.");
-  const [podVideoUrl, setPodVideoUrl] = useState(
-    "https://youtube/choDMzlBpvs?feature=shared"
-  );
+  // USER DETAILS
+  const user = useStore((state) => state.user);
+
+  // CONTENT DETAILS
+  const [contentDetails, setContentDetails] = useState({
+    homeVideo: "",
+    textBanner: "",
+    heroImage: "",
+    storyImage: "",
+    aboutVideo: "",
+    missionSlogan: "",
+    mission: "",
+    visionSlogan: "",
+    vision: "",
+    dayInPodUrl: "",
+  });
+
+  const handleContentDetailsChange = (e) => {
+    setContentDetails((cd) => ({ ...cd, [e.target.name]: e.target.value }));
+
+    console.log(contentDetails);
+    console.log(user.id);
+  };
+
+  const fetchContent = async () => {
+    const response = await api.get("/api/get-content");
+
+    setContentDetails(response.data.data);
+  };
+
+  const [dataUpdated, setDataUpdated] = useState(false);
+
+  useEffect(() => {
+    fetchContent();
+  }, [dataUpdated]);
+
   const [videoFile, setVideoFile] = useState("");
   const [heroImage, setHeroImage] = useState("");
   const [storyImage, setStoryImage] = useState("");
@@ -37,19 +60,22 @@ const AboutPage = ({ handlePreview }) => {
     return match ? match[1] : null;
   };
 
-  const handleSave = () => {
-    const data = {
-      mission,
-      missionSlogan,
-      vision,
-      visionSlogan,
-      podVideoUrl,
-      textBanner,
-      heroImage,
-      storyImage,
-      videoFile,
-    };
-    console.log(data);
+  const handlePublishChanges = async () => {
+    try {
+      const response = await api.post("/api/add-content", {
+        ...contentDetails,
+        user_id: user.id,
+      });
+
+      toast.success(response.data.message);
+
+      setDataUpdated(!dataUpdated);
+    } catch (err) {
+      console.log(err.response);
+      toast.error(
+        "Encountered an error while publishing changes. Try again in a few minutes..."
+      );
+    }
   };
 
   const handleImageChange = (file, setImage) => {
@@ -85,7 +111,7 @@ const AboutPage = ({ handlePreview }) => {
         </button>
         <button
           className="btn-primary flex items-center p-2 gap-2"
-          onClick={handleSave}
+          onClick={handlePublishChanges}
         >
           <BookmarkSquareIcon className="size-5" /> <span>Publish Changes</span>
         </button>
@@ -159,8 +185,9 @@ const AboutPage = ({ handlePreview }) => {
         Text Banner
       </div>
       <textarea
-        value={textBanner}
-        onChange={(e) => setTextBanner(e.target.value)}
+        name="textBanner"
+        value={contentDetails.textBanner}
+        onChange={(e) => handleContentDetailsChange(e)}
         rows={2}
         className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
       ></textarea>
@@ -235,35 +262,47 @@ const AboutPage = ({ handlePreview }) => {
         {[
           {
             label: "Mission Slogan",
-            value: missionSlogan,
-            setValue: setMissionSlogan,
+            value: contentDetails.missionSlogan,
+            name: "missionSlogan",
           },
           {
             label: "Vision Slogan",
-            value: visionSlogan,
-            setValue: setVisionSlogan,
+            value: contentDetails.visionSlogan,
+            name: "visionSlogan",
           },
-          { label: "Mission", value: mission, setValue: setMission },
-          { label: "Vision", value: vision, setValue: setVision },
-        ].map(({ label, value, setValue }) => (
+          {
+            label: "Mission",
+            value: contentDetails.mission,
+            name: "mission",
+          },
+          {
+            label: "Vision",
+            value: contentDetails.vision,
+            name: "vision",
+          },
+        ].map(({ label, value, name }) => (
           <div key={label}>
             <div className="text-md font-bold font-avenir-black">{label}</div>
             <textarea
+              name={name}
               value={value}
-              onChange={(e) => setValue(e.target.value)}
-              rows={3}
+              onChange={(e) => handleContentDetailsChange(e)}
+              rows={
+                label === "Mission Slogan" || label === "Vision Slogan" ? 1 : 3
+              }
               className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
             ></textarea>
           </div>
         ))}
       </div>
       <div className="text-md font-bold pt-4 font-avenir-black">
-        Pod Video Url
+        Day in Pod Video URL
       </div>
-      <textarea
-        value={podVideoUrl}
-        onChange={(e) => setPodVideoUrl(e.target.value)}
-        rows={3}
+      <input
+        type="text"
+        name="dayInPodUrl"
+        value={contentDetails.dayInPodUrl}
+        onChange={(e) => handleContentDetailsChange(e)}
         className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-20"
       />
     </div>
