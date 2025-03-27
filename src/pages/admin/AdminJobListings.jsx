@@ -266,8 +266,8 @@ export default function AdminJobListing() {
 
   // SETUP VARIABLES
   const defaultSetupDetails = {
-    setup_id: null,
-    setup_name: "",
+    setupId: null,
+    setupName: "",
   };
 
   const [setups, setSetups] = useState([]);
@@ -285,27 +285,27 @@ export default function AdminJobListing() {
 
     try {
       let response;
-      if (setupDetails.setup_id === null) {
+      if (setupDetails.setupId === null) {
         // ADD SETUP
         response = await api.post("/api/add-setup", {
           ...setupDetails,
-          user_id: user.id,
+          userId: user.id,
         });
       } else {
         // EDIT SETUP
         response = await api.post("/api/edit-setup", {
           ...setupDetails,
-          user_id: user.id,
+          userId: user.id,
         });
       }
 
       if (response.data.success) {
         toast.success(response.data.message);
-        if (setupDetails.setup_id === null) {
+        if (setupDetails.setupId === null) {
           setSetups((s) => [...s, setupDetails]);
         } else {
           const updatedSetups = setups.map((setup) =>
-            setup.setupId === setupDetails.setup_id
+            setup.setupId === setupDetails.setupId
               ? { ...setupDetails }
               : setup
           );
@@ -335,8 +335,8 @@ export default function AdminJobListing() {
 
   const handleEditSetupClick = (setup) => {
     setSetupDetails((sd) => ({
-      setup_id: setup.setupId,
-      setup_name: setup.setupName,
+      setupId: setup.setupId,
+      setupName: setup.setupName,
     }));
     setSetupModalIsOpen((io) => true);
   };
