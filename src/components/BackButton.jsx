@@ -1,17 +1,29 @@
+import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { NavLink } from "react-router-dom";
 
-const BackButton = ({ backPath, type, jobId }) => {
+const BackButton = ({ backPath, type }) => {
+  const navigate = useNavigate();
+
+  const handleNavigation = () => {
+    if (backPath === -1) {
+      navigate(-1); 
+    } else if (typeof backPath === "function") {
+      backPath(); 
+    } else {
+      navigate(backPath || "/"); 
+    }
+  };
+
   return (
-    <NavLink
-      to={backPath}
-      state={{ jobId, from: location.pathname }}
-      className="!no-underline"
+    <button
+      onClick={handleNavigation}
+      className="group cursor-pointer flex items-center gap-2 text-primary text-xss transition active:font-avenir-black"
     >
-      <button className="cursor-pointer hover:underline! flex items-center gap-2 text-primary !text-[12px] md:text-base font-semibold transition active:font-avenir-black">
-        <ArrowLeft size={15} /> <span className="mt-1">Back to {type}</span>
-      </button>
-    </NavLink>
+      <ArrowLeft size={15} />
+      <span className="mt-1 group-hover:font-avenir-black">
+        Back {type ? `to ${type}` : ""}
+      </span>
+    </button>
   );
 };
 

@@ -1,4 +1,3 @@
-
 import formatTimestamp from "../TimestampFormatter";
 import { toSlug } from "../../utils/slugUrl";
 import { readingTime } from "reading-time-estimator";
@@ -42,10 +41,10 @@ const GuestBlogCard = ({
             {title}
           </p>
 
-          <p className="text-small line-clamp-1 mt-1">
+          <p className="text-xss line-clamp-1 mt-1 opacity-80">
             <span className="text-secondary font-avenir-black">
               {" "}
-              {createdBy}
+              {createdBy.trim().split(" ")[0]}
             </span>{" "}
             |{" "}
             {
@@ -54,11 +53,11 @@ const GuestBlogCard = ({
             }
           </p>
 
-          <p className="mt-2 !text-[12px] sm:!text-[14px] text-gray-300 line-clamp-3">
+          <p className="mt-2 text-small opacity-80 line-clamp-3">
             {description}
           </p>
 
-          <p className="text-small text-gray-400 mt-2">{fullDate}</p>
+          <p className="text-xss opacity-50 mt-2">{fullDate}</p>
         </div>
       </NavLink>
     </section>

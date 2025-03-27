@@ -12,7 +12,7 @@ const HomeBlogSpot = () => {
         viewport={{ once: true, amount: 0.2 }}
         className="w-full"
       >
-        <div className="ml-[6%] mt-10 mb-[2%] text-white">
+        <div className="ml-[6%] mt-5 mb-[2%] text-white p-5">
           <p className="text-h4 font-avenir-black">
             <span className="text-secondary">New</span> Blog Posts
           </p>

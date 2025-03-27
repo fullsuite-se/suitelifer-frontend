@@ -29,17 +29,20 @@ const NewsCardSmall = ({
         />
       )}
 
-      <div className="w-1/2 md:w-full content-news-card-small flex flex-col justify-center ">
-        <div className="flex flex-col">
-          <p className="content-title line-clamp-3 font-avenir-black sm:text-lg group-hover:!text-primary transition-all duration-100">
+      <div className="w-1/2 md:w-full content-news-card-small flex flex-col flex-grow justify-between">
+        {/* Title & Article */}
+        <div className="flex-grow">
+          <p className="text-body line-clamp-3 font-avenir-black group-hover:!text-primary transition-all duration-100">
             {title}
           </p>
-
-          <article className="article-news-card-small text-gray-400 line-clamp-4 my-2 font-avenir">
+          <article className=" text-small text-gray-500 line-clamp-1! md:line-clamp-4! my-2 font-avenir overflow-hidden">
             {article.replace(/<[^>]+>/g, "")}
           </article>
+        </div>
 
-          <p className="author-news-card-small line-clamp-1">
+        {/* Metadata (Always at Bottom) */}
+        <div className="mt-auto">
+          <p className="text-xss line-clamp-1">
             <span className="text-primary">
               {createdByName.split(" ")[0]}&nbsp;&nbsp;|
             </span>
@@ -48,8 +51,7 @@ const NewsCardSmall = ({
               {readingTime(article, 238).text}
             </span>
           </p>
-
-          <p className="text-xs text-gray-400 mt-2">{fullDate}</p>
+          <p className="text-xss text-gray-400 mt-2">{fullDate}</p>
         </div>
       </div>
     </NavLink>

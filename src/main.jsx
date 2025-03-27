@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { HelmetProvider } from "@dr.pogodin/react-helmet";
+import { HelmetProvider } from "react-helmet-async";
 
 // base folder contains the base styles
 import "./css/base/theme.css";
@@ -20,6 +20,16 @@ import "./css/animation/animation.css";
 import "swiper/css";
 
 import App from "./App.jsx";
+
+// PWA Config
+import { registerSW } from "virtual:pwa-register";
+const updateSW = registerSW({
+  onNeedRefresh() {
+    if (confirm("New content available. Reload?")) {
+      updateSW(true);
+    }
+  },
+});
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

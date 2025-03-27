@@ -59,7 +59,7 @@ const EmployeeBlogsFeed = () => {
               <span className="text-white text-sm">3 events today</span>
             </div>
             <div className="flex gap-1 items-center">
-              <span className="text-white text-xs">See all</span>
+              <span className="text-white text-xss">See all</span>
               <ChevronRightIcon className="w-3 h-3 text-white" />
             </div>
           </div>
