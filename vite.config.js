@@ -18,6 +18,8 @@ export default withMT({
       devOptions: {
         enabled: true,
       },
+      // remove this on production
+      selfDestroying: true,
       workbox: {
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
       },
