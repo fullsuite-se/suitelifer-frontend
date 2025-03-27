@@ -117,7 +117,7 @@ const AboutPage = ({ handlePreview }) => {
             id="videoUpload"
           />
           <div
-            className="max-w-[70%] sm:w-[100%] sm:h-auto border-1 rounded-3xl bg-gray-200 overflow-hidden aspect-video cursor-pointer flex items-center justify-center"
+            className="max-w-[70%] sm:w-[100%] sm:h-auto lg:w-[50%] border-1 rounded-3xl bg-gray-200 overflow-hidden aspect-video cursor-pointer flex items-center justify-center"
             onClick={() =>
               !videoFile && document.getElementById("videoUpload").click()
             }
@@ -139,7 +139,7 @@ const AboutPage = ({ handlePreview }) => {
             )}
           </div>
 
-          <div className="flex mt-6 gap-2">
+          <div className="flex mt-6 gap-2 lg:w-[50%]">
             {videoFile && (
               <button
                 type="button"
