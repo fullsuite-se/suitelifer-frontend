@@ -18,15 +18,6 @@ const AdminContents = () => {
 
   return (
     <div className="w-full flex flex-col">
-      {/* Header */}
-      {/* <header className="container flex flex-col sm:flex-row sm:justify-between items-center px-4 md:px-6 py-2">
-        <img src={logofsfull} alt="Fullsuite Logo" className="h-8 mb-2 sm:mb-0" />
-        <button className="btn-primary flex items-center p-2 gap-2">
-          <SaveIcon /> <span>PUBLISH CHANGES</span>
-        </button>
-      </header> */}
-
-      {/* Tabs Navigation */}
       <div className="w-full border-b border-gray-300">
         <Tabs
           value={activeTab}
@@ -60,7 +51,6 @@ const AdminContents = () => {
         </Tabs>
       </div>
 
-      {/* Tab Content */}
       <div className="p-4">
         {activeTab === 0 && <AdminHomePage />}
         {activeTab === 1 && <AdminAboutPage />}
