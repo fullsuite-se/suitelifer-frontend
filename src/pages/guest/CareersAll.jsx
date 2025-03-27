@@ -9,6 +9,7 @@ import BackButton from "../../components/BackButton";
 import { NavLink } from "react-router-dom";
 import { toSlug } from "../../utils/slugUrl";
 import OnLoadLayoutAnimation from "../../components/layout/OnLoadLayoutAnimation";
+import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
 
 const CareersAll = () => {
   const [jobs, setJobs] = useState([]);
@@ -76,9 +77,7 @@ const CareersAll = () => {
         <div className="desktop-nav">
           <DesktopNav />
         </div>
-        <main >
-        
-
+        <main>
           <section className="pb-[7%] lg:pb-[5%]">
             <main className="p-[5%] xl:px-[20%]">
               {" "}
@@ -88,7 +87,7 @@ const CareersAll = () => {
                   type={"Careers"}
                 />
               </div>
-              <p className="text-lg font-avenir-black mb-5  lg:mb-10 lg:text-3xl">
+              <p className="text-h4 font-avenir-black mb-5  lg:mb-10 ">
                 All Jobs here at FullSuite
               </p>
               {industries.length === 0 ? (
@@ -105,7 +104,7 @@ const CareersAll = () => {
                     />
                   </div>
                   {jobs.length === 0 ? (
-                    <div className="grid place-content-center px-5 text-center text-2xl min-h-100 my-7">
+                    <div className="grid place-content-center px-5 text-center text-body min-h-100 my-7">
                       <p>
                         No job listings are available for this industry{" "}
                         <span className="font-avenir-black">at the moment</span>
@@ -127,51 +126,50 @@ const CareersAll = () => {
                         state={{ jobId: job.jobId, from: location.pathname }}
                         className={`group no-underline`}
                       >
-                        <div className="group p-6 bg-white group-hover:bg-primary shadow-md rounded-lg transition-transform duration-400 hover:shadow-xl hover:scale-102 flex flex-col gap-3 relative mb-5">
+                        <div className="group p-6 bg-white group-hover:bg-primary shadow-md rounded-xl transition-transform duration-400 hover:shadow-xl hover:scale-102 flex flex-col gap-3 relative mb-5">
                           <div className="absolute top-4 right-4 text-primary text-xl cursor-pointer group-hover:text-white">
                             &#8599;
                           </div>
-
-                          <p
-                            className={`mt-3 -mb-2 font-avenir-black text-gray-900 group-hover:text-white `}
-                          >
-                            {job.jobTitle}&nbsp;
-                            {job.isOpen === 0 && (
-                              <span className="font-avenir-roman bg-red-100 text-red-700 text-xs font-bold px-3 py-1 rounded-xl">
-                                CLOSED
+                          <div>
+                            {" "}
+                            <p className="font-avenir-black text-body flex items-center gap-2 group-hover:text-white">
+                              {job.jobTitle}
+                              {job.isOpen === 0 && (
+                                <span className="font-avenir-roman bg-red-100 text-red-700 text-xss font-bold px-3 py-1 rounded-xl">
+                                  CLOSED
+                                </span>
+                              )}
+                            </p>
+                            <div className="flex items-center gap-2 text-xss text-gray-400 uppercase group-hover:text-white group-hover:opacity-75 group-hover:font-avenir-black">
+                              <span className="text-secondary font-avenir-black">
+                                |
                               </span>
-                            )}
-                          </p>
-
-                          <div className="flex items-center gap-2 text-sm text-gray-400 uppercase group-hover:text-white group-hover:opacity-75 group-hover:font-avenir-black">
-                            <span className="text-secondary font-avenir-black">
-                              |
-                            </span>
-                            <span>{job.industryName}</span>
+                              <span>{job.industryName}</span>
+                            </div>
                           </div>
 
-                          <span className="text-primary text-sm group-hover:text-white">
+                          <span className="text-primary text-small group-hover:text-white">
                             {job.employmentType}, {job.setupName}
                           </span>
                           {job.salaryMin != null && job.salaryMin > 0 && (
                             <>
-                              <p className="text-sm text-gray-400 -mb-3 group-hover:text-white group-hover:opacity-75 group-hover:font-avenir-black">
+                              <p className="text-xss text-gray-400 -mb-3 group-hover:text-white group-hover:opacity-75 group-hover:font-avenir-black">
                                 Expected Salary
                               </p>
-                              <p className="text-md font-avenir-black text-primary group-hover:text-white">
+                              <p className="text-body font-avenir-black text-primary group-hover:text-white">
                                 {Intl.NumberFormat("en-US", {
                                   style: "currency",
                                   currency: "PHP",
                                   maximumFractionDigits: 0,
                                 }).format(job.salaryMin)}
-                                <span className="text-xs font-avenir-roman">
+                                <span className="text-small font-avenir-roman">
                                   {" "}
                                   min
                                 </span>
                               </p>
                             </>
                           )}
-                          <p className="text-gray-700 text-sm line-clamp-5 group-hover:text-white">
+                          <p className="text-gray-700 text-small line-clamp-5 group-hover:text-white">
                             {job.description}
                           </p>
                         </div>
@@ -180,7 +178,15 @@ const CareersAll = () => {
                   )}
                 </>
               )}
-            </main>
+              
+            </main> 
+            <TwoCirclesLoader
+              bg={"transparent"}
+              color1={"#0097b2"}
+              color2={"#bfd1a0"}
+              height={"35"}
+            />
+          
           </section>
 
           {/* <div className="-translate-y-27">

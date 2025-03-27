@@ -41,7 +41,7 @@ const GuestBlogCard = ({
             {title}
           </p>
 
-          <p className="text-xs line-clamp-1 mt-1 opacity-80">
+          <p className="text-xss line-clamp-1 mt-1 opacity-80">
             <span className="text-secondary font-avenir-black">
               {" "}
               {createdBy.trim().split(" ")[0]}
@@ -57,7 +57,7 @@ const GuestBlogCard = ({
             {description}
           </p>
 
-          <p className="text-xs opacity-50 mt-2">{fullDate}</p>
+          <p className="text-xss opacity-50 mt-2">{fullDate}</p>
         </div>
       </NavLink>
     </section>

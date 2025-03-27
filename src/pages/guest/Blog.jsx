@@ -17,6 +17,8 @@ import PageMeta from "../../components/layout/PageMeta";
 import api from "../../utils/axios";
 import { removeHtmlTags } from "../../utils/removeHTMLTags";
 import { readingTime } from "reading-time-estimator";
+import LoadingBlogLarge from "../../components/guest-blogs/LoadingBlogLarge";
+import LoadingBlogCard from "../../components/guest-blogs/LoadingBlogCard";
 
 const Blog = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -63,12 +65,13 @@ const Blog = () => {
   };
 
   const [companyBlogs, setCompanyBlogs] = useState([]);
-
+  const [isCompanyBlogsLoading, setIsCompanyBlogsLoading] = useState(true);
   const fetchAllCompanyBlogs = async () => {
     try {
+      // await new Promise((resolve) => setTimeout(resolve, 200)); //check if it's working
       const response = await api.get("/api/all-company-blogs");
-
       setCompanyBlogs(response.data);
+      setIsCompanyBlogsLoading(false);
     } catch (err) {
       console.log(err);
     }
@@ -224,49 +227,72 @@ const Blog = () => {
             </div>
 
             <div className="py-5"></div>
-            {companyBlogs.length === 0 ? (
-              <p className="text-center text-lg">
-                Looks like we’re out of blogs for this filter—
-                <span className="font-avenir-black text-primary">
-                  switch it up
-                </span>{" "}
-                and try again!
-              </p>
+            {isCompanyBlogsLoading ? (
+              <>
+                <section>
+                  <p className="md:text-2xl uppercase font-avenir-black text-primary pb-3 lg:pb-4">
+                    The latest
+                  </p>
+                  <LoadingBlogLarge />
+                  <p className="md:text-2xl font-avenir-black text-primary pb-3 mt-10 lg:pb-4">
+                    {/* More Blogs */}
+                  </p>
+                  <div className="h-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 justify-center items-center">
+                    {[...Array(2)].map((_, index) => (
+                      <LoadingBlogCard key={index} />
+                    ))}
+                  </div>
+                </section>
+              </>
             ) : (
               <>
-                <p className="md:text-2xl uppercase font-avenir-black text-primary pb-3 lg:pb-4">
-                  The latest
-                </p>
-                <GuestBlogLarge
-                  id={companyBlogs[0].cblogId}
-                  title={companyBlogs[0].title}
-                  author={companyBlogs[0].createdBy}
-                  article={removeHtmlTags(companyBlogs[0].description)}
-                  readTime={readingTime(companyBlogs[0].description, 238).text}
-                  createdAt={companyBlogs[0].createdAt}
-                  imageUrl={companyBlogs[0].imageUrl}
-                />
-
-                <p className="md:text-2xl font-avenir-black text-primary pb-3 mt-10 lg:pb-4">
-                  {/* More Blogs */}
-                </p>
-                <div className="h-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 justify-center items-center">
-                  {companyBlogs.slice(1).map((blog, index) => (
-                    <GuestBlogCard
-                      key={index}
-                      id={blog.cblogId}
-                      title={blog.title}
-                      createdBy={blog.createdBy}
-                      description={removeHtmlTags(blog.description)}
-                      createdAt={blog.createdAt}
-                      imageUrl={blog.imageUrl}
+                {companyBlogs.length === 0 ? (
+                  <p className="text-center text-lg">
+                    Looks like we're out of blogs for this filter—
+                    <span className="font-avenir-black text-primary">
+                      switch it up
+                    </span>{" "}
+                    and try again!
+                  </p>
+                ) : (
+                  <>
+                    <p className="md:text-2xl uppercase font-avenir-black text-primary pb-3 lg:pb-4">
+                      The latest
+                    </p>
+                    <GuestBlogLarge
+                      id={companyBlogs[0].cblogId}
+                      title={companyBlogs[0].title}
+                      author={companyBlogs[0].createdBy}
+                      article={removeHtmlTags(companyBlogs[0].description)}
+                      readTime={
+                        readingTime(companyBlogs[0].description, 238).text
+                      }
+                      createdAt={companyBlogs[0].createdAt}
+                      imageUrl={companyBlogs[0].imageUrl}
                     />
-                  ))}
-                </div>
+
+                    <p className="md:text-2xl font-avenir-black text-primary pb-3 mt-10 lg:pb-4">
+                      {/* More Blogs */}
+                    </p>
+                    <div className="h-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 justify-center items-center">
+                      {companyBlogs.slice(1).map((blog, index) => (
+                        <GuestBlogCard
+                          key={index}
+                          id={blog.cblogId}
+                          title={blog.title}
+                          createdBy={blog.createdBy}
+                          description={removeHtmlTags(blog.description)}
+                          createdAt={blog.createdAt}
+                          imageUrl={blog.imageUrl}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
               </>
             )}
 
-            <div className="h-10"></div>
+            {/* <div className="h-10"></div>
             <div className="flex justify-center items-center w-full h-15 rounded-lg overflow-hidden">
               <TwoCirclesLoader
                 bg={"transparent"}
@@ -274,7 +300,7 @@ const Blog = () => {
                 color2={"#bfd1a0"}
                 height={"35"}
               />
-            </div>
+            </div> */}
           </>
         )}
       </main>

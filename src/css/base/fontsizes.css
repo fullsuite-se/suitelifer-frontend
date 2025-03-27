@@ -31,7 +31,7 @@
     .text-small {
       font-size: clamp(0.875rem, 2vw, 1rem); 
     }
-    .text-xs {
+    .text-xss {
       font-size: clamp(0.7rem, 1.5vw, 0.85rem);
   }
   

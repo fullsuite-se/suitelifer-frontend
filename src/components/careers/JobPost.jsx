@@ -43,7 +43,7 @@ const JobPost = ({
                     style: "currency",
                     currency: "PHP",
                     maximumFractionDigits: 0,
-                  }).format(salaryMin)}<span className="text-xs font-avenir-roman"> min</span>
+                  }).format(salaryMin)}<span className="text-xss font-avenir-roman"> min</span>
           </p>
         </>
       )}

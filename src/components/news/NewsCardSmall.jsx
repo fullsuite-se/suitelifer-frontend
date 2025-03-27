@@ -42,7 +42,7 @@ const NewsCardSmall = ({
 
         {/* Metadata (Always at Bottom) */}
         <div className="mt-auto">
-          <p className="text-xs line-clamp-1">
+          <p className="text-xss line-clamp-1">
             <span className="text-primary">
               {createdByName.split(" ")[0]}&nbsp;&nbsp;|
             </span>
@@ -51,7 +51,7 @@ const NewsCardSmall = ({
               {readingTime(article, 238).text}
             </span>
           </p>
-          <p className="text-xs text-gray-400 mt-2">{fullDate}</p>
+          <p className="text-xss text-gray-400 mt-2">{fullDate}</p>
         </div>
       </div>
     </NavLink>
