@@ -105,7 +105,7 @@ const AboutPage = ({ handlePreview }) => {
             id="videoUpload"
           />
           <div
-            className="max-w-[70%] sm:w-[100%] sm:h-auto border-3 rounded-3xl bg-gray-200 overflow-hidden aspect-video cursor-pointer flex items-center justify-center"
+            className="max-w-[70%] sm:w-[100%] sm:h-auto border-1 rounded-3xl bg-gray-200 overflow-hidden aspect-video cursor-pointer flex items-center justify-center"
             onClick={() =>
               !videoFile && document.getElementById("videoUpload").click()
             }
@@ -201,7 +201,7 @@ const AboutPage = ({ handlePreview }) => {
                     className="w-full h-full object-cover rounded-xl"
                   />
 
-                  <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="absolute inset-0 bg-black/50 backdrop-blur-sm rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                     <span className="text-white text-sm font-semibold">
                       Edit Image
                     </span>
