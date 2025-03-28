@@ -35,6 +35,7 @@ export const ModalResetPassword = ({ isOpen, handleClose }) => {
           "Failed to send reset link. Try again."
       );
     }
+
     setEmail("");
     handleCancel();
   };
