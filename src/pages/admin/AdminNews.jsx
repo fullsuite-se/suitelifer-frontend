@@ -197,7 +197,7 @@ const AdminNews = () => {
               <span className="text-lg font-bold">Total Likes</span>
               <span className="text-2xl">{formatNumber(totalLikes)}</span>
             </div>
-          </div>
+          </div>  
 
           <div className="flex gap-4">
             <div className="w-full overflow-x-auto">
