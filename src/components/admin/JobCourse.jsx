@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   IconButton,
   TextField,
@@ -20,21 +20,34 @@ import { AgGridReact } from "@ag-grid-community/react";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
+import api from "../../utils/axios";
+import { useStore } from "../../store/authStore";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 function JobCourse() {
-  const [jobs] = useState([
-    { id: 1, title: "Software Engineer" },
-    { id: 2, title: "Web Developer" },
-    { id: 3, title: "Data Analyst" },
-    { id: 4, title: "Data Scientist" },
-    
-  ]);
+  const user = useStore(state => state.user);
+
+  const [jobs, setJobs] = useState([]);
+
+  useEffect(() => {
+    fetchJobs();
+  }, []);
+
+  const fetchJobs = async () => {
+    try {
+      const response = await api.get("api/all-jobs");
+      console.log(response.data.data);
+      setJobs(response.data.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const [rowCourseData, setRowCourseData] = useState([
     {
-      id: "1",
-      title: "React Free Course",
+      jobId: "1",
+      jobTitle: "React Free Course",
       relatedJob: [1],
       url: "http://sampleurl.com/react",
       description: "This is a sample description",
@@ -58,14 +71,12 @@ function JobCourse() {
 
   const [openDialog, setOpenDialog] = useState(false);
   const [currentCourse, setCurrentCourse] = useState({
-    id: "",
+    id: null,
     title: "",
     description: "",
     relatedJob: "",
     jobTitle: "",
     url: "",
-    createdAT: "",
-    createdBy: "",
   });
 
   const handleEdit = (course) => {
@@ -78,38 +89,43 @@ function JobCourse() {
 
   const handleDelete = (id) => {
     setRowCourseData((prevData) =>
-      prevData.filter((course) => course.id !== id)
+      prevData.filter((course) => course.jobId !== id)
     );
   };
 
   const handleAddNew = () => {
-    setCurrentCourse({
-      id: "",
-      title: "",
-      relatedJob: [],
-      url: "",
-      description: "",
-      jobTitle: "",
-      createdAt: new Date().toISOString(),
-      createdBy: "Admin",
-    });
     setOpenDialog(true);
   };
 
-  const handleSave = () => {
-    if (currentCourse.id) {
-      setRowCourseData((prevData) =>
-        prevData.map((course) =>
-          course.id === currentCourse.id ? currentCourse : course
-        )
-      );
-    } else {
-      setRowCourseData((prevData) => [
-        ...prevData,
-        { ...currentCourse, id: Date.now().toString() },
-      ]);
+  const handleSave = async (e) => {
+    e.preventDefault();
+
+    console.log(currentCourse.id === null);
+    
+    
+    try {
+      if (currentCourse.id === null) {
+
+        const response = await api.post("/api/add-course", { ...currentCourse, userId: user.id });
+        
+        const courseId = response.data.courseId;
+
+        const res = await api.post("/api/add-job-course", {courseId, relatedJobs: currentCourse.relatedJob, userId: user.id });
+        
+        console.log(res.data.message);
+        
+      } else {
+        setRowCourseData((prevData) => [
+          ...prevData,
+          { ...currentCourse, jobId: Date.now().toString() },
+        ]);
+      }
+      setOpenDialog(false);
+    } catch (error) {
+      console.log("Test error");
+      console.log(error);
+      
     }
-    setOpenDialog(false);
   };
 
   const handleInputChange = (field) => (event) => {
@@ -187,7 +203,7 @@ function JobCourse() {
                       ? params.data.relatedJob
                           .map(
                             (jobId) =>
-                              jobs.find((job) => job.id === jobId).title
+                              jobs.find((job) => job.jobId === jobId)?.jobTitle
                           )
                           .join(", ")
                       : "N/A",
@@ -249,93 +265,96 @@ function JobCourse() {
             },
           }}
         >
-          <DialogTitle className="flex w-full justify-center items-center">
-            {currentCourse.id ? "Edit Course" : "Add Course"}
-          </DialogTitle>
-          <DialogContent>
-            <div className="w-full">
-              <label className="block text-gray-700 font-avenir-black mt-2">
-                Title<span className="text-primary">*</span>
-              </label>
+          <form onSubmit={e => handleSave(e)}>
+            <DialogTitle className="flex w-full justify-center items-center">
+              {currentCourse.id ? "Edit Course" : "Add Course"}
+            </DialogTitle>
+            <DialogContent>
+              <div className="w-full">
+                <label className="block text-gray-700 font-avenir-black mt-2">
+                  Title<span className="text-primary">*</span>
+                </label>
 
-              <input
-                name="title"
-                required
-                value={currentCourse.title}
-                onChange={handleInputChange("title")}
-                rows={3}
-                className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary "
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700 font-avenir-black mt-2">
-                Description<span className="text-primary">*</span>
-              </label>
-              <textarea
-                name="description"
-                required
-                value={currentCourse.description}
-                onChange={handleInputChange("description")}
-                rows={3}
-                className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
-              ></textarea>
-            </div>
-
-            <div className="w-full">
-              <label className="block text-gray-700 font-avenir-black mt-2">
-                Related Job<span className="text-primary">*</span>
-              </label>
-              <div className="flex flex-col bg-primary/10 p-2 rounded-md max-h-50 overflow-auto">
-                {jobs.map((job) => (
-                  <label key={job.id} className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      value={job.id}
-                      checked={currentCourse.relatedJob.includes(job.id)}
-                      onChange={(e) => {
-                        const updatedRelatedJob = e.target.checked
-                          ? [...currentCourse.relatedJob, job.id]
-                          : currentCourse.relatedJob.filter(
-                              (item) => item !== job.id
-                            );
-
-                        handleInputChange("relatedJob")({
-                          target: { value: updatedRelatedJob },
-                        });
-                      }}
-                      className="accent-primary"
-                    />
-                    <span>{job.title}</span>
-                  </label>
-                ))}
+                <input
+                  name="title"
+                  required
+                  value={currentCourse.title}
+                  onChange={handleInputChange("title")}
+                  rows={3}
+                  className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary "
+                />
               </div>
-            </div>
+              <div>
+                <label className="block text-gray-700 font-avenir-black mt-2">
+                  URL<span className="text-primary">*</span>
+                </label>
+                <input
+                  name="url"
+                  required
+                  value={currentCourse.url}
+                  onChange={handleInputChange("url")}
+                  className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 font-avenir-black mt-2">
+                  Description<span className="text-primary">*</span>
+                </label>
+                <textarea
+                  name="description"
+                  required
+                  value={currentCourse.description}
+                  onChange={handleInputChange("description")}
+                  rows={3}
+                  className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+                ></textarea>
+              </div>
 
-            <div>
-              <label className="block text-gray-700 font-avenir-black mt-2">
-                URL<span className="text-primary">*</span>
-              </label>
-              <input
-                name="url"
-                required
-                value={currentCourse.url}
-                onChange={handleInputChange("url")}
-                className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-            </div>
-          </DialogContent>
-          <DialogActions>
-            <button className="btn-light" onClick={() => setOpenDialog(false)}>
-              Cancel
-            </button>
-            <button
-              className="btn-primary"
-              onClick={handleSave}
-              variant="contained"
-            >
-              Save
-            </button>
-          </DialogActions>
+              <div className="w-full">
+                <label className="block text-gray-700 font-avenir-black mt-2">
+                  Related Job<span className="text-primary">*</span>
+                </label>
+                <div className="flex flex-col bg-primary/10 p-2 rounded-md max-h-50 overflow-auto">
+                  {jobs.map((job) => (
+                    <label
+                      key={job.jobId}
+                      className="flex items-center space-x-2"
+                    >
+                      <input
+                        type="checkbox"
+                        value={job.jobId}
+                        checked={currentCourse.relatedJob.includes(job.jobId)}
+                        onChange={(e) => {
+                          const updatedRelatedJob = e.target.checked
+                            ? [...currentCourse.relatedJob, job.jobId]
+                            : currentCourse.relatedJob.filter(
+                                (item) => item !== job.jobId
+                              );
+
+                          handleInputChange("relatedJob")({
+                            target: { value: updatedRelatedJob },
+                          });
+                        }}
+                        className="accent-primary"
+                      />
+                      <span>{job.jobTitle}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </DialogContent>
+            <DialogActions>
+              <button
+                className="btn-light"
+                onClick={() => setOpenDialog(false)}
+              >
+                Cancel
+              </button>
+              <button type="submit" className="btn-primary" variant="contained">
+                Save
+              </button>
+            </DialogActions>
+          </form>
         </Dialog>
       </div>
     </>
