@@ -199,7 +199,7 @@ const Blog = () => {
       </section>
 
       {/* BLOGS CONTENT */}
-      <main className="px-[5%]">
+      <main className="px-[5%] md:px-[10%] xl:px-[15%]">
         {isSearching ? (
           <ArticleSearchResults
             type="blog"
@@ -246,9 +246,9 @@ const Blog = () => {
             {isCompanyBlogsLoading ? (
               <>
                 <section>
-                  <p className="md:text-2xl uppercase font-avenir-black text-primary pb-3 lg:pb-4">
-                    The latest
-                  </p>
+                <p className="text-small uppercase font-avenir-black text-primary pb-3 lg:pb-4">
+              The latest
+            </p>
                   <LoadingBlogLarge />
                   <p className="md:text-2xl font-avenir-black text-primary pb-3 mt-10 lg:pb-4">
                     {/* More Blogs */}
@@ -272,14 +272,14 @@ const Blog = () => {
                   </p>
                 ) : (
                   <>
-                    <p className="md:text-2xl uppercase font-avenir-black text-primary pb-3 lg:pb-4">
-                      The latest
-                    </p>
+                   <p className="text-small uppercase font-avenir-black text-primary pb-3 lg:pb-4">
+              The latest
+            </p>
                     <GuestBlogLarge
                       id={companyBlogs[0].cblogId}
                       title={companyBlogs[0].title}
                       author={companyBlogs[0].createdBy}
-                      article={removeHtmlTags(companyBlogs[0].description)}
+                      article={companyBlogs[0].description}
                       readTime={
                         readingTime(companyBlogs[0].description, 238).text
                       }
