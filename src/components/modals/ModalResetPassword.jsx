@@ -21,11 +21,22 @@ export const ModalResetPassword = ({ isOpen, handleClose }) => {
 
     try {
       const response = await api.post("/api/reset-password", { email });
-      console.log(response);
+      if (response?.data) {
+        toast.success(response.data.message);
+      } else {
+        toast.error(
+          response?.data?.message || "Something went wrong. Try again."
+        );
+      }
     } catch (error) {
-      toast.error(error);
       console.error(error);
+      toast.error(
+        error?.response?.data?.message ||
+          "Failed to send reset link. Try again."
+      );
     }
+    setEmail("");
+    handleCancel();
   };
 
   return (
