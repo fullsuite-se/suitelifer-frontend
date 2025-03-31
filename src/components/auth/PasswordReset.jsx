@@ -12,7 +12,6 @@ const PasswordReset = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
-  console.log(token);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -37,7 +36,8 @@ const PasswordReset = () => {
         });
         console.log(response.data);
       } catch (error) {
-        console.error(error);
+        toast.error(error.response.data.message);
+        console.error(error.response.data.message);
       }
     };
     updatePassword();
