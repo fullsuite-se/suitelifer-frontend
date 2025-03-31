@@ -47,7 +47,7 @@ const AdminNews = () => {
         datePublished: { seconds: Math.floor(Date.now() / 1000) },
         comments: 0,
         views: 0,
-        image: newNews.image || "https://via.placeholder.com/150",
+        image: newNews.image || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREPVIcCkWNGNzUzt3wUfZhY-I09Z0Rn-jc4g&s",
       };
       setRowNewsData((prevData) => [...prevData, newEntry]);
     }
@@ -68,70 +68,17 @@ const AdminNews = () => {
 
   const newsData = [
     {
-      id: "",
-      title: "Marvin Bautista Wanted for Estafa",
-      author: "Melbraei Santiago",
-      datePublished: { seconds: 1716161616 },
-      comments: 1023,
-      views: 1025489,
-      likes: 4567,
-      image:
-        "https://media.licdn.com/dms/image/v2/D5603AQGic1L2sEBlGg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1707479304553?e=1747267200&v=beta&t=ZjrI_w18mjT_NlZpz34dVSolaLog44oyvCmcaSiqMZk",
+      id: "1",
+      title: "The Art of Code",
+      author: "Alex Mercer",
+      datePublished: { "seconds": 1716161626 },
+      comments: 321,
+      views: 12567,
+      likes: 876,
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREPVIcCkWNGNzUzt3wUfZhY-I09Z0Rn-jc4g&s"
     },
-    {
-      id: "",
-      title: "Marvin Bautista Adonis Hunk",
-      author: "Melbraei Santiago",
-      datePublished: { seconds: 1716161626 },
-      comments: 874,
-      views: 65823,
-      likes: 2398,
-      image:
-        "https://img.mensxp.com/media/content/2020/Sep/Male-Celebrities-Who-Have-Dabbled-With-Some-Really-Outlandish-1_5f62130740f8d.jpeg?w=780&h=524&cc=1",
-    },
-    {
-      id: "",
-      title: "Viva Film Hunk ",
-      author: "Melbraei Santiago",
-      datePublished: { seconds: 1716161636 },
-      comments: 567,
-      views: 34876,
-      likes: 9873,
-      image: "https://i.mydramalist.com/jBq4b_5f.jpg",
-    },
-    {
-      id: "",
-      title: "Daddy Daddy, Yes Papa",
-      author: "Melbraei Santiago",
-      datePublished: { seconds: 1716161646 },
-      comments: 1345,
-      views: 89234,
-      likes: 13567,
-      image:
-        "https://od2-image-api.abs-cbn.com/prod/editorImage/1735922206940SHOWTIME-JM-On-Unforgettable-Firsts-Main.jpg",
-    },
-    {
-      id: "",
-      title: "Blockchain Beyond Cryptocurrency: Real-World Applications",
-      author: "Melbraei Santiago",
-      datePublished: { seconds: 1716161656 },
-      comments: 432,
-      views: 54321,
-      likes: 6789,
-      image:
-        "https://www.vivaartistsagency.ph/wp-content/uploads/2020/01/ANNE-CURTIS.jpg",
-    },
-    {
-      id: "",
-      title: "The Evolution of Smart Homes and IoT Devices",
-      author: "Melbraei Santiago",
-      datePublished: { seconds: 1716161676 },
-      comments: 789,
-      views: 74256,
-      likes: 5432,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
-    },
+    
+ 
   ];
 
   const [rowNewsData, setRowNewsData] = useState(newsData);
@@ -237,7 +184,7 @@ const AdminNews = () => {
                     {
                       headerName: "Author",
                       field: "author",
-                      flex: 1,
+                      flex: 2,
                       filter: "agTextColumnFilter",
                       headerClass: "text-primary font-bold bg-tertiary",
                       hide: window.innerWidth < 640,
@@ -245,7 +192,7 @@ const AdminNews = () => {
                     {
                       headerName: "Date Published",
                       field: "datePublished",
-                      flex: 1,
+                      flex: 2,
                       headerClass: "text-primary font-bold bg-tertiary",
                       valueGetter: (params) =>
                         new Date(

@@ -735,7 +735,7 @@ export default function AdminJobListing() {
       {/* Search and Filter */}
 
       <div
-        className="ag-theme-quartz p-5"
+        className="ag-theme-quartz p-5 overflow-auto"
         style={{ height: "65vh", width: "100%" }}
       >
         <AgGridReact
@@ -745,8 +745,8 @@ export default function AdminJobListing() {
           gridOptions={gridOptions}
           defaultColDef={defaultColDef}
           pagination={true}
-          paginationPageSize={15}
-          paginationPageSizeSelector={[15, 25, 50]}
+          paginationPageSize={10}
+          paginationPageSizeSelector={[10, 15, 25, 50]}
           domLayout="autoHeight"
           className="h-full"
         />
@@ -834,9 +834,9 @@ export default function AdminJobListing() {
 
           {/* INDUSTRY OR SETUP MANAGEMENT */}
           {selectedOption === "Manage Industry" ? (
-            <div className="w-full overflow-x-auto">
+            <div className="w-full overflow-auto ">
               <div
-                className="ag-theme-quartz p-5 min-w-[800px] sm:w-full"
+                className="ag-theme-quartz overflow-auto p-5 min-w-[800px] sm:w-full  "
                 style={{ height: window.innerWidth < 640 ? "50vh" : "65vh" }}
               >
                 <AgGridReact
@@ -854,7 +854,7 @@ export default function AdminJobListing() {
               </div>
             </div>
           ) : (
-            <div className="w-full overflow-x-auto">
+            <div className="w-full overflow-auto">
               <div
                 className="ag-theme-quartz p-5 min-w-[800px] sm:w-full"
                 style={{ height: window.innerWidth < 640 ? "50vh" : "65vh" }}
