@@ -618,7 +618,7 @@ export default function AdminJobListing() {
             <span className="mr-2">+</span> SET-UP
           </button>
 
-          {/* Mobile Buttons (Icons Only) */}
+          {/* Mobile Buttons (Icons Only) */} 
           <button
             className="btn-primary flex sm:hidden p-2 gap-2"
             onClick={handleAddJobListingButtonClick}
