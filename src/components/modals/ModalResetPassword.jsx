@@ -8,9 +8,11 @@ import {
 import api from "../../utils/axios";
 import React, { Fragment, useState } from "react";
 import toast from "react-hot-toast";
+import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
 
 export const ModalResetPassword = ({ isOpen, handleClose }) => {
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleCancel = () => {
     handleClose();
@@ -20,8 +22,9 @@ export const ModalResetPassword = ({ isOpen, handleClose }) => {
     e.preventDefault();
 
     try {
+      setLoading(true);
       const response = await api.post("/api/reset-password", { email });
-      if (response?.data) {
+      if (response?.data?.isSuccess) {
         toast.success(response.data.message);
       } else {
         toast.error(
@@ -34,6 +37,8 @@ export const ModalResetPassword = ({ isOpen, handleClose }) => {
         error?.response?.data?.message ||
           "Failed to send reset link. Try again."
       );
+    } finally {
+      setLoading(false);
     }
 
     setEmail("");
@@ -80,21 +85,33 @@ export const ModalResetPassword = ({ isOpen, handleClose }) => {
                       className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary placeholder-primary/50"
                     />
                   </div>
-                  <div className="flex justify-end mt-6 space-x-2">
-                    <button
-                      type="submit"
-                      className="px-4 py-2 text-sm font-medium text-white rounded-md bg-primary hover:bg-primary-dark transition cursor-pointer"
-                    >
-                      Send OTP
-                    </button>
-                    <button
-                      type="button"
-                      className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-100 transition cursor-pointer"
-                      onClick={handleCancel}
-                    >
-                      Cancel
-                    </button>
-                  </div>
+                  {loading ? (
+                    <div className="mt-3">
+                      <TwoCirclesLoader
+                        bg={"transparent"}
+                        color1={"#bfd1a0"}
+                        color2={"#0097b2"}
+                        height={30}
+                        width={"auto"}
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex justify-end mt-6 space-x-2">
+                      <button
+                        type="submit"
+                        className="px-4 py-2 text-sm font-medium text-white rounded-md bg-primary hover:bg-primary-dark transition cursor-pointer"
+                      >
+                        Send OTP
+                      </button>
+                      <button
+                        type="button"
+                        className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-100 transition cursor-pointer"
+                        onClick={handleCancel}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  )}
                 </DialogPanel>
               </form>
             </TransitionChild>
