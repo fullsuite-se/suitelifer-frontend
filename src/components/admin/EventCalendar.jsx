@@ -69,7 +69,7 @@ const EventCalendar = ({ events, onSelectSlot, onSelectEvent }) => {
       selectable
       onSelectSlot={onSelectSlot}
       onSelectEvent={onSelectEvent}
-      style={{ height: 680, width: "100%" }}
+      style={{ height: 600, width: "100%" }}
       eventPropGetter={(event) => {
         const eventDate = new Date(event.start).setHours(0, 0, 0, 0);
         const today = new Date().setHours(0, 0, 0, 0);
