@@ -60,65 +60,16 @@ const AdminBlog = () => {
   const companyBlogData = [
     {
       title: "Company Growth Strategies for 2025",
-      author: "CEO John Doe",
+      author: "Name of the Author",
       datePublished: { seconds: 1616161616 },
       comments: 325,
       views: 9456,
       likes: 3455,
-      flex: 1,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
-    },
-    {
-      title: "Sustainability Initiatives in Our Business",
-      author: "Jane Smith",
-      datePublished: { seconds: 1616161626 },
-      comments: 54545,
-      views: 95853453,
-      likes: 94,
-      flex: 1,
-      image: "https://i.mydramalist.com/eJ8Dd_5c.jpg",
-    },
-    {
-      title: "The Future of AI in Business Operations",
-      author: "Michael Lee",
-      datePublished: { seconds: 1616161636 },
-      comments: 1200,
-      views: 123456,
-      likes: 23904,
       flex: 2,
-      image: "https://i.mydramalist.com/jBq4b_5f.jpg",
-    },
-    {
-      title: "Remote Work: The New Normal?",
-      author: "Sophia Chen",
-      datePublished: { seconds: 1616161646 },
-      comments: 875,
-      views: 65432,
-      likes: 82394,
       image:
-        "https://od2-image-api.abs-cbn.com/prod/editorImage/1735922206940SHOWTIME-JM-On-Unforgettable-Firsts-Main.jpg",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREPVIcCkWNGNzUzt3wUfZhY-I09Z0Rn-jc4g&s",
     },
-    {
-      title: "Marketing Trends to Watch in 2025",
-      author: "David Brown",
-      datePublished: { seconds: 1616161656 },
-      comments: 2345,
-      views: 789654,
-      likes: 904,
-      image:
-        "https://cdn-images.dzcdn.net/images/artist/53df60edbde3b362ebe1b6f8936a5545/1900x1900-000000-80-0-0.jpg",
-    },
-    {
-      title: "Employee Well-being and Productivity",
-      author: "Olivia Martinez",
-      datePublished: { seconds: 1616161676 },
-      comments: 432,
-      views: 98765,
-      likes: 982,
-      image:
-        "https://www.vivaartistsagency.ph/wp-content/uploads/2020/01/ANNE-CURTIS.jpg",
-    },
+    
   ];
 
   const employeeBlogData = [
@@ -130,17 +81,9 @@ const AdminBlog = () => {
       views: 156,
       likes: 4,
       image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREPVIcCkWNGNzUzt3wUfZhY-I09Z0Rn-jc4g&s",
     },
-    {
-      title: "Work-Life Balance Tips from a Remote Worker",
-      author: "Bob Williams",
-      datePublished: { seconds: 1616161646 },
-      comments: 6912334,
-      views: 480,
-      likes: 3904,
-      image: "https://i.mydramalist.com/eJ8Dd_5c.jpg",
-    },
+    
     {
       title: "Mastering Time Management as a Developer",
       author: "Chris Evans",
@@ -149,48 +92,9 @@ const AdminBlog = () => {
       views: 12000,
       likes: 9823904,
       image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREPVIcCkWNGNzUzt3wUfZhY-I09Z0Rn-jc4g&s",
     },
-    {
-      title: "Overcoming Imposter Syndrome in Tech",
-      author: "Jessica Smith",
-      datePublished: { seconds: 1616161666 },
-      comments: 1456,
-      views: 65432,
-      likes: 493090,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
-    },
-    {
-      title: "The Power of Networking for Career Growth",
-      author: "Daniel White",
-      datePublished: { seconds: 1616161676 },
-      comments: 678,
-      views: 7654,
-      likes: 8548,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
-    },
-    {
-      title: "Lessons from My First Year as a Software Engineer",
-      author: "Megan Taylor",
-      datePublished: { seconds: 1616161686 },
-      comments: 2345,
-      views: 98765,
-      likes: 89435,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
-    },
-    {
-      title: "How to Stay Motivated While Working Remotely",
-      author: "Ethan Harris",
-      datePublished: { seconds: 1616161696 },
-      comments: 453,
-      views: 5432,
-      likes: 33,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
-    },
+   
   ];
 
   const [selectedBlog, setSelectedBlog] = useState("company");
@@ -236,7 +140,7 @@ const AdminBlog = () => {
             </div>
             <div className="flex gap-2">
               <button className="btn-primary" onClick={toggleBlogData}>
-                {selectedBlog === "company" ? "Employee Blog" : "Company Blog"}
+                {selectedBlog === "company" ? "Switch to Employee Blog" : "Switch to Company Blog"}
               </button>
               <button
                 className="btn-primary"
@@ -312,7 +216,7 @@ const AdminBlog = () => {
                     {
                       headerName: "Author",
                       field: "author",
-                      flex: 1,
+                      flex: 2,
                       filter: "agTextColumnFilter",
                       headerClass: "text-primary font-bold bg-tertiary",
                     },
