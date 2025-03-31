@@ -69,18 +69,7 @@ const AdminNews = () => {
   const newsData = [
     {
       id: "",
-      title: "Marvin Bautista Wanted for Estafa",
-      author: "Melbraei Santiago",
-      datePublished: { seconds: 1716161616 },
-      comments: 1023,
-      views: 1025489,
-      likes: 4567,
-      image:
-        "https://media.licdn.com/dms/image/v2/D5603AQGic1L2sEBlGg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1707479304553?e=1747267200&v=beta&t=ZjrI_w18mjT_NlZpz34dVSolaLog44oyvCmcaSiqMZk",
-    },
-    {
-      id: "",
-      title: "Marvin Bautista Adonis Hunk",
+      title: "Lorem Ipsum",
       author: "Melbraei Santiago",
       datePublished: { seconds: 1716161626 },
       comments: 874,
@@ -91,7 +80,7 @@ const AdminNews = () => {
     },
     {
       id: "",
-      title: "Viva Film Hunk ",
+      title: "Lorem Ipsum",
       author: "Melbraei Santiago",
       datePublished: { seconds: 1716161636 },
       comments: 567,
@@ -101,7 +90,7 @@ const AdminNews = () => {
     },
     {
       id: "",
-      title: "Daddy Daddy, Yes Papa",
+      title: "Lorem Ipsum",
       author: "Melbraei Santiago",
       datePublished: { seconds: 1716161646 },
       comments: 1345,
@@ -110,28 +99,7 @@ const AdminNews = () => {
       image:
         "https://od2-image-api.abs-cbn.com/prod/editorImage/1735922206940SHOWTIME-JM-On-Unforgettable-Firsts-Main.jpg",
     },
-    {
-      id: "",
-      title: "Blockchain Beyond Cryptocurrency: Real-World Applications",
-      author: "Melbraei Santiago",
-      datePublished: { seconds: 1716161656 },
-      comments: 432,
-      views: 54321,
-      likes: 6789,
-      image:
-        "https://www.vivaartistsagency.ph/wp-content/uploads/2020/01/ANNE-CURTIS.jpg",
-    },
-    {
-      id: "",
-      title: "The Evolution of Smart Homes and IoT Devices",
-      author: "Melbraei Santiago",
-      datePublished: { seconds: 1716161676 },
-      comments: 789,
-      views: 74256,
-      likes: 5432,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
-    },
+ 
   ];
 
   const [rowNewsData, setRowNewsData] = useState(newsData);
@@ -237,7 +205,7 @@ const AdminNews = () => {
                     {
                       headerName: "Author",
                       field: "author",
-                      flex: 1,
+                      flex: 2,
                       filter: "agTextColumnFilter",
                       headerClass: "text-primary font-bold bg-tertiary",
                       hide: window.innerWidth < 640,
@@ -245,7 +213,7 @@ const AdminNews = () => {
                     {
                       headerName: "Date Published",
                       field: "datePublished",
-                      flex: 1,
+                      flex: 2,
                       headerClass: "text-primary font-bold bg-tertiary",
                       valueGetter: (params) =>
                         new Date(

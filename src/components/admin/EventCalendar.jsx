@@ -13,7 +13,7 @@ const EventCalendar = ({ events, onSelectSlot, onSelectEvent }) => {
     <>
       {/* Navigation Controls */}
       <div className="flex w-full flex-wrap justify-between items-center gap-2">
-        {/* Today Button */}
+ 
         <button
           className="btn-light p-2 flex w-full md:w-auto text-center justify-center"
           onClick={() => onNavigate("TODAY")}
@@ -21,9 +21,8 @@ const EventCalendar = ({ events, onSelectSlot, onSelectEvent }) => {
           Today
         </button>
 
-        {/* Navigation Arrows and Label */}
         <div className="flex w-full md:w-auto items-center justify-center gap-2">
-          {/* Previous Button */}
+
           <button
             className="btn-light flex px-3 py-2"
             onClick={() => onNavigate("PREV")}
@@ -31,12 +30,10 @@ const EventCalendar = ({ events, onSelectSlot, onSelectEvent }) => {
             ◀
           </button>
 
-          {/* Label */}
           <span className="font-avenir-black text-primary font-bold text-lg md:text-2xl truncate text-center">
             {label}
           </span>
 
-          {/* Next Button */}
           <button
             className="btn-light flex px-3 py-2"
             onClick={() => onNavigate("NEXT")}
@@ -45,7 +42,6 @@ const EventCalendar = ({ events, onSelectSlot, onSelectEvent }) => {
           </button>
         </div>
 
-        {/* View Selector */}
         <select
           className="btn-light w-full md:w-auto text-center"
           value={view}
