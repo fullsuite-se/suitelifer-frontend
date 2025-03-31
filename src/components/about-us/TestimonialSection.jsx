@@ -16,8 +16,11 @@ const Testimonials = () => {
     const fetchTestimonials = async () => {
       try {
         const response = await api.get("/api/get-all-testimonials");
-        const data = response.data?.data || [];
-        setTestimonials(data);
+        const data = response.data?.testimonials || [];
+        const filteredTestimonials = data.filter(testimonial => !!testimonial.isShown);
+       
+        
+        setTestimonials(filteredTestimonials);
       } catch (error) {
         console.error(error);
       } finally {
