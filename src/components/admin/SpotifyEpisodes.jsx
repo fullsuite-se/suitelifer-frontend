@@ -39,7 +39,7 @@ const SpotifyEpisodes = () => {
 
   // SPOTIFY VARIABLES
   const defaultEpisodeDetails = {
-    episode_id: null,
+    episodeId: null,
     id: "",
   };
 
@@ -64,9 +64,9 @@ const SpotifyEpisodes = () => {
       return showError("Invalid Spotify episode URL.");
     }
 
-    if (episodeDetails.episode_id !== null) {
+    if (episodeDetails.episodeId !== null) {
       const index = episodes.findIndex(
-        (episode) => episode.episodeId === episodeDetails.episode_id
+        (episode) => episode.episodeId === episodeDetails.episodeId
       );
       if (
         episodeDetails.id ===
@@ -87,11 +87,11 @@ const SpotifyEpisodes = () => {
     }
 
     try {
-      if (episodeDetails.episode_id === null) {
+      if (episodeDetails.episodeId === null) {
         // ADD SPOTIFY EPISODE
         const response = await api.post("/api/add-episode", {
           url: episodeDetails.id,
-          user_id: user.id,
+          userId: user.id,
         });
 
         toast.success(response.data.message);
@@ -99,9 +99,9 @@ const SpotifyEpisodes = () => {
         setDataUpdated(!dataUpdated);
       } else {
         const response = await api.post("/api/edit-episode", {
-          episode_id: episodeDetails.episode_id,
+          episodeId: episodeDetails.episodeId,
           url: episodeDetails.id,
-          user_id: user.id,
+          userId: user.id,
         });
 
         toast.success(response.data.message);
@@ -121,22 +121,22 @@ const SpotifyEpisodes = () => {
   };
 
   const deleteEpisode = (id) => {
-    setEpisodes(episodes.filter((ep) => ep.episode_id !== id));
+    setEpisodes(episodes.filter((ep) => ep.episodeId !== id));
   };
 
-  const handleDeleteClick = (episode_id) => {
+  const handleDeleteClick = (episodeId) => {
     showConfirmationToast({
       message: "Delete spotify episode?",
-      onConfirm: () => handleDelete(episode_id),
+      onConfirm: () => handleDelete(episodeId),
       onCancel: null,
     });
   };
 
-  const handleDelete = async (episode_id) => {
+  const handleDelete = async (episodeId) => {
     try {
       const response = await api.post("/api/delete-episode", {
-        episode_id,
-        user_id: user.id,
+        episodeId,
+        userId: user.id,
       });
 
       toast.success(response.data.message);
@@ -195,7 +195,7 @@ const SpotifyEpisodes = () => {
           placeholder="Enter Spotify episode URL"
           className="border p-2 rounded-2xl w-full"
         />
-        {episodeDetails.episode_id !== null ? (
+        {episodeDetails.episodeId !== null ? (
           <>
             <button
               onClick={(e) => handleAddEditEpisode(e)}
@@ -235,7 +235,7 @@ const SpotifyEpisodes = () => {
                 <button
                   onClick={() => {
                     setEpisodeDetails({
-                      episode_id: episode.episodeId,
+                      episodeId: episode.episodeId,
                       id: `https://open.spotify.com/episode/${episode.spotifyId}`,
                     });
                   }}
