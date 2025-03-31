@@ -47,7 +47,7 @@ const AdminNews = () => {
         datePublished: { seconds: Math.floor(Date.now() / 1000) },
         comments: 0,
         views: 0,
-        image: newNews.image || "https://via.placeholder.com/150",
+        image: newNews.image || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREPVIcCkWNGNzUzt3wUfZhY-I09Z0Rn-jc4g&s",
       };
       setRowNewsData((prevData) => [...prevData, newEntry]);
     }
@@ -68,37 +68,16 @@ const AdminNews = () => {
 
   const newsData = [
     {
-      id: "",
-      title: "Lorem Ipsum",
-      author: "Melbraei Santiago",
-      datePublished: { seconds: 1716161626 },
-      comments: 874,
-      views: 65823,
-      likes: 2398,
-      image:
-        "https://img.mensxp.com/media/content/2020/Sep/Male-Celebrities-Who-Have-Dabbled-With-Some-Really-Outlandish-1_5f62130740f8d.jpeg?w=780&h=524&cc=1",
+      id: "1",
+      title: "The Art of Code",
+      author: "Alex Mercer",
+      datePublished: { "seconds": 1716161626 },
+      comments: 321,
+      views: 12567,
+      likes: 876,
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREPVIcCkWNGNzUzt3wUfZhY-I09Z0Rn-jc4g&s"
     },
-    {
-      id: "",
-      title: "Lorem Ipsum",
-      author: "Melbraei Santiago",
-      datePublished: { seconds: 1716161636 },
-      comments: 567,
-      views: 34876,
-      likes: 9873,
-      image: "https://i.mydramalist.com/jBq4b_5f.jpg",
-    },
-    {
-      id: "",
-      title: "Lorem Ipsum",
-      author: "Melbraei Santiago",
-      datePublished: { seconds: 1716161646 },
-      comments: 1345,
-      views: 89234,
-      likes: 13567,
-      image:
-        "https://od2-image-api.abs-cbn.com/prod/editorImage/1735922206940SHOWTIME-JM-On-Unforgettable-Firsts-Main.jpg",
-    },
+    
  
   ];
 
