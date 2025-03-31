@@ -32,9 +32,9 @@ export default function AdminJobListing() {
 
   const fetchTotalApplications = async () => {
     try {
-      const response = await atsAPI.get("/analytic/metrics/fs-applicant-count");
+      const response = await atsAPI.get("/analytic/graphs/application-trend");
 
-      setTotalApplications(response.data.fs_count);
+      setTotalApplications(response.data.data.total);
     } catch (err) {
       console.log(err);
     }

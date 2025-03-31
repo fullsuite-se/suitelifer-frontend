@@ -71,28 +71,54 @@ const closedJobsData = [
 ];
 
 const AdminDashboard = () => {
-  const [selectedData, setSelectedData] = useState(applicationsData);
   const [selectedLabel, setSelectedLabel] = useState("Total Applications");
   const [selectedColor, setSelectedColor] = useState("#0097b2");
 
-  const handleDataChange = (data, label, color) => {
-    setSelectedData(data);
-    setSelectedLabel(label);
-    setSelectedColor(color);
-  };
-
   const [totalApplications, setTotalApplications] = useState(0);
+  const [applicationTrend, setApplicationTrend] = useState([]);
+
   const [openJobs, setOpenJobs] = useState(0);
   const [closedJobs, setClosedJobs] = useState(0);
 
-  const fetchTotalApplications = async () => {
+  const fetchApplicationData = async () => {
     try {
-      const response = await atsAPI.get("/analytic/metrics/fs-applicant-count");
+      const response = await atsAPI.get("/analytic/graphs/application-trend");
 
-      setTotalApplications((ta) => response.data.fs_count);
+      setTotalApplications(response.data.data.total);
+
+      const monthOrder = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+
+      const data = response.data.data.trend;
+
+      const dataMap = new Map(data.map((item) => [item.month, item.count]));
+
+      const filledData = monthOrder.map((month) => ({
+        month,
+        count: dataMap.get(month) || 0,
+      }));
+
+      setApplicationTrend(filledData);
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const handleDataChange = (data, label, color) => {
+    setSelectedLabel(label);
+    setSelectedColor(color);
   };
 
   const fetchOpenJobs = async () => {
@@ -116,7 +142,7 @@ const AdminDashboard = () => {
   };
 
   useEffect(() => {
-    fetchTotalApplications();
+    fetchApplicationData();
     fetchOpenJobs();
     fetchClosedJobs();
   }, []);
@@ -176,13 +202,13 @@ const AdminDashboard = () => {
         <h4 className="text-gray-500">{selectedLabel}</h4>
         <div className="h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={selectedData}>
+            <AreaChart data={applicationTrend}>
               <XAxis dataKey="month" tickLine={false} axisLine={false} />
               <YAxis tickLine={false} axisLine={false} />
               <Tooltip />
               <Area
                 type="monotone"
-                dataKey="value"
+                dataKey="count"
                 stroke={selectedColor}
                 fill={selectedColor}
                 fillOpacity={0.2}
