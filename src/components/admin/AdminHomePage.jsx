@@ -38,7 +38,9 @@ const AdminHomePage = ({ handlePreview }) => {
             onClick={handleSave}
           >
             <EyeIcon className="size-7 sm:size-5" />
-            <span className="hidden sm:flex w-full items-centerjustify-center">Preview</span>
+            <span className="hidden sm:flex w-full items-centerjustify-center">
+              Preview
+            </span>
           </button>
           <button
             className="btn-primary flex items-center p-2 gap-2"
@@ -58,7 +60,7 @@ const AdminHomePage = ({ handlePreview }) => {
             id="videoUpload"
           />
           <div
-            className="max-w-[70%] sm:w-[100%] sm:h-auto border-3 rounded-3xl bg-gray-200 overflow-hidden aspect-video cursor-pointer flex items-center justify-center"
+            className="max-w-[70%] sm:w-[100%] sm:h-auto border border rounded-3xl bg-gray-200 overflow-hidden aspect-video cursor-pointer flex items-center justify-center"
             onClick={() =>
               !videoFile && document.getElementById("videoUpload").click()
             }
