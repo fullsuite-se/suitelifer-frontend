@@ -47,7 +47,7 @@ function JobCourse() {
   const [rowCourseData, setRowCourseData] = useState([
     {
       jobId: "1",
-      jobTitle: "React Free Course",
+      title: "React Free Course",
       relatedJob: [1],
       url: "http://sampleurl.com/react",
       description: "This is a sample description",
