@@ -343,17 +343,6 @@ export default function AdminJobListing() {
 
   const [selectedOption, setSelectedOption] = useState("Manage Industry");
 
-  // TABLE SETTINGS
-  const gridOptions = {
-    getRowStyle: (params) => {
-      if (params.node.rowIndex % 2 === 0) {
-        return { background: "#ECF1E3", color: "black" };
-      } else {
-        return { background: "white", color: "black" };
-      }
-    },
-  };
-
   const gridRef = useRef();
   const [rowJobData, setRowJobData] = useState([]);
   const columnDefs = useMemo(
@@ -363,20 +352,20 @@ export default function AdminJobListing() {
         field: "jobTitle",
         flex: 2,
         filter: "agTextColumnFilter",
-        headerClass: "text-primary bg-tertiary font-bold",
+        headerClass: "text-primary bg-gray-100 font-bold",
       },
       {
         headerName: "Industry",
         field: "industryName",
         flex: 1,
-        headerClass: "text-primary font-bold bg-tertiary",
+        headerClass: "text-primary font-bold bg-gray-100",
       },
       {
         headerName: "Employment Type",
         field: "employmentType",
         flex: 1,
         filter: "agTextColumnFilter",
-        headerClass: "text-primary font-bold bg-tertiary",
+        headerClass: "text-primary font-bold bg-gray-100",
       },
       {
         headerName: "Status",
@@ -384,14 +373,14 @@ export default function AdminJobListing() {
         flex: 1,
         filter: "agTextColumnFilter",
         valueFormatter: (params) => (params.value === 1 ? "Open" : "Closed"),
-        headerClass: "text-primary font-bold bg-tertiary",
+        headerClass: "text-primary font-bold bg-gray-100",
       },
       {
         headerName: "Set-Up",
         field: "setupName",
         flex: 1,
         filter: "agTextColumnFilter",
-        headerClass: "text-primary font-bold bg-tertiary",
+        headerClass: "text-primary font-bold bg-gray-100",
       },
       {
         headerName: "Visibility",
@@ -399,13 +388,13 @@ export default function AdminJobListing() {
         flex: 1,
         filter: "agTextColumnFilter",
         valueFormatter: (params) => (params.value === 1 ? "Shown" : "Hidden"),
-        headerClass: "text-primary font-bold bg-tertiary",
+        headerClass: "text-primary font-bold bg-gray-100",
       },
       {
         headerName: "Action",
         field: "action",
         filter: false,
-        headerClass: "text-primary font-bold bg-tertiary",
+        headerClass: "text-primary font-bold bg-gray-100",
         flex: 1,
         cellRenderer: (params) => {
           return (
@@ -735,14 +724,13 @@ export default function AdminJobListing() {
       {/* Search and Filter */}
 
       <div
-        className="ag-theme-quartz p-5 overflow-auto"
+        className="ag-theme-quartz overflow-auto"
         style={{ height: "65vh", width: "100%" }}
       >
         <AgGridReact
           rowData={rowJobData}
           ref={gridRef}
           columnDefs={columnDefs}
-          gridOptions={gridOptions}
           defaultColDef={defaultColDef}
           pagination={true}
           paginationPageSize={10}
@@ -843,7 +831,6 @@ export default function AdminJobListing() {
                   rowData={rowIndustryData}
                   ref={gridRef}
                   columnDefs={colIndustry}
-                  gridOptions={gridOptions}
                   defaultColDef={defaultColDef}
                   pagination={true}
                   paginationPageSize={15}
@@ -863,7 +850,6 @@ export default function AdminJobListing() {
                   rowData={rowSetupData}
                   ref={gridRef}
                   columnDefs={colSetup}
-                  gridOptions={gridOptions}
                   defaultColDef={defaultColDef}
                   pagination={true}
                   paginationPageSize={15}

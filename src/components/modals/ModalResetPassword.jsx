@@ -21,6 +21,15 @@ export const ModalResetPassword = ({ isOpen, handleClose }) => {
   const handleResetConfirmation = async (e) => {
     e.preventDefault();
 
+    // Validate email domain
+    const emailDomain = "@fullsuite.ph";
+    if (!email.endsWith(emailDomain)) {
+      toast.error(
+        "Please use your company-issued email address ending with @fullsuite.ph."
+      );
+      return;
+    }
+
     try {
       setLoading(true);
       const response = await api.post("/api/reset-password", { email });
