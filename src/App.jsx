@@ -36,6 +36,7 @@ import RootLayout from "./components/layout/RootLayout";
 // Auth Pages
 import Login from "./pages/auth/Login";
 import PasswordReset from "./pages/auth/PasswordReset";
+import Register from "./pages/auth/Register";
 
 // Others
 import { Toaster } from "react-hot-toast";
@@ -51,6 +52,7 @@ function App() {
           {/* Routes that are publicly available (guest) */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/careers" element={<Careers />} />
