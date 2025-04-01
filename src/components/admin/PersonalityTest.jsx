@@ -41,16 +41,6 @@ function PersonalityTest() {
   // PERSONALITY TEST TABLE VARIABLES
   const [rowData, setRowData] = useState([]);
 
-  const gridOptions = {
-    getRowStyle: (params) => {
-      if (params.node.rowIndex % 2 === 0) {
-        return { background: "#ECF1E3", color: "black" };
-      } else {
-        return { background: "white", color: "black" };
-      }
-    },
-  };
-
   const gridRef = useRef();
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -167,10 +157,10 @@ function PersonalityTest() {
           </div>
         </button>
       </div>
-      <div className="border-primary border-2 rounded-3xl w-full overflow-hidden">
+      <div className="border-primary rounded-md w-full overflow-hidden">
         <div className="overflow-x-auto w-full">
           <div
-            className="ag-theme-quartz p-3 sm:p-5 min-w-[600px] lg:w-full"
+            className="ag-theme-quartz min-w-[600px] lg:w-full"
             style={{ height: "400px" }}
           >
             <AgGridReact
@@ -180,20 +170,20 @@ function PersonalityTest() {
                   headerName: "Title",
                   field: "testTitle",
                   flex: 2,
-                  headerClass: "text-primary font-bold bg-tertiary",
+                  headerClass: "text-primary font-bold bg-gray-100",
                 },
                 {
                   headerName: "URL",
                   field: "url",
                   flex: 2,
-                  headerClass: "text-primary font-bold bg-tertiary",
+                  headerClass: "text-primary font-bold bg-gray-100",
                 },
                 {
                   headerName: "Date Created",
                   field: "createdAt",
                   flex: 1,
                   filter: "agTextColumnFilter",
-                  headerClass: "text-primary font-bold bg-tertiary",
+                  headerClass: "text-primary font-bold bg-gray-100",
                   valueGetter: (params) =>
                     params.data?.createdAt
                       ? new Date(params.data.createdAt).toLocaleString()
@@ -203,14 +193,14 @@ function PersonalityTest() {
                   headerName: "Created By",
                   field: "createdBy",
                   flex: 1,
-                  headerClass: "text-primary font-bold bg-tertiary",
+                  headerClass: "text-primary font-bold bg-gray-100",
                 },
                 {
                   headerName: "Action",
                   field: "action",
                   flex: 1,
 
-                  headerClass: "text-primary font-bold bg-tertiary",
+                  headerClass: "text-primary font-bold bg-gray-100",
                   cellRenderer: (params) => (
                     <div className="flex gap-2">
                       <IconButton onClick={() => handleEditClick(params.data)}>
@@ -230,7 +220,6 @@ function PersonalityTest() {
               pagination={true}
               paginationPageSize={5}
               paginationPageSizeSelector={[5, 10, 20, 50]}
-              gridOptions={gridOptions}
               ref={gridRef}
             />
           </div>

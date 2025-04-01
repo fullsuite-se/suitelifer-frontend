@@ -12,6 +12,8 @@ import {
   GoogleReCaptchaProvider,
   useGoogleReCaptcha,
 } from "react-google-recaptcha-v3";
+import { ModalResetPassword } from "../../components/modals/ModalResetPassword";
+import { Link } from "react-router-dom";
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -127,6 +129,7 @@ const LoginForm = () => {
 const Login = () => {
   const navigate = useNavigate();
   const vantaRef = useRef(null);
+  const [isResetModal, setReselModal] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -167,12 +170,20 @@ const Login = () => {
     };
   }, []);
 
+  const handleResetPasswordBtn = () => {
+    setReselModal((prev) => !prev);
+  };
+
   return (
     <GoogleReCaptchaProvider reCaptchaKey={import.meta.env.VITE_RECAPTCHA_SITE}>
       <div
         id="vanta-bg"
         className="w-screen h-screen flex justify-start items-center bg-white"
       >
+        <ModalResetPassword
+          isOpen={isResetModal}
+          handleClose={handleResetPasswordBtn}
+        />
         <div
           className="bg-white mx-auto rounded-2xl p-10 py-16 border border-gray-200"
           style={{ width: "min(90%, 600px)" }}
@@ -187,6 +198,20 @@ const Login = () => {
             Welcome to SuiteLifer!
           </p>
           <LoginForm /> {/* Wrapped safely inside GoogleReCaptchaProvider */}
+          <section className="flex justify-between mt-3">
+            <Link
+              className="text-sm text-blue-400 underline cursor-pointer"
+              to={"/register"}
+            >
+              Don't have an account?
+            </Link>
+            <p
+              className="text-sm text-blue-400 underline cursor-pointer"
+              onClick={handleResetPasswordBtn}
+            >
+              Reset Password?
+            </p>
+          </section>
         </div>
       </div>
     </GoogleReCaptchaProvider>

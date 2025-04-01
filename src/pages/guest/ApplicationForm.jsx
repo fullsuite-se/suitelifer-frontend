@@ -5,7 +5,7 @@ import DesktopNav from "../../components/home/DesktopNav";
 import BackButton from "../../components/BackButton";
 import { useNavigate, useParams } from "react-router-dom";
 import BackToTop from "../../components/BackToTop";
-import { toSlug, unSlug } from "../../utils/slugUrl";
+import { unSlug } from "../../utils/slugUrl";
 import atsAPI from "../../utils/atsAPI";
 import api from "../../utils/axios";
 import toast from "react-hot-toast";
@@ -22,19 +22,17 @@ import {
   GoogleReCaptchaProvider,
   useGoogleReCaptcha,
 } from "react-google-recaptcha-v3";
-// import { recaptcha } from "../../utils/recaptcha";
 
 const Form = () => {
   const navigate = useNavigate();
-  const [progress, setProgress] = useState(0);
   const { id, jobPosition } = useParams();
 
   const [applicationDetails, setApplicationDetails] = useState({
     first_name: "",
     middle_name: "",
     last_name: "",
-    birth_date: "",
-    gender: "",
+    // birth_date: "",
+    // gender: "",
     email_1: "",
     mobile_number_1: "",
     discovered_at: "",
@@ -57,6 +55,7 @@ const Form = () => {
   // =========== START: drag and drop using dropzone ===========
 
   const [CV, setCV] = useState(null);
+  // const [progress, setProgress] = useState(0);
   const [isFileTooLarge, setIsFileTooLarge] = useState(false);
   const [isFileRemovedOnce, setIsFileRemovedOnce] = useState(false);
   const MAX_FILE_SIZE = 10 * 1024 * 1024;
@@ -71,7 +70,7 @@ const Form = () => {
       setIsFileTooLarge(false);
       setIsFileRemovedOnce(false);
       setCV(selectedFile);
-      setProgress(0);
+      // setProgress(0);
       console.log(selectedFile);
     }
   }, []);
@@ -116,10 +115,10 @@ const Form = () => {
       return;
     }
 
-    if (progress != 100) {
-      toast.error("Uploading... Please wait.");
-      return;
-    }
+    // if (progress != 100) {
+    //   toast.error("Uploading... Please wait.");
+    //   return;
+    // }
 
     try {
       const blackListPayload = {
@@ -127,8 +126,8 @@ const Form = () => {
           first_name: applicationDetails.first_name,
           middle_name: applicationDetails.middle_name ?? "",
           last_name: applicationDetails.last_name,
-          birth_date: applicationDetails.birth_date,
-          gender: applicationDetails.gender,
+          // birth_date: applicationDetails.birth_date,
+          // gender: applicationDetails.gender,
           email_1: applicationDetails.email_1,
           mobile_number_1: applicationDetails.mobile_number_1,
         }),
@@ -189,18 +188,19 @@ const Form = () => {
       toast.error("Job Application Unsuccessful.");
     }
   };
-  useEffect(() => {
-    console.log(id);
 
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) return 100; // Stops at 50%
-        return prev + 1;
-      });
-    }, 20); // Adjust speed here
+  // useEffect(() => {
+  //   console.log(id);
 
-    return () => clearInterval(interval);
-  }, []);
+  //   const interval = setInterval(() => {
+  //     setProgress((prev) => {
+  //       if (prev >= 100) return 100; // Stops at 50%
+  //       return prev + 1;
+  //     });
+  //   }, 20); // Adjust speed here
+
+  //   return () => clearInterval(interval);
+  // }, []);
 
   return (
     <form
@@ -250,7 +250,7 @@ const Form = () => {
           />
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:mt-5">
+      {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:mt-5">
         <div>
           <label className="block text-gray-700 font-avenir-black">
             Birthdate<span className="text-primary">*</span>
@@ -263,8 +263,8 @@ const Form = () => {
             required
             className="text-primary w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
           />
-        </div>
-        <div className="md:col-span-1">
+        </div> */}
+        {/* <div className="md:col-span-1">
           <label className="block text-gray-700 font-avenir-black">
             Sex<span className="text-primary">*</span>
           </label>
@@ -293,7 +293,7 @@ const Form = () => {
             </label>
           </div>
         </div>
-      </div>
+      </div> */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:mt-5">
         <div>
           <label className="block text-gray-700 font-avenir-black">
@@ -467,7 +467,7 @@ const Form = () => {
               <XMarkIcon className="size-5 cursor-pointer" />
             </button>
           </div>
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <div class="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
               <div
                 className="bg-primary h-2 rounded-full transition-all duration-300 w-[40%]"
@@ -475,7 +475,7 @@ const Form = () => {
               ></div>
             </div>
             <p className="text-gray-500">{progress}%</p>
-          </div>
+          </div> */}
         </div>
       ) : (
         ""

@@ -70,16 +70,6 @@ function Testimonials() {
     { value: "Technical Support", label: "Technical Support" },
   ];
 
-  const gridOptions = {
-    getRowStyle: (params) => {
-      if (params.node.rowIndex % 2 === 0) {
-        return { background: "#ECF1E3", color: "black" };
-      } else {
-        return { background: "white", color: "black" };
-      }
-    },
-  };
-
   const handlePositionChange = (e) => {
     setCurrentTestimonial({
       ...currentTestimonial,
@@ -93,7 +83,7 @@ function Testimonials() {
     );
 
     if (!isValid) {
-      setCurrentTestimonial({ ...currentTestimonial, position: "" }); 
+      setCurrentTestimonial({ ...currentTestimonial, position: "" });
     }
   };
 
@@ -150,10 +140,10 @@ function Testimonials() {
         </button>
       </div>
 
-      <div className="border-primary border-2 rounded-3xl w-full overflow-hidden">
+      <div className="border-primary rounded-md w-full overflow-hidden">
         <div className="w-full overflow-x-auto">
           <div
-            className="ag-theme-quartz p-3 sm:p-5 min-w-[600px] lg:w-full"
+            className="ag-theme-quartz min-w-[600px] lg:w-full"
             style={{ height: "600px", width: "100%" }}
           >
             <AgGridReact
@@ -164,7 +154,7 @@ function Testimonials() {
                   field: "employee_image",
                   flex: 2,
                   filter: "agTextColumnFilter",
-                  headerClass: "text-primary font-bold bg-tertiary",
+                  headerClass: "text-primary font-bold bg-gray-100",
                   cellRenderer: (params) =>
                     params.value ? (
                       <img
@@ -181,25 +171,25 @@ function Testimonials() {
                   headerName: "Employee Name",
                   field: "employee_name",
                   flex: 1,
-                  headerClass: "text-primary font-bold bg-tertiary",
+                  headerClass: "text-primary font-bold bg-gray-100",
                 },
                 {
                   headerName: "Testimony",
                   field: "testimony",
                   flex: 2,
-                  headerClass: "text-primary font-bold bg-tertiary",
+                  headerClass: "text-primary font-bold bg-gray-100",
                 },
                 {
                   headerName: "Position",
                   field: "position",
                   flex: 2,
-                  headerClass: "text-primary font-bold bg-tertiary",
+                  headerClass: "text-primary font-bold bg-gray-100",
                 },
                 {
                   headerName: "Visibility",
                   field: "is_shown",
                   flex: 1,
-                  headerClass: "text-primary font-bold bg-tertiary",
+                  headerClass: "text-primary font-bold bg-gray-100",
                   valueFormatter: (params) =>
                     params.value === 1 ? "Shown" : "Hidden",
                 },
@@ -207,7 +197,7 @@ function Testimonials() {
                   headerName: "Date Created",
                   field: "created_at",
                   flex: 1,
-                  headerClass: "text-primary font-bold bg-tertiary",
+                  headerClass: "text-primary font-bold bg-gray-100",
                   valueGetter: (params) =>
                     params.data?.created_at
                       ? new Date(params.data.created_at).toLocaleString()
@@ -217,12 +207,12 @@ function Testimonials() {
                   headerName: "Created By",
                   field: "created_by",
                   flex: 1,
-                  headerClass: "text-primary font-bold bg-tertiary",
+                  headerClass: "text-primary font-bold bg-gray-100",
                 },
                 {
                   headerName: "Action",
                   field: "action",
-                  headerClass: "text-primary font-bold bg-tertiary",
+                  headerClass: "text-primary font-bold bg-gray-100",
                   flex: 1,
                   cellRenderer: (params) => (
                     <div className="flex gap-2">
@@ -253,7 +243,6 @@ function Testimonials() {
               pagination
               paginationPageSize={5}
               paginationPageSizeSelector={[5, 10, 20, 50]}
-              gridOptions={gridOptions}
               ref={gridRef}
             />
           </div>
@@ -314,7 +303,7 @@ function Testimonials() {
                 required
                 list="position-options"
                 value={currentTestimonial.position}
-                onChange={handlePositionChange} 
+                onChange={handlePositionChange}
                 onBlur={validatePosition}
                 className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
               />

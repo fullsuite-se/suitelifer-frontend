@@ -9,11 +9,8 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
-import { CalendarIcon } from "@heroicons/react/20/solid";
 import moment from "moment";
 import EventCalendar from "./../../components/admin/EventCalendar";
-import logofsfull from "../../assets/logos/logo-fs-full.svg";
-import EventIcon from "@mui/icons-material/Event";
 
 const AdminEvents = () => {
   const [openDialog, setOpenDialog] = useState(false);

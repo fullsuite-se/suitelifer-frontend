@@ -36,7 +36,9 @@ import ProtectedRoutes from "./utils/protectedRoutes/ProtectedRoutes";
 import RootLayout from "./components/layout/RootLayout";
 
 // Auth Pages
-import Login from "./components/auth/Login";
+import Login from "./pages/auth/Login";
+import PasswordReset from "./pages/auth/PasswordReset";
+import Register from "./pages/auth/Register";
 
 // Others
 import { Toaster } from "react-hot-toast";
@@ -52,6 +54,8 @@ function App() {
           {/* Routes that are publicly available (guest) */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/careers-all" element={<CareersAll />} />
@@ -71,6 +75,7 @@ function App() {
           <Route path="/blogs/:slug" element={<BlogDetails />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-use" element={<TermsOfUse />} />
+          <Route path="/reset-password" element={<PasswordReset />} />
 
           {/* Routes that are avaialable to admins and employees (guest) */}
           <Route element={<ProtectedRoutes />}>
