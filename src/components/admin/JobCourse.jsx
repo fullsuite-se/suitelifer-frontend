@@ -22,13 +22,18 @@ import "@ag-grid-community/styles/ag-theme-quartz.css";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import api from "../../utils/axios";
 import { useStore } from "../../store/authStore";
+import toast from "react-hot-toast";
+import formatTimestamp from "../TimestampFormatter";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 function JobCourse() {
-  const user = useStore(state => state.user);
+  const user = useStore((state) => state.user);
 
   const [jobs, setJobs] = useState([]);
+
+  // DATA UPDATES
+  const [dataUpdated, setDataUpdated] = useState(false);
 
   useEffect(() => {
     fetchJobs();
@@ -40,20 +45,21 @@ function JobCourse() {
       console.log(response.data.data);
       setJobs(response.data.data);
     } catch (e) {
+      console.log("ERROR FETCHING JOBS");
+
       console.log(e);
     }
   };
 
   const [rowCourseData, setRowCourseData] = useState([
     {
-      jobId: "1",
+      course_id: "1",
       title: "React Free Course",
-      relatedJob: [1],
-      url: "http://sampleurl.com/react",
       description: "This is a sample description",
-      jobTitle: "Software Engineer",
-      createdAt: "2022-10-10",
-      createdBy: "John Doe",
+      url: "http://sampleurl.com/react",
+      created_at: "date",
+      created_by: "1476564bhj23178378",
+      first_name: "John Wick",
     },
   ]);
 
@@ -71,60 +77,69 @@ function JobCourse() {
 
   const [openDialog, setOpenDialog] = useState(false);
   const [currentCourse, setCurrentCourse] = useState({
-    id: null,
+    course_id: null,
     title: "",
     description: "",
-    relatedJob: "",
-    jobTitle: "",
     url: "",
   });
 
   const handleEdit = (course) => {
     setCurrentCourse({
       ...course,
-      relatedJob: course.relatedJob || [],
     });
+    console.log(course);
+
     setOpenDialog(true);
   };
 
-  const handleDelete = (id) => {
-    setRowCourseData((prevData) =>
-      prevData.filter((course) => course.jobId !== id)
-    );
+  const handleDelete = async (course_id) => {
+    console.log(`Delete: ${course_id}`);
+
+    try {
+      const response = await api.post("api/delete-course", { course_id });
+      toast.success(response.data.message);
+      console.log(response.data.message);
+      setDataUpdated(!dataUpdated);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  const handleAddNew = () => {
+  const showAddDialog = () => {
+    setCurrentCourse({
+      course_id: null,
+      title: "",
+      description: "",
+      url: "",
+    });
     setOpenDialog(true);
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
 
-    console.log(currentCourse.id === null);
-    
-    
+    console.log(
+      currentCourse.course_id === null || currentCourse.course_id == ""
+    );
+
     try {
-      if (currentCourse.id === null) {
-
-        const response = await api.post("/api/add-course", { ...currentCourse, userId: user.id });
-        
-        const courseId = response.data.courseId;
-
-        const res = await api.post("/api/add-job-course", {courseId, relatedJobs: currentCourse.relatedJob, userId: user.id });
-        
-        console.log(res.data.message);
-        
+      if (currentCourse.course_id === null || currentCourse.course_id == "") {
+        const response = await api.post("/api/add-course", {
+          ...currentCourse,
+          userId: user.id,
+        });
       } else {
-        setRowCourseData((prevData) => [
-          ...prevData,
-          { ...currentCourse, jobId: Date.now().toString() },
-        ]);
+        console.log("Edit course");
+        await api.post("/api/update-course", {
+          ...currentCourse,
+          userId: user.id,
+        })        
       }
+      setDataUpdated(!dataUpdated);
       setOpenDialog(false);
     } catch (error) {
-      console.log("Test error");
+      console.log("Error adding course (catch)");
       console.log(error);
-      
     }
   };
 
@@ -135,25 +150,27 @@ function JobCourse() {
     }));
   };
 
-  const handleCheckboxChange = (jobId) => (event) => {
-    setCurrentCourse((prevCourse) => {
-      const updatedRelatedJob = event.target.checked
-        ? [...prevCourse.relatedJob, jobId]
-        : prevCourse.relatedJob.filter((id) => id !== jobId);
+  const fetchJobCourses = async () => {
+    try {
+      const response = await api.get("api/all-courses");
 
-      return {
-        ...prevCourse,
-        relatedJob: updatedRelatedJob,
-      };
-    });
+      setRowCourseData(response.data.data);
+    } catch (error) {
+      console.log("Error Fetching Job Courses");
+      console.log(error);
+    }
   };
+
+  useEffect(() => {
+    fetchJobCourses();
+  }, [dataUpdated]);
 
   return (
     <>
       <div className="flex justify-end">
         <button
           variant="contained"
-          onClick={handleAddNew}
+          onClick={showAddDialog}
           sx={{ mb: 2 }}
           className="btn-primary mb-2 "
         >
@@ -177,16 +194,9 @@ function JobCourse() {
                 {
                   headerName: "Course Title",
                   field: "title",
-                  flex: 2,
+                  flex: 1,
                   headerClass: "text-primary font-bold bg-tertiary",
                 },
-                {
-                  headerName: "Description",
-                  field: "description",
-                  flex: 2,
-                  headerClass: "text-primary font-bold bg-tertiary",
-                },
-
                 {
                   headerName: "URL",
                   field: "url",
@@ -194,36 +204,24 @@ function JobCourse() {
                   headerClass: "text-primary font-bold bg-tertiary",
                 },
                 {
-                  headerName: "Related Job",
-                  field: "relatedJob",
-                  flex: 1,
+                  headerName: "Description",
+                  field: "description",
+                  flex: 2,
                   headerClass: "text-primary font-bold bg-tertiary",
-                  valueGetter: (params) =>
-                    params.data?.relatedJob
-                      ? params.data.relatedJob
-                          .map(
-                            (jobId) =>
-                              jobs.find((job) => job.jobId === jobId)?.jobTitle
-                          )
-                          .join(", ")
-                      : "N/A",
-                },
+                },                
                 {
                   headerName: "Date Created",
-                  field: "createdAt",
+                  field: "created_at",
                   flex: 1,
-                  filter: "agTextColumnFilter",
                   headerClass: "text-primary font-bold bg-tertiary",
-                  valueGetter: (params) =>
-                    params.data?.createdAt
-                      ? new Date(params.data.createdAt).toLocaleString()
-                      : "N/A",
+                  valueGetter: (params) => formatTimestamp(params.data.created_at).fullDate,
                 },
                 {
                   headerName: "Created By",
-                  field: "createdBy",
-                  flex: 1,
+                  field: "created_by",
+                  flex: 2,
                   headerClass: "text-primary font-bold bg-tertiary",
+                  valueGetter: (params) => `${params.data.first_name} ${params.data.last_name}`,
                 },
                 {
                   headerName: "Action",
@@ -235,7 +233,9 @@ function JobCourse() {
                       <IconButton onClick={() => handleEdit(params.data)}>
                         <EditIcon />
                       </IconButton>
-                      <IconButton onClick={() => handleDelete(params.data.id)}>
+                      <IconButton
+                        onClick={() => handleDelete(params.data.course_id)}
+                      >
                         <DeleteIcon />
                       </IconButton>
                     </div>
@@ -265,9 +265,9 @@ function JobCourse() {
             },
           }}
         >
-          <form onSubmit={e => handleSave(e)}>
+          <form onSubmit={(e) => handleSave(e)}>
             <DialogTitle className="flex w-full justify-center items-center">
-              {currentCourse.id ? "Edit Course" : "Add Course"}
+              {currentCourse.course_id ? "Edit Course" : "Add Course"}
             </DialogTitle>
             <DialogContent>
               <div className="w-full">
@@ -309,42 +309,10 @@ function JobCourse() {
                   className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
                 ></textarea>
               </div>
-
-              <div className="w-full">
-                <label className="block text-gray-700 font-avenir-black mt-2">
-                  Related Job<span className="text-primary">*</span>
-                </label>
-                <div className="flex flex-col bg-primary/10 p-2 rounded-md max-h-50 overflow-auto">
-                  {jobs.map((job) => (
-                    <label
-                      key={job.jobId}
-                      className="flex items-center space-x-2"
-                    >
-                      <input
-                        type="checkbox"
-                        value={job.jobId}
-                        checked={currentCourse.relatedJob.includes(job.jobId)}
-                        onChange={(e) => {
-                          const updatedRelatedJob = e.target.checked
-                            ? [...currentCourse.relatedJob, job.jobId]
-                            : currentCourse.relatedJob.filter(
-                                (item) => item !== job.jobId
-                              );
-
-                          handleInputChange("relatedJob")({
-                            target: { value: updatedRelatedJob },
-                          });
-                        }}
-                        className="accent-primary"
-                      />
-                      <span>{job.jobTitle}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
             </DialogContent>
             <DialogActions>
               <button
+              type="button"
                 className="btn-light"
                 onClick={() => setOpenDialog(false)}
               >
