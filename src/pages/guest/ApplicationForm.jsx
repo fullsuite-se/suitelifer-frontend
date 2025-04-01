@@ -250,7 +250,7 @@ const Form = () => {
           />
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:mt-5">
+      {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:mt-5">
         <div>
           <label className="block text-gray-700 font-avenir-black">
             Birthdate<span className="text-primary">*</span>
@@ -263,8 +263,8 @@ const Form = () => {
             required
             className="text-primary w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
           />
-        </div>
-        <div className="md:col-span-1">
+        </div> */}
+        {/* <div className="md:col-span-1">
           <label className="block text-gray-700 font-avenir-black">
             Sex<span className="text-primary">*</span>
           </label>
@@ -293,7 +293,7 @@ const Form = () => {
             </label>
           </div>
         </div>
-      </div>
+      </div> */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:mt-5">
         <div>
           <label className="block text-gray-700 font-avenir-black">
