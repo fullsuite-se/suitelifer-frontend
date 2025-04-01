@@ -126,6 +126,7 @@ const EmployeeDrawer = ({ onClose }) => {
                               ? "bg-primary text-white p-3 transition-none! rounded-lg flex items-center gap-3 no-underline!"
                               : "bg-white text-primary p-3 transition-none! rounded-lg flex items-center gap-3 no-underline! hover:bg-blue-50"
                           }
+                          onClick={handleClose}
                         >
                           {icons ? (
                             <icons.default className="size-4 group-hover:hidden" />

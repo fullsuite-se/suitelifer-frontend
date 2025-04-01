@@ -32,9 +32,9 @@ export default function AdminJobListing() {
 
   const fetchTotalApplications = async () => {
     try {
-      const response = await atsAPI.get("/analytic/metrics/fs-applicant-count");
+      const response = await atsAPI.get("/analytic/graphs/application-trend");
 
-      setTotalApplications(response.data.fs_count);
+      setTotalApplications(response.data.data.total);
     } catch (err) {
       console.log(err);
     }
@@ -66,20 +66,20 @@ export default function AdminJobListing() {
 
   // JOB LISTINGS VARIABLES
   const defaultJobDetails = {
-    job_id: null,
+    jobId: null,
     title: "",
-    industry_id: "",
-    industry_name: "",
-    setup_id: "",
-    employment_type: "",
+    industryId: "",
+    industryName: "",
+    setupId: "",
+    employmentType: "",
     description: "",
-    salary_min: null,
-    salary_max: null,
+    salaryMin: null,
+    salaryMax: null,
     responsibility: "",
     requirement: "",
-    preferred_qualification: "",
-    is_open: "",
-    is_shown: "",
+    preferredQualification: "",
+    isOpen: "",
+    isShown: "",
   };
 
   const [jobListings, setJobListings] = useState([]);
@@ -97,27 +97,27 @@ export default function AdminJobListing() {
 
     try {
       let response;
-      if (jobDetails.job_id === null) {
+      if (jobDetails.jobId === null) {
         // ADD JOB LISTING
         response = await api.post("/api/add-job", {
           ...jobDetails,
-          user_id: user.id,
+          userId: user.id,
         });
       } else {
         // EDIT JOB LISTING
         response = await api.post("/api/edit-job", {
           ...jobDetails,
-          user_id: user.id,
+          userId: user.id,
         });
       }
 
       if (response.data.success) {
         toast.success(response.data.message);
-        if (jobDetails.job_id === null) {
+        if (jobDetails.jobId === null) {
           setJobListings((jl) => [...jl, jobDetails]);
         } else {
           const updatedJobListings = jobListings.map((job) =>
-            job.jobId === jobDetails.job_id ? { ...jobDetails } : job
+            job.jobId === jobDetails.jobId ? { ...jobDetails } : job
           );
           setJobListings((jl) => updatedJobListings);
         }
@@ -145,20 +145,20 @@ export default function AdminJobListing() {
 
   const handleEditJobClick = (job) => {
     setJobDetails((jd) => ({
-      job_id: job.jobId,
+      jobId: job.jobId,
       title: job.jobTitle,
-      industry_id: job.industryId,
-      industry_name: job.industryName,
-      setup_id: job.setupId,
-      employment_type: job.employmentType,
+      industryId: job.industryId,
+      industryName: job.industryName,
+      setupId: job.setupId,
+      employmentType: job.employmentType,
       description: job.description,
-      salary_min: job.salaryMin,
-      salary_max: job.salaryMax,
+      salaryMin: job.salaryMin,
+      salaryMax: job.salaryMax,
       responsibility: job.responsibility,
       requirement: job.requirement,
-      preferred_qualification: job.preferredQualification,
-      is_open: job.isOpen,
-      is_shown: job.isShown,
+      preferredQualification: job.preferredQualification,
+      isOpen: job.isOpen,
+      isShown: job.isShown,
     }));
     setJobModalIsOpen(true);
   };
@@ -182,9 +182,9 @@ export default function AdminJobListing() {
 
   // INDUSTRY VARIABLES
   const defaultIndustryDetails = {
-    job_ind_id: null,
-    industry_name: "",
-    assessment_url: "",
+    jobIndId: null,
+    industryName: "",
+    assessmentUrl: "",
   };
 
   const [industries, setIndustries] = useState([]);
@@ -207,27 +207,27 @@ export default function AdminJobListing() {
 
     try {
       let response;
-      if (industryDetails.job_ind_id === null) {
+      if (industryDetails.jobIndId === null) {
         // ADD INDUSTRY
         response = await api.post("/api/add-industry", {
           ...industryDetails,
-          user_id: user.id,
+          userId: user.id,
         });
       } else {
         // EDIT INDUSTRY
         response = await api.post("/api/edit-industry", {
           ...industryDetails,
-          user_id: user.id,
+          userId: user.id,
         });
       }
 
       if (response.data.success) {
         toast.success(response.data.message);
-        if (industryDetails.job_ind_id === null) {
+        if (industryDetails.jobIndId === null) {
           setIndustries((i) => [...i, industryDetails]);
         } else {
           const updatedIndustries = industries.map((industry) =>
-            industry.industryId === industryDetails.job_ind_id
+            industry.industryId === industryDetails.jobIndId
               ? { ...industryDetails }
               : industry
           );
@@ -257,17 +257,17 @@ export default function AdminJobListing() {
 
   const handleEditIndustryClick = (industry) => {
     setIndustryDetails((id) => ({
-      job_ind_id: industry.industryId,
-      industry_name: industry.industryName,
-      assessment_url: industry.assessmentUrl,
+      jobIndId: industry.industryId,
+      industryName: industry.industryName,
+      assessmentUrl: industry.assessmentUrl,
     }));
     setIndustryModalIsOpen((io) => true);
   };
 
   // SETUP VARIABLES
   const defaultSetupDetails = {
-    setup_id: null,
-    setup_name: "",
+    setupId: null,
+    setupName: "",
   };
 
   const [setups, setSetups] = useState([]);
@@ -285,27 +285,27 @@ export default function AdminJobListing() {
 
     try {
       let response;
-      if (setupDetails.setup_id === null) {
+      if (setupDetails.setupId === null) {
         // ADD SETUP
         response = await api.post("/api/add-setup", {
           ...setupDetails,
-          user_id: user.id,
+          userId: user.id,
         });
       } else {
         // EDIT SETUP
         response = await api.post("/api/edit-setup", {
           ...setupDetails,
-          user_id: user.id,
+          userId: user.id,
         });
       }
 
       if (response.data.success) {
         toast.success(response.data.message);
-        if (setupDetails.setup_id === null) {
+        if (setupDetails.setupId === null) {
           setSetups((s) => [...s, setupDetails]);
         } else {
           const updatedSetups = setups.map((setup) =>
-            setup.setupId === setupDetails.setup_id
+            setup.setupId === setupDetails.setupId
               ? { ...setupDetails }
               : setup
           );
@@ -335,8 +335,8 @@ export default function AdminJobListing() {
 
   const handleEditSetupClick = (setup) => {
     setSetupDetails((sd) => ({
-      setup_id: setup.setupId,
-      setup_name: setup.setupName,
+      setupId: setup.setupId,
+      setupName: setup.setupName,
     }));
     setSetupModalIsOpen((io) => true);
   };
@@ -607,7 +607,7 @@ export default function AdminJobListing() {
             <span className="mr-2">+</span> SET-UP
           </button>
 
-          {/* Mobile Buttons (Icons Only) */}
+          {/* Mobile Buttons (Icons Only) */} 
           <button
             className="btn-primary flex sm:hidden p-2 gap-2"
             onClick={handleAddJobListingButtonClick}
@@ -724,7 +724,7 @@ export default function AdminJobListing() {
       {/* Search and Filter */}
 
       <div
-        className="ag-theme-quartz"
+        className="ag-theme-quartz overflow-auto"
         style={{ height: "65vh", width: "100%" }}
       >
         <AgGridReact
@@ -733,8 +733,8 @@ export default function AdminJobListing() {
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
           pagination={true}
-          paginationPageSize={15}
-          paginationPageSizeSelector={[15, 25, 50]}
+          paginationPageSize={10}
+          paginationPageSizeSelector={[10, 15, 25, 50]}
           domLayout="autoHeight"
           className="h-full"
         />
@@ -822,9 +822,9 @@ export default function AdminJobListing() {
 
           {/* INDUSTRY OR SETUP MANAGEMENT */}
           {selectedOption === "Manage Industry" ? (
-            <div className="w-full overflow-x-auto">
+            <div className="w-full overflow-auto ">
               <div
-                className="ag-theme-quartz p-5 min-w-[800px] sm:w-full"
+                className="ag-theme-quartz overflow-auto p-5 min-w-[800px] sm:w-full  "
                 style={{ height: window.innerWidth < 640 ? "50vh" : "65vh" }}
               >
                 <AgGridReact
@@ -841,7 +841,7 @@ export default function AdminJobListing() {
               </div>
             </div>
           ) : (
-            <div className="w-full overflow-x-auto">
+            <div className="w-full overflow-auto">
               <div
                 className="ag-theme-quartz p-5 min-w-[800px] sm:w-full"
                 style={{ height: window.innerWidth < 640 ? "50vh" : "65vh" }}

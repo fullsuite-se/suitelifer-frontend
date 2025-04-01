@@ -1,120 +1,310 @@
-import { useState } from "react";
-import { Typography } from "@mui/material";
+import { useState, useRef, useEffect } from "react";
 import { EyeIcon } from "lucide-react";
-import { BookmarkSquareIcon } from "@heroicons/react/24/outline";
+import {
+  BookmarkSquareIcon,
+  ArrowUpOnSquareIcon,
+  ArrowPathIcon,
+} from "@heroicons/react/24/outline";
+import api from "../../utils/axios";
+import toast from "react-hot-toast";
+import { useStore } from "../../store/authStore";
 
 const AboutPage = ({ handlePreview }) => {
-  const [mission, setMission] = useState(
-    "Love is the most powerful force in the universe. It is the heartbeat of the moral cosmos. SABI NI MAMA."
-  );
-  const [missionSlogan, setMissionSlogan] = useState(
-    "Great things are done by a series of small things brought together."
-  );
-  const [vision, setVision] = useState(
-    "Goal is to create a world where everyone has a sense of belonging."
-  );
-  const [textBanner, setTextBanner] = useState(
-    "Go Suited. Go Lifer. Go SuiteLifer."
-  );
-  const [visionSlogan, setVisionSlogan] = useState("Goooooood vibes only.");
-  const [podVideoUrl, setPodVideoUrl] = useState(
-    "https://youtube/choDMzlBpvs?feature=shared"
-  );
+  // USER DETAILS
+  const user = useStore((state) => state.user);
 
-  const handleSave = () => {
-    const data = {
-      mission,
-      missionSlogan,
-      vision,
-      visionSlogan,
-      podVideoUrl,
-      textBanner,
-    };
-    console.log(data);
+  // CONTENT DETAILS
+  const [contentDetails, setContentDetails] = useState({
+    homeVideo: "",
+    textBanner: "",
+    heroImage: "",
+    storyImage: "",
+    aboutVideo: "",
+    missionSlogan: "",
+    mission: "",
+    visionSlogan: "",
+    vision: "",
+    dayInPodUrl: "",
+  });
+
+  const handleContentDetailsChange = (e) => {
+    setContentDetails((cd) => ({ ...cd, [e.target.name]: e.target.value }));
+
+    console.log(contentDetails);
+    console.log(user.id);
+  };
+
+  const fetchContent = async () => {
+    const response = await api.get("/api/get-content");
+
+    setContentDetails(response.data.data);
+  };
+
+  const [dataUpdated, setDataUpdated] = useState(false);
+
+  useEffect(() => {
+    fetchContent();
+  }, [dataUpdated]);
+
+  const [videoFile, setVideoFile] = useState("");
+  const [heroImage, setHeroImage] = useState("");
+  const [storyImage, setStoryImage] = useState("");
+
+  const heroRef = useRef(null);
+  const storyRef = useRef(null);
+
+  const extractYouTubeID = (url) => {
+    const match = url.match(
+      /(?:youtube\.com\/(?:.*v=|.*\/)|youtu\.be\/)([^"&?/ ]{11})/
+    );
+    return match ? match[1] : null;
+  };
+
+  const handlePublishChanges = async () => {
+    try {
+      const response = await api.post("/api/add-content", {
+        ...contentDetails,
+        user_id: user.id,
+      });
+
+      toast.success(response.data.message);
+
+      setDataUpdated(!dataUpdated);
+    } catch (err) {
+      console.log(err.response);
+      toast.error(
+        "Encountered an error while publishing changes. Try again in a few minutes..."
+      );
+    }
+  };
+
+  const handleImageChange = (file, setImage) => {
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setImage(imageUrl);
+    }
+  };
+
+  const handleDrop = (event, setImage) => {
+    event.preventDefault();
+    const file = event.dataTransfer.files[0];
+    handleImageChange(file, setImage);
+  };
+
+  const handleUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const videoURL = URL.createObjectURL(file);
+      setVideoFile(videoURL);
+    }
   };
 
   return (
-    <div className="about-page p-1 flex flex-col">
-      <div className="flex justify-end px-4 py-2">
+    <div className="overflow-x-auto min-h-screen px-4 sm:px-6 lg:px-8">
+      <div className="flex justify-end py-2 gap-2">
+        <button
+          onClick={handlePreview}
+          className="btn-primary flex items-center p-2 gap-2"
+        >
+          <EyeIcon className="size-5" />
+          Preview Changes
+        </button>
         <button
           className="btn-primary flex items-center p-2 gap-2"
-          onClick={handleSave}
+          onClick={handlePublishChanges}
         >
           <BookmarkSquareIcon className="size-5" /> <span>Publish Changes</span>
         </button>
       </div>
 
-      <div className="text-md p-1 font-avenir-black">Mission</div>
+      <div className="text-md font-bold pb-2 font-avenir-black">
+        About Page Video
+      </div>
+      <div className="video-preview w-full">
+        <div className="flex flex-col items-center p-4">
+          <input
+            type="file"
+            accept="video/*"
+            onChange={handleUpload}
+            className="hidden"
+            id="videoUpload"
+          />
+          <div
+            className="max-w-[70%] sm:w-[100%] sm:h-auto border-1 rounded-3xl bg-gray-200 overflow-hidden aspect-video cursor-pointer flex items-center justify-center"
+            onClick={() =>
+              !videoFile && document.getElementById("videoUpload").click()
+            }
+          >
+            {videoFile ? (
+              videoFile.includes("youtube.com") ||
+              videoFile.includes("youtu.be") ? (
+                <iframe
+                  className="w-full h-full object-cover"
+                  src={`https://www.youtube.com/embed/${extractYouTubeID(
+                    videoFile
+                  )}`}
+                  title="YouTube video"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              ) : (
+                <video
+                  src={videoFile}
+                  className="w-full h-full object-cover"
+                  controls
+                  autoPlay
+                  loop
+                  muted
+                />
+              )
+            ) : (
+              <div className="flex flex-col sm:flex-row items-center justify-center text-center w-full p-3 gap-2">
+                <ArrowUpOnSquareIcon className="size-5 sm:size-20" />
+                <span className="text-sm sm:text-xl">Upload Video</span>
+              </div>
+            )}
+          </div>
 
+          <div className="flex mt-6 gap-2">
+            {videoFile && (
+              <button
+                type="button"
+                onClick={() => document.getElementById("videoUpload").click()}
+                className="flex gap-1 p-2 text-sm items-center btn-light"
+              >
+                <ArrowPathIcon className="size-5" />
+                Change Video
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="text-md font-bold pt-4 font-avenir-black">
+        Text Banner
+      </div>
       <textarea
-        name="mission"
-        required
-        value={mission}
-        onChange={(e) => setMission(e.target.value)}
+        name="textBanner"
+        value={contentDetails.textBanner}
+        onChange={(e) => handleContentDetailsChange(e)}
         rows={2}
-        className="w-full p-3 resize-none border-1 border-primary rounded-md bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary mb-2"
-      ></textarea>
-      <div className="text-md p-1 font-avenir-black">Mission Slogan</div>
-
-      <textarea
-        name="mission slogan"
-        required
-        value={missionSlogan}
-        onChange={(e) => setMissionSlogan(e.target.value)}
-        rows={1}
-        className="w-full p-3 resize-none border-1 border-primary rounded-md bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary mb-2"
+        className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
       ></textarea>
 
-      <div className="text-md p-1 font-avenir-black">Vision</div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {[
+          {
+            label: "Hero Image",
+            ref: heroRef,
+            image: heroImage,
+            setImage: setHeroImage,
+          },
+          {
+            label: "Story Image",
+            ref: storyRef,
+            image: storyImage,
+            setImage: setStoryImage,
+          },
+        ].map((item, index) => (
+          <div key={index} className="flex flex-col gap-2 items-center">
+            <label className="block text-md font-avenir-black">
+              {item.label}
+            </label>
+            <div
+              className="border rounded-xl flex items-center justify-center cursor-pointer aspect-square w-full max-w-xs mx-auto relative group"
+              onClick={() => item.ref.current.click()}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => handleDrop(e, item.setImage)}
+            >
+              {item.image ? (
+                <>
+                  <img
+                    src={item.image}
+                    alt="Preview"
+                    className="w-full h-full object-cover rounded-xl"
+                  />
 
-      <textarea
-        name="vision"
-        required
-        value={vision}
-        onChange={(e) => setVision(e.target.value)}
-        rows={2}
-        className="w-full p-3 resize-none border-1 border-primary rounded-md bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary mb-2"
-      ></textarea>
-      <div className="text-md p-1 font-avenir-black">Vision Slogan</div>
+                  <div className="absolute inset-0 bg-black/50 backdrop-blur-sm rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="text-white text-sm font-semibold">
+                      Edit Image
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <div className="flex flex-col text-center items-center">
+                  <ArrowUpOnSquareIcon className="size-12 text-gray-500" />
+                  <span className="mt-2 text-lg">{"Upload " + item.label}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
 
-      <textarea
-        name="vision slogan"
-        required
-        value={visionSlogan}
-        onChange={(e) => setVisionSlogan(e.target.value)}
-        rows={1}
-        className="w-full p-3 resize-none border-1 border-primary rounded-md bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary mb-2"
-      ></textarea>
+        <input
+          type="file"
+          accept="image/*"
+          ref={heroRef}
+          className="hidden"
+          onChange={(e) => handleImageChange(e.target.files[0], setHeroImage)}
+        />
 
-      <div className="text-md p-1 font-avenir-black">Day in the Pod Video</div>
+        <input
+          type="file"
+          accept="image/*"
+          ref={storyRef}
+          className="hidden"
+          onChange={(e) => handleImageChange(e.target.files[0], setStoryImage)}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 ">
+        {[
+          {
+            label: "Mission Slogan",
+            value: contentDetails.missionSlogan,
+            name: "missionSlogan",
+          },
+          {
+            label: "Vision Slogan",
+            value: contentDetails.visionSlogan,
+            name: "visionSlogan",
+          },
+          {
+            label: "Mission",
+            value: contentDetails.mission,
+            name: "mission",
+          },
+          {
+            label: "Vision",
+            value: contentDetails.vision,
+            name: "vision",
+          },
+        ].map(({ label, value, name }) => (
+          <div key={label}>
+            <div className="text-md font-bold font-avenir-black">{label}</div>
+            <textarea
+              name={name}
+              value={value}
+              onChange={(e) => handleContentDetailsChange(e)}
+              rows={
+                label === "Mission Slogan" || label === "Vision Slogan" ? 1 : 3
+              }
+              className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+            ></textarea>
+          </div>
+        ))}
+      </div>
+      <div className="text-md font-bold pt-4 font-avenir-black">
+        Day in Pod Video URL
+      </div>
       <input
         type="text"
-        className="w-full p-3 resize-none border-1 border-primary rounded-md bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary mb-2"
-        value={podVideoUrl}
-        onChange={(e) => setPodVideoUrl(e.target.value)}
+        name="dayInPodUrl"
+        value={contentDetails.dayInPodUrl}
+        onChange={(e) => handleContentDetailsChange(e)}
+        className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-20"
       />
-
-      <div className="text-md p-1 font-avenir-black">Text Banner</div>
-
-      <textarea
-        name="text banner"
-        required
-        value={textBanner}
-        onChange={(e) => setTextBanner(e.target.value)}
-        rows={1}
-        className="w-full p-3 resize-none border-1 border-primary rounded-md bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary mb-2"
-      ></textarea>
-
-      <div className="about-and-prev flex w-full gap-1">
-        <button
-          type="button"
-          onClick={handlePreview}
-          className="ml-auto flex gap-2 p-1 text-sm items-center mt-5"
-        >
-          <EyeIcon className="size-5" />
-          Preview Changes
-        </button>
-      </div>
     </div>
   );
 };

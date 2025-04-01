@@ -71,28 +71,54 @@ const closedJobsData = [
 ];
 
 const AdminDashboard = () => {
-  const [selectedData, setSelectedData] = useState(applicationsData);
   const [selectedLabel, setSelectedLabel] = useState("Total Applications");
   const [selectedColor, setSelectedColor] = useState("#0097b2");
 
-  const handleDataChange = (data, label, color) => {
-    setSelectedData(data);
-    setSelectedLabel(label);
-    setSelectedColor(color);
-  };
-
   const [totalApplications, setTotalApplications] = useState(0);
+  const [applicationTrend, setApplicationTrend] = useState([]);
+
   const [openJobs, setOpenJobs] = useState(0);
   const [closedJobs, setClosedJobs] = useState(0);
 
-  const fetchTotalApplications = async () => {
+  const fetchApplicationData = async () => {
     try {
-      const response = await atsAPI.get("/analytic/metrics/fs-applicant-count");
+      const response = await atsAPI.get("/analytic/graphs/application-trend");
 
-      setTotalApplications((ta) => response.data.fs_count);
+      setTotalApplications(response.data.data.total);
+
+      const monthOrder = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+
+      const data = response.data.data.trend;
+
+      const dataMap = new Map(data.map((item) => [item.month, item.count]));
+
+      const filledData = monthOrder.map((month) => ({
+        month,
+        count: dataMap.get(month) || 0,
+      }));
+
+      setApplicationTrend(filledData);
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const handleDataChange = (data, label, color) => {
+    setSelectedLabel(label);
+    setSelectedColor(color);
   };
 
   const fetchOpenJobs = async () => {
@@ -116,7 +142,7 @@ const AdminDashboard = () => {
   };
 
   useEffect(() => {
-    fetchTotalApplications();
+    fetchApplicationData();
     fetchOpenJobs();
     fetchClosedJobs();
   }, []);
@@ -128,13 +154,13 @@ const AdminDashboard = () => {
       <section className="mt-3 mb-4 grid grid-cols-4 grid-rows-[7rem] [&>*]:bg-gray-100 [&>*]:border [&>*]:border-gray-200 gap-4">
         <div
           className="rounded-md grid place-content-center cursor-pointer"
-          onClick={() =>
-            handleDataChange(
-              employeesData,
-              "Total Employee Accounts",
-              "#0097b2"
-            )
-          }
+          // onClick={() =>
+          //   handleDataChange(
+          //     employeesData,
+          //     "Total Employee Accounts",
+          //     "#0097b2"
+          //   )
+          // }
         >
           <span className="text-3xl text-center">52</span>
           <div className="text-sm text-gray-500 text-center">
@@ -143,27 +169,27 @@ const AdminDashboard = () => {
         </div>
         <div
           className="rounded-md grid place-content-center cursor-pointer"
-          onClick={() =>
-            handleDataChange(applicationsData, "Total Applications", "#0097b2")
-          }
+          // onClick={() =>
+          //   handleDataChange(applicationsData, "Total Applications", "#0097b2")
+          // }
         >
           <span className="text-3xl text-center">{totalApplications}</span>
           <div className="text-sm text-gray-500 text-center">Applications</div>
         </div>
         <div
           className="rounded-md grid place-content-center cursor-pointer"
-          onClick={() =>
-            handleDataChange(openJobsData, "Open Job Listings", "#0097b2")
-          }
+          // onClick={() =>
+          //   handleDataChange(openJobsData, "Open Job Listings", "#0097b2")
+          // }
         >
           <span className="text-2xl text-center">{openJobs}</span>
           <div className="text-sm text-gray-500 text-center">Open Jobs</div>
         </div>
         <div
           className="rounded-md grid place-content-center cursor-pointer"
-          onClick={() =>
-            handleDataChange(closedJobsData, "Closed Job Listings", "#0097b2")
-          }
+          // onClick={() =>
+          //   handleDataChange(closedJobsData, "Closed Job Listings", "#0097b2")
+          // }
         >
           <span className="text-2xl text-center">{closedJobs}</span>
           <div className="text-sm text-gray-500 text-center">Closed Jobs</div>
@@ -176,13 +202,13 @@ const AdminDashboard = () => {
         <h4 className="text-gray-500">{selectedLabel}</h4>
         <div className="h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={selectedData}>
+            <AreaChart data={applicationTrend}>
               <XAxis dataKey="month" tickLine={false} axisLine={false} />
               <YAxis tickLine={false} axisLine={false} />
               <Tooltip />
               <Area
                 type="monotone"
-                dataKey="value"
+                dataKey="count"
                 stroke={selectedColor}
                 fill={selectedColor}
                 fillOpacity={0.2}

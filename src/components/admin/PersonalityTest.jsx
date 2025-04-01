@@ -29,8 +29,8 @@ function PersonalityTest() {
   const [personalityTests, setPersonalityTests] = useState([]);
 
   const defaultPersonalityTestDetails = {
-    test_id: null,
-    test_title: "",
+    testId: null,
+    testTitle: "",
     url: "",
   };
 
@@ -59,10 +59,10 @@ function PersonalityTest() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (personalityTestDetails.test_id === null) {
+      if (personalityTestDetails.testId === null) {
         const response = await api.post("/api/add-personality-test", {
           ...personalityTestDetails,
-          user_id: user.id,
+          userId: user.id,
         });
 
         toast.success(response.data.message);
@@ -70,12 +70,12 @@ function PersonalityTest() {
       } else {
         const response = await api.post("/api/edit-personality-test", {
           ...personalityTestDetails,
-          user_id: user.id,
+          userId: user.id,
         });
 
         toast.success(response.data.message);
         const updatedPersonalityTests = personalityTests.map((pt) =>
-          pt.testId === personalityTestDetails.test_id
+          pt.testId === personalityTestDetails.testId
             ? { ...personalityTestDetails }
             : pt
         );
@@ -93,25 +93,25 @@ function PersonalityTest() {
 
   const handleEditClick = (test) => {
     setPTDetails({
-      test_id: test.testId,
-      test_title: test.testTitle,
+      testId: test.testId,
+      testTitle: test.testTitle,
       url: test.url,
     });
     setOpenDialog(true);
   };
 
-  const handleDeleteClick = (test_id) => {
+  const handleDeleteClick = (testId) => {
     showConfirmationToast({
       message: "Delete personality test?",
-      onConfirm: () => handleDelete(test_id),
+      onConfirm: () => handleDelete(testId),
       onCancel: null,
     });
   };
 
-  const handleDelete = async (test_id) => {
+  const handleDelete = async (testId) => {
     try {
       const response = await api.post("/api/delete-personality-test", {
-        test_id,
+        test_id: testId,
       });
 
       toast.success(response.data.message);
@@ -248,9 +248,9 @@ function PersonalityTest() {
                 </label>
 
                 <input
-                  name="test_title"
+                  name="testTitle"
                   required
-                  value={personalityTestDetails.test_title}
+                  value={personalityTestDetails.testTitle}
                   onChange={(e) => handlePersonalityTestDetailsChange(e)}
                   rows={3}
                   className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
