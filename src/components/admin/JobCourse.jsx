@@ -63,16 +63,6 @@ function JobCourse() {
     },
   ]);
 
-  const gridOptions = {
-    getRowStyle: (params) => {
-      if (params.node.rowIndex % 2 === 0) {
-        return { background: "#ECF1E3", color: "black" };
-      } else {
-        return { background: "white", color: "black" };
-      }
-    },
-  };
-
   const gridRef = useRef();
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -133,7 +123,7 @@ function JobCourse() {
         await api.post("/api/update-course", {
           ...currentCourse,
           userId: user.id,
-        })        
+        });
       }
       setDataUpdated(!dataUpdated);
       setOpenDialog(false);
@@ -182,10 +172,10 @@ function JobCourse() {
           </div>
         </button>
       </div>
-      <div className="border-primary border-2 rounded-3xl w-full overflow-hidden">
+      <div className="border-primary rounded-md w-full overflow-hidden">
         <div className="w-full overflow-x-auto">
           <div
-            className="ag-theme-quartz p-3 sm:p-5 min-w-[600px] lg:w-full overflow-x-auto"
+            className="ag-theme-quartz min-w-[600px] lg:w-full overflow-x-auto"
             style={{ height: "400px" }}
           >
             <AgGridReact
@@ -195,39 +185,41 @@ function JobCourse() {
                   headerName: "Course Title",
                   field: "title",
                   flex: 1,
-                  headerClass: "text-primary font-bold bg-tertiary",
+                  headerClass: "text-primary font-bold bg-gray-100",
                 },
                 {
                   headerName: "URL",
                   field: "url",
                   flex: 1,
-                  headerClass: "text-primary font-bold bg-tertiary",
+                  headerClass: "text-primary font-bold bg-gray-100",
                 },
                 {
                   headerName: "Description",
                   field: "description",
                   flex: 2,
-                  headerClass: "text-primary font-bold bg-tertiary",
-                },                
+                  headerClass: "text-primary font-bold bg-gray-100",
+                },
                 {
                   headerName: "Date Created",
                   field: "created_at",
                   flex: 1,
-                  headerClass: "text-primary font-bold bg-tertiary",
-                  valueGetter: (params) => formatTimestamp(params.data.created_at).fullDate,
+                  headerClass: "text-primary font-bold bg-gray-100",
+                  valueGetter: (params) =>
+                    formatTimestamp(params.data.created_at).fullDate,
                 },
                 {
                   headerName: "Created By",
                   field: "created_by",
                   flex: 2,
-                  headerClass: "text-primary font-bold bg-tertiary",
-                  valueGetter: (params) => `${params.data.first_name} ${params.data.last_name}`,
+                  headerClass: "text-primary font-bold bg-gray-100",
+                  valueGetter: (params) =>
+                    `${params.data.first_name} ${params.data.last_name}`,
                 },
                 {
                   headerName: "Action",
                   field: "action",
                   flex: 1,
-                  headerClass: "text-primary font-bold bg-tertiary",
+                  headerClass: "text-primary font-bold bg-gray-100",
                   cellRenderer: (params) => (
                     <div className="flex gap-2">
                       <IconButton onClick={() => handleEdit(params.data)}>
@@ -247,7 +239,6 @@ function JobCourse() {
               pagination={true}
               paginationPageSize={5}
               paginationPageSizeSelector={[5, 10, 20, 50]}
-              gridOptions={gridOptions}
               ref={gridRef}
             />
           </div>
@@ -312,7 +303,7 @@ function JobCourse() {
             </DialogContent>
             <DialogActions>
               <button
-              type="button"
+                type="button"
                 className="btn-light"
                 onClick={() => setOpenDialog(false)}
               >

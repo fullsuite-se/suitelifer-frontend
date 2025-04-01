@@ -164,7 +164,7 @@ const SpotifyEpisodes = () => {
   }, [dataUpdated]);
 
   return (
-    <div className="border-primary border-2 rounded-2xl w-full p-4 space-y-4">
+    <div className="w-full space-y-4">
       {error && (
         <div className="fixed inset-0 flex items-center justify-center">
           <div className="bg-white p-6 rounded-2xl shadow-lg max-w-md w-full border-2 border-red-500/95">
@@ -224,10 +224,7 @@ const SpotifyEpisodes = () => {
       ) : (
         episodes.map((episode) => {
           return (
-            <div
-              key={episode.episodeId}
-              className="border rounded-2xl p-2 flex gap-2"
-            >
+            <div key={episode.episodeId} className="flex gap-2">
               <div className="w-[96%]">
                 <SingleSpotifyEmbed spotifyId={episode.spotifyId} />
               </div>
