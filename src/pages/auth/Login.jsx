@@ -13,6 +13,7 @@ import {
   useGoogleReCaptcha,
 } from "react-google-recaptcha-v3";
 import { ModalResetPassword } from "../../components/modals/ModalResetPassword";
+import { Link } from "react-router-dom";
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -197,7 +198,13 @@ const Login = () => {
             Welcome to SuiteLifer!
           </p>
           <LoginForm /> {/* Wrapped safely inside GoogleReCaptchaProvider */}
-          <section className="flex justify-end mt-3">
+          <section className="flex justify-between mt-3">
+            <Link
+              className="text-sm text-blue-400 underline cursor-pointer"
+              to={"/register"}
+            >
+              Don't have an account?
+            </Link>
             <p
               className="text-sm text-blue-400 underline cursor-pointer"
               onClick={handleResetPasswordBtn}
