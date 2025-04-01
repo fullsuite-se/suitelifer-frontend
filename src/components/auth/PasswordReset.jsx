@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import logo from "../../assets/logos/logo-fs-tagline.svg";
 import toast from "react-hot-toast";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../../utils/axios";
 
 const PasswordReset = () => {
@@ -12,6 +12,7 @@ const PasswordReset = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
+  const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -34,10 +35,16 @@ const PasswordReset = () => {
           newPassword: password,
           token,
         });
-        console.log(response.data);
+
+        if (response.data.isSuccess) {
+          toast.success(
+            "Password updated successfully! Redirecting to login page..."
+          );
+          setTimeout(() => navigate("/app/blogs-feed"), 1500);
+        }
       } catch (error) {
         toast.error(error.response.data.message);
-        console.error(error.response.data.message);
+        console.error(error.response);
       }
     };
     updatePassword();
@@ -110,7 +117,7 @@ const PasswordReset = () => {
 
           <button
             type="submit"
-            className="w-full p-3 bg-primary text-white rounded-md hover:bg-primary/80 font-avenir-black"
+            className="cursor-pointer w-full p-3 bg-primary text-white rounded-md hover:bg-primary/80 font-avenir-black"
           >
             Reset Password
           </button>
