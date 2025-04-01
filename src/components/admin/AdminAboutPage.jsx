@@ -2,12 +2,13 @@ import { useState, useRef, useEffect } from "react";
 import { EyeIcon } from "lucide-react";
 import {
   BookmarkSquareIcon,
-  ArrowUpOnSquareIcon,
-  ArrowPathIcon,
+ChevronDownIcon,
+ChevronUpIcon,
 } from "@heroicons/react/24/outline";
 import api from "../../utils/axios";
 import toast from "react-hot-toast";
 import { useStore } from "../../store/authStore";
+import FileUploaderProvider from "./FileUploader";
 
 const AboutPage = ({ handlePreview }) => {
   // USER DETAILS
@@ -32,6 +33,22 @@ const AboutPage = ({ handlePreview }) => {
     harmony: "",
   });
 
+  const [activeIndex, setActiveIndex] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+  
+  const videoData = [
+    { name: "Team Player Video", key: "teamPlayer" },
+    { name: "Understood Video", key: "understood" },
+    { name: "Athlete Video", key: "athlete" },
+    { name: "Upholds Video", key: "upholds" },
+    { name: "Life/Work Harmony Video", key: "harmony" },
+  ];
+
+  const handleToggle = () => {
+    setIsOpen(!isOpen);
+  };
+
+
   const handleContentDetailsChange = (e) => {
     setContentDetails((cd) => ({ ...cd, [e.target.name]: e.target.value }));
 
@@ -50,12 +67,6 @@ const AboutPage = ({ handlePreview }) => {
   useEffect(() => {
     fetchContent();
   }, [dataUpdated]);
-
-  const [heroImage, setHeroImage] = useState("");
-  const [storyImage, setStoryImage] = useState("");
-
-  const heroRef = useRef(null);
-  const storyRef = useRef(null);
 
   
 
@@ -119,72 +130,8 @@ const AboutPage = ({ handlePreview }) => {
         className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
       ></textarea>
 
-<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {[
-          {
-            label: "Hero Image",
-            ref: heroRef,
-            image: heroImage,
-            setImage: setHeroImage,
-          },
-          {
-            label: "Story Image",
-            ref: storyRef,
-            image: storyImage,
-            setImage: setStoryImage,
-          },
-        ].map((item, index) => (
-          <div key={index} className="flex flex-col gap-2 items-center">
-            <label className="block text-md font-avenir-black">
-              {item.label}
-            </label>
-            <div
-              className="border rounded-xl flex items-center justify-center cursor-pointer aspect-square w-full max-w-xs mx-auto relative group"
-              onClick={() => item.ref.current.click()}
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={(e) => handleDrop(e, item.setImage)}
-            >
-              {item.image ? (
-                <>
-                  <img
-                    src={item.image}
-                    alt="Preview"
-                    className="w-full h-full object-cover rounded-xl"
-                  />
+      <FileUploaderProvider/>
 
-                  <div className="absolute inset-0 bg-black/50 backdrop-blur-sm rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span className="text-white text-sm font-semibold">
-                      Edit Image
-                    </span>
-                  </div>
-                </>
-              ) : (
-                <div className="flex flex-col text-center items-center">
-                  <ArrowUpOnSquareIcon className="size-12 text-gray-500" />
-                  <span className="mt-2 text-lg">{"Upload " + item.label}</span>
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
-        
-
-        <input
-          type="file"
-          accept="image/*"
-          ref={heroRef}
-          className="hidden"
-          onChange={(e) => handleImageChange(e.target.files[0], setHeroImage)}
-        />
-
-        <input
-          type="file"
-          accept="image/*"
-          ref={storyRef}
-          className="hidden"
-          onChange={(e) => handleImageChange(e.target.files[0], setStoryImage)}
-        />
-      </div>
 
 <div className="text-md font-bold pt-4 font-avenir-black">
         About Page Video
@@ -197,59 +144,40 @@ const AboutPage = ({ handlePreview }) => {
         className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
       />
 
+      <div className="cursor-pointer" onClick={handleToggle}>
+        <div className="flex items-center text-md text-center mt-4   font-avenir-black gap-2">
+          <span className="">Core Values Videos</span>
+          {isOpen ? (
+            <ChevronUpIcon className="w-5 h-5" />
+          ) : (
+            <ChevronDownIcon className="w-5 h-5" />
+          )}
+        </div>
+      </div>
 
-
-<div className="text-md font-bold pt-4 font-avenir-black">
-        Team Player Video
-      </div>
-      <input
-        type="text"
-        name="teamPlayer"
-        value={contentDetails.teamPlayer}
-        onChange={(e) => handleContentDetailsChange(e)}
-        className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
-      />
-      <div className="text-md font-bold pt-4 font-avenir-black">
-        Understood Video
-      </div>
-      <input
-        type="text"
-        name="understood"
-        value={contentDetails.understood}
-        onChange={(e) => handleContentDetailsChange(e)}
-        className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
-      />
-
-<div className="text-md font-bold pt-4 font-avenir-black">
-        Athlete Video
-      </div>
-      <input
-        type="text"
-        name="athlete"
-        value={contentDetails.athlete}
-        onChange={(e) => handleContentDetailsChange(e)}
-        className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
-      />
-      <div className="text-md font-bold pt-4 font-avenir-black">
-        Upholds Video
-      </div>
-      <input
-        type="text"
-        name="upholds"
-        value={contentDetails.upholds}
-        onChange={(e) => handleContentDetailsChange(e)}
-        className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
-      />
-      <div className="text-md font-bold pt-4 font-avenir-black">
-        Life/Work Harmony Video
-      </div>
-      <input
-        type="text"
-        name="harmony"
-        value={contentDetails.harmony}
-        onChange={(e) => handleContentDetailsChange(e)}
-        className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
-      />
+      <div
+        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+          isOpen ? 'max-h-screen' : 'max-h-0'
+        }`}
+      >
+        <div className="w-full flex flex-col p-1">
+          {videoData.map((video) => (
+            <div key={video.key} className="p-3">
+              <div className="flex items-center text-md font-bold font-avenir-black">
+                <span className="flex-grow">{video.name}</span>
+              </div>
+              <input
+                type="text"
+                name={video.key}
+                value={contentDetails[video.key]}
+                onChange={(e) => handleContentDetailsChange(e)}
+                className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
+          ))}
+        </div>
+      </div>  
+      
 
       
 
