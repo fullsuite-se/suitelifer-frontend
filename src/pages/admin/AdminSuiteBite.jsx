@@ -8,12 +8,13 @@ import "@ag-grid-community/styles/ag-theme-quartz.css";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import logofsfull from "../../assets/logos/logo-suitebite.svg";
+import logofsfull from "../../assets/logos/logo-fs-full.svg";
 import FileUploaderProvider from "../../components/admin/FileUploader";
 import ContentEditor from "../../components/ContentEditor";
 import PreviewIcon from "@mui/icons-material/Preview";
 import formatTimestamp from "../../components/TimestampFormatter";
 import FeedIcon from "@mui/icons-material/Feed";
+
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 

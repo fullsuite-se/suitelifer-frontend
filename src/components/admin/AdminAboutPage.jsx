@@ -15,7 +15,7 @@ const AboutPage = ({ handlePreview }) => {
 
   // CONTENT DETAILS
   const [contentDetails, setContentDetails] = useState({
-    homeVideo: "",
+  
     textBanner: "",
     heroImage: "",
     storyImage: "",
@@ -25,6 +25,11 @@ const AboutPage = ({ handlePreview }) => {
     visionSlogan: "",
     vision: "",
     dayInPodUrl: "",
+    teamPlayer:"",
+    understood: "",
+    athlete: "",
+    upholds: "",
+    harmony: "",
   });
 
   const handleContentDetailsChange = (e) => {
@@ -46,19 +51,13 @@ const AboutPage = ({ handlePreview }) => {
     fetchContent();
   }, [dataUpdated]);
 
-  const [videoFile, setVideoFile] = useState("");
   const [heroImage, setHeroImage] = useState("");
   const [storyImage, setStoryImage] = useState("");
 
   const heroRef = useRef(null);
   const storyRef = useRef(null);
 
-  const extractYouTubeID = (url) => {
-    const match = url.match(
-      /(?:youtube\.com\/(?:.*v=|.*\/)|youtu\.be\/)([^"&?/ ]{11})/
-    );
-    return match ? match[1] : null;
-  };
+  
 
   const handlePublishChanges = async () => {
     try {
@@ -91,14 +90,6 @@ const AboutPage = ({ handlePreview }) => {
     handleImageChange(file, setImage);
   };
 
-  const handleUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const videoURL = URL.createObjectURL(file);
-      setVideoFile(videoURL);
-    }
-  };
-
   return (
     <div className="overflow-x-auto min-h-screen px-4 sm:px-6 lg:px-8">
       <div className="flex justify-end py-2 gap-2">
@@ -117,70 +108,6 @@ const AboutPage = ({ handlePreview }) => {
         </button>
       </div>
 
-      <div className="text-md font-bold pb-2 font-avenir-black">
-        About Page Video
-      </div>
-      <div className="video-preview w-full">
-        <div className="flex flex-col items-center p-4">
-          <input
-            type="file"
-            accept="video/*"
-            onChange={handleUpload}
-            className="hidden"
-            id="videoUpload"
-          />
-          <div
-            className="max-w-[70%] sm:w-[100%] sm:h-auto border-1 rounded-3xl bg-gray-200 overflow-hidden aspect-video cursor-pointer flex items-center justify-center"
-            onClick={() =>
-              !videoFile && document.getElementById("videoUpload").click()
-            }
-          >
-            {videoFile ? (
-              videoFile.includes("youtube.com") ||
-              videoFile.includes("youtu.be") ? (
-                <iframe
-                  className="w-full h-full object-cover"
-                  src={`https://www.youtube.com/embed/${extractYouTubeID(
-                    videoFile
-                  )}`}
-                  title="YouTube video"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
-              ) : (
-                <video
-                  src={videoFile}
-                  className="w-full h-full object-cover"
-                  controls
-                  autoPlay
-                  loop
-                  muted
-                />
-              )
-            ) : (
-              <div className="flex flex-col sm:flex-row items-center justify-center text-center w-full p-3 gap-2">
-                <ArrowUpOnSquareIcon className="size-5 sm:size-20" />
-                <span className="text-sm sm:text-xl">Upload Video</span>
-              </div>
-            )}
-          </div>
-
-          <div className="flex mt-6 gap-2">
-            {videoFile && (
-              <button
-                type="button"
-                onClick={() => document.getElementById("videoUpload").click()}
-                className="flex gap-1 p-2 text-sm items-center btn-light"
-              >
-                <ArrowPathIcon className="size-5" />
-                Change Video
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-
       <div className="text-md font-bold pt-4 font-avenir-black">
         Text Banner
       </div>
@@ -192,7 +119,7 @@ const AboutPage = ({ handlePreview }) => {
         className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
       ></textarea>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {[
           {
             label: "Hero Image",
@@ -240,6 +167,7 @@ const AboutPage = ({ handlePreview }) => {
             </div>
           </div>
         ))}
+        
 
         <input
           type="file"
@@ -257,6 +185,73 @@ const AboutPage = ({ handlePreview }) => {
           onChange={(e) => handleImageChange(e.target.files[0], setStoryImage)}
         />
       </div>
+
+<div className="text-md font-bold pt-4 font-avenir-black">
+        About Page Video
+      </div>
+      <input
+        type="text"
+        name="aboutVideo"
+        value={contentDetails.aboutVideo}
+        onChange={(e) => handleContentDetailsChange(e)}
+        className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+      />
+
+
+
+<div className="text-md font-bold pt-4 font-avenir-black">
+        Team Player Video
+      </div>
+      <input
+        type="text"
+        name="teamPlayer"
+        value={contentDetails.teamPlayer}
+        onChange={(e) => handleContentDetailsChange(e)}
+        className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+      />
+      <div className="text-md font-bold pt-4 font-avenir-black">
+        Understood Video
+      </div>
+      <input
+        type="text"
+        name="understood"
+        value={contentDetails.understood}
+        onChange={(e) => handleContentDetailsChange(e)}
+        className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+      />
+
+<div className="text-md font-bold pt-4 font-avenir-black">
+        Athlete Video
+      </div>
+      <input
+        type="text"
+        name="athlete"
+        value={contentDetails.athlete}
+        onChange={(e) => handleContentDetailsChange(e)}
+        className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+      />
+      <div className="text-md font-bold pt-4 font-avenir-black">
+        Upholds Video
+      </div>
+      <input
+        type="text"
+        name="upholds"
+        value={contentDetails.upholds}
+        onChange={(e) => handleContentDetailsChange(e)}
+        className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+      />
+      <div className="text-md font-bold pt-4 font-avenir-black">
+        Life/Work Harmony Video
+      </div>
+      <input
+        type="text"
+        name="harmony"
+        value={contentDetails.harmony}
+        onChange={(e) => handleContentDetailsChange(e)}
+        className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+      />
+
+      
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 ">
         {[
@@ -303,8 +298,9 @@ const AboutPage = ({ handlePreview }) => {
         name="dayInPodUrl"
         value={contentDetails.dayInPodUrl}
         onChange={(e) => handleContentDetailsChange(e)}
-        className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-20"
+        className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-30"
       />
+      
     </div>
   );
 };
