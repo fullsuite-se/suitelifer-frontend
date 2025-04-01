@@ -14,7 +14,6 @@ import BlogDetails from "./pages/guest/BlogDetails";
 import NewsDetails from "./pages/guest/NewsDetails";
 import ApplicationForm from "./pages/guest/ApplicationForm";
 import CongratsApplicationForm from "./pages/guest/CongratsApplicationForm";
-import PasswordReset from "./components/auth/PasswordReset";
 
 // Regular Pages
 import EmployeeBlogsFeed from "./pages/employee/EmployeeBlogsFeed";
@@ -35,7 +34,8 @@ import ProtectedRoutes from "./utils/protectedRoutes/ProtectedRoutes";
 import RootLayout from "./components/layout/RootLayout";
 
 // Auth Pages
-import Login from "./components/auth/Login";
+import Login from "./pages/auth/Login";
+import PasswordReset from "./pages/auth/PasswordReset";
 
 // Others
 import { Toaster } from "react-hot-toast";
@@ -51,6 +51,7 @@ function App() {
           {/* Routes that are publicly available (guest) */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/careers-all" element={<CareersAll />} />

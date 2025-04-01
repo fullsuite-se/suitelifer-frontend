@@ -12,7 +12,7 @@ import {
   GoogleReCaptchaProvider,
   useGoogleReCaptcha,
 } from "react-google-recaptcha-v3";
-import { ModalResetPassword } from "../modals/ModalResetPassword";
+import { ModalResetPassword } from "../../components/modals/ModalResetPassword";
 
 const LoginForm = () => {
   const navigate = useNavigate();
