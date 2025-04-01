@@ -86,13 +86,13 @@ export const ModalResetPassword = ({ isOpen, handleClose }) => {
                     />
                   </div>
                   {loading ? (
-                    <div className="mt-3">
+                    <div className="mt-3 mx-auto w-min">
                       <TwoCirclesLoader
                         bg={"transparent"}
                         color1={"#bfd1a0"}
                         color2={"#0097b2"}
                         height={30}
-                        width={"auto"}
+                        width={40}
                       />
                     </div>
                   ) : (
