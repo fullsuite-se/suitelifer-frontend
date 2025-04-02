@@ -22,9 +22,9 @@ const isValidEpisodeUrl = (url) => {
 
     if (!parsedUrl.hostname.endsWith("spotify.com")) return false;
 
-    const episodeRegex = /^\/episode\/[a-zA-Z0-9]{22}$/;
+    const embedRegex = /^\/(episode|playlist)\/[a-zA-Z0-9]{22}$/;
 
-    return episodeRegex.test(parsedUrl.pathname);
+    return embedRegex.test(parsedUrl.pathname);
   } catch (error) {
     return false;
   }
@@ -40,7 +40,7 @@ const SpotifyEpisodes = () => {
   // SPOTIFY VARIABLES
   const defaultEpisodeDetails = {
     episodeId: null,
-    id: "",
+    spotifyId: "",
   };
 
   const [episodes, setEpisodes] = useState([]);
@@ -59,7 +59,7 @@ const SpotifyEpisodes = () => {
   const handleAddEditEpisode = async (e) => {
     e.preventDefault();
 
-    if (!isValidEpisodeUrl(episodeDetails.id)) {
+    if (!isValidEpisodeUrl(episodeDetails.spotifyId)) {
       setEpisodeDetails(defaultEpisodeDetails);
       return showError("Invalid Spotify episode URL.");
     }
@@ -69,7 +69,7 @@ const SpotifyEpisodes = () => {
         (episode) => episode.episodeId === episodeDetails.episodeId
       );
       if (
-        episodeDetails.id ===
+        episodeDetails.spotifyId ===
         `https://open.spotify.com/episode/${episodes[index].spotifyId}`
       ) {
         setEpisodeDetails(defaultEpisodeDetails);
@@ -79,7 +79,7 @@ const SpotifyEpisodes = () => {
 
     if (
       episodes.some(
-        (ep) => ep.spotifyId === extractSpotifyId(episodeDetails.id)
+        (ep) => ep.spotifyId === extractSpotifyId(episodeDetails.spotifyId)
       )
     ) {
       setEpisodeDetails(defaultEpisodeDetails);
@@ -89,8 +89,8 @@ const SpotifyEpisodes = () => {
     try {
       if (episodeDetails.episodeId === null) {
         // ADD SPOTIFY EPISODE
-        const response = await api.post("/api/add-episode", {
-          url: episodeDetails.id,
+        const response = await api.post("/api/spotify/", {
+          url: episodeDetails.spotifyId,
           userId: user.id,
         });
 
@@ -98,11 +98,15 @@ const SpotifyEpisodes = () => {
 
         setDataUpdated(!dataUpdated);
       } else {
-        const response = await api.post("/api/edit-episode", {
-          episodeId: episodeDetails.episodeId,
-          url: episodeDetails.id,
-          userId: user.id,
-        });
+        // EDIT SPOTIFY EPISODE
+        const response = await api.put(
+          `/api/spotify/${episodeDetails.episodeId}`,
+          {
+            episodeId: episodeDetails.episodeId,
+            url: episodeDetails.spotifyId,
+            userId: user.id,
+          }
+        );
 
         toast.success(response.data.message);
 
@@ -120,10 +124,6 @@ const SpotifyEpisodes = () => {
     setEpisodeDetails(defaultEpisodeDetails);
   };
 
-  const deleteEpisode = (id) => {
-    setEpisodes(episodes.filter((ep) => ep.episodeId !== id));
-  };
-
   const handleDeleteClick = (episodeId) => {
     showConfirmationToast({
       message: "Delete spotify episode?",
@@ -134,10 +134,13 @@ const SpotifyEpisodes = () => {
 
   const handleDelete = async (episodeId) => {
     try {
-      const response = await api.post("/api/delete-episode", {
-        episodeId,
-        userId: user.id,
-      });
+      const response = await api.delete(
+        `/api/spotify/${episodeDetails.episodeId}`,
+        {
+          episodeId,
+          userId: user.id,
+        }
+      );
 
       toast.success(response.data.message);
 
@@ -149,9 +152,12 @@ const SpotifyEpisodes = () => {
 
   const fetchSpotifyEpisodes = async () => {
     try {
-      const response = await api.get("/api/all-episodes");
+      const response = await api.get("/api/spotify/");
 
       console.log(response.data.data);
+
+      console.log(response.data);
+      
 
       setEpisodes(response.data.data);
     } catch (err) {
@@ -188,9 +194,9 @@ const SpotifyEpisodes = () => {
       <div className="flex gap-2">
         <input
           type="text"
-          value={episodeDetails.id}
+          value={episodeDetails.spotifyId}
           onChange={(e) =>
-            setEpisodeDetails((ed) => ({ ...ed, id: e.target.value }))
+            setEpisodeDetails((ed) => ({ ...ed, spotifyId: e.target.value }))
           }
           placeholder="Enter Spotify episode URL"
           className="border p-2 rounded-2xl w-full"
@@ -233,7 +239,7 @@ const SpotifyEpisodes = () => {
                   onClick={() => {
                     setEpisodeDetails({
                       episodeId: episode.episodeId,
-                      id: `https://open.spotify.com/episode/${episode.spotifyId}`,
+                      spotifyId: `https://open.spotify.com/episode/${episode.spotifyId}`,
                     });
                   }}
                   className="bg-primary text-white w-full rounded-2xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e] h-[50%]"
