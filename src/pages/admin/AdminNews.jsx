@@ -47,7 +47,9 @@ const AdminNews = () => {
         datePublished: { seconds: Math.floor(Date.now() / 1000) },
         comments: 0,
         views: 0,
-        image: newNews.image || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREPVIcCkWNGNzUzt3wUfZhY-I09Z0Rn-jc4g&s",
+        image:
+          newNews.image ||
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREPVIcCkWNGNzUzt3wUfZhY-I09Z0Rn-jc4g&s",
       };
       setRowNewsData((prevData) => [...prevData, newEntry]);
     }
@@ -71,14 +73,13 @@ const AdminNews = () => {
       id: "1",
       title: "The Art of Code",
       author: "Alex Mercer",
-      datePublished: { "seconds": 1716161626 },
+      datePublished: { seconds: 1716161626 },
       comments: 321,
       views: 12567,
       likes: 876,
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREPVIcCkWNGNzUzt3wUfZhY-I09Z0Rn-jc4g&s"
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREPVIcCkWNGNzUzt3wUfZhY-I09Z0Rn-jc4g&s",
     },
-    
- 
   ];
 
   const [rowNewsData, setRowNewsData] = useState(newsData);
@@ -101,55 +102,61 @@ const AdminNews = () => {
     <>
       {!location.pathname.includes("/news/details/") ? (
         <>
-          <header className="container flex h-12 items-center justify-between flex-wrap">
-            <div className="hidden lg:flex md-flex gap-4 items-center ">
-              <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
-            </div>
+          <div className="flex my-3 w-fit ml-auto">
+            <button
+              className="hidden sm:block btn-primary"
+              onClick={() => {
+                navigate("/app/news/new-news");
+              }}
+            >
+              + Add News
+            </button>
 
-            <div className="flex">
-              {/* desktop */}
-              <button
-                className="hidden sm:block btn-primary"
-                onClick={() => {
-                  navigate("/app/news/new-news");
-                }}
-              >
-                + Add News
-              </button>
-
-              {/* Mobile */}
-              <button
-                className="sm:hidden p-2 btn-primary"
-                onClick={() => setShowModal(true)}
-              >
-                <span>+</span> <FeedIcon />
-              </button>
-            </div>
-          </header>
-
-          <div className="flex flex-col md:grid md:grid-cols-2 lg:flex-row gap-4 p-4 bg-white shadow-md rounded-lg mb-4">
-            <div className="p-4 bg-gray-200 rounded-lg w-full h-10 flex items-center justify-between">
-              <span className="text-lg font-bold">News</span>
-              <span className="text-2xl">{formatNumber(totalNews)}</span>
-            </div>
-            <div className="p-4 bg-gray-200 rounded-lg w-full h-10 flex items-center justify-between">
-              <span className="text-lg font-bold">Total Comments</span>
-              <span className="text-2xl">{formatNumber(totalComments)}</span>
-            </div>
-            <div className="p-4 bg-gray-200 rounded-lg w-full h-10 flex items-center justify-between">
-              <span className="text-lg font-bold">Total Views</span>
-              <span className="text-2xl">{formatNumber(totalViews)}</span>
-            </div>
-            <div className="p-4 bg-gray-200 rounded-lg w-full h-10 flex items-center justify-between">
-              <span className="text-lg font-bold">Total Likes</span>
-              <span className="text-2xl">{formatNumber(totalLikes)}</span>
-            </div>
+            <button
+              className="sm:hidden p-2 btn-primary"
+              onClick={() => setShowModal(true)}
+            >
+              <span>+</span> <FeedIcon />
+            </button>
           </div>
 
-          <div className="flex gap-4">
+          <section className="flex gap-3 [&_*]:rounded-md [&_*]:bg-gray-100 [&_div]:border [&_div]:border-gray-200 [&_*]:flex-1">
+            <div className="flex flex-col items-center py-3">
+              <span className="text-sm text-center md:text-base">News</span>
+              <span className="text-sm text-center md:text-base">
+                {formatNumber(totalNews)}
+              </span>
+            </div>
+            <div className="flex flex-col items-center py-3">
+              <span className="text-sm text-center md:text-base">
+                Total Comments
+              </span>
+              <span className="text-sm text-center md:text-base">
+                {formatNumber(totalComments)}
+              </span>
+            </div>
+            <div className="flex flex-col items-center py-3">
+              <span className="text-sm text-center md:text-base">
+                Total Views
+              </span>
+              <span className="text-sm text-center md:text-base">
+                {formatNumber(totalViews)}
+              </span>
+            </div>
+            <div className="flex flex-col items-center py-3">
+              <span className="text-sm text-center md:text-base">
+                Total Likes
+              </span>
+              <span className="text-sm text-center md:text-base">
+                {formatNumber(totalNews)}
+              </span>
+            </div>
+          </section>
+
+          <div className="flex gap-4 mt-3">
             <div className="w-full overflow-x-auto">
               <div
-                className="ag-theme-quartz p-3 sm:p-5 min-w-[600px] lg:w-full"
+                className="ag-theme-quartz min-w-[600px] lg:w-full"
                 style={{ height: "auto" }}
               >
                 <AgGridReact
@@ -160,7 +167,7 @@ const AdminNews = () => {
                       field: "image",
                       flex: 2,
                       filter: "agTextColumnFilter",
-                      headerClass: "text-primary font-bold bg-tertiary",
+                      headerClass: "text-primary font-bold bg-gray-100",
                       cellRenderer: (params) =>
                         params.value ? (
                           <img
@@ -177,7 +184,7 @@ const AdminNews = () => {
                       field: "title",
                       flex: 2,
                       filter: "agTextColumnFilter",
-                      headerClass: "text-primary font-bold bg-tertiary",
+                      headerClass: "text-primary font-bold bg-gray-100",
                       valueGetter: (params) =>
                         params.data.title.replace(/<[^>]*>/g, ""),
                     },
@@ -186,14 +193,14 @@ const AdminNews = () => {
                       field: "author",
                       flex: 2,
                       filter: "agTextColumnFilter",
-                      headerClass: "text-primary font-bold bg-tertiary",
+                      headerClass: "text-primary font-bold bg-gray-100",
                       hide: window.innerWidth < 640,
                     },
                     {
                       headerName: "Date Published",
                       field: "datePublished",
                       flex: 2,
-                      headerClass: "text-primary font-bold bg-tertiary",
+                      headerClass: "text-primary font-bold bg-gray-100",
                       valueGetter: (params) =>
                         new Date(
                           params.data.datePublished.seconds * 1000
@@ -205,7 +212,7 @@ const AdminNews = () => {
                       field: "views",
                       flex: 1,
                       filter: "agTextColumnFilter",
-                      headerClass: "text-primary font-bold bg-tertiary",
+                      headerClass: "text-primary font-bold bg-gray-100",
                       valueGetter: (params) => formatNumber(params.data.views),
                     },
                     {
@@ -213,7 +220,7 @@ const AdminNews = () => {
                       field: "likes",
                       flex: 1,
                       filter: "agTextColumnFilter",
-                      headerClass: "text-primary font-bold bg-tertiary",
+                      headerClass: "text-primary font-bold bg-gray-100",
                       valueGetter: (params) => formatNumber(params.data.likes),
                     },
                     {
@@ -221,7 +228,7 @@ const AdminNews = () => {
                       field: "comments",
                       flex: 1,
                       filter: "agTextColumnFilter",
-                      headerClass: "text-primary font-bold bg-tertiary",
+                      headerClass: "text-primary font-bold bg-gray-100",
                       valueGetter: (params) =>
                         formatNumber(params.data.comments),
                       hide: window.innerWidth < 768,
@@ -230,7 +237,7 @@ const AdminNews = () => {
                       headerName: "Action",
                       field: "action",
                       flex: 2,
-                      headerClass: "text-primary font-bold bg-tertiary",
+                      headerClass: "text-primary font-bold bg-gray-100",
                       cellRenderer: (params) => (
                         <div className="flex gap-2">
                           <button
