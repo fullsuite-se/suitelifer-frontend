@@ -60,7 +60,7 @@ const AdminHomePage = ({ handlePreview }) => {
             id="videoUpload"
           />
           <div
-            className="max-w-[70%] sm:w-[100%] sm:h-auto border border rounded-3xl bg-gray-200 overflow-hidden aspect-video cursor-pointer flex items-center justify-center"
+            className="max-w-[70%] sm:w-[100%] sm:h-auto border rounded-3xl bg-gray-200 overflow-hidden aspect-video cursor-pointer flex items-center justify-center"
             onClick={() =>
               !videoFile && document.getElementById("videoUpload").click()
             }
