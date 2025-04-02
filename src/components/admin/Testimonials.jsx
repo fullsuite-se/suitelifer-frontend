@@ -151,7 +151,7 @@ function Testimonials() {
       <div className="border-primary rounded-md w-full overflow-hidden">
         <div className="w-full overflow-x-auto">
           <div
-            className="ag-theme-quartz min-w-[600px] lg:w-full"
+            className="ag-theme-quartz min-w-[600px] lg:w-full "
             style={{ height: "600px", width: "100%" }}
           >
             <AgGridReact

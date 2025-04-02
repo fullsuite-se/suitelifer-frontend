@@ -33,15 +33,15 @@ const AdminHomePage = () => {
   };
 
   return (
-    <>
-      <div className="video-preview w-full">
-        <div className="flex justify-end px-4 py-2 gap-2">
+    <div className="flex flex-col md:flex-row gap-4 p-4">
+      <div className="flex flex-col md:w-full">
+        <div className="flex justify-end gap-2 mb-4">
           <button
             className="btn-primary flex items-center p-2 gap-2"
             // onClick={handlePublishChanges}
           >
-            <EyeIcon className="size-7 sm:size-5" />
-            <span className="hidden sm:flex w-full items-centerjustify-center">
+            <EyeIcon className="w-7 sm:w-5" />
+            <span className="hidden sm:flex w-full items-center justify-center">
               Preview
             </span>
           </button>
@@ -49,7 +49,7 @@ const AdminHomePage = () => {
             className="btn-primary flex items-center p-2 gap-2"
             onClick={handlePublishChanges}
           >
-            <BookmarkSquareIcon className="size-7 sm:size-5" />
+            <BookmarkSquareIcon className="w-7 sm:w-5" />
             <span className="hidden sm:flex">Publish Changes</span>
           </button>
         </div>
@@ -60,10 +60,10 @@ const AdminHomePage = () => {
           name="videoURL"
           value={contentDetails.videoURL}
           onChange={(e) => handleContentDetailsChange(e)}
-          className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-30"
+          className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
         />
       </div>
-    </>
+    </div>
   );
 };
 
