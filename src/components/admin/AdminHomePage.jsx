@@ -23,7 +23,7 @@ const AdminHomePage = () => {
 
   const handlePublishChanges = async () => {
     try {
-      const response = await api.post("/api/nanidesuka", {
+      const response = await api.post("/api/nani/desu/ka", {
         ...contentDetails,
         user_id: user.id,
       });
