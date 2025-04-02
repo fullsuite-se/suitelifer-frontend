@@ -6,7 +6,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 
-const AdminHomePage = ({ handlePreview }) => {
+const AdminHomePage = () => {
 
 
   const handleContentDetailsChange = (e) => {
@@ -17,9 +17,7 @@ const AdminHomePage = ({ handlePreview }) => {
   };
  
   const [contentDetails, setContentDetails] = useState({
-  
     videoURL: "",
-  
   });
 
 
@@ -47,7 +45,7 @@ const AdminHomePage = ({ handlePreview }) => {
         <div className="flex justify-end px-4 py-2 gap-2">
           <button
             className="btn-primary flex items-center p-2 gap-2"
-            onClick={handlePublishChanges}
+            // onClick={handlePublishChanges}
           >
             <EyeIcon className="size-7 sm:size-5" />
             <span className="hidden sm:flex w-full items-centerjustify-center">Preview</span>
