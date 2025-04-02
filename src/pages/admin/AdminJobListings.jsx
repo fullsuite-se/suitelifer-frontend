@@ -287,13 +287,13 @@ export default function AdminJobListing() {
       let response;
       if (setupDetails.setupId === null) {
         // ADD SETUP
-        response = await api.post("/api/add-setup", {
+        response = await atsAPI.post("/setups/", {
           ...setupDetails,
           userId: user.id,
         });
       } else {
         // EDIT SETUP
-        response = await api.post("/api/edit-setup", {
+        response = await atsAPI.put(`/setups/${setupDetails.setupId}`, {
           ...setupDetails,
           userId: user.id,
         });
@@ -547,7 +547,7 @@ export default function AdminJobListing() {
   };
 
   const fetchSetups = async () => {
-    const response = (await api.get("/api/get-all-setups")).data;
+    const response = (await atsAPI.get("/setups/")).data;
 
     setSetups((s) => response.data);
     setRowSetupData(response.data);
