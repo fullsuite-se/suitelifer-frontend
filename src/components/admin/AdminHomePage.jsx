@@ -1,25 +1,18 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
-import {
-  EyeIcon,
-  BookmarkSquareIcon,
-} from "@heroicons/react/24/outline";
-
+import { EyeIcon, BookmarkSquareIcon } from "@heroicons/react/24/outline";
 
 const AdminHomePage = () => {
-
-
   const handleContentDetailsChange = (e) => {
     setContentDetails((cd) => ({ ...cd, [e.target.name]: e.target.value }));
 
     console.log(contentDetails);
     console.log(user.id);
   };
- 
+
   const [contentDetails, setContentDetails] = useState({
     videoURL: "",
   });
-
 
   const handlePublishChanges = async () => {
     try {
@@ -48,7 +41,9 @@ const AdminHomePage = () => {
             // onClick={handlePublishChanges}
           >
             <EyeIcon className="size-7 sm:size-5" />
-            <span className="hidden sm:flex w-full items-centerjustify-center">Preview</span>
+            <span className="hidden sm:flex w-full items-centerjustify-center">
+              Preview
+            </span>
           </button>
           <button
             className="btn-primary flex items-center p-2 gap-2"
@@ -60,13 +55,13 @@ const AdminHomePage = () => {
         </div>
         <div className="text-md p-1 font-avenir-black">Home Page Video</div>
 
-<input
-        type="text"
-        name="videoURL"
-        value={contentDetails.videoURL}
-        onChange={(e) => handleContentDetailsChange(e)}
-        className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-30"
-      />
+        <input
+          type="text"
+          name="videoURL"
+          value={contentDetails.videoURL}
+          onChange={(e) => handleContentDetailsChange(e)}
+          className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-30"
+        />
       </div>
     </>
   );
