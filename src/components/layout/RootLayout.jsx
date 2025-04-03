@@ -17,7 +17,7 @@ const RootLayout = () => {
   return (
     <section
       className="flex gap-4 h-dvh flex-col lg:flex-row overflow-hidden"
-      style={{ maxWidth: "1800px", margin: "0 auto", padding: "0 1rem" }}
+      style={{ maxWidth: "1800px", margin: "0 auto", padding: "0 1em" }}
     >
       <section
         className="px-6 bg-white fixed -top-full left-0 right-0 z-50 transition-all duration-300"

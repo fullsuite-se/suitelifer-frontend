@@ -48,7 +48,7 @@ const EmployeeBlogsFeed = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="p-2 xl:p-3">
+    <section className="p-2 xl:p-3 mb-50">
       {id ? (
         <Outlet />
       ) : (
