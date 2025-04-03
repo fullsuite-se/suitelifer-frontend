@@ -23,14 +23,13 @@ const AdminContents = () => {
   const handleChange = (event, newValue) => {
     if (unsavedChanges) {
       setPendingTab(newValue);
-      setDialogOpen(true); 
+      setDialogOpen(true);
     } else {
-      setActiveTab(newValue); 
+      setActiveTab(newValue);
     }
   };
 
   const handleSave = () => {
-    
     console.log("Changes saved!");
     setUnsavedChanges(false);
     setDialogOpen(false);
@@ -41,13 +40,13 @@ const AdminContents = () => {
   const handleDiscard = () => {
     setUnsavedChanges(false);
     setDialogOpen(false);
-    setActiveTab(pendingTab); 
+    setActiveTab(pendingTab);
     setPendingTab(null);
   };
 
   return (
     <div className="w-full flex flex-col">
-      <div className="w-full border-b border-gray-300">
+      <div className="min-w-full overflow-x-scroll border-b border-gray-300">
         <Tabs
           value={activeTab}
           onChange={handleChange}
@@ -60,14 +59,20 @@ const AdminContents = () => {
               fontWeight: 500,
               textTransform: "none",
               fontSize: 14,
-              minWidth: "80px",
+              minWidth: "40px",
             },
             "& .MuiTab-root.Mui-selected": {
               color: "#0097b2",
               fontWeight: 900,
             },
+            "@media (min-width: 1024px)": {
+              "& .MuiTab-root": {
+                fontSize: 14,
+                minWidth: "70px",
+              },
+            },
           }}
-          className="w-full"
+          className="w-fit"
         >
           <Tab label="Home" value={0} />
           <Tab label="About" value={1} />
