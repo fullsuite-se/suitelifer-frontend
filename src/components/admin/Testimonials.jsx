@@ -16,11 +16,14 @@ import { AgGridReact } from "@ag-grid-community/react";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
-import FileUploaderProvider from "../../components/admin/FileUploader";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 function Testimonials() {
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [imageFilename, setImageFilename] = useState("");
+  const [image, setImage] = useState(null);
   const [rowTestimonialData, setRowTestimonialData] = useState([
     {
       id: "1",
@@ -57,34 +60,39 @@ function Testimonials() {
     created_by: "Melbraei Santiago",
   });
 
-  const positionOptions = [
-    { value: "Software Engineer", label: "Software Engineer" },
-    { value: "Data Analyst", label: "Data Analyst" },
-    { value: "Web Developer", label: "Web Developer" },
-    { value: "Product Manager", label: "Product Manager" },
-    { value: "UI/UX Designer", label: "UI/UX Designer" },
-    { value: "Quality Assurance", label: "Quality Assurance" },
-    { value: "DevOps Engineer", label: "DevOps Engineer" },
-    { value: "Scrum Master", label: "Scrum Master" },
-    { value: "Business Analyst", label: "Business Analyst" },
-    { value: "Technical Support", label: "Technical Support" },
-  ];
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      setUploading(true);
+      setImageFilename(file.name);
+      setUploadProgress(0);
+
+      let loadProgress = 0;
+      const interval = setInterval(() => {
+        loadProgress += 20;
+        setUploadProgress(loadProgress);
+        if (loadProgress >= 100) {
+          clearInterval(interval);
+          setImage(file);
+          setUploading(false);
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            setCurrentTestimonial({
+              ...currentTestimonial,
+              employee_image: reader.result,
+            });
+          };
+          reader.readAsDataURL(file);
+        }
+      }, 200);
+    }
+  };
 
   const handlePositionChange = (e) => {
     setCurrentTestimonial({
       ...currentTestimonial,
       position: e.target.value,
     });
-  };
-
-  const validatePosition = () => {
-    const isValid = positionOptions.some(
-      (option) => option.value === currentTestimonial.position
-    );
-
-    if (!isValid) {
-      setCurrentTestimonial({ ...currentTestimonial, position: "" });
-    }
   };
 
   const gridRef = useRef();
@@ -143,7 +151,7 @@ function Testimonials() {
       <div className="border-primary rounded-md w-full overflow-hidden">
         <div className="w-full overflow-x-auto">
           <div
-            className="ag-theme-quartz min-w-[600px] lg:w-full"
+            className="ag-theme-quartz min-w-[600px] lg:w-full "
             style={{ height: "600px", width: "100%" }}
           >
             <AgGridReact
@@ -248,11 +256,47 @@ function Testimonials() {
           </div>
         </div>
 
-        <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <Dialog
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          fullWidth
+          maxWidth="sm"
+        >
           <DialogTitle className="w-full text-center justify-center">
             {currentTestimonial.id ? "Edit Testimonial" : "Add Testimonial"}
           </DialogTitle>
           <DialogContent>
+            <div className="w-full mb-3">
+              <button
+                onClick={() => document.getElementById("fileInput").click()}
+                className="w-full p-3 bg-primary/20 text-white rounded-md mt-2 hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                <span className="text-black font-avenir-black">
+                  Upload Image
+                </span>
+              </button>
+              <input
+                id="fileInput"
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                style={{ display: "none" }}
+              />
+              {imageFilename && (
+                <div className="mt-2 text-sm text-gray-600">
+                  <p>File Uploaded: {imageFilename}</p>
+                </div>
+              )}
+              {uploading && (
+                <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700 mt-2">
+                  <div
+                    className="bg-primary h-2.5 rounded-full"
+                    style={{ width: `${uploadProgress}%` }}
+                  ></div>
+                </div>
+              )}
+            </div>
+
             <div className="w-full mb-3">
               <label className="block text-gray-700 font-avenir-black">
                 Employee Name<span className="text-primary">*</span>
@@ -268,8 +312,7 @@ function Testimonials() {
                     employee_name: e.target.value,
                   })
                 }
-                rows={3}
-                className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                className="w-full  p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
               />
             </div>
 
@@ -278,9 +321,10 @@ function Testimonials() {
                 Testimony<span className="text-primary">*</span>
               </label>
 
-              <input
+              <textarea
                 name="testimony"
                 required
+                row={3}
                 value={currentTestimonial.testimony}
                 onChange={(e) =>
                   setCurrentTestimonial({
@@ -288,8 +332,8 @@ function Testimonials() {
                     testimony: e.target.value,
                   })
                 }
-                rows={3}
-                className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                style={{ height: "200px" }}
+                className="w-full p-3 resize-y border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
               />
             </div>
 
@@ -301,18 +345,10 @@ function Testimonials() {
               <input
                 name="position"
                 required
-                list="position-options"
                 value={currentTestimonial.position}
                 onChange={handlePositionChange}
-                onBlur={validatePosition}
                 className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
               />
-
-              <datalist id="position-options">
-                {positionOptions.map((option) => (
-                  <option key={option.value} value={option.value} />
-                ))}
-              </datalist>
             </div>
 
             <div>
@@ -338,14 +374,6 @@ function Testimonials() {
                 <option value={0}>Hidden</option>
               </select>
             </div>
-            <FileUploaderProvider
-              onUpload={(fileUrl) =>
-                setCurrentTestimonial({
-                  ...currentTestimonial,
-                  employee_image: fileUrl,
-                })
-              }
-            />
           </DialogContent>
           <DialogActions>
             <button className="btn-light" onClick={() => setOpenDialog(false)}>
