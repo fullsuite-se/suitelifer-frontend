@@ -41,7 +41,7 @@ const JobCarouselVersion2 = ({ jobs }) => {
           className="w-full"
         >
           {jobs
-            .filter((_, index) => index < 4) 
+            // .filter((_, index) => index < 4) 
             .map((job, index) => (
               <SwiperSlide key={index}>
                 {({ isActive }) => (

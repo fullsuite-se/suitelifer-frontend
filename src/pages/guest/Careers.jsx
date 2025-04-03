@@ -22,6 +22,7 @@ import LoadingSmallSpotify from "../../components/careers/LoadingSmallSpotify";
 import careersLeft from "../../assets/images/careers-hero-images/careers-left.png";
 import careersRight from "../../assets/images/careers-hero-images/careers-right.png";
 import careersMain from "../../assets/images/careers-hero-images/careers-main.png";
+import atsAPI from "../../utils/atsAPI";
 
 const Careers = () => {
   const heroImages = {
@@ -32,8 +33,10 @@ const Careers = () => {
   const [jobs, setJobs] = useState([]);
   const fetchJobs = async () => {
     try {
-      const response = await api.get("/api/all-open-jobs");
+      const response = await atsAPI.get("/jobs/open");
       setJobs((j) => response.data.data);
+      console.log(response.data);
+      console.log(filter);
     } catch (err) {
       console.log(err);
     }
@@ -54,7 +57,7 @@ const Careers = () => {
   const [industries, setIndustries] = useState([]);
   const fetchIndustries = async () => {
     try {
-      const response = await api.get("/api/get-all-industries");
+      const response = await atsAPI.get("/industries/");
       setIndustries((i) => response.data.data);
       console.log(response.data.data);
     } catch (err) {
@@ -75,7 +78,7 @@ const Careers = () => {
 
   const fetchFilteredJobs = async () => {
     try {
-      const response = await api.get(`/api/all-open-jobs/${filter}`);
+      const response = await atsAPI.get(`/jobs/open-filter/${filter}`);
       console.log(filter);
 
       setJobs((j) => response.data.data);

@@ -173,7 +173,7 @@ const Form = () => {
       });
 
       if (response.data.message === "successfully inserted") {
-        const res = await api.post("/api/get-job-assessment-url", {
+        const res = await atsAPI.post("/jobs/assessment-url", {
           job_id: id,
         });
 
