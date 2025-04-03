@@ -76,7 +76,7 @@ const AdminContents = () => {
         >
           <Tab label="Home" value={0} />
           <Tab label="About" value={1} />
-          <Tab label="Spotify" value={2} />
+          <Tab label="Pod Cast" value={2} />
           <Tab label="Courses" value={3} />
           <Tab label="Personality Test" value={4} />
           <Tab label="Testimonials" value={5} />
