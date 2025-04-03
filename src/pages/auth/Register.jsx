@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import logo from "../../assets/logos/logo-fs-tagline.svg";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
+import api from "../../utils/axios";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -13,14 +15,24 @@ const Register = () => {
     setValue(value);
   };
 
+  const submitRegistration = async () => {
+    const response = await api.post("/api/register", {
+      firstName,
+      lastName,
+      workEmail,
+      password,
+    });
+    return response;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("firstname", firstName);
-    console.log("lastname", lastName);
-    console.log("workemmail", workEmail);
-    console.log("password", password);
-    console.log("confirm password", confirmPassword);
+    try {
+      submitRegistration();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
