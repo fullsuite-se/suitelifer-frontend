@@ -2,52 +2,85 @@ import { useState, useRef, useEffect } from "react";
 import { EyeIcon } from "lucide-react";
 import {
   BookmarkSquareIcon,
-ChevronDownIcon,
-ChevronUpIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
 } from "@heroicons/react/24/outline";
 import api from "../../utils/axios";
 import toast from "react-hot-toast";
 import { useStore } from "../../store/authStore";
-import FileUploaderProvider from "./FileUploader";
+import ImageUploader from "./ImageUploader";
 
 const AboutPage = ({ handlePreview }) => {
   // USER DETAILS
   const user = useStore((state) => state.user);
 
+  // IMAGES
+  const [files, setFiles] = useState({
+    getInTouchImage: null,
+    heroImage: null,
+    storyImage: null,
+    careersMainImage: null,
+    careersLeftImage: null,
+    careersRightImage: null,
+  });
+
   // CONTENT DETAILS
   const [contentDetails, setContentDetails] = useState({
-  
+    getInTouchImage: "",
+    homeVideo: "",
     textBanner: "",
     heroImage: "",
     storyImage: "",
     aboutVideo: "",
+    teamPlayerVideo: "",
+    understoodVideo: "",
+    focusedVideo: "",
+    upholdsVideo: "",
+    harmonyVideo: "",
     missionSlogan: "",
     mission: "",
+    missionVideo: "",
     visionSlogan: "",
     vision: "",
+    visionVideo: "",
     dayInPodUrl: "",
-    teamPlayer:"",
-    understood: "",
-    athlete: "",
-    upholds: "",
-    harmony: "",
+    careersMainImage: "",
+    careersLeftImage: "",
+    careersRightImage: "",
+    contactEmail: "",
+    contactLandline: "",
+    contactPhone: "",
   });
 
   const [activeIndex, setActiveIndex] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  
+
   const videoData = [
-    { name: "Team Player Video", key: "teamPlayer" },
-    { name: "Understood Video", key: "understood" },
-    { name: "Athlete Video", key: "athlete" },
-    { name: "Upholds Video", key: "upholds" },
-    { name: "Life/Work Harmony Video", key: "harmony" },
+    { name: "teamPlayerVideo", key: "core1" },
+    { name: "understoodVideo", key: "core2" },
+    { name: "focusedVideo", key: "core3" },
+    { name: "upholdsVideo", key: "core4" },
+    { name: "harmonyVideo", key: "core5" },
   ];
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
   };
 
+  const handleFileChange = (e, key) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFiles((f) => ({
+          ...f,
+          [key]: [file, reader.result],
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+    console.log(files[key]);
+  };
 
   const handleContentDetailsChange = (e) => {
     setContentDetails((cd) => ({ ...cd, [e.target.name]: e.target.value }));
@@ -57,9 +90,9 @@ const AboutPage = ({ handlePreview }) => {
   };
 
   const fetchContent = async () => {
-    const response = await api.get("/api/get-content");
+    const response = await api.get("/api/content/");
 
-    setContentDetails(response.data.data);
+    setContentDetails(response.data.content);
   };
 
   const [dataUpdated, setDataUpdated] = useState(false);
@@ -68,10 +101,14 @@ const AboutPage = ({ handlePreview }) => {
     fetchContent();
   }, [dataUpdated]);
 
-  
-
   const handlePublishChanges = async () => {
     try {
+      Object.entries(files).forEach(([key, value]) => {
+        console.log(key, value);
+      });
+
+      return;
+
       const response = await api.post("/api/add-content", {
         ...contentDetails,
         user_id: user.id,
@@ -86,19 +123,6 @@ const AboutPage = ({ handlePreview }) => {
         "Encountered an error while publishing changes. Try again in a few minutes..."
       );
     }
-  };
-
-  const handleImageChange = (file, setImage) => {
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setImage(imageUrl);
-    }
-  };
-
-  const handleDrop = (event, setImage) => {
-    event.preventDefault();
-    const file = event.dataTransfer.files[0];
-    handleImageChange(file, setImage);
   };
 
   return (
@@ -130,10 +154,21 @@ const AboutPage = ({ handlePreview }) => {
         className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
       ></textarea>
 
-      <FileUploaderProvider/>
+      <div className="flex flex-col 2xl:flex-row justify-around gap-2">
+        <ImageUploader
+          image={files.heroImage}
+          onImageChange={(e) => handleFileChange(e, "heroImage")}
+          name="Hero Image"
+        />
 
+        <ImageUploader
+          image={files.storyImage}
+          onImageChange={(e) => handleFileChange(e, "storyImage")}
+          name="Story Image"
+        />
+      </div>
 
-<div className="text-md font-bold pt-4 font-avenir-black">
+      <div className="text-md font-bold pt-4 font-avenir-black">
         About Page Video
       </div>
       <input
@@ -157,7 +192,7 @@ const AboutPage = ({ handlePreview }) => {
 
       <div
         className={`overflow-hidden transition-all duration-300 ease-in-out ${
-          isOpen ? 'max-h-screen' : 'max-h-0'
+          isOpen ? "max-h-screen" : "max-h-0"
         }`}
       >
         <div className="w-full flex flex-col p-1">
@@ -176,10 +211,7 @@ const AboutPage = ({ handlePreview }) => {
             </div>
           ))}
         </div>
-      </div>  
-      
-
-      
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 ">
         {[
@@ -228,7 +260,6 @@ const AboutPage = ({ handlePreview }) => {
         onChange={(e) => handleContentDetailsChange(e)}
         className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-30"
       />
-      
     </div>
   );
 };
