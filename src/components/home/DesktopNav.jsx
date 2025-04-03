@@ -132,7 +132,7 @@ export default function DesktopNav() {
       `
                 }
               >
-                News
+                Newsletter
               </NavLink>
             </div>
 
@@ -153,7 +153,7 @@ export default function DesktopNav() {
       `
                 }
               >
-                Blogs
+                Podcasts
               </NavLink>
             </div>
 

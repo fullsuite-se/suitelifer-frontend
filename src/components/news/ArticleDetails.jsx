@@ -82,7 +82,7 @@ const ArticleDetails = ({
           <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-10">
             {/* Main Article */}
             <div>
-              <p className="text-gray-400 font-avenir-roman-oblique uppercase mt-5">{type}</p>
+              <p className="text-gray-400 font-avenir-black-oblique uppercase mt-5">{type}</p>
               <p
                 className="text-h4  my-1 font-avenir-black"
               >
@@ -105,7 +105,8 @@ const ArticleDetails = ({
               <p
                 className="mt-10 text-body text-gray-700 whitespace-pre-line"
               >
-                {removeHtmlTags(content)}
+               <div dangerouslySetInnerHTML={{ __html: content }} />
+
               </p>
             </div>
 

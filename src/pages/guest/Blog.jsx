@@ -18,14 +18,51 @@ import PageMeta from "../../components/layout/PageMeta";
 import api from "../../utils/axios";
 import { removeHtmlTags } from "../../utils/removeHTMLTags";
 import { readingTime } from "reading-time-estimator";
-import Skeleton from "react-loading-skeleton";
+// import Skeleton from "react-loading-skeleton";
 import LoadingBlogLarge from "../../components/guest-blogs/LoadingBlogLarge";
 import LoadingBlogCard from "../../components/guest-blogs/LoadingBlogCard";
+
+
+
+import SpotifyEmbed from "../../components/careers/SpotifyEmbed";
+
+import Skeleton from "react-loading-skeleton";
+import LoadingLargeSpotify from "../../components/careers/LoadingLargeSpotify";
+import LoadingSmallSpotify from "../../components/careers/LoadingSmallSpotify";
+
+
+
+
 
 const Blog = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+
+
+
+
+  const [spotifyEpisodes, setEpisodes] = useState([]);
+  const [isSpotifyLoading, setIsSpotifyLoading] = useState(true);
+  const fetchEpisodes = async () => {
+    try {
+      const response = await api.get("/api/latest-three-episodes");
+      setEpisodes((e) => response.data.data);
+      setIsSpotifyLoading(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+
+  useEffect(() => {
+    fetchEpisodes();
+  }, []);
+
+
+
+
+
 
   const handleSearch = () => {
     if (searchQuery.trim() !== "") {
@@ -127,7 +164,7 @@ const Blog = () => {
           alt=""
         />
         {/* BANNER */}
-        <div className="grid grid-cols-2 items-center gap-3">
+        <div className="grid grid-cols-2 items-center ">
           <div className="flex items-center justify-end">
             {/* Blue Thing */}
             <div
@@ -137,9 +174,9 @@ const Blog = () => {
                 left: 0,
               }}
             ></div>
-            <AnimatedText text="blog" color="white" />
+            <AnimatedText text="suite" color="white" />
           </div>
-          <AnimatedText text="spot" color="black" />
+          <AnimatedText text="pod" color="black" />
         </div>
 
         <div className="text-center mt-3 md:mt-5">
@@ -156,7 +193,7 @@ const Blog = () => {
         </div>
 
         {/* SEARCH BAR */}
-        <div className="flex justify-center mt-6 px-4">
+        {/* <div className="flex justify-center mt-6 px-4">
           <div className="relative flex items-center w-full max-w-xs sm:max-w-sm md:max-w-lg">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -195,12 +232,13 @@ const Blog = () => {
               Search
             </button>
           </div>
-        </div>
+        </div> */}
       </section>
 
       {/* BLOGS CONTENT */}
       <main className="px-[5%] md:px-[10%] xl:px-[15%]">
-        {isSearching ? (
+   {/*    <>
+      {isSearching ? (
           <ArticleSearchResults
             type="blog"
             list={guestBlogsList}
@@ -215,13 +253,14 @@ const Blog = () => {
               </div>
             </div>
             <div className="py-5"></div>
+            
             <section>
               <p className="md:text-2xl uppercase font-avenir-black text-primary pb-3 lg:pb-4">
                 The latest
               </p>
               <LoadingBlogLarge />
               <p className="md:text-2xl font-avenir-black text-primary pb-3 mt-10 lg:pb-4">
-                {/* More Blogs */}
+          
               </p>
               <div className="h-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 justify-center items-center">
                 {[...Array(2)].map((_, index) => (
@@ -251,7 +290,7 @@ const Blog = () => {
             </p>
                   <LoadingBlogLarge />
                   <p className="md:text-2xl font-avenir-black text-primary pb-3 mt-10 lg:pb-4">
-                    {/* More Blogs */}
+           
                   </p>
                   <div className="h-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 justify-center items-center">
                     {[...Array(2)].map((_, index) => (
@@ -288,7 +327,7 @@ const Blog = () => {
                     />
 
                     <p className="md:text-2xl font-avenir-black text-primary pb-3 mt-10 lg:pb-4">
-                      {/* More Blogs */}
+                    
                     </p>
                     <div className="h-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 justify-center items-center">
                       {companyBlogs.slice(1).map((blog, index) => (
@@ -308,7 +347,104 @@ const Blog = () => {
               </>
             )}
           </>
-        )}
+        )} 
+        */}
+
+<div className="width-full flex justify-center mt-10">
+  <iframe
+    style={{ borderRadius: "12px" }}
+    src="https://open.spotify.com/embed/playlist/5RXEu9jr0qRZMrG4rxfgHq?utm_source=generator"
+    width="100%"
+    height="400"
+    frameBorder="0"
+    allowFullScreen
+    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+    loading="lazy"
+  ></iframe>
+</div>
+
+
+  {/* Podcasts */}
+  <section className="pb-[7%] lg:pb-[5%] px-[5%]">
+            {/* <div className="text-center pb-7">
+              <p className="text-h4 font-avenir-black">
+                Want to <span className="text-primary">learn more</span> about
+                our careers?
+              </p>
+              <p className="text-small text-gray-500">
+                Check out the Suite Spot podcast below
+              </p>
+            </div> */}
+            {/* Spotify Episodes */}
+            {isSpotifyLoading ? (
+              <section className="mt-20 px-[5%] md:px-[10%] lg:px-[15%]">
+                <div className="sm:hidden flex flex-col gap-4">
+                  <LoadingLargeSpotify />
+                  <LoadingSmallSpotify />
+                  <LoadingSmallSpotify />
+                </div>
+                <div className="hidden sm:flex gap-4">
+                  <div className="w-1/2">
+                    <LoadingLargeSpotify />
+                  </div>
+                  <div className="w-1/2 flex flex-col justify-center gap-4">
+                    <LoadingSmallSpotify />
+                    <LoadingSmallSpotify />
+                  </div>
+                </div>
+              </section>
+            ) : (
+              <>
+                {spotifyEpisodes.length > 0 ? (
+                  <>
+                    <section className="mt-20 px-[5%] md:px-[10%] lg:px-[15%]">
+                      {/* Mobile View: Display all in a column */}
+                      <div className="sm:hidden">
+                        {spotifyEpisodes.map(({ spotifyId }, index) => (
+                          <div className="p-1" key={index}>
+                            <SpotifyEmbed id={spotifyId} index={index} />
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Small Screens and Up: Two-column layout */}
+                      <div className="hidden sm:flex gap-7">
+                        {/* Left Column: Large Embed */}
+                        <div className="w-1/2">
+                          <SpotifyEmbed
+                            id={spotifyEpisodes[0]?.spotifyId}
+                            index={0}
+                          />
+                        </div>
+
+                        {/* Right Column: Two Smaller Embeds */}
+                        <div className="w-1/2 flex flex-col justify-center gap-7">
+                          {spotifyEpisodes
+                            .slice(1, 3)
+                            .map(({ spotifyId }, index) => (
+                              <SpotifyEmbed
+                                key={index + 1}
+                                id={spotifyId}
+                                index={index + 1}
+                              />
+                            ))}
+                        </div>
+                      </div>
+                    </section>
+                  </>
+                ) : (
+                  <>
+                    <div className="text-center text-gray-500">
+                      Oops! It looks like there are no spotify podcasts
+                      available yet. Stay tuned!
+                    </div>
+                  </>
+                )}
+              </>
+            )}
+          </section>
+
+
       </main>
 
       <div className="h-30"></div>

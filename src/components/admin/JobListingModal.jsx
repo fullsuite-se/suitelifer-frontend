@@ -221,9 +221,9 @@ const JobListingModal = ({
                     Visibility<span className="text-primary">*</span>
                   </label>
                   <select
-                    name="isShown"
+                    name="is_shown"
                     required
-                    value={jobDetails.isShown}
+                    value={jobDetails.is_shown}
                     onChange={(e) => handleJobDetailsChange(e)}
                     className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
                   >
