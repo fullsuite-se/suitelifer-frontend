@@ -2,6 +2,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { EyeIcon, BookmarkSquareIcon } from "@heroicons/react/24/outline";
 import ContentButtons from "./ContentButtons";
+import ImageUploader from "./ImageUploader";
 
 const AdminHomePage = () => {
   const handleContentDetailsChange = (e) => {
@@ -12,7 +13,9 @@ const AdminHomePage = () => {
   };
 
   const [contentDetails, setContentDetails] = useState({
-    videoURL: "",
+    getInTouchImage: null,
+    videoURL: null,
+
   });
 
   const handlePublishChanges = async () => {
@@ -37,6 +40,7 @@ const AdminHomePage = () => {
     <>
       <div className="flex flex-col md:flex-row gap-4 p-4">
         <div className="flex flex-col md:w-full">
+       
           <div className="text-md p-1 font-avenir-black">Home Page Video</div>
 
           <input

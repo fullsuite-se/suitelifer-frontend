@@ -11,7 +11,7 @@ import { useStore } from "../../store/authStore";
 import FileUploaderProvider from "./FileUploader";
 import ContentButtons from "./ContentButtons";
 
-const AboutPage = ({ handlePreview }) => {
+const AboutPage = ({  }) => {
   // USER DETAILS
   const user = useStore((state) => state.user);
 
@@ -26,20 +26,22 @@ const AboutPage = ({ handlePreview }) => {
     visionSlogan: "",
     vision: "",
     dayInPodUrl: "",
-    teamPlayer: "",
-    understood: "",
-    athlete: "",
-    upholds: "",
-    harmony: "",
+    teamPlayerVideo: "",
+    understoodVideo: "",
+    focusedVideo: "",
+    upholdsVideo: "",
+    harmonyVideo: "",
+    missionVideo:"",
+    visionVideo:""
   });
   const [isOpen, setIsOpen] = useState(false);
 
   const videoData = [
-    { name: "Team Player Video", key: "teamPlayer" },
-    { name: "Understood Video", key: "understood" },
-    { name: "Athlete Video", key: "athlete" },
-    { name: "Upholds Video", key: "upholds" },
-    { name: "Life/Work Harmony Video", key: "harmony" },
+    { name: "Team Player Video", key: "teamPlayerVideo" },
+    { name: "Understood Video", key: "understoodVideo" },
+    { name: "Athlete Video", key: "focusedVideo" },
+    { name: "Upholds Video", key: "upholdsVideo" },
+    { name: "Life/Work Harmony Video", key: "harmonyVideo" },
   ];
 
   const handleToggle = () => {
@@ -92,7 +94,7 @@ const AboutPage = ({ handlePreview }) => {
 
   return (
     <>
-      <div className="overflow-x-auto min-h-screen px-4 sm:px-6 lg:px-8">
+      <div className="overflow-x-auto min-h-screen px-4 sm:px-6 lg:px-8 sticky">
         <div className="text-md font-bold pt-4 font-avenir-black">
           Text Banner
         </div>
@@ -119,7 +121,7 @@ const AboutPage = ({ handlePreview }) => {
 
         <div className="cursor-pointer" onClick={handleToggle}>
           <div className="flex items-center text-md text-center mt-4   font-avenir-black gap-2">
-            <span className="">Core Values Videos</span>
+            <span className="">Core Value Videos</span>
             {isOpen ? (
               <ChevronUpIcon className="w-5 h-5" />
             ) : (
@@ -190,6 +192,27 @@ const AboutPage = ({ handlePreview }) => {
             </div>
           ))}
         </div>
+
+        <div className="text-md font-bold pt-4 font-avenir-black">
+          Mission Video
+        </div>
+        <input
+          type="text"
+          name="missionVideo"
+          value={contentDetails.missionVideo}
+          onChange={(e) => handleContentDetailsChange(e)}
+          className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+        />
+        <div className="text-md font-bold pt-4 font-avenir-black">
+          Vision Video
+        </div>
+        <input
+          type="text"
+          name="visionVideo"
+          value={contentDetails.visionVideo}
+          onChange={(e) => handleContentDetailsChange(e)}
+          className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+        />
         <div className="text-md font-bold pt-4 font-avenir-black">
           Day in Pod Video URL
         </div>
@@ -201,7 +224,7 @@ const AboutPage = ({ handlePreview }) => {
           className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
         />
 
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-end gap-2 mb-30">
           <ContentButtons
             icon={<EyeIcon className="size-5" />}
             text="Preview Changes"
