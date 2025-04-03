@@ -1,71 +1,102 @@
 import { ChevronRightIcon } from "@heroicons/react/24/solid";
-import mo from "../../assets/images/mo.jpg";
-import financeOp from "../../assets/images/finance-op.svg";
-import kb_startup from "../../assets/images/keyboard-startup.svg";
-import adminOp from "../../assets/images/admin-op.svg";
 import newsList from "../news/NewsList";
 import { Link } from "react-router-dom";
 import { toSlug } from "../../utils/slugUrl";
-import { motion } from "framer-motion";
 import MotionUp from "../MotionUp";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import DynamicLink from "../buttons/ViewAll";
 
 const HomeNews = () => {
-  return (
-    <section className="px-7 xl:px-17">
-      {/* TITLE: "LATEST COMPANY NEWS" */}
-      <div className="mb-5 relative">
-        {/* <p
-          className="
-            absolute -z-10 
-            text-[100px] 
-            sm:text-[180px] 
-            md:text-[200px] 
-            lg:text-[280px] 
-            xl:text-[380px] 
-            -left-5 
-            lg:-left-13
-            xl:-left-15 transform 
-            -translate-y-[60px]
-            sm:-translate-y-[90px] 
-            md:-translate-y-[100px] 
-            lg:-translate-y-[150px] 
-            xl:-translate-y-[200px] font-avenir-black text-primary opacity-5"
-        >
-          NEWS
-        </p> */}
-        <MotionUp className="font-serif font-black text-2xl lg:mb-15 sm:text-4xl md:text-4xl lg:text-5xl xl:text-7xl">
-          <span className="text-primary">Latest</span> Company News
+  if (!newsList || newsList.length === 0) {
+    return (
+      <section className="px-7 xl:px-17 text-center">
+        <div className="mb-5 relative">
+        <MotionUp className="mb-10 md:mb-5 text-start">
+          <div className="font-avenir-black text-h4 ">
+            <span className="text-primary">Latest</span> Company News
+          </div>
+          <p className="text-small text-gray-500">
+            Stay updated with our latest achievements, events, and
+            announcements!
+          </p>
         </MotionUp>
       </div>
+      <div className="py-10 text-gray-500 flex flex-col items-center">
+  <img
+    src="src/assets/gif/nothing-found-icon.gif" 
+    alt="No articles illustration"
+    className="w-40 h-40 mb-4 opacity-50"
+  />
+  <p>No news articles available.</p>
+</div>
+ </section>
+    );
+  }
+
+  const mainNews = newsList?.[0]; // Get the first news item
+  const mainImage = mainNews?.imagesWithCaption?.[0]?.image?.trim();
+  const mainTitle = mainNews?.title;
+  const mainAuthor = mainNews?.author;
+  const mainReadTime = mainNews?.readTime;
+  const mainArticle = mainNews?.article;
+  const mainNewsLink = mainTitle
+    ? `/news/${mainNews.id}/${toSlug(mainTitle)}`
+    : "";
+
+  return (
+    <section className="px-7 xl:px-17">
+      <div className="mb-5 relative">
+        <MotionUp className="mb-10 md:mb-5">
+          <div className="font-avenir-black text-h4 ">
+            <span className="text-primary">Latest</span> Company News
+          </div>
+          <p className="text-small text-gray-500">
+            Stay updated with our latest achievements, events, and
+            announcements!
+          </p>
+        </MotionUp>
+      </div>
+
       {/* CONTENTS */}
       <section className="flex flex-col lg:flex-row gap-0 lg:gap-10">
         {/* MAIN NEWS (First Item) */}
         <MotionUp className="lg:w-1/2 flex px-2 flex-col items-center justify-center">
-          {newsList.length > 0 && (
+          {mainNews && (
             <Link
-              to={`/news/${newsList[0].id}/${toSlug(newsList[0].title)}`}
-              className="no-underline rounded-2xl cursor-pointer group  hover:bg-white"
+              to={mainNewsLink}
+              className="no-underline rounded-2xl cursor-pointer group hover:bg-white w-full"
             >
               <div className="group-hover:!text-primary">
                 {/* IMAGE */}
                 <MotionUp className="mb-5">
-                  <img
-                    className="aspect-video object-cover rounded-2xl lg:w-full xl:h-[400px]!"
-                    src={newsList[0].imagesWithCaption[2].image}
-                    alt="Main content news image"
-                  />
+                  {mainImage ? (
+                    <img
+                      className="aspect-video object-cover rounded-2xl lg:w-full xl:h-[400px]!"
+                      src={mainImage}
+                      alt="Main content news image"
+                    />
+                  ) : (
+                    <Skeleton className="aspect-video object-cover rounded-2xl lg:w-full xl:h-[400px]!" />
+                  )}
                 </MotionUp>
+
                 {/* TITLE */}
                 <MotionUp
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, ease: "easeOut" }}
-                  className="title w-fit hover:text-primary!"
+                  className="title hover:text-primary!"
                 >
-                  <p className="font-serif font-bold sm:text-xl lg:text-2xl line-clamp-2">
-                    {newsList[0].title}
-                  </p>
+                  {mainTitle ? (
+                    <p className="font-avenir-black text-body line-clamp-2">
+                      {mainTitle}
+                    </p>
+                  ) : (
+                    <Skeleton width={"70%"} />
+                  )}
                 </MotionUp>
+
                 {/* AUTHOR AND READ TIME */}
                 <MotionUp
                   initial={{ opacity: 0, y: 20 }}
@@ -73,83 +104,117 @@ const HomeNews = () => {
                   transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
                   className="news-info py-1 md:py-2 mb-2 no-underline!"
                 >
-                  <p className="text-sm">
-                    <span className="text-primary">{newsList[0].author}</span>
-                    <span className="text-primary">&nbsp; |</span>
-                    <span className="text-gray-400">
-                      &nbsp;&nbsp;{newsList[0].readTime}
-                    </span>
-                  </p>
-                </MotionUp>{" "}
+                  {mainAuthor && mainReadTime ? (
+                    <p className="text-xss">
+                      <span className="text-primary">{mainAuthor}</span>
+                      <span className="text-primary">&nbsp; |</span>
+                      <span className="text-gray-400">
+                        &nbsp;&nbsp;{mainReadTime}
+                      </span>
+                    </p>
+                  ) : (
+                    <Skeleton width={"25%"} />
+                  )}
+                </MotionUp>
+
+                {/* DESCRIPTION */}
                 <div className="news-desc pr-2 mb-2">
-                  <p className="font-serif text-[10px] line-clamp-3  md:line-clamp-5! xl:line-clamp-3! sm:text-[12px] md:text-sm text-gray-500 ">
-                    {newsList[0].article}
-                  </p>
+                  {mainArticle ? (
+                    <p className="font-avenir line-clamp-3 md:line-clamp-5! xl:line-clamp-3! text-small text-gray-500">
+                      {mainArticle}
+                    </p>
+                  ) : (
+                    <Skeleton count={3} />
+                  )}
                 </div>
               </div>
             </Link>
           )}
         </MotionUp>
-        <br />
+        <div className="py-5"></div>
+
         {/* OTHER NEWS (Remaining Items) */}
         <div className="lg:w-1/2 flex flex-col max-h-full overflow-y-auto gap-2 pb-2">
-          <a
-            className=" text-[10px] z-10 md:mt-2 pr-2 lg:mt-2 sm:text-[16px] no-underline text-primary font-avenir-black flex items-center justify-end gap-1"
-            href="news"
-          >
-            <span className="flex items-end ">View all</span>
-            <ChevronRightIcon className="size-4 sm:size-5 mb-1" />
-          </a>
-          {newsList.slice(1, 4).map((news) => (
-            <Link
-              key={news.id}
-              to={`/news/${news.id}/${toSlug(newsList[0].title)}`}
-              className="group no-underline rounded-2xl cursor-pointer px-2 py-3 lg:px-4 transition-all duration-300 hover:shadow-sm hover:bg-white "
-            >
-              <MotionUp>
-                <div className="other-news flex justify-center items-center gap-2 ">
-                  {/* CONTENT */}
-                  <div className="w-[50%] sm:w-[60%] flex flex-col">
-                    <div className="group-hover:!text-primary">
-                      {/* TITLE */}
-                      <div className="mb-1 ">
+          <DynamicLink
+            text="See More News"
+            href="/news"
+            className="custom-class"
+            iconSize={5}
+          />
+
+          {newsList.slice(1, 4).map((news) => {
+            const newsImage = news?.imagesWithCaption?.[0]?.image?.trim();
+            const newsTitle = news?.title;
+            const newsArticle = news?.article;
+            const newsAuthor = news?.author;
+            const newsReadTime = news?.readTime;
+            const newsLink = newsTitle
+              ? `/news/${news.id}/${toSlug(newsTitle)}`
+              : "";
+
+            return (
+              <Link
+                key={news.id}
+                to={newsLink}
+                className="group no-underline rounded-2xl cursor-pointer px-2 py-3 lg:px-4 transition-all duration-300 hover:shadow-sm hover:bg-white"
+              >
+                <MotionUp>
+                  <div className="other-news flex justify-center items-center gap-2">
+                    {/* CONTENT */}
+                    <div className="w-[50%] sm:w-[60%] flex flex-col">
+                      <div className="group-hover:!text-primary">
+                        {/* TITLE */}
                         <p
-                          title={news.title}
-                          className="font-serif font-bold  text-[12px] line-clamp-2 sm:text-[16px] md:text-lg pr-2 font-avenir-black"
+                          title={newsTitle}
+                          className="font-avenir-black text-body pr-2 font-avenir-black"
                         >
-                          {news.title}
+                          {newsTitle || <Skeleton width={"70%"} />}
                         </p>
                       </div>
                       {/* DESCRIPTION */}
-                      <div className="news-desc pr-2 mb-2">
-                        <p className="font-serif text-[10px] line-clamp-2 sm:text-[12px] md:text-sm sm:line-clamp-3   text-gray-500">
-                          {news.article}
+                      <div className="hidden md:block news-desc pr-2 mb-2">
+                        <p className="font-avenir line-clamp-2 text-small sm:line-clamp-3   text-gray-500">
+                          {newsArticle || <Skeleton count={2} />}
                         </p>
+
+                       
                       </div>
-                      {/* AUTHOR AND READ TIME */}
-                      <div className="news-info">
-                        <p className="text-sm text-[10px] sm:text-[12px] md:text-sm">
-                          <span className="text-primary">
-                            {news.author} &nbsp; |
-                          </span>
-                          &nbsp;{" "}
-                          <span className="text-gray-400">{news.readTime}</span>
-                        </p>
-                      </div>
+                      <div> {/* AUTHOR AND READ TIME */}
+                        <p className="text-xss">
+                          {newsAuthor && newsReadTime ? (
+                            <>
+                              <span className="text-primary">
+                                {newsAuthor} &nbsp; |
+                              </span>
+                              &nbsp;
+                              <span className="text-gray-400">
+                                {newsReadTime}
+                              </span>
+                            </>
+                          ) : (
+                            <Skeleton width={"30%"} />
+                          )}
+                        </p></div>
+                    </div>
+                    {/* IMAGE */}
+                    <div className="w-[50%] sm:w-[40%] h-full flex items-center">
+                      {newsImage ? (
+                        <img
+                          className="aspect-video h-full object-cover rounded-md sm:rounded-xl"
+                          src={newsImage}
+                          alt="News image"
+                        />
+                      ) : (
+                        <div className="w-full aspect-video h-full object-cover rounded-md sm:rounded-xl">
+                          <Skeleton className="h-full w-full" />
+                        </div>
+                      )}
                     </div>
                   </div>
-                  {/* IMAGE */}
-                  <div className="w-[50%] sm:w-[40%] h-full flex items-center">
-                    <img
-                      className="aspect-video h-full object-cover rounded-md sm:rounded-xl"
-                      src={news.imagesWithCaption[0].image}
-                      alt="News image"
-                    />
-                  </div>
-                </div>
-              </MotionUp>
-            </Link>
-          ))}
+                </MotionUp>
+              </Link>
+            );
+          })}
         </div>
       </section>
     </section>

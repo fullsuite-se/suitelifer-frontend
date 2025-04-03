@@ -3,6 +3,9 @@ import { ListBulletIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { format } from "date-fns";
 
 const EventCard = ({ event, isUpcoming }) => {
+  const dayAbbreviation = format(new Date(event.date_time), "EEE");
+  const dayOfMonth = format(new Date(event.date_time), "d");
+
   return (
     <section
       className={`border border-gray-200 p-4 rounded-lg flex gap-4 items-center
@@ -14,8 +17,8 @@ const EventCard = ({ event, isUpcoming }) => {
         ${isUpcoming ? "flex" : "hidden"}  
           `}
       >
-        <span className="text-black text-base">Thu</span>
-        <h1 className="font-avenir-black my-0! text-primary">27</h1>
+        <span className="text-black text-base">{dayAbbreviation}</span>
+        <h1 className="font-avenir-black my-0! text-primary">{dayOfMonth}</h1>
       </div>
       <div className="flex-1 min-w-0">
         <span className="text-black text-base block truncate">

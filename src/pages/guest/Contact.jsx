@@ -1,5 +1,5 @@
 import React from "react";
-import Footer from "../../components/Footer";
+
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
@@ -16,7 +16,7 @@ import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
 import { useEffect, useState } from "react";
 import PageMeta from "../../components/layout/PageMeta";
-import FooterNew from "../../components/FooterNew";
+import Footer from "../../components/Footer";
 const Contact = () => {
   const fadeInUp = {
     hidden: { opacity: 0, y: 50 },
@@ -30,7 +30,6 @@ const Contact = () => {
 
   useEffect(() => {
     setIsLoaded(true);
-    window.scroll(0, 0);
   }, []);
 
   return (
@@ -187,7 +186,7 @@ const Contact = () => {
     //       </div>
 
     //       <FAQ />
-    //       <Footer />
+    //       < />
     //     </main>
     //   </div>
     // </>
@@ -257,24 +256,28 @@ const Contact = () => {
             >
               <div className="absolute inset-0 bg-primary rounded-tr-xl rounded-br-xl"></div>
               <div className="relative z-10">
-                <p className="font-avenir-black text-2xl md:!text-3xl text-white-300 lg:!text-4xl xl:!text-5xl">
+                <p className="font-avenir-black  text-white-300 text-h3">
                   Check your{" "}
                   <span className="text-secondary"> culture fit </span>
                   with us!
                 </p>
-                <p className="mt-4 text-white text-xs md:text-base">
-                  Lorem ipsum dolor sit amet ipsum consectetur adipiscing
-                  elit...
+                <p className=" text-white text-small">
+                  Reach out and discover how you align with our team!
                 </p>
 
-                <div className="mt-6 space-y-2 text-white">
+                <div className="group mt-6 space-y-5 text-white font-avenir-black text-body">
                   <p className="flex items-center gap-2">
                     <img
                       src={emailicon}
                       alt="Email"
                       className="w-5 h-5 filter invert"
                     />
-                    abc@fullsuite.ph
+                    <a
+                      href="mailto:abc@fullsuite.ph"
+                      className="hover:text-secondary transition-colors  no-underline!"
+                    >
+                      abc@fullsuite.ph
+                    </a>
                   </p>
                   <p className="flex items-center gap-2">
                     <img
@@ -282,7 +285,12 @@ const Contact = () => {
                       alt="Phone"
                       className="w-5 h-5 filter invert"
                     />
-                    (074) 619-5521
+                    <a
+                      href="tel:+63746195521"
+                      className="hover:text-secondary transition-colors  no-underline!"
+                    >
+                      (074) 619-5521
+                    </a>
                   </p>
                   <p className="flex items-center gap-2">
                     <img
@@ -290,7 +298,12 @@ const Contact = () => {
                       alt="Mobile"
                       className="w-5 h-5 filter invert"
                     />
-                    +63-912-3456-789
+                    <a
+                      href="tel:+639123456789"
+                      className="hover:text-secondary transition-colors  no-underline!"
+                    >
+                      +63-912-3456-789
+                    </a>
                   </p>
                 </div>
               </div>
@@ -305,7 +318,7 @@ const Contact = () => {
             >
               <form action="#" className="space-y-4">
                 <div>
-                  <label className="block text-gray-700 font-medium">
+                  <label className="block text-gray-700 text-small">
                     Full Name<span className="text-primary">*</span>
                   </label>
                   <input
@@ -314,7 +327,7 @@ const Contact = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-700 font-medium">
+                  <label className="block text-gray-700 text-small">
                     Email Address<span className="text-primary">*</span>
                   </label>
                   <input
@@ -323,7 +336,7 @@ const Contact = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-700 font-medium">
+                  <label className="block text-gray-700 text-small">
                     Subject<span className="text-primary">*</span>
                   </label>
                   <input
@@ -332,7 +345,7 @@ const Contact = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-700 font-medium">
+                  <label className="block text-gray-700 text-small">
                     Message<span className="text-primary">*</span>
                   </label>
                   <textarea
@@ -341,7 +354,7 @@ const Contact = () => {
                     placeholder="Type your message here"
                   ></textarea>
                 </div>
-                <button className="w-full font-avenir-black bg-primary text-white py-3 rounded-md hover:bg-primary/90 transition">
+                <button className="w-full font-avenir-black bg-primary  text-small text-white py-3 rounded-md hover:bg-primary/90 transition">
                   SEND
                 </button>
               </form>
@@ -355,17 +368,17 @@ const Contact = () => {
             transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
             className="flex flex-col md:flex-row items-center md:items-center mt-12 p-10 justify-center gap-10"
           >
-            <div className="md:w-1/2 flex flex-col justify-center text-left lg:w-1/4">
-              <h2 className="font-avenir-black text-lg md:text-xl">
+            <div className="md:w-1/2 gap-3 flex flex-col justify-center text-left lg:w-1/4">
+              <p className="font-avenir-black text-h4">
                 Visit us <span className="text-primary">here</span>
-              </h2>
-              <div className="flex items-center gap-2 mt-2 text-primary">
-                <MarkerIcon width={24} height={24} />
+              </p>
+              <div className="flex items-center gap-2 mt-2 text-primary text-body">
+                <MarkerIcon width={34} height={34} />
                 <span className="text-black">
                   5F Curamed Building, Ben Palispis-Aspiras Highway
                 </span>
               </div>
-              <div className="flex items-center gap-2 mt-2 text-primary">
+              <div className="flex items-center gap-2 mt-2 text-primary text-body">
                 <ClockIcon width={24} height={24} />
                 <span className="text-black">
                   <strong className="font-avenir-black">
@@ -397,7 +410,7 @@ const Contact = () => {
             <FAQ />
           </section>
           <BackToTop />
-          <FooterNew />
+          <Footer />
         </main>
       </div>
     </section>

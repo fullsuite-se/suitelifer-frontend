@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import formatTimestamp from "../TimestampFormatter";
 import { toSlug } from "../../utils/slugUrl";
 import { readingTime } from "reading-time-estimator";
@@ -10,14 +9,15 @@ const GuestBlogCard = ({
   title,
   createdBy,
   description,
-  createdAt,
+  article,
+  created_at,
   imageUrl,
 }) => {
-  const { day, fullDate, time } = formatTimestamp(createdAt);
+  const { fullDate } = formatTimestamp(created_at);
 
   return (
     <section
-      className="relative w-full h-80 lg:h-90 rounded-xl overflow-hidden 
+      className="relative md:max-w-[320px] w-full h-80 lg:h-90 rounded-xl overflow-hidden 
   transform transition-all duration-300 ease-in-out group-hover:scale-105 
   group-hover:shadow-xl group-hover:shadow-secondary/50 active:scale-105 
   active:shadow-xl active:shadow-secondary/50"
@@ -36,15 +36,15 @@ const GuestBlogCard = ({
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/80"></div>
         </div>
 
-        <div className="absolute bottom-0 p-4 text-white">
-          <h2 className="font-avenir-black !text-base sm:!text-lg md:!text-lg  group-hover:text-secondary transition duration-300 ease-in-out">
+        <div className="absolute left-0 bottom-0 p-4 text-white">
+          <p className="font-avenir-black text-body group-hover:text-secondary transition duration-300 ease-in-out">
             {title}
-          </h2>
+          </p>
 
-          <p className="!text-[12px] sm:!text-[14px]  mt-1">
+          <p className="text-xss line-clamp-1 mt-1 opacity-80">
             <span className="text-secondary font-avenir-black">
               {" "}
-              {createdBy}
+              {createdBy.trim().split(" ")[0]}
             </span>{" "}
             |{" "}
             {
@@ -53,11 +53,11 @@ const GuestBlogCard = ({
             }
           </p>
 
-          <p className="mt-2 !text-[12px] sm:!text-[14px] text-gray-300 line-clamp-3">
-            {removeHtmlTags(description ?? "Description")}
+          <p className="mt-2 text-small opacity-80 line-clamp-3">
+            {description}
           </p>
 
-          <p className="text-xs text-gray-400 mt-2">{fullDate}</p>
+          <p className="text-xss opacity-50 mt-2">{fullDate}</p>
         </div>
       </NavLink>
     </section>

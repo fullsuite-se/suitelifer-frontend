@@ -47,7 +47,9 @@ const AdminNews = () => {
         datePublished: { seconds: Math.floor(Date.now() / 1000) },
         comments: 0,
         views: 0,
-        image: newNews.image || "https://via.placeholder.com/150",
+        image:
+          newNews.image ||
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREPVIcCkWNGNzUzt3wUfZhY-I09Z0Rn-jc4g&s",
       };
       setRowNewsData((prevData) => [...prevData, newEntry]);
     }
@@ -68,69 +70,15 @@ const AdminNews = () => {
 
   const newsData = [
     {
-      id: "",
-      title: "Marvin Bautista Wanted for Estafa",
-      author: "Melbraei Santiago",
-      datePublished: { seconds: 1716161616 },
-      comments: 1023,
-      views: 1025489,
-      likes: 4567,
-      image:
-        "https://media.licdn.com/dms/image/v2/D5603AQGic1L2sEBlGg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1707479304553?e=1747267200&v=beta&t=ZjrI_w18mjT_NlZpz34dVSolaLog44oyvCmcaSiqMZk",
-    },
-    {
-      id: "",
-      title: "Marvin Bautista Adonis Hunk",
-      author: "Melbraei Santiago",
+      id: "1",
+      title: "The Art of Code",
+      author: "Alex Mercer",
       datePublished: { seconds: 1716161626 },
-      comments: 874,
-      views: 65823,
-      likes: 2398,
+      comments: 321,
+      views: 12567,
+      likes: 876,
       image:
-        "https://img.mensxp.com/media/content/2020/Sep/Male-Celebrities-Who-Have-Dabbled-With-Some-Really-Outlandish-1_5f62130740f8d.jpeg?w=780&h=524&cc=1",
-    },
-    {
-      id: "",
-      title: "Viva Film Hunk ",
-      author: "Melbraei Santiago",
-      datePublished: { seconds: 1716161636 },
-      comments: 567,
-      views: 34876,
-      likes: 9873,
-      image: "https://i.mydramalist.com/jBq4b_5f.jpg",
-    },
-    {
-      id: "",
-      title: "Daddy Daddy, Yes Papa",
-      author: "Melbraei Santiago",
-      datePublished: { seconds: 1716161646 },
-      comments: 1345,
-      views: 89234,
-      likes: 13567,
-      image:
-        "https://od2-image-api.abs-cbn.com/prod/editorImage/1735922206940SHOWTIME-JM-On-Unforgettable-Firsts-Main.jpg",
-    },
-    {
-      id: "",
-      title: "Blockchain Beyond Cryptocurrency: Real-World Applications",
-      author: "Melbraei Santiago",
-      datePublished: { seconds: 1716161656 },
-      comments: 432,
-      views: 54321,
-      likes: 6789,
-      image:
-        "https://www.vivaartistsagency.ph/wp-content/uploads/2020/01/ANNE-CURTIS.jpg",
-    },
-    {
-      id: "",
-      title: "The Evolution of Smart Homes and IoT Devices",
-      author: "Melbraei Santiago",
-      datePublished: { seconds: 1716161676 },
-      comments: 789,
-      views: 74256,
-      likes: 5432,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtp0yBOpspCBHdj3aWQOrpZuC7K9fzfmNImA&s",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREPVIcCkWNGNzUzt3wUfZhY-I09Z0Rn-jc4g&s",
     },
   ];
 
@@ -154,55 +102,61 @@ const AdminNews = () => {
     <>
       {!location.pathname.includes("/news/details/") ? (
         <>
-          <header className="container flex h-12 items-center justify-between flex-wrap">
-            <div className="hidden lg:flex md-flex gap-4 items-center ">
-              <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
-            </div>
+          <div className="flex my-3 w-fit ml-auto">
+            <button
+              className="hidden sm:block btn-primary"
+              onClick={() => {
+                navigate("/app/news/new-news");
+              }}
+            >
+              + Add News
+            </button>
 
-            <div className="flex">
-              {/* desktop */}
-              <button
-                className="hidden sm:block btn-primary"
-                onClick={() => {
-                  navigate("/app/news/new-news");
-                }}
-              >
-                + Add News
-              </button>
-
-              {/* Mobile */}
-              <button
-                className="sm:hidden p-2 btn-primary"
-                onClick={() => setShowModal(true)}
-              >
-                <span>+</span> <FeedIcon />
-              </button>
-            </div>
-          </header>
-
-          <div className="flex flex-col md:grid md:grid-cols-2 lg:flex-row gap-4 p-4 bg-white shadow-md rounded-lg mb-4">
-            <div className="p-4 bg-gray-200 rounded-lg w-full h-10 flex items-center justify-between">
-              <span className="text-lg font-bold">News</span>
-              <span className="text-2xl">{formatNumber(totalNews)}</span>
-            </div>
-            <div className="p-4 bg-gray-200 rounded-lg w-full h-10 flex items-center justify-between">
-              <span className="text-lg font-bold">Total Comments</span>
-              <span className="text-2xl">{formatNumber(totalComments)}</span>
-            </div>
-            <div className="p-4 bg-gray-200 rounded-lg w-full h-10 flex items-center justify-between">
-              <span className="text-lg font-bold">Total Views</span>
-              <span className="text-2xl">{formatNumber(totalViews)}</span>
-            </div>
-            <div className="p-4 bg-gray-200 rounded-lg w-full h-10 flex items-center justify-between">
-              <span className="text-lg font-bold">Total Likes</span>
-              <span className="text-2xl">{formatNumber(totalLikes)}</span>
-            </div>
+            <button
+              className="sm:hidden p-2 btn-primary"
+              onClick={() => setShowModal(true)}
+            >
+              <span>+</span> <FeedIcon />
+            </button>
           </div>
 
-          <div className="flex gap-4">
+          <section className="flex gap-3 [&_*]:rounded-md [&_*]:bg-gray-100 [&_div]:border [&_div]:border-gray-200 [&_*]:flex-1">
+            <div className="flex flex-col items-center py-3">
+              <span className="text-sm text-center md:text-base">News</span>
+              <span className="text-sm text-center md:text-base">
+                {formatNumber(totalNews)}
+              </span>
+            </div>
+            <div className="flex flex-col items-center py-3">
+              <span className="text-sm text-center md:text-base">
+                Total Comments
+              </span>
+              <span className="text-sm text-center md:text-base">
+                {formatNumber(totalComments)}
+              </span>
+            </div>
+            <div className="flex flex-col items-center py-3">
+              <span className="text-sm text-center md:text-base">
+                Total Views
+              </span>
+              <span className="text-sm text-center md:text-base">
+                {formatNumber(totalViews)}
+              </span>
+            </div>
+            <div className="flex flex-col items-center py-3">
+              <span className="text-sm text-center md:text-base">
+                Total Likes
+              </span>
+              <span className="text-sm text-center md:text-base">
+                {formatNumber(totalNews)}
+              </span>
+            </div>
+          </section>
+
+          <div className="flex gap-4 mt-3">
             <div className="w-full overflow-x-auto">
               <div
-                className="ag-theme-quartz p-3 sm:p-5 min-w-[600px] lg:w-full"
+                className="ag-theme-quartz min-w-[600px] lg:w-full"
                 style={{ height: "auto" }}
               >
                 <AgGridReact
@@ -213,7 +167,7 @@ const AdminNews = () => {
                       field: "image",
                       flex: 2,
                       filter: "agTextColumnFilter",
-                      headerClass: "text-primary font-bold bg-tertiary",
+                      headerClass: "text-primary font-bold bg-gray-100",
                       cellRenderer: (params) =>
                         params.value ? (
                           <img
@@ -230,23 +184,23 @@ const AdminNews = () => {
                       field: "title",
                       flex: 2,
                       filter: "agTextColumnFilter",
-                      headerClass: "text-primary font-bold bg-tertiary",
+                      headerClass: "text-primary font-bold bg-gray-100",
                       valueGetter: (params) =>
                         params.data.title.replace(/<[^>]*>/g, ""),
                     },
                     {
                       headerName: "Author",
                       field: "author",
-                      flex: 1,
+                      flex: 2,
                       filter: "agTextColumnFilter",
-                      headerClass: "text-primary font-bold bg-tertiary",
+                      headerClass: "text-primary font-bold bg-gray-100",
                       hide: window.innerWidth < 640,
                     },
                     {
                       headerName: "Date Published",
                       field: "datePublished",
-                      flex: 1,
-                      headerClass: "text-primary font-bold bg-tertiary",
+                      flex: 2,
+                      headerClass: "text-primary font-bold bg-gray-100",
                       valueGetter: (params) =>
                         new Date(
                           params.data.datePublished.seconds * 1000
@@ -258,7 +212,7 @@ const AdminNews = () => {
                       field: "views",
                       flex: 1,
                       filter: "agTextColumnFilter",
-                      headerClass: "text-primary font-bold bg-tertiary",
+                      headerClass: "text-primary font-bold bg-gray-100",
                       valueGetter: (params) => formatNumber(params.data.views),
                     },
                     {
@@ -266,7 +220,7 @@ const AdminNews = () => {
                       field: "likes",
                       flex: 1,
                       filter: "agTextColumnFilter",
-                      headerClass: "text-primary font-bold bg-tertiary",
+                      headerClass: "text-primary font-bold bg-gray-100",
                       valueGetter: (params) => formatNumber(params.data.likes),
                     },
                     {
@@ -274,7 +228,7 @@ const AdminNews = () => {
                       field: "comments",
                       flex: 1,
                       filter: "agTextColumnFilter",
-                      headerClass: "text-primary font-bold bg-tertiary",
+                      headerClass: "text-primary font-bold bg-gray-100",
                       valueGetter: (params) =>
                         formatNumber(params.data.comments),
                       hide: window.innerWidth < 768,
@@ -283,7 +237,7 @@ const AdminNews = () => {
                       headerName: "Action",
                       field: "action",
                       flex: 2,
-                      headerClass: "text-primary font-bold bg-tertiary",
+                      headerClass: "text-primary font-bold bg-gray-100",
                       cellRenderer: (params) => (
                         <div className="flex gap-2">
                           <button

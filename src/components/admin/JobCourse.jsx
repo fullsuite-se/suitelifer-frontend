@@ -1,21 +1,17 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  Typography,
   IconButton,
-  Button,
   TextField,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
@@ -24,233 +20,303 @@ import { AgGridReact } from "@ag-grid-community/react";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
+import api from "../../utils/axios";
+import { useStore } from "../../store/authStore";
+import toast from "react-hot-toast";
+import formatTimestamp from "../TimestampFormatter";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 function JobCourse() {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const user = useStore((state) => state.user);
+
+  const [jobs, setJobs] = useState([]);
+
+  // DATA UPDATES
+  const [dataUpdated, setDataUpdated] = useState(false);
+
+  useEffect(() => {
+    fetchJobs();
+  }, []);
+
+  const fetchJobs = async () => {
+    try {
+      const response = await api.get("api/all-jobs");
+      console.log(response.data.data);
+      setJobs(response.data.data);
+    } catch (e) {
+      console.log("ERROR FETCHING JOBS");
+
+      console.log(e);
+    }
+  };
+
   const [rowCourseData, setRowCourseData] = useState([
     {
-      id: "1",
+      course_id: "1",
       title: "React Free Course",
-      relatedJob: "Junior Software Engineer",
+      description: "This is a sample description",
       url: "http://sampleurl.com/react",
-    },
-    {
-      id: "2",
-      title: "Tailwind Free Course",
-      relatedJob: "First Job Title",
-      url: "http://sampleurl.com/tailwind",
-    },
-    {
-      id: "3",
-      title: "Node.JS Free Course",
-      relatedJob: "Second Job Title",
-      url: "http://sampleurl.com/nodejs",
-    },
-    {
-      id: "4",
-      title: "Sample Course Title",
-      relatedJob: "Third Job Title",
-      url: "http://sampleurl.com/sample",
-    },
-    {
-      id: "5",
-      title: "Another Sample Course",
-      relatedJob: "Fourth Job Title",
-      url: "http://sampleurl.com/another",
+      created_at: "date",
+      created_by: "1476564bhj23178378",
+      first_name: "John Wick",
     },
   ]);
 
-  const gridOptions = {
-    getRowStyle: (params) => {
-      if (params.node.rowIndex % 2 === 0) {
-        return { background: "#ECF1E3", color: "black" };
-      } else {
-        return { background: "white", color: "black" };
-      }
-    },
-  };
-
-  const gridRef = useRef(); 
+  const gridRef = useRef();
 
   const [openDialog, setOpenDialog] = useState(false);
   const [currentCourse, setCurrentCourse] = useState({
-    id: "",
+    course_id: null,
     title: "",
-    relatedJob: "",
+    description: "",
     url: "",
   });
 
   const handleEdit = (course) => {
-    setCurrentCourse(course);
+    setCurrentCourse({
+      ...course,
+    });
+    console.log(course);
+
     setOpenDialog(true);
   };
 
-  const handleDelete = (id) => {
-    setRowCourseData(rowCourseData.filter((course) => course.id !== id));
-  };
+  const handleDelete = async (course_id) => {
+    console.log(`Delete: ${course_id}`);
 
-  const handleAddNew = () => {
-    setCurrentCourse({ id: "", title: "", relatedJob: "", url: "" });
-    setOpenDialog(true);
-  };
-
-  const handleSave = () => {
-    if (currentCourse.id) {
-      setRowCourseData(
-        rowCourseData.map((course) =>
-          course.id === currentCourse.id ? currentCourse : course
-        )
-      );
-    } else {
-      setRowCourseData([
-        ...rowCourseData,
-        { ...currentCourse, id: Date.now().toString() },
-      ]);
+    try {
+      const response = await api.post("api/delete-course", { course_id });
+      toast.success(response.data.message);
+      console.log(response.data.message);
+      setDataUpdated(!dataUpdated);
+    } catch (err) {
+      console.log(err);
     }
-    setOpenDialog(false);
   };
+
+  const showAddDialog = () => {
+    setCurrentCourse({
+      course_id: null,
+      title: "",
+      description: "",
+      url: "",
+    });
+    setOpenDialog(true);
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+
+    console.log(
+      currentCourse.course_id === null || currentCourse.course_id == ""
+    );
+
+    try {
+      if (currentCourse.course_id === null || currentCourse.course_id == "") {
+        const response = await api.post("/api/add-course", {
+          ...currentCourse,
+          userId: user.id,
+        });
+      } else {
+        console.log("Edit course");
+        await api.post("/api/update-course", {
+          ...currentCourse,
+          userId: user.id,
+        });
+      }
+      setDataUpdated(!dataUpdated);
+      setOpenDialog(false);
+    } catch (error) {
+      console.log("Error adding course (catch)");
+      console.log(error);
+    }
+  };
+
+  const handleInputChange = (field) => (event) => {
+    setCurrentCourse((prevCourse) => ({
+      ...prevCourse,
+      [field]: event.target.value,
+    }));
+  };
+
+  const fetchJobCourses = async () => {
+    try {
+      const response = await api.get("api/all-courses");
+
+      setRowCourseData(response.data.data);
+    } catch (error) {
+      console.log("Error Fetching Job Courses");
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchJobCourses();
+  }, [dataUpdated]);
 
   return (
-    <div className="border-primary border-2 rounded-3xl w-full overflow-hidden">
-      <Card sx={{ boxShadow:"none" }}>
-        <div
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="hover:bg-gray-100 rounded flex items-center p-4 cursor-pointer"
+    <>
+      <div className="flex justify-end">
+        <button
+          variant="contained"
+          onClick={showAddDialog}
+          sx={{ mb: 2 }}
+          className="btn-primary mb-2 "
         >
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            Job Courses
-          </Typography>
-          <IconButton>
-            {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-          </IconButton>
+          <div className="flex items-center justify-center w-full gap-1">
+            <ControlPointIcon fontSize="small" />
+            <span className="text-sm flex items-center justify-center">
+              Course
+            </span>
+          </div>
+        </button>
+      </div>
+      <div className="border-primary rounded-md w-full overflow-hidden">
+        <div className="w-full overflow-x-auto">
+          <div
+            className="ag-theme-quartz min-w-[600px] lg:w-full overflow-x-auto"
+            style={{ height: "400px" }}
+          >
+            <AgGridReact
+              rowData={rowCourseData}
+              columnDefs={[
+                {
+                  headerName: "Course Title",
+                  field: "title",
+                  flex: 1,
+                  headerClass: "text-primary font-bold bg-gray-100",
+                },
+                {
+                  headerName: "URL",
+                  field: "url",
+                  flex: 1,
+                  headerClass: "text-primary font-bold bg-gray-100",
+                },
+                {
+                  headerName: "Description",
+                  field: "description",
+                  flex: 2,
+                  headerClass: "text-primary font-bold bg-gray-100",
+                },
+                {
+                  headerName: "Date Created",
+                  field: "created_at",
+                  flex: 1,
+                  headerClass: "text-primary font-bold bg-gray-100",
+                  valueGetter: (params) =>
+                    formatTimestamp(params.data.created_at).fullDate,
+                },
+                {
+                  headerName: "Created By",
+                  field: "created_by",
+                  flex: 2,
+                  headerClass: "text-primary font-bold bg-gray-100",
+                  valueGetter: (params) =>
+                    `${params.data.first_name} ${params.data.last_name}`,
+                },
+                {
+                  headerName: "Action",
+                  field: "action",
+                  flex: 1,
+                  headerClass: "text-primary font-bold bg-gray-100",
+                  cellRenderer: (params) => (
+                    <div className="flex gap-2">
+                      <IconButton onClick={() => handleEdit(params.data)}>
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handleDelete(params.data.course_id)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </div>
+                  ),
+                },
+              ]}
+              defaultColDef={{ sortable: true, filter: true }}
+              rowHeight={50}
+              pagination={true}
+              paginationPageSize={5}
+              paginationPageSizeSelector={[5, 10, 20, 50]}
+              ref={gridRef}
+            />
+          </div>
         </div>
-        {isExpanded && (
-          <CardContent>
-            <button
-              variant="contained"
-              onClick={handleAddNew}
-              sx={{ mb: 2 }}
-              className="btn-primary mb-2 "
-            >
-              <div className="flex items-center justify-center w-full gap-1">
-                <ControlPointIcon fontSize="small" />
-                <span className="text-sm flex items-center justify-center">
-                  Course
-                </span>
-              </div>
-            </button>
-
-            <div
-              className="ag-theme-quartz"
-              style={{ height: "400px", width: "100%" }}
-            >
-              <AgGridReact
-                rowData={rowCourseData}
-                columnDefs={[
-                  {
-                    headerName: "Title",
-                    field: "title",
-                    flex: 1,
-                    headerClass: "text-primary font-bold bg-tertiary",
-                  },
-                  {
-                    headerName: "Related Job",
-                    field: "relatedJob",
-                    flex: 1,
-                    headerClass: "text-primary font-bold bg-tertiary",
-                  },
-                  {
-                    headerName: "URL",
-                    field: "url",
-                    flex: 1,
-                    headerClass: "text-primary font-bold bg-tertiary",
-                  },
-                  {
-                    headerName: "Action",
-                    field: "action",
-                    flex: 1,
-
-                    headerClass: "text-primary font-bold bg-tertiary",
-                    cellRenderer: (params) => (
-                      <div className="flex gap-2">
-                        <IconButton onClick={() => handleEdit(params.data)}>
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton
-                          onClick={() => handleDelete(params.data.id)}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </div>
-                    ),
-                  },
-                ]}
-                defaultColDef={{ sortable: true, filter: true }}
-                rowHeight={50}
-                pagination={true}
-                paginationPageSize={5}
-                paginationPageSizeSelector={[5, 10, 20, 50]}
-                gridOptions={gridOptions}
-                ref={gridRef}
-              />
-            </div>
-          </CardContent>
-        )}
 
         {/* Dialog for Add/Edit */}
-        <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-          <DialogTitle>
-            {currentCourse.id ? "Edit Course" : "Add Course"}
-          </DialogTitle>
-          <DialogContent>
-            <TextField
-              label="Title"
-              fullWidth
-              margin="dense"
-              value={currentCourse.title}
-              onChange={(e) =>
-                setCurrentCourse({ ...currentCourse, title: e.target.value })
-              }
-            />
-            <TextField
-              label="Related Job"
-              fullWidth
-              margin="dense"
-              value={currentCourse.relatedJob}
-              onChange={(e) =>
-                setCurrentCourse({
-                  ...currentCourse,
-                  relatedJob: e.target.value,
-                })
-              }
-            />
-            <TextField
-              label="URL"
-              fullWidth
-              margin="dense"
-              value={currentCourse.url}
-              onChange={(e) =>
-                setCurrentCourse({ ...currentCourse, url: e.target.value })
-              }
-            />
-          </DialogContent>
-          <DialogActions>
-            <button className="btn-light" onClick={() => setOpenDialog(false)}>
-              Cancel
-            </button>
-            <button
-              className="btn-primary"
-              onClick={handleSave}
-              variant="contained"
-            >
-              Save
-            </button>
-          </DialogActions>
+        <Dialog
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          sx={{
+            "& .MuiDialog-paper": {
+              borderRadius: "16px",
+              padding: "20px",
+              width: "600px",
+            },
+          }}
+        >
+          <form onSubmit={(e) => handleSave(e)}>
+            <DialogTitle className="flex w-full justify-center items-center">
+              {currentCourse.course_id ? "Edit Course" : "Add Course"}
+            </DialogTitle>
+            <DialogContent>
+              <div className="w-full">
+                <label className="block text-gray-700 font-avenir-black mt-2">
+                  Title<span className="text-primary">*</span>
+                </label>
+
+                <input
+                  name="title"
+                  required
+                  value={currentCourse.title}
+                  onChange={handleInputChange("title")}
+                  rows={3}
+                  className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary "
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 font-avenir-black mt-2">
+                  URL<span className="text-primary">*</span>
+                </label>
+                <input
+                  name="url"
+                  required
+                  value={currentCourse.url}
+                  onChange={handleInputChange("url")}
+                  className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 font-avenir-black mt-2">
+                  Description<span className="text-primary">*</span>
+                </label>
+                <textarea
+                  name="description"
+                  required
+                  value={currentCourse.description}
+                  onChange={handleInputChange("description")}
+                  rows={3}
+                  className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+                ></textarea>
+              </div>
+            </DialogContent>
+            <DialogActions>
+              <button
+                type="button"
+                className="btn-light"
+                onClick={() => setOpenDialog(false)}
+              >
+                Cancel
+              </button>
+              <button type="submit" className="btn-primary" variant="contained">
+                Save
+              </button>
+            </DialogActions>
+          </form>
         </Dialog>
-      </Card>
-    </div>
+      </div>
+    </>
   );
 }
 

@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import Footer from "../../components/Footer";
+
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
 import congratsImg from "../../assets/images/congrats-app-form-illustration.jpg";
 import fullsuitelogo from "../../assets/logos/logo-fs-full.svg";
 import { useLocation, useNavigate } from "react-router-dom";
+import Footer from '../../components/Footer';
 
 const CongratsApplicationForm = () => {
-  window.scroll(0, 0);
+
 
   const location = useLocation();
   const assessmentUrl = location.state?.assessmentUrl;

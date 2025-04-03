@@ -53,24 +53,13 @@ const EmployeeBlogsFeed = () => {
         <Outlet />
       ) : (
         <>
-          <div className="lg:flex items-center justify-between hidden">
-            <h2 className="font-avenir-black">Feeds</h2>
-            <span
-              onClick={() => {
-                navigate("/app/my-blogs/new-blog");
-              }}
-              className="font-avenir-black text-primary text-sm cursor-pointer"
-            >
-              + Create new blog
-            </span>
-          </div>
           <div className="bg-primary rounded-md p-3 flex justify-between mb-5 lg:hidden">
             <div className="flex gap-2">
               <TicketIcon className="w-5 h-5 text-white" />
               <span className="text-white text-sm">3 events today</span>
             </div>
             <div className="flex gap-1 items-center">
-              <span className="text-white text-xs">See all</span>
+              <span className="text-white text-xss">See all</span>
               <ChevronRightIcon className="w-3 h-3 text-white" />
             </div>
           </div>

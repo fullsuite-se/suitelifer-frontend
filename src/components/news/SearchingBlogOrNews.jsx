@@ -1,19 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import GuestBlogCard from "../guest-blogs/GuestBlogCard";
 import NewsCardSmall from "../news/NewsCardSmall";
 import nothingFoundIcon from "../../assets/gif/nothing-found-icon.gif";
+import api from "../../utils/axios";
+import { useStore } from "../../store/authStore";
 
-const ArticleSearchResults = ({ type, list, searchTerm }) => {
-  const lowerCaseQuery = searchTerm?.toLowerCase().trim();
+const SearchingBlogOrNews = ({ type }) => {
+  const [filteredResults, setFilteredResults] = useState([]);
+  const searchValue = useStore((state) => state.searchValue);
 
-  const filteredResults = lowerCaseQuery
-    ? list.filter(
-        (item) =>
-          item.title.toLowerCase().includes(lowerCaseQuery) ||
-          item.article.toLowerCase().includes(lowerCaseQuery) ||
-          item.author.toLowerCase().includes(lowerCaseQuery)
-      )
-    : list;
+  useEffect(() => {
+    const fetchSearchResult = async () => {
+      if (type === "news") {
+        try {
+          const response = await api.get("/api/all-news", {
+            params: searchValue ? { filter: searchValue } : {},
+          });
+          setFilteredResults(response.data);
+        } catch (error) {
+          console.error("Error fetching news:", error);
+        }
+      }
+    };
+    fetchSearchResult();
+  }, [searchValue]);
 
   return (
     <div className="w-full">
@@ -25,33 +35,34 @@ const ArticleSearchResults = ({ type, list, searchTerm }) => {
 
           {type === "news" ? (
             <div className="layout-small-news-cards gap-4 sm:gap-5">
-              {filteredResults.map((news, index) => (
-                <NewsCardSmall
-                  key={news.id || index}
-                  id={news.id}
-                  title={news.title}
-                  author={news.author}
-                  article={news.article}
-                  readTime={news.readTime}
-                  created_at={news.created_at}
-                  imagesWithCaption={news.imagesWithCaption}
-                />
-              ))}
+              {filteredResults.length > 0 &&
+                filteredResults.map((news, index) => (
+                  <NewsCardSmall
+                    key={news.id || index}
+                    id={news.id}
+                    title={news.title}
+                    createdByName={news.createdByName}
+                    article={news.article}
+                    createdAt={news.createdAt}
+                    imgUrls={news.imgUrls}
+                  />
+                ))}
             </div>
           ) : (
             <div className="h-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 justify-center items-center">
-              {filteredResults.map((blog, index) => (
-                <GuestBlogCard
-                  key={blog.id || index}
-                  id={blog.id}
-                  title={blog.title}
-                  author={blog.author}
-                  article={blog.article}
-                  readTime={blog.readTime}
-                  created_at={blog.created_at}
-                  images={blog.images}
-                />
-              ))}
+              {filteredResults.length > 0 &&
+                filteredResults.map((blog, index) => (
+                  <GuestBlogCard
+                    key={blog.id || index}
+                    id={blog.id}
+                    title={blog.title}
+                    author={blog.author}
+                    article={blog.article}
+                    readTime={blog.readTime}
+                    created_at={blog.created_at}
+                    images={blog.images}
+                  />
+                ))}
             </div>
           )}
         </>
@@ -69,4 +80,4 @@ const ArticleSearchResults = ({ type, list, searchTerm }) => {
   );
 };
 
-export default ArticleSearchResults;
+export default SearchingBlogOrNews;

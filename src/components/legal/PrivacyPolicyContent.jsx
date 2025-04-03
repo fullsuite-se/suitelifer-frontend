@@ -65,23 +65,7 @@ const PrivacyPolicyContent = () => {
               </li>
             ))}
           </ul>
-          {/* <button
-            onClick={() => {
-              const element = document.getElementById("top");
-              if (element) {
-                const offset = 80;
-                const elementPosition =
-                  element.getBoundingClientRect().top + window.scrollY;
-                window.scrollTo({
-                  top: elementPosition - offset,
-                  behavior: "smooth",
-                });
-              }
-            }}
-            className="mt-4 text-sm text-primary hover:underline"
-          >
-            ↑ Back to top
-          </button> */}
+        
         </div>
       </div>
 
@@ -218,17 +202,7 @@ const PrivacyPolicyContent = () => {
           </p>
         </section>
 
-        {/* <div className="mt-5 lg:mt-10 font-avenir-black">
-          At FullSuite (“Company”), we are committed to protecting the privacy
-          and security of your personal information. This Data Privacy Policy
-          outlines how we collect, use, store, dispose and protect your personal
-          data. By accessing our website and/or submitting your information
-          directly to the Company, you agree and consent to the use, collection,
-          processing, storage, and disposal of your personal data as outlined in
-          this Privacy Policy. The Company is committed to being transparent
-          about how it collects and uses that data and to meeting its data
-          protection obligations.
-        </div> */}
+       
       </div>
     </div>
   );

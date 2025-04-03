@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
-import Footer from "../../components/Footer";
+
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
+import Footer from "../../components/Footer";
+
 import bgBlogs from "../../assets/images/blogs-text-bg.svg";
 import guestBlogsList from "../../components/guest-blogs/GuestBlogsList";
 import GuestBlogLarge from "../../components/guest-blogs/GuestBlogLarge";
 import AnimatedText from "../../components/guest-blogs/AnimatedText";
 import GuestBlogTags from "../../components/guest-blogs/GuestBlogTags";
 import GuestBlogCard from "../../components/guest-blogs/GuestBlogCard";
-import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
 import ArticleSearchResults from "../../components/news/SearchingBlogOrNews";
 import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
@@ -17,6 +18,9 @@ import PageMeta from "../../components/layout/PageMeta";
 import api from "../../utils/axios";
 import { removeHtmlTags } from "../../utils/removeHTMLTags";
 import { readingTime } from "reading-time-estimator";
+import Skeleton from "react-loading-skeleton";
+import LoadingBlogLarge from "../../components/guest-blogs/LoadingBlogLarge";
+import LoadingBlogCard from "../../components/guest-blogs/LoadingBlogCard";
 
 const Blog = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -36,9 +40,7 @@ const Blog = () => {
     setIsSearching(false);
   };
 
-  useEffect(() => {
-    window.scroll(0, 0);
-  }, []);
+  useEffect(() => {}, []);
 
   const allTag = { tagId: "All", tagName: "All" };
 
@@ -64,12 +66,13 @@ const Blog = () => {
   };
 
   const [companyBlogs, setCompanyBlogs] = useState([]);
-
+  const [isCompanyBlogsLoading, setIsCompanyBlogsLoading] = useState(true);
   const fetchAllCompanyBlogs = async () => {
     try {
+      // await new Promise((resolve) => setTimeout(resolve, 200)); //check if it's working
       const response = await api.get("/api/all-company-blogs");
-
       setCompanyBlogs(response.data);
+      setIsCompanyBlogsLoading(false);
     } catch (err) {
       console.log(err);
     }
@@ -129,7 +132,7 @@ const Blog = () => {
             {/* Blue Thing */}
             <div
               className="absolute bg-primary h-15 md:h-25 w-[49.7%] rounded-br-2xl rounded-tr-2xl"
-              style={{ 
+              style={{
                 animation: "slideInFromLeft 0.8s ease-out forwards",
                 left: 0,
               }}
@@ -140,7 +143,7 @@ const Blog = () => {
         </div>
 
         <div className="text-center mt-3 md:mt-5">
-          <p className="text-gray-400 text-[12px] md:text-[14px] lg:text-[16px]">
+          <p className="text-gray-400 text-small">
             <motion.span
               initial={{ width: 0 }}
               animate={{ width: "100%" }}
@@ -204,13 +207,28 @@ const Blog = () => {
             searchTerm={searchTerm}
           />
         ) : companyBlogTags.length === 1 ? (
-          <div className="mt-20">
-            <TwoCirclesLoader
-              bg={"transparent"}
-              color1={"#0097b2"}
-              color2={"#bfd1a0"}
-              height={"35"}
-            />
+          <div className="mt-28">
+            <div className="mx-[25vw] -translate-y-10">
+              <div className="w-full">
+                <Skeleton />
+                <Skeleton width={"40%"} />
+              </div>
+            </div>
+            <div className="py-5"></div>
+            <section>
+              <p className="md:text-2xl uppercase font-avenir-black text-primary pb-3 lg:pb-4">
+                The latest
+              </p>
+              <LoadingBlogLarge />
+              <p className="md:text-2xl font-avenir-black text-primary pb-3 mt-10 lg:pb-4">
+                {/* More Blogs */}
+              </p>
+              <div className="h-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 justify-center items-center">
+                {[...Array(2)].map((_, index) => (
+                  <LoadingBlogCard key={index} />
+                ))}
+              </div>
+            </section>
           </div>
         ) : (
           <>
@@ -225,63 +243,77 @@ const Blog = () => {
             </div>
 
             <div className="py-5"></div>
-            {companyBlogs.length === 0 ? (
-              <p className="text-center text-lg">
-                Looks like we’re out of blogs for this filter—
-                <span className="font-avenir-black text-primary">
-                  switch it up
-                </span>{" "}
-                and try again!
-              </p>
+            {isCompanyBlogsLoading ? (
+              <>
+                <section>
+                  <p className="md:text-2xl uppercase font-avenir-black text-primary pb-3 lg:pb-4">
+                    The latest
+                  </p>
+                  <LoadingBlogLarge />
+                  <p className="md:text-2xl font-avenir-black text-primary pb-3 mt-10 lg:pb-4">
+                    {/* More Blogs */}
+                  </p>
+                  <div className="h-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 justify-center items-center">
+                    {[...Array(2)].map((_, index) => (
+                      <LoadingBlogCard key={index} />
+                    ))}
+                  </div>
+                </section>
+              </>
             ) : (
               <>
-                <p className="md:text-2xl uppercase font-avenir-black text-primary pb-3 lg:pb-4">
-                  The latest
-                </p>
-                <GuestBlogLarge
-                  id={companyBlogs[0].cblogId}
-                  title={companyBlogs[0].title}
-                  author={companyBlogs[0].createdBy}
-                  article={removeHtmlTags(companyBlogs[0].description)}
-                  readTime={readingTime(companyBlogs[0].description, 238).text}
-                  createdAt={companyBlogs[0].createdAt}
-                  imageUrl={companyBlogs[0].imageUrl}
-                />
-
-                <p className="md:text-2xl font-avenir-black text-primary pb-3 mt-10 lg:pb-4">
-                  {/* More Blogs */}
-                </p>
-                <div className="h-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 justify-center items-center">
-                  {companyBlogs.slice(1).map((blog, index) => (
-                    <GuestBlogCard
-                      key={index}
-                      id={blog.cblogId}
-                      title={blog.title}
-                      createdBy={blog.createdBy}
-                      description={removeHtmlTags(blog.description)}
-                      createdAt={blog.createdAt}
-                      imageUrl={blog.imageUrl}
+                {companyBlogs.length === 0 ? (
+                  <p className="text-center text-lg">
+                    Looks like we're out of blogs for this filter—
+                    <span className="font-avenir-black text-primary">
+                      switch it up
+                    </span>{" "}
+                    and try again!
+                  </p>
+                ) : (
+                  <>
+                    <p className="md:text-2xl uppercase font-avenir-black text-primary pb-3 lg:pb-4">
+                      The latest
+                    </p>
+                    <GuestBlogLarge
+                      id={companyBlogs[0].cblogId}
+                      title={companyBlogs[0].title}
+                      author={companyBlogs[0].createdBy}
+                      article={removeHtmlTags(companyBlogs[0].description)}
+                      readTime={
+                        readingTime(companyBlogs[0].description, 238).text
+                      }
+                      createdAt={companyBlogs[0].createdAt}
+                      imageUrl={companyBlogs[0].imageUrl}
                     />
-                  ))}
-                </div>
+
+                    <p className="md:text-2xl font-avenir-black text-primary pb-3 mt-10 lg:pb-4">
+                      {/* More Blogs */}
+                    </p>
+                    <div className="h-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 justify-center items-center">
+                      {companyBlogs.slice(1).map((blog, index) => (
+                        <GuestBlogCard
+                          key={index}
+                          id={blog.cblogId}
+                          title={blog.title}
+                          createdBy={blog.createdBy}
+                          description={removeHtmlTags(blog.description)}
+                          createdAt={blog.createdAt}
+                          imageUrl={blog.imageUrl}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
               </>
             )}
-
-            <div className="h-10"></div>
-            <div className="flex justify-center items-center w-full h-15 rounded-lg overflow-hidden">
-              <TwoCirclesLoader
-                bg={"transparent"}
-                color1={"#0097b2"}
-                color2={"#bfd1a0"}
-                height={"35"}
-              />
-            </div>
           </>
         )}
       </main>
 
       <div className="h-30"></div>
       <BackToTop />
+      <Footer />
     </section>
   );
 };

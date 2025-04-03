@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import logo_fs_full from "../../assets/logos/logo-fs-full.svg";
-import { Bars2Icon, XMarkIcon } from "@heroicons/react/24/solid";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
 export default function DesktopNav() {
+  const location = useLocation();
   const [isVisible, setIsVisible] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
 
@@ -45,10 +45,10 @@ export default function DesktopNav() {
         {/* Navigation Links*/}
         <nav className={`flex justify-center items-end relative`}>
           {/* Logo */}
-          <div
-            className={`w-32 lg:ml-0 lg:mr-7 xl:ml-9 xl:mr-16 `}
-          >
-            <a href="/"><img className="object-cover" src={logo_fs_full} alt="Logo" /></a>
+          <div className={`w-32 lg:ml-0 lg:mr-7 xl:ml-9 xl:mr-16 `}>
+            <a href="/">
+              <img className="object-cover" src={logo_fs_full} alt="Logo" />
+            </a>
           </div>
           <div className="flex gap-9 xl:gap-14">
             <div className="">
@@ -96,19 +96,20 @@ export default function DesktopNav() {
             <div>
               <NavLink
                 to="/careers"
-                className={({ isActive }) =>
-                  `relative !no-underline text-dark text-md hover:text-[#007a8e] ${
-                    isActive ? "active-class text-[#007a8e]" : ""
-                  }transition-all duration-300 ease-in-out 
+                className={({ isActive }) => {
+                  const isPathActive = location.pathname.startsWith("/careers");
+                  return `relative !no-underline text-dark text-md hover:text-[#007a8e] 
+      ${
+        isPathActive ? "active-class text-[#007a8e]" : ""
+      } transition-all duration-300 ease-in-out 
+
+      before:absolute before:content-[''] before:w-1 before:h-1 
+      before:rounded-full before:bg-[#007a8e] before:left-1/2 before:-translate-x-1/2 
+      before:bottom-[-6px] before:opacity-0 before:transition-all before:duration-300
       
-                before:absolute before:content-[''] before:w-1 before:h-1 
-                before:rounded-full before:bg-[#007a8e] before:left-1/2 before:-translate-x-1/2 
-                before:bottom-[-6px] before:opacity-0 before:transition-all before:duration-300
-                
-                hover:before:opacity-100 hover:before:translate-y-1 
-                ${isActive ? "before:opacity-100 before:translate-y-1" : ""}
-      `
-                }
+      hover:before:opacity-100 hover:before:translate-y-1 
+      ${isPathActive ? "before:opacity-100 before:translate-y-1" : ""}`;
+                }}
               >
                 Careers
               </NavLink>
@@ -178,18 +179,7 @@ export default function DesktopNav() {
             </div>
           </div>
         </nav>
-        <div>
-          {/* <NavLink
-            to="/login-employee"
-            className={({ isActive }) =>
-              `!no-underline bg-[#E5F5F7] px-4 p-3 rounded-4xl text-primary text-md font-md hover:text-[#007a8e] transition-all duration-300 ease-in-out ${
-                isActive ? "active-class" : ""
-              }`
-            }
-          >
-            Employee Login
-          </NavLink> */}
-        </div>
+        <div></div>
       </div>
     </>
   );

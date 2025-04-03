@@ -9,11 +9,8 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
-import { CalendarIcon } from "@heroicons/react/20/solid";
 import moment from "moment";
 import EventCalendar from "./../../components/admin/EventCalendar";
-import logofsfull from "../../assets/logos/logo-fs-full.svg";
-import EventIcon from "@mui/icons-material/Event";
 
 const AdminEvents = () => {
   const [openDialog, setOpenDialog] = useState(false);
@@ -94,12 +91,6 @@ const AdminEvents = () => {
           </button>
 
           {/* Icon Button for Mobile */}
-          <button
-            className="flex gap-2 cursor-pointer sm:hidden px-3 py-2 rounded-md border border-gray-200 bg-gray-100"
-            onClick={() => setIsAddModalOpen(true)}
-          >
-            <span>+</span> <CalendarIcon className="size-5" />
-          </button>
         </div>
       </header>
 

@@ -23,6 +23,8 @@ import {
   DisclosureButton,
   DisclosurePanel,
 } from "@headlessui/react";
+import SidebarCollapse from "../../assets/icons/SidebarCollapse";
+import { useEffect } from "react";
 
 const iconMap = {
   dashboard: { default: ChartBarIcon },
@@ -54,30 +56,116 @@ const CMSNavigation = () => {
   const services = useStore((state) => state.services) || [];
   const [isOpenModal, setIsOpenModal] = useState(false);
   const user = useStore((state) => state.user);
+  const [isCollapse, setCollapse] = useState(
+    JSON.parse(localStorage.getItem("isCollapsed")) ?? false
+  );
+  const [showTool, setShowTool] = useState(
+    JSON.parse(localStorage.getItem("showTools")) ?? true
+  );
+  const [isLoading, setIsLoading] = useState(true);
+  // For PWA
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [showInstallPrompt, setShowInstallPrompt] = useState(false);
+
+  useEffect(() => {
+    try {
+      setIsLoading(true);
+      const isCollaped =
+        JSON.parse(localStorage.getItem("isCollapsed")) ?? false;
+      const showTools = JSON.parse(localStorage.getItem("showTools")) ?? true;
+      setCollapse(isCollaped);
+      setShowTool(showTools);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (event) => {
+      event.preventDefault();
+      setDeferredPrompt(event);
+      setShowInstallPrompt(true);
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener(
+        "beforeinstallprompt",
+        handleBeforeInstallPrompt
+      );
+    };
+  }, []);
+
+  const handleCollapseBtn = () => {
+    localStorage.setItem("isCollapsed", !isCollapse);
+    setCollapse((prev) => !prev);
+  };
+
+  const handleDisclosureBtn = () => {
+    const updatedShowTool = !showTool;
+    localStorage.setItem("showTools", updatedShowTool);
+    setShowTool(updatedShowTool);
+  };
+
+  const handleInstallClick = () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === "accepted") {
+          console.log("User accepted PWA install");
+        } else {
+          console.log("User dismissed PWA install");
+        }
+        setDeferredPrompt(null);
+        setShowInstallPrompt(false);
+      });
+    }
+  };
+
+  if (isLoading) return null;
 
   return (
     <section>
-      <nav className="w-36 md:w-40 lg:w-44 xl:w-52 h-dvh flex flex-col">
+      <nav className={`${isCollapse && "w-min"} h-dvh flex flex-col`}>
         <ModalLogout
           isOpen={isOpenModal}
           handleClose={() => setIsOpenModal(false)}
         />
-        <section className="py-5">
-          <div className="w-20 h-20 mx-auto mb-3">
+        <section className={`relative ${isCollapse ? "pt-8" : "py-5"}`}>
+          <section
+            className={`${
+              isCollapse ? "flex justify-center" : "absolute top-8 right-0"
+            }`}
+            onClick={handleCollapseBtn}
+          >
+            <SidebarCollapse direction={"left"} />
+          </section>
+          <div
+            className={`size-20 mx-auto mb-3 ${isCollapse ? "mt-3" : "mb-3"}`}
+          >
             <img
               src="http://sa.kapamilya.com/absnews/abscbnnews/media/2020/tvpatrol/06/01/james-reid.jpg"
               alt="Hernani"
               className="w-full h-full object-cover rounded-full"
             />
           </div>
-          <p className="font-avenir-black text-center">
-            {`${user?.first_name ?? "Unknown"} ${user?.last_name ?? "User"}`}
-          </p>
-          <p className="text-sm text-center text-primary">
-            {`@${user?.first_name?.trim()?.toLowerCase() ?? "unknown"}.${
-              user?.last_name?.trim()?.toLowerCase() ?? "user"
-            }`}
-          </p>
+          {!isCollapse && (
+            <>
+              <p className="font-avenir-black text-center truncate">
+                {`${user?.first_name ?? "Unknown"} ${
+                  user?.last_name ?? "User"
+                }`}
+              </p>
+              <p className="text-sm text-center text-primary">
+                {`@${user?.first_name?.trim()?.toLowerCase() ?? "unknown"}.${
+                  user?.last_name?.trim()?.toLowerCase() ?? "user"
+                }`}
+              </p>
+            </>
+          )}
         </section>
         <section className=" flex-1 ">
           <ul className="list-none!">
@@ -88,8 +176,12 @@ const CMSNavigation = () => {
                     to={`/app/${service.path}`}
                     className={({ isActive }) =>
                       isActive
-                        ? "bg-primary text-white transition-none! p-3 rounded-lg flex items-center gap-3 no-underline!"
-                        : "bg-white text-primary transition-none! p-3 rounded-lg flex items-center gap-3 no-underline! hover:bg-blue-50"
+                        ? `bg-primary text-white transition-none p-3 rounded-lg flex items-center gap-3 no-underline ${
+                            !isCollapse ? "w-full" : "w-min"
+                          }`
+                        : `bg-white text-primary transition-none p-3 rounded-lg flex items-center gap-3 no-underline hover:bg-blue-50 ${
+                            !isCollapse ? "w-full" : "w-min"
+                          }`
                     }
                   >
                     {service ? (
@@ -97,22 +189,31 @@ const CMSNavigation = () => {
                     ) : (
                       <Square2StackIcon className="size-4 group-hover:hidden" />
                     )}
-                    <span className="no-underline! font-avenir-black">
-                      {service.feature_name}
-                    </span>
+                    {!isCollapse && (
+                      <span className="no-underline! truncate font-avenir-black">
+                        {service.feature_name}
+                      </span>
+                    )}
                   </NavLink>
                 </li>
               );
             })}
             {services.length !== 0 && (
-              <Disclosure as="div" defaultOpen={true}>
-                <DisclosureButton className="group cursor-pointer flex w-full items-center justify-between">
-                  <p className="font-avenir-black text-primary p-3">
-                    Admin Tools
-                  </p>
+              <Disclosure as="div" defaultOpen={showTool}>
+                <DisclosureButton
+                  className="group cursor-pointer flex w-full items-center justify-between"
+                  onClick={handleDisclosureBtn}
+                >
+                  {!isCollapse && (
+                    <p className="font-avenir-black text-primary p-3">
+                      Admin Tools
+                    </p>
+                  )}
                   <ChevronDownIcon className="size-5 text-primary  group-data-[open]:rotate-180" />
                 </DisclosureButton>
-                <DisclosurePanel className="mt-1 ml-5 flex flex-col">
+                <DisclosurePanel
+                  className={`${!isCollapse && "ml-5"} mt-1 flex flex-col`}
+                >
                   {services.map(({ feature_name }, index) => {
                     if (!feature_name) return null;
                     const path = feature_name.toLowerCase().replace(" ", "");
@@ -127,8 +228,12 @@ const CMSNavigation = () => {
                           to={`/app/${path}`}
                           className={({ isActive }) =>
                             isActive
-                              ? "bg-primary text-white p-3 transition-none! rounded-lg flex items-center gap-3 no-underline!"
-                              : "bg-white text-primary p-3 transition-none! rounded-lg flex items-center gap-3 no-underline! hover:bg-blue-50"
+                              ? `bg-primary text-white transition-none p-3 rounded-lg flex items-center gap-3 no-underline ${
+                                  !isCollapse ? "w-full" : "w-min"
+                                }`
+                              : `bg-white text-primary transition-none p-3 rounded-lg flex items-center gap-3 no-underline hover:bg-blue-50 ${
+                                  !isCollapse ? "w-full" : "w-min"
+                                }`
                           }
                         >
                           {icons ? (
@@ -136,9 +241,11 @@ const CMSNavigation = () => {
                           ) : (
                             <Square2StackIcon className="size-4 group-hover:hidden" />
                           )}
-                          <span className="no-underline! font-avenir-black">
-                            {feature_name}
-                          </span>
+                          {!isCollapse && (
+                            <span className="no-underline! font-avenir-black">
+                              {feature_name}
+                            </span>
+                          )}
                         </NavLink>
                       </li>
                     );
@@ -148,18 +255,34 @@ const CMSNavigation = () => {
             )}
           </ul>
         </section>
-        <section className="p-5 py-7 flex gap-12">
-          <img
-            src={fullsuitelogo}
-            alt="fullsuitelogo"
-            className="w-20 h-auto"
-          />
-          <button
-            className=" cursor-pointer"
-            onClick={() => setIsOpenModal(true)}
-          >
-            <ArrowRightCircleIcon className="w-6 h-6 text-primary" />
-          </button>
+
+        <section className="p-5 py-7 flex flex-col gap-4">
+          {showInstallPrompt && (
+            <div className="mx-auto">
+              <button
+                className="bg-primary text-sm px-3 py-1 rounded-md text-white cursor-pointer"
+                onClick={handleInstallClick}
+              >
+                Install App
+              </button>
+            </div>
+          )}
+
+          <div className="flex justify-between">
+            {!isCollapse && (
+              <img
+                src={fullsuitelogo}
+                alt="fullsuitelogo"
+                className="w-20 h-auto"
+              />
+            )}
+            <button
+              className=" cursor-pointer"
+              onClick={() => setIsOpenModal(true)}
+            >
+              <ArrowRightCircleIcon className="w-6 h-6 text-primary" />
+            </button>
+          </div>
         </section>
       </nav>
     </section>

@@ -7,7 +7,6 @@ import {
   YAxis,
   Tooltip,
 } from "recharts";
-import logofsfull from "../../assets/logos/logo-fs-full.svg";
 import api from "../../utils/axios";
 import atsAPI from "../../utils/atsAPI";
 
@@ -72,28 +71,54 @@ const closedJobsData = [
 ];
 
 const AdminDashboard = () => {
-  const [selectedData, setSelectedData] = useState(applicationsData);
   const [selectedLabel, setSelectedLabel] = useState("Total Applications");
   const [selectedColor, setSelectedColor] = useState("#0097b2");
 
-  const handleDataChange = (data, label, color) => {
-    setSelectedData(data);
-    setSelectedLabel(label);
-    setSelectedColor(color);
-  };
-
   const [totalApplications, setTotalApplications] = useState(0);
-  const [openJobs, setOpenJobs] = useState(null);
-  const [closedJobs, setClosedJobs] = useState(null);
+  const [applicationTrend, setApplicationTrend] = useState([]);
 
-  const fetchTotalApplications = async () => {
+  const [openJobs, setOpenJobs] = useState(0);
+  const [closedJobs, setClosedJobs] = useState(0);
+
+  const fetchApplicationData = async () => {
     try {
-      const response = await atsAPI.get("/fs-applicant-count");
+      const response = await atsAPI.get("/analytic/graphs/application-trend");
 
-      setTotalApplications((ta) => response.data.fs_count);
+      setTotalApplications(response.data.data.total);
+
+      const monthOrder = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+
+      const data = response.data.data.trend;
+
+      const dataMap = new Map(data.map((item) => [item.month, item.count]));
+
+      const filledData = monthOrder.map((month) => ({
+        month,
+        count: dataMap.get(month) || 0,
+      }));
+
+      setApplicationTrend(filledData);
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const handleDataChange = (data, label, color) => {
+    setSelectedLabel(label);
+    setSelectedColor(color);
   };
 
   const fetchOpenJobs = async () => {
@@ -117,7 +142,7 @@ const AdminDashboard = () => {
   };
 
   useEffect(() => {
-    fetchTotalApplications();
+    fetchApplicationData();
     fetchOpenJobs();
     fetchClosedJobs();
   }, []);
@@ -125,68 +150,17 @@ const AdminDashboard = () => {
   return (
     <div className="max-h-100vh">
       {/* Header */}
-      <header className="container flex h-12 items-center justify-end flex-wrap">
-        {/* <div className="hidden lg:flex md-flex gap-4 items-center ">
-          <img src={logofsfull} alt="Fullsuite Logo" className="h-8" />
-        </div> */}
-
-        <div className="flex gap-3">
-          {/* Button for desktop */}
-          <button className="text-gray-500 hidden sm:block border border-gray-200 bg-gray-100 px-3 py-2 rounded-md cursor-pointer">
-            + Job Listing
-          </button>
-          <button className="text-gray-500 hidden sm:block border border-gray-200 bg-gray-100 px-3 py-2 rounded-md cursor-pointer">
-            + Industry
-          </button>
-
-          {/* Icon Button for Mobile */}
-          <button className="text-gray-500 border rounded-md cursor-pointer bg-gray-100 border-gray-200 sm:hidden px-3 py-2 flex items-center gap-1">
-            <span>+</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="size-5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 0 0 .75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 0 0-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0 1 12 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 0 1-.673-.38m0 0A2.18 2.18 0 0 1 3 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 0 1 3.413-.387m7.5 0V5.25A2.25 2.25 0 0 0 13.5 3h-3a2.25 2.25 0 0 0-2.25 2.25v.894m7.5 0a48.667 48.667 0 0 0-7.5 0M12 12.75h.008v.008H12v-.008Z"
-              />
-            </svg>
-          </button>
-          <button className="text-gray-500 border rounded-md cursor-pointer bg-gray-100 border-gray-200 sm:hidden px-3 py-2 flex items-center gap-1">
-            <span>+</span>{" "}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="size-5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"
-              />
-            </svg>
-          </button>
-        </div>
-      </header>
 
       <section className="mt-3 mb-4 grid grid-cols-4 grid-rows-[7rem] [&>*]:bg-gray-100 [&>*]:border [&>*]:border-gray-200 gap-4">
         <div
           className="rounded-md grid place-content-center cursor-pointer"
-          onClick={() =>
-            handleDataChange(
-              employeesData,
-              "Total Employee Accounts",
-              "#0097b2"
-            )
-          }
+          // onClick={() =>
+          //   handleDataChange(
+          //     employeesData,
+          //     "Total Employee Accounts",
+          //     "#0097b2"
+          //   )
+          // }
         >
           <span className="text-3xl text-center">52</span>
           <div className="text-sm text-gray-500 text-center">
@@ -195,27 +169,27 @@ const AdminDashboard = () => {
         </div>
         <div
           className="rounded-md grid place-content-center cursor-pointer"
-          onClick={() =>
-            handleDataChange(applicationsData, "Total Applications", "#0097b2")
-          }
+          // onClick={() =>
+          //   handleDataChange(applicationsData, "Total Applications", "#0097b2")
+          // }
         >
-          <span className="text-3xl">{totalApplications}</span>
+          <span className="text-3xl text-center">{totalApplications}</span>
           <div className="text-sm text-gray-500 text-center">Applications</div>
         </div>
         <div
           className="rounded-md grid place-content-center cursor-pointer"
-          onClick={() =>
-            handleDataChange(openJobsData, "Open Job Listings", "#0097b2")
-          }
+          // onClick={() =>
+          //   handleDataChange(openJobsData, "Open Job Listings", "#0097b2")
+          // }
         >
           <span className="text-2xl text-center">{openJobs}</span>
           <div className="text-sm text-gray-500 text-center">Open Jobs</div>
         </div>
         <div
           className="rounded-md grid place-content-center cursor-pointer"
-          onClick={() =>
-            handleDataChange(closedJobsData, "Closed Job Listings", "#0097b2")
-          }
+          // onClick={() =>
+          //   handleDataChange(closedJobsData, "Closed Job Listings", "#0097b2")
+          // }
         >
           <span className="text-2xl text-center">{closedJobs}</span>
           <div className="text-sm text-gray-500 text-center">Closed Jobs</div>
@@ -228,13 +202,13 @@ const AdminDashboard = () => {
         <h4 className="text-gray-500">{selectedLabel}</h4>
         <div className="h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={selectedData}>
+            <AreaChart data={applicationTrend}>
               <XAxis dataKey="month" tickLine={false} axisLine={false} />
               <YAxis tickLine={false} axisLine={false} />
               <Tooltip />
               <Area
                 type="monotone"
-                dataKey="value"
+                dataKey="count"
                 stroke={selectedColor}
                 fill={selectedColor}
                 fillOpacity={0.2}

@@ -35,7 +35,7 @@ const BlogCard = ({ blog }) => {
             <p className="font-avenir-black">
               {blog.firstName} {blog.lastName}
             </p>
-            <span className="text-xs text-gray-500">{blog.date}</span>
+            <span className="text-xss text-gray-500">{blog.date}</span>
           </div>
         </div>
 

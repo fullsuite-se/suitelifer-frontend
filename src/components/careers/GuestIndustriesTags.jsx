@@ -1,6 +1,4 @@
-import { useState } from "react";
 
-const industries = ["All", "Business", "Operations", "Finance", "Software"];
 
 const GuestIndustryTags = ({ industries, filter, handleFilterChange }) => {
   return (
@@ -9,7 +7,7 @@ const GuestIndustryTags = ({ industries, filter, handleFilterChange }) => {
         <button
           key={-1}
           onClick={() => handleFilterChange("All")}
-          className={`cursor-pointer px-4 py-1 sm:px-5 md:px-6 text-sm sm:text-base md:text-lg rounded-full border-1 border-primary text-primary transition-all duration-300 
+          className={`cursor-pointer px-4 py-1 sm:px-5 md:px-6 text-small rounded-full border-1 border-primary text-primary transition-all duration-300 
         ${
           filter === "All"
             ? "bg-primary text-white"
@@ -22,7 +20,7 @@ const GuestIndustryTags = ({ industries, filter, handleFilterChange }) => {
           <button
             key={index}
             onClick={() => handleFilterChange(industry.industryId)}
-            className={`cursor-pointer px-4 py-1 sm:px-5 md:px-6 text-sm sm:text-base md:text-lg rounded-full border-1 border-primary text-primary transition-all duration-300 
+            className={`cursor-pointer px-4 py-1 sm:px-5 md:px-6 text-small rounded-full border-1 border-primary text-primary transition-all duration-300 
         ${
           filter === industry.industryId
             ? "bg-primary text-white"

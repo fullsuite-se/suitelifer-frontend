@@ -1,11 +1,13 @@
 import { useState } from "react";
 import logo_fs_full from "../../assets/logos/logo-fs-full.svg";
 import { Bars2Icon, XMarkIcon } from "@heroicons/react/24/solid";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
 export default function MobileNav() {
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const location = useLocation();
+  const isPathActive = location.pathname.startsWith("/careers");
 
   const handleClose = () => {
     setIsClosing(true);
@@ -19,7 +21,9 @@ export default function MobileNav() {
     <div className="relative h-16 text-center">
       <div className="bg-white z-50 fixed flex justify-between items-center h-16 w-full text-center">
         <div className="w-32 ml-7">
-          <a href="/"><img className="object-cover" src={logo_fs_full} alt="Logo" /></a>
+          <a href="/">
+            <img className="object-cover" src={logo_fs_full} alt="Logo" />
+          </a>
         </div>
 
         {!isOpen ? (
@@ -83,11 +87,10 @@ export default function MobileNav() {
               <div>
                 <NavLink
                   to="/careers"
-                  className={({ isActive }) =>
-                    `!no-underline text-black text-lg font-medium hover:text-[#007a8e] ${
-                      isActive ? "active-class" : ""
-                    }`
-                  }
+                  className={`!no-underline text-black text-lg font-medium transition-all duration-300
+        hover:text-[#007a8e] ${
+          isPathActive ? "active-class text-[#007a8e]" : ""
+        }`}
                   onClick={handleClose}
                 >
                   Careers
@@ -135,19 +138,7 @@ export default function MobileNav() {
                 </NavLink>
               </div>
 
-              <div className="mt-8">
-                {/* <NavLink
-                to="/login-employee"
-                className={({ isActive }) =>
-                  `!no-underline bg-[#E5F5F7] px-5 p-3 rounded-4xl text-primary text-lg font-medium hover:text-[#007a8e] ${
-                    isActive ? "active-class" : ""
-                  }`
-                }
-                onClick={handleClose}
-              >
-                Employee Login
-              </NavLink> */}
-              </div>
+              <div className="mt-8"></div>
             </nav>
           </div>
         </div>

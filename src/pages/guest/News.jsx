@@ -1,44 +1,48 @@
 import React, { useEffect, useState } from "react";
-import Footer from "../../components/Footer";
+
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
 import bgNews from "../../assets/images/bg-news.svg";
 import NewsLarge from "../../components/news/NewsLarge";
-import newsList from "../../components/news/NewsList";
 import NewsCardSmall from "../../components/news/NewsCardSmall";
-import ArticleSearchResults from "../../components/news/SearchingBlogOrNews";
+import SearchingBlogOrNews from "../../components/news/SearchingBlogOrNews";
 import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
 import PageMeta from "../../components/layout/PageMeta";
-import FooterNew from "../../components/FooterNew";
+import Footer from "../../components/Footer";
 import api from "../../utils/axios";
 import toast from "react-hot-toast";
 import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
+import { useStore } from "../../store/authStore";
+
+import LoadingNewsLarge from "../../components/news/LoadingNewsLarge";
+import LoadingNewsCardSmall from "../../components/news/LoadingNewsCardSmall";
 
 const News = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
+  const setSearchValue = useStore((state) => state.setSearchValue);
+  const [inputValue, setInputValue] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const handleSearch = () => {
-    if (searchQuery.trim() !== "") {
-      setSearchTerm(searchQuery);
+    if (inputValue.trim() !== "") {
+      setSearchValue(inputValue);
       setIsSearching(true);
     }
   };
 
   const handleClearSearch = () => {
-    setSearchQuery("");
-    setSearchTerm("");
+    setInputValue("");
+    setSearchValue("");
     setIsSearching(false);
   };
 
-  useEffect(() => {
-    window.scroll(0, 0);
-  }, []);
+  const handleInputSearch = (e) => {
+    setInputValue(e.target.value);
+  };
+
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -79,7 +83,7 @@ const News = () => {
         <DesktopNav />
       </div>
       {/* NEWS HERO */}
-      <section className="pt-[10%] xl:pt-[8%]">
+      <section className="pt-[10%] xl:pt-[8%] ">
         <div className="relative hidden">
           <img
             className="-z-50 absolute w-[90%] transform translate-y-5 -translate-x-6 lg:-translate-y-10  xl:-translate-y-15 lg:-translate-x-15 xl:-translate-x-40 opacity-90"
@@ -90,7 +94,7 @@ const News = () => {
 
         {/* BANNER */}
         <div className="text-center overflow-hidden">
-          <p className="text-4xl md:text-7xl font-serif font-extrabold flex justify-center gap-4 md:gap-8 flex-nowrap">
+          <p className="text-4xl md:text-7xl font-avenir-black flex justify-center gap-4 md:gap-8 flex-nowrap">
             <motion.span
               initial={{ x: "-100vw", opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
@@ -107,7 +111,7 @@ const News = () => {
               news
             </motion.span>
           </p>
-          <p className="text-gray-400 text-[12px] md:text-[14px] lg:text-[16px]">
+          <p className="text-gray-400 text-small">
             <motion.span
               initial={{ width: 0 }}
               animate={{ width: "100%" }}
@@ -136,12 +140,12 @@ const News = () => {
             </svg>
             <input
               type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              value={inputValue}
+              onChange={handleInputSearch}
               placeholder="Search news..."
               className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md pl-10 pr-7 py-2 focus:outline-none focus:border-primary-400"
             />
-            {searchQuery && (
+            {inputValue && (
               <button
                 onClick={handleClearSearch}
                 className="absolute right-24 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
@@ -160,31 +164,30 @@ const News = () => {
       </section>
       <div className="py-5"></div>
       {/* NEWS CONTENT */}
-      <main className="px-[5%]">
+      <main className="px-[5%] md:px-[10%] xl:px-[15%]">
         {isSearching ? (
-          <ArticleSearchResults
-            type="news"
-            list={newsList}
-            searchTerm={searchTerm}
-          />
+          <SearchingBlogOrNews type="news" />
         ) : (
           <>
-            <p className="md:text-2xl uppercase font-avenir-black text-primary pb-3 lg:pb-4">
+            <p className="text-small uppercase font-avenir-black text-primary pb-3 lg:pb-4">
               The latest
             </p>
             {loading || !news.length ? (
-              <div className="mt-20">
-                <TwoCirclesLoader
-                  bg={"transparent"}
-                  color1={"#0097b2"}
-                  color2={"#bfd1a0"}
-                  height={"35"}
-                />
+              <div className="">
+                <LoadingNewsLarge />
+                <p className="mt-10 md:text-xl font-avenir-black text-primary pb-3 lg:pb-4">
+                  More Articles
+                </p>
+                <div className="layout-small-news-cards gap-4 sm:gap-5">
+                  {[...Array(2)].map((_, index) => (
+                    <LoadingNewsCardSmall/>
+                  ))}
+                </div>
               </div>
             ) : (
               <>
                 <NewsLarge {...news[0]} />
-                <p className="mt-10 md:text-xl font-avenir-black text-primary pb-3 lg:pb-4">
+                <p className="mt-10 text-small font-avenir-black text-primary pb-3 lg:pb-4">
                   More Articles
                 </p>
                 <div className="layout-small-news-cards gap-4 sm:gap-5">
@@ -199,7 +202,7 @@ const News = () => {
         )}
       </main>
       <div className="h-20"></div> <BackToTop />
-      <FooterNew />
+      <Footer />
     </section>
   );
 };
