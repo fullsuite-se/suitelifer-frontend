@@ -1,14 +1,15 @@
 import { useState, useRef, useEffect } from "react";
-import { EyeIcon } from "lucide-react";
 import {
+  EyeIcon,
   BookmarkSquareIcon,
-ChevronDownIcon,
-ChevronUpIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
 } from "@heroicons/react/24/outline";
 import api from "../../utils/axios";
 import toast from "react-hot-toast";
 import { useStore } from "../../store/authStore";
 import FileUploaderProvider from "./FileUploader";
+import ContentButtons from "./ContentButtons";
 
 const AboutPage = ({ handlePreview }) => {
   // USER DETAILS
@@ -16,7 +17,6 @@ const AboutPage = ({ handlePreview }) => {
 
   // CONTENT DETAILS
   const [contentDetails, setContentDetails] = useState({
-  
     textBanner: "",
     heroImage: "",
     storyImage: "",
@@ -26,16 +26,14 @@ const AboutPage = ({ handlePreview }) => {
     visionSlogan: "",
     vision: "",
     dayInPodUrl: "",
-    teamPlayer:"",
+    teamPlayer: "",
     understood: "",
     athlete: "",
     upholds: "",
     harmony: "",
   });
-
-  const [activeIndex, setActiveIndex] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  
+
   const videoData = [
     { name: "Team Player Video", key: "teamPlayer" },
     { name: "Understood Video", key: "understood" },
@@ -47,7 +45,6 @@ const AboutPage = ({ handlePreview }) => {
   const handleToggle = () => {
     setIsOpen(!isOpen);
   };
-
 
   const handleContentDetailsChange = (e) => {
     setContentDetails((cd) => ({ ...cd, [e.target.name]: e.target.value }));
@@ -67,8 +64,6 @@ const AboutPage = ({ handlePreview }) => {
   useEffect(() => {
     fetchContent();
   }, [dataUpdated]);
-
-  
 
   const handlePublishChanges = async () => {
     try {
@@ -95,141 +90,132 @@ const AboutPage = ({ handlePreview }) => {
     }
   };
 
-  const handleDrop = (event, setImage) => {
-    event.preventDefault();
-    const file = event.dataTransfer.files[0];
-    handleImageChange(file, setImage);
-  };
-
   return (
-    <div className="overflow-x-auto min-h-screen px-4 sm:px-6 lg:px-8">
-      <div className="flex justify-end py-2 gap-2">
-        <button
-          onClick={handlePreview}
-          className="btn-primary flex items-center p-2 gap-2"
-        >
-          <EyeIcon className="size-5" />
-          Preview Changes
-        </button>
-        <button
-          className="btn-primary flex items-center p-2 gap-2"
-          onClick={handlePublishChanges}
-        >
-          <BookmarkSquareIcon className="size-5" /> <span>Publish Changes</span>
-        </button>
-      </div>
-
-      <div className="text-md font-bold pt-4 font-avenir-black">
-        Text Banner
-      </div>
-      <textarea
-        name="textBanner"
-        value={contentDetails.textBanner}
-        onChange={(e) => handleContentDetailsChange(e)}
-        rows={2}
-        className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
-      ></textarea>
-
-      <FileUploaderProvider/>
-
-
-<div className="text-md font-bold pt-4 font-avenir-black">
-        About Page Video
-      </div>
-      <input
-        type="text"
-        name="aboutVideo"
-        value={contentDetails.aboutVideo}
-        onChange={(e) => handleContentDetailsChange(e)}
-        className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
-      />
-
-      <div className="cursor-pointer" onClick={handleToggle}>
-        <div className="flex items-center text-md text-center mt-4   font-avenir-black gap-2">
-          <span className="">Core Values Videos</span>
-          {isOpen ? (
-            <ChevronUpIcon className="w-5 h-5" />
-          ) : (
-            <ChevronDownIcon className="w-5 h-5" />
-          )}
+    <>
+      <div className="overflow-x-auto min-h-screen px-4 sm:px-6 lg:px-8">
+        <div className="text-md font-bold pt-4 font-avenir-black">
+          Text Banner
         </div>
-      </div>
+        <textarea
+          name="textBanner"
+          value={contentDetails.textBanner}
+          onChange={(e) => handleContentDetailsChange(e)}
+          rows={2}
+          className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
+        ></textarea>
 
-      <div
-        className={`overflow-hidden transition-all duration-300 ease-in-out ${
-          isOpen ? 'max-h-screen' : 'max-h-0'
-        }`}
-      >
-        <div className="w-full flex flex-col p-1">
-          {videoData.map((video) => (
-            <div key={video.key} className="p-3">
-              <div className="flex items-center text-md font-bold font-avenir-black">
-                <span className="flex-grow">{video.name}</span>
+        <FileUploaderProvider />
+
+        <div className="text-md font-bold pt-4 font-avenir-black">
+          About Page Video
+        </div>
+        <input
+          type="text"
+          name="aboutVideo"
+          value={contentDetails.aboutVideo}
+          onChange={(e) => handleContentDetailsChange(e)}
+          className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+        />
+
+        <div className="cursor-pointer" onClick={handleToggle}>
+          <div className="flex items-center text-md text-center mt-4   font-avenir-black gap-2">
+            <span className="">Core Values Videos</span>
+            {isOpen ? (
+              <ChevronUpIcon className="w-5 h-5" />
+            ) : (
+              <ChevronDownIcon className="w-5 h-5" />
+            )}
+          </div>
+        </div>
+
+        <div
+          className={`overflow-hidden transition-all duration-300 ease-in-out ${
+            isOpen ? "max-h-screen" : "max-h-0"
+          }`}
+        >
+          <div className="w-full flex flex-col p-1">
+            {videoData.map((video) => (
+              <div key={video.key} className="p-3">
+                <div className="flex items-center text-md font-bold font-avenir-black">
+                  <span className="flex-grow">{video.name}</span>
+                </div>
+                <input
+                  type="text"
+                  name={video.key}
+                  value={contentDetails[video.key]}
+                  onChange={(e) => handleContentDetailsChange(e)}
+                  className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
               </div>
-              <input
-                type="text"
-                name={video.key}
-                value={contentDetails[video.key]}
+            ))}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 ">
+          {[
+            {
+              label: "Mission Slogan",
+              value: contentDetails.missionSlogan,
+              name: "missionSlogan",
+            },
+            {
+              label: "Vision Slogan",
+              value: contentDetails.visionSlogan,
+              name: "visionSlogan",
+            },
+            {
+              label: "Mission",
+              value: contentDetails.mission,
+              name: "mission",
+            },
+            {
+              label: "Vision",
+              value: contentDetails.vision,
+              name: "vision",
+            },
+          ].map(({ label, value, name }) => (
+            <div key={label}>
+              <div className="text-md font-bold font-avenir-black">{label}</div>
+              <textarea
+                name={name}
+                value={value}
                 onChange={(e) => handleContentDetailsChange(e)}
+                rows={
+                  label === "Mission Slogan" || label === "Vision Slogan"
+                    ? 1
+                    : 3
+                }
                 className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
-              />
+              ></textarea>
             </div>
           ))}
         </div>
-      </div>  
-      
+        <div className="text-md font-bold pt-4 font-avenir-black">
+          Day in Pod Video URL
+        </div>
+        <input
+          type="text"
+          name="dayInPodUrl"
+          value={contentDetails.dayInPodUrl}
+          onChange={(e) => handleContentDetailsChange(e)}
+          className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
+        />
 
-      
+        <div className="flex justify-end gap-2">
+          <ContentButtons
+            icon={<EyeIcon className="size-5" />}
+            text="Preview Changes"
+            handleClick={null}
+          />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 ">
-        {[
-          {
-            label: "Mission Slogan",
-            value: contentDetails.missionSlogan,
-            name: "missionSlogan",
-          },
-          {
-            label: "Vision Slogan",
-            value: contentDetails.visionSlogan,
-            name: "visionSlogan",
-          },
-          {
-            label: "Mission",
-            value: contentDetails.mission,
-            name: "mission",
-          },
-          {
-            label: "Vision",
-            value: contentDetails.vision,
-            name: "vision",
-          },
-        ].map(({ label, value, name }) => (
-          <div key={label}>
-            <div className="text-md font-bold font-avenir-black">{label}</div>
-            <textarea
-              name={name}
-              value={value}
-              onChange={(e) => handleContentDetailsChange(e)}
-              rows={
-                label === "Mission Slogan" || label === "Vision Slogan" ? 1 : 3
-              }
-              className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
-            ></textarea>
-          </div>
-        ))}
+          <ContentButtons
+            icon={<BookmarkSquareIcon className="size-5" />}
+            text="Publish Changes"
+            handleClick={handlePublishChanges}
+          />
+        </div>
       </div>
-      <div className="text-md font-bold pt-4 font-avenir-black">
-        Day in Pod Video URL
-      </div>
-      <input
-        type="text"
-        name="dayInPodUrl"
-        value={contentDetails.dayInPodUrl}
-        onChange={(e) => handleContentDetailsChange(e)}
-        className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-30"
-      />
-      
-    </div>
+    </>
   );
 };
 
