@@ -8,44 +8,78 @@ import {
 import api from "../../utils/axios";
 import toast from "react-hot-toast";
 import { useStore } from "../../store/authStore";
-import FileUploaderProvider from "./FileUploader";
+import ImageUploader from "./ImageUploader";
 import ContentButtons from "./ContentButtons";
+
 
 const AboutPage = ({  }) => {
   // USER DETAILS
   const user = useStore((state) => state.user);
 
+  // IMAGES
+  const [files, setFiles] = useState({
+    getInTouchImage: null,
+    heroImage: null,
+    storyImage: null,
+    careersMainImage: null,
+    careersLeftImage: null,
+    careersRightImage: null,
+  });
+
   // CONTENT DETAILS
   const [contentDetails, setContentDetails] = useState({
+    getInTouchImage: "",
+    homeVideo: "",
     textBanner: "",
     heroImage: "",
     storyImage: "",
     aboutVideo: "",
-    missionSlogan: "",
-    mission: "",
-    visionSlogan: "",
-    vision: "",
-    dayInPodUrl: "",
     teamPlayerVideo: "",
     understoodVideo: "",
     focusedVideo: "",
     upholdsVideo: "",
     harmonyVideo: "",
-    missionVideo:"",
-    visionVideo:""
+    missionSlogan: "",
+    mission: "",
+    missionVideo: "",
+    visionSlogan: "",
+    vision: "",
+    visionVideo: "",
+    dayInPodUrl: "",
+    careersMainImage: "",
+    careersLeftImage: "",
+    careersRightImage: "",
+    contactEmail: "",
+    contactLandline: "",
+    contactPhone: "",
   });
   const [isOpen, setIsOpen] = useState(false);
 
   const videoData = [
-    { name: "Team Player Video", key: "teamPlayerVideo" },
-    { name: "Understood Video", key: "understoodVideo" },
-    { name: "Athlete Video", key: "focusedVideo" },
-    { name: "Upholds Video", key: "upholdsVideo" },
-    { name: "Life/Work Harmony Video", key: "harmonyVideo" },
+    { name: "teamPlayerVideo", key: "core1" },
+    { name: "understoodVideo", key: "core2" },
+    { name: "focusedVideo", key: "core3" },
+    { name: "upholdsVideo", key: "core4" },
+    { name: "harmonyVideo", key: "core5" },
   ];
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleFileChange = (e, key) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFiles((f) => ({
+          ...f,
+          [key]: [file, reader.result],
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+    console.log(files[key]);
   };
 
   const handleContentDetailsChange = (e) => {
@@ -56,9 +90,9 @@ const AboutPage = ({  }) => {
   };
 
   const fetchContent = async () => {
-    const response = await api.get("/api/get-content");
+    const response = await api.get("/api/content/");
 
-    setContentDetails(response.data.data);
+    setContentDetails(response.data.content);
   };
 
   const [dataUpdated, setDataUpdated] = useState(false);
@@ -69,6 +103,12 @@ const AboutPage = ({  }) => {
 
   const handlePublishChanges = async () => {
     try {
+      Object.entries(files).forEach(([key, value]) => {
+        console.log(key, value);
+      });
+
+      return;
+
       const response = await api.post("/api/add-content", {
         ...contentDetails,
         user_id: user.id,
@@ -85,49 +125,68 @@ const AboutPage = ({  }) => {
     }
   };
 
-  const handleImageChange = (file, setImage) => {
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setImage(imageUrl);
-    }
-  };
-
   return (
-    <>
-      <div className="overflow-x-auto min-h-screen px-4 sm:px-6 lg:px-8 sticky">
-        <div className="text-md font-bold pt-4 font-avenir-black">
-          Text Banner
-        </div>
-        <textarea
-          name="textBanner"
-          value={contentDetails.textBanner}
-          onChange={(e) => handleContentDetailsChange(e)}
-          rows={2}
-          className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
-        ></textarea>
+    <div className="overflow-x-auto min-h-screen px-4 sm:px-6 lg:px-8">
+      <div className="flex justify-end py-2 gap-2">
+        <button
+          onClick={handlePreview}
+          className="btn-primary flex items-center p-2 gap-2"
+        >
+          <EyeIcon className="size-5" />
+          Preview Changes
+        </button>
+        <button
+          className="btn-primary flex items-center p-2 gap-2"
+          onClick={handlePublishChanges}
+        >
+          <BookmarkSquareIcon className="size-5" /> <span>Publish Changes</span>
+        </button>
+      </div>
 
-        <FileUploaderProvider />
+      <div className="text-md font-bold pt-4 font-avenir-black">
+        Text Banner
+      </div>
+      <textarea
+        name="textBanner"
+        value={contentDetails.textBanner}
+        onChange={(e) => handleContentDetailsChange(e)}
+        rows={2}
+        className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
+      ></textarea>
 
-        <div className="text-md font-bold pt-4 font-avenir-black">
-          About Page Video
-        </div>
-        <input
-          type="text"
-          name="aboutVideo"
-          value={contentDetails.aboutVideo}
-          onChange={(e) => handleContentDetailsChange(e)}
-          className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+      <div className="flex flex-col 2xl:flex-row justify-around gap-2">
+        <ImageUploader
+          image={files.heroImage}
+          onImageChange={(e) => handleFileChange(e, "heroImage")}
+          name="Hero Image"
         />
 
-        <div className="cursor-pointer" onClick={handleToggle}>
-          <div className="flex items-center text-md text-center mt-4   font-avenir-black gap-2">
-            <span className="">Core Value Videos</span>
-            {isOpen ? (
-              <ChevronUpIcon className="w-5 h-5" />
-            ) : (
-              <ChevronDownIcon className="w-5 h-5" />
-            )}
-          </div>
+        <ImageUploader
+          image={files.storyImage}
+          onImageChange={(e) => handleFileChange(e, "storyImage")}
+          name="Story Image"
+        />
+      </div>
+
+      <div className="text-md font-bold pt-4 font-avenir-black">
+        About Page Video
+      </div>
+      <input
+        type="text"
+        name="aboutVideo"
+        value={contentDetails.aboutVideo}
+        onChange={(e) => handleContentDetailsChange(e)}
+        className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+      />
+
+      <div className="cursor-pointer" onClick={handleToggle}>
+        <div className="flex items-center text-md text-center mt-4   font-avenir-black gap-2">
+          <span className="">Core Values Videos</span>
+          {isOpen ? (
+            <ChevronUpIcon className="w-5 h-5" />
+          ) : (
+            <ChevronDownIcon className="w-5 h-5" />
+          )}
         </div>
 
         <div
@@ -192,7 +251,6 @@ const AboutPage = ({  }) => {
             </div>
           ))}
         </div>
-
         <div className="text-md font-bold pt-4 font-avenir-black">
           Mission Video
         </div>
