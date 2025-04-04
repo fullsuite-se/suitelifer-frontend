@@ -12,8 +12,7 @@ import ImageUploader from "./ImageUploader";
 import ContentButtons from "./ContentButtons";
 import Testimonials from "./Testimonials";
 
-
-const AboutPage = ({  }) => {
+const AboutPage = ({}) => {
   // USER DETAILS
   const user = useStore((state) => state.user);
 
