@@ -130,7 +130,7 @@ const AboutPage = ({  }) => {
     <div className="overflow-x-auto min-h-screen px-4 sm:px-6 lg:px-8">
       <div className="flex justify-end py-2 gap-2">
         <button
-          onClick={handlePreview}
+          // onClick={handlePreview}
           className="btn-primary flex items-center p-2 gap-2"
         >
           <EyeIcon className="size-5" />
