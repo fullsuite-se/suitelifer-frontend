@@ -1,4 +1,4 @@
-//TODO: MADE A SPECIFIC TEMPORARY PAGE FOR 404 PAGES  
+//TODO: MADE A SPECIFIC TEMPORARY PAGE FOR 404 PAGES
 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
@@ -43,6 +43,8 @@ import Register from "./pages/auth/Register";
 // Others
 import { Toaster } from "react-hot-toast";
 import ScrollToTop from "./components/ScrollToTop";
+import JobCourse from "./components/admin/JobCourse";
+import PersonalityTest from "./components/admin/PersonalityTest";
 
 function App() {
   return (
@@ -51,6 +53,16 @@ function App() {
         <ScrollToTop />
         <Toaster position="top-center" reverseOrder={false} />
         <Routes>
+
+
+
+
+          
+
+
+
+
+
           {/* Routes that are publicly available (guest) */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
@@ -80,10 +92,15 @@ function App() {
           {/* Routes that are avaialable to admins and employees (guest) */}
           <Route element={<ProtectedRoutes />}>
             <Route path="/app" element={<RootLayout />}>
+            
               <Route path="*" element={<DynamicRoutes />} />
               <Route index element={<Navigate to="blogs-feed" replace />} />
               <Route path="blogs-feed" element={<EmployeeBlogsFeed />} />
               <Route path="blogs-feed/blog/:id/:slug" element={<BlogView />} />
+
+              {/* Paki lagay sa tamang lagayan kasi di mahanap kung san belong tong mga routes na to nani desu ka */}
+              <Route path="courses" element={<JobCourse />} />
+              <Route path="personalitytest" element={<PersonalityTest/>}/>
 
               <Route path="my-blogs" element={<EmployeeMyBlogs />} />
               <Route path="my-blogs/blog/:id/:slug" element={<BlogView />} />

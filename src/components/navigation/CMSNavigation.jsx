@@ -17,6 +17,8 @@ import {
   UserIcon,
   ArrowPathRoundedSquareIcon,
   ChevronDownIcon,
+  BookOpenIcon,
+  FaceSmileIcon
 } from "@heroicons/react/20/solid";
 import {
   Disclosure,
@@ -33,6 +35,8 @@ const iconMap = {
   news: { default: NewspaperIcon },
   events: { default: CalendarIcon },
   contents: { default: Bars3BottomLeftIcon },
+  courses: { default: BookOpenIcon },
+  personalitytest: { default: FaceSmileIcon },
 };
 
 const regularServices = [
@@ -50,6 +54,7 @@ const regularServices = [
     path: "personality-test",
     icon: UserIcon,
   },
+  
 ];
 
 const CMSNavigation = () => {

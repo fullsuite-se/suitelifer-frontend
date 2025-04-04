@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Dialog, DialogTitle, DialogContent } from "@mui/material";
-import { Button } from "@/components/ui/button";
+import { Dialog, DialogTitle, DialogContent,Button } from "@mui/material";
+
 
 const CareerImage = ({ onUpload }) => {
   const [image, setImage] = useState(null);
