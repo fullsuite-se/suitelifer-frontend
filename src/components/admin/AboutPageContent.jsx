@@ -10,10 +10,9 @@ import toast from "react-hot-toast";
 import { useStore } from "../../store/authStore";
 import ImageUploader from "./ImageUploader";
 import ContentButtons from "./ContentButtons";
-import Testimonials from "./Testimonials";
-import PageToggle from "./AdminPageToggle";
 
-const AboutPage = ({}) => {
+
+const AboutPageContent = ({}) => {
   // USER DETAILS
   const user = useStore((state) => state.user);
 
@@ -285,4 +284,4 @@ const AboutPage = ({}) => {
   );
 };
 
-export default AboutPage;
+export default AboutPageContent;

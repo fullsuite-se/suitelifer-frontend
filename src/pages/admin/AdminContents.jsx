@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import JobCourse from "../../components/admin/JobCourse";
-import PersonalityTest from "../../components/admin/PersonalityTest";
-import Testimonials from "../../components/admin/Testimonials";
-import SpotifyEpisode from "../../components/admin/SpotifyEpisodes";
-import AdminHomePage from "../../components/admin/AdminHomePage";
-import AdminAboutPage from "../../components/admin/AdminAboutPage";
+
 import {
   Tabs,
   Tab,
@@ -20,6 +15,9 @@ import AdminContacts from "../../components/admin/AdminContacts";
 import AdminFooter from "../../components/admin/AdminFooter";
 import AdminSuiteBite from "./AdminSuiteBite";
 import PageToggle from "../../components/admin/AdminPageToggle";
+import FooterPageToggle from "../../components/admin/FooterPageToggle";
+import SingleSpotifyEmbed from "../../components/home/SingleSpotifyEmbed";
+import AdminHomePage from "../../components/admin/AdminHomePage";
 
 const AdminContents = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -93,10 +91,12 @@ const AdminContents = () => {
 
       <div className="p-4">
         {activeTab === 0 && (
-          <AdminHomePage setUnsavedChanges={setUnsavedChanges} />
+          <AdminHomePage setUnsavedChanges={setUnsavedChanges}/>
+            
         )}
         {activeTab === 1 && (
-          <PageToggle setUnsavedChanges={setUnsavedChanges} />
+          <PageToggle
+            setUnsavedChanges={setUnsavedChanges}/>
         )}
         {activeTab === 2 && <Careers setUnsavedChanges={setUnsavedChanges} />}
         {activeTab === 3 && (
@@ -109,7 +109,7 @@ const AdminContents = () => {
           <AdminContacts setUnsavedChanges={setUnsavedChanges} />
         )}
         {activeTab === 6 && (
-          <AdminFooter setUnsavedChanges={setUnsavedChanges} />
+          <FooterPageToggle setUnsavedChanges={setUnsavedChanges} />
         )}
       </div>
 
