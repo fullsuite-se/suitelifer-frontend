@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { useStore } from "../../store/authStore";
 import ImageUploader from "./ImageUploader";
 import ContentButtons from "./ContentButtons";
+import Testimonials from "./Testimonials";
 
 
 const AboutPage = ({  }) => {
