@@ -176,7 +176,7 @@ const Blog = () => {
             ></div>
             <AnimatedText text="suite" color="white" />
           </div>
-          <AnimatedText text="pod" color="black" />
+          <AnimatedText text="spot" color="black" />
         </div>
 
         <div className="text-center mt-3 md:mt-5">
