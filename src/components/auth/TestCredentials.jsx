@@ -19,7 +19,7 @@ export default function TestCredentials({ setEmail, setPassword }) {
 
   return (
     <div className="flex flex-col items-center  p-6">
-    <p className="text-body! font-avenir-black">TEST CREDENTIALS</p>
+    <p className="text-body! font-avenir-black mb-2">TEST CREDENTIALS</p>
     <div className="w-full max-w-lg space-y-4">
       {credentials.map((cred, index) => (
         <div
@@ -33,7 +33,7 @@ export default function TestCredentials({ setEmail, setPassword }) {
           </div>
 
           <button
-            className="flex items-center gap-2 bg-cyan-50 text-primary px-3 py-1 text-sm rounded-md hover:bg-cyan-100 transition"
+            className="flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 text-sm rounded-md hover:bg-cyan-100 transition"
             onClick={() => {
               setEmail(cred.email);
               setPassword(cred.password);

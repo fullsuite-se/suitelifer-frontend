@@ -296,7 +296,7 @@ const Login = () => {
             />
             <div className="flex justify-center">
               <button
-                className="mt-10 px-2 py-1 text-xss text-primary border border-primary-300 rounded hover:bg-gray-100"
+                className="mt-10 px-2 py-1 text-xss text-gray-400 border border-gray-200 rounded hover:bg-gray-100"
                 onClick={() => setShowCredentials(!showCredentials)}
               >
                 TEST CREDENTIALS
