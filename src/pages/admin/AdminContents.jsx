@@ -19,6 +19,7 @@ import SpotifyEpisodes from "../../components/admin/SpotifyEpisodes";
 import AdminContacts from "../../components/admin/AdminContacts";
 import AdminFooter from "../../components/admin/AdminFooter";
 import AdminSuiteBite from "./AdminSuiteBite";
+import PageToggle from "../../components/admin/AdminPageToggle";
 
 const AdminContents = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -52,7 +53,7 @@ const AdminContents = () => {
 
   return (
     <div className="w-full flex flex-col">
-      <div className="min-w-full overflow-x-scroll border-b border-gray-300">
+      <div className="min-w-full overflow-x-scroll border-b border-gray-300 sticky top-0 z-50 bg-white">
         <Tabs
           value={activeTab}
           onChange={handleChange}
@@ -95,12 +96,12 @@ const AdminContents = () => {
           <AdminHomePage setUnsavedChanges={setUnsavedChanges} />
         )}
         {activeTab === 1 && (
-          <AdminAboutPage setUnsavedChanges={setUnsavedChanges} />
+          <PageToggle setUnsavedChanges={setUnsavedChanges} />
         )}
-        {activeTab === 2 && (
-          <Careers setUnsavedChanges={setUnsavedChanges} />
+        {activeTab === 2 && <Careers setUnsavedChanges={setUnsavedChanges} />}
+        {activeTab === 3 && (
+          <AdminSuiteBite setUnsavedChanges={setUnsavedChanges} />
         )}
-        {activeTab === 3 && <AdminSuiteBite setUnsavedChanges={setUnsavedChanges} />}
         {activeTab === 4 && (
           <SpotifyEpisodes setUnsavedChanges={setUnsavedChanges} />
         )}
