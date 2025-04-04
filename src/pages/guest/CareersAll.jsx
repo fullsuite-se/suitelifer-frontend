@@ -10,12 +10,13 @@ import { NavLink } from "react-router-dom";
 import { toSlug } from "../../utils/slugUrl";
 import OnLoadLayoutAnimation from "../../components/layout/OnLoadLayoutAnimation";
 import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
+import atsAPI from "../../utils/atsAPI";
 
 const CareersAll = () => {
   const [jobs, setJobs] = useState([]);
   const fetchJobs = async () => {
     try {
-      const response = await api.get("/api/all-jobs");
+      const response = await atsAPI.get("/jobs/");
 
       setJobs(response.data.data);
     } catch (err) {
@@ -26,7 +27,7 @@ const CareersAll = () => {
   const [industries, setIndustries] = useState([]);
   const fetchIndustries = async () => {
     try {
-      const response = await api.get("/api/get-all-industries");
+      const response = await atsAPI.get("/industries/");
       setIndustries((i) => response.data.data);
       console.log(response.data.data);
     } catch (err) {
@@ -46,7 +47,7 @@ const CareersAll = () => {
 
   const fetchFilteredJobs = async () => {
     try {
-      const response = await api.get(`/api/all-jobs/${filter}`);
+      const response = await atsAPI.get(`/jobs/${filter}`);
       console.log(filter);
 
       setJobs((j) => response.data.data);
@@ -81,7 +82,7 @@ const CareersAll = () => {
           <section className="pb-[7%] lg:pb-[5%]">
             <main className="p-[5%] xl:px-[20%]">
               {" "}
-              <div className="w-fit mb-2">
+              <div className="w-fit mb-2 lg:mt-15">
                 <BackButton
                   backPath={"/careers/#current-job-openings"}
                   type={"Careers"}

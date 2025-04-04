@@ -287,13 +287,13 @@ export default function AdminJobListing() {
       let response;
       if (setupDetails.setupId === null) {
         // ADD SETUP
-        response = await api.post("/api/add-setup", {
+        response = await atsAPI.post("/setups/", {
           ...setupDetails,
           userId: user.id,
         });
       } else {
         // EDIT SETUP
-        response = await api.post("/api/edit-setup", {
+        response = await atsAPI.put(`/setups/${setupDetails.setupId}`, {
           ...setupDetails,
           userId: user.id,
         });
@@ -343,17 +343,6 @@ export default function AdminJobListing() {
 
   const [selectedOption, setSelectedOption] = useState("Manage Industry");
 
-  // TABLE SETTINGS
-  const gridOptions = {
-    getRowStyle: (params) => {
-      if (params.node.rowIndex % 2 === 0) {
-        return { background: "#ECF1E3", color: "black" };
-      } else {
-        return { background: "white", color: "black" };
-      }
-    },
-  };
-
   const gridRef = useRef();
   const [rowJobData, setRowJobData] = useState([]);
   const columnDefs = useMemo(
@@ -363,20 +352,20 @@ export default function AdminJobListing() {
         field: "jobTitle",
         flex: 2,
         filter: "agTextColumnFilter",
-        headerClass: "text-primary bg-tertiary font-bold",
+        headerClass: "text-primary bg-gray-100 font-bold",
       },
       {
         headerName: "Industry",
         field: "industryName",
         flex: 1,
-        headerClass: "text-primary font-bold bg-tertiary",
+        headerClass: "text-primary font-bold bg-gray-100",
       },
       {
         headerName: "Employment Type",
         field: "employmentType",
         flex: 1,
         filter: "agTextColumnFilter",
-        headerClass: "text-primary font-bold bg-tertiary",
+        headerClass: "text-primary font-bold bg-gray-100",
       },
       {
         headerName: "Status",
@@ -384,14 +373,14 @@ export default function AdminJobListing() {
         flex: 1,
         filter: "agTextColumnFilter",
         valueFormatter: (params) => (params.value === 1 ? "Open" : "Closed"),
-        headerClass: "text-primary font-bold bg-tertiary",
+        headerClass: "text-primary font-bold bg-gray-100",
       },
       {
         headerName: "Set-Up",
         field: "setupName",
         flex: 1,
         filter: "agTextColumnFilter",
-        headerClass: "text-primary font-bold bg-tertiary",
+        headerClass: "text-primary font-bold bg-gray-100",
       },
       {
         headerName: "Visibility",
@@ -399,13 +388,13 @@ export default function AdminJobListing() {
         flex: 1,
         filter: "agTextColumnFilter",
         valueFormatter: (params) => (params.value === 1 ? "Shown" : "Hidden"),
-        headerClass: "text-primary font-bold bg-tertiary",
+        headerClass: "text-primary font-bold bg-gray-100",
       },
       {
         headerName: "Action",
         field: "action",
         filter: false,
-        headerClass: "text-primary font-bold bg-tertiary",
+        headerClass: "text-primary font-bold bg-gray-100",
         flex: 1,
         cellRenderer: (params) => {
           return (
@@ -558,7 +547,7 @@ export default function AdminJobListing() {
   };
 
   const fetchSetups = async () => {
-    const response = (await api.get("/api/get-all-setups")).data;
+    const response = (await atsAPI.get("/setups/")).data;
 
     setSetups((s) => response.data);
     setRowSetupData(response.data);
@@ -618,7 +607,7 @@ export default function AdminJobListing() {
             <span className="mr-2">+</span> SET-UP
           </button>
 
-          {/* Mobile Buttons (Icons Only) */}
+          {/* Mobile Buttons (Icons Only) */} 
           <button
             className="btn-primary flex sm:hidden p-2 gap-2"
             onClick={handleAddJobListingButtonClick}
@@ -735,18 +724,17 @@ export default function AdminJobListing() {
       {/* Search and Filter */}
 
       <div
-        className="ag-theme-quartz p-5"
+        className="ag-theme-quartz overflow-auto"
         style={{ height: "65vh", width: "100%" }}
       >
         <AgGridReact
           rowData={rowJobData}
           ref={gridRef}
           columnDefs={columnDefs}
-          gridOptions={gridOptions}
           defaultColDef={defaultColDef}
           pagination={true}
-          paginationPageSize={15}
-          paginationPageSizeSelector={[15, 25, 50]}
+          paginationPageSize={10}
+          paginationPageSizeSelector={[10, 15, 25, 50]}
           domLayout="autoHeight"
           className="h-full"
         />
@@ -834,16 +822,15 @@ export default function AdminJobListing() {
 
           {/* INDUSTRY OR SETUP MANAGEMENT */}
           {selectedOption === "Manage Industry" ? (
-            <div className="w-full overflow-x-auto">
+            <div className="w-full overflow-auto ">
               <div
-                className="ag-theme-quartz p-5 min-w-[800px] sm:w-full"
+                className="ag-theme-quartz overflow-auto p-5 min-w-[800px] sm:w-full  "
                 style={{ height: window.innerWidth < 640 ? "50vh" : "65vh" }}
               >
                 <AgGridReact
                   rowData={rowIndustryData}
                   ref={gridRef}
                   columnDefs={colIndustry}
-                  gridOptions={gridOptions}
                   defaultColDef={defaultColDef}
                   pagination={true}
                   paginationPageSize={15}
@@ -854,7 +841,7 @@ export default function AdminJobListing() {
               </div>
             </div>
           ) : (
-            <div className="w-full overflow-x-auto">
+            <div className="w-full overflow-auto">
               <div
                 className="ag-theme-quartz p-5 min-w-[800px] sm:w-full"
                 style={{ height: window.innerWidth < 640 ? "50vh" : "65vh" }}
@@ -863,7 +850,6 @@ export default function AdminJobListing() {
                   rowData={rowSetupData}
                   ref={gridRef}
                   columnDefs={colSetup}
-                  gridOptions={gridOptions}
                   defaultColDef={defaultColDef}
                   pagination={true}
                   paginationPageSize={15}

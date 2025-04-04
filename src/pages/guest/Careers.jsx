@@ -22,13 +22,21 @@ import LoadingSmallSpotify from "../../components/careers/LoadingSmallSpotify";
 import careersLeft from "../../assets/images/careers-hero-images/careers-left.png";
 import careersRight from "../../assets/images/careers-hero-images/careers-right.png";
 import careersMain from "../../assets/images/careers-hero-images/careers-main.png";
+import atsAPI from "../../utils/atsAPI";
 
 const Careers = () => {
+  const heroImages = {
+    careersLeft,
+    careersRight,
+    careersMain,
+  }
   const [jobs, setJobs] = useState([]);
   const fetchJobs = async () => {
     try {
-      const response = await api.get("/api/all-open-jobs");
+      const response = await atsAPI.get("/jobs/open");
       setJobs((j) => response.data.data);
+      console.log(response.data);
+      console.log(filter);
     } catch (err) {
       console.log(err);
     }
@@ -49,7 +57,7 @@ const Careers = () => {
   const [industries, setIndustries] = useState([]);
   const fetchIndustries = async () => {
     try {
-      const response = await api.get("/api/get-all-industries");
+      const response = await atsAPI.get("/industries/");
       setIndustries((i) => response.data.data);
       console.log(response.data.data);
     } catch (err) {
@@ -70,7 +78,7 @@ const Careers = () => {
 
   const fetchFilteredJobs = async () => {
     try {
-      const response = await api.get(`/api/all-open-jobs/${filter}`);
+      const response = await atsAPI.get(`/jobs/open-filter/${filter}`);
       console.log(filter);
 
       setJobs((j) => response.data.data);
@@ -127,15 +135,15 @@ const Careers = () => {
               <section className="bg-mobile-images relative md:hidden">
                 {/* upper left image MAIN */}
                 <img
-                  className="absolute w-[30vw] max-w-[220px] -translate-y-[13vw] -translate-x-[30%] rounded-2xl opacity-60 object-cover aspect-3/4"
-                  src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  alt=""
+                  className="absolute w-[30vw] max-w-[220px] -translate-y-[13vw] -translate-x-[30%] rounded-2xl object-cover aspect-3/4"
+                  src={heroImages.careersLeft}
+                  alt="left hero image"
                 />
                 {/* lower right image MAIN */}
                 <img
-                  className="absolute right-0 w-[35vw] translate-y-[30vw] translate-x-[14vw] rounded-2xl opacity-60 object-cover aspect-3/4"
-                  src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  alt=""
+                  className="absolute right-0 w-[35vw] translate-y-[30vw] translate-x-[14vw] rounded-2xl object-cover aspect-3/4"
+                  src={heroImages.careersRight}
+                  alt="right hero image"
                 />
 
                 {/* lower left image 1 */}
@@ -183,7 +191,7 @@ const Careers = () => {
                     className="absolute z-10 w-[160px] lg:w-[15vw] max-w-[190px] translate-y-15 -translate-x-[15vw]
                                 rounded-3xl opacity-60 
                                 object-cover aspect-3/4"
-                    src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    src={heroImages.careersLeft}
                     alt=""
                   />
                 </div>
@@ -194,7 +202,7 @@ const Careers = () => {
                     className="right-0 absolute z-10 w-[45%] lg:w-[15vw] max-w-[250px] translate-y-40 lg:translate-y-50 translate-x-[18vw] lg:translate-x-[17vw]
                                 rounded-3xl opacity-60 
                                 object-cover aspect-3/4"
-                    src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    src={heroImages.careersRight}
                     alt=""
                   />
                 </div>
@@ -258,20 +266,20 @@ const Careers = () => {
                 {/* Left Image */}
                 <img
                   className="hidden md:block size-[18%] z-20 xl:max-w-[200px] object-cover aspect-3/4 rounded-2xl md:rounded-2xl"
-                  src={careersLeft}
-                  alt=""
+                  src={heroImages.careersLeft}
+                  alt="left hero image"
                 />
                 {/* Main Image (CENTER) */}
                 <img
                   className="size-[40%] md:size-[35%] z-20 max-w-[350px] xl:max-w-[380px] object-cover aspect-3/4 rounded-2xl md:rounded-4xl"
-                  src={careersMain}
-                  alt=""
+                  src={heroImages.careersMain}
+                  alt="main hero image"
                 />
                 {/* Right Image */}
                 <img
                   className="hidden md:block self-end z-20 size-[20%] xl:max-w-[220px] object-cover aspect-3/4 rounded-2xl md:rounded-2xl"
-                  src={careersRight}
-                  alt=""
+                  src={heroImages.careersRight}
+                  alt="right hero image"
                 />
               </div>
               <p className="text-end pr-[5%] xl:-translate-x-[4vw] career-hero-text-desktop font-avenir-black max-w-[1800px] mx-auto">

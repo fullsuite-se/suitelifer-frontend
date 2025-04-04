@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import api from "../../utils/axios.js";
 import config from "../../config.js";
 import MobileNav from "../../components/home/MobileNav.jsx";
 import TabletNav from "../../components/home/TabletNav.jsx";
@@ -10,7 +9,7 @@ import BackToTop from "../../components/BackToTop.jsx";
 import OnLoadLayoutAnimation from "../../components/layout/OnLoadLayoutAnimation";
 import PageMeta from "../../components/layout/PageMeta.jsx";
 import BackButton from "../../components/BackButton.jsx";
-import { ArrowLeft } from "lucide-react";
+import atsAPI from "../../utils/atsAPI.js";
 
 const CareersJobDetails = () => {
   const [jobDetails, setJobDetails] = useState(null);
@@ -39,7 +38,7 @@ const CareersJobDetails = () => {
 
         console.log(config.apiBaseUrl);
 
-        const response = await api.get(`/api/get-job-details/${jobId}`);
+        const response = await atsAPI.get(`/jobs/details/${jobId}`);
         setJobDetails(response.data.data);
 
         console.log(response.data.data);

@@ -13,6 +13,12 @@ import {
   DialogActions,
   Button,
 } from "@mui/material";
+import Careers from "../../components/admin/Careers";
+import AdminNews from "./AdminNews";
+import SpotifyEpisodes from "../../components/admin/SpotifyEpisodes";
+import AdminContacts from "../../components/admin/AdminContacts";
+import AdminFooter from "../../components/admin/AdminFooter";
+import AdminSuiteBite from "./AdminSuiteBite";
 
 const AdminContents = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -23,14 +29,13 @@ const AdminContents = () => {
   const handleChange = (event, newValue) => {
     if (unsavedChanges) {
       setPendingTab(newValue);
-      setDialogOpen(true); 
+      setDialogOpen(true);
     } else {
-      setActiveTab(newValue); 
+      setActiveTab(newValue);
     }
   };
 
   const handleSave = () => {
-    
     console.log("Changes saved!");
     setUnsavedChanges(false);
     setDialogOpen(false);
@@ -41,13 +46,13 @@ const AdminContents = () => {
   const handleDiscard = () => {
     setUnsavedChanges(false);
     setDialogOpen(false);
-    setActiveTab(pendingTab); 
+    setActiveTab(pendingTab);
     setPendingTab(null);
   };
 
   return (
     <div className="w-full flex flex-col">
-      <div className="w-full border-b border-gray-300">
+      <div className="min-w-full overflow-x-scroll border-b border-gray-300">
         <Tabs
           value={activeTab}
           onChange={handleChange}
@@ -60,21 +65,28 @@ const AdminContents = () => {
               fontWeight: 500,
               textTransform: "none",
               fontSize: 14,
-              minWidth: "80px",
+              minWidth: "40px",
             },
             "& .MuiTab-root.Mui-selected": {
               color: "#0097b2",
               fontWeight: 900,
             },
+            "@media (min-width: 1024px)": {
+              "& .MuiTab-root": {
+                fontSize: 14,
+                minWidth: "70px",
+              },
+            },
           }}
-          className="w-full"
+          className="w-fit"
         >
           <Tab label="Home" value={0} />
           <Tab label="About" value={1} />
-          <Tab label="Spotify" value={2} />
-          <Tab label="Courses" value={3} />
-          <Tab label="Personality Test" value={4} />
-          <Tab label="Testimonials" value={5} />
+          <Tab label="Careers" value={2} />
+          <Tab label="News Letter" value={3} />
+          <Tab label="Pod Cast" value={4} />
+          <Tab label="Contacts" value={5} />
+          <Tab label="Footer" value={6} />
         </Tabs>
       </div>
 
@@ -86,14 +98,17 @@ const AdminContents = () => {
           <AdminAboutPage setUnsavedChanges={setUnsavedChanges} />
         )}
         {activeTab === 2 && (
-          <SpotifyEpisode setUnsavedChanges={setUnsavedChanges} />
+          <Careers setUnsavedChanges={setUnsavedChanges} />
         )}
-        {activeTab === 3 && <JobCourse setUnsavedChanges={setUnsavedChanges} />}
+        {activeTab === 3 && <AdminSuiteBite setUnsavedChanges={setUnsavedChanges} />}
         {activeTab === 4 && (
-          <PersonalityTest setUnsavedChanges={setUnsavedChanges} />
+          <SpotifyEpisodes setUnsavedChanges={setUnsavedChanges} />
         )}
         {activeTab === 5 && (
-          <Testimonials setUnsavedChanges={setUnsavedChanges} />
+          <AdminContacts setUnsavedChanges={setUnsavedChanges} />
+        )}
+        {activeTab === 6 && (
+          <AdminFooter setUnsavedChanges={setUnsavedChanges} />
         )}
       </div>
 

@@ -22,9 +22,9 @@ const isValidEpisodeUrl = (url) => {
 
     if (!parsedUrl.hostname.endsWith("spotify.com")) return false;
 
-    const episodeRegex = /^\/episode\/[a-zA-Z0-9]{22}$/;
+    const embedRegex = /^\/(episode|playlist)\/[a-zA-Z0-9]{22}$/;
 
-    return episodeRegex.test(parsedUrl.pathname);
+    return embedRegex.test(parsedUrl.pathname);
   } catch (error) {
     return false;
   }
@@ -40,7 +40,7 @@ const SpotifyEpisodes = () => {
   // SPOTIFY VARIABLES
   const defaultEpisodeDetails = {
     episodeId: null,
-    id: "",
+    spotifyId: "",
   };
 
   const [episodes, setEpisodes] = useState([]);
@@ -59,7 +59,7 @@ const SpotifyEpisodes = () => {
   const handleAddEditEpisode = async (e) => {
     e.preventDefault();
 
-    if (!isValidEpisodeUrl(episodeDetails.id)) {
+    if (!isValidEpisodeUrl(episodeDetails.spotifyId)) {
       setEpisodeDetails(defaultEpisodeDetails);
       return showError("Invalid Spotify episode URL.");
     }
@@ -69,7 +69,7 @@ const SpotifyEpisodes = () => {
         (episode) => episode.episodeId === episodeDetails.episodeId
       );
       if (
-        episodeDetails.id ===
+        episodeDetails.spotifyId ===
         `https://open.spotify.com/episode/${episodes[index].spotifyId}`
       ) {
         setEpisodeDetails(defaultEpisodeDetails);
@@ -79,7 +79,7 @@ const SpotifyEpisodes = () => {
 
     if (
       episodes.some(
-        (ep) => ep.spotifyId === extractSpotifyId(episodeDetails.id)
+        (ep) => ep.spotifyId === extractSpotifyId(episodeDetails.spotifyId)
       )
     ) {
       setEpisodeDetails(defaultEpisodeDetails);
@@ -89,8 +89,8 @@ const SpotifyEpisodes = () => {
     try {
       if (episodeDetails.episodeId === null) {
         // ADD SPOTIFY EPISODE
-        const response = await api.post("/api/add-episode", {
-          url: episodeDetails.id,
+        const response = await api.post("/api/spotify/", {
+          url: episodeDetails.spotifyId,
           userId: user.id,
         });
 
@@ -98,11 +98,15 @@ const SpotifyEpisodes = () => {
 
         setDataUpdated(!dataUpdated);
       } else {
-        const response = await api.post("/api/edit-episode", {
-          episodeId: episodeDetails.episodeId,
-          url: episodeDetails.id,
-          userId: user.id,
-        });
+        // EDIT SPOTIFY EPISODE
+        const response = await api.put(
+          `/api/spotify/${episodeDetails.episodeId}`,
+          {
+            episodeId: episodeDetails.episodeId,
+            url: episodeDetails.spotifyId,
+            userId: user.id,
+          }
+        );
 
         toast.success(response.data.message);
 
@@ -120,10 +124,6 @@ const SpotifyEpisodes = () => {
     setEpisodeDetails(defaultEpisodeDetails);
   };
 
-  const deleteEpisode = (id) => {
-    setEpisodes(episodes.filter((ep) => ep.episodeId !== id));
-  };
-
   const handleDeleteClick = (episodeId) => {
     showConfirmationToast({
       message: "Delete spotify episode?",
@@ -134,10 +134,13 @@ const SpotifyEpisodes = () => {
 
   const handleDelete = async (episodeId) => {
     try {
-      const response = await api.post("/api/delete-episode", {
-        episodeId,
-        userId: user.id,
-      });
+      const response = await api.delete(
+        `/api/spotify/${episodeDetails.episodeId}`,
+        {
+          episodeId,
+          userId: user.id,
+        }
+      );
 
       toast.success(response.data.message);
 
@@ -149,9 +152,11 @@ const SpotifyEpisodes = () => {
 
   const fetchSpotifyEpisodes = async () => {
     try {
-      const response = await api.get("/api/all-episodes");
+      const response = await api.get("/api/spotify/");
 
       console.log(response.data.data);
+
+      console.log(response.data);
 
       setEpisodes(response.data.data);
     } catch (err) {
@@ -164,7 +169,7 @@ const SpotifyEpisodes = () => {
   }, [dataUpdated]);
 
   return (
-    <div className="border-primary border-2 rounded-2xl w-full p-4 space-y-4">
+    <div className="w-full space-y-4">
       {error && (
         <div className="fixed inset-0 flex items-center justify-center">
           <div className="bg-white p-6 rounded-2xl shadow-lg max-w-md w-full border-2 border-red-500/95">
@@ -188,9 +193,9 @@ const SpotifyEpisodes = () => {
       <div className="flex gap-2">
         <input
           type="text"
-          value={episodeDetails.id}
+          value={episodeDetails.spotifyId}
           onChange={(e) =>
-            setEpisodeDetails((ed) => ({ ...ed, id: e.target.value }))
+            setEpisodeDetails((ed) => ({ ...ed, spotifyId: e.target.value }))
           }
           placeholder="Enter Spotify episode URL"
           className="border p-2 rounded-2xl w-full"
@@ -199,12 +204,12 @@ const SpotifyEpisodes = () => {
           <>
             <button
               onClick={(e) => handleAddEditEpisode(e)}
-              className="btn-primary p-2"
+              className="text-primary"
             >
-              Save
+              <PlusIcon className="size-5" />
             </button>
-            <button onClick={cancelEdit} className="btn-light p-2">
-              <XCircleIcon className="size-6" />
+            <button onClick={cancelEdit} className="text-primary">
+              <XCircleIcon className="size-8" />
             </button>
           </>
         ) : (
@@ -212,7 +217,7 @@ const SpotifyEpisodes = () => {
             onClick={(e) => handleAddEditEpisode(e)}
             className="btn-light"
           >
-            <PlusIcon className="size-7" />
+            <PlusIcon className="size-5 sm:size-7" />
           </button>
         )}
       </div>
@@ -226,26 +231,26 @@ const SpotifyEpisodes = () => {
           return (
             <div
               key={episode.episodeId}
-              className="border rounded-2xl p-2 flex gap-2"
+              className="flex flex-col sm:flex-row gap-2"
             >
-              <div className="w-[96%]">
+              <div className="w-full sm:w-[96%]">
                 <SingleSpotifyEmbed spotifyId={episode.spotifyId} />
               </div>
-              <div className="w-[4%] sm:min-w-[5%] flex flex-col mx-auto justify-evenly items-center gap-2">
+              <div className="flex w-full sm:w-[4%] sm:min-w-[5%] flex-row sm:flex-col justify-center items-center gap-2">
                 <button
                   onClick={() => {
                     setEpisodeDetails({
                       episodeId: episode.episodeId,
-                      id: `https://open.spotify.com/episode/${episode.spotifyId}`,
+                      spotifyId: `https://open.spotify.com/episode/${episode.spotifyId}`,
                     });
                   }}
-                  className="bg-primary text-white w-full rounded-2xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e] h-[50%]"
+                  className="bg-primary text-white w-[48%] sm:w-full rounded-2xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e] h-[50%]"
                 >
                   <EditIcon className="size-7" />
                 </button>
                 <button
                   onClick={() => handleDeleteClick(episode.episodeId)}
-                  className="bg-primary text-white w-full rounded-2xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e] h-[50%]"
+                  className="bg-primary text-white w-[48%] sm:w-full rounded-2xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e] h-[50%]"
                 >
                   <DeleteIcon className="size-7" />
                 </button>
