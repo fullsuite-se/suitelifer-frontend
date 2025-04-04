@@ -18,6 +18,7 @@ import AdminNews from "./AdminNews";
 import SpotifyEpisodes from "../../components/admin/SpotifyEpisodes";
 import AdminContacts from "../../components/admin/AdminContacts";
 import AdminFooter from "../../components/admin/AdminFooter";
+import AdminSuiteBite from "./AdminSuiteBite";
 
 const AdminContents = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -99,7 +100,7 @@ const AdminContents = () => {
         {activeTab === 2 && (
           <Careers setUnsavedChanges={setUnsavedChanges} />
         )}
-        {activeTab === 3 && <AdminNews setUnsavedChanges={setUnsavedChanges} />}
+        {activeTab === 3 && <AdminSuiteBite setUnsavedChanges={setUnsavedChanges} />}
         {activeTab === 4 && (
           <SpotifyEpisodes setUnsavedChanges={setUnsavedChanges} />
         )}
