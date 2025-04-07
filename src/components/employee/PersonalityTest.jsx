@@ -17,24 +17,8 @@ const tests = [
     duration: 15,
     isPrimary: false,
   },
-  {
-    id: 3,
-    title: "16 Personality Types",
-    description:
-      "Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen.",
-    isPrimary: false,
-  },
-  {
-    id: 4,
-    title: "Physical Abilities",
-    description:
-      "Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen.",
-    duration: 10,
-    isPrimary: true,
-  },
 ];
 
-// Main component
 export default function PersonalityTest() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
