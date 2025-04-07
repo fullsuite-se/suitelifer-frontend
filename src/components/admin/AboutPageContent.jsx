@@ -10,9 +10,9 @@ import toast from "react-hot-toast";
 import { useStore } from "../../store/authStore";
 import ImageUploader from "./ImageUploader";
 import ContentButtons from "./ContentButtons";
-import Testimonials from "./Testimonials";
 
-const AboutPage = ({}) => {
+
+const AboutPageContent = ({}) => {
   // USER DETAILS
   const user = useStore((state) => state.user);
 
@@ -127,22 +127,6 @@ const AboutPage = ({}) => {
 
   return (
     <div className="overflow-x-auto min-h-screen px-4 sm:px-6 lg:px-8">
-      <div className="flex justify-end py-2 gap-2">
-        <button
-          // onClick={handlePreview}
-          className="btn-primary flex items-center p-2 gap-2"
-        >
-          <EyeIcon className="size-5" />
-          Preview Changes
-        </button>
-        <button
-          className="btn-primary flex items-center p-2 gap-2"
-          onClick={handlePublishChanges}
-        >
-          <BookmarkSquareIcon className="size-5" /> <span>Publish Changes</span>
-        </button>
-      </div>
-
       <div className="text-md font-bold pt-4 font-avenir-black">
         Text Banner
       </div>
@@ -300,4 +284,4 @@ const AboutPage = ({}) => {
   );
 };
 
-export default AboutPage;
+export default AboutPageContent;
