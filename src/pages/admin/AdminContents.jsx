@@ -9,15 +9,12 @@ import {
   Button,
 } from "@mui/material";
 import Careers from "../../components/admin/Careers";
-import AdminNews from "./AdminNews";
 import SpotifyEpisodes from "../../components/admin/SpotifyEpisodes";
 import AdminContacts from "../../components/admin/AdminContacts";
-import AdminFooter from "../../components/admin/AdminFooter";
-import AdminSuiteBite from "./AdminSuiteBite";
 import PageToggle from "../../components/admin/AdminPageToggle";
 import FooterPageToggle from "../../components/admin/FooterPageToggle";
-import SingleSpotifyEmbed from "../../components/home/SingleSpotifyEmbed";
 import AdminHomePage from "../../components/admin/AdminHomePage";
+import NewsLetter from "../../components/admin/NewsLetter";
 
 const AdminContents = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -91,16 +88,14 @@ const AdminContents = () => {
 
       <div className="p-4">
         {activeTab === 0 && (
-          <AdminHomePage setUnsavedChanges={setUnsavedChanges}/>
-            
+          <AdminHomePage setUnsavedChanges={setUnsavedChanges} />
         )}
         {activeTab === 1 && (
-          <PageToggle
-            setUnsavedChanges={setUnsavedChanges}/>
+          <PageToggle setUnsavedChanges={setUnsavedChanges} />
         )}
         {activeTab === 2 && <Careers setUnsavedChanges={setUnsavedChanges} />}
         {activeTab === 3 && (
-          <AdminSuiteBite setUnsavedChanges={setUnsavedChanges} />
+          <NewsLetter setUnsavedChanges={setUnsavedChanges} />
         )}
         {activeTab === 4 && (
           <SpotifyEpisodes setUnsavedChanges={setUnsavedChanges} />
