@@ -80,7 +80,7 @@ const AdminContents = () => {
           <Tab label="About" value={1} />
           <Tab label="Careers" value={2} />
           <Tab label="News Letter" value={3} />
-          <Tab label="Pod Cast" value={4} />
+          <Tab label="Podcast" value={4} />
           <Tab label="Contacts" value={5} />
           <Tab label="Footer" value={6} />
         </Tabs>
