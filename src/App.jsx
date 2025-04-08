@@ -53,16 +53,6 @@ function App() {
         <ScrollToTop />
         <Toaster position="top-center" reverseOrder={false} />
         <Routes>
-
-
-
-
-          
-
-
-
-
-
           {/* Routes that are publicly available (guest) */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />

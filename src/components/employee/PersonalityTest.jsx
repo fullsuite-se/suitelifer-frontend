@@ -22,16 +22,14 @@ export default function PersonalityTest() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="flex items-center mb-8">
-        <span className="text-sm text-gray-600 mr-2">Powered by</span>
+        <span className="text-sm text-gray-600">Powered by</span>
         <div className="flex items-center">
-          <svg
-            className="h-6 w-6 text-pink-500"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-          >
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-9c.83 0 1.5-.67 1.5-1.5S7.83 8 7 8s-1.5.67-1.5 1.5S6.17 10 7 10zm8-1.5c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5.67 1.5 1.5 1.5 1.5-.67 1.5-1.5zM12 17.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z" />
-          </svg>
-          <span className="font-bold text-gray-800 ml-1">TestGorilla</span>
+          <img
+            className="h-10 w-40"
+            src="https://images.teamtailor-cdn.com/images/s3/teamtailor-production/gallery_picture-v6/image_uploads/6128c76c-0dc2-4240-9a50-55035ae9b531/original.svg"
+            alt="TestGorilla logo"
+          />
+         
         </div>
       </div>
 
@@ -43,6 +41,7 @@ export default function PersonalityTest() {
             description={test.description}
             duration={test.duration}
             isPrimary={test.isPrimary}
+            text="View Details"
           />
         ))}
       </div>
