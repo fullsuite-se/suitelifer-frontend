@@ -150,6 +150,27 @@ const EmployeeAside = () => {
                       />
                     </div>
                   ))}
+                  {events
+                  .filter((event) => {
+                    const today = new Date().toISOString().split("T")[0]; // Get today's date (YYYY-MM-DD)
+                    const eventDate = new Date(event.date_time)
+                      .toISOString()
+                      .split("T")[0];
+                    return eventDate >= today;
+                  })
+                  .map((event, index) => (
+                    <div key={index}>
+                      <EventCard
+                        event={event}
+                        isUpcoming={
+                          new Date(event.date_time)
+                            .toISOString()
+                            .split("T")[0] >
+                          new Date().toISOString().split("T")[0]
+                        }
+                      />
+                    </div>
+                  ))}
               </DisclosurePanel>
             </Disclosure>
           </div>

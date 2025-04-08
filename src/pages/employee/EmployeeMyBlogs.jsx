@@ -46,8 +46,8 @@ const blogFeeds = [
 
 const EmployeeMyBlogs = () => {
   return (
-    <section>
-      <div className="p-2 xl:p-3">
+    <section className="mb-50">
+      <div className="p-2 xl:p-3 ">
         <main>
           {blogFeeds.map((blog, index) => (
             <div key={index} className="mb-5">
