@@ -1,126 +1,271 @@
-import { useState } from "react";
-import toast from "react-hot-toast";
-import { EyeIcon, BookmarkSquareIcon } from "@heroicons/react/24/outline";
-import { useStore } from "../../store/authStore";
-import ImageUploader from "./ImageUploader";
-import ContentButtons from "./ContentButtons";
-import api from "../../utils/axios";
+"use client";
 
-const NewsLetter = () => {
-  const user = useStore((state) => state.user);
+import { useState, useRef } from "react";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+} from "@mui/material";
+import ControlPointIcon from "@mui/icons-material/ControlPoint";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
+import { ModuleRegistry } from "@ag-grid-community/core";
+import { AgGridReact } from "@ag-grid-community/react";
+import "@ag-grid-community/styles/ag-grid.css";
+import "@ag-grid-community/styles/ag-theme-quartz.css";
 
-  const [files, setFiles] = useState({
-    imageUrl: null,
-  });
+ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
-  const [newsletterDetails, setNewsletterDetails] = useState({
-    imageUrl: "",
-    article: "",
-    title: "",
+function NewsLetter() {
+  const gridRef = useRef();
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [imageFilename, setImageFilename] = useState("");
+
+  const [newsletterData, setNewsletterData] = useState([
+    {
+      id: "1",
+      textPhrase: "Stay Updated",
+      title: "New Features Released",
+      article: "We just rolled out new updates...",
+      imageUrl: "https://via.placeholder.com/150",
+      created_at: "2023-08-10",
+      created_by: "Admin",
+    },
+  ]);
+
+  const [currentNews, setCurrentNews] = useState({
+    id: "",
     textPhrase: "",
+    title: "",
+    article: "",
+    imageUrl: "",
+    created_by: "Admin",
   });
 
-  const [dataUpdated, setDataUpdated] = useState(false);
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      setUploading(true);
+      setImageFilename(file.name);
+      setUploadProgress(0);
 
-  const handleInputChange = (e) => {
-    setNewsletterDetails((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+      let loadProgress = 0;
+      const interval = setInterval(() => {
+        loadProgress += 25;
+        setUploadProgress(loadProgress);
+        if (loadProgress >= 100) {
+          clearInterval(interval);
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            setCurrentNews((prev) => ({
+              ...prev,
+              imageUrl: reader.result,
+            }));
+          };
+          reader.readAsDataURL(file);
+          setUploading(false);
+        }
+      }, 200);
+    }
   };
 
-  const handleFileChange = (e, key) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFiles((prev) => ({
-          ...prev,
-          [key]: [file, reader.result],
-        }));
-
-        setNewsletterDetails((prev) => ({
-          ...prev,
-          [key]: reader.result,
-        }));
+  const handleSave = () => {
+    if (currentNews.id) {
+      setNewsletterData((prev) =>
+        prev.map((item) => (item.id === currentNews.id ? currentNews : item))
+      );
+    } else {
+      const newEntry = {
+        ...currentNews,
+        id: Date.now().toString(),
+        created_at: new Date().toISOString(),
+        imageUrl: currentNews.imageUrl || "https://via.placeholder.com/150",
       };
-      reader.readAsDataURL(file);
+      setNewsletterData((prev) => [...prev, newEntry]);
     }
+
+    setCurrentNews({
+      id: "",
+      textPhrase: "",
+      title: "",
+      article: "",
+      imageUrl: "",
+      created_by: "Admin",
+    });
+    setOpenDialog(false);
+    setImageFilename("");
   };
 
-  const handlePublishChanges = async () => {
-    console.log("user", newsletterDetails);
-    try {
-      const response = await api.post("/api/add-news", {
-        ...newsletterDetails,
-        user_id: user.id,
-      });
+  const handleEdit = (item) => {
+    setCurrentNews(item);
+    setOpenDialog(true);
+  };
 
-      toast.success(response.data.message);
-      setDataUpdated((prev) => !prev);
-    } catch (err) {
-      console.error(err.response);
-      toast.error("Failed to publish newsletter changes. Please try again.");
-    }
+  const handleDelete = (id) => {
+    setNewsletterData((prev) => prev.filter((item) => item.id !== id));
   };
 
   return (
     <>
-      <div className="flex flex-col gap-4 p-4">
-        <div>
-          <div className="text-md p-1 font-avenir-black">Text Phrase</div>
+      <div className="flex justify-end">
+        <button
+          onClick={() => setOpenDialog(true)}
+          className="btn-primary mb-2"
+        >
+          <div className="flex items-center gap-1">
+            <ControlPointIcon fontSize="small" />
+            <span>Add Newsletter</span>
+          </div>
+        </button>
+      </div>
+
+      <div
+        className="ag-theme-quartz"
+        style={{ height: "600px", width: "100%" }}
+      >
+        <AgGridReact
+          ref={gridRef}
+          rowData={newsletterData}
+          columnDefs={[
+            {
+              headerName: "Image",
+              field: "imageUrl",
+              flex: 1,
+              cellRenderer: (params) =>
+                params.value ? (
+                  <img
+                    src={params.value}
+                    alt="Newsletter"
+                    className="w-[80px] h-[80px] rounded-md object-cover mx-auto"
+                  />
+                ) : (
+                  "No Image"
+                ),
+            },
+            { headerName: "Text Phrase", field: "textPhrase", flex: 1 },
+            { headerName: "Title", field: "title", flex: 1.5 },
+            { headerName: "Article", field: "article", flex: 2 },
+            {
+              headerName: "Created At",
+              field: "created_at",
+              flex: 1,
+              valueGetter: (params) =>
+                new Date(params.data.created_at).toLocaleString(),
+            },
+            { headerName: "Created By", field: "created_by", flex: 1 },
+            {
+              headerName: "Action",
+              field: "action",
+              flex: 1,
+              cellRenderer: (params) => (
+                <div className="flex gap-2">
+                  <IconButton onClick={() => handleEdit(params.data)}>
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton onClick={() => handleDelete(params.data.id)}>
+                    <DeleteIcon />
+                  </IconButton>
+                </div>
+              ),
+            },
+          ]}
+          defaultColDef={{
+            sortable: true,
+            filter: true,
+            floatingFilter: true,
+          }}
+          pagination
+          paginationPageSize={5}
+        />
+      </div>
+
+      <Dialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>
+          {currentNews.id ? "Edit Newsletter" : "Add Newsletter"}
+        </DialogTitle>
+        <DialogContent>
+          <div className="mb-4">
+            <button
+              onClick={() => document.getElementById("fileInput").click()}
+              className="btn-light"
+            >
+              Upload Image
+            </button>
+            <input
+              id="fileInput"
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              style={{ display: "none" }}
+            />
+            {uploading && (
+              <div className="mt-2 w-full bg-gray-200 h-2 rounded">
+                <div
+                  className="bg-primary h-2 rounded"
+                  style={{ width: `${uploadProgress}%` }}
+                />
+              </div>
+            )}
+            {imageFilename && (
+              <div className="mt-2 text-sm text-gray-600">
+                Uploaded: {imageFilename}
+              </div>
+            )}
+          </div>
+
           <input
             type="text"
             name="textPhrase"
-            value={newsletterDetails.textPhrase}
-            onChange={handleInputChange}
-            className="w-full p-3 border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="Text Phrase"
+            value={currentNews.textPhrase}
+            onChange={(e) =>
+              setCurrentNews({ ...currentNews, textPhrase: e.target.value })
+            }
+            className="input mb-4"
           />
-        </div>
-
-        <div>
-          <div className="text-md p-1 font-avenir-black">Title</div>
           <input
             type="text"
             name="title"
-            value={newsletterDetails.title}
-            onChange={handleInputChange}
-            className="w-full p-3 border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="Title"
+            value={currentNews.title}
+            onChange={(e) =>
+              setCurrentNews({ ...currentNews, title: e.target.value })
+            }
+            className="input mb-4"
           />
-        </div>
-
-        <ImageUploader
-          image={files.imageUrl}
-          onImageChange={(e) => handleFileChange(e, "imageUrl")}
-          name="Newsletter Image"
-        />
-
-        <div>
-          <div className="text-md p-1 font-avenir-black">Article</div>
           <textarea
             name="article"
-            value={newsletterDetails.article}
-            onChange={handleInputChange}
-            rows={6}
-            className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
-          ></textarea>
-        </div>
-      </div>
-
-      <div className="flex justify-end gap-2 mb-4 px-4">
-        <ContentButtons
-          icon={<EyeIcon className="size-5" />}
-          text="Preview Changes"
-          handleClick={null}
-        />
-        <ContentButtons
-          icon={<BookmarkSquareIcon className="size-5" />}
-          text="Publish Changes"
-          handleClick={handlePublishChanges}
-        />
-      </div>
+            rows={4}
+            placeholder="Article"
+            value={currentNews.article}
+            onChange={(e) =>
+              setCurrentNews({ ...currentNews, article: e.target.value })
+            }
+            className="input"
+          />
+        </DialogContent>
+        <DialogActions>
+          <button className="btn-light" onClick={() => setOpenDialog(false)}>
+            Cancel
+          </button>
+          <button className="btn-primary" onClick={handleSave}>
+            Save
+          </button>
+        </DialogActions>
+      </Dialog>
     </>
   );
-};
+}
 
 export default NewsLetter;
