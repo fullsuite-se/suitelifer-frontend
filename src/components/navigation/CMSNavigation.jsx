@@ -73,6 +73,14 @@ const adminFeatures = [
   },
 ];
 
+const superAdminFeatures = [
+  {
+    feature_name: "Accounts",
+    path: "accounts-management",
+    icon: Bars3BottomLeftIcon,
+  },
+];
+
 const CMSNavigation = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const user = useStore((state) => state.user);
@@ -218,7 +226,6 @@ const CMSNavigation = () => {
                 </li>
               );
             })}
-            {/* TODO Fix */}
             {user.role === "ADMIN" && (
               <Disclosure as="div" defaultOpen={showTool}>
                 <DisclosureButton
@@ -236,6 +243,56 @@ const CMSNavigation = () => {
                   className={`${!isCollapse && "ml-5"} mt-1 flex flex-col`}
                 >
                   {adminFeatures.map((feature, index) => {
+                    const icons = iconMap[feature.path] || null;
+                    return (
+                      <li key={index}>
+                        <NavLink
+                          key={feature.path}
+                          to={`/app/${feature.path}`}
+                          className={({ isActive }) =>
+                            isActive
+                              ? `bg-primary text-white transition-none p-3 rounded-lg flex items-center gap-3 no-underline ${
+                                  !isCollapse ? "w-full" : "w-min"
+                                }`
+                              : `bg-white text-primary transition-none p-3 rounded-lg flex items-center gap-3 no-underline hover:bg-blue-50 ${
+                                  !isCollapse ? "w-full" : "w-min"
+                                }`
+                          }
+                        >
+                          {icons ? (
+                            <icons.default className="size-4 group-hover:hidden" />
+                          ) : (
+                            <Square2StackIcon className="size-4 group-hover:hidden" />
+                          )}
+                          {!isCollapse && (
+                            <span className="no-underline! font-avenir-black">
+                              {feature.feature_name}
+                            </span>
+                          )}
+                        </NavLink>
+                      </li>
+                    );
+                  })}
+                </DisclosurePanel>
+              </Disclosure>
+            )}
+            {user.role === "SUPER ADMIN" && (
+              <Disclosure as="div" defaultOpen={showTool}>
+                <DisclosureButton
+                  className="group cursor-pointer flex w-full items-center justify-between"
+                  onClick={handleDisclosureBtn}
+                >
+                  {!isCollapse && (
+                    <p className="font-avenir-black text-primary p-3">
+                      Admin Tools
+                    </p>
+                  )}
+                  <ChevronDownIcon className="size-5 text-primary  group-data-[open]:rotate-180" />
+                </DisclosureButton>
+                <DisclosurePanel
+                  className={`${!isCollapse && "ml-5"} mt-1 flex flex-col`}
+                >
+                  {superAdminFeatures.map((feature, index) => {
                     const icons = iconMap[feature.path] || null;
                     return (
                       <li key={index}>
