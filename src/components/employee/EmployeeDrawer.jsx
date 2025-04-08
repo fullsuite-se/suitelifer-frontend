@@ -43,7 +43,7 @@ const regularServices = [
     icon: ArrowPathRoundedSquareIcon,
   },
   { feature_name: "Events", path: "company-events", icon: CalendarIcon },
-  { feature_name: "Workshops", path: "worshops", icon: WrenchScrewdriverIcon },
+  { feature_name: "Workshops", path: "workshops", icon: WrenchScrewdriverIcon },
   {
     feature_name: "Personality Test",
     path: "personality-test",
