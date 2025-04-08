@@ -28,9 +28,19 @@ import EmployeePersonalityTest from "./pages/employee/EmployeePersonalityTest";
 import BlogCreate from "./components/blog/BlogCreate";
 import CareersJobDetails from "./pages/guest/CareersJobDetails";
 
+// Super/Admin Pages
+import AdminBlogs from "./pages/admin/AdminBlogs";
+import AdminNews from "./pages/admin/AdminNews";
+import AdminEvents from "./pages/admin/AdminEvents";
+import AdminContents from "./pages/admin/AdminContents";
+import AdminNewsCreate from "./pages/admin/AdminNewsCreate";
+import AdminBlogCreate from "./pages/admin/AdminBlogCreate";
+import SuperAdminAccountManagement from "./pages/superadmin/SuperAdminAccountManagement";
+
 // Route Management
-import DynamicRoutes from "./utils/protectedRoutes/DynamicRoutes";
 import ProtectedRoutes from "./utils/protectedRoutes/ProtectedRoutes";
+import AdminProtectedRoutes from "./utils/protectedRoutes/AdminProtectedRoutes";
+import SuperAdminProtectedRoutes from "./utils/protectedRoutes/SuperAdminProtectedRoutes";
 
 // Layout
 import RootLayout from "./components/layout/RootLayout";
@@ -83,16 +93,10 @@ function App() {
           {/* Routes that are avaialable to admins and employees (guest) */}
           <Route element={<ProtectedRoutes />}>
             <Route path="/app" element={<RootLayout />}>
-            
-              <Route path="*" element={<DynamicRoutes />} />
               <Route index element={<Navigate to="blogs-feed" replace />} />
               <Route path="blogs-feed" element={<EmployeeBlogsFeed />} />
               <Route path="blogs-feed/blog/:id/:slug" element={<BlogView />} />
-
-              {/* Paki lagay sa tamang lagayan kasi di mahanap kung san belong tong mga routes na to nani desu ka */}
-              <Route path="courses" element={<JobCourse />} />
-              <Route path="personalitytest" element={<PersonalityTest/>}/>
-
+              <Route path="personalitytest" element={<PersonalityTest />} />
               <Route path="my-blogs" element={<EmployeeMyBlogs />} />
               <Route path="my-blogs/blog/:id/:slug" element={<BlogView />} />
               <Route path="my-blogs/new-blog" element={<BlogCreate />} />
@@ -104,6 +108,30 @@ function App() {
                 path="personality-test"
                 element={<EmployeePersonalityTest />}
               />
+              <Route />
+
+              {/* Admin Protected Routes */}
+              <Route element={<AdminProtectedRoutes />}>
+                <Route path="blogs" element={<AdminBlogs />} />
+                <Route
+                  path="blogs/new-company-blog"
+                  element={<AdminBlogCreate />}
+                />
+                <Route path="news" element={<AdminNews />} />
+                <Route path="news/new-news" element={<AdminNewsCreate />} />
+                <Route path="events" element={<AdminEvents />} />
+                <Route path="contents" element={<AdminContents />} />
+                <Route path="courses" element={<JobCourse />} />
+                <Route path="personalitytest" element={<PersonalityTest />} />
+              </Route>
+
+              {/* Super Admin Protected Routes */}
+              <Route element={<SuperAdminProtectedRoutes />}>
+                <Route
+                  path="accounts-management"
+                  element={<SuperAdminAccountManagement />}
+                />
+              </Route>
             </Route>
           </Route>
         </Routes>

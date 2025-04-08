@@ -14,16 +14,6 @@ export const getUserFromCookie = async () => {
   }
 };
 
-export const getServicesFromCookie = async (userId) => {
-  try {
-    const response = await api.get(`/api/get-services/${userId}`);
-    return response.data.services;
-  } catch (error) {
-    console.error("Failed to fetch services:", error);
-    return [];
-  }
-};
-
 export const refreshToken = async () => {
   try {
     const response = await api.get("/api/refresh-token");

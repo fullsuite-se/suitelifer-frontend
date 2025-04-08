@@ -22,7 +22,7 @@ const VerifyAccount = () => {
 
         if (response.data.isSuccess) {
           toast.success(response.data.message);
-          navigate("/app/blogs-feed");
+          navigate("/login");
         }
       } catch (error) {
         if (error.status === 400) {
