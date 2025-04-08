@@ -39,7 +39,7 @@ const iconMap = {
   personalitytest: { default: FaceSmileIcon },
 };
 
-const regularServices = [
+const regularFeatures = [
   { feature_name: "Blogs Feed", path: "blogs-feed", icon: NewspaperIcon },
   { feature_name: "My Blogs", path: "my-blogs", icon: ClipboardIcon },
   {
@@ -56,9 +56,24 @@ const regularServices = [
   },
 ];
 
+const adminFeatures = [
+  { feature_name: "Content", path: "contents", icon: Bars3BottomLeftIcon },
+  { feature_name: "Events", path: "events", icon: CalendarIcon },
+  {
+    feature_name: "News",
+    path: "news",
+    icon: NewspaperIcon,
+  },
+  { feature_name: "Blogs", path: "blogs", icon: CalendarIcon },
+  { feature_name: "Courses", path: "courses", icon: BookOpenIcon },
+  {
+    feature_name: "Personality Test",
+    path: "personalitytest",
+    icon: FaceSmileIcon,
+  },
+];
+
 const CMSNavigation = () => {
-  // TODO: remove
-  // const services = useStore((state) => state.services) || [];
   const [isOpenModal, setIsOpenModal] = useState(false);
   const user = useStore((state) => state.user);
   const [isCollapse, setCollapse] = useState(
@@ -174,7 +189,7 @@ const CMSNavigation = () => {
         </section>
         <section className=" flex-1 ">
           <ul className="list-none!">
-            {regularServices.map((service, index) => {
+            {regularFeatures.map((service, index) => {
               return (
                 <li key={index}>
                   <NavLink
@@ -204,7 +219,7 @@ const CMSNavigation = () => {
               );
             })}
             {/* TODO Fix */}
-            {/* {services.length !== 0 && (
+            {user.role === "ADMIN" && (
               <Disclosure as="div" defaultOpen={showTool}>
                 <DisclosureButton
                   className="group cursor-pointer flex w-full items-center justify-between"
@@ -220,18 +235,13 @@ const CMSNavigation = () => {
                 <DisclosurePanel
                   className={`${!isCollapse && "ml-5"} mt-1 flex flex-col`}
                 >
-                  {services.map(({ feature_name }, index) => {
-                    if (!feature_name) return null;
-                    const path = feature_name.toLowerCase().replace(" ", "");
-                    const iconKey = feature_name
-                      .toLowerCase()
-                      .replace(/\s+/g, "");
-                    const icons = iconMap[iconKey] || null;
+                  {adminFeatures.map((feature, index) => {
+                    const icons = iconMap[feature.path] || null;
                     return (
                       <li key={index}>
                         <NavLink
-                          key={path}
-                          to={`/app/${path}`}
+                          key={feature.path}
+                          to={`/app/${feature.path}`}
                           className={({ isActive }) =>
                             isActive
                               ? `bg-primary text-white transition-none p-3 rounded-lg flex items-center gap-3 no-underline ${
@@ -249,7 +259,7 @@ const CMSNavigation = () => {
                           )}
                           {!isCollapse && (
                             <span className="no-underline! font-avenir-black">
-                              {feature_name}
+                              {feature.feature_name}
                             </span>
                           )}
                         </NavLink>
@@ -258,7 +268,7 @@ const CMSNavigation = () => {
                   })}
                 </DisclosurePanel>
               </Disclosure>
-            )} */}
+            )}
           </ul>
         </section>
 
