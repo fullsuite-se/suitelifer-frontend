@@ -23,9 +23,8 @@ const Form = () => {
     setValue(value);
   };
 
-  const submitRegistration = async (recaptchaToken) => {
+  const submitRegistration = async () => {
     const response = await api.post("/api/register", {
-      recaptchaToken,
       workEmail,
       password,
       firstName,
@@ -67,7 +66,7 @@ const Form = () => {
 
     try {
       setLoading(true);
-      const responseRegister = await submitRegistration(recaptchaToken);
+      const responseRegister = await submitRegistration();
       if (responseRegister.data.isSuccess) {
         const userId = responseRegister.data.userId;
         const email = responseRegister.data.email;
