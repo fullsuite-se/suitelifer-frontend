@@ -25,7 +25,7 @@ const PasswordReset = () => {
   const handleConfirmBtn = (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      toast.error("Password do not march");
+      toast.error("Password do not match");
       return;
     }
 
