@@ -3,13 +3,16 @@ import logo from "../../assets/logos/logo-fs-tagline.svg";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import api from "../../utils/axios";
+import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
+  const [middleName, setMiddleName] = useState("");
   const [lastName, setLastName] = useState("");
   const [workEmail, setWorkEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (value, setValue) => {
     setValue(value);
@@ -17,10 +20,19 @@ const Register = () => {
 
   const submitRegistration = async () => {
     const response = await api.post("/api/register", {
-      firstName,
-      lastName,
       workEmail,
       password,
+      firstName,
+      middleName,
+      lastName,
+    });
+    return response;
+  };
+
+  const sendVerification = async (userId, email) => {
+    const response = await api.post("/api/send-verification-code", {
+      userId: userId,
+      email: email,
     });
     return response;
   };
@@ -29,18 +41,33 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      submitRegistration();
+      setLoading(true);
+      const responseRegister = await submitRegistration();
+      if (responseRegister.data.isSuccess) {
+        const userId = responseRegister.data.userId;
+        const email = responseRegister.data.email;
+        const responseVerication = await sendVerification(userId, email);
+        if (responseVerication.data.isSuccess) {
+          toast.success("Registration successful. Verification code sent.");
+        } else {
+          toast.error("Failed to send verification code.");
+        }
+      } else {
+        toast.error("Registration failed.");
+      }
     } catch (error) {
-      console.error(error);
+      console.error("Error during registration:", error);
+      toast.error("Registration failed.");
+    } finally {
+      setLoading(false);
     }
   };
-
   return (
     <section className="flex flex-col h-dvh px-7 py-4">
       <section>
         <img src={logo} className="w-32 h-auto" alt="Logo" />
       </section>
-      <main className="flex-1 grid place-content-center gap-10">
+      <main className="flex-1 grid content-center gap-10 max-w-4xl mx-auto">
         <header className="text-center">
           <h2 className="font-avenir-black">
             <span className="text-primary">SIGN UP</span> YOUR SUITELIFER
@@ -60,6 +87,14 @@ const Register = () => {
               required
               value={firstName}
               onChange={(e) => handleInputChange(e.target.value, setFirstName)}
+            />
+            <input
+              type="text"
+              placeholder="Middle Name"
+              className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary placeholder-primary/50"
+              required
+              value={middleName}
+              onChange={(e) => handleInputChange(e.target.value, setMiddleName)}
             />
             <input
               type="text"
@@ -98,9 +133,21 @@ const Register = () => {
           />
           <button
             type="submit"
-            className="cursor-pointer w-full p-3 bg-primary text-white rounded-md hover:bg-primary/80 font-avenir-black"
+            className="w-full bg-primary p-3 rounded-md text-white font-avenir-black cursor-pointer"
           >
-            Sign Up
+            {loading ? (
+              <div className="mx-auto w-fit">
+                <TwoCirclesLoader
+                  bg={"transparent"}
+                  color1={"#bfd1a0"}
+                  color2={"#ffffff"}
+                  width={"57"}
+                  height={"24"}
+                />
+              </div>
+            ) : (
+              "LOG IN"
+            )}
           </button>
         </form>
         <p className="text-center">
@@ -108,9 +155,7 @@ const Register = () => {
           <Link
             className="font-avenir-black no-underline text-primary cursor-pointer"
             to={"/login"}
-          >
-            Sign in
-          </Link>
+          ></Link>
         </p>
       </main>
     </section>
