@@ -438,7 +438,7 @@ const Careers = () => {
 
                         {/* Right Column: Two Smaller Embeds */}
                         <div className="w-1/2 flex flex-col justify-center gap-7">
-                          {spotifyEpisodes.slice(1, 2).map((episode, index) => (
+                          {spotifyEpisodes.slice(1, 3).map((episode, index) => (
                             <SpotifyEmbed
                               key={index + 1}
                               spotifyId={episode.spotifyId}
