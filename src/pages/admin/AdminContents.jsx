@@ -79,7 +79,7 @@ const AdminContents = () => {
           <Tab label="Home" value={0} />
           <Tab label="About" value={1} />
           <Tab label="Careers" value={2} />
-          <Tab label="News Letter" value={3} />
+          <Tab label="Newsletter" value={3} />
           <Tab label="Podcast" value={4} />
           <Tab label="Contacts" value={5} />
           <Tab label="Footer" value={6} />
