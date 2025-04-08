@@ -13,8 +13,8 @@ import SpotifyEpisodes from "../../components/admin/SpotifyEpisodes";
 import PageToggle from "../../components/admin/AdminPageToggle";
 import FooterPageToggle from "../../components/admin/FooterPageToggle";
 import AdminHomePage from "../../components/admin/AdminHomePage";
-import NewsLetter from "../../components/admin/NewsLetter";
 import AdminContactsToggle from "../../components/admin/AdminContactsToggle";
+import AdminNewsLetterToggle from "../../components/admin/AdminNewsLetterToggle";
 
 const AdminContents = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -95,7 +95,7 @@ const AdminContents = () => {
         )}
         {activeTab === 2 && <Careers setUnsavedChanges={setUnsavedChanges} />}
         {activeTab === 3 && (
-          <NewsLetter setUnsavedChanges={setUnsavedChanges} />
+          <AdminNewsLetterToggle setUnsavedChanges={setUnsavedChanges} />
         )}
         {activeTab === 4 && (
           <SpotifyEpisodes setUnsavedChanges={setUnsavedChanges} />

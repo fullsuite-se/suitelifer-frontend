@@ -19,7 +19,7 @@ import "@ag-grid-community/styles/ag-theme-quartz.css";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
-function NewsLetter() {
+function NewsArticle() {
   const gridRef = useRef();
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -29,23 +29,21 @@ function NewsLetter() {
 
   const [newsletterData, setNewsletterData] = useState([
     {
-      id: "1",
-      textPhrase: "Stay Updated",
+      newsId: "1",
       title: "New Features Released",
-      article: "We just rolled out new updates...",
+      article: "We just rolled out new updates to our platform.",
       imageUrl: "https://via.placeholder.com/150",
-      created_at: "2023-08-10",
-      created_by: "Admin",
+      createdAt: "2023-08-10",
+      createdBy: "Melbraei Santiago",
     },
   ]);
 
   const [currentNews, setCurrentNews] = useState({
-    id: "",
-    textPhrase: "",
+    newsId: "",
     title: "",
     article: "",
     imageUrl: "",
-    created_by: "Admin",
+    createdBy: "Melbraei Santiago",
   });
 
   const handleImageUpload = (event) => {
@@ -76,27 +74,28 @@ function NewsLetter() {
   };
 
   const handleSave = () => {
-    if (currentNews.id) {
+    if (currentNews.newsId) {
       setNewsletterData((prev) =>
-        prev.map((item) => (item.id === currentNews.id ? currentNews : item))
+        prev.map((item) =>
+          item.newsId === currentNews.newsId ? currentNews : item
+        )
       );
     } else {
       const newEntry = {
         ...currentNews,
-        id: Date.now().toString(),
-        created_at: new Date().toISOString(),
+        newsId: Date.now().toString(),
+        createdAt: new Date().toISOString(),
         imageUrl: currentNews.imageUrl || "https://via.placeholder.com/150",
       };
       setNewsletterData((prev) => [...prev, newEntry]);
     }
 
     setCurrentNews({
-      id: "",
-      textPhrase: "",
+      newsId: "",
       title: "",
       article: "",
       imageUrl: "",
-      created_by: "Admin",
+      createdBy: "Admin",
     });
     setOpenDialog(false);
     setImageFilename("");
@@ -107,8 +106,8 @@ function NewsLetter() {
     setOpenDialog(true);
   };
 
-  const handleDelete = (id) => {
-    setNewsletterData((prev) => prev.filter((item) => item.id !== id));
+  const handleDelete = (newsId) => {
+    setNewsletterData((prev) => prev.filter((item) => item.newsId !== newsId));
   };
 
   return (
@@ -120,7 +119,7 @@ function NewsLetter() {
         >
           <div className="flex items-center gap-1">
             <ControlPointIcon fontSize="small" />
-            <span>Add Newsletter</span>
+            <span>News Article</span>
           </div>
         </button>
       </div>
@@ -136,29 +135,30 @@ function NewsLetter() {
             {
               headerName: "Image",
               field: "imageUrl",
-              flex: 1,
+              flex: 2,
+              filter: "agTextColumnFilter",
               cellRenderer: (params) =>
                 params.value ? (
                   <img
                     src={params.value}
-                    alt="Newsletter"
-                    className="w-[80px] h-[80px] rounded-md object-cover mx-auto"
+                    alt="NewsImage"
+                    className="w-[80px] h-[80px] sm:w-[80px] sm:h-[80px] rounded-md object-cover mx-auto"
                   />
                 ) : (
-                  "No Image"
+                  <span>No Image</span>
                 ),
             },
-            { headerName: "Text Phrase", field: "textPhrase", flex: 1 },
+
             { headerName: "Title", field: "title", flex: 1.5 },
             { headerName: "Article", field: "article", flex: 2 },
             {
               headerName: "Created At",
-              field: "created_at",
+              field: "createdAt",
               flex: 1,
               valueGetter: (params) =>
-                new Date(params.data.created_at).toLocaleString(),
+                new Date(params.data.createdAt).toLocaleString(),
             },
-            { headerName: "Created By", field: "created_by", flex: 1 },
+            { headerName: "Created By", field: "createdBy", flex: 1 },
             {
               headerName: "Action",
               field: "action",
@@ -168,7 +168,7 @@ function NewsLetter() {
                   <IconButton onClick={() => handleEdit(params.data)}>
                     <EditIcon />
                   </IconButton>
-                  <IconButton onClick={() => handleDelete(params.data.id)}>
+                  <IconButton onClick={() => handleDelete(params.data.newsId)}>
                     <DeleteIcon />
                   </IconButton>
                 </div>
@@ -181,7 +181,10 @@ function NewsLetter() {
             floatingFilter: true,
           }}
           pagination
-          paginationPageSize={5}
+          paginationPageSize={10}
+          paginationPageSizeSelectors={[5, 10, 20]}
+          enableBrowserTooltips={true}
+          tooltipShowDelay={0}
         />
       </div>
 
@@ -192,69 +195,66 @@ function NewsLetter() {
         maxWidth="sm"
       >
         <DialogTitle>
-          {currentNews.id ? "Edit Newsletter" : "Add Newsletter"}
+          {currentNews.newsId ? "Edit News Article" : "Add News Article"}
         </DialogTitle>
         <DialogContent>
-          <div className="mb-4">
-            <button
-              onClick={() => document.getElementById("fileInput").click()}
-              className="btn-light"
-            >
-              Upload Image
-            </button>
-            <input
-              id="fileInput"
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              style={{ display: "none" }}
-            />
-            {uploading && (
-              <div className="mt-2 w-full bg-gray-200 h-2 rounded">
-                <div
-                  className="bg-primary h-2 rounded"
-                  style={{ width: `${uploadProgress}%` }}
-                />
-              </div>
-            )}
-            {imageFilename && (
-              <div className="mt-2 text-sm text-gray-600">
-                Uploaded: {imageFilename}
-              </div>
-            )}
-          </div>
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col items-center">
+              <button
+                onClick={() => document.getElementById("fileInput").click()}
+                className="btn-light"
+              >
+                Upload Image
+              </button>
+              <input
+                id="fileInput"
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                style={{ display: "none" }}
+              />
+              {uploading && (
+                <div className="mt-2 w-full bg-gray-200 h-2 rounded">
+                  <div
+                    className="bg-primary h-2 rounded"
+                    style={{ width: `${uploadProgress}%` }}
+                  />
+                </div>
+              )}
+              {imageFilename && (
+                <div className="mt-2 text-sm text-gray-600">
+                  Uploaded: {imageFilename}
+                </div>
+              )}
+            </div>
 
-          <input
-            type="text"
-            name="textPhrase"
-            placeholder="Text Phrase"
-            value={currentNews.textPhrase}
-            onChange={(e) =>
-              setCurrentNews({ ...currentNews, textPhrase: e.target.value })
-            }
-            className="input mb-4"
-          />
-          <input
-            type="text"
-            name="title"
-            placeholder="Title"
-            value={currentNews.title}
-            onChange={(e) =>
-              setCurrentNews({ ...currentNews, title: e.target.value })
-            }
-            className="input mb-4"
-          />
-          <textarea
-            name="article"
-            rows={4}
-            placeholder="Article"
-            value={currentNews.article}
-            onChange={(e) =>
-              setCurrentNews({ ...currentNews, article: e.target.value })
-            }
-            className="input"
-          />
+            <div className="text-md font-bold pt-4 font-avenir-black">
+              Title
+            </div>
+            <input
+              name="title"
+              value={currentNews.title}
+              onChange={(e) =>
+                setCurrentNews({ ...currentNews, title: e.target.value })
+              }
+              rows={2}
+              className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary "
+            ></input>
+            <div className="text-md font-bold pt-4 font-avenir-black">
+              Article
+            </div>
+            <textarea
+              name="article"
+              value={currentNews.article}
+              onChange={(e) =>
+                setCurrentNews({ ...currentNews, article: e.target.value })
+              }
+              rows={8}
+              className="w-full p-3 resize-y border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+            ></textarea>
+          </div>
         </DialogContent>
+
         <DialogActions>
           <button className="btn-light" onClick={() => setOpenDialog(false)}>
             Cancel
@@ -268,4 +268,4 @@ function NewsLetter() {
   );
 }
 
-export default NewsLetter;
+export default NewsArticle;

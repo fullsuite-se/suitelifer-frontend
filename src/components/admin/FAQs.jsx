@@ -23,47 +23,54 @@ ModuleRegistry.registerModules([ClientSideRowModelModule]);
 function FAQs() {
   const [faqs, setFaqs] = useState([
     {
-      id: "1",
+      faqId: "1",
       question: "What is your return policy?",
       answer: "30 days return policy.",
+      createdAt: new Date().toISOString(),
+      createdBy: "Melbraei Santiago",
     },
     {
-      id: "2",
+      faqId: "2",
       question: "Do you offer customer support?",
       answer: "Yes, 24/7 support available.",
+      createdAt: new Date().toISOString(),
+      createdBy: "Melbraei Santiago",
     },
     {
-      id: "3",
-      question: "Do you love me?",
-      answer: "Yes Daddy!!!",
+      faqId: "3",
+      question: "Benz likes Maricar?",
+      answer: "Yes, He does.",
+      createdAt: new Date().toISOString(),
+      createdBy: "Benz",
     },
   ]);
   const [openDialog, setOpenDialog] = useState(false);
   const [currentFAQ, setCurrentFAQ] = useState({
-    id: "",
+    faqId: "",
     question: "",
     answer: "",
-    created_at: "",
-    created_by: "Melbraei Santiago",
+    createdAt: "",
+    createdBy: "",
   });
 
   const gridRef = useRef();
 
   const handleSave = () => {
-    if (currentFAQ.id) {
+    if (currentFAQ.faqId) {
       setFaqs((prev) =>
-        prev.map((faq) => (faq.id === currentFAQ.id ? currentFAQ : faq))
+        prev.map((faq) => (faq.faqId === currentFAQ.faqId ? currentFAQ : faq))
       );
     } else {
       const newFaq = {
         ...currentFAQ,
-        id: Date.now().toString(),
-        created_at: new Date().toISOString(),
+        faqId: Date.now().toString(),
+        createdAt: new Date().toISOString(),
+        createdBy: "Melbraei Santiago",
       };
       setFaqs((prev) => [...prev, newFaq]);
     }
 
-    setCurrentFAQ({ id: "", question: "", answer: "" });
+    setCurrentFAQ({ faqId: "", question: "", answer: "" });
     setOpenDialog(false);
   };
 
@@ -72,8 +79,8 @@ function FAQs() {
     setOpenDialog(true);
   };
 
-  const handleDelete = (id) => {
-    setFaqs((prev) => prev.filter((faq) => faq.id !== id));
+  const handleDelete = (faqId) => {
+    setFaqs((prev) => prev.filter((faq) => faq.faqId !== faqId));
   };
 
   return (
@@ -124,17 +131,17 @@ function FAQs() {
 
             {
               headerName: "Date Created",
-              field: "created_at",
+              field: "createdAt",
               flex: 2,
               headerClass: "text-primary font-bold bg-gray-100",
               valueGetter: (params) =>
-                params.data?.created_at
-                  ? new Date(params.data.created_at).toLocaleString()
+                params.data?.createdAt
+                  ? new Date(params.data.createdAt).toLocaleString()
                   : "N/A",
             },
             {
               headerName: "Created By",
-              field: "created_by",
+              field: "createdBy",
               flex: 2,
               headerClass: "text-primary font-bold bg-gray-100",
             },
@@ -148,7 +155,7 @@ function FAQs() {
                   <IconButton onClick={() => handleEdit(params.data)}>
                     <EditIcon />
                   </IconButton>
-                  <IconButton onClick={() => handleDelete(params.data.id)}>
+                  <IconButton onClick={() => handleDelete(params.data.faqId)}>
                     <DeleteIcon />
                   </IconButton>
                 </div>
@@ -166,12 +173,13 @@ function FAQs() {
             },
           }}
           pagination
-          paginationPageSize={5}
+          paginationPageSize={10}
+          paginationPageSizeSelector={[5, 10, 20, 50]}
         />
       </div>
 
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)} fullWidth>
-        <DialogTitle>{currentFAQ.id ? "Edit FAQ" : "Add FAQ"}</DialogTitle>
+        <DialogTitle>{currentFAQ.faqId ? "Edit FAQ" : "Add FAQ"}</DialogTitle>
         <DialogContent>
           <div className="mb-4">
             <label className="block text-gray-700 font-bold">Question</label>
