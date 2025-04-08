@@ -18,7 +18,7 @@ import {
   ArrowPathRoundedSquareIcon,
   ChevronDownIcon,
   BookOpenIcon,
-  FaceSmileIcon
+  FaceSmileIcon,
 } from "@heroicons/react/20/solid";
 import {
   Disclosure,
@@ -54,11 +54,11 @@ const regularServices = [
     path: "personality-test",
     icon: UserIcon,
   },
-  
 ];
 
 const CMSNavigation = () => {
-  const services = useStore((state) => state.services) || [];
+  // TODO: remove
+  // const services = useStore((state) => state.services) || [];
   const [isOpenModal, setIsOpenModal] = useState(false);
   const user = useStore((state) => state.user);
   const [isCollapse, setCollapse] = useState(
@@ -203,7 +203,8 @@ const CMSNavigation = () => {
                 </li>
               );
             })}
-            {services.length !== 0 && (
+            {/* TODO Fix */}
+            {/* {services.length !== 0 && (
               <Disclosure as="div" defaultOpen={showTool}>
                 <DisclosureButton
                   className="group cursor-pointer flex w-full items-center justify-between"
@@ -257,7 +258,7 @@ const CMSNavigation = () => {
                   })}
                 </DisclosurePanel>
               </Disclosure>
-            )}
+            )} */}
           </ul>
         </section>
 

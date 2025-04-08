@@ -52,7 +52,8 @@ const regularServices = [
 ];
 
 const EmployeeDrawer = ({ onClose }) => {
-  const services = useStore((state) => state.services) || [];
+  // TODO: remove
+  // const services = useStore((state) => state.services) || [];
   const [isOpenModal, setIsOpenModal] = useState(false);
 
   const handleClose = () => {
@@ -100,7 +101,8 @@ const EmployeeDrawer = ({ onClose }) => {
                 </li>
               );
             })}
-            {services.length !== 0 && (
+            {/* TODO: Fix */}
+            {/* {services.length !== 0 && (
               <Disclosure as="div" defaultOpen={true}>
                 <DisclosureButton className="group cursor-pointer flex w-full items-center justify-between">
                   <p className="font-avenir-black text-primary p-3">
@@ -142,7 +144,7 @@ const EmployeeDrawer = ({ onClose }) => {
                   })}
                 </DisclosurePanel>
               </Disclosure>
-            )}
+            )} */}
           </ul>
         </section>
         <section
