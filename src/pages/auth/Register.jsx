@@ -180,11 +180,12 @@ const Register = () => {
           </header>
           <Form />
           <p className="text-center">
-            Already have an account?{" "}
             <Link
-              className="font-avenir-black no-underline text-primary cursor-pointer"
+              className="text-blue-400 text-primary cursor-pointer text-sm"
               to={"/login"}
-            ></Link>
+            >
+              Already have an account?
+            </Link>
           </p>
         </main>
       </section>
