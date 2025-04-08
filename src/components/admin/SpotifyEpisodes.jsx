@@ -117,7 +117,6 @@ const SpotifyEpisodes = () => {
       console.log(err);
     }
 
-    setEpisodes((e) => [...e, episodeDetails]);
     setEpisodeDetails(defaultEpisodeDetails);
   };
 
@@ -191,7 +190,7 @@ const SpotifyEpisodes = () => {
         </div>
       )}
 
-      <div className="overflow-y-auto space-y-4 bg-amber-300">
+      <div className="overflow-y-auto space-y-4">
         <div className="flex gap-2">
           <input
             type="text"
