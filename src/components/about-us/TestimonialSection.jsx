@@ -16,8 +16,11 @@ const Testimonials = () => {
     const fetchTestimonials = async () => {
       try {
         const response = await api.get("/api/get-all-testimonials");
-        const data = response.data?.data || [];
-        setTestimonials(data);
+        const data = response.data?.testimonials || [];
+        const filteredTestimonials = data.filter(testimonial => !!testimonial.is_shown);
+       
+        
+        setTestimonials(filteredTestimonials);
       } catch (error) {
         console.error(error);
       } finally {
@@ -97,8 +100,8 @@ const Testimonials = () => {
           </SwiperSlide>
           ))
       : testimonials.length > 0 ? (
-        testimonials.slice(0, 5).map((testimonial) => (
-          <SwiperSlide key={testimonial.testimonialId}>
+        testimonials.map((testimonial) => (
+          <SwiperSlide key={testimonial.testimonial_id}>
             {({ isActive }) => (
               <div
                 className={`p-10 mt-4 ease-out bg-white shadow-lg rounded-lg text-center transition-transform duration-300 ${
@@ -113,8 +116,8 @@ const Testimonials = () => {
                   className="absolute translate-x-5 translate-y-22 -rotate-5 w-16 mb-4"
                 />
                 <img
-                  src={testimonial.employeeImageUrl}
-                  alt={testimonial.employeeName}
+                  src={testimonial.employee_image_url}
+                  alt={testimonial.employee_name}
                   className="size-30 mx-auto rounded-full mb-4 object-cover"
                 />
                 <p className="mt-4 text-gray-700 text-body">
@@ -122,7 +125,7 @@ const Testimonials = () => {
                 </p>
                 <br />
                 <p className="text-small font-avenir-black text-primary">
-                  {testimonial.employeeName}
+                  {testimonial.employee_name}
                 </p>
                 <p className="text-xss text-gray-400">{testimonial.position}</p>
               </div>

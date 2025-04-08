@@ -101,6 +101,15 @@ ol {
   padding-left: 20px;
 }
 
+strong, b {
+  font-family: var(--font-avenir-black);
+}
+
+em, i{
+  font-family: var(--font-avenir-roman-oblique);
+
+}
+
 
 /* Color Themes */
 @theme {
@@ -115,7 +124,7 @@ ol {
   --font-avenir-black: Avenir-Black, "sans-serif";
   --font-avenir-black-oblique: Avenir-BlackOblique, "sans-serif";
   --font-avenir-roman: Avenir-Roman, "sans-serif";
-  --font-avenir-roman-oblique: Avenir-BlackOblique, "sans-serif";
+  --font-avenir-roman-oblique: Avenir-RomanOblique, "sans-serif";
   --font-sansita-black: SansitaSwashed-Black, "sans-serif";
   --font-sansita-bold: SansitaSwashed-Bold, "sans-serif";
   --font-sansita-regular: SansitaSwashed-Regular, "sans-serif";

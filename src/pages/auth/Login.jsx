@@ -12,13 +12,13 @@ import {
   GoogleReCaptchaProvider,
   useGoogleReCaptcha,
 } from "react-google-recaptcha-v3";
+
+import TestCredentials from "./TestCredentials";
 import { ModalResetPassword } from "../../components/modals/ModalResetPassword";
 import { Link } from "react-router-dom";
 
-const LoginForm = () => {
+const LoginForm = ({ email, password, setEmail, setPassword }) => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const { executeRecaptcha } = useGoogleReCaptcha();
@@ -85,7 +85,7 @@ const LoginForm = () => {
           value={email}
           placeholder="Email"
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary placeholder-primary/50"
+          className="w-full p-3 border-none rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary placeholder-gray-500"
         />
       </div>
       <div className="relative">
@@ -95,23 +95,20 @@ const LoginForm = () => {
           value={password}
           placeholder="Password"
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary placeholder-primary/50"
+          className="w-full p-3 border-none rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary placeholder-gray-500"
         />
         <button
           type="button"
-          className="absolute right-3 top-4 text-gray-500 hover:text-gray-700"
           onClick={() => setShowPassword(!showPassword)}
+          className="absolute top-3 right-3 text-gray-500"
         >
-          {showPassword ? (
-            <EyeSlashIcon className="w-5 h-5 cursor-pointer text-primary" />
-          ) : (
-            <EyeIcon className="w-5 h-5 cursor-pointer text-primary" />
-          )}
+          {showPassword ? "Hide" : "Show"}
         </button>
       </div>
       <button
         type="submit"
-        className="mt-5 w-full bg-primary p-3 rounded-xl text-white font-avenir-black cursor-pointer"
+        className="mt-5 w-full bg-primary p-3 rounded-xl text-white font-avenir-black"
+        disabled={!email || !password || loading}  // Disable if fields are empty or loading
       >
         {loading ? (
           <div className="mx-auto w-fit">
@@ -131,11 +128,17 @@ const LoginForm = () => {
   );
 };
 
+
 // Main Login Component
+
 const Login = () => {
   const navigate = useNavigate();
   const vantaRef = useRef(null);
-  const [isResetModal, setReselModal] = useState(false);
+  const [isResetModal, setResetModal] = useState(false);  // Fixed typo here
+
+  const [showCredentials, setShowCredentials] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -177,51 +180,73 @@ const Login = () => {
   }, []);
 
   const handleResetPasswordBtn = () => {
-    setReselModal((prev) => !prev);
+    setResetModal((prev) => !prev);  // Fixed typo here
   };
 
   return (
     <GoogleReCaptchaProvider reCaptchaKey={import.meta.env.VITE_RECAPTCHA_SITE}>
-      <div
-        id="vanta-bg"
-        className="w-screen h-screen flex justify-start items-center bg-white"
-      >
+      <div id="vanta-bg" className="min-h-screen bg-white overflow-y-auto">
         <ModalResetPassword
           isOpen={isResetModal}
           handleClose={handleResetPasswordBtn}
         />
-        <div
-          className="bg-white mx-auto rounded-2xl p-10 py-16 border border-gray-200"
-          style={{ width: "min(90%, 600px)" }}
-        >
-          <img
-            src={fullsuite}
-            alt="FullSuite"
-            onClick={() => navigate("/")}
-            className="w-28 h-auto mx-auto cursor-pointer"
-          />
-          <p className="text-center text-base my-4 text-gray-500 mb-10">
-            Welcome to SuiteLifer!
-          </p>
-          <LoginForm /> {/* Wrapped safely inside GoogleReCaptchaProvider */}
-          <section className="flex justify-between mt-3">
-            <Link
-              className="text-sm text-blue-400 underline cursor-pointer"
-              to={"/register"}
-            >
-              Don't have an account?
-            </Link>
-            <p
-              className="text-sm text-blue-400 underline cursor-pointer"
-              onClick={handleResetPasswordBtn}
-            >
-              Reset Password?
+        <div className={`flex flex-col items-center ${!showCredentials ? "justify-center min-h-screen" : "pt-20"}`}>
+          <div
+            className="bg-white mx-auto rounded-2xl p-10 py-16 border border-gray-200"
+            style={{ width: "min(90%, 600px)" }}
+          >
+            <img
+              src={fullsuite}
+              alt="FullSuite"
+              onClick={() => navigate("/")}
+              className="w-28 h-auto mx-auto cursor-pointer"
+            />
+            <p className="text-center text-base my-4 text-gray-500 mb-10">
+              Welcome SuiteLifer!
             </p>
-          </section>
+            <LoginForm
+              email={email}
+              password={password}
+              setEmail={setEmail}
+              setPassword={setPassword}
+            />
+            <section className="flex justify-between mt-3">
+              <Link
+                className="text-sm text-blue-400 underline cursor-pointer"
+                to={"/register"}
+              >
+                Don't have an account?
+              </Link>
+              <p
+                className="text-sm text-blue-400 underline cursor-pointer"
+                onClick={handleResetPasswordBtn}
+              >
+                Reset Password?
+              </p>
+            </section>
+            <div className="flex justify-center">
+              <button
+                className="mt-10 px-2 py-1 text-xss text-gray-400 border border-gray-200 rounded hover:bg-gray-100"
+                onClick={() => setShowCredentials(!showCredentials)}
+              >
+                TEST CREDENTIALS
+              </button>
+            </div>
+          </div>
+  
+          {showCredentials && (
+            <div
+              className="bg-white mx-auto rounded-2xl p-5 mt-10"
+              style={{ width: "min(90%, 600px)" }}
+            >
+              <TestCredentials setEmail={setEmail} setPassword={setPassword} />
+            </div>
+          )}
         </div>
       </div>
     </GoogleReCaptchaProvider>
   );
-};
+}
 
 export default Login;
+

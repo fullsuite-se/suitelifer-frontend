@@ -159,7 +159,7 @@ export default function TabletNav() {
                         }
                         onClick={handleClose}
                       >
-                        News
+                        Newsletter
                       </NavLink>
                     </div>
 
@@ -173,7 +173,7 @@ export default function TabletNav() {
                         }
                         onClick={handleClose}
                       >
-                        Blogs
+                        Podcasts
                       </NavLink>
                     </div>
 

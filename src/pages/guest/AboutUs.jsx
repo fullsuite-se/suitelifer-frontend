@@ -165,6 +165,7 @@ const AboutUs = () => {
                     <b>team player</b>
                   </p>
                 }
+                youtubeUrl="https://www.youtube.com/embed/dQw4w9WgXcQ" 
               />
               {/* 2 */}
               <CoreValueCard
@@ -181,6 +182,7 @@ const AboutUs = () => {
                     <b>understood</b>
                   </p>
                 }
+                youtubeUrl="https://www.youtube.com/embed/dQw4w9WgXcQ" 
               />
             </div>
             <div className="flex justify-center">
@@ -198,6 +200,7 @@ const AboutUs = () => {
                     <b>focused athlete</b>
                   </p>
                 }
+                youtubeUrl="https://www.youtube.com/embed/dQw4w9WgXcQ" 
               />
             </div>
             <div className="flex justify-evenly lg:gap-10">
@@ -211,6 +214,7 @@ const AboutUs = () => {
                   />
                 }
                 text={<b className="text-body">upholds</b>}
+                youtubeUrl="https://www.youtube.com/embed/dQw4w9WgXcQ" 
               />
               {/* 5 */}
               <CoreValueCard
@@ -225,6 +229,7 @@ const AboutUs = () => {
                     values <br /> work/life harmony
                   </b>
                 }
+                youtubeUrl="https://www.youtube.com/embed/dQw4w9WgXcQ" 
               />
             </div>
           </div>

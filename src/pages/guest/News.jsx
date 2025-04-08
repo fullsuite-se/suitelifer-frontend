@@ -108,7 +108,7 @@ const News = () => {
               animate={{ x: 0, opacity: 1 }}
               transition={{ type: "spring", stiffness: 120, damping: 20 }}
             >
-              news
+              letter
             </motion.span>
           </p>
           <p className="text-gray-400 text-small">
@@ -192,7 +192,7 @@ const News = () => {
                 </p>
                 <div className="layout-small-news-cards gap-4 sm:gap-5">
                   {news.length > 0 &&
-                    news.map((news, index) => (
+                    news.slice(1).map((news, index) => (
                       <NewsCardSmall key={news.id || index} {...news} />
                     ))}
                 </div>

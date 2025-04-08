@@ -83,11 +83,11 @@ const ContentEditor = ({
       <EditorContent
         editor={editor}
         className="border p-2 rounded bg-[--color-accent-1] text-[--color-dark] 
-             font-serif
+             font-avenir
              [&_ul]:list-disc [&_ul]:pl-6 
              [&_ol]:list-decimal [&_ol]:pl-6
              [&_em]:font-inherit
-             [&_strong]:font-bold
+             [&_strong]:font-avenir-black
              [&_strong_em]:font-inherit
              [&_em_strong]:font-inherit"
       />

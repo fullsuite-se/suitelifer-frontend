@@ -106,7 +106,7 @@ export default function MobileNav() {
                   }
                   onClick={handleClose}
                 >
-                  News
+                  Newsletter
                 </NavLink>
               </div>
 
@@ -120,7 +120,7 @@ export default function MobileNav() {
                   }
                   onClick={handleClose}
                 >
-                  Blogs
+                  Podcasts
                 </NavLink>
               </div>
 

@@ -47,7 +47,7 @@ const NewsLarge = ({
             <p className="text-body lg:line-clamp-3 xl:line-clamp-6 lg:overflow-hidden text-gray-500 font-avenir">
               {article.replace(/<[^>]+>/g, "")}
             </p>
-            <p className=" text-gray-400 mt-2 text-small">
+            <p className=" text-gray-400 mt-2 text-xss">
               {fullDate}
             </p>
           </div>

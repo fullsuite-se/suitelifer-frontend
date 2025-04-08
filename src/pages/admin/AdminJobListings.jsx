@@ -79,7 +79,7 @@ export default function AdminJobListing() {
     requirement: "",
     preferredQualification: "",
     isOpen: "",
-    isShown: "",
+    is_shown: "",
   };
 
   const [jobListings, setJobListings] = useState([]);
@@ -158,7 +158,7 @@ export default function AdminJobListing() {
       requirement: job.requirement,
       preferredQualification: job.preferredQualification,
       isOpen: job.isOpen,
-      isShown: job.isShown,
+      is_shown: job.is_shown,
     }));
     setJobModalIsOpen(true);
   };
@@ -384,7 +384,7 @@ export default function AdminJobListing() {
       },
       {
         headerName: "Visibility",
-        field: "isShown",
+        field: "is_shown",
         flex: 1,
         filter: "agTextColumnFilter",
         valueFormatter: (params) => (params.value === 1 ? "Shown" : "Hidden"),

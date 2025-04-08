@@ -1,34 +1,33 @@
 import { useState, useEffect } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { motion } from "framer-motion";
+import api from "../../utils/axios";
 
 
-const faqs = [
-  {
-    question: "How long is the hiring process?",
-    answer:
-      "Once you have sent your application and have attended all the interviews, we will be sending the full list of pre-employment requirements you will need.",
-  },
-  {
-    question:
-      "I am a first-time jobseeker, should I have my requirements ready before I apply?",
-    answer:
-      "Once you have sent your application and have attended all the interviews, we will be sending the full list of pre-employment requirements you will need.",
-  },
-  {
-    question:
-      "I got a low score in the Test-gorilla, does that mean I am no longer fit to apply?",
-    answer:
-      "Once you have sent your application and have attended all the interviews, we will be sending the full list of pre-employment requirements you will need.",
-  },
-  {
-    question: "What are the pre-employment requirements needed?",
-    answer:
-      "Once you have sent your application and have attended all the interviews, we will be sending the full list of pre-employment requirements you will need.",
-  },
-];
 
 const FAQ = () => {
+
+  const [faqs, setFaqs] = useState([]);
+  const fetchFaqs = async () => {
+    try {
+      const response = await api.get("/api/get-all-faqs");
+      const visibleFaqs = response.data.faqs.filter((faq) => faq.is_shown === 1);
+      setFaqs(visibleFaqs);
+      console.log(response.data.setFaqs);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchFaqs();
+  }, []);
+
+
+
+
+
+
   const [openIndex, setOpenIndex] = useState(null);
 
   const toggleFAQ = (index) => {
