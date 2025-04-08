@@ -7,7 +7,7 @@ const ContentButtons = ({ icon, text, handleClick }) => {
     onClick={handleClick}
   >
     {icon}
-    <span className="hidden sm:flex">{text}</span>
+    <span className="hidden sm:flex flex-col">{text}</span>
   </button>
   );
 };

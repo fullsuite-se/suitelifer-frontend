@@ -10,11 +10,11 @@ import {
 } from "@mui/material";
 import Careers from "../../components/admin/Careers";
 import SpotifyEpisodes from "../../components/admin/SpotifyEpisodes";
-import AdminContacts from "../../components/admin/AdminContacts";
 import PageToggle from "../../components/admin/AdminPageToggle";
 import FooterPageToggle from "../../components/admin/FooterPageToggle";
 import AdminHomePage from "../../components/admin/AdminHomePage";
 import NewsLetter from "../../components/admin/NewsLetter";
+import AdminContactsToggle from "../../components/admin/AdminContactsToggle";
 
 const AdminContents = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -48,7 +48,7 @@ const AdminContents = () => {
 
   return (
     <div className="w-full flex flex-col">
-      <div className="min-w-full overflow-x-scroll border-b border-gray-300 sticky top-0 z-50 bg-white">
+      <div className="min-w-full overflow-x-scroll border-b border-gray-300 sticky top-0 z-3 bg-white">
         <Tabs
           value={activeTab}
           onChange={handleChange}
@@ -101,7 +101,7 @@ const AdminContents = () => {
           <SpotifyEpisodes setUnsavedChanges={setUnsavedChanges} />
         )}
         {activeTab === 5 && (
-          <AdminContacts setUnsavedChanges={setUnsavedChanges} />
+          <AdminContactsToggle setUnsavedChanges={setUnsavedChanges} />
         )}
         {activeTab === 6 && (
           <FooterPageToggle setUnsavedChanges={setUnsavedChanges} />

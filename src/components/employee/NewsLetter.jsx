@@ -28,14 +28,14 @@ const EmployeeWorkshops = () => {
 
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
         <div className="flex justify-center text-center items-center ">
-        <img
-          src="https://www.sony.net/Products/di_photo-gallery/images/extralarge/1887.JPG"
-          alt="image"
-          className="max-w-lg w-full h-72 object-cover rounded-2xl mb-4  flex"
-        />
+          <img
+            src="https://static.vecteezy.com/system/resources/thumbnails/026/112/779/small_2x/man-holds-newspaper-reading-news-about-latest-business-events-and-political-changes-or-financial-articles-businessman-with-newspaper-studying-economic-news-in-fresh-press-during-break-vector.jpg"
+            alt="image"
+            className="max-w-lg w-full h-72 object-cover rounded-2xl mb-4  flex"
+          />
         </div>
 
-        <h2 className="text-xl font-semibold mb-2">
+        <h2 className="text-xl font-avenir-black mb-2">
           Subscribe to our NewsLetter!
         </h2>
 
@@ -58,7 +58,6 @@ const EmployeeWorkshops = () => {
         ) : (
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
-              
               <div className="text-md p-1 font-avenir-black">Your Email</div>
               <input
                 type="email"
