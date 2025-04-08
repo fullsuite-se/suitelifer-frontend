@@ -29,14 +29,12 @@ const Careers = () => {
     careersLeft,
     careersRight,
     careersMain,
-  }
+  };
   const [jobs, setJobs] = useState([]);
   const fetchJobs = async () => {
     try {
       const response = await atsAPI.get("/jobs/open");
       setJobs((j) => response.data.data);
-      console.log(response.data);
-      console.log(filter);
     } catch (err) {
       console.log(err);
     }
@@ -46,8 +44,10 @@ const Careers = () => {
   const [isSpotifyLoading, setIsSpotifyLoading] = useState(true);
   const fetchEpisodes = async () => {
     try {
-      const response = await api.get("/api/latest-three-episodes");
-      setEpisodes((e) => response.data.data);
+      const response = await api.get("/api/spotify/latest-three");
+      console.log(response.data.threeLatestEpisodes);
+
+      setEpisodes((e) => response.data.threeLatestEpisodes);
       setIsSpotifyLoading(false);
     } catch (err) {
       console.log(err);
@@ -59,7 +59,6 @@ const Careers = () => {
     try {
       const response = await atsAPI.get("/industries/");
       setIndustries((i) => response.data.data);
-      console.log(response.data.data);
     } catch (err) {
       console.log(err);
     }
@@ -79,7 +78,6 @@ const Careers = () => {
   const fetchFilteredJobs = async () => {
     try {
       const response = await atsAPI.get(`/jobs/open-filter/${filter}`);
-      console.log(filter);
 
       setJobs((j) => response.data.data);
     } catch (err) {
@@ -432,22 +430,22 @@ const Careers = () => {
                         {/* Left Column: Large Embed */}
                         <div className="w-1/2">
                           <SpotifyEmbed
-                            id={spotifyEpisodes[0]?.spotifyId}
+                            spotifyId={spotifyEpisodes[0]?.spotifyId}
+                            embedType={spotifyEpisodes[0]?.embedType}
                             index={0}
                           />
                         </div>
 
                         {/* Right Column: Two Smaller Embeds */}
                         <div className="w-1/2 flex flex-col justify-center gap-7">
-                          {spotifyEpisodes
-                            .slice(1, 3)
-                            .map(({ spotifyId }, index) => (
-                              <SpotifyEmbed
-                                key={index + 1}
-                                id={spotifyId}
-                                index={index + 1}
-                              />
-                            ))}
+                          {spotifyEpisodes.slice(1, 2).map((episode, index) => (
+                            <SpotifyEmbed
+                              key={index + 1}
+                              spotifyId={episode.spotifyId}
+                              embedType={episode.embedType}
+                              index={index + 1}
+                            />
+                          ))}
                         </div>
                       </div>
                     </section>

@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import JobCourse from "../../components/admin/JobCourse";
-import PersonalityTest from "../../components/admin/PersonalityTest";
-import Testimonials from "../../components/admin/Testimonials";
-import SpotifyEpisode from "../../components/admin/SpotifyEpisodes";
-import AdminHomePage from "../../components/admin/AdminHomePage";
-import AdminAboutPage from "../../components/admin/AdminAboutPage";
+
 import {
   Tabs,
   Tab,
@@ -14,11 +9,12 @@ import {
   Button,
 } from "@mui/material";
 import Careers from "../../components/admin/Careers";
-import AdminNews from "./AdminNews";
 import SpotifyEpisodes from "../../components/admin/SpotifyEpisodes";
-import AdminContacts from "../../components/admin/AdminContacts";
-import AdminFooter from "../../components/admin/AdminFooter";
-import AdminSuiteBite from "./AdminSuiteBite";
+import PageToggle from "../../components/admin/AdminPageToggle";
+import FooterPageToggle from "../../components/admin/FooterPageToggle";
+import AdminHomePage from "../../components/admin/AdminHomePage";
+import NewsLetter from "../../components/admin/NewsLetter";
+import AdminContactsToggle from "../../components/admin/AdminContactsToggle";
 
 const AdminContents = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -52,7 +48,7 @@ const AdminContents = () => {
 
   return (
     <div className="w-full flex flex-col">
-      <div className="min-w-full overflow-x-scroll border-b border-gray-300">
+      <div className="min-w-full overflow-x-scroll border-b border-gray-300 sticky top-0 z-3 bg-white">
         <Tabs
           value={activeTab}
           onChange={handleChange}
@@ -84,7 +80,7 @@ const AdminContents = () => {
           <Tab label="About" value={1} />
           <Tab label="Careers" value={2} />
           <Tab label="News Letter" value={3} />
-          <Tab label="Pod Cast" value={4} />
+          <Tab label="Podcast" value={4} />
           <Tab label="Contacts" value={5} />
           <Tab label="Footer" value={6} />
         </Tabs>
@@ -95,20 +91,20 @@ const AdminContents = () => {
           <AdminHomePage setUnsavedChanges={setUnsavedChanges} />
         )}
         {activeTab === 1 && (
-          <AdminAboutPage setUnsavedChanges={setUnsavedChanges} />
+          <PageToggle setUnsavedChanges={setUnsavedChanges} />
         )}
-        {activeTab === 2 && (
-          <Careers setUnsavedChanges={setUnsavedChanges} />
+        {activeTab === 2 && <Careers setUnsavedChanges={setUnsavedChanges} />}
+        {activeTab === 3 && (
+          <NewsLetter setUnsavedChanges={setUnsavedChanges} />
         )}
-        {activeTab === 3 && <AdminSuiteBite setUnsavedChanges={setUnsavedChanges} />}
         {activeTab === 4 && (
           <SpotifyEpisodes setUnsavedChanges={setUnsavedChanges} />
         )}
         {activeTab === 5 && (
-          <AdminContacts setUnsavedChanges={setUnsavedChanges} />
+          <AdminContactsToggle setUnsavedChanges={setUnsavedChanges} />
         )}
         {activeTab === 6 && (
-          <AdminFooter setUnsavedChanges={setUnsavedChanges} />
+          <FooterPageToggle setUnsavedChanges={setUnsavedChanges} />
         )}
       </div>
 

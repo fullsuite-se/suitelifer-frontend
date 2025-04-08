@@ -46,7 +46,7 @@ const AdminHomePage = () => {
           <input
             type="text"
             name="videoURL"
-            value={contentDetails.videoURL}
+            value={contentDetails.aboutVideo}
             onChange={(e) => handleContentDetailsChange(e)}
             className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
           />

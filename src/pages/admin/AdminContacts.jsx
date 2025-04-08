@@ -3,7 +3,7 @@ import React from 'react'
 function AdminContacts() {
   return (
     <div>
-      This is Contact Page
+      Admin Contacts
     </div>
   )
 }

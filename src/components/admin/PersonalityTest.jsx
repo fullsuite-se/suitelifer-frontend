@@ -17,7 +17,7 @@ import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import api from "../../utils/axios";
 import { useStore } from "../../store/authStore";
 import toast from "react-hot-toast";
-import { showConfirmationToast } from "../toasts/confirm";
+import { ModalDeleteConfirmation } from "../modals/ModalDeleteConfirmation";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -31,7 +31,7 @@ function PersonalityTest() {
   const defaultPersonalityTestDetails = {
     testId: null,
     testTitle: "",
-    url: "",
+    testUrl: "",
   };
 
   const [personalityTestDetails, setPTDetails] = useState(
@@ -60,7 +60,8 @@ function PersonalityTest() {
     e.preventDefault();
     try {
       if (personalityTestDetails.testId === null) {
-        const response = await api.post("/api/add-personality-test", {
+        // ADD PERSONALITY TEST
+        const response = await api.post("/api/personality-test", {
           ...personalityTestDetails,
           userId: user.id,
         });
@@ -68,7 +69,8 @@ function PersonalityTest() {
         toast.success(response.data.message);
         setPersonalityTests((pt) => [...pt, personalityTestDetails]);
       } else {
-        const response = await api.post("/api/edit-personality-test", {
+        // EDIT PERSONALITY TEST
+        const response = await api.put("/api/personality-test", {
           ...personalityTestDetails,
           userId: user.id,
         });
@@ -95,23 +97,22 @@ function PersonalityTest() {
     setPTDetails({
       testId: test.testId,
       testTitle: test.testTitle,
-      url: test.url,
+      testUrl: test.testUrl,
     });
     setOpenDialog(true);
   };
 
   const handleDeleteClick = (testId) => {
-    showConfirmationToast({
-      message: "Delete personality test?",
-      onConfirm: () => handleDelete(testId),
-      onCancel: null,
-    });
+    setPTDetails((ptd) => ({ ...ptd, testId }));
+    setDeleteModalIsOpen(true);
   };
 
-  const handleDelete = async (testId) => {
+  const handleDelete = async () => {
     try {
-      const response = await api.post("/api/delete-personality-test", {
-        test_id: testId,
+      const response = await api.delete("/api/personality-test", {
+        data: {
+          testId: personalityTestDetails.testId,
+        },
       });
 
       toast.success(response.data.message);
@@ -119,6 +120,7 @@ function PersonalityTest() {
       toast.error("Encountered an error deleting personality test");
     }
     setDataUpdated(!dataUpdated);
+    setPTDetails(defaultPersonalityTestDetails);
   };
 
   const handleModalClose = () => {
@@ -128,9 +130,9 @@ function PersonalityTest() {
 
   const fetchPersonalityTests = async () => {
     try {
-      const response = await api.get("/api/get-all-personality-tests");
+      const response = await api.get("/api/personality-test");
 
-      setRowData(response.data.data);
+      setRowData(response.data.personalityTests);
     } catch (err) {
       console.log(err);
     }
@@ -139,6 +141,9 @@ function PersonalityTest() {
   useEffect(() => {
     fetchPersonalityTests();
   }, [dataUpdated]);
+
+  // DELETE MODAL VARIABLES
+  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
 
   return (
     <>
@@ -174,7 +179,7 @@ function PersonalityTest() {
                 },
                 {
                   headerName: "URL",
-                  field: "url",
+                  field: "testUrl",
                   flex: 2,
                   headerClass: "text-primary font-bold bg-gray-100",
                 },
@@ -263,9 +268,9 @@ function PersonalityTest() {
                 </label>
 
                 <input
-                  name="url"
+                  name="testUrl"
                   required
-                  value={personalityTestDetails.url}
+                  value={personalityTestDetails.testUrl}
                   onChange={(e) => handlePersonalityTestDetailsChange(e)}
                   rows={3}
                   className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
@@ -283,6 +288,12 @@ function PersonalityTest() {
           </form>
         </Dialog>
       </div>
+      <ModalDeleteConfirmation
+        isOpen={deleteModalIsOpen}
+        handleClose={() => setDeleteModalIsOpen(false)}
+        onConfirm={handleDelete}
+        message="Are you sure you want to delete this item? This action cannot be undone."
+      />
     </>
   );
 }

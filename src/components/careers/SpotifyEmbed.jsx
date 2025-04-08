@@ -1,26 +1,15 @@
 import React from "react";
 
-const SpotifyEmbed = ({ id, embedType, index }) => {
-  return embedType === "EPISODE" ? (
+const SpotifyEmbed = ({ spotifyId, embedType, index }) => {
+  return (
     <iframe
-      src={`https://open.spotify.com/embed/episode/${id}?utm_source=generator`}
-      width="200%"
-      color=""
+      src={`https://open.spotify.com/embed/${embedType?.toLowerCase()}/${spotifyId}?utm_source=generator`}
+      width="100%"
       height={index === 0 ? "352" : "152"}
+      style={{ borderRadius: "12px" }}
       allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
       loading="lazy"
       key={index}
-    ></iframe>
-  ) : (
-    <iframe
-      style="border-radius:12px"
-      src={`https://open.spotify.com/embed/playlist/${id}?utm_source=generator`}
-      width="100%"
-      height="352"
-      frameBorder="0"
-      allowfullscreen=""
-      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-      loading="lazy"
     ></iframe>
   );
 };

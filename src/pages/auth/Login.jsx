@@ -32,6 +32,13 @@ const LoginForm = ({ email, password, setEmail, setPassword }) => {
     }
 
     const recaptchaToken = await executeRecaptcha("login");
+    const recaptcha = await api.post("/api/verify-recaptcha", {
+      recaptchaToken: recaptchaToken,
+    });
+    if (recaptcha.status !== 200) {
+      toast.error(recaptcha.data.message);
+      return;
+    }
 
     if (!email || !password) {
       toast.error("Please enter both email and password.");
@@ -43,7 +50,6 @@ const LoginForm = ({ email, password, setEmail, setPassword }) => {
       const response = await api.post("/api/login", {
         email,
         password,
-        recaptchaToken,
       });
 
       if (response.data.accessToken) {

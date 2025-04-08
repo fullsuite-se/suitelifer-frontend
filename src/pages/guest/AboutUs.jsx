@@ -26,23 +26,18 @@ const AboutUs = () => {
   const [content, setContent] = useState({});
   const [videoTitle, setVideoTitle] = useState("Thought it was over, but...");
 
-  const [clickCount, setClickCount] = useState(0);
+  const fetchContent = async () => {
+    try {
+      const response = await api.get("/api/content/about");
 
-  const handleClick = () => {
-    setClickCount((prev) => (prev < 6 ? prev + 1 : 0)); // Reset after animation
+      setContent(response.data.aboutContent);
+    } catch (error) {
+      // TODO: HANDLE FETCH ERROR
+      console.log(error);
+    }
   };
 
   useEffect(() => {
-    const fetchContent = async () => {
-      try {
-        const response = await api.get("/api/get-content");
-        console.log(response.data.data);
-
-        setContent(response.data.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
     fetchContent();
   }, []);
 
@@ -194,10 +189,6 @@ const AboutUs = () => {
               {/* 3 */}
               <CoreValueCard
                 icon={
-                  // <CoreValue01
-                  //   color="group-hover:fill-white w-20 fill-primary size-40"
-                  //   size={"45%"}
-                  // />
                   <FocusedAthleteIcon
                     color="group-hover:fill-white w-20 fill-primary size-40"
                     size={"45%"}
@@ -390,9 +381,7 @@ const AboutUs = () => {
             </a>
           </div>
           <div className="py-10"></div>
-       
         </section>
-       
       </main>
       <BackToTop />
 
