@@ -43,6 +43,7 @@ import Register from "./pages/auth/Register";
 // Others
 import { Toaster } from "react-hot-toast";
 import ScrollToTop from "./components/ScrollToTop";
+import VerifyAccount from "./pages/auth/VerifyAccount";
 import JobCourse from "./components/admin/JobCourse";
 import PersonalityTest from "./components/admin/PersonalityTest";
 
@@ -57,7 +58,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-
+          <Route path="/verify-account" element={<VerifyAccount />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/careers-all" element={<CareersAll />} />
