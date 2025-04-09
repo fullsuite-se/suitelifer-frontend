@@ -92,13 +92,16 @@ function JobCourse() {
         toast.success(response.data.message);
       } else {
         // EDIT COURSE
-        await api.put("/api/course", {
+        const response = await api.put("/api/course", {
           ...courseDetails,
           userId: user.id,
         });
+
+        toast.success(response.data.message);
       }
 
       setDataUpdated(!dataUpdated);
+      setCourseDetails(defaultCourseDetails);
       setAddEditModalIsOpen(false);
     } catch (error) {
       console.log("Error adding course");
@@ -233,7 +236,7 @@ function JobCourse() {
         >
           <form onSubmit={(e) => handleAddEditCourse(e)}>
             <DialogTitle className="flex w-full justify-center items-center">
-              {courseDetails.course_id ? "Edit Course" : "Add Course"}
+              {courseDetails.courseId ? "Edit Course" : "Add Course"}
             </DialogTitle>
             <DialogContent>
               <div className="w-full">
@@ -280,7 +283,10 @@ function JobCourse() {
               <button
                 type="button"
                 className="btn-light"
-                onClick={() => setAddEditModalIsOpen(false)}
+                onClick={() => {
+                  setAddEditModalIsOpen(false);
+                  setCourseDetails(defaultCourseDetails);
+                }}
               >
                 Cancel
               </button>
