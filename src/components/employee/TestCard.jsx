@@ -15,7 +15,6 @@ const TestCardComponent = ({ title, description, url }) => {
           target="_blank"
           rel="noopener noreferrer"
           href={url}
-          // href="https://www.google.com"
           className="w-full py-2 px-4 rounded-full text-center text-black border border-black/25 hover:bg-accent-2 hover:text-white no-underline cursor-pointer"
         >
           Go to Test
