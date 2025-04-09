@@ -1,6 +1,4 @@
-"use client";
-
-import { useState, useRef } from "react";
+import { useState, useRef, createContext, useContext } from "react";
 import {
   Dialog,
   DialogActions,
@@ -26,10 +24,25 @@ function NewsArticle() {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [imageFilename, setImageFilename] = useState("");
-
   const [newsletterData, setNewsletterData] = useState([
     {
       newsId: "1",
+      title: "New Features Released",
+      article: "We just rolled out new updates to our platform.",
+      imageUrl: "https://via.placeholder.com/150",
+      createdAt: "2023-08-10",
+      createdBy: "Melbraei Santiago",
+    },
+    {
+      newsId: "2",
+      title: "New Features Released",
+      article: "We just rolled out new updates to our platform.",
+      imageUrl: "https://via.placeholder.com/150",
+      createdAt: "2023-08-10",
+      createdBy: "Melbraei Santiago",
+    },
+    {
+      newsId: "3",
       title: "New Features Released",
       article: "We just rolled out new updates to our platform.",
       imageUrl: "https://via.placeholder.com/150",
