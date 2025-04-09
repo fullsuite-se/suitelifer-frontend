@@ -1,0 +1,40 @@
+.header-text {
+  font-size: clamp(28px, 8.3vw, 5.5rem);
+}
+
+.caption {
+  font-size: clamp(2px, 2.3vw, 0.9rem);
+}
+
+.quote-text {
+  font-size: clamp(16px, 2.3vw, 2rem);
+}
+
+@media (max-width: 767px) {
+  .hide-me-on-mobile {
+    display: none;
+  }
+}
+
+.article-ds-1 article {
+  column-count: 2;
+  @media (max-width: 767px) {
+    display: none;
+  }
+  column-gap: 40px;
+  width: 100%;
+  line-height: 1.7;
+  max-height: calc(
+    1.6em * 9
+  ); /* 9 lines of text (line-height * number of lines) */
+  overflow: hidden; /* Hide overflow text */
+}
+
+.mobile-clamper {
+  @media (max-width: 767px) {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 15;
+  }
+}

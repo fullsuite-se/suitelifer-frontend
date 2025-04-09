@@ -151,6 +151,20 @@ export default function TabletNav() {
 
                     <div>
                       <NavLink
+                        to="/newsletter"
+                        className={({ isActive }) =>
+                          `!no-underline text-black text-lg font-medium hover:text-[#007a8e] ${
+                            isPathActive ? "active-class text-[#007a8e]" : ""
+                          }`
+                        }
+                        onClick={handleClose}
+                      >
+                        Newsletter
+                      </NavLink>
+                    </div>
+
+                    <div>
+                      <NavLink
                         to="/news"
                         className={({ isActive }) =>
                           `!no-underline text-black text-lg font-medium hover:text-[#007a8e] ${

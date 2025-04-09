@@ -295,15 +295,7 @@ const Careers = () => {
                 hop on <span className="text-primary">now</span>.
               </p>
             </div>
-          </section>
-
-          {/* HEIGHT DUMMY */}
-          {/* <div className="h-100 grid place-content-center bg-amber-100 text-center p-5">
-            <i>
-              This height is but an illusion, a mere construct of perception,
-              bound by the limits we choose to accept.
-            </i>
-          </div> */}
+          </section>          
 
           {/* Three dots one line */}
           <div

@@ -96,6 +96,19 @@ export default function MobileNav() {
                   Careers
                 </NavLink>
               </div>
+
+              <div>
+                <NavLink
+                  to="/newsletter"
+                  className={`!no-underline text-black text-lg font-medium transition-all duration-300
+                  hover:text-[#007a8e] ${
+                    isPathActive ? "active-class text-[#007a8e]" : ""
+                  }`}
+                  onClick={handleClose}
+                >
+                  Newsletter
+                </NavLink>
+              </div>
               <div>
                 <NavLink
                   to="/news"
