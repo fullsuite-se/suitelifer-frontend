@@ -315,7 +315,7 @@ function PersonalityTest() {
         isOpen={deleteModalIsOpen}
         handleClose={() => setDeleteModalIsOpen(false)}
         onConfirm={handleDelete}
-        message="Are you sure you want to delete this item? This action cannot be undone."
+        message="Are you sure you want to delete this personality test? This action cannot be undone."
       />
     </>
   );
