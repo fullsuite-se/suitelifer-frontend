@@ -13,6 +13,7 @@ import "./css/responsive/home.css";
 import "./css/responsive/about.css";
 import "./css/responsive/careers.css";
 import "./css/responsive/news.css";
+import "./css/responsive/newsletter.css";
 
 // animations folder contains the animations styles
 import "./css/animation/animation.css";

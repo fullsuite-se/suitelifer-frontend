@@ -315,7 +315,8 @@ const Home = () => {
                 width="40"
               />
             </MotionUp>
-          </a> <a
+          </a>{" "}
+          <a
             href={socmedPlatforms[4].href}
             title={socmedPlatforms[4].href}
             target="_blank"
@@ -332,7 +333,6 @@ const Home = () => {
           </a>
         </div>
       </section>
-             
 
       <BackToTop />
 
