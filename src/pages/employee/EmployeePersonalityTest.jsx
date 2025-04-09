@@ -29,8 +29,7 @@ const EmployeePersonalityTest = () => {
                 key={test.testId}
                 title={test.testTitle}
                 description={test.testDescription}
-                duration={test.duration}
-                text="Go to Test"
+                url={test.testUrl}
               />
             ))}
       </div>
