@@ -16,12 +16,44 @@ const tests = [
     duration: 15,
     isPrimary: false,
   },
+  {
+    id: 2,
+    title: "Motivation",
+    description:
+      "Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen.",
+    duration: 15,
+    isPrimary: false,
+  },
+  {
+    id: 2,
+    title: "Motivation",
+    description:
+      "Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen.",
+    duration: 15,
+    isPrimary: false,
+  },
+  {
+    id: 2,
+    title: "Motivation",
+    description:
+      "Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen.",
+    duration: 15,
+    isPrimary: false,
+  },
+  {
+    id: 2,
+    title: "Motivation",
+    description:
+      "Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen.",
+    duration: 15,
+    isPrimary: false,
+  },
 ];
 
 export default function PersonalityTest() {
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="flex items-center mb-8">
+    <div className="max-w-7xl mx-auto px-4">
+      {/* <div className="flex items-center mb-8">
         <span className="text-sm text-gray-600">Powered by</span>
         <div className="flex items-center">
           <img
@@ -31,17 +63,16 @@ export default function PersonalityTest() {
           />
          
         </div>
-      </div>
+      </div> */}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-30">
         {tests.map((test) => (
           <TestCardComponent
             key={test.id}
             title={test.title}
             description={test.description}
             duration={test.duration}
-            isPrimary={test.isPrimary}
-            text="View Details"
+            text="Go to Test"
           />
         ))}
       </div>

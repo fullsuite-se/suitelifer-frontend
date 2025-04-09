@@ -32,6 +32,7 @@ function PersonalityTest() {
     testId: null,
     testTitle: "",
     testUrl: "",
+    testDescription:"",
   };
 
   const [personalityTestDetails, setPTDetails] = useState(
@@ -98,6 +99,7 @@ function PersonalityTest() {
       testId: test.testId,
       testTitle: test.testTitle,
       testUrl: test.testUrl,
+      testDescription: test.testDescription,
     });
     setOpenDialog(true);
   };
@@ -174,6 +176,12 @@ function PersonalityTest() {
                 {
                   headerName: "Title",
                   field: "testTitle",
+                  flex: 2,
+                  headerClass: "text-primary font-bold bg-gray-100",
+                },
+                {
+                  headerName: "Description",
+                  field: "testDescription",
                   flex: 2,
                   headerClass: "text-primary font-bold bg-gray-100",
                 },
@@ -256,6 +264,21 @@ function PersonalityTest() {
                   name="testTitle"
                   required
                   value={personalityTestDetails.testTitle}
+                  onChange={(e) => handlePersonalityTestDetailsChange(e)}
+                  rows={3}
+                  className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                />
+              </div>
+
+              <div className="w-full mb-3">
+                <label className="block text-gray-700 font-avenir-black">
+                  Description<span className="text-primary">*</span>
+                </label>
+
+                <input
+                  name="testDescription"
+                  required
+                  value={personalityTestDetails.testDescription}
                   onChange={(e) => handlePersonalityTestDetailsChange(e)}
                   rows={3}
                   className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"

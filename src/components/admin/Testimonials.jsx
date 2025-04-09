@@ -32,7 +32,7 @@ function Testimonials() {
       try {
         const response = await api.get("/api/get-all-testimonials");
         const data = response.data?.testimonials || [];
-      
+
         setRowTestimonialData(data);
       } catch (error) {
         console.error(error);
@@ -43,16 +43,15 @@ function Testimonials() {
 
   const [openDialog, setOpenDialog] = useState(false);
   const [currentTestimonial, setCurrentTestimonial] = useState({
-    testimonial_id: null, 
+    testimonial_id: null,
     employee_image_url: "",
     employee_name: "",
     position: "",
     testimony: "",
-    is_shown: 1, 
+    is_shown: 1,
     useImageUrl: false,
     employeeImageFile: null,
   });
-
 
   const gridOptions = {
     getRowStyle: (params) => {
@@ -77,93 +76,58 @@ function Testimonials() {
     );
 
     if (!isValid) {
-      setCurrentTestimonial({ ...currentTestimonial, position: "" }); 
+      setCurrentTestimonial({ ...currentTestimonial, position: "" });
     }
   };
 
   const gridRef = useRef();
 
-  // const handleSave = async () => {
-  //   if (!currentTestimonial.employee_name || !currentTestimonial.testimony || !currentTestimonial.position) {
-  //     toast.error("Please fill in all required fields.");
-  //     return;
-  //   }
-  
-  //   if (!currentTestimonial.useImageUrl && !currentTestimonial.employeeImageFile) {
-  //     toast.error("Please upload an image.");
-  //     return;
-  //   }
-  
-  //   if (currentTestimonial.useImageUrl && !currentTestimonial.employee_image_url) {
-  //     toast.error("Please provide a valid image URL.");
-  //     return;
-  //   }
-  
-  //   try {
-  //     const newEntry = {
-  //       employee_name: currentTestimonial.employee_name,
-  //       employee_image_url: currentTestimonial.useImageUrl
-  //         ? currentTestimonial.employee_image_url
-  //         : currentTestimonial.employeeImageFile || "https://via.placeholder.com/150",
-  //       position: currentTestimonial.position,
-  //       testimony: currentTestimonial.testimony,
-  //       is_shown: currentTestimonial.is_shown || 0,
-  //     };
-
-  //     const response = await api.post("/api/add-testimonial", {
-  //       ...newEntry,
-  //       user_id: user.id,
-  //     });
-  
-  //     if (response.data?.isSuccess) {
-  //       toast.success(response.data.message || "Testimonial added successfully!");
-  //       setRowTestimonialData((prevData) => [...prevData, { ...newEntry, id: response.data.id }]);
-  //       setOpenDialog(false);
-  //     } else {
-  //       toast.error(response.data.message || "Failed to add testimonial.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error saving testimonial:", error);
-  //     toast.error("Something went wrong. Please try again.");
-  //   }
-  
-  //   setCurrentTestimonial("");
-  //   setOpenDialog(false);
-  // };
-
-
   const handleAddEditTestimonial = async (e) => {
     e.preventDefault();
-  
-    if (!currentTestimonial.employee_name || !currentTestimonial.testimony || !currentTestimonial.position) {
+
+    if (
+      !currentTestimonial.employee_name ||
+      !currentTestimonial.testimony ||
+      !currentTestimonial.position
+    ) {
       toast.error("Please fill in all required fields.");
       return;
     }
-  
-    if (!currentTestimonial.useImageUrl && !currentTestimonial.employeeImageFile) {
+
+    if (
+      !currentTestimonial.useImageUrl &&
+      !currentTestimonial.employeeImageFile
+    ) {
       toast.error("Please upload an image.");
       return;
     }
-  
-    if (currentTestimonial.useImageUrl && !currentTestimonial.employee_image_url) {
+
+    if (
+      currentTestimonial.useImageUrl &&
+      !currentTestimonial.employee_image_url
+    ) {
       toast.error("Please provide a valid image URL.");
       return;
     }
-  
+
     try {
       const testimonialData = {
         employee_name: currentTestimonial.employee_name,
         employee_image_url: currentTestimonial.useImageUrl
           ? currentTestimonial.employee_image_url
-          : currentTestimonial.employeeImageFile || "https://static.vecteezy.com/system/resources/previews/021/548/095/non_2x/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg",
+          : currentTestimonial.employeeImageFile ||
+            "https://static.vecteezy.com/system/resources/previews/021/548/095/non_2x/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg",
         position: currentTestimonial.position,
         testimony: currentTestimonial.testimony,
-        is_shown: currentTestimonial.is_shown === undefined ? 0 : currentTestimonial.is_shown, // Default to 0 (Hidden) if undefined
+        is_shown:
+          currentTestimonial.is_shown === undefined
+            ? 0
+            : currentTestimonial.is_shown, // Default to 0 (Hidden) if undefined
         user_id: user.id,
       };
-  
+
       let response;
-  
+
       // Check if there's an existing testimonial_id (i.e., update) or not (i.e., add new)
       if (currentTestimonial.testimonial_id) {
         response = await api.post("/api/edit-testimonial", {
@@ -173,10 +137,12 @@ function Testimonials() {
       } else {
         response = await api.post("/api/add-testimonial", testimonialData); // No testimonial_id for add
       }
-  
+
       // Handle response after submitting
       if (response.data?.success) {
-        toast.success(response.data.message || "Testimonial saved successfully!");
+        toast.success(
+          response.data.message || "Testimonial saved successfully!"
+        );
         if (currentTestimonial.testimonial_id) {
           // If updating, update the local state accordingly
           const updatedTestimonials = rowTestimonialData.map((testimonial) =>
@@ -187,7 +153,10 @@ function Testimonials() {
           setRowTestimonialData(updatedTestimonials);
         } else {
           // If adding new, add to state
-          setRowTestimonialData((prevData) => [...prevData, { ...testimonialData, id: response.data.id }]);
+          setRowTestimonialData((prevData) => [
+            ...prevData,
+            { ...testimonialData, id: response.data.id },
+          ]);
         }
       } else {
         toast.error(response.data.message || "Failed to save testimonial.");
@@ -196,38 +165,35 @@ function Testimonials() {
       console.error("Error saving testimonial:", error);
       toast.error("Something went wrong. Please try again.");
     }
-  
+
     // Clear form and close dialog
     setCurrentTestimonial({});
     setOpenDialog(false);
   };
-  
-
-
 
   const handleAdd = () => {
     setCurrentTestimonial({});
-    setIsEditing(false)
+    setIsEditing(false);
     setOpenDialog(true);
   };
 
   const handleEdit = (testimonial) => {
     setCurrentTestimonial(testimonial);
-    setIsEditing(true)
+    setIsEditing(true);
     setOpenDialog(true);
   };
 
   const handleDelete = async (testimonial_id) => {
     try {
-      console.log("Deleting testimonial with ID:", testimonial_id); 
-  
+      console.log("Deleting testimonial with ID:", testimonial_id);
+
       const response = await api.post("/api/delete-testimonial", {
-        testimonial_id: testimonial_id, 
+        testimonial_id: testimonial_id,
       });
-  
+
       if (response.data.success) {
-        toast.success(response.data.message); 
-  
+        toast.success(response.data.message);
+
         setRowTestimonialData((prevData) =>
           prevData.filter((t) => t.testimonial_id !== testimonial_id)
         );
@@ -239,9 +205,6 @@ function Testimonials() {
       toast.error("An error occurred while deleting the testimonial");
     }
   };
-  
-  
-  
 
   const [isEditing, setIsEditing] = useState(false); // State to manage edit mode
 
@@ -302,6 +265,7 @@ function Testimonials() {
                   flex: 1,
                   headerClass: "text-primary font-bold bg-gray-100",
                 },
+                
                 {
                   headerName: "Testimony",
                   field: "testimony",
@@ -329,7 +293,17 @@ function Testimonials() {
                   headerClass: "text-primary font-bold bg-gray-100",
                   valueGetter: (params) =>
                     params.data?.created_at
-                      ? new Date(params.data.created_at).toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })
+                      ? new Date(params.data.created_at).toLocaleString(
+                          "en-GB",
+                          {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                          }
+                        )
                       : "N/A",
                 },
                 {
@@ -348,11 +322,11 @@ function Testimonials() {
                       <IconButton onClick={() => handleEdit(params.data)}>
                         <EditIcon />
                       </IconButton>
-                      <IconButton onClick={() => handleDelete(params.data.testimonial_id)}>
-  <DeleteIcon />
-</IconButton>
-
-
+                      <IconButton
+                        onClick={() => handleDelete(params.data.testimonial_id)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
                     </div>
                   ),
                 },
@@ -380,191 +354,195 @@ function Testimonials() {
         </div>
 
         <Dialog
-  open={openDialog}
-  onClose={() => setOpenDialog(false)}
-  sx={{
-    "& .MuiDialog-paper": {
-      width: "600px", 
-      height: "auto", 
-      maxHeight: "90vh", 
-    },
-  }}
->
-  <DialogTitle className="w-full text-center justify-center">
-    {currentTestimonial.testimonial_id ? "Edit Testimonial" : "Add Testimonial"}
-  </DialogTitle>
-  <DialogContent>
-  <form onSubmit={(e)=>
-    handleAddEditTestimonial(e)}
-      encType="multipart/form-data"
-      className="space-y-4"
-    >
-      <div className="w-full mb-3">
-        <label className="block text-gray-700 font-avenir-black">
-          Employee Name<span className="text-primary">*</span>
-        </label>
-        <input
-          name="name"
-          required
-          value={currentTestimonial.employee_name || ""}
-          onChange={(e) =>
-            setCurrentTestimonial({
-              ...currentTestimonial,
-              employee_name: e.target.value,
-            })
-          }
-          className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
-        />
-      </div>
-
-      <div className="w-full mb-3">
-        <label className="block text-gray-700 font-avenir-black">
-          Testimony<span className="text-primary">*</span>
-        </label>
-        <textarea
-          name="testimony"
-          required
-          value={currentTestimonial.testimony || ""}
-          onChange={(e) =>
-            setCurrentTestimonial({
-              ...currentTestimonial,
-              testimony: e.target.value,
-            })
-          }
-          rows={3}
-          className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
-        />
-      </div>
-
-      <div className="w-full mb-3">
-        <label className="block text-gray-700 font-avenir-black">
-          Position<span className="text-primary">*</span>
-        </label>
-        <input
-          name="position"
-          required
-          // list="position-options"
-          value={currentTestimonial.position || ""}
-          onChange={(e) =>
-            setCurrentTestimonial({
-              ...currentTestimonial,
-              position: e.target.value,
-            })
-          }
-          className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
-        />
-   
-      </div>
-
-      <div>
-        <label className="block text-gray-700 font-avenir-black">
-          Visibility<span className="text-primary">*</span>
-        </label>
-        <select
-  name="visibility"
-  required
-  value={currentTestimonial.is_shown !== undefined ? currentTestimonial.is_shown : ""}
-  onChange={(e) =>
-    setCurrentTestimonial({
-      ...currentTestimonial,
-      is_shown: Number(e.target.value),
-    })
-  }
-  className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
->
-  <option value="" disabled>
-    -- Select an option --
-  </option>
-  <option value={1}>Shown</option>
-  <option value={0}>Hidden</option>
-</select>
-
-      </div>
-
-      <div className="w-full mb-3">
-        <label className="block text-gray-700 font-avenir-black">
-          Employee Image<span className="text-primary">*</span>
-        </label>
-        <div className="flex items-center gap-4 mt-2">
-          <label className="flex items-center gap-2">
-            <input
-              type="radio"
-              name="imageOption"
-              value="upload"
-              checked={!currentTestimonial.useImageUrl}
-              onChange={() =>
-                setCurrentTestimonial({
-                  ...currentTestimonial,
-                  useImageUrl: false,
-                  employee_image_url: "",
-                })
-              }
-            />
-            Upload File
-          </label>
-          <label className="flex items-center gap-2">
-            <input
-              type="radio"
-              name="imageOption"
-              value="url"
-              checked={currentTestimonial.useImageUrl}
-              onChange={() =>
-                setCurrentTestimonial({
-                  ...currentTestimonial,
-                  useImageUrl: true,
-                  employeeImageFile: null,
-                })
-              }
-            />
-            Use URL
-          </label>
-        </div>
-
-        {!currentTestimonial.useImageUrl ? (
-          <div className="mt-3">
-            <FileUploaderProvider
-              onUpload={(fileUrl) =>
-                setCurrentTestimonial({
-                  ...currentTestimonial,
-                  employeeImageFile: fileUrl,
-                })
-              }
-            />
-          </div>
-        ) : (
-          <div className="mt-3">
-            <input
-              type="url"
-              name="employee_image_url"
-              placeholder="Enter image URL"
-              value={currentTestimonial.employee_image_url || ""}
-              onChange={(e) =>
-                setCurrentTestimonial({
-                  ...currentTestimonial,
-                  employee_image_url: e.target.value,
-                })
-              }
-              className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-          </div>
-        )}
-      </div>
-
-      <DialogActions>
-        <button
-          type="button"
-          className="btn-light"
-          onClick={() => setOpenDialog(false)}
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          sx={{
+            "& .MuiDialog-paper": {
+              width: "600px",
+              height: "auto",
+              maxHeight: "90vh",
+            },
+          }}
         >
-          Cancel
-        </button>
-        <button type="submit" className="btn-primary">
-          Save
-        </button>
-      </DialogActions>
-    </form>
-  </DialogContent>
-</Dialog>
+          <DialogTitle className="w-full text-center justify-center">
+            {currentTestimonial.testimonial_id
+              ? "Edit Testimonial"
+              : "Add Testimonial"}
+          </DialogTitle>
+          <DialogContent>
+            <form
+              onSubmit={(e) => handleAddEditTestimonial(e)}
+              encType="multipart/form-data"
+              className="space-y-4"
+            >
+              <div className="w-full mb-3">
+                <label className="block text-gray-700 font-avenir-black">
+                  Employee Name<span className="text-primary">*</span>
+                </label>
+                <input
+                  name="name"
+                  required
+                  value={currentTestimonial.employee_name || ""}
+                  onChange={(e) =>
+                    setCurrentTestimonial({
+                      ...currentTestimonial,
+                      employee_name: e.target.value,
+                    })
+                  }
+                  className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                />
+              </div>
+
+              <div className="w-full mb-3">
+                <label className="block text-gray-700 font-avenir-black">
+                  Testimony<span className="text-primary">*</span>
+                </label>
+                <textarea
+                  name="testimony"
+                  required
+                  value={currentTestimonial.testimony || ""}
+                  onChange={(e) =>
+                    setCurrentTestimonial({
+                      ...currentTestimonial,
+                      testimony: e.target.value,
+                    })
+                  }
+                  rows={3}
+                  className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                />
+              </div>
+
+              <div className="w-full mb-3">
+                <label className="block text-gray-700 font-avenir-black">
+                  Position<span className="text-primary">*</span>
+                </label>
+                <input
+                  name="position"
+                  required
+                  // list="position-options"
+                  value={currentTestimonial.position || ""}
+                  onChange={(e) =>
+                    setCurrentTestimonial({
+                      ...currentTestimonial,
+                      position: e.target.value,
+                    })
+                  }
+                  className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-700 font-avenir-black">
+                  Visibility<span className="text-primary">*</span>
+                </label>
+                <select
+                  name="visibility"
+                  required
+                  value={
+                    currentTestimonial.is_shown !== undefined
+                      ? currentTestimonial.is_shown
+                      : ""
+                  }
+                  onChange={(e) =>
+                    setCurrentTestimonial({
+                      ...currentTestimonial,
+                      is_shown: Number(e.target.value),
+                    })
+                  }
+                  className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                >
+                  <option value="" disabled>
+                    -- Select an option --
+                  </option>
+                  <option value={1}>Shown</option>
+                  <option value={0}>Hidden</option>
+                </select>
+              </div>
+
+              <div className="w-full mb-3">
+                <label className="block text-gray-700 font-avenir-black">
+                  Employee Image<span className="text-primary">*</span>
+                </label>
+                <div className="flex items-center gap-4 mt-2">
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="imageOption"
+                      value="upload"
+                      checked={!currentTestimonial.useImageUrl}
+                      onChange={() =>
+                        setCurrentTestimonial({
+                          ...currentTestimonial,
+                          useImageUrl: false,
+                          employee_image_url: "",
+                        })
+                      }
+                    />
+                    Upload File
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="imageOption"
+                      value="url"
+                      checked={currentTestimonial.useImageUrl}
+                      onChange={() =>
+                        setCurrentTestimonial({
+                          ...currentTestimonial,
+                          useImageUrl: true,
+                          employeeImageFile: null,
+                        })
+                      }
+                    />
+                    Use URL
+                  </label>
+                </div>
+
+                {!currentTestimonial.useImageUrl ? (
+                  <div className="mt-3">
+                    <FileUploaderProvider
+                      onUpload={(fileUrl) =>
+                        setCurrentTestimonial({
+                          ...currentTestimonial,
+                          employeeImageFile: fileUrl,
+                        })
+                      }
+                    />
+                  </div>
+                ) : (
+                  <div className="mt-3">
+                    <input
+                      type="url"
+                      name="employee_image_url"
+                      placeholder="Enter image URL"
+                      value={currentTestimonial.employee_image_url || ""}
+                      onChange={(e) =>
+                        setCurrentTestimonial({
+                          ...currentTestimonial,
+                          employee_image_url: e.target.value,
+                        })
+                      }
+                      className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <DialogActions>
+                <button
+                  type="button"
+                  className="btn-light"
+                  onClick={() => setOpenDialog(false)}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="btn-primary">
+                  Save
+                </button>
+              </DialogActions>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
     </>
   );
