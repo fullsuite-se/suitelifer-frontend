@@ -1,14 +1,10 @@
-"use client";
-
 import { useState, useRef, useEffect } from "react";
 import {
   IconButton,
- 
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -28,121 +24,99 @@ ModuleRegistry.registerModules([ClientSideRowModelModule]);
 function JobCourse() {
   const user = useStore((state) => state.user);
 
-  const [jobs, setJobs] = useState([]);
-
   // DATA UPDATES
   const [dataUpdated, setDataUpdated] = useState(false);
 
-  useEffect(() => {
-    fetchJobs();
-  }, []);
-
-  const fetchJobs = async () => {
-    try {
-      const response = await api.get("api/all-jobs");
-      console.log(response.data.data);
-      setJobs(response.data.data);
-    } catch (e) {
-      console.log("ERROR FETCHING JOBS");
-
-      console.log(e);
-    }
-  };
-
-  const [rowCourseData, setRowCourseData] = useState([
-    {
-      course_id: "1",
-      title: "React Free Course",
-      description: "This is a sample description",
-      url: "http://sampleurl.com/react",
-      created_at: "date",
-      created_by: "1476564bhj23178378",
-      first_name: "John Wick",
-    },
-  ]);
+  const [rowCourseData, setRowCourseData] = useState([]);
 
   const gridRef = useRef();
 
-  const [openDialog, setOpenDialog] = useState(false);
-  const [currentCourse, setCurrentCourse] = useState({
-    course_id: null,
+  // ADD EDIT MODAL
+  const [addEditModalIsOpen, setAddEditModalIsOpen] = useState(false);
+
+  // DELETE MODAL
+  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+
+  const defaultCourseDetails = {
+    courseId: null,
     title: "",
     description: "",
     url: "",
-  });
-
-  const handleEdit = (course) => {
-    setCurrentCourse({
-      ...course,
-    });
-    console.log(course);
-
-    setOpenDialog(true);
   };
 
-  const handleDelete = async (course_id) => {
-    console.log(`Delete: ${course_id}`);
+  const [courseDetails, setCourseDetails] = useState(defaultCourseDetails);
 
+  const handleEdit = (course) => {
+    setCourseDetails({
+      ...course,
+    });
+    setAddEditModalIsOpen(true);
+  };
+
+  const handleDeleteClick = (courseId) => {
+    setCourseDetails((cd) => ({ ...cd, courseId }));
+    setDeleteModalIsOpen(true);
+  };
+
+  const handleDelete = async () => {
     try {
-      const response = await api.post("api/delete-course", { course_id });
+      const response = await api.delete("api/course", {
+        data: { courseId: courseDetails.courseId },
+      });
+
       toast.success(response.data.message);
-      console.log(response.data.message);
+
       setDataUpdated(!dataUpdated);
+      setCourseDetails(defaultCourseDetails);
     } catch (err) {
       console.log(err);
     }
   };
 
   const showAddDialog = () => {
-    setCurrentCourse({
-      course_id: null,
-      title: "",
-      description: "",
-      url: "",
-    });
-    setOpenDialog(true);
+    setAddEditModalIsOpen(true);
   };
 
-  const handleSave = async (e) => {
+  const handleAddEditCourse = async (e) => {
     e.preventDefault();
 
-    console.log(
-      currentCourse.course_id === null || currentCourse.course_id == ""
-    );
-
     try {
-      if (currentCourse.course_id === null || currentCourse.course_id == "") {
-        const response = await api.post("/api/add-course", {
-          ...currentCourse,
+      if (courseDetails.courseId === null || courseDetails.courseId === "") {
+        // ADD COURSE
+        const response = await api.post("/api/course", {
+          ...courseDetails,
           userId: user.id,
         });
       } else {
-        console.log("Edit course");
-        await api.post("/api/update-course", {
-          ...currentCourse,
+        // EDIT COURSE
+        await api.put("/api/course", {
+          ...courseDetails,
           userId: user.id,
         });
       }
+
       setDataUpdated(!dataUpdated);
-      setOpenDialog(false);
+      setAddEditModalIsOpen(false);
     } catch (error) {
       console.log("Error adding course (catch)");
       console.log(error);
     }
   };
 
-  const handleInputChange = (field) => (event) => {
-    setCurrentCourse((prevCourse) => ({
-      ...prevCourse,
-      [field]: event.target.value,
+  const handleInputChange = (event) => {
+    setCourseDetails((c) => ({
+      ...c,
+      [event.target.name]: event.target.value,
     }));
   };
 
   const fetchJobCourses = async () => {
     try {
-      const response = await api.get("api/all-courses");
+      const response = await api.get("api/course");
 
-      setRowCourseData(response.data.data);
+      console.log(response.data.courses);
+
+      setRowCourseData(response.data.courses);
     } catch (error) {
       console.log("Error Fetching Job Courses");
       console.log(error);
@@ -182,13 +156,13 @@ function JobCourse() {
                 {
                   headerName: "Course Title",
                   field: "title",
-                  flex: 1,
+                  flex: 2,
                   headerClass: "text-primary font-bold bg-gray-100",
                 },
                 {
                   headerName: "URL",
                   field: "url",
-                  flex: 1,
+                  flex: 3,
                   headerClass: "text-primary font-bold bg-gray-100",
                 },
                 {
@@ -199,19 +173,19 @@ function JobCourse() {
                 },
                 {
                   headerName: "Date Created",
-                  field: "created_at",
+                  field: "createdAt",
                   flex: 1,
                   headerClass: "text-primary font-bold bg-gray-100",
                   valueGetter: (params) =>
-                    formatTimestamp(params.data.created_at).fullDate,
+                    formatTimestamp(params.data.createdAt).fullDate,
                 },
                 {
                   headerName: "Created By",
-                  field: "created_by",
-                  flex: 2,
+                  field: "createdBy",
+                  flex: 1,
                   headerClass: "text-primary font-bold bg-gray-100",
-                  valueGetter: (params) =>
-                    `${params.data.first_name} ${params.data.last_name}`,
+                  // valueGetter: (params) =>
+                  //   `${params.data.first_name} ${params.data.last_name}`,
                 },
                 {
                   headerName: "Action",
@@ -224,7 +198,7 @@ function JobCourse() {
                         <EditIcon />
                       </IconButton>
                       <IconButton
-                        onClick={() => handleDelete(params.data.course_id)}
+                        onClick={() => handleDeleteClick(params.data.courseId)}
                       >
                         <DeleteIcon />
                       </IconButton>
@@ -244,8 +218,8 @@ function JobCourse() {
 
         {/* Dialog for Add/Edit */}
         <Dialog
-          open={openDialog}
-          onClose={() => setOpenDialog(false)}
+          open={addEditModalIsOpen}
+          onClose={() => setAddEditModalIsOpen(false)}
           sx={{
             "& .MuiDialog-paper": {
               borderRadius: "16px",
@@ -254,9 +228,9 @@ function JobCourse() {
             },
           }}
         >
-          <form onSubmit={(e) => handleSave(e)}>
+          <form onSubmit={(e) => handleAddEditCourse(e)}>
             <DialogTitle className="flex w-full justify-center items-center">
-              {currentCourse.course_id ? "Edit Course" : "Add Course"}
+              {courseDetails.course_id ? "Edit Course" : "Add Course"}
             </DialogTitle>
             <DialogContent>
               <div className="w-full">
@@ -267,8 +241,8 @@ function JobCourse() {
                 <input
                   name="title"
                   required
-                  value={currentCourse.title}
-                  onChange={handleInputChange("title")}
+                  value={courseDetails.title}
+                  onChange={(e) => handleInputChange(e)}
                   rows={3}
                   className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary "
                 />
@@ -280,8 +254,8 @@ function JobCourse() {
                 <input
                   name="url"
                   required
-                  value={currentCourse.url}
-                  onChange={handleInputChange("url")}
+                  value={courseDetails.url}
+                  onChange={(e) => handleInputChange(e)}
                   className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
@@ -292,8 +266,8 @@ function JobCourse() {
                 <textarea
                   name="description"
                   required
-                  value={currentCourse.description}
-                  onChange={handleInputChange("description")}
+                  value={courseDetails.description}
+                  onChange={(e) => handleInputChange(e)}
                   rows={3}
                   className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
                 ></textarea>
@@ -303,7 +277,7 @@ function JobCourse() {
               <button
                 type="button"
                 className="btn-light"
-                onClick={() => setOpenDialog(false)}
+                onClick={() => setAddEditModalIsOpen(false)}
               >
                 Cancel
               </button>
@@ -314,6 +288,12 @@ function JobCourse() {
           </form>
         </Dialog>
       </div>
+      <ModalDeleteConfirmation
+        isOpen={deleteModalIsOpen}
+        handleClose={() => setDeleteModalIsOpen(false)}
+        onConfirm={handleDelete}
+        message="Are you sure you want to delete this course? This action cannot be undone."
+      />
     </>
   );
 }
