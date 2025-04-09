@@ -290,7 +290,10 @@ function PersonalityTest() {
       </div>
       <ModalDeleteConfirmation
         isOpen={deleteModalIsOpen}
-        handleClose={() => setDeleteModalIsOpen(false)}
+        handleClose={() => {
+          setDeleteModalIsOpen(false);
+          setPTDetails(defaultPersonalityTestDetails);
+        }}
         onConfirm={handleDelete}
         message="Are you sure you want to delete this personality test? This action cannot be undone."
       />

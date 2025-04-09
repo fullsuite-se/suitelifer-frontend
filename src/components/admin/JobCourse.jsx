@@ -18,6 +18,7 @@ import api from "../../utils/axios";
 import { useStore } from "../../store/authStore";
 import toast from "react-hot-toast";
 import formatTimestamp from "../TimestampFormatter";
+import { ModalDeleteConfirmation } from "../modals/ModalDeleteConfirmation";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -87,6 +88,8 @@ function JobCourse() {
           ...courseDetails,
           userId: user.id,
         });
+
+        toast.success(response.data.message);
       } else {
         // EDIT COURSE
         await api.put("/api/course", {
@@ -98,7 +101,7 @@ function JobCourse() {
       setDataUpdated(!dataUpdated);
       setAddEditModalIsOpen(false);
     } catch (error) {
-      console.log("Error adding course (catch)");
+      console.log("Error adding course");
       console.log(error);
     }
   };
@@ -290,7 +293,10 @@ function JobCourse() {
       </div>
       <ModalDeleteConfirmation
         isOpen={deleteModalIsOpen}
-        handleClose={() => setDeleteModalIsOpen(false)}
+        handleClose={() => {
+          setDeleteModalIsOpen(false);
+          setCourseDetails(defaultCourseDetails);
+        }}
         onConfirm={handleDelete}
         message="Are you sure you want to delete this course? This action cannot be undone."
       />
