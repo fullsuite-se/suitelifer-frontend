@@ -29,7 +29,7 @@ function NewsArticle() {
       newsId: "1",
       title: "New Features Released",
       article: "We just rolled out new updates to our platform.",
-      imageUrl: "https://via.placeholder.com/150",
+      imageUrl: "https://icon-library.com/images/placeholder-image-icon/placeholder-image-icon-15.jpg",
       createdAt: "2023-08-10",
       createdBy: "Melbraei Santiago",
     },
@@ -37,7 +37,7 @@ function NewsArticle() {
       newsId: "2",
       title: "New Features Released",
       article: "We just rolled out new updates to our platform.",
-      imageUrl: "https://via.placeholder.com/150",
+      imageUrl: "https://icon-library.com/images/placeholder-image-icon/placeholder-image-icon-15.jpg",
       createdAt: "2023-08-10",
       createdBy: "Melbraei Santiago",
     },
@@ -45,7 +45,7 @@ function NewsArticle() {
       newsId: "3",
       title: "New Features Released",
       article: "We just rolled out new updates to our platform.",
-      imageUrl: "https://via.placeholder.com/150",
+      imageUrl: "https://icon-library.com/images/placeholder-image-icon/placeholder-image-icon-15.jpg",
       createdAt: "2023-08-10",
       createdBy: "Melbraei Santiago",
     },
@@ -155,7 +155,7 @@ function NewsArticle() {
                   <img
                     src={params.value}
                     alt="NewsImage"
-                    className="w-[80px] h-[80px] sm:w-[80px] sm:h-[80px] rounded-md object-cover mx-auto"
+                    className="w-[100px] h-[100px] sm:w-[100px] sm:h-[100px] rounded-md object-cover mx-auto p-2"
                   />
                 ) : (
                   <span>No Image</span>
@@ -193,6 +193,7 @@ function NewsArticle() {
             filter: true,
             floatingFilter: true,
           }}
+          rowHeight={100}
           pagination
           paginationPageSize={10}
           paginationPageSizeSelectors={[5, 10, 20]}
