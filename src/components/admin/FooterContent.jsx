@@ -135,7 +135,7 @@ function FooterContent() {
                       <img
                         src={params.value}
                         alt="Certificate"
-                        className="w-[60px] h-[60px] sm:w-[60px] sm:h-[60px] rounded-md object-cover mx-auto"
+                        className="w-[100px] h-[100px] sm:w-[100px] sm:h-[100px] rounded-2xl object-cover mx-auto p-2"
                       />
                     ) : (
                       <span>No Image</span>
@@ -145,10 +145,13 @@ function FooterContent() {
                   headerName: "Date Created",
                   field: "createdAt",
                   flex: 1,
-                  headerClass: "text-primary font-bold bg-gray-100",
+                  headerClass: "text-primary font-bold bg-gray-100 text-left",
+                  cellClass: "flex items-center justify-center w-full ",
+
                   valueGetter: (params) =>
                     new Date(params.data.createdAt).toLocaleString(),
                 },
+                
                 {
                   headerName: "Created By",
                   field: "createdBy",
@@ -174,7 +177,7 @@ function FooterContent() {
                 },
               ]}
               defaultColDef={{ sortable: true, filter: true }}
-              rowHeight={60}
+              rowHeight={100}
               pagination={true}
               paginationPageSize={5}
               paginationPageSizeSelector={[5, 10]}
