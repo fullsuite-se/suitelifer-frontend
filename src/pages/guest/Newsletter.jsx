@@ -4,7 +4,8 @@ import DesktopNav from "../../components/home/DesktopNav";
 import Footer from "../../components/Footer";
 import BackToTop from "../../components/BackToTop";
 
-import NewsletterDesign01 from "../../components/newsletter/NewsletterDesign01";
+import NewsletterDesign01 from "../../components/newsletter/templates/NewsletterDesign01";
+import NewsletterDesign02 from "../../components/newsletter/templates/NewsletterDesign02";
 
 const Newsletter = () => {
   return (
