@@ -11,6 +11,7 @@ import api from "../../utils/axios";
 import toast from "react-hot-toast";
 import { useStore } from "../../store/authStore";
 import { showConfirmationToast } from "../toasts/confirm";
+import ButtonsSpotify from "./ButtonsSpotify";
 
 const extractSpotifyId = (url) => {
   const match = url.match(/(?:episode|playlist)\/([^?]+)/);
@@ -169,7 +170,7 @@ const SpotifyEpisodes = () => {
   }, [dataUpdated]);
 
   return (
-    <div className="w-full space-y-4 bg">
+    <div className="w-full space-y-4 bg mb-20">
       {error && (
         <div className="fixed inset-0 flex items-center justify-center">
           <div className="bg-white p-6 rounded-2xl shadow-lg max-w-md w-full border-2 border-red-500/95">
@@ -222,6 +223,14 @@ const SpotifyEpisodes = () => {
             </button>
           )}
         </div>
+
+        <ButtonsSpotify
+          buttons={[
+            { label: "All" },
+            { label: "Episodes" },
+            { label: "Playlists" },
+          ]}
+        />
 
         {episodes.length === 0 ? (
           <div className="p-4 text-center text-gray-600">
