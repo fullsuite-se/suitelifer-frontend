@@ -23,6 +23,14 @@ const LoginForm = () => {
   const [loading, setLoading] = useState(false);
   const { executeRecaptcha } = useGoogleReCaptcha();
 
+  const sendVerification = async (userId, email) => {
+    const response = await api.post("/api/send-verification-code", {
+      userId: userId,
+      email: email,
+    });
+    return response;
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -64,14 +72,23 @@ const LoginForm = () => {
       setLoading(false);
       if (error.response?.status === 400) {
         toast.error("Invalid email or password. Please try again.");
-        setEmail("");
-        setPassword("");
+      } else if (error.response?.data?.isNotVerified) {
+        const id = error.response?.data?.userId;
+        const email = error.response?.data?.email;
+        const response = await sendVerification(id, email);
+        if (response.data.isSuccess) {
+          toast.success("Check your email to verify your account.");
+        } else {
+          toast.error("Failed to send verification code.");
+        }
       } else {
         toast.error(
-          `Error: ${error.response?.data?.message || "Something went wrong."}`
+          `${error.response?.data?.message || "Something went wrong."}`
         );
       }
     } finally {
+      setEmail("");
+      setPassword("");
       setLoading(false);
     }
   };
