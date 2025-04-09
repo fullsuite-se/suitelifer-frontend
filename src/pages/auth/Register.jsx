@@ -72,9 +72,9 @@ const Form = () => {
         const email = responseRegister.data.email;
         const responseVerication = await sendVerification(userId, email);
         if (responseVerication.data.isSuccess) {
-          toast.success("Registration successful. Verification code sent.");
+          toast.success("Registration successful. Verification link sent.");
         } else {
-          toast.error("Failed to send verification code.");
+          toast.error("Failed to send verification link.");
         }
       } else {
         toast.error("Registration failed.");
