@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
@@ -9,8 +9,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Footer from '../../components/Footer';
 
 const CongratsApplicationForm = () => {
-
-
   const location = useLocation();
   const assessmentUrl = location.state?.assessmentUrl;
 
