@@ -62,6 +62,27 @@ function NewsArticle() {
     createdBy: "Melbraei Santiago",
   });
 
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 11 }, (_, i) => currentYear - 5 + i);
+
+  const [selectedYear, setSelectedYear] = useState(currentYear);
+  const [selectedMonth, setSelectedMonth] = useState(null);
+
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file && file.type.startsWith("image/")) {
@@ -128,10 +149,38 @@ function NewsArticle() {
 
   return (
     <>
-      <div className="flex justify-end">
+      <div className="flex justify-between mb-2">
+        <div className="flex gap-2">
+          <div className="bg-accent-2 rounded-md text-white flex items-center px-2">
+            <select
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(String(e.target.value))}
+              className=""
+            >
+              {months.map((month) => (
+                <option key={month} value={month}>
+                  {month}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <select
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(Number(e.target.value))}
+            className="rounded-md p-2 bg-accent-2! border-none outline-none text-white"
+          >
+            {years.map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <button
           onClick={() => setOpenDialog(true)}
-          className="btn-primary mb-2"
+          className="rounded-md p-2 bg-accent-2! border-none outline-none text-white"
         >
           <div className="flex items-center gap-1">
             <ControlPointIcon fontSize="small" />
@@ -200,7 +249,7 @@ function NewsArticle() {
               alignItems: "center",
               justifyContent: "left",
             },
-          }}  
+          }}
           domLayout="autoHeight"
           rowHeight={
             window.innerWidth < 640 ? 60 : window.innerWidth < 768 ? 70 : 80
