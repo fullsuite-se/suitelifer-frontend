@@ -8,6 +8,7 @@ import {
   GoogleReCaptchaProvider,
   useGoogleReCaptcha,
 } from "react-google-recaptcha-v3";
+import sendVerification from "../../utils/sendVerification";
 
 const Form = () => {
   const [firstName, setFirstName] = useState("");
@@ -30,14 +31,6 @@ const Form = () => {
       firstName,
       middleName,
       lastName,
-    });
-    return response;
-  };
-
-  const sendVerification = async (userId, email) => {
-    const response = await api.post("/api/send-verification-code", {
-      userId: userId,
-      email: email,
     });
     return response;
   };
@@ -71,7 +64,7 @@ const Form = () => {
         const userId = responseRegister.data.userId;
         const email = responseRegister.data.email;
         const responseVerication = await sendVerification(userId, email);
-        if (responseVerication.data.isSuccess) {
+        if (responseVerication.isSuccess) {
           toast.success("Registration successful. Verification link sent.");
         } else {
           toast.error("Failed to send verification link.");
@@ -180,10 +173,7 @@ const Register = () => {
           </header>
           <Form />
           <p className="text-center">
-            <Link
-              className="text-blue-400 text-primary cursor-pointer text-sm"
-              to={"/login"}
-            >
+            <Link className="text-primary cursor-pointer" to={"/login"}>
               Already have an account?
             </Link>
           </p>
