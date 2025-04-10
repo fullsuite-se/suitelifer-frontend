@@ -27,7 +27,7 @@ const LoadingArticleDetails = () => {
         </div>
         <main className="px-[7%] pt-[10%] xl:pt-[8%] md:px-[5%] lg:px-[8%]">
           <BackButton backPath={-1} />
-          <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-10">
+          <div className="grid grid-cols-1 gap-10">
             {/* Main Article */}
             <div>
               {/* Type */}
@@ -42,14 +42,14 @@ const LoadingArticleDetails = () => {
               <Skeleton width={20} />
               <div className="py-5"></div>
               {/* Image Carousel */}
-              <Skeleton className="h-[90vh]" />
+              <Skeleton className="h-[30vh]" />
               <div className="py-5"></div>
               {/* Content */}
               <Skeleton count={15} />
             </div>
 
             {/* Related Articles */}
-            <div className="overflow-y-auto lg:px-5 lg:h-[100vh]">
+            <div className="hidden overflow-y-auto lg:px-5 lg:h-[100vh]">
               <p className="text-small mt-5 font-avenir-black text-primary pb-3 lg:pb-4">
                 Read More
               </p>

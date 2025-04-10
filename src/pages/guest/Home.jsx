@@ -23,6 +23,7 @@ import InstagramIcon from "../../assets/logos/Instagram";
 import YoutubeIcon from "../../assets/logos/Youtube";
 import SpotifyIcon from "../../assets/logos/Spotify";
 import LinkedlnIcon from "../../assets/logos/Linkedln";
+import YouTubeEmbed from "../../components/home/YoutubeEmbed";
 
 const Home = () => {
   const socmedPlatforms = [
@@ -199,15 +200,9 @@ const Home = () => {
         </MotionUp>
         <MotionUp>
           <div className="flex justify-center">
-            <video
-              className="aspect-16/9 rounded-xl md:rounded-2xl lg:rounded-4xl object-cover"
-              autoPlay
-              loop
-              muted
-              controls
-            >
-              <source src={videoTemplate} type="video/mp4" />
-            </video>
+            <div className="w-[95%] max-w-[1200px] mx-auto">
+              <YouTubeEmbed videoId={"VY0CRNkUG1E"} />
+            </div>
           </div>
         </MotionUp>
       </section>
