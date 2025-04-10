@@ -29,7 +29,8 @@ function NewsArticle() {
       newsId: "1",
       title: "New Features Released",
       article: "We just rolled out new updates to our platform.",
-      imageUrl: "https://icon-library.com/images/placeholder-image-icon/placeholder-image-icon-15.jpg",
+      imageUrl:
+        "https://icon-library.com/images/placeholder-image-icon/placeholder-image-icon-15.jpg",
       createdAt: "2023-08-10",
       createdBy: "Melbraei Santiago",
     },
@@ -37,7 +38,8 @@ function NewsArticle() {
       newsId: "2",
       title: "New Features Released",
       article: "We just rolled out new updates to our platform.",
-      imageUrl: "https://icon-library.com/images/placeholder-image-icon/placeholder-image-icon-15.jpg",
+      imageUrl:
+        "https://icon-library.com/images/placeholder-image-icon/placeholder-image-icon-15.jpg",
       createdAt: "2023-08-10",
       createdBy: "Melbraei Santiago",
     },
@@ -45,7 +47,8 @@ function NewsArticle() {
       newsId: "3",
       title: "New Features Released",
       article: "We just rolled out new updates to our platform.",
-      imageUrl: "https://icon-library.com/images/placeholder-image-icon/placeholder-image-icon-15.jpg",
+      imageUrl:
+        "https://icon-library.com/images/placeholder-image-icon/placeholder-image-icon-15.jpg",
       createdAt: "2023-08-10",
       createdBy: "Melbraei Santiago",
     },
@@ -189,11 +192,19 @@ function NewsArticle() {
             },
           ]}
           defaultColDef={{
-            sortable: true,
-            filter: true,
+            filter: "agTextColumnFilter",
             floatingFilter: true,
-          }}
-          rowHeight={100}
+            sortable: true,
+            cellStyle: {
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "left",
+            },
+          }}  
+          domLayout="autoHeight"
+          rowHeight={
+            window.innerWidth < 640 ? 60 : window.innerWidth < 768 ? 70 : 80
+          }
           pagination
           paginationPageSize={10}
           paginationPageSizeSelectors={[5, 10, 20]}
