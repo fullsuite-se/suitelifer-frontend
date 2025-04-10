@@ -29,7 +29,8 @@ function NewsArticle() {
       newsId: "1",
       title: "New Features Released",
       article: "We just rolled out new updates to our platform.",
-      imageUrl: "https://icon-library.com/images/placeholder-image-icon/placeholder-image-icon-15.jpg",
+      imageUrl:
+        "https://icon-library.com/images/placeholder-image-icon/placeholder-image-icon-15.jpg",
       createdAt: "2023-08-10",
       createdBy: "Melbraei Santiago",
     },
@@ -37,7 +38,8 @@ function NewsArticle() {
       newsId: "2",
       title: "New Features Released",
       article: "We just rolled out new updates to our platform.",
-      imageUrl: "https://icon-library.com/images/placeholder-image-icon/placeholder-image-icon-15.jpg",
+      imageUrl:
+        "https://icon-library.com/images/placeholder-image-icon/placeholder-image-icon-15.jpg",
       createdAt: "2023-08-10",
       createdBy: "Melbraei Santiago",
     },
@@ -45,7 +47,8 @@ function NewsArticle() {
       newsId: "3",
       title: "New Features Released",
       article: "We just rolled out new updates to our platform.",
-      imageUrl: "https://icon-library.com/images/placeholder-image-icon/placeholder-image-icon-15.jpg",
+      imageUrl:
+        "https://icon-library.com/images/placeholder-image-icon/placeholder-image-icon-15.jpg",
       createdAt: "2023-08-10",
       createdBy: "Melbraei Santiago",
     },
@@ -58,6 +61,27 @@ function NewsArticle() {
     imageUrl: "",
     createdBy: "Melbraei Santiago",
   });
+
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 11 }, (_, i) => currentYear - 5 + i);
+
+  const [selectedYear, setSelectedYear] = useState(currentYear);
+  const [selectedMonth, setSelectedMonth] = useState(null);
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -125,10 +149,39 @@ function NewsArticle() {
 
   return (
     <>
-      <div className="flex justify-end">
+      <div className="flex justify-between mb-2">
+        <div className="flex gap-2">
+          <div className="bg-accent-2 rounded-md text-white flex items-center px-2">
+            <select
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(String(e.target.value))}
+              className=""
+            >
+              {months.map((month) => (
+                <option key={month} value={month}>
+                  {month}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="bg-accent-2 rounded-md text-white flex items-center px-2">
+            <select
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(Number(e.target.value))}
+              className="rounded-md p-2 bg-accent-2! border-none outline-none text-white"
+            >
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
         <button
           onClick={() => setOpenDialog(true)}
-          className="btn-primary mb-2"
+          className="rounded-md p-2 bg-accent-2! border-none outline-none text-white"
         >
           <div className="flex items-center gap-1">
             <ControlPointIcon fontSize="small" />
@@ -189,11 +242,19 @@ function NewsArticle() {
             },
           ]}
           defaultColDef={{
-            sortable: true,
-            filter: true,
+            filter: "agTextColumnFilter",
             floatingFilter: true,
+            sortable: true,
+            cellStyle: {
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "left",
+            },
           }}
-          rowHeight={100}
+          domLayout="autoHeight"
+          rowHeight={
+            window.innerWidth < 640 ? 60 : window.innerWidth < 768 ? 70 : 80
+          }
           pagination
           paginationPageSize={10}
           paginationPageSizeSelectors={[5, 10, 20]}
