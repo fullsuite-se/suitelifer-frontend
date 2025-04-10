@@ -48,12 +48,12 @@ const ArticleDetails = ({
           content={
             content
               ? content.substring(0, 150) + "..."
-              : "Read the latest articles on SuiteLifer."
+              : "Read the latest newsletters on SuiteLifer."
           }
         />
         <meta
           name="keywords"
-          content={`${title}, ${type}, SuiteLifer News, SuiteLifer Blogs, blog, news`}
+          content={`${title}, ${type}, SuiteLifer Newsletter, SuiteLifer Blogs, blog, news, newsletter`}
         />
         {/* 
           TODO :

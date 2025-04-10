@@ -8,6 +8,7 @@ import AboutUs from "./pages/guest/AboutUs";
 import Careers from "./pages/guest/Careers";
 import CareersAll from "./pages/guest/CareersAll";
 import Newsletter from "./pages/guest/Newsletter";
+import NewsletterDetails from "./components/newsletter/NewsLetterDetails";
 import News from "./pages/guest/News";
 import Contact from "./pages/guest/Contact";
 import Blog from "./pages/guest/Blog";
@@ -84,6 +85,7 @@ function App() {
           <Route path="/careers/:slug" element={<CareersJobDetails />} />
           <Route path="/news" element={<News />} />
           <Route path="/newsletter" element={<Newsletter />} />
+          <Route path="/newsletter/:slug" element={<NewsletterDetails />} />
           <Route path="/news/:slug" element={<NewsDetails />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/podcast" element={<Blog />} />
