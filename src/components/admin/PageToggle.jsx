@@ -26,9 +26,7 @@ const PageToggle = ({ tabs }) => {
         ))}
       </div>
 
-      <div className="bg-white shadow-md rounded-xl p-6">
-        <ActiveComponent />
-      </div>
+      <ActiveComponent />
     </div>
   );
 };
