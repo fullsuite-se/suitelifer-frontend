@@ -65,6 +65,10 @@ const LoginForm = ({ email, password, setEmail, setPassword }) => {
       setLoading(false);
       if (error.response?.status === 400) {
         toast.error("Invalid email or password. Please try again.");
+      } else if (error.response?.data?.isAttemptExceeded) {
+        toast.error(
+          "You've reached the maximum number of verification attempts. Please try again in 15 minutes."
+        );
       } else if (error.response?.data?.isNotVerified) {
         const id = error.response?.data?.userId;
         const email = error.response?.data?.email;
