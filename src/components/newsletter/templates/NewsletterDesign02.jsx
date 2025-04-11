@@ -51,8 +51,9 @@ const NewsletterDesign02 = () => {
               datePublished={articles[0].datePublished}
               article={articles[0].article}
             />
-            <div className="my-5"></div>
+            <div className="my-5 md:m-0"></div>
             <ReadMoreBtn href={""} />
+            <div className="my-10"></div>
           </div>
           <div className="my-5"></div>
           <div className="md:flex gap-10">

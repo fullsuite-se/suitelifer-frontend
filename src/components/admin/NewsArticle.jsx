@@ -14,6 +14,7 @@ import { ModuleRegistry } from "@ag-grid-community/core";
 import { AgGridReact } from "@ag-grid-community/react";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
+import Filter from "./NewsletterFilter";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -24,12 +25,14 @@ function NewsArticle() {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [imageFilename, setImageFilename] = useState("");
+
   const [newsletterData, setNewsletterData] = useState([
     {
       newsId: "1",
       title: "New Features Released",
       article: "We just rolled out new updates to our platform.",
-      imageUrl: "https://icon-library.com/images/placeholder-image-icon/placeholder-image-icon-15.jpg",
+      imageUrl:
+        "https://icon-library.com/images/placeholder-image-icon/placeholder-image-icon-15.jpg",
       createdAt: "2023-08-10",
       createdBy: "Melbraei Santiago",
     },
@@ -37,7 +40,8 @@ function NewsArticle() {
       newsId: "2",
       title: "New Features Released",
       article: "We just rolled out new updates to our platform.",
-      imageUrl: "https://icon-library.com/images/placeholder-image-icon/placeholder-image-icon-15.jpg",
+      imageUrl:
+        "https://icon-library.com/images/placeholder-image-icon/placeholder-image-icon-15.jpg",
       createdAt: "2023-08-10",
       createdBy: "Melbraei Santiago",
     },
@@ -45,12 +49,14 @@ function NewsArticle() {
       newsId: "3",
       title: "New Features Released",
       article: "We just rolled out new updates to our platform.",
-      imageUrl: "https://icon-library.com/images/placeholder-image-icon/placeholder-image-icon-15.jpg",
+      imageUrl:
+        "https://icon-library.com/images/placeholder-image-icon/placeholder-image-icon-15.jpg",
       createdAt: "2023-08-10",
       createdBy: "Melbraei Santiago",
     },
   ]);
-
+  const currentYear = new Date().getFullYear();
+  const [selectedYear, setSelectedYear] = useState(currentYear);
   const [currentNews, setCurrentNews] = useState({
     newsId: "",
     title: "",
@@ -125,10 +131,27 @@ function NewsArticle() {
 
   return (
     <>
-      <div className="flex justify-end">
+      <div className="flex justify-between w-full mb-2">
+        <div className="flex gap-2">
+          <div className="bg-accent-2 rounded-md text-white flex ">
+            <Filter
+              showMonth={true}
+              showYear={false}
+              onYearChange={setSelectedYear}
+            />
+          </div>
+          <div className="bg-accent-2 rounded-md text-white flex pr-3 items-center ">
+            <Filter
+              showMonth={false}
+              showYear={true}
+              onYearChange={setSelectedYear}
+            />
+          </div>
+        </div>
+
         <button
           onClick={() => setOpenDialog(true)}
-          className="btn-primary mb-2"
+          className="rounded-md p-2 bg-accent-2! border-none outline-none text-white"
         >
           <div className="flex items-center gap-1">
             <ControlPointIcon fontSize="small" />
@@ -189,11 +212,19 @@ function NewsArticle() {
             },
           ]}
           defaultColDef={{
-            sortable: true,
-            filter: true,
+            filter: "agTextColumnFilter",
             floatingFilter: true,
+            sortable: true,
+            cellStyle: {
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "left",
+            },
           }}
-          rowHeight={100}
+          domLayout="autoHeight"
+          rowHeight={
+            window.innerWidth < 640 ? 60 : window.innerWidth < 768 ? 70 : 80
+          }
           pagination
           paginationPageSize={10}
           paginationPageSizeSelectors={[5, 10, 20]}

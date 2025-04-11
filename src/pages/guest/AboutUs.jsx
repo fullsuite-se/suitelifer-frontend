@@ -116,7 +116,8 @@ const AboutUs = () => {
               efficiently.
             </p>
           </section>
-          <section>
+          {/* HIDE THIS FOR NOW AS YANI REQUESTED */}
+          {/* <section>
             <div className="max-w-4xl h-72 my-4 lg:h-96 mx-5">
               <video
                 className="w-full h-full rounded-xl object-cover aspect-video"
@@ -137,7 +138,7 @@ const AboutUs = () => {
               greater comeback. Tune in for an inspiring conversation on
               perseverance, innovation, and the future of FullSuite.
             </p>
-          </section>
+          </section> */}
         </section>{" "}
         <div className="py-5"></div>{" "}
         <div className="flex justify-end scale-x-[-1] rotate-180">

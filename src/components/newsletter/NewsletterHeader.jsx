@@ -1,4 +1,11 @@
-const NewsletterHeader = ({year="Date unavailable", issueNumber="unkown"}) => {
+const NewsletterHeader = ({year=new Date().toISOString()}) => {
+  function formatToMonthYear(isoString) {
+    const date = new Date(isoString);
+    return date.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+  }
+
+  const formattedDate = formatToMonthYear(year);
+
   return (
     <header className="flex flex-col">
       <div className="flex items-center justify-end">
@@ -18,11 +25,11 @@ const NewsletterHeader = ({year="Date unavailable", issueNumber="unkown"}) => {
             <div className="w-[2ch] lg:w-[5vh] h-[0.25vh] bg-primary"></div>
           </div>
           <p className="whitespace-nowrap flex-shrink-0 px-2 caption text-primary">
-            {year}, issue {issueNumber}
+            {formattedDate}, issue
           </p>
           <div className="w-full h-[0.25vh] bg-primary"></div>
           <p className="whitespace-nowrap flex-shrink-0 px-2 caption text-gray-500">
-            Fresh and Bright, Your Daily Insight!
+            Fresh and Bright, Your Monthly Insight!
           </p>
         </div>
       </div>

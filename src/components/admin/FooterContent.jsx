@@ -151,7 +151,7 @@ function FooterContent() {
                   valueGetter: (params) =>
                     new Date(params.data.createdAt).toLocaleString(),
                 },
-                
+
                 {
                   headerName: "Created By",
                   field: "createdBy",
@@ -176,8 +176,20 @@ function FooterContent() {
                   ),
                 },
               ]}
-              defaultColDef={{ sortable: true, filter: true }}
-              rowHeight={100}
+              defaultColDef={{
+                filter: "agTextColumnFilter",
+                floatingFilter: true,
+                sortable: true,
+                cellStyle: {
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "left",
+                },
+              }}
+              domLayout="autoHeight"
+              rowHeight={
+                window.innerWidth < 640 ? 60 : window.innerWidth < 768 ? 70 : 80
+              }
               pagination={true}
               paginationPageSize={5}
               paginationPageSizeSelector={[5, 10]}

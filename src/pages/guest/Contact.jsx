@@ -119,7 +119,7 @@ const Contact = () => {
                       href="mailto:abc@fullsuite.ph"
                       className="hover:text-secondary transition-colors  no-underline!"
                     >
-                      abc@fullsuite.ph
+                      hireme@fullsuite.ph
                     </a>
                   </p>
                   <p className="flex items-center gap-2">
@@ -132,7 +132,7 @@ const Contact = () => {
                       href="tel:+63746195521"
                       className="hover:text-secondary transition-colors  no-underline!"
                     >
-                      (074) 619-5521
+                      742-442-887
                     </a>
                   </p>
                   <p className="flex items-center gap-2">
@@ -145,7 +145,7 @@ const Contact = () => {
                       href="tel:+639123456789"
                       className="hover:text-secondary transition-colors  no-underline!"
                     >
-                      +63-912-3456-789
+                      0919-063-9001
                     </a>
                   </p>
                 </div>
@@ -213,12 +213,14 @@ const Contact = () => {
           >
             <div className="md:w-1/2 gap-3 flex flex-col justify-center text-left lg:w-1/4">
               <p className="font-avenir-black text-h4">
-                Visit us <span className="text-primary">here</span>
+                Walk-in applicants, welcome! Let's discuss your{" "}
+                <span className="text-primary">future</span> over coffee (it's
+                on us).
               </p>
               <div className="flex items-center gap-2 mt-2 text-primary text-body">
                 <MarkerIcon width={34} height={34} />
                 <span className="text-black">
-                  5F Curamed Building, Ben Palispis-Aspiras Highway
+                  5F Curamed Building, Ben Palispis- Aspiras Highway
                 </span>
               </div>
               <div className="flex items-center gap-2 mt-2 text-primary text-body">
@@ -227,7 +229,7 @@ const Contact = () => {
                   <strong className="font-avenir-black">
                     Monday to Friday
                   </strong>{" "}
-                  <br /> 7 AM - 4 PM
+                  <br /> 8:00 to 10:00 AM or 1:00 to 3:00 PM
                 </span>
               </div>
             </div>
