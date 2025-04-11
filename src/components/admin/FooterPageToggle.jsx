@@ -7,7 +7,7 @@ const FooterPageToggle = () => {
   const tabs = [
     { label: "Terms of Use", component: TermsOfUse },
     { label: "Privacy Policy", component: PrivacyPolicy },
-    { label: "Footer Content", component: FooterContent }
+    { label: "Footer Content", component: FooterContent },
   ];
 
   return <PageToggle tabs={tabs} />;
