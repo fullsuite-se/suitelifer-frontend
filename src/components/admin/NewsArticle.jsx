@@ -178,7 +178,7 @@ function NewsArticle() {
                   <img
                     src={params.value}
                     alt="NewsImage"
-                    className="w-[100px] h-[100px] sm:w-[100px] sm:h-[100px] rounded-md object-cover mx-auto p-2"
+                    className="w-[100px] h-[100px] sm:w-[100px] sm:h-[100px] object-cover mx-auto p-4"
                   />
                 ) : (
                   <span>No Image</span>
