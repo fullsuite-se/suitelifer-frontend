@@ -9,6 +9,7 @@ const VerifyAccount = () => {
   const [params] = useSearchParams();
   const code = params.get("code");
   const id = params.get("id");
+  const payload = params.get("payload-encrypted");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -17,7 +18,7 @@ const VerifyAccount = () => {
       try {
         setLoading(true);
         const response = await api.get("/api/verify-verification-code", {
-          params: { code, id },
+          params: { code, id, payload },
         });
 
         if (response.data.isSuccess) {
