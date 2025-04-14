@@ -67,11 +67,27 @@ function FAQs() {
       setFaqs((prev) =>
         prev.map((faq) => (faq.faq_id === currentFAQ.faq_id ? currentFAQ : faq))
       );
+      try {
+        console.log("Sending to backend:", currentFAQ);
+
+        const response = await api.post("/api/edit-faq", {...currentFAQ, 
+          user_id: user.id});
+        console.log(response.data);
+
+        if (response.data?.success) {
+          toast.success(response.data.message);
+        } else {
+          toast.error(response.data.message || "Failed to update faq.");
+        }
+  
+        setDataUpdated(!dataUpdated);
+      } catch (err) {
+        console.error(err.message);
+      }
 
     } else {
       const newFaq = {
         ...currentFAQ,
-        created_at: new Date().toISOString(),
         user_id: user.id
       };
       setFaqs((prev) => [newFaq, ...prev]);
@@ -107,9 +123,18 @@ function FAQs() {
     setOpenDialog(true);
   };
 
-  const handleDelete = (faq_id) => {
-    setFaqs((prev) => prev.filter((faq) => faq.faq_id !== faq_id));
+  const handleDelete = async (faq_id) => {
+    try {
+      await api.post("/api/delete-faq", { faq_id });
+      setFaqs((prev) => prev.filter((faq) => faq.faq_id !== faq_id)); 
+      toast.success("FAQ deleted successfully");
+      setDataUpdated((prev) => !prev);
+    } catch (err) {
+      console.error(err.message);
+      toast.error("Failed to delete FAQ");
+    }
   };
+  
 
   const handleFaqDetailsChange = (e) => {
     setCurrentFAQ((td) => ({ ...td, [e.target.name]: e.target.value }));
