@@ -133,20 +133,17 @@ function NewsArticle() {
     <>
       <div className="flex justify-between w-full mb-2">
         <div className="flex gap-2">
-          <div className="bg-accent-2 rounded-md text-white flex ">
-            <Filter
-              showMonth={true}
-              showYear={false}
-              onYearChange={setSelectedYear}
-            />
-          </div>
-          <div className="bg-accent-2 rounded-md text-white flex pr-3 items-center ">
-            <Filter
-              showMonth={false}
-              showYear={true}
-              onYearChange={setSelectedYear}
-            />
-          </div>
+          <Filter
+            showMonth={true}
+            showYear={false}
+            onYearChange={setSelectedYear}
+          />
+
+          <Filter
+            showMonth={false}
+            showYear={true}
+            onYearChange={setSelectedYear}
+          />
         </div>
 
         <button

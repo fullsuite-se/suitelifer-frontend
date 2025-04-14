@@ -12,6 +12,7 @@ const ContactDetails = () => {
     contactPhone: "",
     contactLandline: "",
     contactEmail: "",
+    internshipEmail: "",
   });
 
   const [dataUpdated, setDataUpdated] = useState(false);
@@ -27,6 +28,7 @@ const ContactDetails = () => {
         contactPhone: response.data.content.contactPhone,
         contactLandline: response.data.content.contactLandline,
         contactEmail: response.data.content.contactEmail,
+        internshipEmail:response.data.content.internshipEmail
       });
     } catch (err) {
       console.log(err);
@@ -63,6 +65,11 @@ const ContactDetails = () => {
           value: contactDetails.contactEmail,
         },
         {
+          label: "Internship Email",
+          name: "internshipEmail",
+          value: contactDetails.internshipEmail,
+        },
+        {
           label: "Telephone Number",
           name: "contactLandline",
           value: contactDetails.contactLandline,
@@ -86,11 +93,6 @@ const ContactDetails = () => {
       ))}
 
       <div className="flex justify-end gap-2 mt-6">
-        {/* <ContentButtons
-          icon={<EyeIcon className="size-5" />}
-          text="Preview Changes"
-          handleClick={null}
-        /> */}
         <ContentButtons
           icon={<BookmarkSquareIcon className="size-5" />}
           text="Publish Changes"
