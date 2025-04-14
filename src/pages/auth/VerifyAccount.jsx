@@ -13,9 +13,12 @@ const VerifyAccount = () => {
   useEffect(() => {
     const verifyCode = async () => {
       try {
-        const response = await api.get("/api/verify-verification-code", {
-          params: { payloadEncrypted },
-        });
+        const response = await api.get(
+          "/api/verify-account-verification-link",
+          {
+            params: { payloadEncrypted },
+          }
+        );
 
         if (response.data.isSuccess) {
           toast.success(response.data.message);
