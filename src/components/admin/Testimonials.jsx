@@ -248,7 +248,6 @@ function Testimonials() {
                   headerClass: "text-primary font-bold bg-gray-100",
                 },
                 {
-
                   headerName: "Visibility",
                   field: "isShown",
                   flex: 1,
@@ -371,7 +370,7 @@ function Testimonials() {
                   required
                   value={testimonialDetails.testimony || ""}
                   onChange={(e) => handleTestimonialDetailsChange(e)}
-                  rows={3}
+                  rows={7}
                   className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
                 />
               </div>
