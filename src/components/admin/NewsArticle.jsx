@@ -15,6 +15,8 @@ import { AgGridReact } from "@ag-grid-community/react";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
 import Filter from "./NewsletterFilter";
+import ContentButtons from "./ContentButtons";
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -133,20 +135,23 @@ function NewsArticle() {
     <>
       <div className="flex justify-between w-full mb-2">
         <div className="flex gap-2">
-          <Filter
-            showMonth={true}
-            showYear={false}
-            onYearChange={setSelectedYear}
-          />
-
-          <Filter
-            showMonth={false}
-            showYear={true}
-            onYearChange={setSelectedYear}
-          />
+          <div className="bg-primary rounded-md text-white pr-2 flex items-center ">
+            <Filter
+              showMonth={true}
+              showYear={false}
+              onYearChange={setSelectedYear}
+            />
+          </div>
+          <div className="bg-primary rounded-md text-white pr-4 flex items-center ">
+            <Filter
+              showMonth={false}
+              showYear={true}
+              onYearChange={setSelectedYear}
+            />
+          </div>
         </div>
 
-        <button
+        {/* <button
           onClick={() => setOpenDialog(true)}
           className="rounded-md p-2 bg-accent-2! border-none outline-none text-white"
         >
@@ -154,7 +159,15 @@ function NewsArticle() {
             <ControlPointIcon fontSize="small" />
             <span>News Article</span>
           </div>
-        </button>
+        </button> */}
+
+        <div className="flex justify-end gap-2">
+          <ContentButtons
+            icon={<PlusCircleIcon className="size-5" />}
+            text="Add News Article"
+            handleClick={setOpenDialog}
+          />
+        </div>
       </div>
 
       <div

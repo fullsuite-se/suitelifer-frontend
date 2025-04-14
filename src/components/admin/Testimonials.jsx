@@ -20,6 +20,8 @@ import FileUploaderProvider from "../../components/admin/FileUploader";
 import api from "../../utils/axios";
 import { useStore } from "../../store/authStore";
 import toast from "react-hot-toast";
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import ContentButtons from "./ContentButtons";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -217,19 +219,12 @@ function Testimonials() {
 
   return (
     <>
-      <div className="flex justify-end">
-        <button
-          variant="contained"
-          onClick={handleAdd}
-          className="btn-primary mb-2"
-        >
-          <div className="flex items-center justify-center w-full gap-1">
-            <ControlPointIcon fontSize="small" />
-            <span className="text-sm flex items-center justify-center">
-              Add Testimonial
-            </span>
-          </div>
-        </button>
+      <div className="flex justify-end gap-2 mb-2">
+        <ContentButtons
+          icon={<PlusCircleIcon className="size-5" />}
+          text="Preview Changes"
+          handleClick={handleAdd}
+        />
       </div>
 
       <div className="border-primary rounded-md w-full overflow-hidden">
@@ -265,7 +260,7 @@ function Testimonials() {
                   flex: 1,
                   headerClass: "text-primary font-bold bg-gray-100",
                 },
-                
+
                 {
                   headerName: "Testimony",
                   field: "testimony",
@@ -276,7 +271,7 @@ function Testimonials() {
                   headerName: "Position",
                   field: "position",
                   flex: 1,
-                  headerClass: "text-primary font-bold bg-tertiary",
+                  headerClass: "text-primary font-bold bg-gray-100",
                 },
                 {
                   headerName: "Visibility",
