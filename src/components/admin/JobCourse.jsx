@@ -205,7 +205,16 @@ function JobCourse() {
                   ),
                 },
               ]}
-              defaultColDef={{ sortable: true, filter: true }}
+              defaultColDef={{
+                filter: "agTextColumnFilter",
+                floatingFilter: true,
+                sortable: true,
+                cellStyle: {
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "left",
+                },
+              }}
               rowHeight={50}
               pagination={true}
               paginationPageSize={5}
