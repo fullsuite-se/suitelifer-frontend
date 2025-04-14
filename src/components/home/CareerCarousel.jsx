@@ -5,37 +5,31 @@ import "swiper/css";
 import MotionUp from "../MotionUp.jsx";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import BusinessOperations from "../../assets/images/careers-industry-images/Business-Operations.webp";
+import FinanceOperations from "../../assets/images/careers-industry-images/Finance-Operations.webp";
+import SoftwareDevelopment from "../../assets/images/careers-industry-images/Software-Engineering-A.webp";
+import Compliance from "../../assets/images/careers-industry-images/Compliance.webp";
 
 const careerIndustries = [
   {
     industryId: 1,
-    imageUrl:
-      "https://www.anzac.co.in/wp-content/uploads/2024/03/business-process-outsourcing.jpg",
-    name: "Data Operations",
-  },
-  {
-    industryId: 2,
-    imageUrl:
-      "https://i1.wp.com/ebcallcenter.com/wp-content/uploads/BPO-1.jpg?fit=750%2C437&ssl=1",
+    imageUrl: BusinessOperations,
     name: "Business Operations",
   },
   {
-    industryId: 3,
-    imageUrl:
-      "https://media.istockphoto.com/id/1645012505/photo/analytics-chart-business-analysis-chart-kpi-showing-icon-on-virtual-screen-monitor-laptop-by.jpg?s=612x612&w=0&k=20&c=t82vo8fipJUrwEpHGU2y-rUQN_i7BrXYoxvLgMcDe18=",
+    industryId: 2,
+    imageUrl: FinanceOperations,
     name: "Finance Operations",
   },
   {
-    industryId: 4,
-    imageUrl:
-      "https://media.istockphoto.com/id/1021137062/photo/software-developers-doing-some-research.jpg?s=612x612&w=0&k=20&c=K3YdSFPGGCUSwSWkeZ_nuhWszRxpjNJe5sRBYJkFMpQ=",
+    industryId: 3,
+    imageUrl: SoftwareDevelopment,
     name: "Software Development",
   },
   {
-    industryId: 5,
-    imageUrl:
-      "https://www.georginalittlephotography.co.uk/wp-content/uploads/2024/09/Alex-Chell-2-1080x675.jpg",
-    name: "Branding",
+    industryId: 4,
+    imageUrl: Compliance,
+    name: "Compliance",
   },
 ];
 
