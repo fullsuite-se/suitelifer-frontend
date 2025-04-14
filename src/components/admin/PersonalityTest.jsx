@@ -13,11 +13,12 @@ import { ModuleRegistry } from "@ag-grid-community/core";
 import { AgGridReact } from "@ag-grid-community/react";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
-import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import api from "../../utils/axios";
 import { useStore } from "../../store/authStore";
 import toast from "react-hot-toast";
 import { ModalDeleteConfirmation } from "../modals/ModalDeleteConfirmation";
+import ContentButtons from "./ContentButtons";
+import { EyeIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -149,20 +150,12 @@ function PersonalityTest() {
 
   return (
     <>
-      <div className="w-full flex justify-end items-end">
-        <button
-          variant="contained"
-          onClick={() => setOpenDialog(true)}
-          sx={{ mb: 2 }}
-          className="btn-primary mb-2 "
-        >
-          <div className="flex items-center justify-center w-full gap-1">
-            <ControlPointIcon fontSize="small" />
-            <span className="text-sm flex items-center justify-center">
-              Test
-            </span>
-          </div>
-        </button>
+      <div className="flex justify-end gap-2 mb-2">
+        <ContentButtons
+          icon={<PlusCircleIcon className="size-5" />}
+          text="Add Test"
+          handleClick={setOpenDialog}
+        />
       </div>
       <div className="border-primary rounded-md w-full overflow-hidden">
         <div className="overflow-x-auto w-full">
@@ -179,7 +172,7 @@ function PersonalityTest() {
                   flex: 2,
                   headerClass: "text-primary font-bold bg-gray-100",
                 },
-                
+
                 {
                   headerName: "URL",
                   field: "testUrl",
