@@ -285,7 +285,7 @@ const Form = () => {
           </label>
           <div className="flex flex-col gap-3 mt-3">
             {[
-              "Through Referral",
+              "Referral",
               "Website",
               "Social Media",
               "Podcast",
@@ -299,7 +299,7 @@ const Form = () => {
                   required
                   className="text-primary focus:ring-primary"
                   onChange={(e) => {
-                    setShowReferralInput(option === "Through Referral");
+                    setShowReferralInput(option === "Referral");
                     handleApplicationDetailsChange(e);
                   }}
                 />

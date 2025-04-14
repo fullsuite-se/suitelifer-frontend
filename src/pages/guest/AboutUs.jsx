@@ -23,14 +23,14 @@ import PageMeta from "../../components/layout/PageMeta";
 import Footer from "../../components/Footer";
 import MissionVision from "../../components/about-us/MissionVision";
 const AboutUs = () => {
-  const [content, setContent] = useState({});
+  const [aboutContent, setAboutContent] = useState({});
   const [videoTitle, setVideoTitle] = useState("Thought it was over, but...");
 
   const fetchContent = async () => {
     try {
       const response = await api.get("/api/content/about");
 
-      setContent(response.data.aboutContent);
+      setAboutContent(response.data.aboutContent);
     } catch (error) {
       console.log(err);
     }
@@ -72,7 +72,7 @@ const AboutUs = () => {
             />
           </div>
           <div className="about-text-banner flex flex-col mb-2 xl:pl-10">
-            <h2 className="font-avenir-black px-5">{content.textBanner}</h2>
+            <h2 className="font-avenir-black px-5">{aboutContent.textBanner}</h2>
           </div>
 
           <div className="mx-5">
@@ -236,10 +236,10 @@ const AboutUs = () => {
         <MissionVision
           imgMission={imgMission}
           imgVision={imgVision}
-          missionContent={content.mission}
-          missionSlogan={content.missionSlogan}
-          visionContent={content.vision}
-          visionSlogan={content.visionSlogan}
+          missionContent={aboutContent.mission}
+          missionSlogan={aboutContent.missionSlogan}
+          visionContent={aboutContent.vision}
+          visionSlogan={aboutContent.visionSlogan}
         />
         <div className="py-5"></div>
         {/* Message from the CEO */}
@@ -352,7 +352,7 @@ const AboutUs = () => {
             </div>
           </div>
           <div className="w-[80%] max-w-[1200px] pt-5 md:pt-20 mx-auto">
-            <YouTubeEmbed videoId={"c6fs1gBpjQg"} />
+            <YouTubeEmbed embedUrl={aboutContent.dayInPodUrl} />
           </div>
 
           <div className="text-body mt-10 md:mt-[3%] flex flex-col items-center mx-[10%]">
