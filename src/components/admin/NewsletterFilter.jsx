@@ -50,7 +50,7 @@ const Filter = ({
           <select
             value={selectedMonth}
             onChange={handleMonthChange}
-            className="bg-primary rounded-md border-none outline-none p-2 text-white"
+            className="bg-primary rounded-md border-none outline-none p-2 text-white "
           >
             {months.map((month) => (
               <option key={month} value={month}>

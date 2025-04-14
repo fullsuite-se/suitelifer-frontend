@@ -6,7 +6,6 @@ import {
   DialogTitle,
   IconButton,
 } from "@mui/material";
-import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
@@ -15,6 +14,8 @@ import { AgGridReact } from "@ag-grid-community/react";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
 import Filter from "./NewsletterFilter";
+import ContentButtons from "./ContentButtons";
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -63,6 +64,7 @@ function NewsArticle() {
     article: "",
     imageUrl: "",
     createdBy: "Melbraei Santiago",
+    section: "",
   });
 
   const handleImageUpload = (event) => {
@@ -133,28 +135,29 @@ function NewsArticle() {
     <>
       <div className="flex justify-between w-full mb-2">
         <div className="flex gap-2">
-          <Filter
-            showMonth={true}
-            showYear={false}
-            onYearChange={setSelectedYear}
-          />
-
-          <Filter
-            showMonth={false}
-            showYear={true}
-            onYearChange={setSelectedYear}
-          />
+          <div className="bg-primary rounded-md text-white pr-2 flex items-center ">
+            <Filter
+              showMonth={true}
+              showYear={false}
+              onYearChange={setSelectedYear}
+            />
+          </div>
+          <div className="bg-primary rounded-md text-white pr-4 flex items-center ">
+            <Filter
+              showMonth={false}
+              showYear={true}
+              onYearChange={setSelectedYear}
+            />
+          </div>
         </div>
 
-        <button
-          onClick={() => setOpenDialog(true)}
-          className="rounded-md p-2 bg-accent-2! border-none outline-none text-white"
-        >
-          <div className="flex items-center gap-1">
-            <ControlPointIcon fontSize="small" />
-            <span>News Article</span>
-          </div>
-        </button>
+        <div className="flex justify-end gap-2">
+          <ContentButtons
+            icon={<PlusCircleIcon className="size-5" />}
+            text="Add News Article"
+            handleClick={setOpenDialog}
+          />
+        </div>
       </div>
 
       <div
@@ -184,6 +187,16 @@ function NewsArticle() {
 
             { headerName: "Title", field: "title", flex: 1.5 },
             { headerName: "Article", field: "article", flex: 2 },
+            {
+              headerName: "Section",
+              field: "section",
+              flex: 1,
+              cellStyle: {
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              },
+            },
             {
               headerName: "Created At",
               field: "createdAt",
@@ -271,7 +284,7 @@ function NewsArticle() {
             </div>
 
             <div className="text-md font-bold pt-4 font-avenir-black">
-              Title
+              Title<span className="text-primary">*</span>
             </div>
             <input
               name="title"
@@ -283,7 +296,7 @@ function NewsArticle() {
               className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary "
             ></input>
             <div className="text-md font-bold pt-4 font-avenir-black">
-              Article
+              Article<span className="text-primary">*</span>
             </div>
             <textarea
               name="article"
@@ -294,6 +307,32 @@ function NewsArticle() {
               rows={8}
               className="w-full p-3 resize-y border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
             ></textarea>
+          </div>
+          <div>
+            <label className="block text-gray-700 font-avenir-black mt-4">
+              Section<span className="text-primary">*</span>
+            </label>
+            <select
+              name="section"
+              value={currentNews.section}
+              onChange={(e) =>
+                setCurrentNews({ ...currentNews, section: e.target.value })
+              }
+              required
+              className="w-full p-3 resize-y border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <option value="" disabled>
+                Select Section{" "}
+              </option>
+              <option value={1}>Section 1</option>
+              <option value={2}>Section 2</option>
+              <option value={3}>Section 3</option>
+              <option value={4}>Section 4</option>
+              <option value={5}>Section 5</option>
+              <option value={6}>Section 6</option>
+              <option value={7}>Section 7</option>
+              <option value={0}>Unassigned</option>
+            </select>
           </div>
         </DialogContent>
 
