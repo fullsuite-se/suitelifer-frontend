@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import banner_img from "../../assets/images/banner-img.svg";
 import HeroSection from "../../components/home/HomeHeroSection";
 import MobileNav from "../../components/home/MobileNav";
@@ -9,7 +9,6 @@ import kb_startup from "../../assets/images/keyboard-startup.svg";
 import HomeGoalsOperations from "../../components/home/HomeGoalsOperations";
 import HomeNews from "../../components/home/HomeNews";
 import HomeBlogSpot from "../../components/home/HomeBlogSpot";
-import { useEffect } from "react";
 import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
 import PageMeta from "../../components/layout/PageMeta";
@@ -24,6 +23,7 @@ import YoutubeIcon from "../../assets/logos/Youtube";
 import SpotifyIcon from "../../assets/logos/Spotify";
 import LinkedlnIcon from "../../assets/logos/Linkedln";
 import YouTubeEmbed from "../../components/home/YoutubeEmbed";
+import api from "../../utils/axios";
 
 const Home = () => {
   const socmedPlatforms = [
@@ -53,6 +53,7 @@ const Home = () => {
       text: "the Suite Tube",
     },
   ];
+
   useEffect(() => {
     const left = document.getElementById("left-side");
     if (!left) return;
@@ -74,6 +75,20 @@ const Home = () => {
     return () => {
       clearInterval(interval);
     };
+  }, []);
+
+  const [homeContent, setHomeContent] = useState({
+    kickstartVideo: "",
+  });
+
+  const fetchHomeContent = async () => {
+    const response = await api.get("/api/content/home");
+
+    setHomeContent(response.data.homeContent);
+  };
+
+  useEffect(() => {
+    fetchHomeContent();
   }, []);
 
   return (
@@ -201,7 +216,7 @@ const Home = () => {
         <MotionUp>
           <div className="flex justify-center">
             <div className="w-[95%] max-w-[1200px] mx-auto">
-              <YouTubeEmbed videoId={"VY0CRNkUG1E"} />
+              <YouTubeEmbed embedUrl={homeContent.kickstartVideo} />
             </div>
           </div>
         </MotionUp>
