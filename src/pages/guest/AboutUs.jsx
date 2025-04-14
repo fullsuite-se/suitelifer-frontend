@@ -32,8 +32,7 @@ const AboutUs = () => {
 
       setContent(response.data.aboutContent);
     } catch (error) {
-      // TODO: HANDLE FETCH ERROR
-      console.log(error);
+      console.log(err);
     }
   };
 
@@ -74,13 +73,6 @@ const AboutUs = () => {
           </div>
           <div className="about-text-banner flex flex-col mb-2 xl:pl-10">
             <h2 className="font-avenir-black px-5">{content.textBanner}</h2>
-
-            {/* <motion.div
-              initial={{ x: 100, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
-              className="h-10 w-20 lg:h-20 lg:w-32 rounded-l-2xl bg-primary ml-auto mb-2"
-            /> */}
           </div>
 
           <div className="mx-5">
@@ -166,7 +158,7 @@ const AboutUs = () => {
                     <b>team player</b>
                   </p>
                 }
-                youtubeUrl="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                youtubeUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
               />
               {/* 2 */}
               <CoreValueCard
@@ -183,7 +175,7 @@ const AboutUs = () => {
                     <b>understood</b>
                   </p>
                 }
-                youtubeUrl="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                youtubeUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
               />
             </div>
             <div className="flex justify-center">
@@ -201,7 +193,7 @@ const AboutUs = () => {
                     <b>focused athlete</b>
                   </p>
                 }
-                youtubeUrl="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                youtubeUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
               />
             </div>
             <div className="flex justify-evenly lg:gap-10">
@@ -215,7 +207,7 @@ const AboutUs = () => {
                   />
                 }
                 text={<b className="text-body">upholds</b>}
-                youtubeUrl="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                youtubeUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
               />
               {/* 5 */}
               <CoreValueCard
@@ -230,7 +222,7 @@ const AboutUs = () => {
                     values <br /> work/life harmony
                   </b>
                 }
-                youtubeUrl="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                youtubeUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
               />
             </div>
           </div>
