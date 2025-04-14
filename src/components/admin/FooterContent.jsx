@@ -16,6 +16,8 @@ import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
 import { showConfirmationToast } from "../toasts/confirm";
 import { ModalDeleteConfirmation } from "../modals/ModalDeleteConfirmation";
+import ContentButtons from "./ContentButtons";
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -107,14 +109,14 @@ function FooterContent() {
 
   return (
     <>
-      <div className="flex justify-end mb-2">
-        <button onClick={handleAdd} className="btn-primary">
-          <div className="flex items-center gap-1">
-            <ControlPointIcon fontSize="small" />
-            <span>Add Certification</span>
-          </div>
-        </button>
+      <div className="flex justify-end gap-2 mb-2">
+        <ContentButtons
+          icon={<PlusCircleIcon className="size-5" />}
+          text="Add Certification"
+          handleClick={handleAdd}
+        />
       </div>
+
       <div className="w-full overflow-x-auto">
         <div
           className="ag-theme-quartz min-w-[600px] lg:w-full "
