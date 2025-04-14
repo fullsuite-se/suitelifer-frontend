@@ -7,12 +7,7 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
 const careerIndustries = [
-  {
-    industryId: 1,
-    imageUrl:
-      "https://www.anzac.co.in/wp-content/uploads/2024/03/business-process-outsourcing.jpg",
-    name: "Data Operations",
-  },
+ 
   {
     industryId: 2,
     imageUrl:
@@ -35,7 +30,7 @@ const careerIndustries = [
     industryId: 5,
     imageUrl:
       "https://www.georginalittlephotography.co.uk/wp-content/uploads/2024/09/Alex-Chell-2-1080x675.jpg",
-    name: "Branding",
+    name: "Compliance",
   },
 ];
 

@@ -209,9 +209,9 @@ const Careers = () => {
                 {/* <div className="relative w-full max-w-[400px] mx-auto">
                   <img
                     className="right-0 top-0 absolute z-10 w-[18vw] max-w-[260px] -translate-y-40 lg:-translate-y-50 translate-x-[7vw]
-                                rounded-b-3xl opacity-10 
+                                rounded-b-3xl opacity-100 
                                 object-cover aspect-3/4"
-                    src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    src="https://www.solidbackgrounds.com/images/5120x2880/5120x2880-yellow-orange-solid-color-background.jpg"
                     alt=""
                   />
                 </div> */}
@@ -242,9 +242,9 @@ const Careers = () => {
                 {/* <div className="relative w-full max-w-[400px] mx-auto">
                   <img
                     className="absolute right-0 z-10 w-[15vw] max-w-[200px] translate-y-85 translate-x-[4vw]
-                                rounded-3xl opacity-5 
+                                rounded-3xl opacity-50 
                                 object-cover aspect-3/4"
-                    src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    src="https://www.solidbackgrounds.com/images/5120x2880/5120x2880-yellow-orange-solid-color-background.jpg"
                     alt=""
                   />
                 </div> */}
@@ -253,9 +253,9 @@ const Careers = () => {
                 {/* <div className="relative w-full max-w-[400px] mx-auto">
                   <img
                     className="absolute z-10 w-[15vw] max-w-[280px] translate-y-65 -translate-x-[24vw]
-                                rounded-3xl opacity-5 
+                                rounded-3xl opacity-30 
                                 object-cover aspect-3/4"
-                    src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    src="https://www.solidbackgrounds.com/images/5120x2880/5120x2880-yellow-orange-solid-color-background.jpg"
                     alt=""
                   />
                 </div> */}
