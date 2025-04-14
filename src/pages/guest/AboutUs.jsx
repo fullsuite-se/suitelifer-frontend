@@ -242,7 +242,7 @@ const AboutUs = () => {
         <section className="my-[7%] relative bg-linear-to-tl from-[#6DB8A8] to-primary p-[7%] xl:p-[4%] md:px[10%] xl:px-[5%] xl:mx-[10%] rounded-tr-[12vw] lg:rounded-tr-[7vw] rounded-bl-[12vw] lg:rounded-bl-[7vw] xl:rounded-tl-xs xl:rounded-br-xs">
           <div className="flex px-[3%] flex-col md:flex-row items-center gap-10 xl:gap-20">
             <img
-              className="size-[50vw] max-w-[300px] max-h-[300px] object-cover shadow-2xl rounded-full"
+              className="size-[50vw] max-w-[350px] max-h-[350px] object-cover shadow-2xl rounded-full"
               src={maggie}
               alt="circle cutout ceo image"
             />

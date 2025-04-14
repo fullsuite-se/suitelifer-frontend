@@ -10,11 +10,15 @@ import BackToTop from "../../components/BackToTop";
 import PageMeta from "../../components/layout/PageMeta";
 import api from "../../utils/axios";
 
+import ComingSoon from "../../assets/images/coming-soon.gif";
+
 import SpotifyEmbed from "../../components/careers/SpotifyEmbed";
-import Skeleton from "react-loading-skeleton";
 import LoadingLargeSpotify from "../../components/careers/LoadingLargeSpotify";
 import LoadingSmallSpotify from "../../components/careers/LoadingSmallSpotify";
-import { IndeterminateCheckBox } from "@mui/icons-material";
+
+import emailicon from "../../assets/icons/envelope.svg";
+import tphoneicon from "../../assets/icons/mobile-button.svg";
+import phoneicon from "../../assets/icons/phone-flip.svg";
 
 const Blog = () => {
   const [isSpotifyLoading, setSpotifyIsLoading] = useState(true);
@@ -26,7 +30,7 @@ const Blog = () => {
       setSpotifyIsLoading(true);
       const response = await api.get("/api/spotify/latest-three");
 
-      setEpisodes((e) => response.data.threeLatestEpisodes);
+      // setEpisodes((e) => response.data.threeLatestEpisodes);
     } catch (err) {
       console.error(err);
     } finally {
@@ -42,7 +46,7 @@ const Blog = () => {
       const response = await api.get("/api/spotify/playlists");
 
       console.log(response.data);
-      
+
       setPlaylists(response.data.playlists);
     } catch (err) {
       console.error(err);
@@ -184,9 +188,72 @@ const Blog = () => {
                 </>
               ) : (
                 <>
-                  <div className="text-center text-gray-500">
-                    Oops! It looks like there are no spotify podcasts available
-                    yet. Stay tuned!
+                  <div className="">
+                    <div className="flex justify-center">
+                      <img src={ComingSoon} alt="coming soon gif" />
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <p className="font-avenir-black text-center text-h6">
+                        Join in on the conversation. <br />{" "}
+                        <span className="text-primary">Reach out to us!</span>
+                      </p>
+                      <br />
+                      <div className="text-body flex flex-col gap-2 md:flex-row text-gray-500 w-full justify-center text-center">
+                        <a
+                          href="mailto:suitelifer@fullsuite.ph"
+                          className="flex justify-center items-center gap-2 text-primary hover:text-secondary transition-colors  no-underline!"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            id="Filled"
+                            viewBox="0 0 24 24"
+                            width="512"
+                            height="512"
+                            className="fill-primary size-5 mb-1"
+                          >
+                            <path d="M23.954,5.542,15.536,13.96a5.007,5.007,0,0,1-7.072,0L.046,5.542C.032,5.7,0,5.843,0,6V18a5.006,5.006,0,0,0,5,5H19a5.006,5.006,0,0,0,5-5V6C24,5.843,23.968,5.7,23.954,5.542Z" />
+                            <path d="M14.122,12.546l9.134-9.135A4.986,4.986,0,0,0,19,1H5A4.986,4.986,0,0,0,.744,3.411l9.134,9.135A3.007,3.007,0,0,0,14.122,12.546Z" />
+                          </svg>
+                          suitelifer@fullsuite.ph
+                        </a>
+                        <span className="hidden md:block">&nbsp;|&nbsp;</span>
+                        <a
+                          href="tel:742-442-887"
+                          className="flex justify-center items-center gap-2 text-primary hover:text-secondary transition-colors  no-underline!"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            id="Layer_1"
+                            data-name="Layer 1"
+                            viewBox="0 0 24 24"
+                            width="512"
+                            height="512"
+                            className="fill-primary size-5 mb-1"
+                          >
+                            <path d="M24,6.24c0,7.64-10.13,17.76-17.76,17.76-1.67,0-3.23-.63-4.38-1.78l-1-1.15c-1.16-1.16-1.16-3.12,.05-4.33,.03-.03,2.44-1.88,2.44-1.88,1.2-1.14,3.09-1.14,4.28,0l1.46,1.17c3.2-1.36,5.47-3.64,6.93-6.95l-1.16-1.46c-1.15-1.19-1.15-3.09,0-4.28,0,0,1.85-2.41,1.88-2.44,1.21-1.21,3.17-1.21,4.38,0l1.05,.91c1.2,1.19,1.83,2.75,1.83,4.42Z" />
+                          </svg>
+                          742-442-887
+                        </a>
+                        <span className="hidden md:block">&nbsp;|&nbsp;</span>
+                        <a
+                          href="tel:09190639001"
+                          className="flex justify-center items-center gap-2 text-primary hover:text-secondary transition-colors  no-underline!"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            id="Layer_1"
+                            data-name="Layer 1"
+                            viewBox="0 0 24 24"
+                            width="512"
+                            height="512"
+                            className="fill-primary size-5 mb-1"
+                          >
+                            <path d="M15,0h-6c-2.757,0-5,2.243-5,5v14c0,2.757,2.243,5,5,5h6c2.757,0,5-2.243,5-5V5c0-2.757-2.243-5-5-5Zm-2,21h-2c-.552,0-1-.448-1-1s.448-1,1-1h2c.552,0,1,.448,1,1s-.448,1-1,1Z" />
+                          </svg>{" "}
+                          0917-568-0851
+                        </a>
+                      </div>
+                    </div>
                   </div>
                 </>
               )}
@@ -195,23 +262,29 @@ const Blog = () => {
         </section>
 
         <div className="width-full flex flex-col justify-center mt-10">
-          <p className="text-2xl font-avenir-black text-black/75">
-            Check out these Fresh Playlists:
-          </p>
-          <div className="mt-3 flex flex-col lg:grid lg:grid-cols-2 gap-7">
-            {playlists?.map((playlist, index) => (
-              <iframe
-                key={index}
-                style={{ borderRadius: "12px" }}
-                src={`https://open.spotify.com/embed/playlist/${playlist.spotifyId}?utm_source=generator`}
-                width="100%"
-                height="400"
-                allowFullScreen
-                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                loading="lazy"
-              ></iframe>
-            ))}
-          </div>
+          {playlists.length > 0 && spotifyEpisodes.length > 0 ? (
+            <>
+              <p className="text-2xl font-avenir-black text-black/75">
+                Check out these Fresh Playlists:
+              </p>{" "}
+              <div className="mt-3 flex flex-col lg:grid lg:grid-cols-2 gap-7">
+                {playlists?.map((playlist, index) => (
+                  <iframe
+                    key={index}
+                    style={{ borderRadius: "12px" }}
+                    src={`https://open.spotify.com/embed/playlist/${playlist.spotifyId}?utm_source=generator`}
+                    width="100%"
+                    height="400"
+                    allowFullScreen
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                    loading="lazy"
+                  ></iframe>
+                ))}
+              </div>{" "}
+            </>
+          ) : (
+            ""
+          )}
         </div>
       </main>
 
