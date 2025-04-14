@@ -248,9 +248,9 @@ const Home = () => {
       {/* <HomeSocials /> */}
       {/* </div> */}
       <div className="h-10"></div> 
-       <div className="flex items-center justify-end">
+       <div className="flex items-center justify-end pl-7 xl:pl-40">
         <div className="size-[1vh] bg-primary rounded-full"></div>
-        <div className="w-[90%] h-[0.25vh] bg-primary"></div>
+        <div className="w-full  h-[0.25vh] bg-primary"></div>
       </div>
       <div className="h-10"></div> 
 
