@@ -152,7 +152,7 @@ const CareersAll = () => {
                           <span className="text-primary text-small group-hover:text-white">
                             {job.employmentType}, {job.setupName}
                           </span>
-                          {job.salaryMin != null && job.salaryMin > 0 && (
+                          {/* {job.salaryMin != null && job.salaryMin > 0 && (
                             <>
                               <p className="text-xss text-gray-400 -mb-3 group-hover:text-white group-hover:opacity-75 group-hover:font-avenir-black">
                                 Expected Salary
@@ -169,7 +169,7 @@ const CareersAll = () => {
                                 </span>
                               </p>
                             </>
-                          )}
+                          )} */}
                           <p className="text-gray-700 text-small line-clamp-5 group-hover:text-white">
                             {job.description}
                           </p>

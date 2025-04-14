@@ -102,7 +102,7 @@ const CareersJobDetails = () => {
             <p className="text-primary mb-2 text-small">
               {jobDetails.employmentType}, {jobDetails.setupName}
             </p>
-            {jobDetails.salaryMin != null && jobDetails.salaryMin != 0 && (
+            {/* {jobDetails.salaryMin != null && jobDetails.salaryMin != 0 && (
               <div className="mb-5">
                 {" "}
                 <p className="text-xss text-gray-500">Expected Salary: </p>
@@ -121,7 +121,7 @@ const CareersJobDetails = () => {
                       }).format(jobDetails.salaryMax)}
                 </span>
               </div>
-            )}
+            )} */}
             <p className="text-body">{jobDetails.description}</p>
             <br />
             {jobDetails.responsibility && (

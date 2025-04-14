@@ -4,10 +4,7 @@ import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
 import api from "../../utils/axios";
 import CoreValueCard from "../../components/about-us/CoreValueCard";
-import bgMaggieMobile from "../../assets/images/bg-mobile-chair-cutout.png";
-import bgMaggieTablet from "../../assets/images/bg-desktop-chair-cutout-4.png";
-import bgMaggieLg from "../../assets/images/bg-desktop-chair-cutout-lg.png";
-import bgMaggieDesktop from "../../assets/images/bg-desktop-chair-cutout-2.png";
+import maggie from "../../assets/images/maggie-cutout-circle.png";
 import imgMission from "../../assets/images/imgMission.svg";
 import imgVision from "../../assets/images/imgVision.svg";
 import dotsLine from "../../assets/images/socials-dots-line.svg";
@@ -241,92 +238,54 @@ const AboutUs = () => {
           visionContent={aboutContent.vision}
           visionSlogan={aboutContent.visionSlogan}
         />
-        <div className="py-5"></div>
         {/* Message from the CEO */}
-        <section className="relative" id="ceo-message">
-          {/* Text overlay */}
-          <article className="absolute text-end text-white -mt-10">
-            <div className="container-ceo-message pt-[18%]  pr-[5%] md:pr-[5%]">
-              <div className="flex justify-end">
-                <p className="text-small font-avenir-black text-secondary">
-                  MESSAGE FROM THE CEO
-                </p>
-              </div>{" "}
+        <section className="my-[7%] relative bg-linear-to-tl from-[#6DB8A8] to-primary p-[7%] xl:p-[4%] md:px[10%] xl:px-[5%] xl:mx-[10%] rounded-tr-[12vw] lg:rounded-tr-[7vw] rounded-bl-[12vw] lg:rounded-bl-[7vw] xl:rounded-tl-xs xl:rounded-br-xs">
+          <div className="flex px-[3%] flex-col md:flex-row items-center gap-10 xl:gap-20">
+            <img
+              className="size-[50vw] max-w-[300px] max-h-[300px] object-cover shadow-2xl rounded-full"
+              src={maggie}
+              alt="circle cutout ceo image"
+            />
+            <div className="text-white text-center md:text-start">
+              <p className="text-small font-avenir-black text-secondary">
+                MESSAGE FROM THE CEO
+              </p>
               <br />
-              <div className="flex justify-end">
-                {/* Title */}
-                <p className="text-h4 w-[60%] font-avenir-black ">
-                  Scaling Smarter, Growing Faster
-                </p>
-              </div>{" "}
+              {/* Title */}
+              <p className="text-h4 font-avenir-black">
+                Scaling Smarter, Growing Faster
+              </p>
               <br />
-              {/* First paragraph bolded */}
-              <div className="flex justify-end">
-                {/* Title */}
-                <p className="text-body w-[50%] md:w-[40%]">
-                  <i className="font-avenir-black indent-8">
-                    At FullSuite, we are redefining how startups scale—offering
-                    seamless, cost-efficient solutions to help you grow with
-                    confidence.
-                  </i>
-                </p>
-              </div>
-              <p className=""></p> <br />
-              <div className="flex justify-end">
-                {/* Second paragraph */}
-                <p className="w-[60%] md:w-[55%] indent-8 text-body">
-                  FullSuite was built to empower venture-backed startups with
-                  the operational and financial expertise they need to scale
-                  efficiently. Our team understands the challenges of rapid
-                  growth, and we are committed to providing tailored, offshore
-                  solutions that allow you to focus on innovation while we
-                  handle the complexities of finance and operations.
-                </p>
-              </div>{" "}
-              <br />
-              {/* Third paragraph */}
-              <div className="flex justify-end">
-                <p className="w-[48%] md:w-[55%] indent-8 text-base sm:text-lg md:text-xl">
-                  We take pride in being the trusted partner of some of the most
-                  ambitious startups, ensuring they have the support and
-                  infrastructure needed to thrive in a competitive market.
-                  Whether you're looking to streamline processes or expand your
-                  team without the burden of traditional staffing costs,
-                  FullSuite is here to help you achieve your goals.
-                </p>
-              </div>
-              <div className="flex justify-end">
-                <p className="mt-2 md:mt-4 indent-8 text-small font-avenir-roman-oblique">
-                  ~ Maggie
-                </p>
-              </div>
+              {/* Quote */}
+              <p className="text-body -mt-4">
+                <i className="font-avenir-black indent-8">
+                  At FullSuite, we are redefining how startups scale—offering
+                  seamless, cost-efficient solutions to help you grow with
+                  confidence.
+                </i>
+              </p>
             </div>
-          </article>
-          {/* Image background */}
-          <div className="mt-20  md:-mt-20 md:mb-20">
-            <img
-              className="md:hidden h-full w-full"
-              src={bgMaggieMobile}
-              alt=""
-            />
-            <img
-              className="hidden md:block lg:hidden h-full w-full"
-              src={bgMaggieTablet}
-              alt=""
-            />
-            <img
-              className="hidden md:block lg:block xl:hidden h-full w-full"
-              src={bgMaggieLg}
-              alt=""
-            />
-            <img
-              className="hidden lg:hidden xl:block h-full w-full"
-              src={bgMaggieDesktop}
-              alt=""
-            />
+          </div>
+          <div className="pt-[4%] px-[3%]">
+            <p className="text-white text-body">
+              FullSuite was built to empower venture-backed startups with the
+              operational and financial expertise they need to scale
+              efficiently. Our team understands the challenges of rapid growth,
+              and we are committed to providing tailored, offshore solutions
+              that allow you to focus on innovation while we handle the
+              complexities of finance and operations.
+            </p>{" "}
+            <br />
+            <p className="text-white text-body">
+              We take pride in being the trusted partner of some of the most
+              ambitious startups, ensuring they have the support and
+              infrastructure needed to thrive in a competitive market. Whether
+              you're looking to streamline processes or expand your team without
+              the burden of traditional staffing costs, FullSuite is here to
+              help you achieve your goals.
+            </p>
           </div>
         </section>
-        <div className="py-5"></div>{" "}
         <div className="flex justify-end scale-x-[-1]">
           <img className="dots-line" src={dotsLine} alt="3 dots and a line" />
         </div>
@@ -355,25 +314,31 @@ const AboutUs = () => {
             <YouTubeEmbed embedUrl={aboutContent.dayInPodUrl} />
           </div>
 
-          <div className="text-body mt-10 md:mt-[3%] flex flex-col items-center mx-[10%]">
-            <div className="mb-5">
-              <p className="">
-                Feel like you belong to{" "}
-                <span className="font-avenir-black text-primary">
-                  SuiteLife?
-                </span>
+          <section className="mt-10 md:mt-[5%] pb-[7%] lg:pb-[5%] px-[5%]">
+            <div className="text-center pb-7">
+              <p className="text-h5 font-avenir-black">
+                Feel like you embody the{" "}
+                <span className="text-primary">SuiteLife</span>?
+              </p>
+              <p className="text-small text-gray-500">
+                Transform that feeling into your future. Discover your
+                opportunities with us.
               </p>
             </div>
-            <a
-              className="font-avenir-black transition-all duration-300 cursor-pointer hover:bg-[#007a8e] w-full max-w-[200px] rounded-2xl text-white text-center no-underline bg-primary p-3"
-              href="careers"
-            >
-              <button className="cursor-pointer text-small">
-                Check our careers
-              </button>
-            </a>
-          </div>
-          <div className="py-10"></div>
+            {/* CTA */}
+            <div className="flex justify-center">
+              <a
+                className="font-avenir-black transition-all duration-300 cursor-pointer hover:bg-[#007a8e] w-full max-w-[200px] rounded-2xl text-white text-center no-underline bg-primary p-3"
+                href="careers"
+              >
+                <button className="cursor-pointer text-small">
+                  Explore our careers
+                </button>
+              </a>
+            </div>
+          </section>
+
+          <div className="py-10 lg:p-0"></div>
         </section>
       </main>
       <BackToTop />
