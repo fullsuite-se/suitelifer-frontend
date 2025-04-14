@@ -1,63 +1,254 @@
-import React, { useState } from "react";
-import PPC from "./PrivacyPolicyContent";
+import React, { useRef, useState } from "react";
+import {
+  IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+} from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { AgGridReact } from "@ag-grid-community/react";
+import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
+import { ModuleRegistry } from "@ag-grid-community/core";
+import "@ag-grid-community/styles/ag-grid.css";
+import "@ag-grid-community/styles/ag-theme-quartz.css";
+import { showConfirmationToast } from "../toasts/confirm";
+import { ModalDeleteConfirmation } from "../modals/ModalDeleteConfirmation";
+import ContentButtons from "./ContentButtons";
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
+
+ModuleRegistry.registerModules([ClientSideRowModelModule]);
+
+const defaultPolicy = {
+  policyId: null,
+  title: "",
+  content: "",
+  createdAt: "",
+  createdBy: "",
+};
 
 function PrivacyPolicy() {
-  const [policySections, setPolicySections] = useState([
-  ]);
+  const gridRef = useRef();
+  const [policies, setPolicies] = useState([]);
+  const [dataUpdated, setDataUpdated] = useState(false);
 
-  const [newSection, setNewSection] = useState({ title: "", content: "" });
+  const [addEditModalOpen, setAddEditModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [policyDetails, setPolicyDetails] = useState(defaultPolicy);
 
   const handleAdd = () => {
-    if (!newSection.title || !newSection.content) return;
-    setPolicySections([...policySections, { ...newSection, id: Date.now() }]);
-    setNewSection({ title: "", content: "" });
+    setPolicyDetails(defaultPolicy);
+    setAddEditModalOpen(true);
   };
 
-  const handleUpdate = (id, updated) => {
-    setPolicySections((prev) =>
-      prev.map((section) => (section.id === id ? updated : section))
+  const handleEdit = (data) => {
+    setPolicyDetails(data);
+    setAddEditModalOpen(true);
+  };
+
+  const handleDeleteClick = (id) => {
+    setPolicyDetails((p) => ({ ...p, policyId: id }));
+    setDeleteModalOpen(true);
+  };
+
+  const handleDelete = () => {
+    const filtered = policies.filter(
+      (item) => item.policyId !== policyDetails.policyId
     );
+    setPolicies(filtered);
+    showConfirmationToast.success("Policy deleted");
+    setDeleteModalOpen(false);
+    setPolicyDetails(defaultPolicy);
   };
 
-  const handleDelete = (id) => {
-    setPolicySections((prev) => prev.filter((section) => section.id !== id));
+  const handleSave = (e) => {
+    e.preventDefault();
+
+    if (!policyDetails.title || !policyDetails.content) {
+      showConfirmationToast.error("Title and content are required.");
+      return;
+    }
+
+    let updatedPolicies = [...policies];
+
+    if (policyDetails.policyId) {
+      updatedPolicies = updatedPolicies.map((item) =>
+        item.policyId === policyDetails.policyId ? policyDetails : item
+      );
+    } else {
+      updatedPolicies.push({
+        ...policyDetails,
+        policyId: Date.now(),
+        createdAt: new Date().toISOString(),
+        createdBy: "Melbraei Santiago",
+      });
+    }
+
+    setPolicies(updatedPolicies);
+    setPolicyDetails(defaultPolicy);
+    setAddEditModalOpen(false);
+    setDataUpdated(!dataUpdated);
   };
 
   return (
-    <div className="p-4 w-full mx-auto">
-      <div className="mb-6">
-        <div className="text-md font-bold pt-4 font-avenir-black">Title</div>
-        <input
-          type="text"
-          name="title"
-          value={newSection.title}
-          onChange={(e) =>
-            setNewSection({ ...newSection, title: e.target.value })
-          }
-          className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+    <>
+      <div className="flex justify-end gap-2 mb-2">
+        <ContentButtons
+          icon={<PlusCircleIcon className="size-5" />}
+          text="Add Policy"
+          handleClick={handleAdd}
         />
-
-        <div className="text-md font-bold pt-4 font-avenir-black">Content</div>
-        <textarea
-          type="text"
-          name="content"
-          value={newSection.content}
-          onChange={(e) =>
-            setNewSection({ ...newSection, content: e.target.value })
-          }
-          className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
-        />
-        <button className="btn-primary" onClick={handleAdd}>
-          Add Policy
-        </button>
       </div>
 
-      <PPC
-        policySections={policySections}
-        onUpdate={handleUpdate}
-        onDelete={handleDelete}
+      <div className="w-full overflow-x-auto">
+        <div
+          className="ag-theme-quartz min-w-[600px] lg:w-full"
+          style={{ height: "600px" }}
+        >
+          <AgGridReact
+            ref={gridRef}
+            rowData={policies}
+            columnDefs={[
+              {
+                headerName: "Title",
+                field: "title",
+                flex: 1,
+                headerClass: "text-primary font-bold bg-gray-100",
+              },
+              {
+                headerName: "Content",
+                field: "content",
+                flex: 2,
+                headerClass: "text-primary font-bold bg-gray-100",
+              },
+              {
+                headerName: "Date Created",
+                field: "createdAt",
+                flex: 1,
+                valueGetter: (params) =>
+                  new Date(params.data.createdAt).toLocaleString(),
+                headerClass: "text-primary font-bold bg-gray-100",
+              },
+              {
+                headerName: "Created By",
+                field: "createdBy",
+                flex: 1,
+                headerClass: "text-primary font-bold bg-gray-100",
+              },
+              {
+                headerName: "Actions",
+                field: "actions",
+                flex: 1,
+                headerClass: "text-primary font-bold bg-gray-100",
+                cellRenderer: (params) => (
+                  <div className="flex gap-2">
+                    <IconButton onClick={() => handleEdit(params.data)}>
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => handleDeleteClick(params.data.policyId)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </div>
+                ),
+              },
+            ]}
+            defaultColDef={{
+              filter: "agTextColumnFilter",
+              floatingFilter: true,
+              sortable: true,
+              cellStyle: {
+                display: "flex",
+                alignItems: "center",
+              },
+            }}
+            domLayout="autoHeight"
+            rowHeight={window.innerWidth < 640 ? 60 : 80}
+            pagination={true}
+            paginationPageSize={5}
+            paginationPageSizeSelector={[5, 10]}
+          />
+        </div>
+      </div>
+
+      <Dialog
+        open={addEditModalOpen}
+        onClose={() => setAddEditModalOpen(false)}
+        sx={{
+          "& .MuiDialog-paper": {
+            borderRadius: "16px",
+            padding: "20px",
+            width: "600px",
+          },
+        }}
+      >
+        <form onSubmit={handleSave}>
+          <DialogTitle>
+            {policyDetails.policyId ? "Edit Policy" : "Add Policy"}
+          </DialogTitle>
+          <DialogContent>
+            <div className="text-md font-bold pt-4 font-avenir-black">
+              Title<span className="text-primary">*</span>
+            </div>
+            <input
+              name="itle"
+              value={policyDetails.title}
+              onChange={(e) =>
+                setPolicyDetails((prev) => ({
+                  ...prev,
+                  title: e.target.value,
+                }))
+              }
+              className="w-full p-3 border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+
+            <div className="text-md font-bold pt-4 font-avenir-black">
+              Content<span className="text-primary">*</span>
+            </div>
+            <textarea
+              name="content"
+              value={policyDetails.content}
+              onChange={(e) =>
+                setPolicyDetails((prev) => ({
+                  ...prev,
+                  content: e.target.value,
+                }))
+              }
+              rows={8}
+              className="w-full p-3 resize-y border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+          </DialogContent>
+          <DialogActions>
+            <button
+              type="button"
+              className="btn-light"
+              onClick={() => {
+                setAddEditModalOpen(false);
+                setPolicyDetails(defaultPolicy);
+              }}
+            >
+              Cancel
+            </button>
+            <button type="submit" className="btn-primary">
+              Save
+            </button>
+          </DialogActions>
+        </form>
+      </Dialog>
+
+      <ModalDeleteConfirmation
+        isOpen={deleteModalOpen}
+        handleClose={() => {
+          setDeleteModalOpen(false);
+          setPolicyDetails(defaultPolicy);
+        }}
+        onConfirm={handleDelete}
+        message="Are you sure you want to delete this privacy policy?"
       />
-    </div>
+    </>
   );
 }
 
