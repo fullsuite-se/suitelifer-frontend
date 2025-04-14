@@ -17,6 +17,8 @@ import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-mod
 
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
+import ContentButtons from "./ContentButtons";
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -85,16 +87,12 @@ function FAQs() {
 
   return (
     <>
-      <div className="flex justify-end">
-        <button
-          onClick={() => setOpenDialog(true)}
-          className="btn-primary mb-2"
-        >
-          <div className="flex items-center justify-center w-full gap-1">
-            <ControlPointIcon fontSize="small" />
-            <span className="text-sm">Add FAQ</span>
-          </div>
-        </button>
+      <div className="flex justify-end gap-2 mb-2">
+        <ContentButtons
+          icon={<PlusCircleIcon className="size-5" />}
+          text="Preview Changes"
+          handleClick={setOpenDialog}
+        />
       </div>
 
       <div
