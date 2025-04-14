@@ -1,27 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { EyeIcon, BookmarkSquareIcon } from "@heroicons/react/24/outline";
 import ContentButtons from "./ContentButtons";
-import ImageUploader from "./ImageUploader";
+import api from "../../utils/axios";
+import { useStore } from "../../store/authStore";
 
 const AdminHomePage = () => {
-  const handleContentDetailsChange = (e) => {
-    setContentDetails((cd) => ({ ...cd, [e.target.name]: e.target.value }));
+  // USER DETAILS
+  const user = useStore((state) => state.user);
 
-    console.log(contentDetails);
-    console.log(user.id);
-  };
-
-  const [contentDetails, setContentDetails] = useState({
-    getInTouchImage: null,
-    videoURL: null,
-
+  // HOME DETAILS
+  const [homeDetails, setHomeDetails] = useState({
+    contentId: null,
+    // getInTouchImage: null,
+    kickstartVideo: "",
   });
+
+  const handleHomeDetailsChange = (e) => {
+    setHomeDetails((cd) => ({ ...cd, [e.target.name]: e.target.value }));
+
+    console.log(homeDetails);
+  };
 
   const handlePublishChanges = async () => {
     try {
-      const response = await api.post("/api/nani/desu/ka", {
-        ...contentDetails,
+      const response = await api.patch("/api/content/home", {
+        ...homeDetails,
         user_id: user.id,
       });
 
@@ -36,18 +40,36 @@ const AdminHomePage = () => {
     }
   };
 
+  const fetchHomeContent = async () => {
+    try {
+      const response = await api.get("/api/content/home");
+
+      console.log(response.data);
+
+      setHomeDetails(response.data.homeContent);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // USE EFFECT TRIGGER
+  const [dataUpdated, setDataUpdated] = useState(false);
+
+  useEffect(() => {
+    fetchHomeContent();
+  }, [dataUpdated]);
+
   return (
     <>
       <div className="flex flex-col md:flex-row gap-4 p-4">
         <div className="flex flex-col md:w-full">
-       
           <div className="text-md p-1 font-avenir-black">Home Page Video</div>
 
           <input
             type="text"
-            name="videoURL"
-            value={contentDetails.aboutVideo}
-            onChange={(e) => handleContentDetailsChange(e)}
+            name="kickstartVideo"
+            value={homeDetails.kickstartVideo}
+            onChange={(e) => handleHomeDetailsChange(e)}
             className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
           />
         </div>
