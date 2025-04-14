@@ -285,7 +285,7 @@ const Form = () => {
           </label>
           <div className="flex flex-col gap-3 mt-3">
             {[
-              "Through Referral",
+              "Referral",
               "Website",
               "Social Media",
               "Podcast",
