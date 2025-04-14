@@ -16,20 +16,13 @@ import {
 import TestCredentials from "./TestCredentials";
 import { ModalResetPassword } from "../../components/modals/ModalResetPassword";
 import { Link } from "react-router-dom";
+import sendVerification from "../../utils/sendVerification";
 
 const LoginForm = ({ email, password, setEmail, setPassword }) => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const { executeRecaptcha } = useGoogleReCaptcha();
-
-  const sendVerification = async (userId, email) => {
-    const response = await api.post("/api/send-verification-code", {
-      userId: userId,
-      email: email,
-    });
-    return response;
-  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -72,11 +65,16 @@ const LoginForm = ({ email, password, setEmail, setPassword }) => {
       setLoading(false);
       if (error.response?.status === 400) {
         toast.error("Invalid email or password. Please try again.");
+      } else if (error.response?.data?.isAttemptExceeded) {
+        toast.error(
+          "You've reached the maximum number of verification attempts. Please try again in 15 minutes."
+        );
       } else if (error.response?.data?.isNotVerified) {
         const id = error.response?.data?.userId;
         const email = error.response?.data?.email;
+        setLoading(true);
         const response = await sendVerification(id, email);
-        if (response.data.isSuccess) {
+        if (response.isSuccess) {
           toast.success("Check your email to verify your account.");
         } else {
           toast.error("Failed to send verification code.");
@@ -125,7 +123,7 @@ const LoginForm = ({ email, password, setEmail, setPassword }) => {
       <button
         type="submit"
         className="mt-5 w-full bg-primary p-3 rounded-xl text-white font-avenir-black"
-        disabled={!email || !password || loading}  // Disable if fields are empty or loading
+        disabled={!email || !password || loading} // Disable if fields are empty or loading
       >
         {loading ? (
           <div className="mx-auto w-fit">
@@ -145,13 +143,12 @@ const LoginForm = ({ email, password, setEmail, setPassword }) => {
   );
 };
 
-
 // Main Login Component
 
 const Login = () => {
   const navigate = useNavigate();
   const vantaRef = useRef(null);
-  const [isResetModal, setResetModal] = useState(false);  // Fixed typo here
+  const [isResetModal, setResetModal] = useState(false); // Fixed typo here
 
   const [showCredentials, setShowCredentials] = useState(false);
   const [email, setEmail] = useState("");
@@ -197,7 +194,7 @@ const Login = () => {
   }, []);
 
   const handleResetPasswordBtn = () => {
-    setResetModal((prev) => !prev);  // Fixed typo here
+    setResetModal((prev) => !prev); // Fixed typo here
   };
 
   return (
@@ -207,7 +204,11 @@ const Login = () => {
           isOpen={isResetModal}
           handleClose={handleResetPasswordBtn}
         />
-        <div className={`flex flex-col items-center ${!showCredentials ? "justify-center min-h-screen" : "pt-20"}`}>
+        <div
+          className={`flex flex-col items-center ${
+            !showCredentials ? "justify-center min-h-screen" : "pt-20"
+          }`}
+        >
           <div
             className="bg-white mx-auto rounded-2xl p-10 py-16 border border-gray-200"
             style={{ width: "min(90%, 600px)" }}
@@ -250,7 +251,7 @@ const Login = () => {
               </button>
             </div>
           </div>
-  
+
           {showCredentials && (
             <div
               className="bg-white mx-auto rounded-2xl p-5 mt-10"
@@ -263,7 +264,6 @@ const Login = () => {
       </div>
     </GoogleReCaptchaProvider>
   );
-}
+};
 
 export default Login;
-
