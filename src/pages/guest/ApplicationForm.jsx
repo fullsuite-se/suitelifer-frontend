@@ -28,6 +28,8 @@ const Form = () => {
   const navigate = useNavigate();
   const { id, jobPosition } = useParams();
 
+  const [referrerName, setReferrerName] = useState("");
+
   const defaultApplicationDetails = {
     first_name: "",
     middle_name: "",
@@ -38,7 +40,7 @@ const Form = () => {
     mobile_number_1: "",
     discovered_at: "",
     applied_source: "Suitelife",
-    referrer_name: "",
+    referrer_name: referrerName,
     position_id: id,
     test_result: null,
     created_by: null,
@@ -317,6 +319,7 @@ const Form = () => {
                 type="text"
                 name="referrer_name"
                 required={showReferralInput}
+                onChange={(e) => setApplicationDetails(ad => ({...ad, referrer_name: e.target.value}))}
                 className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
