@@ -130,7 +130,7 @@ const Careers = () => {
                 Let's <span className="text-primary">launch</span> your career,
               </p>
               {/* MOBILE background images */}
-              <section className="relative md:hidden">
+              <section className="bg-mobile-images relative md:hidden">
                 {/* upper left image MAIN */}
                 <img
                   className="absolute w-[30vw] max-w-[220px] -translate-y-[13vw] -translate-x-[30%] rounded-2xl object-cover aspect-3/4"
@@ -143,7 +143,44 @@ const Careers = () => {
                   src={heroImages.careersRight}
                   alt="right hero image"
                 />
+
+                {/* lower left image 1 */}
+                {/* <img
+                  className="absolute w-[30vw] max-w-[220px] translate-y-[35vw] translate-x-[15vw] rounded-xl opacity-15 object-cover aspect-3/4"
+                  src="https://images.unsplash.com/photo-1606836591695-4d58a73eba1e?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  alt=""
+                /> */}
+
+                {/* lower right image 2 */}
+                {/* <img
+                  className="absolute right-0 w-[20vw] max-w-[120px] translate-y-[36vw] -translate-x-[25vw] rounded-lg opacity-5 object-cover aspect-3/4"
+                  src="https://images.unsplash.com/photo-1496851473196-e26508c21494?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  alt=""
+                /> */}
+
+                {/* upper right image 2 */}
+                {/* <img
+                  className="absolute w-[28vw] max-w-[180px] -translate-y-[14vw] translate-x-[55vw] rounded-2xl opacity-10 object-cover aspect-3/4"
+                  src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  alt=""
+                /> */}
+
+                {/* upper left image 1 */}
+                {/* <img
+                  className="absolute w-[25vw] max-w-[180px] -translate-y-[27vw] translate-x-[22vw] rounded-2xl opacity-5 object-cover aspect-3/4"
+                  src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  alt=""
+                /> */}
               </section>
+              {/* 
+
+                <img
+                  className="absolute w-[15vw]  max-w-[220px] translate-y-[0vw] translate-x-[0vw] rounded-2xl opacity-60 object-cover aspect-3/4"
+                  src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  alt=""
+                />
+
+              */}
               {/* TABLET + DESKTOP background images */}
               <section className="relative hidden md:block mx-auto">
                 {/* left image MAIN */}
@@ -153,7 +190,7 @@ const Careers = () => {
                                 rounded-3xl opacity-60 
                                 object-cover aspect-3/4"
                     src={heroImages.careersLeft}
-                    alt="left hero image"
+                    alt=""
                   />
                 </div>
 
@@ -164,7 +201,7 @@ const Careers = () => {
                                 rounded-3xl opacity-60 
                                 object-cover aspect-3/4"
                     src={heroImages.careersRight}
-                    alt="right hero image"
+                    alt=""
                   />
                 </div>
 
@@ -223,33 +260,7 @@ const Careers = () => {
                   />
                 </div> */}
               </section>
-              <div className="relative flex justify-center md:py-4 gap-10">
-                <div className="">
-                  <div className="absolute right-0">
-                    <div className="relative bg-secondary/17 rounded-l-2xl w-[10vw] h-[17vw] -translate-y-10"></div>
-                  </div>
-
-                  <div className="absolute right-100">
-                    <div className="hidden lg:block relative bg-primary/7 rounded-2xl size-[17vw] max-w-[200px] max-h-[200px] -translate-y-10"></div>
-                  </div>
-
-                  <div className="absolute lg:-translate-x-70 lg:translate-y-10">
-                    <div className="relative bg-primary/8 rounded-2xl max-w-[150px] max-h-[150px] w-[17vw] h-[17vw] -translate-y-10"></div>
-                  </div>
-
-                  <div className="absolute -bottom-30 left-0">
-                    <div className="relative bg-orange-400/12 rounded-2xl w-[27vw] h-[27vw] max-w-[300px] max-h-[300px] -translate-y-10"></div>
-                  </div>
-
-                  <div className="absolute -bottom-0 left-120">
-                    <div className="hidden lg:block relative bg-secondary/10 rounded-2xl w-[17vw] h-[17vw] max-w-[100px] max-h-[100px] -translate-y-10"></div>
-                  </div>
-
-                  <div className="absolute -bottom-0 right-80">
-                    <div className="hidden lg:block relative bg-orange-400/7 rounded-2xl w-[17vw] h-[17vw] max-w-[100px] max-h-[100px] -translate-y-10"></div>
-                  </div>
-                </div>
-
+              <div className="flex justify-center md:py-4 gap-10">
                 {/* Left Image */}
                 <img
                   className="hidden md:block size-[18%] z-20 xl:max-w-[200px] object-cover aspect-3/4 rounded-2xl md:rounded-2xl"
@@ -282,7 +293,7 @@ const Careers = () => {
                 hop on <span className="text-primary">now</span>.
               </p>
             </div>
-          </section>
+          </section>          
 
           {/* Three dots one line */}
           <div
@@ -366,26 +377,83 @@ const Careers = () => {
           {/* Podcasts */}
           <section className="pb-[7%] lg:pb-[5%] px-[5%]">
             <div className="text-center pb-7">
-              <p className="text-h5 font-avenir-black">
+              <p className="text-h4 font-avenir-black">
                 Want to <span className="text-primary">learn more</span> about
-                what we do?
+                our careers?
               </p>
               <p className="text-small text-gray-500">
-                Go beyond the website: dive deeper with the Suite Spot!
+                Check out the Suite Spot podcast below
               </p>
             </div>
-            {/* CTA */}
-            <div className="flex justify-center">
-              <a
-                className="font-avenir-black transition-all duration-300 cursor-pointer hover:bg-[#007a8e] w-full max-w-[200px] rounded-2xl text-white text-center no-underline bg-primary p-3"
-                href="podcast"
-              >
-                <button className="cursor-pointer text-small">
-                  Explore our podcast
-                </button>
-              </a>
-            </div>
+            {/* Spotify Episodes */}
+            {isSpotifyLoading ? (
+              <section className="mt-20 px-[5%] md:px-[10%] lg:px-[15%]">
+                <div className="sm:hidden flex flex-col gap-4">
+                  <LoadingLargeSpotify />
+                  <LoadingSmallSpotify />
+                  <LoadingSmallSpotify />
+                </div>
+                <div className="hidden sm:flex gap-4">
+                  <div className="w-1/2">
+                    <LoadingLargeSpotify />
+                  </div>
+                  <div className="w-1/2 flex flex-col justify-center gap-4">
+                    <LoadingSmallSpotify />
+                    <LoadingSmallSpotify />
+                  </div>
+                </div>
+              </section>
+            ) : (
+              <>
+                {spotifyEpisodes.length > 0 ? (
+                  <>
+                    <section className="mt-20 px-[5%] md:px-[10%] lg:px-[15%]">
+                      {/* Mobile View: Display all in a column */}
+                      <div className="sm:hidden">
+                        {spotifyEpisodes.map(({ spotifyId }, index) => (
+                          <div className="p-1" key={index}>
+                            <SpotifyEmbed id={spotifyId} index={index} />
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Small Screens and Up: Two-column layout */}
+                      <div className="hidden sm:flex gap-7">
+                        {/* Left Column: Large Embed */}
+                        <div className="w-1/2">
+                          <SpotifyEmbed
+                            spotifyId={spotifyEpisodes[0]?.spotifyId}
+                            embedType={spotifyEpisodes[0]?.embedType}
+                            index={0}
+                          />
+                        </div>
+
+                        {/* Right Column: Two Smaller Embeds */}
+                        <div className="w-1/2 flex flex-col justify-center gap-7">
+                          {spotifyEpisodes.slice(1, 3).map((episode, index) => (
+                            <SpotifyEmbed
+                              key={index + 1}
+                              spotifyId={episode.spotifyId}
+                              embedType={episode.embedType}
+                              index={index + 1}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </section>
+                  </>
+                ) : (
+                  <>
+                    <div className="text-center text-gray-500">
+                      Oops! It looks like there are no spotify podcasts
+                      available yet. Stay tuned!
+                    </div>
+                  </>
+                )}
+              </>
+            )}
           </section>
+
         </main>
         <BackToTop />
 

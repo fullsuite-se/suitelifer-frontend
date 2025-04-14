@@ -83,7 +83,6 @@ function Testimonials() {
             headers: { "Content-Type": "multipart/form-data" },
           }
         );
-
         // SET CLOUDINARY IMAGE URL TO TESTIMONIAL DETAILS
         testimonialDetails.employeeImageUrl = uploadResponse.data.imageUrl;
 
