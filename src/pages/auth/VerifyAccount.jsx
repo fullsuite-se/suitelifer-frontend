@@ -7,18 +7,14 @@ import toast from "react-hot-toast";
 
 const VerifyAccount = () => {
   const [params] = useSearchParams();
-  const code = params.get("code");
-  const id = params.get("id");
-  const payload = params.get("payload-encrypted");
-  const [loading, setLoading] = useState(false);
+  const payloadEncrypted = params.get("payload-encrypted");
   const navigate = useNavigate();
 
   useEffect(() => {
     const verifyCode = async () => {
       try {
-        setLoading(true);
         const response = await api.get("/api/verify-verification-code", {
-          params: { code, id, payload },
+          params: { payloadEncrypted },
         });
 
         if (response.data.isSuccess) {
@@ -34,8 +30,6 @@ const VerifyAccount = () => {
         } else {
           toast.error(error.response.data.message || "Invalid request");
         }
-      } finally {
-        setLoading(false);
       }
     };
     verifyCode();
@@ -43,8 +37,6 @@ const VerifyAccount = () => {
 
   return (
     <section className="w-dvw h-dvh">
-      <div>{code}</div>
-      <div>{id}</div>
       <OnLoadLayoutAnimation />
     </section>
   );
