@@ -218,7 +218,11 @@ function Testimonials() {
                         className="w-[80px] h-[80px] sm:w-[80px] sm:h-[80px] rounded-md object-cover mx-auto "
                       />
                     ) : (
-                      <span>No Image</span>
+                      <img
+                      src="https://cdn-icons-png.flaticon.com/512/147/147142.png"
+                      alt="Employee"
+                      className="w-[80px] h-[80px] sm:w-[80px] sm:h-[80px] rounded-md object-cover mx-auto "
+                    />
                     ),
                 },
 
