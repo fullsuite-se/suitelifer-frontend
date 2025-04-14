@@ -11,6 +11,8 @@ import {
 } from "@mui/material";
 import moment from "moment";
 import EventCalendar from "./../../components/admin/EventCalendar";
+import ContentButtons from "../../components/admin/ContentButtons";
+import { EyeIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
 
 const AdminEvents = () => {
   const [openDialog, setOpenDialog] = useState(false);
@@ -46,7 +48,6 @@ const AdminEvents = () => {
 
   const handleAddEvent = () => {
     if (isEditing) {
-      // Update the existing event
       setEvents((prevEvents) =>
         prevEvents.map((event) =>
           event.start === selectedEvent.start ? newEvent : event
@@ -54,7 +55,6 @@ const AdminEvents = () => {
       );
       setIsEditing(false);
     } else {
-      // Add new event
       setEvents([...events, newEvent]);
     }
     setIsAddModalOpen(false);
@@ -80,19 +80,13 @@ const AdminEvents = () => {
 
   return (
     <div className="bg-white p-2">
-      <header className="container flex h-12 items-center justify-between flex-wrap">
-        <div className="flex">
-          {/* Button for desktop */}
-          <button
-            className="hidden cursor-pointer sm:block px-3 py-2 rounded-md border border-gray-200 bg-gray-100"
-            onClick={() => setIsAddModalOpen(true)}
-          >
-            + Add Event
-          </button>
-
-          {/* Icon Button for Mobile */}
-        </div>
-      </header>
+      <div className="flex justify-end gap-2">
+        <ContentButtons
+          icon={<PlusCircleIcon className="size-5" />}
+          text="Add Event"
+          handleClick={setIsAddModalOpen}
+        />
+      </div>
 
       <TextField
         label="Search Events"
@@ -119,7 +113,6 @@ const AdminEvents = () => {
 
               return isToday ? { className: "custom-today" } : {};
             }}
-            // style={{ height: "100%", width: "100%" }}
           />
         </div>
       </div>

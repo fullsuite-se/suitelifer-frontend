@@ -50,7 +50,7 @@ const Filter = ({
           <select
             value={selectedMonth}
             onChange={handleMonthChange}
-            className="rounded-md p-2 bg-accent-2 border-none outline-none text-white"
+            className="bg-primary rounded-md border-none outline-none p-2 text-white "
           >
             {months.map((month) => (
               <option key={month} value={month}>
@@ -66,7 +66,7 @@ const Filter = ({
           <select
             value={selectedYear}
             onChange={handleYearChange}
-            className="rounded-md p-2 bg-accent-2 border-none outline-none text-white"
+            className="bg-primary rounded-md border-none outline-none p-2 text-white"
           >
             {years.map((year) => (
               <option key={year} value={year}>

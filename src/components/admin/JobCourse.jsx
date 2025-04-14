@@ -13,12 +13,13 @@ import { ModuleRegistry } from "@ag-grid-community/core";
 import { AgGridReact } from "@ag-grid-community/react";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
-import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import api from "../../utils/axios";
 import { useStore } from "../../store/authStore";
 import toast from "react-hot-toast";
 import formatTimestamp from "../TimestampFormatter";
 import { ModalDeleteConfirmation } from "../modals/ModalDeleteConfirmation";
+import ContentButtons from "./ContentButtons";
+import { EyeIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -135,20 +136,12 @@ function JobCourse() {
 
   return (
     <>
-      <div className="flex justify-end">
-        <button
-          variant="contained"
-          onClick={showAddDialog}
-          sx={{ mb: 2 }}
-          className="btn-primary mb-2 "
-        >
-          <div className="flex items-center justify-center w-full gap-1">
-            <ControlPointIcon fontSize="small" />
-            <span className="text-sm flex items-center justify-center">
-              Course
-            </span>
-          </div>
-        </button>
+      <div className="flex justify-end gap-2 mb-2">
+        <ContentButtons
+          icon={<PlusCircleIcon className="size-5" />}
+          text="Add Course"
+          handleClick={showAddDialog}
+        />
       </div>
       <div className="border-primary rounded-md w-full overflow-hidden">
         <div className="w-full overflow-x-auto">
@@ -212,7 +205,16 @@ function JobCourse() {
                   ),
                 },
               ]}
-              defaultColDef={{ sortable: true, filter: true }}
+              defaultColDef={{
+                filter: "agTextColumnFilter",
+                floatingFilter: true,
+                sortable: true,
+                cellStyle: {
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "left",
+                },
+              }}
               rowHeight={50}
               pagination={true}
               paginationPageSize={5}

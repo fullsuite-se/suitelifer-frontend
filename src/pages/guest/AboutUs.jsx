@@ -23,17 +23,16 @@ import PageMeta from "../../components/layout/PageMeta";
 import Footer from "../../components/Footer";
 import MissionVision from "../../components/about-us/MissionVision";
 const AboutUs = () => {
-  const [content, setContent] = useState({});
+  const [aboutContent, setAboutContent] = useState({});
   const [videoTitle, setVideoTitle] = useState("Thought it was over, but...");
 
   const fetchContent = async () => {
     try {
       const response = await api.get("/api/content/about");
 
-      setContent(response.data.aboutContent);
+      setAboutContent(response.data.aboutContent);
     } catch (error) {
-      // TODO: HANDLE FETCH ERROR
-      console.log(error);
+      console.log(err);
     }
   };
 
@@ -73,14 +72,7 @@ const AboutUs = () => {
             />
           </div>
           <div className="about-text-banner flex flex-col mb-2 xl:pl-10">
-            <h2 className="font-avenir-black px-5">{content.textBanner}</h2>
-
-            {/* <motion.div
-              initial={{ x: 100, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
-              className="h-10 w-20 lg:h-20 lg:w-32 rounded-l-2xl bg-primary ml-auto mb-2"
-            /> */}
+            <h2 className="font-avenir-black px-5">{aboutContent.textBanner}</h2>
           </div>
 
           <div className="mx-5">
@@ -166,7 +158,7 @@ const AboutUs = () => {
                     <b>team player</b>
                   </p>
                 }
-                youtubeUrl="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                youtubeUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
               />
               {/* 2 */}
               <CoreValueCard
@@ -183,7 +175,7 @@ const AboutUs = () => {
                     <b>understood</b>
                   </p>
                 }
-                youtubeUrl="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                youtubeUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
               />
             </div>
             <div className="flex justify-center">
@@ -201,7 +193,7 @@ const AboutUs = () => {
                     <b>focused athlete</b>
                   </p>
                 }
-                youtubeUrl="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                youtubeUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
               />
             </div>
             <div className="flex justify-evenly lg:gap-10">
@@ -215,7 +207,7 @@ const AboutUs = () => {
                   />
                 }
                 text={<b className="text-body">upholds</b>}
-                youtubeUrl="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                youtubeUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
               />
               {/* 5 */}
               <CoreValueCard
@@ -230,7 +222,7 @@ const AboutUs = () => {
                     values <br /> work/life harmony
                   </b>
                 }
-                youtubeUrl="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                youtubeUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
               />
             </div>
           </div>
@@ -244,10 +236,10 @@ const AboutUs = () => {
         <MissionVision
           imgMission={imgMission}
           imgVision={imgVision}
-          missionContent={content.mission}
-          missionSlogan={content.missionSlogan}
-          visionContent={content.vision}
-          visionSlogan={content.visionSlogan}
+          missionContent={aboutContent.mission}
+          missionSlogan={aboutContent.missionSlogan}
+          visionContent={aboutContent.vision}
+          visionSlogan={aboutContent.visionSlogan}
         />
         <div className="py-5"></div>
         {/* Message from the CEO */}
@@ -360,7 +352,7 @@ const AboutUs = () => {
             </div>
           </div>
           <div className="w-[80%] max-w-[1200px] pt-5 md:pt-20 mx-auto">
-            <YouTubeEmbed videoId={"c6fs1gBpjQg"} />
+            <YouTubeEmbed embedUrl={aboutContent.dayInPodUrl} />
           </div>
 
           <div className="text-body mt-10 md:mt-[3%] flex flex-col items-center mx-[10%]">

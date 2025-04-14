@@ -7,7 +7,7 @@ const Issues = () => {
 
   return (
     <div className="flex justify-start w-full gap-4">
-      <div className="bg-accent-2 rounded-md text-white flex pr-3 items-center ">
+      <div className="bg-primary rounded-md text-white pr-4 flex items-center">
         <Filter
           showMonth={false}
           showYear={true}
