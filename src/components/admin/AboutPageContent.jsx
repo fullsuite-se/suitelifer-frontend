@@ -228,7 +228,7 @@ const AboutPageContent = ({}) => {
                 rows={
                   label === "Mission Slogan" || label === "Vision Slogan"
                     ? 1
-                    : 3
+                    : 7
                 }
                 className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
               ></textarea>

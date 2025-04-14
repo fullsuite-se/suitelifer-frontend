@@ -10,11 +10,9 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import { AgGridReact } from "@ag-grid-community/react";
 import { ModuleRegistry } from "@ag-grid-community/core";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
-
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
 import ContentButtons from "./ContentButtons";
@@ -90,7 +88,7 @@ function FAQs() {
       <div className="flex justify-end gap-2 mb-2">
         <ContentButtons
           icon={<PlusCircleIcon className="size-5" />}
-          text="Preview Changes"
+          text="Add FAQ"
           handleClick={setOpenDialog}
         />
       </div>

@@ -222,7 +222,7 @@ function Testimonials() {
       <div className="flex justify-end gap-2 mb-2">
         <ContentButtons
           icon={<PlusCircleIcon className="size-5" />}
-          text="Preview Changes"
+          text="Add Testimonial"
           handleClick={handleAdd}
         />
       </div>
