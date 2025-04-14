@@ -140,6 +140,13 @@ function TermsOfUse() {
                 headerName: "Actions",
                 field: "actions",
                 flex: 1,
+                headerClass:
+                  "text-primary font-bold bg-gray-100 flex justify-center items-center",
+                cellStyle: {
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                },
                 cellRenderer: (params) => (
                   <div className="flex gap-2">
                     <IconButton onClick={() => handleEdit(params.data)}>
