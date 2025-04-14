@@ -250,9 +250,9 @@ const Home = () => {
       <div className="h-10"></div>
 
       {/* HOME BLOG SPOT */}
-      <div className="bg-primary rounded-2xl md:rounded-3xl mx-7 lg:mx-17">
+      {/* <div className="bg-primary rounded-2xl md:rounded-3xl mx-7 lg:mx-17">
         <HomeBlogSpot />
-      </div>
+      </div> */}
 
       <section className="relative py-15 md:py-[5%] px-7 ">
         <MotionUp>
