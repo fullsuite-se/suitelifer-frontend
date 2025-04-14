@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import PPC from "./PrivacyPolicyContent";
 
 function PrivacyPolicy() {
-  const [policySections, setPolicySections] = useState([
-  ]);
+  const [policySections, setPolicySections] = useState([]);
 
   const [newSection, setNewSection] = useState({ title: "", content: "" });
 
@@ -26,7 +25,9 @@ function PrivacyPolicy() {
   return (
     <div className="p-4 w-full mx-auto">
       <div className="mb-6">
-        <div className="text-md font-bold pt-4 font-avenir-black">Privacy Policy Title <span>*</span></div>
+        <div className="text-md font-bold pt-4 font-avenir-black">
+          Privacy Policy Title <span>*</span>
+        </div>
         <input
           type="text"
           name="title"
@@ -37,7 +38,9 @@ function PrivacyPolicy() {
           className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
         />
 
-        <div className="text-md font-bold pt-4 font-avenir-black">Content <span>*</span></div>
+        <div className="text-md font-bold pt-4 font-avenir-black">
+          Content <span>*</span>
+        </div>
         <textarea
           type="text"
           name="content"
