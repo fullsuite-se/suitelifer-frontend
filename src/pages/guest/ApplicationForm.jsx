@@ -299,7 +299,7 @@ const Form = () => {
                   required
                   className="text-primary focus:ring-primary"
                   onChange={(e) => {
-                    setShowReferralInput(option === "Through Referral");
+                    setShowReferralInput(option === "Referral");
                     handleApplicationDetailsChange(e);
                   }}
                 />
