@@ -23,7 +23,7 @@ const ColoredArticleViewDesign = ({
       <div style={{
         
       }} className={`${lineclamp} mobile-clamper text-body text-justify text-white`}>
-        <article>{article}</article>
+        <article><pre>{article}</pre></article>
       </div>
     </div>
   );

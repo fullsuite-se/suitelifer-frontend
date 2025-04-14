@@ -64,7 +64,7 @@ const JobCarouselVersion2 = ({ jobs }) => {
                         {job.employmentType}, {job.setupName}
                       </span>
                     </div>
-                    {isActive && job.salaryMin != null && job.salaryMin > 0 && (
+                    {/* {isActive && job.salaryMin != null && job.salaryMin > 0 && (
                       <>
                         <p className="text-xss text-gray-400">
                           Expected Salary
@@ -81,7 +81,7 @@ const JobCarouselVersion2 = ({ jobs }) => {
                           </span>
                         </p>
                       </>
-                    )}
+                    )} */}
                     {isActive && (
                       <p
                         className={`mb-3 text-small text-gray-700 ${

@@ -140,6 +140,7 @@ function TermsOfUse() {
                 headerName: "Actions",
                 field: "actions",
                 flex: 1,
+                headerClass: "text-primary font-bold bg-gray-100",
                 cellRenderer: (params) => (
                   <div className="flex gap-2">
                     <IconButton onClick={() => handleEdit(params.data)}>
@@ -188,9 +189,11 @@ function TermsOfUse() {
             {termsDetails.termsId ? "Edit Terms of Use" : "Add Terms of Use"}
           </DialogTitle>
           <DialogContent>
-            <TextField
-              label="Title"
-              fullWidth
+            <div className="text-md font-bold pt-4 font-avenir-black">
+              Title<span className="text-primary">*</span>
+            </div>
+            <input
+              name="title"
               value={termsDetails.title}
               onChange={(e) =>
                 setTermsDetails((prev) => ({
@@ -198,13 +201,13 @@ function TermsOfUse() {
                   title: e.target.value,
                 }))
               }
-              margin="normal"
-            />
-            <TextField
-              label="Content"
-              fullWidth
-              multiline
-              minRows={4}
+              className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
+            ></input>
+            <div className="text-md font-bold pt-4 font-avenir-black">
+              Content<span className="text-primary">*</span>
+            </div>
+            <textarea
+              name="title"
               value={termsDetails.content}
               onChange={(e) =>
                 setTermsDetails((prev) => ({
@@ -212,8 +215,9 @@ function TermsOfUse() {
                   content: e.target.value,
                 }))
               }
-              margin="normal"
-            />
+              rows={7}
+              className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
+            ></textarea>
           </DialogContent>
           <DialogActions>
             <button

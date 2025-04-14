@@ -32,7 +32,9 @@ export const ModalResetPassword = ({ isOpen, handleClose }) => {
 
     try {
       setLoading(true);
-      const response = await api.post("/api/reset-password", { email });
+      const response = await api.post("/api/send-password-reset-link", {
+        email,
+      });
       if (response?.data?.isSuccess) {
         toast.success(response.data.message);
       } else {

@@ -108,41 +108,50 @@ const Contact = () => {
                   Reach out and discover how you align with our team!
                 </p>
 
-                <div className="group mt-6 space-y-5 text-white font-avenir-black text-body">
-                  <p className="flex items-center gap-2">
+                <div className="group mt-6 space-y-5 text-white font-avenir-back text-body">
+                  <p className="flex items-center gap-4">
                     <img
                       src={emailicon}
                       alt="Email"
-                      className="w-5 h-5 filter invert"
+                      className="w-5 h-5 mb-1 filter invert"
                     />
-                    <a
-                      href="mailto:abc@fullsuite.ph"
-                      className="hover:text-secondary transition-colors  no-underline!"
-                    >
-                      hireme@fullsuite.ph
-                    </a>
+                    <div className="flex">
+                      <a
+                        href="mailto:hireme@fullsuite.ph"
+                        className="hover:text-secondary transition-colors  no-underline!"
+                      >
+                        hireme@fullsuite.ph
+                      </a>
+                       &nbsp;|&nbsp; 
+                       <a
+                        href="mailto:internships@fullsuite.ph"
+                        className="hover:text-secondary transition-colors  no-underline!"
+                      >
+                        internships@fullsuite.ph
+                      </a>
+                    </div>
                   </p>
-                  <p className="flex items-center gap-2">
+                  <p className="flex items-center gap-4">
                     <img
                       src={phoneicon}
                       alt="Phone"
-                      className="w-5 h-5 filter invert"
+                      className="w-5 h-5 mb-1 filter invert"
                     />
                     <a
-                      href="tel:+63746195521"
+                      href="tel:742-442-887"
                       className="hover:text-secondary transition-colors  no-underline!"
                     >
                       742-442-887
                     </a>
                   </p>
-                  <p className="flex items-center gap-2">
+                  <p className="flex items-center gap-4">
                     <img
                       src={tphoneicon}
                       alt="Mobile"
-                      className="w-5 h-5 filter invert"
+                      className="w-5 h-5 mb-1 filter invert"
                     />
                     <a
-                      href="tel:+639123456789"
+                      href="tel:09190639001"
                       className="hover:text-secondary transition-colors  no-underline!"
                     >
                       0919-063-9001
@@ -212,24 +221,26 @@ const Contact = () => {
             className="flex flex-col md:flex-row items-center md:items-center mt-12 p-10 justify-center gap-10"
           >
             <div className="md:w-1/2 gap-3 flex flex-col justify-center text-left lg:w-1/4">
-              <p className="font-avenir-black text-h4">
-                Walk-in applicants, welcome! Let's discuss your{" "}
-                <span className="text-primary">future</span> over coffee (it's
-                on us).
+              <p className="font-avenir-black text-4xl xl:text-5xl">
+                Walk-in applicants are welcome!
               </p>
-              <div className="flex items-center gap-2 mt-2 text-primary text-body">
+              <p className="font-avenir-black text-xl xl:text-2xl">
+                Let's discuss your <span className="text-primary">future</span>{" "}
+                over coffee (it's on us).
+              </p>
+              <div className="flex items-center gap-2 mt-2 text-primary text-small">
                 <MarkerIcon width={34} height={34} />
-                <span className="text-black">
+                <span className="text-gray-700">
                   5F Curamed Building, Ben Palispis- Aspiras Highway
                 </span>
               </div>
-              <div className="flex items-center gap-2 mt-2 text-primary text-body">
-                <ClockIcon width={24} height={24} />
-                <span className="text-black">
+              <div className="flex items-center gap-2 mt-2 text-primary text-small">
+                <ClockIcon width={34} height={24} />
+                <span className="text-gray-700">
                   <strong className="font-avenir-black">
                     Monday to Friday
                   </strong>{" "}
-                  <br /> 8:00 to 10:00 AM or 1:00 to 3:00 PM
+                  <br /> 8:00 - 10:00 AM or 1:00 - 3:00 PM
                 </span>
               </div>
             </div>
