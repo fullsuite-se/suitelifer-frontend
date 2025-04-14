@@ -14,9 +14,10 @@ const NewsletterDesign01 = () => {
       <div className="pb-[4%]"></div>
 
       {/* Contents */}
-      <section className="md:flex md:gap-10 md:px-[10%] xl:px-[15%] mb-10">
-        <div className="px-[5%] md:px-0">
-          <div className="">
+      <section className="md:flex md:gap-10 md:px-[10%] xl:px-[10%] mb-10">
+        <div className="px-[5%] md:px-0 md:w-[66%]">
+          <div className="w-[100%]">
+            {/* MAIN */}
             <LargeViewDesign01
               image={articles[0].image}
               title={articles[0].title}
@@ -35,88 +36,90 @@ const NewsletterDesign01 = () => {
           </div>
 
           <div className="md:flex gap-10">
-            <div className="">
+            <div className="md:w-[50%]">
               <Divider />
               <ArticleViewDesign
-                title={articles[0].title}
-                author={articles[0].author}
-                readTime={articles[0].readTime}
-                datePublished={articles[0].datePublished}
-                article={articles[0].article}
-                lineclamp={"line-clamp-21"}
+                title={articles[1].title}
+                author={articles[1].author}
+                readTime={articles[1].readTime}
+                datePublished={articles[1].datePublished}
+                article={articles[1].article}
+                lineclamp={"line-clamp-6"}
               />
               <div className="mt-5"></div>
               <ReadMoreBtn
                 href={""}
-                title={articles[0].title}
-                id={articles[0].id}
+                title={articles[1].title}
+                id={articles[1].id}
               />
             </div>
 
-            <div className="mt-10 md:mt-0">
+            <div className="mt-10 md:mt-0 md:w-[50%]">
               <ArticleViewDesign
-                image={articles[0].image}
-                title={articles[0].title}
-                author={articles[0].author}
-                readTime={articles[0].readTime}
-                datePublished={articles[0].datePublished}
-                article={articles[0].article}
-                lineclamp={"line-clamp-14"}
+                image={articles[2].image}
+                title={articles[2].title}
+                author={articles[2].author}
+                readTime={articles[2].readTime}
+                datePublished={articles[2].datePublished}
+                article={articles[2].article}
+                lineclamp={"line-clamp-7"}
               />
               <div className="mt-5"></div>
               <ReadMoreBtn
                 href={""}
-                title={articles[0].title}
-                id={articles[0].id}
+                title={articles[2].title}
+                id={articles[2].id}
               />
             </div>
           </div>
         </div>
 
-        <div className="pt-10 px-[5%] md:p-0">
+        <div className="pt-10 px-[5%] md:w-[34%] md:p-0">
+          {/* TOP RIGHT ARTICLE */}
           <div className="">
             <p className={`font-avenir-black text-h6 line-clamp-2`}>
-              {articles[0].title}
+              {articles[1].title}
             </p>
             <p className="text-small pb-3 pt-1">
-              <span className={`text-primary`}>{articles[0].author}</span>
+              <span className={`text-primary`}>{articles[1].author}</span>
               <span className={`text-gray-400`}>&nbsp; |</span>
               <span className={`text-primary`}>
-                &nbsp;&nbsp;{articles[0].readTime}
+                &nbsp;&nbsp;{articles[1].readTime}
               </span>
               <span className={`text-gray-400`}>&nbsp; |</span>
               <span className={`text-primary`}>
-                &nbsp;&nbsp;{articles[0].datePublished}
+                &nbsp;&nbsp;{articles[1].datePublished}
               </span>
             </p>
             <div
               className={`line-clamp-5 text-body text-justify text-gray-500`}
             >
-              <article>{articles[0].article}</article>
+              <article>{articles[1].article}</article>
             </div>
             <div className="mt-5"></div>
             <ReadMoreBtn
               href={""}
-              title={articles[0].title}
-              id={articles[0].id}
+              title={articles[1].title}
+              id={articles[1].id}
             />
 
             <div className="my-5"></div>
           </div>
+          {/* COLORED ARTICLE */}
           <ColoredArticleViewDesign
-            title={articles[0].title}
-            author={articles[0].author}
-            readTime={articles[0].readTime}
-            datePublished={articles[0].datePublished}
-            article={articles[0].article}
+            title={articles[2].title}
+            author={articles[2].author}
+            readTime={articles[2].readTime}
+            datePublished={articles[2].datePublished}
+            article={articles[2].article}
             lineclamp={"line-clamp-42"}
           />
           <div className="mt-5"></div>
           <div className="px-[5%] md:px-0">
             <ReadMoreBtn
               href={""}
-              title={articles[0].title}
-              id={articles[0].id}
+              title={articles[2].title}
+              id={articles[2].id}
             />
           </div>
         </div>
