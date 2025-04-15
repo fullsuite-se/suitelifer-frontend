@@ -58,7 +58,6 @@ import ScrollToTop from "./components/ScrollToTop";
 import VerifyAccount from "./pages/auth/VerifyAccount";
 import JobCourse from "./components/admin/JobCourse";
 import PersonalityTest from "./components/admin/PersonalityTest";
-import AdminSuitebite from "./pages/admin/AdminSuitebite";
 
 function App() {
   return (
@@ -116,7 +115,12 @@ function App() {
 
               {/* Admin Protected Routes */}
               <Route element={<AdminProtectedRoutes />}>
-                <Route path="suitebite" element={<AdminSuitebite />} />
+                <Route path="suitebite" element={<AdminNews />} />
+
+                <Route
+                  path="suitebite/new-suitebite"
+                  element={<AdminNewsCreate />}
+                />
                 <Route path="events" element={<AdminEvents />} />
                 <Route path="contents" element={<AdminContents />} />
                 <Route path="courses" element={<JobCourse />} />
