@@ -133,7 +133,7 @@ const Form = () => {
       />
       <button
         type="submit"
-        className="w-full bg-primary p-3 rounded-md text-white font-avenir-black cursor-pointer"
+        className="w-full bg-primary hover:bg-[#007a8e] duration-300 p-3 rounded-md text-white font-avenir-black cursor-pointer"
       >
         {loading ? (
           <div className="mx-auto w-fit">
@@ -146,7 +146,7 @@ const Form = () => {
             />
           </div>
         ) : (
-          "LOG IN"
+          "SIGN UP"
         )}
       </button>
     </form>
@@ -173,8 +173,9 @@ const Register = () => {
           </header>
           <Form />
           <p className="text-center">
-            <Link className="text-primary cursor-pointer" to={"/login"}>
-              Already have an account?
+            <span className="text-gray-400">Already have an account? </span>
+            <Link className="text-primary cursor-pointer no-underline hover:underline!" to={"/login"}>
+              Log in
             </Link>
           </p>
         </main>

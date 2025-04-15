@@ -135,7 +135,7 @@ const AboutPageContent = ({}) => {
         value={contentDetails.textBanner}
         onChange={(e) => handleContentDetailsChange(e)}
         rows={2}
-        className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
+        className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
       ></textarea>
 
       <div className="flex flex-col 2xl:flex-row justify-around gap-2">
@@ -160,7 +160,7 @@ const AboutPageContent = ({}) => {
         name="aboutVideo"
         value={contentDetails.aboutVideo}
         onChange={(e) => handleContentDetailsChange(e)}
-        className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+        className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
       />
 
       <div className="cursor-pointer" onClick={handleToggle}>
@@ -189,7 +189,7 @@ const AboutPageContent = ({}) => {
                   name={video.key}
                   value={contentDetails[video.key]}
                   onChange={(e) => handleContentDetailsChange(e)}
-                  className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
             ))}
@@ -230,7 +230,7 @@ const AboutPageContent = ({}) => {
                     ? 1
                     : 7
                 }
-                className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
               ></textarea>
             </div>
           ))}
@@ -243,7 +243,7 @@ const AboutPageContent = ({}) => {
           name="missionVideo"
           value={contentDetails.missionVideo}
           onChange={(e) => handleContentDetailsChange(e)}
-          className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+          className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
         />
         <div className="text-md font-bold pt-4 font-avenir-black">
           Vision Video
@@ -253,7 +253,7 @@ const AboutPageContent = ({}) => {
           name="visionVideo"
           value={contentDetails.visionVideo}
           onChange={(e) => handleContentDetailsChange(e)}
-          className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+          className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
         />
         <div className="text-md font-bold pt-4 font-avenir-black">
           Day in Pod Video URL
@@ -263,7 +263,7 @@ const AboutPageContent = ({}) => {
           name="dayInPodUrl"
           value={contentDetails.dayInPodUrl}
           onChange={(e) => handleContentDetailsChange(e)}
-          className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
+          className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
         />
 
         <div className="flex justify-end gap-2 mb-30">
