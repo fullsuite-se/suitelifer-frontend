@@ -59,12 +59,7 @@ const regularFeatures = [
 const adminFeatures = [
   { feature_name: "Content", path: "contents", icon: Bars3BottomLeftIcon },
   { feature_name: "Events", path: "events", icon: CalendarIcon },
-  {
-    feature_name: "News",
-    path: "news",
-    icon: NewspaperIcon,
-  },
-  { feature_name: "Blogs", path: "blogs", icon: CalendarIcon },
+  { feature_name: "Suitebite", path: "suitebite", icon: NewspaperIcon },
   { feature_name: "Courses", path: "courses", icon: BookOpenIcon },
   {
     feature_name: "Personality Test",
