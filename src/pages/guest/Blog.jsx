@@ -19,6 +19,8 @@ import LoadingSmallSpotify from "../../components/careers/LoadingSmallSpotify";
 import emailicon from "../../assets/icons/envelope.svg";
 import tphoneicon from "../../assets/icons/mobile-button.svg";
 import phoneicon from "../../assets/icons/phone-flip.svg";
+import ClockIcon from "../../assets/logos/ClockIcon";
+import MarkerIcon from "../../assets/logos/MarkerIcon";
 
 const Blog = () => {
   const [isSpotifyLoading, setSpotifyIsLoading] = useState(true);
@@ -54,10 +56,20 @@ const Blog = () => {
       setSpotifyIsLoading(false);
     }
   };
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, ease: "easeOut" },
+    },
+  };
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     fetchThreeLatestEpisodes();
     fetchPlaylists();
+    setIsLoaded(true);
   }, []);
 
   return (
@@ -189,70 +201,8 @@ const Blog = () => {
               ) : (
                 <>
                   <div className="">
-                    <div className="flex justify-center">
+                    <div className="flex justify-center pt-20">
                       <img src={ComingSoon} alt="coming soon gif" />
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <p className="font-avenir-black text-center text-h6">
-                        Join in on the conversation. <br />{" "}
-                        <span className="text-primary">Reach out to us!</span>
-                      </p>
-                      <br />
-                      <div className="text-body flex flex-col gap-2 md:flex-row text-gray-500 w-full justify-center text-center">
-                        <a
-                          href="mailto:suitelifer@fullsuite.ph"
-                          className="flex justify-center items-center gap-2 text-primary hover:text-secondary transition-colors  no-underline!"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            id="Filled"
-                            viewBox="0 0 24 24"
-                            width="512"
-                            height="512"
-                            className="fill-primary size-5 mb-1"
-                          >
-                            <path d="M23.954,5.542,15.536,13.96a5.007,5.007,0,0,1-7.072,0L.046,5.542C.032,5.7,0,5.843,0,6V18a5.006,5.006,0,0,0,5,5H19a5.006,5.006,0,0,0,5-5V6C24,5.843,23.968,5.7,23.954,5.542Z" />
-                            <path d="M14.122,12.546l9.134-9.135A4.986,4.986,0,0,0,19,1H5A4.986,4.986,0,0,0,.744,3.411l9.134,9.135A3.007,3.007,0,0,0,14.122,12.546Z" />
-                          </svg>
-                          suitelifer@fullsuite.ph
-                        </a>
-                        <span className="hidden md:block">&nbsp;|&nbsp;</span>
-                        <a
-                          href="tel:742-442-887"
-                          className="flex justify-center items-center gap-2 text-primary hover:text-secondary transition-colors  no-underline!"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            id="Layer_1"
-                            data-name="Layer 1"
-                            viewBox="0 0 24 24"
-                            width="512"
-                            height="512"
-                            className="fill-primary size-5 mb-1"
-                          >
-                            <path d="M24,6.24c0,7.64-10.13,17.76-17.76,17.76-1.67,0-3.23-.63-4.38-1.78l-1-1.15c-1.16-1.16-1.16-3.12,.05-4.33,.03-.03,2.44-1.88,2.44-1.88,1.2-1.14,3.09-1.14,4.28,0l1.46,1.17c3.2-1.36,5.47-3.64,6.93-6.95l-1.16-1.46c-1.15-1.19-1.15-3.09,0-4.28,0,0,1.85-2.41,1.88-2.44,1.21-1.21,3.17-1.21,4.38,0l1.05,.91c1.2,1.19,1.83,2.75,1.83,4.42Z" />
-                          </svg>
-                          742-442-887
-                        </a>
-                        <span className="hidden md:block">&nbsp;|&nbsp;</span>
-                        <a
-                          href="tel:09190639001"
-                          className="flex justify-center items-center gap-2 text-primary hover:text-secondary transition-colors  no-underline!"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            id="Layer_1"
-                            data-name="Layer 1"
-                            viewBox="0 0 24 24"
-                            width="512"
-                            height="512"
-                            className="fill-primary size-5 mb-1"
-                          >
-                            <path d="M15,0h-6c-2.757,0-5,2.243-5,5v14c0,2.757,2.243,5,5,5h6c2.757,0,5-2.243,5-5V5c0-2.757-2.243-5-5-5Zm-2,21h-2c-.552,0-1-.448-1-1s.448-1,1-1h2c.552,0,1,.448,1,1s-.448,1-1,1Z" />
-                          </svg>{" "}
-                          0917-568-0851
-                        </a>
-                      </div>
                     </div>
                   </div>
                 </>
@@ -287,6 +237,131 @@ const Blog = () => {
           )}
         </div>
       </main>
+      <section className="">
+        <div className="h-30"></div>
+        <motion.div
+          initial="hidden"
+          animate={isLoaded ? "visible" : "hidden"}
+          variants={fadeInUp}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="flex flex-col md:flex-row items-start md:items-center"
+        >
+          <div
+            className="relative p-8 pr-8 md:pr-16 rounded-tr-xl rounded-br-xl text-white mr-4 md:min-h-[500px] justify-center items-center flex flex-col 
+                    w-[98%] md:w-[60%] lg:w-[60%] xl:w-[50%] max-w-[90%] xl:max-w-[60%]"
+            style={{
+              // backgroundImage: `url(${bgimg})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          >
+            <div className="absolute inset-0 bg-primary rounded-tr-xl rounded-br-xl"></div>
+            <div className="relative z-10">
+              <p className="font-avenir-black  text-white-300 text-h3">
+                Join in on the conversation.
+                <br />
+                <span className="text-secondary">Reach out to us!</span>
+              </p>
+              <p className="text-white text-body"></p>
+
+              <div className="group mt-6 space-y-5 text-white font-avenir-back text-body">
+                <p className="flex items-center gap-4">
+                  <img
+                    src={emailicon}
+                    alt="Email"
+                    className="w-5 h-5 mb-1 filter invert"
+                  />
+                  <div className="flex">
+                    <a
+                      href="mailto:suitelifer@fullsuite.ph"
+                      className="hover:text-secondary transition-colors  no-underline!"
+                    >
+                      suitelifer@fullsuite.ph
+                    </a>
+                  </div>
+                </p>
+                <p className="flex items-center gap-4">
+                  <img
+                    src={phoneicon}
+                    alt="Phone"
+                    className="w-5 h-5 mb-1 filter invert"
+                  />
+                  <a
+                    href="tel:742-442-887"
+                    className="hover:text-secondary transition-colors  no-underline!"
+                  >
+                    742-442-887
+                  </a>
+                </p>
+                <p className="flex items-center gap-4">
+                  <img
+                    src={tphoneicon}
+                    alt="Mobile"
+                    className="w-5 h-5 mb-1 filter invert"
+                  />
+                  <a
+                    href="tel:09175680851"
+                    className="hover:text-secondary transition-colors  no-underline!"
+                  >
+                    0917-568-0851
+                  </a>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <motion.div
+            initial="hidden"
+            animate={isLoaded ? "visible" : "hidden"}
+            variants={fadeInUp}
+            transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+            className="p-8 w-full md:max-w-lg lg:max-w-2xl xl:max-w-4xl"
+          >
+            <form action="#" className="space-y-4">
+              <div>
+                <label className="block text-gray-700 text-small">
+                  Full Name<span className="text-primary">*</span>
+                </label>
+                <input
+                  type="text"
+                  className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 text-small">
+                  Email Address<span className="text-primary">*</span>
+                </label>
+                <input
+                  type="email"
+                  className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 text-small">
+                  Subject<span className="text-primary">*</span>
+                </label>
+                <input
+                  type="text"
+                  className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 text-small">
+                  Message<span className="text-primary">*</span>
+                </label>
+                <textarea
+                  rows="4"
+                  className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary placeholder-primary/50"
+                  placeholder="Type your message here"
+                ></textarea>
+              </div>
+              <button className="w-full font-avenir-black bg-primary  text-small text-white py-3 rounded-md hover:bg-primary/90 transition">
+                SEND
+              </button>
+            </form>
+          </motion.div>
+        </motion.div>
+      </section>
 
       <div className="h-30"></div>
       <BackToTop />
