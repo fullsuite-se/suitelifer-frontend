@@ -46,8 +46,6 @@ const AdminHomePage = () => {
     try {
       const response = await api.get("/api/content/home");
 
-      console.log(response.data);
-
       setHomeDetails(response.data.homeContent);
     } catch (err) {
       console.log(err);

@@ -8,12 +8,16 @@ import ContentButtons from "./ContentButtons";
 const ContactDetails = () => {
   const user = useStore((state) => state.user);
 
-  const [contactDetails, setContactDetails] = useState({
-    contactPhone: "",
-    contactLandline: "",
-    contactEmail: "",
+  const defaultContactDetails = {
+    websiteEmail: "",
+    websiteTel: "",
+    websitePhone: "",
+    careersEmail: "",
     internshipEmail: "",
-  });
+    careersPhone: "",
+  };
+
+  const [contactDetails, setContactDetails] = useState(defaultContactDetails);
 
   const [dataUpdated, setDataUpdated] = useState(false);
 
@@ -23,13 +27,11 @@ const ContactDetails = () => {
 
   const fetchContactDetails = async () => {
     try {
-      const response = await api.get("/api/content/");
-      setContactDetails({
-        contactPhone: response.data.content.contactPhone,
-        contactLandline: response.data.content.contactLandline,
-        contactEmail: response.data.content.contactEmail,
-        internshipEmail:response.data.content.internshipEmail
-      });
+      const response = await api.get("/api/contact");
+
+      console.log(response.data);
+
+      response.data.contact && setContactDetails(response.data.contact);
     } catch (err) {
       console.log(err);
       toast.error("Failed to fetch contact details.");
@@ -41,13 +43,21 @@ const ContactDetails = () => {
   }, [dataUpdated]);
 
   const handlePublishChanges = async () => {
+    const hasEmptyFields = Object.values(contactDetails).some(
+      (val) => val === "" || val === null
+    );
+
+    if (hasEmptyFields) {
+      return toast.error("Please fill in all contact fields.");
+    }
+
     try {
-      const response = await api.post("/api/add-content", {
+      const response = await api.post("/api/contact", {
         ...contactDetails,
-        user_id: user.id,
+        userId: user.id,
       });
 
-      toast.success("Contact details updated!");
+      toast.success(response.data.message);
       setDataUpdated(!dataUpdated);
     } catch (err) {
       console.log(err);
@@ -57,12 +67,26 @@ const ContactDetails = () => {
 
   return (
     <div className="overflow-x-auto min-h-screen px-4 sm:px-6 lg:px-8">
-
       {[
         {
-          label: "Email",
-          name: "contactEmail",
-          value: contactDetails.contactEmail,
+          label: "Suitelifer Email",
+          name: "websiteEmail",
+          value: contactDetails.websiteEmail,
+        },
+        {
+          label: "Suitelifer Telephone",
+          name: "websiteTel",
+          value: contactDetails.websiteTel,
+        },
+        {
+          label: "Suitelifer Phone",
+          name: "websitePhone",
+          value: contactDetails.websitePhone,
+        },
+        {
+          label: "Careers Email",
+          name: "careersEmail",
+          value: contactDetails.careersEmail,
         },
         {
           label: "Internship Email",
@@ -70,20 +94,16 @@ const ContactDetails = () => {
           value: contactDetails.internshipEmail,
         },
         {
-          label: "Telephone Number",
-          name: "contactLandline",
-          value: contactDetails.contactLandline,
+          label: "Careers Phone",
+          name: "careersPhone",
+          value: contactDetails.careersPhone,
         },
-        {
-          label: "Cellphone Number",
-          name: "contactPhone",
-          value: contactDetails.contactPhone,
-        },
-      ].map(({ label, name, value }) => (
-        <div key={name} className="mt-4">
+      ].map(({ label, name, value }, index) => (
+        <div key={index} className="mt-4">
           <div className="text-md font-bold font-avenir-black">{label}</div>
           <input
             type="text"
+            required
             name={name}
             value={value}
             onChange={handleContactChange}
