@@ -27,7 +27,6 @@ const Testimonials = () => {
     } finally {
       setIsLoading(false);
       console.log(testimonials.length);
-      
     }
   };
 
@@ -134,17 +133,19 @@ const Testimonials = () => {
                       alt="quote"
                       className="absolute translate-x-5 translate-y-22 -rotate-5 w-16 mb-4"
                     />
-                    { testimonials.employeeImageUrl ? (
-                    <img
-                      src={testimonial.employeeImageUrl}
-                      alt={testimonial.employeeName}
-                      className="size-30 mx-auto rounded-full mb-4 object-cover"
-                    />) : (
-                       <img
-                      src="https://cdn-icons-png.flaticon.com/512/147/147142.png"
-                      alt="Employee"
-                      className="w-[80px] h-[80px] sm:w-[80px] sm:h-[80px] rounded-md object-cover mx-auto "
-                    />)}
+                    {
+                      <img
+                        src={testimonial.employeeImageUrl}
+                        alt={testimonial.employeeName}
+                        className="size-30 mx-auto rounded-full mb-4 object-cover"
+                      />
+                      // : (
+                      //    <img
+                      //   src="https://cdn-icons-png.flaticon.com/512/147/147142.png"
+                      //   alt="Employee"
+                      //   className="w-[80px] h-[80px] sm:w-[80px] sm:h-[80px] rounded-md object-cover mx-auto "
+                      // />)}
+                    }
                     <p className="mt-4 text-gray-700 text-body">
                       {testimonial.testimony}
                     </p>
