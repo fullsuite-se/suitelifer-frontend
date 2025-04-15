@@ -255,12 +255,12 @@ const Blog = () => {
               backgroundPosition: "center",
             }}
           >
-            <div className="absolute inset-0 bg-primary rounded-tr-xl rounded-br-xl"></div>
+            <div className="absolute inset-0 bg-secondary rounded-tr-xl rounded-br-xl"></div>
             <div className="relative z-10">
-              <p className="font-avenir-black  text-white-300 text-h3">
+              <p className="font-avenir-black text-white-300 text-h3">
                 Join in on the conversation.
                 <br />
-                <span className="text-secondary">Reach out to us!</span>
+                Reach out to us!
               </p>
               <p className="text-white text-body"></p>
 
@@ -274,7 +274,7 @@ const Blog = () => {
                   <div className="flex">
                     <a
                       href="mailto:suitelifer@fullsuite.ph"
-                      className="hover:text-secondary transition-colors  no-underline!"
+                      className="hover:text-accent-2 transition-colors  no-underline!"
                     >
                       suitelifer@fullsuite.ph
                     </a>
@@ -288,7 +288,7 @@ const Blog = () => {
                   />
                   <a
                     href="tel:742-442-887"
-                    className="hover:text-secondary transition-colors  no-underline!"
+                    className="hover:text-accent-2 transition-colors  no-underline!"
                   >
                     742-442-887
                   </a>
@@ -301,7 +301,7 @@ const Blog = () => {
                   />
                   <a
                     href="tel:09175680851"
-                    className="hover:text-secondary transition-colors  no-underline!"
+                    className="hover:text-accent-2 transition-colors  no-underline!"
                   >
                     0917-568-0851
                   </a>
@@ -324,7 +324,7 @@ const Blog = () => {
                 </label>
                 <input
                   type="text"
-                  className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="text-accent-2 w-full p-3 border-none rounded-md bg-secondary/10 focus:outline-none focus:ring-2 focus:ring-secondary"
                 />
               </div>
               <div>
@@ -333,7 +333,7 @@ const Blog = () => {
                 </label>
                 <input
                   type="email"
-                  className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="text-accent-2 w-full p-3 border-none rounded-md bg-secondary/10 focus:outline-none focus:ring-2 focus:ring-secondary"
                 />
               </div>
               <div>
@@ -342,7 +342,7 @@ const Blog = () => {
                 </label>
                 <input
                   type="text"
-                  className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="text-accent-2 w-full p-3 border-none rounded-md bg-secondary/10 focus:outline-none focus:ring-2 focus:ring-secondary"
                 />
               </div>
               <div>
@@ -351,11 +351,11 @@ const Blog = () => {
                 </label>
                 <textarea
                   rows="4"
-                  className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary placeholder-primary/50"
+                  className="w-full p-3 border-none rounded-md bg-secondary/10 focus:outline-none focus:ring-2 focus:ring-secondary placeholder-accent-2/50 text-accent-2"
                   placeholder="Type your message here"
                 ></textarea>
               </div>
-              <button className="w-full font-avenir-black bg-primary  text-small text-white py-3 rounded-md hover:bg-primary/90 transition">
+              <button className="w-full font-avenir-black bg-secondary cursor-pointer  text-small text-white py-3 rounded-md hover:bg-secondary/90 transition">
                 SEND
               </button>
             </form>
