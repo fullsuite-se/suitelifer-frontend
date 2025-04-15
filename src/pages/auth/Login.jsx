@@ -115,7 +115,7 @@ const LoginForm = ({ email, password, setEmail, setPassword }) => {
         <button
           type="button"
           onClick={() => setShowPassword(!showPassword)}
-          className="absolute top-4 right-3 text-primary"
+          className="cursor-pointer absolute top-3 right-3 text-gray-500"
         >
           {showPassword ? (
             <EyeSlashIcon className="size-5 cursor-pointer" />
@@ -127,7 +127,7 @@ const LoginForm = ({ email, password, setEmail, setPassword }) => {
       <button
         type="submit"
         disabled={loading}
-        className="mt-5 w-full bg-primary p-3 rounded-xl text-white font-avenir-black cursor-pointer"
+        className="cursor-pointer hover:bg-[#007a8e] duration-300 mt-5 w-full bg-primary p-3 rounded-xl text-white font-avenir-black"
       >
         {loading ? (
           <div className="mx-auto w-fit">
@@ -218,7 +218,7 @@ const Login = () => {
               className="w-28 h-auto mx-auto cursor-pointer"
             />
             <p className="text-center text-base my-4 text-gray-500 mb-10">
-              Welcome SuiteLifer!
+              Welcome, SuiteLifer!
             </p>
             <LoginForm
               email={email}
@@ -228,13 +228,13 @@ const Login = () => {
             />
             <section className="flex justify-between mt-3">
               <Link
-                className="text-sm text-primary underline cursor-pointer"
+                className="text-sm text-primary no-underline hover:underline! cursor-pointer"
                 to={"/register"}
               >
                 Don't have an account?
               </Link>
               <p
-                className="text-sm text-primary underline cursor-pointer"
+                className="text-sm text-primary no-underline hover:underline! cursor-pointer"
                 onClick={handleResetPasswordBtn}
               >
                 Reset Password?

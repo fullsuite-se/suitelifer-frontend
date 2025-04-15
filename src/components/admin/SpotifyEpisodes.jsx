@@ -200,24 +200,24 @@ const SpotifyEpisodes = () => {
               setEpisodeDetails((ed) => ({ ...ed, spotifyId: e.target.value }))
             }
             placeholder="Enter Spotify episode URL"
-            className="border p-2 rounded-2xl w-full"
+            className="border p-2 px-4 rounded-2xl w-full"
           />
           {episodeDetails.episodeId !== null ? (
             <>
               <button
                 onClick={(e) => handleAddEditEpisode(e)}
-                className="text-primary"
+                className="grid place-items-center cursor-pointer hover:bg-gray-100 rounded-full size-10 text-primary"
               >
                 <PlusIcon className="size-5" />
               </button>
-              <button onClick={cancelEdit} className="text-primary">
+              <button onClick={cancelEdit} className="hover:text-[#007a8e] cursor-pointer text-primary">
                 <XCircleIcon className="size-8" />
               </button>
             </>
           ) : (
             <button
               onClick={(e) => handleAddEditEpisode(e)}
-              className="btn-light"
+              className="cursor-pointer btn-light"
             >
               <PlusIcon className="size-5 sm:size-7" />
             </button>
@@ -240,13 +240,13 @@ const SpotifyEpisodes = () => {
           episodes.map((episode, index) => {
             return (
               <div key={index} className="flex flex-col sm:flex-row gap-2">
-                <div className="w-full sm:w-[96%]">
+                <div className="flex-1">
                   <SingleSpotifyEmbed
                     spotifyId={episode.spotifyId}
                     embedType={episode.embedType}
                   />
                 </div>
-                <div className="flex w-full sm:w-[4%] sm:min-w-[5%] flex-row sm:flex-col justify-center items-center gap-2">
+                <div className="flex flex-row sm:flex-col justify-center items-center gap-2">
                   <button
                     onClick={() => {
                       setEpisodeDetails({
@@ -254,15 +254,15 @@ const SpotifyEpisodes = () => {
                         spotifyId: `https://open.spotify.com/episode/${episode.spotifyId}`,
                       });
                     }}
-                    className="bg-primary text-white w-[48%] sm:w-full rounded-2xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e] h-[50%]"
+                    className="p-3 sm:p-5 bg-primary text-white rounded-xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e] h-full w-full"
                   >
-                    <EditIcon className="size-7" />
+                    <EditIcon className="size-7" /> Edit
                   </button>
                   <button
                     onClick={() => handleDeleteClick(episode.episodeId)}
-                    className="bg-primary text-white w-[48%] sm:w-full rounded-2xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e] h-[50%]"
+                    className="p-3 sm:p-5 bg-primary text-white rounded-xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e] h-full w-full"
                   >
-                    <DeleteIcon className="size-7" />
+                    <DeleteIcon className="size-7" /> Delete
                   </button>
                 </div>
               </div>
