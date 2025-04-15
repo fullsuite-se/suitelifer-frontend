@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   EyeIcon,
   BookmarkSquareIcon,
@@ -133,7 +133,7 @@ const AboutPageContent = ({}) => {
         name="textBanner"
         value={contentDetails.textBanner}
         onChange={(e) => handleContentDetailsChange(e)}
-        rows={2}
+        rows={4}
         className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
       ></textarea>
 
@@ -227,7 +227,7 @@ const AboutPageContent = ({}) => {
               value={value}
               onChange={(e) => handleContentDetailsChange(e)}
               rows={
-                label === "Mission Slogan" || label === "Vision Slogan" ? 1 : 7
+                label === "Mission Slogan" || label === "Vision Slogan" ? 4 : 8
               }
               className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
             ></textarea>
