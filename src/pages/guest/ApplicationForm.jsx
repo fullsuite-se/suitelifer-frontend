@@ -23,6 +23,7 @@ import {
   useGoogleReCaptcha,
 } from "react-google-recaptcha-v3";
 import ModalConfirmApplication from "../../components/modals/ModalConfirmApplication";
+import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
 
 const Form = () => {
   const navigate = useNavigate();
@@ -108,6 +109,8 @@ const Form = () => {
     }));
   };
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleSubmitApplication = async (e) => {
     e.preventDefault();
 
@@ -135,6 +138,8 @@ const Form = () => {
     }
 
     try {
+      setIsLoading(true);
+
       const duplicateResponse = await atsAPI.post(
         "/applicants/check/check-existing",
         {
@@ -167,6 +172,8 @@ const Form = () => {
     } catch (err) {
       console.log(err);
       toast.error("Job Application Unsuccessful.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -319,7 +326,12 @@ const Form = () => {
                 type="text"
                 name="referrer_name"
                 required={showReferralInput}
-                onChange={(e) => setApplicationDetails(ad => ({...ad, referrer_name: e.target.value}))}
+                onChange={(e) =>
+                  setApplicationDetails((ad) => ({
+                    ...ad,
+                    referrer_name: e.target.value,
+                  }))
+                }
                 className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
@@ -430,7 +442,19 @@ const Form = () => {
           type="submit"
           className="w-full cursor-pointer font-avenir-black bg-primary text-white py-3 rounded-md hover:bg-primary/90 transition"
         >
-          SUBMIT APPLICATION
+          {isLoading ? (
+            <div className="mx-auto w-fit">
+              <TwoCirclesLoader
+                bg={"transparent"}
+                color1={"#bfd1a0"}
+                color2={"#ffffff"}
+                width={"135"}
+                height={"24"}
+              />
+            </div>
+          ) : (
+            "SUBMIT APPLICATION"
+          )}
         </button>
         <button
           type="button"
