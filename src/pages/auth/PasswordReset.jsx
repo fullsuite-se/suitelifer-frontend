@@ -4,14 +4,16 @@ import logo from "../../assets/logos/logo-fs-tagline.svg";
 import toast from "react-hot-toast";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../../utils/axios";
+import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
 
 const PasswordReset = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
-  const token = searchParams.get("token");
+  const payloadEncrypted = searchParams.get("payload-encrypted");
   const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
@@ -25,15 +27,18 @@ const PasswordReset = () => {
   const handleConfirmBtn = (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      toast.error("Password do not match");
+      toast.error(
+        "Passwords do not match. Please ensure both passwords are the same."
+      );
       return;
     }
 
     const updatePassword = async () => {
       try {
+        setLoading(true);
         const response = await api.post("/api/update-password", {
           newPassword: password,
-          token,
+          payloadEncrypted,
         });
 
         if (response.data.isSuccess) {
@@ -45,6 +50,8 @@ const PasswordReset = () => {
       } catch (error) {
         toast.error(error.response.data.message);
         console.error(error.response);
+      } finally {
+        setLoading(false);
       }
     };
     updatePassword();
@@ -117,9 +124,22 @@ const PasswordReset = () => {
 
           <button
             type="submit"
+            disabled={loading}
             className="cursor-pointer w-full p-3 bg-primary text-white rounded-md hover:bg-primary/80 font-avenir-black"
           >
-            Reset Password
+            {loading ? (
+              <div className="mx-auto w-fit">
+                <TwoCirclesLoader
+                  bg={"transparent"}
+                  color1={"#bfd1a0"}
+                  color2={"#ffffff"}
+                  width={"135"}
+                  height={"24"}
+                />
+              </div>
+            ) : (
+              "Reset Password"
+            )}
           </button>
         </form>
       </main>
