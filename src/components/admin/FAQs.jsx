@@ -25,9 +25,7 @@ import toast from "react-hot-toast";
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 function FAQs() {
-
-
-    const user = useStore((state) => state.user);
+  const user = useStore((state) => state.user);
 
   const [faqs, setFaqs] = useState([]);
 
@@ -35,21 +33,18 @@ function FAQs() {
     try {
       const response = await api.get("/api/get-all-faqs");
       const fetchedFaqs = response.data.faqs;
-      setFaqs(  fetchedFaqs);
+      setFaqs(fetchedFaqs);
       console.log(fetchedFaqs);
     } catch (err) {
       console.log(err);
     }
   };
 
-
   const [dataUpdated, setDataUpdated] = useState(false);
 
   useEffect(() => {
     fetchFaqs();
   }, [dataUpdated]);
-
-
 
   const [openDialog, setOpenDialog] = useState(false);
   const [currentFAQ, setCurrentFAQ] = useState({
@@ -62,7 +57,7 @@ function FAQs() {
 
   const gridRef = useRef();
 
-  const handleSave = async ()=> {
+  const handleSave = async () => {
     if (currentFAQ.faq_id) {
       setFaqs((prev) =>
         prev.map((faq) => (faq.faq_id === currentFAQ.faq_id ? currentFAQ : faq))
@@ -70,8 +65,10 @@ function FAQs() {
       try {
         console.log("Sending to backend:", currentFAQ);
 
-        const response = await api.post("/api/edit-faq", {...currentFAQ, 
-          user_id: user.id});
+        const response = await api.post("/api/edit-faq", {
+          ...currentFAQ,
+          user_id: user.id,
+        });
         console.log(response.data);
 
         if (response.data?.success) {
@@ -79,16 +76,15 @@ function FAQs() {
         } else {
           toast.error(response.data.message || "Failed to update faq.");
         }
-  
+
         setDataUpdated(!dataUpdated);
       } catch (err) {
         console.error(err.message);
       }
-
     } else {
       const newFaq = {
         ...currentFAQ,
-        user_id: user.id
+        user_id: user.id,
       };
       setFaqs((prev) => [newFaq, ...prev]);
       try {
@@ -102,16 +98,11 @@ function FAQs() {
         } else {
           toast.error(response.data.message || "Failed to save faq.");
         }
-  
+
         setDataUpdated(!dataUpdated);
-
-
-
       } catch (err) {
         console.error(err.message);
       }
-
-
     }
 
     setCurrentFAQ({ faq_id: "", question: "", answer: "" });
@@ -126,7 +117,7 @@ function FAQs() {
   const handleDelete = async (faq_id) => {
     try {
       await api.post("/api/delete-faq", { faq_id });
-      setFaqs((prev) => prev.filter((faq) => faq.faq_id !== faq_id)); 
+      setFaqs((prev) => prev.filter((faq) => faq.faq_id !== faq_id));
       toast.success("FAQ deleted successfully");
       setDataUpdated((prev) => !prev);
     } catch (err) {
@@ -134,7 +125,6 @@ function FAQs() {
       toast.error("Failed to delete FAQ");
     }
   };
-  
 
   const handleFaqDetailsChange = (e) => {
     setCurrentFAQ((td) => ({ ...td, [e.target.name]: e.target.value }));
@@ -144,17 +134,16 @@ function FAQs() {
 
   return (
     <>
-<div className="flex justify-end gap-2 mb-2">
-  <ContentButtons
-    icon={<PlusCircleIcon className="size-5" />}
-    text="Add FAQ"
-    handleClick={() => {
-      setOpenDialog(true);
-      setCurrentFAQ({ faq_id: "", question: "", answer: "" });
-    }}
-  />
-</div>
-
+      <div className="flex justify-end gap-2 mb-2">
+        <ContentButtons
+          icon={<PlusCircleIcon className="size-5" />}
+          text="Add FAQ"
+          handleClick={() => {
+            setOpenDialog(true);
+            setCurrentFAQ({ faq_id: "", question: "", answer: "" });
+          }}
+        />
+      </div>
 
       <div
         className="ag-theme-quartz min-w-[600px] lg:w-full "
@@ -244,11 +233,13 @@ function FAQs() {
         />
       </div>
 
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)} fullWidth > 
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)} fullWidth>
         <DialogTitle>{currentFAQ.faq_id ? "Edit FAQ" : "Add FAQ"}</DialogTitle>
         <DialogContent>
           <div className="mb-4">
-            <label className="block text-gray-700 font-bold">Question</label>
+            <label className="block text-gray-700 font-avenir-black">
+              Question<span className="text-primary">*</span>
+            </label>
             <input
               value={currentFAQ.question}
               onChange={(e) =>
@@ -259,7 +250,9 @@ function FAQs() {
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-bold">Answer</label>
+            <label className="block text-gray-700 font-avenir-black">
+              Answer<span className="text-primary">*</span>
+            </label>
             <textarea
               value={currentFAQ.answer}
               onChange={(e) =>
@@ -271,27 +264,25 @@ function FAQs() {
             />
           </div>
           <div>
-                <label className="block text-gray-700 font-avenir-black">
-                  Visibility<span className="text-primary">*</span>
-                </label>
-                <select
-                  name="is_shown"
-                  required
-                  value={
-                    currentFAQ.is_shown !== undefined
-                      ? currentFAQ.is_shown
-                      : ""
-                  }
-                  onChange={(e) => handleFaqDetailsChange(e)}
-                  className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
-                >
-                  <option value="" disabled>
-                    -- Select an option --
-                  </option>
-                  <option value={1}>Shown</option>
-                  <option value={0}>Hidden</option>
-                </select>
-              </div>
+            <label className="block text-gray-700 font-avenir-black">
+              Visibility<span className="text-primary">*</span>
+            </label>
+            <select
+              name="is_shown"
+              required
+              value={
+                currentFAQ.is_shown !== undefined ? currentFAQ.is_shown : ""
+              }
+              onChange={(e) => handleFaqDetailsChange(e)}
+              className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+            >
+              <option value="" disabled>
+                -- Select an option --
+              </option>
+              <option value={1}>Shown</option>
+              <option value={0}>Hidden</option>
+            </select>
+          </div>
         </DialogContent>
         <DialogActions>
           <button className="btn-light" onClick={() => setOpenDialog(false)}>
