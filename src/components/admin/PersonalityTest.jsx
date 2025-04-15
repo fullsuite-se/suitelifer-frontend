@@ -269,7 +269,7 @@ function PersonalityTest() {
                   value={personalityTestDetails.testTitle}
                   onChange={(e) => handlePersonalityTestDetailsChange(e)}
                   rows={3}
-                  className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                  className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
                 />
               </div>
 
@@ -284,7 +284,7 @@ function PersonalityTest() {
                   value={personalityTestDetails.testUrl}
                   onChange={(e) => handlePersonalityTestDetailsChange(e)}
                   rows={3}
-                  className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                  className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
                 />
               </div>
 
@@ -299,7 +299,7 @@ function PersonalityTest() {
                   value={personalityTestDetails.testDescription}
                   onChange={(e) => handlePersonalityTestDetailsChange(e)}
                   rows={3}
-                  className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2 resize-y"
+                  className="w-full p-3 border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4 mt-2 resize-y"
                 />
               </div>
             </DialogContent>
