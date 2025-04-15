@@ -87,7 +87,7 @@ const ContactDetails = () => {
             name={name}
             value={value}
             onChange={handleContactChange}
-            className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
       ))}

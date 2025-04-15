@@ -115,13 +115,12 @@ function App() {
 
               {/* Admin Protected Routes */}
               <Route element={<AdminProtectedRoutes />}>
-                <Route path="blogs" element={<AdminBlogs />} />
+                <Route path="suitebite" element={<AdminNews />} />
+
                 <Route
-                  path="blogs/new-company-blog"
-                  element={<AdminBlogCreate />}
+                  path="suitebite/new-suitebite"
+                  element={<AdminNewsCreate />}
                 />
-                <Route path="news" element={<AdminNews />} />
-                <Route path="news/new-news" element={<AdminNewsCreate />} />
                 <Route path="events" element={<AdminEvents />} />
                 <Route path="contents" element={<AdminContents />} />
                 <Route path="courses" element={<JobCourse />} />

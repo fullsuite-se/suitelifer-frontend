@@ -6,14 +6,8 @@ import { AgGridReact } from "@ag-grid-community/react";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import logofsfull from "../../assets/logos/logo-fs-full.svg";
-import FileUploaderProvider from "../../components/admin/FileUploader";
-import ContentEditor from "../../components/ContentEditor";
 import PreviewIcon from "@mui/icons-material/Preview";
-import formatTimestamp from "../../components/TimestampFormatter";
-import FeedIcon from "@mui/icons-material/Feed";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -21,7 +15,12 @@ const AdminNews = () => {
   const location = useLocation();
   const [showModal, setShowModal] = useState(false);
   const [editingNews, setEditingNews] = useState(null);
-  const [newNews, setNewNews] = useState({ title: "", author: "", image: "" });
+  const [newNews, setNewNews] = useState({
+    title: "",
+    author: "",
+    image: "",
+    isShown: "",
+  });
   const navigate = useNavigate();
 
   const formatNumber = (num) => {
@@ -64,9 +63,9 @@ const AdminNews = () => {
     setShowModal(true);
   };
 
-  const handleDelete = (id) => {
-    setRowNewsData((prevData) => prevData.filter((news) => news.id !== id));
-  };
+  // const handleDelete = (id) => {
+  //   setRowNewsData((prevData) => prevData.filter((news) => news.id !== id));
+  // };
 
   const newsData = [
     {
@@ -77,6 +76,7 @@ const AdminNews = () => {
       comments: 321,
       views: 12567,
       likes: 876,
+      isShown: 1,
       image:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREPVIcCkWNGNzUzt3wUfZhY-I09Z0Rn-jc4g&s",
     },
@@ -102,11 +102,11 @@ const AdminNews = () => {
     <>
       {!location.pathname.includes("/news/details/") ? (
         <>
-          <div className="flex my-3 w-fit ml-auto">
+          {/* <div className="flex my-3 w-fit ml-auto">
             <button
               className="hidden sm:block btn-primary"
               onClick={() => {
-                navigate("/app/news/new-news");
+                navigate("/app/suitebite/new-suitebite");
               }}
             >
               + Add News
@@ -118,11 +118,11 @@ const AdminNews = () => {
             >
               <span>+</span> <FeedIcon />
             </button>
-          </div>
+          </div> */}
 
           <section className="flex gap-3 [&_*]:rounded-md [&_*]:bg-gray-100 [&_div]:border [&_div]:border-gray-200 [&_*]:flex-1">
             <div className="flex flex-col items-center py-3">
-              <span className="text-sm text-center md:text-base">News</span>
+              <span className="text-sm text-center md:text-base">Bites</span>
               <span className="text-sm text-center md:text-base">
                 {formatNumber(totalNews)}
               </span>
@@ -197,6 +197,15 @@ const AdminNews = () => {
                       hide: window.innerWidth < 640,
                     },
                     {
+                      headerName: "Visibility",
+                      field: "isShown",
+                      flex: 2,
+                      filter: "agTextColumnFilter",
+                      headerClass: "text-primary font-bold bg-gray-100",
+                      valueFormatter: (params) =>
+                        params.value === 1 ? "Shown" : "Hidden",
+                    },
+                    {
                       headerName: "Date Published",
                       field: "datePublished",
                       flex: 2,
@@ -246,12 +255,12 @@ const AdminNews = () => {
                           >
                             <EditIcon />
                           </button>
-                          <button
+                          {/* <button
                             className="btn-delete"
                             onClick={() => handleDelete(params.data.id)}
                           >
                             <DeleteIcon />
-                          </button>
+                          </button> */}
                           <button
                             className="btn-preview"
                             onClick={() =>
@@ -290,53 +299,108 @@ const AdminNews = () => {
             </div>
           </div>
 
-          <Dialog open={showModal} onClose={() => setShowModal(false)}>
-            <div className="relative p-6">
-              {" "}
-              <button
-                className="absolute top-2 right-2 p-2 rounded-full hover:bg-gray-200"
-                onClick={() => setShowModal(false)}
-              >
-                ✖
-              </button>
-            </div>
+          <Dialog
+            open={showModal}
+            onClose={() => setShowModal(false)}
+            sx={{
+              "& .MuiDialog-paper": {
+                borderRadius: "16px",
+                padding: "20px",
+                width: "600px",
+              },
+            }}
+          >
+            
             <DialogTitle className="w-full text-center">
-              {editingNews ? "Edit News" : "Add News"}
+              {editingNews ? "Edit Bite" : "Add Bite"}
             </DialogTitle>
             <DialogContent>
-              <TextField
-                label="Author"
-                fullWidth
-                margin="normal"
+              <div className="text-md font-bold pt-4 font-avenir-black">
+                Author
+              </div>
+              <input
+                type="text"
+                name="author"
+                disabled
                 value={editingNews?.author || newNews.author}
                 onChange={(e) =>
                   editingNews
                     ? setEditingNews({ ...editingNews, author: e.target.value })
                     : setNewNews({ ...newNews, author: e.target.value })
                 }
+                className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
               />
-              <ContentEditor
-                titleChange={(value) =>
+
+              <div className="text-md font-bold pt-4 font-avenir-black">
+                Image
+              </div>
+              <input
+                type="text"
+                name="image"
+                disabled
+                value={editingNews?.image || newNews.image}
+                onChange={(e) =>
+                  editingNews
+                    ? setEditingNews({ ...editingNews, image: e.target.value })
+                    : setNewNews({ ...newNews, image: e.target.value })
+                }
+                className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
+              />
+              {/* <ContentEditor
+                title={(value) =>
                   editingNews
                     ? setEditingNews({ ...editingNews, title: value })
                     : setNewNews({ ...newNews, title: value })
                 }
-              />
+                onClick={addOrUpdateNews}
+              /> */}
 
-              <FileUploaderProvider
+              <label className="block text-gray-700 font-avenir-black mt-4">
+                Visibility
+              </label>
+              <select
+                name="is_shown"
+                required
+                value={editingNews?.isShown || newNews.isShown}
+                onChange={(e) =>
+                  editingNews
+                    ? setEditingNews({
+                        ...editingNews,
+                        isShown: e.target.value,
+                      })
+                    : setNewNews({ ...newNews, isShown: e.target.value })
+                }
+                className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+              >
+                <option value="" disabled>
+                  -- Select an option --
+                </option>
+                <option value={1}>Shown</option>
+                <option value={0}>Hidden</option>
+              </select>
+
+              {/* <FileUploaderProvider
                 onUpload={(fileUrl) =>
                   editingNews
                     ? setEditingNews({ ...editingNews, image: fileUrl })
                     : setNewNews({ ...newNews, image: fileUrl })
                 }
-              />
+              /> */}
 
-              <button
-                className="btn-primary flex-end w-full"
-                onClick={addOrUpdateNews}
-              >
-                {editingNews ? "Update" : "Add"}
-              </button>
+              <div className="flex gap-2 mt-4">
+                <button
+                  className="flex justify-center w-full mt-2 btn-light hover:bg-gray-200"
+                  onClick={() => setShowModal(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="btn-primary flex-end w-full"
+                  onClick={addOrUpdateNews}
+                >
+                  {editingNews ? "Update" : "Add"}
+                </button>
+              </div>
             </DialogContent>
           </Dialog>
         </>

@@ -2,9 +2,6 @@ import React, { useEffect, useState } from "react";
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
-
-import SpotifyEmbed from "../../components/careers/SpotifyEmbed";
-import api from "../../utils/axios";
 import JobCarousel from "../../components/careers/JobCarousel";
 import GuestIndustryTags from "../../components/careers/GuestIndustriesTags";
 import dotsLine from "../../assets/images/socials-dots-line.svg";
@@ -14,10 +11,6 @@ import Footer from "../../components/Footer";
 import { useLocation } from "react-router-dom";
 import DynamicLink from "../../components/buttons/ViewAll";
 import LoadingJobCarousel from "../../components/careers/LoadingJobCarousel";
-
-import Skeleton from "react-loading-skeleton";
-import LoadingLargeSpotify from "../../components/careers/LoadingLargeSpotify";
-import LoadingSmallSpotify from "../../components/careers/LoadingSmallSpotify";
 
 import careersLeft from "../../assets/images/careers-hero-images/careers-left.png";
 import careersRight from "../../assets/images/careers-hero-images/careers-right.png";
@@ -30,29 +23,8 @@ const Careers = () => {
     careersRight,
     careersMain,
   };
-  const [jobs, setJobs] = useState([]);
-  const fetchJobs = async () => {
-    try {
-      const response = await atsAPI.get("/jobs/open");
-      setJobs((j) => response.data.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
-  const [spotifyEpisodes, setEpisodes] = useState([]);
-  const [isSpotifyLoading, setIsSpotifyLoading] = useState(true);
-  const fetchEpisodes = async () => {
-    try {
-      const response = await api.get("/api/spotify/latest-three");
-      console.log(response.data.threeLatestEpisodes);
-
-      setEpisodes((e) => response.data.threeLatestEpisodes);
-      setIsSpotifyLoading(false);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  const [isLoading, setIsLoading] = useState(false);
 
   const [industries, setIndustries] = useState([]);
   const fetchIndustries = async () => {
@@ -64,26 +36,42 @@ const Careers = () => {
     }
   };
 
-  useEffect(() => {
-    fetchEpisodes();
-    fetchJobs();
-    fetchIndustries();
-  }, []);
-
   const [filter, setFilter] = useState("All");
   const handleFilterChange = (filter) => {
     setFilter((f) => filter);
   };
 
+  const [jobs, setJobs] = useState([]);
+  const fetchJobs = async () => {
+    try {
+      setIsLoading(true);
+      const response = await atsAPI.get("/jobs/open");
+      setJobs((j) => response.data.data);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const fetchFilteredJobs = async () => {
     try {
+      setIsLoading(true);
+
       const response = await atsAPI.get(`/jobs/open-filter/${filter}`);
 
       setJobs((j) => response.data.data);
     } catch (err) {
       console.log(err);
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchIndustries();
+    fetchJobs();
+  }, []);
 
   useEffect(() => {
     filter === "All" ? fetchJobs() : fetchFilteredJobs();
@@ -223,7 +211,7 @@ const Careers = () => {
                   />
                 </div> */}
               </section>
-              <div className="relative flex justify-center md:py-4 gap-10">
+              <div className="relative flex justify-center md:py-4 md:gap-10">
                 <div className="">
                   <div className="absolute right-0">
                     <div className="relative bg-secondary/17 rounded-l-2xl w-[10vw] h-[17vw] -translate-y-10"></div>
@@ -316,14 +304,16 @@ const Careers = () => {
             {/* <div className="relative hidden lg:block">
               <div className="absolute overflow-hidden right-0 translate-y-12 -z-50 w-[25%] h-25 bg-secondary/10 rounded-l-4xl"></div>
             </div> */}
-            {industries.length === 0 ? (
+            {isLoading ? (
               <section className="">
+                {/* Filter */}
                 <div className="flex justify-center py-[3%] pl-[5%] pb-[5%]">
                   <div className="w-full max-w-full flex justify-center">
-                    <div className="w-full">
-                      <Skeleton width={"80%"} />
-                      <Skeleton width={"40%"} />
-                    </div>
+                    <GuestIndustryTags
+                      industries={industries}
+                      filter={filter}
+                      handleFilterChange={handleFilterChange}
+                    />
                   </div>
                 </div>
                 <LoadingJobCarousel />

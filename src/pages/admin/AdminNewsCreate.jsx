@@ -58,12 +58,12 @@ const AdminNewsCreate = () => {
       }
 
       if (newsResponse.data.isSuccess) {
-        toast.success(newsResponse.data.message || "News added successfully!");
+        toast.success(newsResponse.data.message || "Bite added successfully!");
       } else {
         toast.error(newsResponse.data.message || "Something went wrong.");
       }
     } catch (error) {
-      console.error("Error adding news:", error);
+      console.error("Error adding Bite:", error);
       toast.error("Something went wrong. Please try again.");
     }
   };
@@ -72,14 +72,14 @@ const AdminNewsCreate = () => {
     <section className="p-2 xl:p-3">
       <div className="lg:flex items-center justify-between hidden">
         <div className="flex items-center gap-2">
-          <h2 className="font-avenir-black">Create News</h2>
+          <h2 className="font-avenir-black">Create Bite</h2>
           <InformationCircleIcon className="w-4 h-4 text-gray-500" />
         </div>
         <span
-          onClick={() => navigate("/app/news")}
+          onClick={() => navigate("/app/suitebite")}
           className="font-avenir-black text-red-400 text-sm cursor-pointer"
         >
-          Discard News
+          Discard Bite
         </span>
       </div>
 

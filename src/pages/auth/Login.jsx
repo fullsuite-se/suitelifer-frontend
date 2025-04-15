@@ -5,7 +5,7 @@ import GLOBE from "vanta/dist/vanta.net.min";
 import fullsuite from "../../assets/logos/logo-fs-full.svg";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
 import { getUserFromCookie } from "../../utils/cookie";
 import {
@@ -100,7 +100,7 @@ const LoginForm = ({ email, password, setEmail, setPassword }) => {
           value={email}
           placeholder="Email"
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-3 border-none rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary placeholder-gray-500"
+          className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary placeholder-primary/50"
         />
       </div>
       <div className="relative">
@@ -110,20 +110,24 @@ const LoginForm = ({ email, password, setEmail, setPassword }) => {
           value={password}
           placeholder="Password"
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-3 border-none rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary placeholder-gray-500"
+          className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary placeholder-primary/50"
         />
         <button
           type="button"
           onClick={() => setShowPassword(!showPassword)}
-          className="absolute top-3 right-3 text-gray-500"
+          className="cursor-pointer absolute top-3 right-3 text-gray-500"
         >
-          {showPassword ? "Hide" : "Show"}
+          {showPassword ? (
+            <EyeSlashIcon className="size-5 cursor-pointer" />
+          ) : (
+            <EyeIcon className="size-5 cursor-pointer" />
+          )}
         </button>
       </div>
       <button
         type="submit"
-        className="mt-5 w-full bg-primary p-3 rounded-xl text-white font-avenir-black"
-        disabled={!email || !password || loading} // Disable if fields are empty or loading
+        disabled={loading}
+        className="cursor-pointer hover:bg-[#007a8e] duration-300 mt-5 w-full bg-primary p-3 rounded-xl text-white font-avenir-black"
       >
         {loading ? (
           <div className="mx-auto w-fit">
@@ -149,8 +153,6 @@ const Login = () => {
   const navigate = useNavigate();
   const vantaRef = useRef(null);
   const [isResetModal, setResetModal] = useState(false); // Fixed typo here
-
-  const [showCredentials, setShowCredentials] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -204,11 +206,7 @@ const Login = () => {
           isOpen={isResetModal}
           handleClose={handleResetPasswordBtn}
         />
-        <div
-          className={`flex flex-col items-center ${
-            !showCredentials ? "justify-center min-h-screen" : "pt-20"
-          }`}
-        >
+        <div className="flex flex-col items-center justify-center h-screen">
           <div
             className="bg-white mx-auto rounded-2xl p-10 py-16 border border-gray-200"
             style={{ width: "min(90%, 600px)" }}
@@ -220,7 +218,7 @@ const Login = () => {
               className="w-28 h-auto mx-auto cursor-pointer"
             />
             <p className="text-center text-base my-4 text-gray-500 mb-10">
-              Welcome SuiteLifer!
+              Welcome, SuiteLifer!
             </p>
             <LoginForm
               email={email}
@@ -230,36 +228,19 @@ const Login = () => {
             />
             <section className="flex justify-between mt-3">
               <Link
-                className="text-sm text-blue-400 underline cursor-pointer"
+                className="text-sm text-primary no-underline hover:underline! cursor-pointer"
                 to={"/register"}
               >
                 Don't have an account?
               </Link>
               <p
-                className="text-sm text-blue-400 underline cursor-pointer"
+                className="text-sm text-primary no-underline hover:underline! cursor-pointer"
                 onClick={handleResetPasswordBtn}
               >
                 Reset Password?
               </p>
             </section>
-            <div className="flex justify-center">
-              <button
-                className="mt-10 px-2 py-1 text-xss text-gray-400 border border-gray-200 rounded hover:bg-gray-100"
-                onClick={() => setShowCredentials(!showCredentials)}
-              >
-                TEST CREDENTIALS
-              </button>
-            </div>
           </div>
-
-          {showCredentials && (
-            <div
-              className="bg-white mx-auto rounded-2xl p-5 mt-10"
-              style={{ width: "min(90%, 600px)" }}
-            >
-              <TestCredentials setEmail={setEmail} setPassword={setPassword} />
-            </div>
-          )}
         </div>
       </div>
     </GoogleReCaptchaProvider>

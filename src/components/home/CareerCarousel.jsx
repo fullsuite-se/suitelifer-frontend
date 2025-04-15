@@ -9,6 +9,7 @@ import BusinessOperations from "../../assets/images/careers-industry-images/Busi
 import FinanceOperations from "../../assets/images/careers-industry-images/Finance-Operations.webp";
 import SoftwareDevelopment from "../../assets/images/careers-industry-images/Software-Engineering-A.webp";
 import Compliance from "../../assets/images/careers-industry-images/Compliance.webp";
+import atsAPI from "../../utils/atsAPI.js";
 
 const careerIndustries = [
   {
@@ -34,7 +35,26 @@ const careerIndustries = [
 ];
 
 const CareerCarousel = () => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [industries, setIndustries] = useState([]);
+
+  const fetchIndustries = async () => {
+    try {
+      setIsLoading(true);
+      const response = await atsAPI.get("/industries/pr");
+
+      setIndustries(response.data.data);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchIndustries();
+  }, []);
 
   return (
     <MotionUp>
@@ -62,12 +82,12 @@ const CareerCarousel = () => {
           }}
           className="w-full"
         >
-          {careerIndustries.length == 0 ? (
+          {isLoading ? (
             <>
               {[...Array(5)].map((_, index) => (
                 <SwiperSlide key={index}>
                   <div
-                    className={`p-5 mt-4 ease-out bg-white shadow-lg rounded-2xl text-center transition-transform duration-300 scale-90
+                    className={`p-5 mt-4 ease-out cursor-grab bg-white shadow-lg rounded-2xl text-center transition-transform duration-300 scale-90
                     `}
                   >
                     <div className="w-full aspect-[100/101] rounded-xl overflow-hidden">
@@ -82,17 +102,17 @@ const CareerCarousel = () => {
             </>
           ) : (
             <>
-              {careerIndustries.slice(0, 5).map((career, index) => (
+              {industries.slice(0, 5).map((career, index) => (
                 <SwiperSlide key={career.industryId}>
                   <div
-                    className={`p-5 mt-4 ease-out bg-white shadow-lg rounded-2xl text-center transition-transform duration-300 scale-90
+                    className={`p-5 mt-4 ease-out cursor-grab bg-white shadow-lg rounded-2xl text-center transition-transform duration-300 scale-90
                     `}
                   >
                     {career.imageUrl ? (
                       <>
                         <img
                           src={career.imageUrl}
-                          alt={career.name}
+                          alt={career.industryName}
                           className="w-full aspect-[100/101] object-cover rounded-xl"
                         />
                       </>
@@ -104,7 +124,7 @@ const CareerCarousel = () => {
                       </>
                     )}
                     <p className="text-center mt-3 py-5 font-avenir-black text-body">
-                      {career.name || <Skeleton width={"50%"} />}
+                      {career.industryName || <Skeleton width={"50%"} />}
                     </p>
                   </div>
                 </SwiperSlide>

@@ -115,20 +115,26 @@ const Contact = () => {
                       alt="Email"
                       className="w-5 h-5 mb-1 filter invert"
                     />
-                    <div className="flex">
-                      <a
-                        href="mailto:hireme@fullsuite.ph"
-                        className="hover:text-secondary transition-colors  no-underline!"
-                      >
-                        hireme@fullsuite.ph
-                      </a>
-                       &nbsp;|&nbsp; 
-                       <a
-                        href="mailto:internships@fullsuite.ph"
-                        className="hover:text-secondary transition-colors  no-underline!"
-                      >
-                        internships@fullsuite.ph
-                      </a>
+                    <div className="flex flex-col xl:flex-row">
+                      <div className="">
+                        <a
+                          href="mailto:hireme@fullsuite.ph"
+                          className="hover:text-secondary transition-colors  no-underline!"
+                        >
+                          hireme@fullsuite.ph
+                        </a>
+                      </div>
+                      <div className="">
+                        <span className="hidden xl:block">&nbsp;|&nbsp;</span>
+                      </div>
+                      <div className="">
+                        <a
+                          href="mailto:internships@fullsuite.ph"
+                          className="hover:text-secondary transition-colors  no-underline!"
+                        >
+                          internships@fullsuite.ph
+                        </a>
+                      </div>
                     </div>
                   </p>
                   <p className="flex items-center gap-4">
