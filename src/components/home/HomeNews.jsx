@@ -1,6 +1,6 @@
 import { ChevronRightIcon } from "@heroicons/react/24/solid";
 import newsList from "../news/NewsList";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { toSlug } from "../../utils/slugUrl";
 import MotionUp from "../MotionUp";
 import Skeleton from "react-loading-skeleton";
@@ -15,7 +15,7 @@ const HomeNews = () => {
         <div className="mb-5 relative">
           <MotionUp className="mb-10 md:mb-5 text-start">
             <div className="font-avenir-black text-h4 ">
-              <span className="text-primary">Latest</span> Company News
+              <span className="text-primary">Latest</span> Company Newsletter
             </div>
             <p className="text-small text-gray-500">
               Stay updated with our latest achievements, events, and
@@ -43,7 +43,7 @@ const HomeNews = () => {
   const mainArticle = mainNews?.article;
   const mainCreatedAt = mainNews?.created_at;
   const mainNewsLink = mainTitle
-    ? `/news/${mainNews.id}/${toSlug(mainTitle)}`
+    ? `/newsletter/${toSlug(mainTitle)}`
     : "";
 
   return (
@@ -53,7 +53,7 @@ const HomeNews = () => {
           <div className="flex flex-row items-center justify-between">
             <div>
               <div className="font-avenir-black text-h4 ">
-                <span className="text-primary">Latest</span> Company News
+                <span className="text-primary">Latest</span> Company Newsletter
               </div>
             </div>
             <div className="hidden md:block">
@@ -67,10 +67,10 @@ const HomeNews = () => {
           </div>
 
           <div className=" flex items-center text-small ">
-          <p className="mr-3 text-gray-500 md:whitespace-nowrap">
-  Stay updated with our latest achievements, events, and announcements!
-</p>
-
+            <p className="mr-3 text-gray-500 md:whitespace-nowrap">
+              Stay updated with our latest achievements, events, and
+              announcements!
+            </p>
             <div className="w-full h-[0.25vh] bg-primary hidden md:block"></div>{" "}
             <div className="flex items-center hidden md:block">
               <div className="size-[1vh] bg-primary rounded-full"></div>
@@ -92,7 +92,7 @@ const HomeNews = () => {
         {/* MAIN NEWS (First Item) */}
         <MotionUp className="lg:w-1/2 flex  flex-col items-center justify-center">
           {mainNews && (
-            <Link
+            <NavLink
               to={mainNewsLink}
               className="no-underline rounded-2xl cursor-pointer group hover:bg-white w-full h-full"
             >
@@ -118,7 +118,7 @@ const HomeNews = () => {
                   className="title "
                 >
                   {mainTitle ? (
-                    <p className="font-avenir-black text-white text-body line-clamp-2 group-hover:text-secondary!">
+                    <p className="font-avenir-black text-white text-body line-clamp-2 group-hover:text-secondary! duration-300">
                       {mainTitle}
                     </p>
                   ) : (
@@ -162,7 +162,7 @@ const HomeNews = () => {
                   )}
                 </div>
               </div>
-            </Link>
+            </NavLink>
           )}
         </MotionUp>
         <div className="py-5"></div>
@@ -177,19 +177,19 @@ const HomeNews = () => {
             const newsReadTime = news?.readTime;
             const newsCreatedAt = news?.created_at;
             const newsLink = newsTitle
-              ? `/news/${news.id}/${toSlug(newsTitle)}`
+              ? `/newsletter/${toSlug(newsTitle)}`
               : "";
 
             return (
-              <Link
+              <NavLink
                 key={news.id}
                 to={newsLink}
-                className="group no-underline rounded-2xl cursor-pointer px-2 py-3 lg:px-4 md:mb-2 transition-all duration-300 hover:shadow-sm hover:bg-white"
+                className="duration-500 group no-underline rounded-2xl cursor-pointer px-2 py-3 lg:px-4 md:mb-2 transition-all hover:shadow-sm hover:bg-white"
               >
                 <MotionUp>
                   <div className="flex justify-center items-center gap-2">
                     {/* CONTENT */}
-                    <div className=" flex flex-col w-full">
+                    <div className="flex flex-col w-full">
                       <MotionUp
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -211,7 +211,7 @@ const HomeNews = () => {
                           <Skeleton width={"25%"} />
                         )}
                       </MotionUp>
-                      <div className="group-hover:!text-primary">
+                      <div className="group-hover:!text-primary duration-300">
                         {/* TITLE */}
                         <p
                           title={newsTitle}
@@ -262,7 +262,7 @@ const HomeNews = () => {
                     </div> */}
                   </div>
                 </MotionUp>
-              </Link>
+              </NavLink>
             );
           })}
         </div>
