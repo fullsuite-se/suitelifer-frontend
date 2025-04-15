@@ -9,6 +9,7 @@ import {
   useGoogleReCaptcha,
 } from "react-google-recaptcha-v3";
 import sendVerification from "../../utils/sendVerification";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 
 const Form = () => {
   const [firstName, setFirstName] = useState("");
@@ -18,7 +19,16 @@ const Form = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { executeRecaptcha } = useGoogleReCaptcha();
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
 
   const handleInputChange = (value, setValue) => {
     setValue(value);
@@ -43,17 +53,32 @@ const Form = () => {
       return;
     }
 
+    const domain = workEmail.split("@")[1]?.toLowerCase();
+    const isValid =
+      domain === "fullsuite.ph" ||
+      domain === "viascari.com" ||
+      domain === "kriyahr.com";
+
+    if (!isValid) {
+      toast.error(
+        "Please use a Fullsuite-issued or affiliated email address (@fullsuite.ph, @viascari.com, or @kriyahr.com)."
+      );
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      toast.error(
+        "Passwords do not match. Please ensure both passwords are the same."
+      );
+      return;
+    }
+
     const recaptchaToken = await executeRecaptcha("login");
     const recaptcha = await api.post("/api/verify-recaptcha", {
       recaptchaToken: recaptchaToken,
     });
     if (recaptcha.status !== 200) {
       toast.error(recaptcha.data.message);
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      toast.error("Password do not match");
       return;
     }
 
@@ -69,6 +94,12 @@ const Form = () => {
         } else {
           toast.error("Failed to send verification link.");
         }
+        setFirstName("");
+        setMiddleName("");
+        setLastName("");
+        setWorkEmail("");
+        setPassword("");
+        setConfirmPassword("");
       } else {
         toast.error("Registration failed.");
       }
@@ -115,24 +146,54 @@ const Form = () => {
         value={workEmail}
         onChange={(e) => handleInputChange(e.target.value, setWorkEmail)}
       />
-      <input
-        type="password"
-        placeholder="Enter your password"
-        className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary placeholder-primary/50"
-        required
-        value={password}
-        onChange={(e) => handleInputChange(e.target.value, setPassword)}
-      />
-      <input
-        type="password"
-        placeholder="Confirm your password"
-        className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary placeholder-primary/50"
-        required
-        value={confirmPassword}
-        onChange={(e) => handleInputChange(e.target.value, setConfirmPassword)}
-      />
+      <div className="relative">
+        <input
+          type={showPassword ? "text" : "password"}
+          placeholder="Enter your password"
+          className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary placeholder-primary/50"
+          required
+          value={password}
+          onChange={(e) => handleInputChange(e.target.value, setPassword)}
+        />
+        <button
+          type="button"
+          className="absolute right-3 top-4 text-primary"
+          onClick={togglePasswordVisibility}
+        >
+          {showPassword ? (
+            <EyeSlashIcon className="size-5 cursor-pointer" />
+          ) : (
+            <EyeIcon className="size-5 cursor-pointer" />
+          )}
+        </button>
+      </div>
+      <div className="relative">
+        <input
+          type={showConfirmPassword ? "text" : "password"}
+          placeholder="Confirm your password"
+          className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary placeholder-primary/50"
+          required
+          value={confirmPassword}
+          onChange={(e) =>
+            handleInputChange(e.target.value, setConfirmPassword)
+          }
+        />
+        <button
+          type="button"
+          className="absolute right-3 top-4 text-primary"
+          onClick={toggleConfirmPasswordVisibility}
+        >
+          {showConfirmPassword ? (
+            <EyeSlashIcon className="size-5 cursor-pointer" />
+          ) : (
+            <EyeIcon className="size-5 cursor-pointer" />
+          )}
+        </button>
+      </div>
+
       <button
         type="submit"
+        disabled={loading}
         className="w-full bg-primary hover:bg-[#007a8e] duration-300 p-3 rounded-md text-white font-avenir-black cursor-pointer"
       >
         {loading ? (
