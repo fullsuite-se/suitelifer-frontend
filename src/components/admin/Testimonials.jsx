@@ -19,6 +19,10 @@ import { useStore } from "../../store/authStore";
 import toast from "react-hot-toast";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import ContentButtons from "./ContentButtons";
+import {
+  ExclamationTriangleIcon,
+  InformationCircleIcon,
+} from "@heroicons/react/24/outline";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -27,6 +31,16 @@ function Testimonials() {
   const user = useStore((state) => state.user);
 
   const [imageFile, setImageFile] = useState(null);
+  const imgRef = useRef(null);
+
+  const handleImageFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      const imageURL = URL.createObjectURL(file);
+      imgRef.current.src = imageURL;
+    }
+  };
 
   const defaultTestimonialDetails = {
     testimonialId: null,
@@ -185,6 +199,12 @@ function Testimonials() {
     fetchData();
   }, [dataUpdated]);
 
+  useEffect(() => {
+    if (modalIsOpen && imgRef.current && testimonialDetails.employeeImageUrl) {
+      imgRef.current.src = testimonialDetails.employeeImageUrl;
+    }
+  }, [modalIsOpen, testimonialDetails]);
+
   return (
     <>
       <div className="flex justify-end gap-2 mb-2">
@@ -219,10 +239,10 @@ function Testimonials() {
                       />
                     ) : (
                       <img
-                      src="https://cdn-icons-png.flaticon.com/512/147/147142.png"
-                      alt="Employee"
-                      className="w-[80px] h-[80px] sm:w-[80px] sm:h-[80px] rounded-md object-cover mx-auto "
-                    />
+                        src="https://cdn-icons-png.flaticon.com/512/147/147142.png"
+                        alt="Employee"
+                        className="w-[80px] h-[80px] sm:w-[80px] sm:h-[80px] rounded-md object-cover mx-auto "
+                      />
                     ),
                 },
 
@@ -317,7 +337,12 @@ function Testimonials() {
 
         <Dialog
           open={modalIsOpen}
-          onClose={() => setModalIsOpen(false)}
+          onClose={(event, reason) => {
+            if (reason !== "backdropClick" && reason !== "escapeKeyDown") {
+              setModalIsOpen(false);
+            }
+          }}
+          disableEscapeKeyDown={true}
           sx={{
             "& .MuiDialog-paper": {
               width: "600px",
@@ -382,23 +407,25 @@ function Testimonials() {
                 <label className="block text-gray-700 font-avenir-black">
                   Visibility<span className="text-primary">*</span>
                 </label>
-                <select
-                  name="isShown"
-                  required
-                  value={
-                    testimonialDetails.isShown !== undefined
-                      ? testimonialDetails.isShown
-                      : ""
-                  }
-                  onChange={(e) => handleTestimonialDetailsChange(e)}
-                  className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
-                >
-                  <option value="" disabled>
-                    -- Select an option --
-                  </option>
-                  <option value={1}>Shown</option>
-                  <option value={0}>Hidden</option>
-                </select>
+                <div className="p-2 bg-primary/10 rounded-md cursor-pointer">
+                  <select
+                    name="isShown"
+                    required
+                    value={
+                      testimonialDetails.isShown !== undefined
+                        ? testimonialDetails.isShown
+                        : ""
+                    }
+                    onChange={(e) => handleTestimonialDetailsChange(e)}
+                    className="w-full cursor-pointer border-none focus:outline-none"
+                  >
+                    <option value="" disabled>
+                      -- Select an option --
+                    </option>
+                    <option value={1}>Shown</option>
+                    <option value={0}>Hidden</option>
+                  </select>
+                </div>
               </div>
 
               <div className="w-full mb-3">
@@ -408,9 +435,40 @@ function Testimonials() {
 
                 <div className="mt-3">
                   <input
+                    className="mb-2 block w-fit text-sm text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer file:cursor-pointer"
                     type="file"
-                    onChange={(e) => setImageFile(e.target.files[0])}
+                    accept=".jpeg,.jpg,.png,.heic"
+                    onChange={handleImageFileChange}
                   />
+                  <span className="mb-1 flex text-sm text-gray-400">
+                    {" "}
+                    <InformationCircleIcon className="size-5  text-primary/70" />
+                    &nbsp;Accepted formats: .jpeg, .jpg, .png, .heic (rec.
+                    1080×1080px)
+                  </span>
+                  <span className="flex text-sm text-gray-400">
+                    {" "}
+                    <ExclamationTriangleIcon className="size-5  text-orange-500/70" />
+                    &nbsp;Make sure your image is a perfect square (1:1 ratio)
+                  </span>
+                  {imageFile === null ? (
+                    testimonialDetails.testimonialId && (
+                      <div
+                        className={`preview mt-4`}
+                      >
+                        <img
+                          className=""
+                          src={testimonialDetails.employeeImageUrl}
+                          alt="Preview"
+                        />
+                      </div>
+                    )
+                  ) : (
+                    <img
+                      className="mb-20"
+                      src={URL.createObjectURL(imageFile)}
+                    />
+                  )}
                 </div>
               </div>
 
@@ -418,7 +476,10 @@ function Testimonials() {
                 <button
                   type="button"
                   className="btn-light"
-                  onClick={() => setModalIsOpen(false)}
+                  onClick={() => {
+                    setModalIsOpen(false);
+                    setImageFile(null);
+                  }}
                 >
                   Cancel
                 </button>
