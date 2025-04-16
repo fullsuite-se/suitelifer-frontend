@@ -113,52 +113,7 @@ const Home = () => {
       <div className="desktop-nav">
         <DesktopNav />
       </div>
-      <div className="lg:flex lg:flex-row-reverse hidden lg:hidden">
-        {/* HERO SECTION */}
-        <HeroSection />
-        {/* BANNER SECTION */}
-        <section className="flex pt-5 lg:w-2/5 ">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.7 }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            whileHover={{ scale: 1.05 }}
-            whileInView={{
-              scale: [1, 1.05, 1],
-              transition: { duration: 3, repeat: Infinity, ease: "easeInOut" },
-            }}
-            className="flex justify-end items-start ml-5 pb-3 lg:hidden overflow-hidden"
-          >
-            <img
-              className="opacity-70 -z-10 rounded-l-4xl object-cover h-full w-full"
-              src={banner_img}
-              alt="Banner image"
-            />
-          </motion.div>
-        </section>
-      </div>
-      {/* ADD-ON (SHOWS ON MOBILE & TABLET) */}
-      <div className="relative lg:hidden overflow-hidden h-28 sm:h-34 hidden">
-        <motion.img
-          className="absolute w-[15vw] right-0 opacity-40 rounded-l-4xl object-cover"
-          src={kb_startup}
-          alt="A keyboard with a startup key"
-          style={{
-            height: "100%",
-            transform: "translateX(70%)",
-          }}
-          animate={{
-            scale: [1, 1.05, 1],
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-      </div>
-
-      <section className="h-[100dvh] relative lg:mt-17 mb-[10%]">
+      <section className="h-[100vh] relative lg:mt-17 mb-[10%]">
         {/* White */}
         <div id="right-side" className="side pb-17">
           <div className="title">
@@ -171,9 +126,6 @@ const Home = () => {
                 <span className="text-black">Career is going</span>{" "}
                 <span className="nowhere">nowhere?</span>
               </span>
-            </div>{" "}
-            <div className="hidden">
-              <span className="title-line-3">We can help.</span>
             </div>
           </div>
         </div>
@@ -182,7 +134,7 @@ const Home = () => {
           <div className="title relative">
             <div>
               <span className="title-line-1">We can help.</span>
-            </div>
+            </div> <br />
             <div>
               <span className="title-line-2">
                 <span className="text-white">Let's get you on the</span> <br />
@@ -198,7 +150,6 @@ const Home = () => {
 
       {/* GOAL AND OPERATIONS */}
       <HomeGoalsOperations />
-      {/* <div className="h-300 bg-red-900"></div> */}
 
       <section className="px-5 xl:px-17 pb-[5%]">
         <MotionUp>
@@ -226,7 +177,7 @@ const Home = () => {
         <MotionUp>
           <div className="text-center text-white px-7 xl:px-17">
             <p className="text-h4 font-avenir-black">
-              Your Next <span className="text-secondary">Career</span> Starts
+            Take the <span className="text-secondary">next step</span> in your career journey
               Here
             </p>
             <p className="text-small">
@@ -243,21 +194,13 @@ const Home = () => {
 
       {/* NEWS SECTION */}
       <HomeNews />
-      {/* <div className="relative bg-primary py-10 mt-10 rounded-t-30!"> */}
-      {/* SOCIALS SECTION */}
-      {/* <HomeSocials /> */}
-      {/* </div> */}
-      <div className="h-10"></div> 
-       <div className="flex items-center justify-end pl-7 xl:pl-40">
+
+      <div className="h-10"></div>
+      <div className="flex items-center justify-end pl-7 xl:pl-40">
         <div className="size-[1vh] bg-primary rounded-full"></div>
         <div className="w-full  h-[0.25vh] bg-primary"></div>
       </div>
-      <div className="h-10"></div> 
-
-      {/* HOME BLOG SPOT */}
-      {/* <div className="bg-primary rounded-2xl md:rounded-3xl mx-7 lg:mx-17">
-        <HomeBlogSpot />
-      </div> */}
+      <div className="h-10"></div>
 
       <section className="relative py-15 md:py-[5%] px-7 ">
         <MotionUp>
@@ -348,7 +291,7 @@ const Home = () => {
           </a>
         </div>
       </section>
-      <div className="h-10"></div> 
+      <div className="h-10"></div>
 
       <BackToTop />
 

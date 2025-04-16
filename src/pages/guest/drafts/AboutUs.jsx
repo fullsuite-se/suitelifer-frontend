@@ -1,13 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
 import api from "../../utils/axios";
 import CoreValueCard from "../../components/about-us/CoreValueCard";
 import maggie from "../../assets/images/maggie-cutout-circle.png";
-import aboutBanner from "../../assets/images/about-banner.webp";
-import theSuiteliferValues from "../../assets/images/the-suitelifer-values.webp";
-import ourStoryText from "../../assets/images/our-story-text.webp";
 import imgMission from "../../assets/images/imgMission.svg";
 import imgVision from "../../assets/images/imgVision.svg";
 import dotsLine from "../../assets/images/socials-dots-line.svg";
@@ -26,9 +23,6 @@ const AboutUs = () => {
   const [aboutContent, setAboutContent] = useState({});
   const [videoTitle, setVideoTitle] = useState("Thought it was over, but...");
 
-  const contentRef = useRef(null);
-  const [lineHeight, setLineHeight] = useState(0);
-
   const fetchContent = async () => {
     try {
       const response = await api.get("/api/content/about");
@@ -41,19 +35,6 @@ const AboutUs = () => {
 
   useEffect(() => {
     fetchContent();
-    const observer = new ResizeObserver(() => {
-      if (contentRef.current) {
-        setLineHeight(contentRef.current.offsetHeight);
-      }
-    });
-
-    if (contentRef.current) {
-      observer.observe(contentRef.current);
-    }
-
-    return () => {
-      observer.disconnect();
-    };
   }, []);
 
   return (
@@ -77,111 +58,87 @@ const AboutUs = () => {
       <div className="desktop-nav">
         <DesktopNav />
       </div>
-      <main className="lg:mt-20 overflow-hidden">
-        
-        <div className="relative w-full flex justify-center h-[100%] items-end mt-20">
-          <img
-            src={aboutBanner}
-            alt="background banner"
-            className="absolute bottom-0 h-full md:h-[600px] object-cover opacity-10 lg:hidden"
-          />
-          <div className="relative z-10 flex flex-col items-center gap-30 lg:flex-row p-1 md:p-10 md:!pb-0 md:gap-5 lg:gap-10 ">
-            <p className="text-h3 md:text-3xl lg:text-3xl xl:text-5xl text-center font-avenir-black mb-4 lg:text-left ">
-              {aboutContent.textBanner ? (
-                aboutContent.textBanner.split(" ").map((word, index) => {
-                  const match = word.match(/^(\W*)(\w+)(\W*)$/);
+      <main className="lg:mt-20">
+        {/* Hero Section */}
+        <section className="overflow-hidden about-container" id="our-story">
+          <div className="h-56 w-72">
+            <img
+              // style={{ animation: "slideInFromLeft 0.8s ease-out forwards" }}
+              className="w-full h-full object-cover rounded-r-3xl "
+              src="https://images.unsplash.com/photo-1739382121445-19b3460a9e7a?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            />
+          </div>
+          <div className="about-text-banner flex flex-col mb-2 xl:pl-10">
+            <h2 className="font-avenir-black px-5">{aboutContent.textBanner}</h2>
+          </div>
 
-                  if (match) {
-                    const [, leading, core, trailing] = match;
-                    const isTarget = ["fullsuite", "suitelifer"].includes(
-                      core.toLowerCase()
-                    );
-
-                    return (
-                      <span key={index}>
-                        {leading}
-                        <span className={isTarget ? "text-primary" : ""}>
-                          {core}
-                        </span>
-                        {trailing}{" "}
-                      </span>
-                    );
-                  }
-
-                  return <span key={index}>{word} </span>;
-                })
-              ) : (
-                <span>ABOUT <span className="text-primary">US</span></span>
-              )}
+          <div className="mx-5">
+            <img
+              className="w-full h-full object-cover rounded-3xl"
+              src="https://images.unsplash.com/photo-1739382120576-b1434e8bc4d3?q=80&w=1975&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            />
+          </div>
+          <section className="flex flex-col gap-3 mt-5 mx-5 text-justify">
+            <p className="text-primary text-center text-small font-avenir-black">
+              OUR STORY
             </p>
-
-            {/* <div className=""> */}
-              <img src={aboutBanner} alt="banner image" className="w-auto max-h-[400px] p-1 md:max-h-[400px] lg:max-h-[450px] xl:max-h-[700px]" />
-              {/* <div className="absolute bottom-2 md:-bottom-20 xl:bottom-0 w-[100%] md:w-[95%] xl:w-[35%] h-6 bg-black/50 xl:bg-black/50 blur-xl rounded-full z-0"></div> */}
-            {/* </div> */}
-          </div>
-        </div>
-        <div className="mt-about-banner mt-about-banner-xl"></div>
-        <div className="py-20 "></div>
-        <div className="flex items-center justify-end mb-10">
-          <div className="size-[1.3vh] bg-primary rounded-full"></div>
-          <div className="w-[45%] h-[0.25vh] bg-primary"></div>
-        </div>
-        <div className="relative w-full h-auto flex flex-row px-10 md:px-20 lg:px-30 xl:px-50 items-start justify-start">
-          <div
-            className="flex flex-col items-center justify-between"
-            style={{ height: lineHeight }}
-          >
-            <div className="size-[1.3vh] bg-primary rounded-full"></div>
-            <div className="w-[0.25vh] flex-1 bg-primary"></div>
-            <div className="size-[1.3vh] bg-primary rounded-full"></div>
-          </div>
-
-          <div
-            ref={contentRef}
-            className="relative pb-10 max-w-4xl mx-auto pl-10 md:pl-20  lg:pl-30 xl:py-30"
-          >
-            <div className="flex items-end gap-2 mb-6  pointer-events-none">
-              <img
-                src={ourStoryText}
-                alt="Story"
-                className="h-30 object-contain md:h-35 lg:h-40"
-              />
+            {/* <h2 className="font-avenir-black lg:text-4xl! text-center m-0!">
+              Lorem, ipsum dolor it
+            </h2> */}
+            <p className="text-body mb-5">
+              FullSuite was originally founded by Maggie Po on October 8, 2014
+              as Offshore Concept Consulting, Inc. In 2018, the founder acquired
+              full ownership of the brand name, FullSuite because it embodied
+              the company vision to provide a comprehensive suite of solutions
+              for startups. Maggie, alongside her co-founders, envisioned that
+              instead of piecemeal services, FullSuite will offer an end-to-end
+              approach that helps venture-backed startups handle critical data
+              operational functions—especially the ones their AI systems can’t
+              yet automate.
+            </p>
+            <p className="text-body">
+              In 2020, the legal entity was changed to Offshore Concept BPO
+              Services, Inc. to reflect in the name the more accurate
+              representation of its services. But, the brand name is still in
+              use which reflects the various suite of operations that the
+              company offers to help customers scale their businesses
+              efficiently.
+            </p>
+          </section>
+          {/* HIDE THIS FOR NOW AS YANI REQUESTED */}
+          {/* <section>
+            <div className="max-w-4xl h-72 my-4 lg:h-96 mx-5">
+              <video
+                className="w-full h-full rounded-xl object-cover aspect-video"
+                controls
+              >
+                <source src="#" type="video/mp4" />
+              </video>
             </div>
+          </section>
 
-            <div className="text-body text-gray-700 xl:leading-10">
-              <p>
-                FullSuite was originally founded by Maggie Po on October 8, 2014
-                as Offshore Concept Consulting, Inc. In 2018, the founder
-                acquired full ownership of the brand name, FullSuite because it
-                embodied the company vision to provide a comprehensive suite of
-                solutions for startups. Maggie, alongside her co-founders,
-                envisioned that instead of piecemeal services, FullSuite will
-                offer an end-to-end approach that helps venture-backed startups
-                handle critical data operational functions—especially the ones
-                their AI systems can't yet automate.
-              </p>
-              <br />
-              <p>
-                In 2020, the legal entity was changed to Offshore Concept BPO
-                Services, Inc. to reflect in the name the more accurate
-                representation of its services. But, the brand name is still in
-                use which reflects the various suite of operations that the
-                company offers to help customers scale their businesses
-                efficiently.
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="px-10 md:px-20  lg:px-30 xl:px-50 mt-20 mb-5 md:mt-30  lg:mt-40">
-          <p className="color-gray text-h4 font-avenir-black -mb-3">the</p>
-          <p className="text-primary text-h2 font-avenir-black">
-            suite<span className="text-black">lifer...</span>
-          </p>
-        </div>
-
+          <section className="mx-8 flex flex-col justify-center text-justify">
+            <p className="font-avenir-black py-3 text-h6">“{videoTitle}”</p>
+            <p className="text-body">
+              In this exclusive podcast interview, Maggie, the CEO of FullSuite
+              Company, shares her journey of resilience and leadership in the
+              competitive world of BPO. From navigating challenges to redefining
+              success, she proves that every setback is just a setup for a
+              greater comeback. Tune in for an inspiring conversation on
+              perseverance, innovation, and the future of FullSuite.
+            </p>
+          </section> */}
+        </section>{" "}
+        <div className="py-5"></div>{" "}
+        <div className="flex justify-end scale-x-[-1] rotate-180">
+          <img className="dots-line" src={dotsLine} alt="3 dots and a line" />
+        </div>{" "}
+        <div className="py-5"></div>
         {/* Our Core Values Section */}
-        <section className="overflow-hidden relative ">
+        <section className="overflow-hidden relative pt-5">
+          <p className="font-avenir-black text-h4 text-center m-0!">
+            The suitelifer...
+          </p>
           <div className="flex flex-col lg:flex-row lg:justify-center lg:mb-[7%] py-[5%] pb-[12%] md:pb-[4%] gap-6 lg:gap-10 text-base sm:text-lg md:text-xl">
             <div className="flex justify-evenly lg:flex-none lg:gap-10">
               {/* 1 */}
@@ -267,11 +224,11 @@ const AboutUs = () => {
             </div>
           </div>
         </section>
-        <div className="py-10"></div>
-        <div className="flex justify-end scale-x-[-1] rotate-180 -mr-10">
+        <div className="py-5"></div>
+        <div className="flex justify-end scale-x-[-1]">
           <img className="dots-line" src={dotsLine} alt="3 dots and a line" />
         </div>
-        <div className="py-10"></div>
+        <div className="py-5"></div>
         {/* Mission Vision LASTLY: CHANGE LAYOUT FOR MOBILE. BREAKPOINT: 480px */}
         <MissionVision
           imgMission={imgMission}
@@ -317,7 +274,7 @@ const AboutUs = () => {
               and we are committed to providing tailored, offshore solutions
               that allow you to focus on innovation while we handle the
               complexities of finance and operations.
-            </p>
+            </p>{" "}
             <br />
             <p className="text-white text-body">
               We take pride in being the trusted partner of some of the most
@@ -339,7 +296,7 @@ const AboutUs = () => {
         </section>
         <div className="flex justify-end scale-x-[-1] rotate-180">
           <img className="dots-line" src={dotsLine} alt="3 dots and a line" />
-        </div>
+        </div>{" "}
         <div className="py-5"></div>
         {/* A Day in the Pod */}
         <section className="mb-[2%] relative">
@@ -360,7 +317,7 @@ const AboutUs = () => {
           <section className="mt-10 md:mt-[5%] pb-[7%] lg:pb-[5%] px-[5%]">
             <div className="text-center pb-7">
               <p className="text-h5 font-avenir-black">
-                Feel like you embody the
+                Feel like you embody the{" "}
                 <span className="text-primary">SuiteLife</span>?
               </p>
               <p className="text-small text-gray-500">
