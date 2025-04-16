@@ -66,9 +66,26 @@ const Blog = () => {
   };
   const [isLoaded, setIsLoaded] = useState(false);
 
+  const [contactDetails, setContactDetails] = useState({
+    websiteEmail: "",
+    websiteTel: "",
+    websitePhone: "",
+  });
+
+  const fetchContact = async () => {
+    try {
+      const response = await api.get("/api/contact");
+
+      setContactDetails(response.data.contact);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     fetchThreeLatestEpisodes();
     fetchPlaylists();
+    fetchContact();
     setIsLoaded(true);
   }, []);
 
@@ -276,7 +293,7 @@ const Blog = () => {
                       href="mailto:suitelifer@fullsuite.ph"
                       className="hover:text-accent-2 transition-colors  no-underline!"
                     >
-                      suitelifer@fullsuite.ph
+                      {contactDetails.websiteEmail}
                     </a>
                   </div>
                 </p>
@@ -290,7 +307,7 @@ const Blog = () => {
                     href="tel:742-442-887"
                     className="hover:text-accent-2 transition-colors  no-underline!"
                   >
-                    742-442-887
+                    {contactDetails.websiteTel}
                   </a>
                 </p>
                 <p className="flex items-center gap-4">
@@ -303,7 +320,7 @@ const Blog = () => {
                     href="tel:09175680851"
                     className="hover:text-accent-2 transition-colors  no-underline!"
                   >
-                    0917-568-0851
+                    {contactDetails.websitePhone}
                   </a>
                 </p>
               </div>

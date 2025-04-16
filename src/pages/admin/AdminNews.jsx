@@ -19,7 +19,7 @@ const AdminNews = () => {
     title: "",
     author: "",
     image: "",
-    isShown: "",
+    isShown: null,
   });
   const navigate = useNavigate();
 
@@ -46,6 +46,7 @@ const AdminNews = () => {
         datePublished: { seconds: Math.floor(Date.now() / 1000) },
         comments: 0,
         views: 0,
+        isShown: 0,
         image:
           newNews.image ||
           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREPVIcCkWNGNzUzt3wUfZhY-I09Z0Rn-jc4g&s",
@@ -55,7 +56,7 @@ const AdminNews = () => {
 
     setShowModal(false);
     setEditingNews(null);
-    setNewNews({ title: "", author: "", image: "" });
+    setNewNews({ isShown: "" });
   };
 
   const handleEdit = (news) => {
@@ -72,6 +73,8 @@ const AdminNews = () => {
       id: "1",
       title: "The Art of Code",
       author: "Alex Mercer",
+      article:
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
       datePublished: { seconds: 1716161626 },
       comments: 321,
       views: 12567,
@@ -197,6 +200,14 @@ const AdminNews = () => {
                       hide: window.innerWidth < 640,
                     },
                     {
+                      headerName: "Article",
+                      field: "article",
+                      flex: 2,
+                      filter: "agTextColumnFilter",
+                      headerClass: "text-primary font-bold bg-gray-100",
+                      hide: window.innerWidth < 640,
+                    },
+                    {
                       headerName: "Visibility",
                       field: "isShown",
                       flex: 2,
@@ -310,66 +321,65 @@ const AdminNews = () => {
               },
             }}
           >
-            
             <DialogTitle className="w-full text-center">
               {editingNews ? "Edit Bite" : "Add Bite"}
             </DialogTitle>
             <DialogContent>
-              <div className="text-md font-bold pt-4 font-avenir-black">
-                Author
-              </div>
-              <input
-                type="text"
-                name="author"
-                disabled
-                value={editingNews?.author || newNews.author}
-                onChange={(e) =>
-                  editingNews
-                    ? setEditingNews({ ...editingNews, author: e.target.value })
-                    : setNewNews({ ...newNews, author: e.target.value })
-                }
-                className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
-              />
+              <div className="gap-2 flex flex-col">
+                <div className="text-md border-none p-2 rounded-md bg-primary/10 flex">
+                  <span className="mr-2 font-bold font-avenir-black">
+                    Author:{" "}
+                  </span>{" "}
+                  <p className="w-full">
+                    {editingNews ? editingNews.author : newNews.author || "N/A"}
+                  </p>
+                </div>
 
-              <div className="text-md font-bold pt-4 font-avenir-black">
-                Image
+                <div className="text-md border-none p-2 rounded-md bg-primary/10 flex">
+                  <span className="mr-2 font-bold font-avenir-black">
+                    Title:{" "}
+                  </span>{" "}
+                  <p className="w-full">
+                    {editingNews ? editingNews.title : newNews.title || "N/A"}
+                  </p>
+                </div>
+                <div className="text-md border-none p-2 rounded-md bg-primary/10 flex">
+                  <span className="mr-2 font-bold font-avenir-black">
+                    Image:{" "}
+                  </span>{" "}
+                  <p className="w-full">
+                    {editingNews ? editingNews.image : newNews.image || "N/A"}
+                  </p>
+                </div>
+                <div className="text-md border-none p-2 rounded-md bg-primary/10 flex">
+                  <span className="mr-2 font-bold font-avenir-black">
+                    Article:{" "}
+                  </span>{" "}
+                  <p className="w-full">
+                    {editingNews
+                      ? editingNews.article
+                      : newNews.article || "N/A"}
+                  </p>
+                </div>
               </div>
-              <input
-                type="text"
-                name="image"
-                disabled
-                value={editingNews?.image || newNews.image}
-                onChange={(e) =>
-                  editingNews
-                    ? setEditingNews({ ...editingNews, image: e.target.value })
-                    : setNewNews({ ...newNews, image: e.target.value })
-                }
-                className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
-              />
-              {/* <ContentEditor
-                title={(value) =>
-                  editingNews
-                    ? setEditingNews({ ...editingNews, title: value })
-                    : setNewNews({ ...newNews, title: value })
-                }
-                onClick={addOrUpdateNews}
-              /> */}
 
               <label className="block text-gray-700 font-avenir-black mt-4">
                 Visibility
               </label>
               <select
-                name="is_shown"
+                name="isShown"
                 required
-                value={editingNews?.isShown || newNews.isShown}
-                onChange={(e) =>
+                value={
                   editingNews
-                    ? setEditingNews({
-                        ...editingNews,
-                        isShown: e.target.value,
-                      })
-                    : setNewNews({ ...newNews, isShown: e.target.value })
+                    ? editingNews.isShown?.toString()
+                    : newNews.isShown?.toString()
                 }
+                onChange={(e) => {
+                  const value = parseInt(e.target.value, 10);
+                  editingNews
+                    ? setEditingNews({ ...editingNews, isShown: value })
+                    : setNewNews({ ...newNews, isShown: value });
+                }}
                 className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
               >
                 <option value="" disabled>
@@ -378,14 +388,6 @@ const AdminNews = () => {
                 <option value={1}>Shown</option>
                 <option value={0}>Hidden</option>
               </select>
-
-              {/* <FileUploaderProvider
-                onUpload={(fileUrl) =>
-                  editingNews
-                    ? setEditingNews({ ...editingNews, image: fileUrl })
-                    : setNewNews({ ...newNews, image: fileUrl })
-                }
-              /> */}
 
               <div className="flex gap-2 mt-4">
                 <button
