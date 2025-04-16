@@ -8,8 +8,8 @@ const MissionVision = ({
   visionSlogan,
   missionContent,
   visionContent,
-  missionVideoUrl = "https://www.youtube.com/embed/dQw4w9WgXcQ", // Default Mission Video URL
-  visionVideoUrl = "https://www.youtube.com/embed/dQw4w9WgXcQ",  // Default Vision Video URL
+  missionVideoUrl = "https://www.youtube.com/embed/6bq0XVkpG9U", // Default Mission Video URL
+  visionVideoUrl = "https://www.youtube.com/embed/6bq0XVkpG9U",  // Default Vision Video URL
 }) => {
 
   const [isExpanded, setIsExpanded] = useState(false);
