@@ -32,7 +32,7 @@ const AdminNews = () => {
         is_shown: parseInt((editingNews?.isShown ?? newNews.isShown) || 0),
       };
 
-      const response = await api.post("/api/employee-blog", payload);
+      const response = await api.post("/api/add-employee-blog", payload);
       const result = response.data;
 
       if (response.status === 200) {
@@ -75,7 +75,7 @@ const AdminNews = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await api.get("/api/employee-allblog");
+        const response = await api.get("/api/all-employee-blog");
         const result = response.data;
 
         if (response.status === 200) {

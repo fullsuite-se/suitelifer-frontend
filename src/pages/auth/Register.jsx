@@ -85,9 +85,10 @@ const Form = () => {
     try {
       setLoading(true);
       const responseRegister = await submitRegistration();
-      if (responseRegister.data.isSuccess) {
-        const userId = responseRegister.data.userId;
-        const email = responseRegister.data.email;
+      const data = responseRegister.data;
+      if (data.isSuccess) {
+        const userId = data.userId;
+        const email = data.email;
         const responseVerication = await sendVerification(userId, email);
         if (responseVerication.isSuccess) {
           toast.success("Registration successful. Verification link sent.");
@@ -100,12 +101,14 @@ const Form = () => {
         setWorkEmail("");
         setPassword("");
         setConfirmPassword("");
-      } else {
-        toast.error("Registration failed.");
       }
     } catch (error) {
-      console.error("Error during registration:", error);
-      toast.error("Registration failed.");
+      if (error.response.data.isEmailAlreadyExist) {
+        toast.error("Email already exists. Please use a different one.");
+      } else {
+        console.error("Error during registration:", error);
+        toast.error("Registration failed.");
+      }
     } finally {
       setLoading(false);
     }
