@@ -6,6 +6,7 @@ import bgQuotes from "../../assets/images/bg-quotes.svg";
 import api from "../../utils/axios";
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
+import useIsMobile from "../../utils/useIsMobile";
 
 const Testimonials = () => {
   const [testimonials, setTestimonials] = useState([]);
@@ -28,6 +29,8 @@ const Testimonials = () => {
     fetchTestimonials();
   }, []);
 
+  const isMobile = useIsMobile();
+
   return (
     <section className="py-15">
       <div className="mx-auto max-w-[1560px] px-4 sm:px-6 lg:px-8">
@@ -41,6 +44,8 @@ const Testimonials = () => {
         </div>
         <Swiper
           modules={[Navigation, Pagination, Autoplay]}
+          navigation={!isMobile}
+          loop={testimonials.length > 4}
           pagination={{ clickable: true }}
           slidesPerView={1}
           autoplay={{ delay: 5000 }}
