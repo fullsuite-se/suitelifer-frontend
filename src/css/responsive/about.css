@@ -58,17 +58,12 @@
   }
 }
 
-@media (min-width: 700px) and (max-width: 1023px) {
+/* @media (min-width: 700px) and (max-width: 1279px) {
   .mt-about-banner{
     margin-top: 10rem;
   }
-}
+} */
 
-@media (min-width: 1111px) and (max-width: 1279px) {
-  .mt-about-banner-xl{
-    margin-top: 10rem;
-  }
-}
 
 
 @media (min-width: 1400px) {
