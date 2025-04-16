@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
@@ -6,7 +6,7 @@ import api from "../../utils/axios";
 import CoreValueCard from "../../components/about-us/CoreValueCard";
 import maggie from "../../assets/images/maggie-cutout-circle.png";
 import aboutBanner from "../../assets/images/about-banner.webp";
-import ourStoryFrame from "../../assets/images/our-story-frame.webp";
+import theSuiteliferValues from "../../assets/images/the-suitelifer-values.webp";
 import ourStoryText from "../../assets/images/our-story-text.webp";
 import imgMission from "../../assets/images/imgMission.svg";
 import imgVision from "../../assets/images/imgVision.svg";
@@ -26,6 +26,9 @@ const AboutUs = () => {
   const [aboutContent, setAboutContent] = useState({});
   const [videoTitle, setVideoTitle] = useState("Thought it was over, but...");
 
+  const contentRef = useRef(null);
+  const [lineHeight, setLineHeight] = useState(0);
+
   const fetchContent = async () => {
     try {
       const response = await api.get("/api/content/about");
@@ -38,6 +41,19 @@ const AboutUs = () => {
 
   useEffect(() => {
     fetchContent();
+    const observer = new ResizeObserver(() => {
+      if (contentRef.current) {
+        setLineHeight(contentRef.current.offsetHeight);
+      }
+    });
+
+    if (contentRef.current) {
+      observer.observe(contentRef.current);
+    }
+
+    return () => {
+      observer.disconnect();
+    };
   }, []);
 
   return (
@@ -61,7 +77,7 @@ const AboutUs = () => {
       <div className="desktop-nav">
         <DesktopNav />
       </div>
-      <main className="lg:mt-20">
+      <main className="lg:mt-20 overflow-hidden">
         <div className="relative w-full flex justify-center h-[100%] items-end mt-20">
           <img
             src={aboutBanner}
@@ -70,34 +86,69 @@ const AboutUs = () => {
           />
           <div className="relative z-10 flex flex-col items-center gap-30 lg:flex-row p-1 md:p-10 md:!pb-0 md:gap-5 lg:gap-10 xl:gap-40 lg:p-20 xl:px-50 xl:py-30">
             <p className="text-h3 md:text-3xl lg:text-3xl xl:text-5xl text-center font-avenir-black mb-4 lg:text-left">
-              Welcome to FullSuite, where passion meets limitless possibilities
-              {/* {aboutContent.textBanner} */}
+              {aboutContent.textBanner ? (
+                aboutContent.textBanner.split(" ").map((word, index) => {
+                  const match = word.match(/^(\W*)(\w+)(\W*)$/);
+
+                  if (match) {
+                    const [, leading, core, trailing] = match;
+                    const isTarget = ["fullsuite", "suitelifer"].includes(
+                      core.toLowerCase()
+                    );
+
+                    return (
+                      <span key={index}>
+                        {leading}
+                        <span className={isTarget ? "text-primary" : ""}>
+                          {core}
+                        </span>
+                        {trailing}{" "}
+                      </span>
+                    );
+                  }
+
+                  return <span key={index}>{word} </span>;
+                })
+              ) : (
+                <span>ABOUT <span className="text-primary">US</span></span>
+              )}
             </p>
 
-            <img
-              src={aboutBanner}
-              alt="banner image"
-              className="w-auto max-h-[400px] p-1 md:max-h-[400px] lg:max-h-[300px] xl:max-h-[500px]"
-            />
+            <div className="w-auto max-h-[400px] p-1 md:max-h-[400px] lg:max-h-[300px] xl:max-h-[500px]">
+              <img src={aboutBanner} alt="banner image" />
+              {/* <div className="absolute bottom-2 md:-bottom-20 xl:bottom-0 w-[100%] md:w-[95%] xl:w-[35%] h-6 bg-black/50 xl:bg-black/50 blur-xl rounded-full z-0"></div> */}
+            </div>
           </div>
         </div>
-        <div className="py-10"></div>
-      
-        <div className="relative w-full h-[1300px] ">
-          {/* this is the frame lines together with the 'the suitelifer...' */}
-          <img
-            className="absolute top-0 left-0 w-full h-full p-20 pointer-events-none"
-            src={ourStoryFrame}
-            alt=""
-          />
+        <div className="mt-about-banner mt-about-banner-xl"></div>
+        <div className="py-20 "></div>
+        <div className="flex items-center justify-end mb-10">
+          <div className="size-[1.3vh] bg-primary rounded-full"></div>
+          <div className="w-[45%] h-[0.25vh] bg-primary"></div>
+        </div>
+        <div className="relative w-full h-auto flex flex-row px-10 md:px-20 lg:px-30 xl:px-50 items-start justify-start">
+          <div
+            className="flex flex-col items-center justify-between"
+            style={{ height: lineHeight }}
+          >
+            <div className="size-[1.3vh] bg-primary rounded-full"></div>
+            <div className="w-[0.25vh] flex-1 bg-primary"></div>
+            <div className="size-[1.3vh] bg-primary rounded-full"></div>
+          </div>
 
-          <div className="relative z-10 px-10 py-20 max-w-4xl mx-auto">
-            <div className="flex items-end gap-2 mb-6 mt-50">
-              {/* this is the "OUR Story" */}
-              <img src={ourStoryText} alt="Story" className="h-50" />
+          <div
+            ref={contentRef}
+            className="relative pb-10 max-w-4xl mx-auto pl-10 md:pl-20  lg:pl-30 xl:py-30"
+          >
+            <div className="flex items-end gap-2 mb-6  pointer-events-none">
+              <img
+                src={ourStoryText}
+                alt="Story"
+                className="h-30 object-contain md:h-35 lg:h-40"
+              />
             </div>
 
-            <div className="text-body text-gray-700 space-y-5">
+            <div className="text-body text-gray-700 xl:leading-10">
               <p>
                 FullSuite was originally founded by Maggie Po on October 8, 2014
                 as Offshore Concept Consulting, Inc. In 2018, the founder
@@ -120,6 +171,12 @@ const AboutUs = () => {
               </p>
             </div>
           </div>
+        </div>
+        <div className="px-10 md:px-20  lg:px-30 xl:px-50 mt-20 mb-5 md:mt-30  lg:mt-40">
+          <p className="color-gray text-h4 font-avenir-black -mb-3">the</p>
+          <p className="text-primary text-h2 font-avenir-black">
+            suite<span className="text-black">lifer...</span>
+          </p>
         </div>
 
         {/* Our Core Values Section */}
@@ -210,7 +267,7 @@ const AboutUs = () => {
           </div>
         </section>
         <div className="py-10"></div>
-        <div className="flex justify-end scale-x-[-1] rotate-180">
+        <div className="flex justify-end scale-x-[-1] rotate-180 -mr-10">
           <img className="dots-line" src={dotsLine} alt="3 dots and a line" />
         </div>
         <div className="py-10"></div>

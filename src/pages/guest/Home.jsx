@@ -226,7 +226,7 @@ const Home = () => {
         <MotionUp>
           <div className="text-center text-white px-7 xl:px-17">
             <p className="text-h4 font-avenir-black">
-              Your Next <span className="text-secondary">Career</span> Starts
+            Take the <span className="text-secondary">next step</span> in your career journey
               Here
             </p>
             <p className="text-small">
