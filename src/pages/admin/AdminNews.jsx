@@ -18,7 +18,7 @@ const AdminNews = () => {
   const [newNews, setNewNews] = useState({
     title: "",
     description: "",
-    image: "",
+    imageUrl: "",
     isShown: null,
     createdAt: "",
     createdBy: "",
@@ -29,8 +29,9 @@ const AdminNews = () => {
       const payload = {
         ...editingNews,
         ...newNews,
-        is_shown: parseInt((editingNews?.isShown ?? newNews.isShown) || 0),
+        is_shown: parseInt(editingNews?.isShown ?? newNews.isShown ?? 0),
       };
+      console.log("createdBy:", createdBy);
 
       const response = await api.post("/api/add-employee-blog", payload);
       const result = response.data;
@@ -40,25 +41,23 @@ const AdminNews = () => {
           ...payload,
           id: result.eblog_id || editingNews?.id || Date.now(),
           datePublished: { seconds: Math.floor(Date.now() / 1000) },
-          image:
-            payload.image ||
+          imageUrl:
+            payload.imageUrl ||
             "https://t4.ftcdn.net/jpg/05/17/53/57/360_F_517535712_q7f9QC9X6TQxWi6xYZZbMmw5cnLMr279.jpg",
         };
 
-        if (editingNews) {
-          setRowNewsData((prev) =>
-            prev.map((news) => (news.id === editingNews.id ? newEntry : news))
-          );
-        } else {
-          setRowNewsData((prev) => [...prev, newEntry]);
-        }
+        setRowNewsData((prev) =>
+          editingNews
+            ? prev.map((news) => (news.id === editingNews.id ? newEntry : news))
+            : [...prev, newEntry]
+        );
 
         setShowModal(false);
         setEditingNews(null);
         setNewNews({
           title: "",
           author: "",
-          image: "",
+          imageUrl: "",
           isShown: null,
         });
       } else {
@@ -67,6 +66,24 @@ const AdminNews = () => {
     } catch (err) {
       console.error("Error adding blog:", err);
       alert("An unexpected error occurred.");
+    }
+  };
+
+  const deleteNews = async (eblog_id) => {
+    console.log("Deleting blog with ID:", eblog_id);
+    try {
+      const response = await api.post("/api/delete-employee-blog", {
+        eblog_id,
+      });
+
+      if (response.status === 200) {
+        setRowNewsData((prev) => prev.filter((item) => item.id !== eblog_id));
+      } else {
+        alert("Failed to delete blog.");
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+      alert("Something went wrong while deleting.");
     }
   };
 
@@ -79,12 +96,14 @@ const AdminNews = () => {
         const result = response.data;
 
         if (response.status === 200) {
+          console.log(response.data);
+
           const formatted = result.map((blog) => ({
             ...blog,
             id: blog.eblogId,
             title: blog.title || "Untitled",
-            image:
-              blog.images?.[0] ||
+            imageUrl:
+              blog.images[0] ||
               "https://t4.ftcdn.net/jpg/05/17/53/57/360_F_517535712_q7f9QC9X6TQxWi6xYZZbMmw5cnLMr279.jpg",
             author: `${blog.firstName} ${blog.middleName || ""} ${
               blog.lastName
@@ -124,7 +143,7 @@ const AdminNews = () => {
               columnDefs={[
                 {
                   headerName: "Image",
-                  field: "image",
+                  field: "imageUrl",
                   flex: 2,
                   filter: "agTextColumnFilter",
                   headerClass: "text-primary font-bold bg-gray-100",
@@ -154,7 +173,8 @@ const AdminNews = () => {
                   flex: 2,
                   filter: "agTextColumnFilter",
                   headerClass: "text-primary font-bold bg-gray-100",
-                  hide: window.innerWidth < 640,
+                  valueGetter: (params) =>
+                    params.data.title.replace(/<[^>]*>/g, ""),
                 },
                 {
                   headerName: "Visibility",
@@ -187,15 +207,17 @@ const AdminNews = () => {
                   field: "action",
                   flex: 2,
                   headerClass: "text-primary font-bold bg-gray-100",
-                  cellRenderer: () => (
+                  cellRenderer: (params) => (
                     <div className="flex gap-3">
-                      <button>
-                        <PencilIcon
-                          onClick={setShowModal}
-                          className="size-5 text-black"
-                        />
+                      <button
+                        onClick={() => {
+                          setEditingNews(params.data);
+                          setShowModal(true);
+                        }}
+                      >
+                        <PencilIcon className="size-5 text-black" />
                       </button>
-                      <button>
+                      <button onClick={() => deleteNews(params.data.id)}>
                         <TrashIcon className="size-5 text-black" />
                       </button>
                     </div>
@@ -241,32 +263,32 @@ const AdminNews = () => {
         <DialogContent>
           <div className="gap-2 flex flex-col">
             <div className="text-md border-none p-2 rounded-md bg-primary/10 flex">
-              <span className="mr-2 font-bold font-avenir-black">Author: </span>{" "}
+              <span className="mr-2 font-bold font-avenir-black">Author: </span>
               <p className="w-full">
-                {editingNews
-                  ? editingNews.createdBy
-                  : newNews.createdBy || "N/A"}
+                {editingNews?.author || newNews.createdBy || "N/A"}
               </p>
             </div>
 
             <div className="text-md border-none p-2 rounded-md bg-primary/10 flex">
-              <span className="mr-2 font-bold font-avenir-black">Title: </span>{" "}
+              <span className="mr-2 font-bold font-avenir-black">Title: </span>
               <p className="w-full">
-                {editingNews ? editingNews.title : newNews.title || "N/A"}
+                {editingNews?.title || newNews.title || "N/A"}
               </p>
             </div>
+
             <div className="text-md border-none p-2 rounded-md bg-primary/10 flex">
-              <span className="mr-2 font-bold font-avenir-black">Image: </span>{" "}
+              <span className="mr-2 font-bold font-avenir-black">Image: </span>
               <p className="w-full">
-                {editingNews ? editingNews.image : newNews.image || "N/A"}
+                {editingNews?.imageUrl || newNews.imageUrl || "N/A"}
               </p>
             </div>
+
             <div className="text-md border-none p-2 rounded-md bg-primary/10 flex">
               <span className="mr-2 font-bold font-avenir-black">
                 Article:{" "}
-              </span>{" "}
+              </span>
               <p className="w-full">
-                {editingNews ? editingNews.article : newNews.article || "N/A"}
+                {editingNews?.description || newNews.description || "N/A"}
               </p>
             </div>
           </div>
