@@ -13,15 +13,9 @@ const Testimonials = () => {
 
   const fetchTestimonials = async () => {
     try {
-      const response = await api.get("/api/testimonials");
-      const data = response.data.testimonials;
-      const filteredTestimonials = data.filter(
-        (testimonial) => !!testimonial.isShown
-      );
+      const response = await api.get("/api/testimonials/shown");
 
-      console.log(response.data.testimonials);
-
-      setTestimonials(filteredTestimonials);
+      setTestimonials(response.data.testimonials);
     } catch (error) {
       console.error(error);
     } finally {
@@ -133,19 +127,13 @@ const Testimonials = () => {
                       alt="quote"
                       className="absolute translate-x-5 translate-y-22 -rotate-5 w-16 mb-4"
                     />
-                    {
-                      <img
-                        src={testimonial.employeeImageUrl}
-                        alt={testimonial.employeeName}
-                        className="size-30 mx-auto rounded-full mb-4 object-cover"
-                      />
-                      // : (
-                      //    <img
-                      //   src="https://cdn-icons-png.flaticon.com/512/147/147142.png"
-                      //   alt="Employee"
-                      //   className="w-[80px] h-[80px] sm:w-[80px] sm:h-[80px] rounded-md object-cover mx-auto "
-                      // />)}
-                    }
+
+                    <img
+                      src={testimonial.employeeImageUrl}
+                      alt={testimonial.employeeName}
+                      className="size-30 mx-auto rounded-full mb-4 object-cover"
+                    />
+
                     <p className="mt-4 text-gray-700 text-body">
                       {testimonial.testimony}
                     </p>
