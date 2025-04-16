@@ -3,8 +3,11 @@ import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import { toSlug } from "../../utils/slugUrl";
 import { NavLink } from "react-router-dom";
+import useIsMobile from "../../utils/useIsMobile";
 
 const JobCarouselVersion2 = ({ jobs }) => {
+  const isMobile = useIsMobile();
+
   return (
     <section className="">
       <div className="mx-auto max-w-[1550px] px-4 sm:px-6 lg:px-8">
@@ -14,8 +17,8 @@ const JobCarouselVersion2 = ({ jobs }) => {
           spaceBetween={20}
           slidesPerView={1}
           autoplay={{ delay: 5000 }}
-          // loop
-          // navigation={true}
+          loop={jobs.length > 4}
+          navigation={!isMobile}
           breakpoints={{
             0: {
               slidesPerView: 1,
