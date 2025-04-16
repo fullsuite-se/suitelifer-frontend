@@ -168,7 +168,7 @@ function Testimonials() {
           testimonialId: testimonial_id,
         },
       });
-      if (response.data.suuccess) {
+      if (response.data.success) {
         toast.success(response.data.message);
         setDataUpdated(!dataUpdated);
       } else {
