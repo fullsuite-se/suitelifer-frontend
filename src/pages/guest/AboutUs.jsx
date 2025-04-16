@@ -22,20 +22,25 @@ import UpholdsIcon from "../../assets/icons/UpholdsIcon";
 import PageMeta from "../../components/layout/PageMeta";
 import Footer from "../../components/Footer";
 import MissionVision from "../../components/about-us/MissionVision";
+import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
+
 const AboutUs = () => {
   const [aboutContent, setAboutContent] = useState({});
   const [videoTitle, setVideoTitle] = useState("Thought it was over, but...");
-
+  const [isLoading, setIsLoading] = useState(true);
   const contentRef = useRef(null);
   const [lineHeight, setLineHeight] = useState(0);
 
   const fetchContent = async () => {
     try {
+      setIsLoading(true);
       const response = await api.get("/api/content/about");
 
       setAboutContent(response.data.aboutContent);
     } catch (error) {
       console.log(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -78,47 +83,63 @@ const AboutUs = () => {
         <DesktopNav />
       </div>
       <main className="lg:mt-20 overflow-hidden">
-        
         <div className="relative w-full flex justify-center h-[100%] items-end mt-20">
           <img
             src={aboutBanner}
             alt="background banner"
             className="absolute bottom-0 h-full md:h-[600px] object-cover opacity-10 lg:hidden"
           />
-          <div className="relative z-10 flex flex-col items-center gap-30 lg:flex-row p-1 md:p-10 md:!pb-0 md:gap-5 lg:gap-10 ">
-            <p className="text-h3 md:text-3xl lg:text-3xl xl:text-5xl text-center font-avenir-black mb-4 lg:text-left ">
-              {aboutContent.textBanner ? (
-                aboutContent.textBanner.split(" ").map((word, index) => {
-                  const match = word.match(/^(\W*)(\w+)(\W*)$/);
 
-                  if (match) {
-                    const [, leading, core, trailing] = match;
-                    const isTarget = ["fullsuite", "suitelifer"].includes(
-                      core.toLowerCase()
-                    );
+          <div className="relative z-10 flex flex-col items-center gap-30 lg:flex-row p-1 md:p-10 md:!pb-0 md:gap-5 lg:gap-10">
+            {isLoading ? (
+              <div className="mt-3 mx-auto w-min">
+                <TwoCirclesLoader
+                  bg="transparent"
+                  color1="#bfd1a0"
+                  color2="#0097b2"
+                  height={30}
+                  width={40}
+                />
+              </div>
+            ) : (
+              <>
+                <p className="text-h3 md:text-3xl lg:text-3xl xl:text-5xl text-center font-avenir-black mb-4 lg:text-left">
+                  {aboutContent.textBanner ? (
+                    aboutContent.textBanner.split(" ").map((word, index) => {
+                      const match = word.match(/^(\W*)(\w+)(\W*)$/);
+                      if (match) {
+                        const [, leading, core, trailing] = match;
+                        const isTarget = ["fullsuite", "suitelifer"].includes(
+                          core.toLowerCase()
+                        );
 
-                    return (
-                      <span key={index}>
-                        {leading}
-                        <span className={isTarget ? "text-primary" : ""}>
-                          {core}
-                        </span>
-                        {trailing}{" "}
-                      </span>
-                    );
-                  }
+                        return (
+                          <span key={index}>
+                            {leading}
+                            <span className={isTarget ? "text-primary" : ""}>
+                              {core}
+                            </span>
+                            {trailing}{" "}
+                          </span>
+                        );
+                      }
 
-                  return <span key={index}>{word} </span>;
-                })
-              ) : (
-                <span>ABOUT <span className="text-primary">US</span></span>
-              )}
-            </p>
+                      return <span key={index}>{word} </span>;
+                    })
+                  ) : (
+                    <span>
+                      ABOUT <span className="text-primary">US</span>
+                    </span>
+                  )}
+                </p>
 
-            {/* <div className=""> */}
-              <img src={aboutBanner} alt="banner image" className="w-auto max-h-[400px] p-1 md:max-h-[400px] lg:max-h-[450px] xl:max-h-[700px]" />
-              {/* <div className="absolute bottom-2 md:-bottom-20 xl:bottom-0 w-[100%] md:w-[95%] xl:w-[35%] h-6 bg-black/50 xl:bg-black/50 blur-xl rounded-full z-0"></div> */}
-            {/* </div> */}
+                <img
+                  src={aboutBanner}
+                  alt="banner image"
+                  className="w-auto max-h-[400px] p-1 md:max-h-[400px] lg:max-h-[450px] xl:max-h-[700px]"
+                />
+              </>
+            )}
           </div>
         </div>
         <div className="mt-about-banner mt-about-banner-xl"></div>
