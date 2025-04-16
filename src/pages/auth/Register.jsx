@@ -85,9 +85,10 @@ const Form = () => {
     try {
       setLoading(true);
       const responseRegister = await submitRegistration();
-      if (responseRegister.data.isSuccess) {
-        const userId = responseRegister.data.userId;
-        const email = responseRegister.data.email;
+      const data = responseRegister.data;
+      if (data.isSuccess) {
+        const userId = data.userId;
+        const email = data.email;
         const responseVerication = await sendVerification(userId, email);
         if (responseVerication.isSuccess) {
           toast.success("Registration successful. Verification link sent.");
@@ -100,12 +101,14 @@ const Form = () => {
         setWorkEmail("");
         setPassword("");
         setConfirmPassword("");
-      } else {
-        toast.error("Registration failed.");
       }
     } catch (error) {
-      console.error("Error during registration:", error);
-      toast.error("Registration failed.");
+      if (error.response.data.isEmailAlreadyExist) {
+        toast.error("Email already exists. Please use a different one.");
+      } else {
+        console.error("Error during registration:", error);
+        toast.error("Registration failed.");
+      }
     } finally {
       setLoading(false);
     }
@@ -194,7 +197,7 @@ const Form = () => {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-primary p-3 rounded-md text-white font-avenir-black cursor-pointer"
+        className="w-full bg-primary hover:bg-[#007a8e] duration-300 p-3 rounded-md text-white font-avenir-black cursor-pointer"
       >
         {loading ? (
           <div className="mx-auto w-fit">
@@ -207,7 +210,7 @@ const Form = () => {
             />
           </div>
         ) : (
-          "LOG IN"
+          "SIGN UP"
         )}
       </button>
     </form>
@@ -234,8 +237,12 @@ const Register = () => {
           </header>
           <Form />
           <p className="text-center">
-            <Link className="text-primary cursor-pointer text-sm" to={"/login"}>
-              Already have an account?
+            <span className="text-gray-400">Already have an account? </span>
+            <Link
+              className="text-primary cursor-pointer no-underline hover:underline!"
+              to={"/login"}
+            >
+              Log in
             </Link>
           </p>
         </main>
