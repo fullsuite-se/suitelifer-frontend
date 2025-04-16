@@ -31,14 +31,11 @@ function Testimonials() {
   const user = useStore((state) => state.user);
 
   const [imageFile, setImageFile] = useState(null);
-  const imgRef = useRef(null);
-
+  
   const handleImageFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setImageFile(file);
-      const imageURL = URL.createObjectURL(file);
-      imgRef.current.src = imageURL;
+      setImageFile(file);    
     }
   };
 
@@ -147,16 +144,12 @@ function Testimonials() {
     try {
       console.log("Deleting testimonial with ID:", testimonial_id);
 
-      const response = await api.post("/api/delete-testimonial", {
-        testimonial_id: testimonial_id,
-      });
-
-      if (response.data.success) {
+      const response = await api.delete("/api/testimonials", {data:{
+        testimonialId: testimonial_id,
+      }});
+      if (response.data.suuccess) {
         toast.success(response.data.message);
-
-        setRowTestimonialData((prevData) =>
-          prevData.filter((t) => t.testimonial_id !== testimonial_id)
-        );
+        setDataUpdated(!dataUpdated);
       } else {
         toast.error(response.data.message);
       }
@@ -198,12 +191,6 @@ function Testimonials() {
   useEffect(() => {
     fetchData();
   }, [dataUpdated]);
-
-  useEffect(() => {
-    if (modalIsOpen && imgRef.current && testimonialDetails.employeeImageUrl) {
-      imgRef.current.src = testimonialDetails.employeeImageUrl;
-    }
-  }, [modalIsOpen, testimonialDetails]);
 
   return (
     <>
@@ -305,7 +292,7 @@ function Testimonials() {
                         <EditIcon />
                       </IconButton>
                       <IconButton
-                        onClick={() => handleDelete(params.data.testimonial_id)}
+                        onClick={() => handleDelete(params.data.testimonialId)}
                       >
                         <DeleteIcon />
                       </IconButton>
@@ -453,9 +440,7 @@ function Testimonials() {
                   </span>
                   {imageFile === null ? (
                     testimonialDetails.testimonialId && (
-                      <div
-                        className={`preview mt-4`}
-                      >
+                      <div className={`preview mt-4`}>
                         <img
                           className=""
                           src={testimonialDetails.employeeImageUrl}
