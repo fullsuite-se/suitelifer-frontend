@@ -187,8 +187,9 @@ const CareersJobDetails = () => {
               </>
             )}
             <button
-              className="cursor-pointer mx-auto font-avenir-black bg-primary mt-10 py-3 text-white rounded-xl min-w-70 md:min-w-100 mb-50 text-small"
+              className={`mx-auto font-avenir-black ${jobDetails.isOpen === 1 ? 'bg-primary cursor-pointer' : 'bg-gray-300 cursor-not-allowed'} mt-10 py-3 text-white rounded-xl min-w-70 md:min-w-100 mb-50 text-small`}
               type="button"
+              disabled={jobDetails.isOpen === 0}
               onClick={() => {
                 navigate(
                   `/careers/application-form/${jobId}/${toSlug(
