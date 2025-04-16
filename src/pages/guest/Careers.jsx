@@ -211,7 +211,7 @@ const Careers = () => {
                   />
                 </div> */}
               </section>
-              <div className="relative flex justify-center md:py-4 gap-10">
+              <div className="relative flex justify-center md:py-4 md:gap-10">
                 <div className="">
                   <div className="absolute right-0">
                     <div className="relative bg-secondary/17 rounded-l-2xl w-[10vw] h-[17vw] -translate-y-10"></div>

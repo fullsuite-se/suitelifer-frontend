@@ -17,6 +17,7 @@ import BackToTop from "../../components/BackToTop";
 import { useEffect, useState } from "react";
 import PageMeta from "../../components/layout/PageMeta";
 import Footer from "../../components/Footer";
+import api from "../../utils/axios";
 const Contact = () => {
   const fadeInUp = {
     hidden: { opacity: 0, y: 50 },
@@ -28,7 +29,25 @@ const Contact = () => {
   };
   const [isLoaded, setIsLoaded] = useState(false);
 
+  const [contactDetails, setContactDetails] = useState({
+    careersEmail: "",
+    internshipEmail: "",
+    websiteTel: "",
+    careersPhone: "",
+  });
+
+  const fetchContact = async () => {
+    try {
+      const response = await api.get("/api/contact");
+
+      setContactDetails(response.data.contact);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
+    fetchContact();
     setIsLoaded(true);
   }, []);
 
@@ -121,7 +140,7 @@ const Contact = () => {
                           href="mailto:hireme@fullsuite.ph"
                           className="hover:text-secondary transition-colors  no-underline!"
                         >
-                          hireme@fullsuite.ph
+                          {contactDetails.careersEmail}
                         </a>
                       </div>
                       <div className="">
@@ -132,7 +151,7 @@ const Contact = () => {
                           href="mailto:internships@fullsuite.ph"
                           className="hover:text-secondary transition-colors  no-underline!"
                         >
-                          internships@fullsuite.ph
+                          {contactDetails.internshipEmail}
                         </a>
                       </div>
                     </div>
@@ -147,7 +166,7 @@ const Contact = () => {
                       href="tel:742-442-887"
                       className="hover:text-secondary transition-colors  no-underline!"
                     >
-                      742-442-887
+                      {contactDetails.websiteTel}
                     </a>
                   </p>
                   <p className="flex items-center gap-4">
@@ -160,7 +179,7 @@ const Contact = () => {
                       href="tel:09190639001"
                       className="hover:text-secondary transition-colors  no-underline!"
                     >
-                      0919-063-9001
+                      {contactDetails.careersPhone}
                     </a>
                   </p>
                 </div>
