@@ -83,16 +83,9 @@ const AboutUs = () => {
         <DesktopNav />
       </div>
       <main className="lg:mt-20 overflow-hidden">
-        <div className="relative w-full flex justify-center h-[100%] items-end mt-20">
-          <img
-            src={aboutBanner}
-            alt="background banner"
-            className="absolute bottom-0 h-full md:h-[600px] object-cover opacity-10 lg:hidden"
-          />
-
-          <div className="relative z-10 flex flex-col items-center gap-30 lg:flex-row p-1 md:p-10 md:!pb-0 md:gap-5 lg:gap-10">
+       
             {isLoading ? (
-              <div className="mt-3 mx-auto w-min">
+              <div className="mt-30 mx-auto w-min">
                 <TwoCirclesLoader
                   bg="transparent"
                   color1="#bfd1a0"
@@ -102,7 +95,14 @@ const AboutUs = () => {
                 />
               </div>
             ) : (
-              <>
+              <> <div className="relative w-full flex justify-center h-[100%] items-end mt-20">
+          <img
+            src={aboutBanner}
+            alt="background banner"
+            className="absolute bottom-0 h-full md:h-[600px] object-cover opacity-10 lg:hidden"
+          />
+
+          <div className="relative z-10 flex flex-col items-center gap-30 lg:flex-row p-1 md:p-10 md:!pb-0 md:gap-5 lg:gap-10">
                 <p className="text-h3 md:text-3xl lg:text-3xl xl:text-5xl text-center font-avenir-black mb-4 lg:text-left">
                   {aboutContent.textBanner ? (
                     aboutContent.textBanner.split(" ").map((word, index) => {
@@ -137,11 +137,11 @@ const AboutUs = () => {
                   src={aboutBanner}
                   alt="banner image"
                   className="w-auto max-h-[400px] p-1 md:max-h-[400px] lg:max-h-[450px] xl:max-h-[700px]"
-                />
+                />    </div>
+        </div>
               </>
             )}
-          </div>
-        </div>
+      
         <div className="mt-about-banner mt-about-banner-xl"></div>
         <div className="py-20 "></div>
         <div className="flex items-center justify-end mb-10">
