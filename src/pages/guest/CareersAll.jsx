@@ -16,7 +16,7 @@ const CareersAll = () => {
   const [jobs, setJobs] = useState([]);
   const fetchJobs = async () => {
     try {
-      const response = await atsAPI.get("/jobs/");
+      const response = await atsAPI.get("/jobs/shown");
 
       setJobs(response.data.data);
     } catch (err) {
