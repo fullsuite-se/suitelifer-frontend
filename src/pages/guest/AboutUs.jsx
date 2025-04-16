@@ -78,14 +78,15 @@ const AboutUs = () => {
         <DesktopNav />
       </div>
       <main className="lg:mt-20 overflow-hidden">
+        
         <div className="relative w-full flex justify-center h-[100%] items-end mt-20">
           <img
             src={aboutBanner}
             alt="background banner"
             className="absolute bottom-0 h-full md:h-[600px] object-cover opacity-10 lg:hidden"
           />
-          <div className="relative z-10 flex flex-col items-center gap-30 lg:flex-row p-1 md:p-10 md:!pb-0 md:gap-5 lg:gap-10 xl:gap-40 lg:p-20 xl:px-50 xl:py-30">
-            <p className="text-h3 md:text-3xl lg:text-3xl xl:text-5xl text-center font-avenir-black mb-4 lg:text-left">
+          <div className="relative z-10 flex flex-col items-center gap-30 lg:flex-row p-1 md:p-10 md:!pb-0 md:gap-5 lg:gap-10 ">
+            <p className="text-h3 md:text-3xl lg:text-3xl xl:text-5xl text-center font-avenir-black mb-4 lg:text-left ">
               {aboutContent.textBanner ? (
                 aboutContent.textBanner.split(" ").map((word, index) => {
                   const match = word.match(/^(\W*)(\w+)(\W*)$/);
@@ -114,10 +115,10 @@ const AboutUs = () => {
               )}
             </p>
 
-            <div className="w-auto max-h-[400px] p-1 md:max-h-[400px] lg:max-h-[300px] xl:max-h-[500px]">
-              <img src={aboutBanner} alt="banner image" />
+            {/* <div className=""> */}
+              <img src={aboutBanner} alt="banner image" className="w-auto max-h-[400px] p-1 md:max-h-[400px] lg:max-h-[450px] xl:max-h-[700px]" />
               {/* <div className="absolute bottom-2 md:-bottom-20 xl:bottom-0 w-[100%] md:w-[95%] xl:w-[35%] h-6 bg-black/50 xl:bg-black/50 blur-xl rounded-full z-0"></div> */}
-            </div>
+            {/* </div> */}
           </div>
         </div>
         <div className="mt-about-banner mt-about-banner-xl"></div>
