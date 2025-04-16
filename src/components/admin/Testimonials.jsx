@@ -31,11 +31,11 @@ function Testimonials() {
   const user = useStore((state) => state.user);
 
   const [imageFile, setImageFile] = useState(null);
-  
+
   const handleImageFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setImageFile(file);    
+      setImageFile(file);
     }
   };
 
@@ -105,6 +105,25 @@ function Testimonials() {
           userId: user.id,
         });
       } else {
+        if (imageFile !== null) {
+          const formData = new FormData();
+
+          formData.append("file", imageFile);
+
+          console.log("mag-uupload na dapat");
+
+          // UPLOAD EMPLOYEE IMAGE
+          const uploadResponse = await api.post(
+            "/api/upload-image/testimonials",
+            formData,
+            {
+              headers: { "Content-Type": "multipart/form-data" },
+            }
+          );
+          // SET CLOUDINARY IMAGE URL TO TESTIMONIAL DETAILS
+          testimonialDetails.employeeImageUrl = uploadResponse.data.imageUrl;
+        }
+
         response = await api.put("/api/testimonials", {
           ...testimonialDetails,
           userId: user.id,
@@ -144,9 +163,11 @@ function Testimonials() {
     try {
       console.log("Deleting testimonial with ID:", testimonial_id);
 
-      const response = await api.delete("/api/testimonials", {data:{
-        testimonialId: testimonial_id,
-      }});
+      const response = await api.delete("/api/testimonials", {
+        data: {
+          testimonialId: testimonial_id,
+        },
+      });
       if (response.data.suuccess) {
         toast.success(response.data.message);
         setDataUpdated(!dataUpdated);
