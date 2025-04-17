@@ -114,6 +114,7 @@ em, i{
 /* Color Themes */
 @theme {
   --color-primary: #0097b2;
+  --color-primary-hovered: #007a8e;
   --color-secondary: #bfd1a0;
   --color-secondarydark: #4FAFAB;
   --color-tertiary: #ECF1E3;
