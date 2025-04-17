@@ -5,6 +5,7 @@ import { ModuleRegistry } from "@ag-grid-community/core";
 import { AgGridReact } from "@ag-grid-community/react";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
+import { useStore } from "../../store/authStore";
 import {
   PlusCircleIcon,
   PencilIcon,
@@ -12,68 +13,49 @@ import {
 } from "@heroicons/react/24/outline";
 import api from "../../utils/axios";
 import ContentButtons from "./ContentButtons";
+import toast from "react-hot-toast";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 const FooterContent = () => {
   const [showModal, setShowModal] = useState(false);
-  const [editingFooter, setEditingFooter] = useState(null);
+  const [editingFooter, setEditingFooter] = useState(null); 
   const [rowFooterData, setRowFooterData] = useState([]);
+  const user = useStore((state) => state.user);
 
   const [newCert, setNewCert] = useState({
-    certId: "",
+    certId: null,
     imageUrl: "",
-    createdBy: "",
-    createdAt: "",
+    createdBy: user?.id || "Admin",
+    createdAt: new Date().toISOString(),
   });
 
-  const addOrUpdateCert = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      const isEditing = !!editingFooter;
-      const payload = {
-        cert_id: isEditing ? editingFooter.certId : undefined,
-        cert_img_url: isEditing ? editingFooter.imageUrl : newCert.imageUrl,
-        created_by: isEditing
-          ? editingFooter.createdBy
-          : newCert.createdBy || "Admin",
-      };
+      const payload = { ...newCert, userId: user?.id };
 
-      const response = await api.post("/api/add-cert", payload);
-      const result = response.data;
+      if (newCert.certId) {
+        const response = await api.put("/api/update-cert", payload);
+        toast.success(response.data.message);
 
-      if (response.status === 200) {
-        const newEntry = {
-          certId: result.cert_id || payload.cert_id || Date.now(),
-          imageUrl: payload.cert_img_url,
-          createdBy: payload.created_by,
-          createdAt: result.created_at || new Date().toISOString(),
-        };
-
-        setRowFooterData((prev) =>
-          isEditing
-            ? prev.map((item) =>
-                item.certId === editingFooter.certId ? newEntry : item
-              )
-            : [...prev, newEntry]
+        const updatedCerts = rowFooterData.map((c) =>
+          c.certId === newCert.certId ? { ...newCert } : c
         );
-
-        setShowModal(false);
-        setEditingFooter(null);
-        setNewCert({
-          certId: "",
-          imageUrl: "",
-          createdBy: "",
-          createdAy: "",
-        });
+        setRowFooterData(updatedCerts);
       } else {
-        alert("Failed to save certificate. Please try again.");
+        const response = await api.post("/api/add-cert", payload);
+        toast.success(response.data.message);
+
+        setRowFooterData((prev) => [
+          ...prev,
+          { ...newCert, certId: Date.now() }, 
+        ]);
       }
-    } catch (err) {
-      console.error(
-        "Error adding/updating cert:",
-        err?.response?.data || err.message
-      );
-      alert("An unexpected error occurred while saving the certificate.");
+      setShowModal(false);
+    } catch (error) {
+      toast.error("Failed to save certificate");
+      console.error(error);
     }
   };
 
@@ -127,7 +109,11 @@ const FooterContent = () => {
         <ContentButtons
           icon={<PlusCircleIcon className="size-5" />}
           text="Add Certification"
-          handleClick={setShowModal}
+          handleClick={() => {
+            setEditingFooter(null); // Clear out editing state
+            setNewCert({ ...newCert, certId: null }); // Reset new cert fields
+            setShowModal(true);
+          }}
         />
       </div>
       <div className="ag-theme-quartz mt-4" style={{ height: "auto" }}>
@@ -142,7 +128,7 @@ const FooterContent = () => {
                 params.value ? (
                   <img
                     src={params.value}
-                    alt="NewsImage"
+                    alt="CertImage"
                     className="w-[100px] h-[100px] sm:w-[100px] sm:h-[100px] object-cover mx-auto p-4"
                   />
                 ) : (
@@ -174,6 +160,7 @@ const FooterContent = () => {
                   <button
                     onClick={() => {
                       setEditingFooter(params.data);
+                      setNewCert({ ...params.data });
                       setShowModal(true);
                     }}
                   >
@@ -197,9 +184,7 @@ const FooterContent = () => {
             },
           }}
           domLayout="autoHeight"
-          rowHeight={
-            window.innerWidth < 640 ? 60 : window.innerWidth < 768 ? 70 : 80
-          }
+          rowHeight={80}
           pagination
           paginationPageSize={5}
           paginationPageSizeSelector={[5, 10, 20]}
@@ -208,21 +193,16 @@ const FooterContent = () => {
 
       <Dialog open={showModal} onClose={() => setShowModal(false)}>
         <DialogTitle className="text-center">
-          {editingFooter ? "Edit Footer Item" : "Add Footer Item"}
+          {editingFooter ? "Edit Certificate" : "Add Certificate"}
         </DialogTitle>
         <DialogContent>
           <div className="flex flex-col gap-4 mt-2">
             <TextField
               label="Image URL"
               fullWidth
-              value={editingFooter?.imageUrl || newCert.imageUrl}
+              value={newCert.imageUrl}
               onChange={(e) =>
-                editingFooter
-                  ? setEditingFooter({
-                      ...editingFooter,
-                      imageUrl: e.target.value,
-                    })
-                  : setNewCert({ ...newCert, imageUrl: e.target.value })
+                setNewCert({ ...newCert, imageUrl: e.target.value })
               }
             />
           </div>
@@ -231,7 +211,7 @@ const FooterContent = () => {
             <button className="btn-light" onClick={() => setShowModal(false)}>
               Cancel
             </button>
-            <button className="btn-primary" onClick={addOrUpdateCert}>
+            <button className="btn-primary" onClick={handleSubmit}>
               {editingFooter ? "Update" : "Add"}
             </button>
           </div>
