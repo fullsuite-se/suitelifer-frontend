@@ -21,6 +21,7 @@ import api from "../../utils/axios";
 
 import { useStore } from "../../store/authStore";
 import toast from "react-hot-toast";
+import ActionButtons from "./ActionButtons";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -206,13 +207,15 @@ function FAQs() {
               flex: 1,
               headerClass: "text-primary font-bold bg-gray-100",
               cellRenderer: (params) => (
-                <div className="flex gap-2">
-                  <IconButton onClick={() => handleEdit(params.data)}>
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton onClick={() => handleDelete(params.data.faq_id)}>
-                    <DeleteIcon />
-                  </IconButton>
+                <div className="flex">
+                  <ActionButtons
+                    icon={<PencilIcon className="size-5 cursor-pointer" />}
+                    handleClick={handleEdit}
+                  />
+                  <ActionButtons
+                    icon={<TrashIcon className="size-5 cursor-pointer" />}
+                    handleClick={handleDelete}
+                  />
                 </div>
               ),
             },
