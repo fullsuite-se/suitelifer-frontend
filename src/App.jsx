@@ -114,7 +114,7 @@ function App() {
               <Route />
 
               {/* Admin Protected Routes */}
-              <Route element={<AdminProtectedRoutes />}>
+              <Route path="admin-tools" element={<AdminProtectedRoutes />}>
                 <Route path="suitebite" element={<AdminNews />} />
 
                 <Route
@@ -124,7 +124,7 @@ function App() {
                 <Route path="events" element={<AdminEvents />} />
                 <Route path="contents" element={<AdminContents />} />
                 <Route path="courses" element={<JobCourse />} />
-                <Route path="personalitytest" element={<PersonalityTest />} />
+                <Route path="personality-test" element={<PersonalityTest />} />
               </Route>
 
               {/* Super Admin Protected Routes */}
