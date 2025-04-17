@@ -31,14 +31,11 @@ function Testimonials() {
   const user = useStore((state) => state.user);
 
   const [imageFile, setImageFile] = useState(null);
-  const imgRef = useRef(null);
 
   const handleImageFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setImageFile(file);
-      const imageURL = URL.createObjectURL(file);
-      imgRef.current.src = imageURL;
     }
   };
 
@@ -108,6 +105,25 @@ function Testimonials() {
           userId: user.id,
         });
       } else {
+        if (imageFile !== null) {
+          const formData = new FormData();
+
+          formData.append("file", imageFile);
+
+          console.log("mag-uupload na dapat");
+
+          // UPLOAD EMPLOYEE IMAGE
+          const uploadResponse = await api.post(
+            "/api/upload-image/testimonials",
+            formData,
+            {
+              headers: { "Content-Type": "multipart/form-data" },
+            }
+          );
+          // SET CLOUDINARY IMAGE URL TO TESTIMONIAL DETAILS
+          testimonialDetails.employeeImageUrl = uploadResponse.data.imageUrl;
+        }
+
         response = await api.put("/api/testimonials", {
           ...testimonialDetails,
           userId: user.id,
@@ -147,16 +163,14 @@ function Testimonials() {
     try {
       console.log("Deleting testimonial with ID:", testimonial_id);
 
-      const response = await api.post("/api/delete-testimonial", {
-        testimonial_id: testimonial_id,
+      const response = await api.delete("/api/testimonials", {
+        data: {
+          testimonialId: testimonial_id,
+        },
       });
-
       if (response.data.success) {
         toast.success(response.data.message);
-
-        setRowTestimonialData((prevData) =>
-          prevData.filter((t) => t.testimonial_id !== testimonial_id)
-        );
+        setDataUpdated(!dataUpdated);
       } else {
         toast.error(response.data.message);
       }
@@ -198,12 +212,6 @@ function Testimonials() {
   useEffect(() => {
     fetchData();
   }, [dataUpdated]);
-
-  useEffect(() => {
-    if (modalIsOpen && imgRef.current && testimonialDetails.employeeImageUrl) {
-      imgRef.current.src = testimonialDetails.employeeImageUrl;
-    }
-  }, [modalIsOpen, testimonialDetails]);
 
   return (
     <>
@@ -305,7 +313,7 @@ function Testimonials() {
                         <EditIcon />
                       </IconButton>
                       <IconButton
-                        onClick={() => handleDelete(params.data.testimonial_id)}
+                        onClick={() => handleDelete(params.data.testimonialId)}
                       >
                         <DeleteIcon />
                       </IconButton>
@@ -453,9 +461,7 @@ function Testimonials() {
                   </span>
                   {imageFile === null ? (
                     testimonialDetails.testimonialId && (
-                      <div
-                        className={`preview mt-4`}
-                      >
+                      <div className={`preview mt-4`}>
                         <img
                           className=""
                           src={testimonialDetails.employeeImageUrl}
