@@ -237,7 +237,7 @@ const AboutUs = () => {
                     <b>team player</b>
                   </p>
                 }
-                youtubeUrl="https://www.youtube.com/embed/6bq0XVkpG9U"
+                youtubeUrl={aboutContent.teamPlayerVideo}
               />
               {/* 2 */}
               <CoreValueCard
@@ -254,7 +254,7 @@ const AboutUs = () => {
                     <b>understood</b>
                   </p>
                 }
-                youtubeUrl="https://www.youtube.com/embed/6bq0XVkpG9U"
+                youtubeUrl={aboutContent.understoodVideo}
               />
             </div>
             <div className="flex justify-center">
@@ -272,7 +272,7 @@ const AboutUs = () => {
                     <b>focused athlete</b>
                   </p>
                 }
-                youtubeUrl="https://www.youtube.com/embed/6bq0XVkpG9U"
+                youtubeUrl={aboutContent.focusedVideo}
               />
             </div>
             <div className="flex justify-evenly lg:gap-10">
@@ -286,7 +286,7 @@ const AboutUs = () => {
                   />
                 }
                 text={<b className="text-body">upholds</b>}
-                youtubeUrl="https://www.youtube.com/embed/6bq0XVkpG9U"
+                youtubeUrl={aboutContent.upholdsVideo}
               />
               {/* 5 */}
               <CoreValueCard
@@ -301,7 +301,7 @@ const AboutUs = () => {
                     values <br /> work/life harmony
                   </b>
                 }
-                youtubeUrl="https://www.youtube.com/embed/6bq0XVkpG9U"
+                youtubeUrl={aboutContent.harmonyVideo}
               />
             </div>
           </div>
@@ -316,10 +316,12 @@ const AboutUs = () => {
           <MissionVision
             imgMission={imgMission}
             imgVision={imgVision}
-            missionContent={aboutContent.mission}
             missionSlogan={aboutContent.missionSlogan}
-            visionContent={aboutContent.vision}
+            missionContent={aboutContent.mission}
+            missionVideoUrl={aboutContent.missionVideo}
             visionSlogan={aboutContent.visionSlogan}
+            visionContent={aboutContent.vision}
+            visionVideoUrl={aboutContent.visionVideo}
           />
         </section>
         {/* Message from the CEO */}
