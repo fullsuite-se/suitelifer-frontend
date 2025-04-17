@@ -114,9 +114,9 @@ function App() {
               <Route />
 
               {/* Admin Protected Routes */}
-              <Route element={<AdminProtectedRoutes />}>
+              <Route path="admin-tools" element={<AdminProtectedRoutes />}>
+                <Route index element={<Navigate to="suitebite" replace />} />
                 <Route path="suitebite" element={<AdminNews />} />
-
                 <Route
                   path="suitebite/new-suitebite"
                   element={<AdminNewsCreate />}
@@ -124,15 +124,28 @@ function App() {
                 <Route path="events" element={<AdminEvents />} />
                 <Route path="contents" element={<AdminContents />} />
                 <Route path="courses" element={<JobCourse />} />
-                <Route path="personalitytest" element={<PersonalityTest />} />
+                <Route path="personality-test" element={<PersonalityTest />} />
               </Route>
 
               {/* Super Admin Protected Routes */}
-              <Route element={<SuperAdminProtectedRoutes />}>
+              <Route path="admin-tools" element={<SuperAdminProtectedRoutes />}>
+                <Route
+                  index
+                  element={<Navigate to="accounts-management" replace />}
+                />
                 <Route
                   path="accounts-management"
                   element={<SuperAdminAccountManagement />}
                 />
+                <Route path="suitebite" element={<AdminNews />} />
+                <Route
+                  path="suitebite/new-suitebite"
+                  element={<AdminNewsCreate />}
+                />
+                <Route path="events" element={<AdminEvents />} />
+                <Route path="contents" element={<AdminContents />} />
+                <Route path="courses" element={<JobCourse />} />
+                <Route path="personality-test" element={<PersonalityTest />} />
               </Route>
             </Route>
           </Route>
