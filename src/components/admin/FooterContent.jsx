@@ -6,9 +6,6 @@ import {
   DialogContent,
   DialogTitle,
 } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import { AgGridReact } from "@ag-grid-community/react";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { ModuleRegistry } from "@ag-grid-community/core";
@@ -17,7 +14,12 @@ import "@ag-grid-community/styles/ag-theme-quartz.css";
 import { showConfirmationToast } from "../toasts/confirm";
 import { ModalDeleteConfirmation } from "../modals/ModalDeleteConfirmation";
 import ContentButtons from "./ContentButtons";
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import {
+  PlusCircleIcon,
+  PencilIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
+import ActionButtons from "./ActionButtons";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -63,19 +65,9 @@ function FooterContent() {
     setAddEditModalOpen(true);
   };
 
-  const handleDeleteClick = (id) => {
+  const handleDelete = (id) => {
     setCertDetails((c) => ({ ...c, CertId: id }));
     setDeleteModalOpen(true);
-  };
-
-  const handleDelete = () => {
-    const filtered = certImages.filter(
-      (item) => item.CertId !== certDetails.CertId
-    );
-    setCertImages(filtered);
-    showConfirmationToast.success("Certification image deleted");
-    setDeleteModalOpen(false);
-    setCertDetails(defaultCert);
   };
 
   const handleSave = (e) => {
@@ -165,21 +157,16 @@ function FooterContent() {
                   field: "actions",
                   flex: 0.5,
                   headerClass: "text-primary font-bold bg-gray-100",
-                  cellStyle: {
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  },
                   cellRenderer: (params) => (
-                    <div className="flex gap-2">
-                      <IconButton onClick={() => handleEdit(params.data)}>
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => handleDeleteClick(params.data.CertId)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
+                    <div className="flex">
+                      <ActionButtons
+                        icon={<PencilIcon className="size-5 cursor-pointer" />}
+                        handleClick={handleEdit}
+                      />
+                      <ActionButtons
+                        icon={<TrashIcon className="size-5 cursor-pointer" />}
+                        handleClick={handleDelete}
+                      />
                     </div>
                   ),
                 },
