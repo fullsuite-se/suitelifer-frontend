@@ -65,9 +65,19 @@ function FooterContent() {
     setAddEditModalOpen(true);
   };
 
-  const handleDelete = (id) => {
+  const handleDeleteClick = (id) => {
     setCertDetails((c) => ({ ...c, CertId: id }));
     setDeleteModalOpen(true);
+  };
+
+  const handleDelete = () => {
+    const filtered = certImages.filter(
+      (item) => item.CertId !== certDetails.CertId
+    );
+    setCertImages(filtered);
+    showConfirmationToast.success("Certificate deleted");
+    setDeleteModalOpen(false);
+    setCertDetails(defaultCert);
   };
 
   const handleSave = (e) => {
@@ -161,11 +171,13 @@ function FooterContent() {
                     <div className="flex">
                       <ActionButtons
                         icon={<PencilIcon className="size-5 cursor-pointer" />}
-                        handleClick={handleEdit}
+                        handleClick={() => handleEdit(params.data)}
                       />
                       <ActionButtons
                         icon={<TrashIcon className="size-5 cursor-pointer" />}
-                        handleClick={handleDelete}
+                        handleClick={() =>
+                          handleDeleteClick(params.data.CertId)
+                        }
                       />
                     </div>
                   ),
