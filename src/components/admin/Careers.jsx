@@ -10,6 +10,7 @@ import {
   PencilIcon,
   XMarkIcon,
 } from "@heroicons/react/24/solid";
+import { OrbitProgress } from "react-loading-indicators";
 import toast from "react-hot-toast";
 import LoadingAnimation from "../loader/Loading";
 function Careers() {
@@ -17,6 +18,7 @@ function Careers() {
   const [isEditing, setIsEditing] = useState(false);
   const [dataUpdated, setIsDataUpdated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
 
   const [files, setFiles] = useState({
     careersMainImage: null,
@@ -90,6 +92,7 @@ function Careers() {
   };
 
   const fetchData = async () => {
+    setIsFetching(true);
     try {
       const response = await api.get("/api/content/careers");
       const data = response.data.careersContent;
@@ -98,6 +101,8 @@ function Careers() {
       setCareerImages(data);
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsFetching(false);
     }
   };
 
@@ -136,8 +141,24 @@ function Careers() {
         <div className="text-center aspect-3/4 flex justify-center items-center size-[18%] bg-primary/5 border text-primary border-dashed rounded-2xl">
           {files.careersLeftImage === null ? (
             <div className="relative group w-full h-full aspect-3/4 rounded-2xl overflow-hidden">
+              <div
+                className={`${
+                  isFetching ? "" : "hidden"
+                } w-full h-full grid place-content-center`}
+              >
+                <OrbitProgress
+                  variant="disc"
+                  color="#0097b2"
+                  size="small"
+                  text=""
+                  textColor=""
+                />
+              </div>
+
               <img
-                className="w-full h-full object-cover"
+                className={`${
+                  isFetching ? "hidden" : ""
+                }w-full h-full object-cover`}
                 src={careerImages.careersLeftImage}
                 alt="Left Preview"
               />
