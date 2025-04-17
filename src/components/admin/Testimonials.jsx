@@ -23,13 +23,16 @@ import {
   ExclamationTriangleIcon,
   InformationCircleIcon,
 } from "@heroicons/react/24/outline";
+import LoadingAnimation from "../../components/loader/Loading";
+import ConfirmationDialog from "./ConfirmationDialog";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 function Testimonials() {
   // USER DETAILS
   const user = useStore((state) => state.user);
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [imageFile, setImageFile] = useState(null);
 
   const handleImageFileChange = (e) => {
@@ -73,6 +76,7 @@ function Testimonials() {
     let response;
 
     try {
+      setIsLoading(true);
       if (!testimonialDetails.testimonialId) {
         // VALIDATE EMPLOYEE IMAGE
         if (imageFile === null) {
@@ -141,6 +145,8 @@ function Testimonials() {
     } catch (error) {
       console.error("Error saving testimonial:", error);
       toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
 
     // Clear form and close dialog
@@ -159,7 +165,14 @@ function Testimonials() {
     setModalIsOpen(true);
   };
 
-  const handleDelete = async (testimonial_id) => {
+  const handleDeleteClick = (testimonial_id) => {
+    setTestimonialId(testimonial_id);
+    setDeleteModalIsOpen(true);
+  };
+  const [testimonialId, setTestimonialId] = useState(null);
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    let testimonial_id = testimonialId;
     try {
       console.log("Deleting testimonial with ID:", testimonial_id);
 
@@ -177,10 +190,14 @@ function Testimonials() {
     } catch (error) {
       console.error("Error deleting testimonial:", error);
       toast.error("An error occurred while deleting the testimonial");
+    } finally {
+      setIsDeleting(false);
+      setDeleteModalIsOpen(false);
     }
   };
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
 
   const [rowTestimonialData, setRowTestimonialData] = useState([]);
 
@@ -313,7 +330,9 @@ function Testimonials() {
                         <EditIcon />
                       </IconButton>
                       <IconButton
-                        onClick={() => handleDelete(params.data.testimonialId)}
+                        onClick={() =>
+                          handleDeleteClick(params.data.testimonialId)
+                        }
                       >
                         <DeleteIcon />
                       </IconButton>
@@ -342,160 +361,177 @@ function Testimonials() {
             />
           </div>
         </div>
-
-        <Dialog
-          open={modalIsOpen}
-          onClose={(event, reason) => {
-            if (reason !== "backdropClick" && reason !== "escapeKeyDown") {
-              setModalIsOpen(false);
-            }
-          }}
-          disableEscapeKeyDown={true}
-          sx={{
-            "& .MuiDialog-paper": {
-              width: "600px",
-              height: "auto",
-              maxHeight: "90vh",
-            },
-          }}
-        >
-          <DialogTitle className="w-full text-center justify-center">
-            {testimonialDetails.testimonialId
-              ? "Edit Testimonial"
-              : "Add Testimonial"}
-          </DialogTitle>
-          <DialogContent>
-            <form
-              onSubmit={(e) => handleAddEditTestimonial(e)}
-              encType="multipart/form-data"
-              className="space-y-4"
-            >
-              <div className="w-full mb-3">
-                <label className="block text-gray-700 font-avenir-black">
-                  Employee Name<span className="text-primary">*</span>
-                </label>
-                <input
-                  name="employeeName"
-                  required
-                  value={testimonialDetails.employeeName || ""}
-                  onChange={(e) => handleTestimonialDetailsChange(e)}
-                  className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
-                />
-              </div>
-
-              <div className="w-full mb-3">
-                <label className="block text-gray-700 font-avenir-black">
-                  Position<span className="text-primary">*</span>
-                </label>
-                <input
-                  name="position"
-                  required
-                  // list="position-options"
-                  value={testimonialDetails.position || ""}
-                  onChange={(e) => handleTestimonialDetailsChange(e)}
-                  className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
-                />
-              </div>
-
-              <div className="w-full mb-3">
-                <label className="block text-gray-700 font-avenir-black">
-                  Testimony<span className="text-primary">*</span>
-                </label>
-                <textarea
-                  name="testimony"
-                  required
-                  value={testimonialDetails.testimony || ""}
-                  onChange={(e) => handleTestimonialDetailsChange(e)}
-                  rows={7}
-                  className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
-                />
-              </div>
-
-              <div>
-                <label className="block text-gray-700 font-avenir-black">
-                  Visibility<span className="text-primary">*</span>
-                </label>
-                <div className="p-2 bg-primary/10 rounded-md cursor-pointer">
-                  <select
-                    name="isShown"
-                    required
-                    value={
-                      testimonialDetails.isShown !== undefined
-                        ? testimonialDetails.isShown
-                        : ""
-                    }
-                    onChange={(e) => handleTestimonialDetailsChange(e)}
-                    className="w-full cursor-pointer border-none focus:outline-none"
-                  >
-                    <option value="" disabled>
-                      -- Select an option --
-                    </option>
-                    <option value={1}>Shown</option>
-                    <option value={0}>Hidden</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="w-full mb-3">
-                <label className="block text-gray-700 font-avenir-black">
-                  Employee Image<span className="text-primary">*</span>
-                </label>
-
-                <div className="mt-3">
+        {isDeleting ? (
+          <LoadingAnimation />
+        ) : (
+          <ConfirmationDialog
+            open={deleteModalIsOpen}
+            onClose={() => setDeleteModalIsOpen(false)}
+            onConfirm={handleDelete}
+            title="Delete Testimonial"
+            description="Are you sure you want to delete this testimonial? This action cannot be undone."
+            confirmLabel="Delete"
+            cancelBtnClass="p-2 px-4 cursor-pointer rounded-xl hover:bg-gray-200 duration-500 text-gray-700"
+            confirmBtnClass="p-2 px-4 cursor-pointer rounded-xl bg-red-700 hover:bg-red-800 duration-500 text-white"
+          />
+        )}
+        {isLoading ? (
+          <LoadingAnimation />
+        ) : (
+          <Dialog
+            open={modalIsOpen}
+            onClose={(event, reason) => {
+              if (reason !== "backdropClick" && reason !== "escapeKeyDown") {
+                setModalIsOpen(false);
+              }
+            }}
+            disableEscapeKeyDown={true}
+            sx={{
+              "& .MuiDialog-paper": {
+                width: "600px",
+                height: "auto",
+                maxHeight: "90vh",
+              },
+            }}
+          >
+            <DialogTitle className="w-full text-center justify-center">
+              {testimonialDetails.testimonialId
+                ? "Edit Testimonial"
+                : "Add Testimonial"}
+            </DialogTitle>
+            <DialogContent>
+              <form
+                onSubmit={(e) => handleAddEditTestimonial(e)}
+                encType="multipart/form-data"
+                className="space-y-4"
+              >
+                <div className="w-full mb-3">
+                  <label className="block text-gray-700 font-avenir-black">
+                    Employee Name<span className="text-primary">*</span>
+                  </label>
                   <input
-                    className="mb-2 block w-fit text-sm text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer file:cursor-pointer"
-                    type="file"
-                    accept=".jpeg,.jpg,.png,.heic"
-                    onChange={handleImageFileChange}
+                    name="employeeName"
+                    required
+                    value={testimonialDetails.employeeName || ""}
+                    onChange={(e) => handleTestimonialDetailsChange(e)}
+                    className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
                   />
-                  <span className="mb-1 flex text-sm text-gray-400">
-                    {" "}
-                    <InformationCircleIcon className="size-5  text-primary/70" />
-                    &nbsp;Accepted formats: .jpeg, .jpg, .png, .heic (rec.
-                    1080×1080px)
-                  </span>
-                  <span className="flex text-sm text-gray-400">
-                    {" "}
-                    <ExclamationTriangleIcon className="size-5  text-orange-500/70" />
-                    &nbsp;Make sure your image is a perfect square (1:1 ratio)
-                  </span>
-                  {imageFile === null ? (
-                    testimonialDetails.testimonialId && (
-                      <div className={`preview mt-4`}>
-                        <img
-                          className=""
-                          src={testimonialDetails.employeeImageUrl}
-                          alt="Preview"
-                        />
-                      </div>
-                    )
-                  ) : (
-                    <img
-                      className="mb-20"
-                      src={URL.createObjectURL(imageFile)}
-                    />
-                  )}
                 </div>
-              </div>
 
-              <DialogActions>
-                <button
-                  type="button"
-                  className="btn-light"
-                  onClick={() => {
-                    setModalIsOpen(false);
-                    setImageFile(null);
-                  }}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="btn-primary">
-                  Save
-                </button>
-              </DialogActions>
-            </form>
-          </DialogContent>
-        </Dialog>
+                <div className="w-full mb-3">
+                  <label className="block text-gray-700 font-avenir-black">
+                    Position<span className="text-primary">*</span>
+                  </label>
+                  <input
+                    name="position"
+                    required
+                    // list="position-options"
+                    value={testimonialDetails.position || ""}
+                    onChange={(e) => handleTestimonialDetailsChange(e)}
+                    className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                  />
+                </div>
+
+                <div className="w-full mb-3">
+                  <label className="block text-gray-700 font-avenir-black">
+                    Testimony<span className="text-primary">*</span>
+                  </label>
+                  <textarea
+                    name="testimony"
+                    required
+                    value={testimonialDetails.testimony || ""}
+                    onChange={(e) => handleTestimonialDetailsChange(e)}
+                    rows={7}
+                    className="w-full p-3 resize-none border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-gray-700 font-avenir-black">
+                    Visibility<span className="text-primary">*</span>
+                  </label>
+                  <div className="p-2 bg-primary/10 rounded-md cursor-pointer">
+                    <select
+                      name="isShown"
+                      required
+                      value={
+                        testimonialDetails.isShown !== undefined
+                          ? testimonialDetails.isShown
+                          : ""
+                      }
+                      onChange={(e) => handleTestimonialDetailsChange(e)}
+                      className="w-full cursor-pointer border-none focus:outline-none"
+                    >
+                      <option value="" disabled>
+                        -- Select an option --
+                      </option>
+                      <option value={1}>Shown</option>
+                      <option value={0}>Hidden</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="w-full mb-3">
+                  <label className="block text-gray-700 font-avenir-black">
+                    Employee Image<span className="text-primary">*</span>
+                  </label>
+
+                  <div className="mt-3">
+                    <input
+                      className="mb-2 block w-fit text-sm text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer file:cursor-pointer"
+                      type="file"
+                      accept=".jpeg,.jpg,.png,.heic"
+                      onChange={handleImageFileChange}
+                    />
+                    <span className="mb-1 flex text-sm text-gray-400">
+                      {" "}
+                      <InformationCircleIcon className="size-5  text-primary/70" />
+                      &nbsp;Accepted formats: .jpeg, .jpg, .png, .heic (rec.
+                      1080×1080px)
+                    </span>
+                    <span className="flex text-sm text-gray-400">
+                      {" "}
+                      <ExclamationTriangleIcon className="size-5  text-orange-500/70" />
+                      &nbsp;Make sure your image is a perfect square (1:1 ratio)
+                    </span>
+                    {imageFile === null ? (
+                      testimonialDetails.testimonialId && (
+                        <div className={`preview mt-4`}>
+                          <img
+                            className=""
+                            src={testimonialDetails.employeeImageUrl}
+                            alt="Preview"
+                          />
+                        </div>
+                      )
+                    ) : (
+                      <img
+                        className="mb-20"
+                        src={URL.createObjectURL(imageFile)}
+                      />
+                    )}
+                  </div>
+                </div>
+
+                <DialogActions>
+                  <button
+                    type="button"
+                    className="btn-light"
+                    onClick={() => {
+                      setModalIsOpen(false);
+                      setImageFile(null);
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn-primary">
+                    Save
+                  </button>
+                </DialogActions>
+              </form>
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
     </>
   );
