@@ -13,7 +13,6 @@ import {
   useGoogleReCaptcha,
 } from "react-google-recaptcha-v3";
 
-import TestCredentials from "./TestCredentials";
 import { ModalResetPassword } from "../../components/modals/ModalResetPassword";
 import { Link } from "react-router-dom";
 import sendVerification from "../../utils/sendVerification";
@@ -32,15 +31,6 @@ const LoginForm = ({ email, password, setEmail, setPassword }) => {
       return;
     }
 
-    const recaptchaToken = await executeRecaptcha("login");
-    const recaptcha = await api.post("/api/verify-recaptcha", {
-      recaptchaToken: recaptchaToken,
-    });
-    if (recaptcha.status !== 200) {
-      toast.error(recaptcha.data.message);
-      return;
-    }
-
     if (!email || !password) {
       toast.error("Please enter both email and password.");
       return;
@@ -48,9 +38,11 @@ const LoginForm = ({ email, password, setEmail, setPassword }) => {
 
     try {
       setLoading(true);
+      const recaptchaToken = await executeRecaptcha("login");
       const response = await api.post("/api/login", {
         email,
         password,
+        recaptchaToken,
       });
 
       if (response.data.accessToken) {
@@ -146,8 +138,6 @@ const LoginForm = ({ email, password, setEmail, setPassword }) => {
     </form>
   );
 };
-
-// Main Login Component
 
 const Login = () => {
   const navigate = useNavigate();
