@@ -113,7 +113,7 @@ const AboutUs = () => {
             <div className=" md:mt-100 lg:mt-30"></div>
             <div className="relative w-full flex justify-center h-[100%] items-end mt-20">
               <img
-                src={aboutBannerShadow}
+                src={aboutContent.aboutBackgroundImage}
                 alt="background banner"
                 className="filter grayscale absolute bottom-0 lg:bottom-30 xl:bottom-5 w-full lg:w-[80%]  h-full md:h-[900px] object-cover object-top opacity-100 lg:h-[500px] lg:right-0 xl:h-[840px] 
 [mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.2),rgba(0,0,0,0))] [mask-size:100%_100%]"
@@ -151,7 +151,7 @@ const AboutUs = () => {
                   )}
                 </p>
                 <img
-                  src={aboutBanner}
+                  src={aboutContent.aboutHeroImage}
                   alt="banner image"
                   className="w-auto max-h-[400px] p-1 md:max-h-[400px] lg:max-h-[450px] xl:max-h-[700px]"
                 />{" "}
