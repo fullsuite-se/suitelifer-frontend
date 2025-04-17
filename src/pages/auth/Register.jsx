@@ -34,13 +34,14 @@ const Form = () => {
     setValue(value);
   };
 
-  const submitRegistration = async () => {
+  const submitRegistration = async (recaptchaToken) => {
     const response = await api.post("/api/register", {
       workEmail,
       password,
       firstName,
       middleName,
       lastName,
+      recaptchaToken,
     });
     return response;
   };
@@ -72,19 +73,10 @@ const Form = () => {
       );
       return;
     }
-
-    const recaptchaToken = await executeRecaptcha("register");
-    const recaptcha = await api.post("/api/verify-recaptcha", {
-      recaptchaToken: recaptchaToken,
-    });
-    if (recaptcha.status !== 200) {
-      toast.error(recaptcha.data.message);
-      return;
-    }
-
     try {
       setLoading(true);
-      const responseRegister = await submitRegistration();
+      const recaptchaToken = await executeRecaptcha("register");
+      const responseRegister = await submitRegistration(recaptchaToken);
       const data = responseRegister.data;
       if (data.isSuccess) {
         const userId = data.userId;
