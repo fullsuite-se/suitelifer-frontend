@@ -34,7 +34,7 @@ const FooterContent = () => {
     e.preventDefault();
     try {
       const payload = { ...newCert, userId: user?.id };
-
+      console.log("payload", payload)
       if (newCert.certId) {
         const response = await api.put("/api/update-cert", payload);
         toast.success(response.data.message);
@@ -45,6 +45,7 @@ const FooterContent = () => {
         setRowFooterData(updatedCerts);
       } else {
         const response = await api.post("/api/add-cert", payload);
+
         toast.success(response.data.message);
 
         setRowFooterData((prev) => [
@@ -80,6 +81,7 @@ const FooterContent = () => {
     const fetchCerts = async () => {
       try {
         const response = await api.get("/api/all-cert");
+        console.log("respons" ,response.data)
         const result = response.data;
 
         if (response.status === 200) {
