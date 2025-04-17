@@ -273,7 +273,16 @@ const AboutPageContent = ({}) => {
                     onChange={(e) => handleContentDetailsChange(e)}
                     className="flex-grow p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
                   />
-                  <ArrowUpRightIcon height={25} />
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={aboutDetails[video.name].replace(
+                      "embed/",
+                      "watch?v="
+                    )}
+                  >
+                    <ArrowUpRightIcon height={25} />
+                  </a>
                 </div>
               </div>
             </div>
