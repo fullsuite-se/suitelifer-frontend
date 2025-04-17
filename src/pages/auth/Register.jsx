@@ -73,7 +73,7 @@ const Form = () => {
       return;
     }
 
-    const recaptchaToken = await executeRecaptcha("login");
+    const recaptchaToken = await executeRecaptcha("register");
     const recaptcha = await api.post("/api/verify-recaptcha", {
       recaptchaToken: recaptchaToken,
     });
@@ -238,7 +238,10 @@ const Register = () => {
           <Form />
           <p className="text-center">
             <span className="text-gray-400">Already have an account? </span>
-            <Link className="text-primary cursor-pointer no-underline hover:underline!" to={"/login"}>
+            <Link
+              className="text-primary cursor-pointer no-underline hover:underline!"
+              to={"/login"}
+            >
               Log in
             </Link>
           </p>
