@@ -5,12 +5,14 @@ import toast from "react-hot-toast";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../../utils/axios";
 import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
+import VerifyPasswordStrength from "../../components/auth/VerifyPasswordStrength";
 
 const PasswordReset = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
   const payloadEncrypted = searchParams.get("payload-encrypted");
@@ -24,11 +26,22 @@ const PasswordReset = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
+  const handlePasswordValidation = (value) => {
+    setIsPasswordValid(value);
+  };
+
   const handleConfirmBtn = (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       toast.error(
         "Passwords do not match. Please ensure both passwords are the same."
+      );
+      return;
+    }
+
+    if (!isPasswordValid) {
+      toast.error(
+        "Weak password! Use 10+ chars, a number, special char, and both cases. InfoSec believes in you! 🔐"
       );
       return;
     }
@@ -43,7 +56,7 @@ const PasswordReset = () => {
 
         if (response.data.isSuccess) {
           toast.success(
-            "Password updated successfully! Redirecting to login page..."
+            "Password updated successfully! Redirecting to login page."
           );
           setTimeout(() => navigate("/app/blogs-feed"), 1500);
         }
@@ -72,6 +85,11 @@ const PasswordReset = () => {
           </p>
         </header>
         <form onSubmit={handleConfirmBtn} className="space-y-4">
+          <VerifyPasswordStrength
+            password={password}
+            confirmPassword={confirmPassword}
+            onChangeValidation={handlePasswordValidation}
+          />
           <section className="relative">
             <label htmlFor="password" className="text-primary">
               Enter your new password
