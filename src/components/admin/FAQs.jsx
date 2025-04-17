@@ -16,7 +16,11 @@ import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-mod
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
 import ContentButtons from "./ContentButtons";
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import {
+  PlusCircleIcon,
+  PencilIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import api from "../../utils/axios";
 
 import { useStore } from "../../store/authStore";
