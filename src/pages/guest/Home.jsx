@@ -167,7 +167,7 @@ const Home = () => {
         <MotionUp>
           <div className="flex justify-center">
             <div className="w-[95%] max-w-[1200px] mx-auto">
-              <YouTubeEmbed embedUrl={homeContent.kickstartVideo} />
+              <YouTubeEmbed embedUrl={homeContent?.kickstartVideo} />
             </div>
           </div>
         </MotionUp>
