@@ -10,6 +10,7 @@ import {
 } from "react-google-recaptcha-v3";
 import sendVerification from "../../utils/sendVerification";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
+import VerifyPasswordStrength from "../../components/auth/VerifyPasswordStrength";
 
 const Form = () => {
   const [firstName, setFirstName] = useState("");
@@ -21,6 +22,7 @@ const Form = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
   const { executeRecaptcha } = useGoogleReCaptcha();
 
   const togglePasswordVisibility = () => {
@@ -28,6 +30,9 @@ const Form = () => {
   };
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
+  };
+  const handlePasswordValidation = (value) => {
+    setIsPasswordValid(value);
   };
 
   const handleInputChange = (value, setValue) => {
@@ -70,6 +75,13 @@ const Form = () => {
     if (password !== confirmPassword) {
       toast.error(
         "Passwords do not match. Please ensure both passwords are the same."
+      );
+      return;
+    }
+
+    if (!isPasswordValid) {
+      toast.error(
+        "Weak password! Use 10+ chars, a number, special char, and both cases. InfoSec believes in you! 🔐"
       );
       return;
     }
@@ -140,6 +152,11 @@ const Form = () => {
         required
         value={workEmail}
         onChange={(e) => handleInputChange(e.target.value, setWorkEmail)}
+      />
+      <VerifyPasswordStrength
+        password={password}
+        confirmPassword={confirmPassword}
+        onChangeValidation={handlePasswordValidation}
       />
       <div className="relative">
         <input
