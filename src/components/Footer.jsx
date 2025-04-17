@@ -149,7 +149,7 @@ const Footer = () => {
                 </li>
                 <li className=" text-white ">
                   <HashLink
-                    to="/about-us#our-mission"
+                    to="/about-us#mission-vision"
                     className="no-underline hover:!text-secondary"
                   >
                     Mission
@@ -157,7 +157,7 @@ const Footer = () => {
                 </li>
                 <li className=" text-white ">
                   <HashLink
-                    to="/about-us#our-vision"
+                    to="/about-us#mission-vision"
                     className="no-underline hover:!text-secondary"
                   >
                     Vision

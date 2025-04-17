@@ -109,11 +109,11 @@ const AboutUs = () => {
             </div>
           </>
         ) : (
-          <>
+            <>
             <div className=" md:mt-100 lg:mt-30"></div>
             <div className="relative w-full flex justify-center h-[100%] items-end mt-20">
               <img
-                src={aboutBannerShadow}
+                src={aboutContent.aboutBackgroundImage}
                 alt="background banner"
                 className="filter grayscale absolute bottom-0 lg:bottom-30 xl:bottom-5 w-full lg:w-[80%]  h-full md:h-[900px] object-cover object-top opacity-100 lg:h-[500px] lg:right-0 xl:h-[840px] 
 [mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.2),rgba(0,0,0,0))] [mask-size:100%_100%]"
@@ -151,7 +151,7 @@ const AboutUs = () => {
                   )}
                 </p>
                 <img
-                  src={aboutBanner}
+                  src={aboutContent.aboutHeroImage}
                   alt="banner image"
                   className="w-auto max-h-[400px] p-1 md:max-h-[400px] lg:max-h-[450px] xl:max-h-[700px]"
                 />{" "}
@@ -160,58 +160,58 @@ const AboutUs = () => {
           </>
         )}
 
-        <div className="mt-about-banner mt-about-banner-xl"></div>
+        {/* <div className="mt-about-banner mt-about-banner-xl"></div> */}
         <div className="py-20 "></div>
         <div className="flex items-center justify-end mb-10">
           <div className="size-[1.3vh] bg-primary rounded-full"></div>
           <div className="w-[45%] h-[0.25vh] bg-primary"></div>
         </div>
-        <div className="relative w-full h-auto flex flex-row px-10 md:px-20 lg:px-30 xl:px-50 items-start justify-start">
-          <div
-            className="flex flex-col items-center justify-between"
-            style={{ height: lineHeight }}
-          >
-            <div className="size-[1.3vh] bg-primary rounded-full"></div>
-            <div className="w-[0.25vh] flex-1 bg-primary"></div>
-            <div className="size-[1.3vh] bg-primary rounded-full"></div>
-          </div>
-
-          <div
-            ref={contentRef}
-            className="relative pb-10 max-w-4xl mx-auto pl-10 md:pl-20  lg:pl-30 xl:py-30"
-          >
-            <div className="flex items-end gap-2 mb-6  pointer-events-none">
-              <img
-                src={ourStoryText}
-                alt="Story"
-                className="h-30 object-contain md:h-35 lg:h-40"
-              />
+        <section id="our-story">
+          <div className="relative w-full h-auto flex flex-row px-10 md:px-20 lg:px-30 xl:px-50 items-start justify-start">
+            <div
+              className="flex flex-col items-center justify-between"
+              style={{ height: lineHeight }}
+            >
+              <div className="size-[1.3vh] bg-primary rounded-full"></div>
+              <div className="w-[0.25vh] flex-1 bg-primary"></div>
+              <div className="size-[1.3vh] bg-primary rounded-full"></div>
             </div>
-
-            <div className="text-body text-gray-700 xl:leading-10">
-              <p>
-                FullSuite was originally founded by Maggie Po on October 8, 2014
-                as Offshore Concept Consulting, Inc. In 2018, the founder
-                acquired full ownership of the brand name, FullSuite because it
-                embodied the company vision to provide a comprehensive suite of
-                solutions for startups. Maggie, alongside her co-founders,
-                envisioned that instead of piecemeal services, FullSuite will
-                offer an end-to-end approach that helps venture-backed startups
-                handle critical data operational functions—especially the ones
-                their AI systems can't yet automate.
-              </p>
-              <br />
-              <p>
-                In 2020, the legal entity was changed to Offshore Concept BPO
-                Services, Inc. to reflect in the name the more accurate
-                representation of its services. But, the brand name is still in
-                use which reflects the various suite of operations that the
-                company offers to help customers scale their businesses
-                efficiently.
-              </p>
+            <div
+              ref={contentRef}
+              className="relative pb-10 max-w-4xl mx-auto pl-10 md:pl-20  lg:pl-30 xl:py-30"
+            >
+              <div className="flex items-end gap-2 mb-6  pointer-events-none">
+                <img
+                  src={ourStoryText}
+                  alt="Story"
+                  className="h-30 object-contain md:h-35 lg:h-40"
+                />
+              </div>
+              <div className="text-body text-gray-700 xl:leading-10">
+                <p>
+                  FullSuite was originally founded by Maggie Po on October 8, 2014
+                  as Offshore Concept Consulting, Inc. In 2018, the founder
+                  acquired full ownership of the brand name, FullSuite because it
+                  embodied the company vision to provide a comprehensive suite of
+                  solutions for startups. Maggie, alongside her co-founders,
+                  envisioned that instead of piecemeal services, FullSuite will
+                  offer an end-to-end approach that helps venture-backed startups
+                  handle critical data operational functions—especially the ones
+                  their AI systems can't yet automate.
+                </p>
+                <br />
+                <p>
+                  In 2020, the legal entity was changed to Offshore Concept BPO
+                  Services, Inc. to reflect in the name the more accurate
+                  representation of its services. But, the brand name is still in
+                  use which reflects the various suite of operations that the
+                  company offers to help customers scale their businesses
+                  efficiently.
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+        </section>
         <div className="px-10 md:px-20  lg:px-30 xl:px-50 mt-20 mb-5 md:mt-30  lg:mt-40">
           <p className="color-gray text-h4 font-avenir-black -mb-3">the</p>
           <p className="text-primary text-h2 font-avenir-black">
@@ -220,7 +220,7 @@ const AboutUs = () => {
         </div>
 
         {/* Our Core Values Section */}
-        <section className="overflow-hidden relative ">
+        <section className="overflow-hidden relative " id="core-values">
           <div className="flex flex-col lg:flex-row lg:justify-center lg:mb-[7%] py-[5%] pb-[12%] md:pb-[4%] gap-6 lg:gap-10 text-base sm:text-lg md:text-xl">
             <div className="flex justify-evenly lg:flex-none lg:gap-10">
               {/* 1 */}
@@ -237,7 +237,7 @@ const AboutUs = () => {
                     <b>team player</b>
                   </p>
                 }
-                youtubeUrl="https://www.youtube.com/embed/6bq0XVkpG9U"
+                youtubeUrl={aboutContent.teamPlayerVideo}
               />
               {/* 2 */}
               <CoreValueCard
@@ -254,7 +254,7 @@ const AboutUs = () => {
                     <b>understood</b>
                   </p>
                 }
-                youtubeUrl="https://www.youtube.com/embed/6bq0XVkpG9U"
+                youtubeUrl={aboutContent.understoodVideo}
               />
             </div>
             <div className="flex justify-center">
@@ -272,7 +272,7 @@ const AboutUs = () => {
                     <b>focused athlete</b>
                   </p>
                 }
-                youtubeUrl="https://www.youtube.com/embed/6bq0XVkpG9U"
+                youtubeUrl={aboutContent.focusedVideo}
               />
             </div>
             <div className="flex justify-evenly lg:gap-10">
@@ -286,7 +286,7 @@ const AboutUs = () => {
                   />
                 }
                 text={<b className="text-body">upholds</b>}
-                youtubeUrl="https://www.youtube.com/embed/6bq0XVkpG9U"
+                youtubeUrl={aboutContent.upholdsVideo}
               />
               {/* 5 */}
               <CoreValueCard
@@ -301,7 +301,7 @@ const AboutUs = () => {
                     values <br /> work/life harmony
                   </b>
                 }
-                youtubeUrl="https://www.youtube.com/embed/6bq0XVkpG9U"
+                youtubeUrl={aboutContent.harmonyVideo}
               />
             </div>
           </div>
@@ -312,16 +312,23 @@ const AboutUs = () => {
         </div>
         <div className="py-10"></div>
         {/* Mission Vision LASTLY: CHANGE LAYOUT FOR MOBILE. BREAKPOINT: 480px */}
-        <MissionVision
-          imgMission={imgMission}
-          imgVision={imgVision}
-          missionContent={aboutContent.mission}
-          missionSlogan={aboutContent.missionSlogan}
-          visionContent={aboutContent.vision}
-          visionSlogan={aboutContent.visionSlogan}
-        />
+        <section id="mission-vision">
+          <MissionVision
+            imgMission={imgMission}
+            imgVision={imgVision}
+            missionSlogan={aboutContent.missionSlogan}
+            missionContent={aboutContent.mission}
+            missionVideoUrl={aboutContent.missionVideo}
+            visionSlogan={aboutContent.visionSlogan}
+            visionContent={aboutContent.vision}
+            visionVideoUrl={aboutContent.visionVideo}
+          />
+        </section>
         {/* Message from the CEO */}
-        <section className="my-[7%] relative bg-linear-to-tl from-[#6DB8A8] to-primary p-[7%] xl:p-[4%] md:px[10%] xl:px-[5%] xl:mx-[10%] rounded-tr-[12vw] lg:rounded-tr-[7vw] rounded-bl-[12vw] lg:rounded-bl-[7vw] xl:rounded-tl-xs xl:rounded-br-xs">
+        <section
+          id="ceo-message"
+          className="my-[7%] relative bg-linear-to-tl from-[#6DB8A8] to-primary p-[7%] xl:p-[4%] md:px[10%] xl:px-[5%] xl:mx-[10%] rounded-tr-[12vw] lg:rounded-tr-[7vw] rounded-bl-[12vw] lg:rounded-bl-[7vw] xl:rounded-tl-xs xl:rounded-br-xs"
+        >
           <div className="flex px-[3%] flex-col md:flex-row items-center gap-10 xl:gap-20">
             <img
               className="size-[50vw] max-w-[350px] max-h-[350px] object-cover shadow-2xl rounded-full"

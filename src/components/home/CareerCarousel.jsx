@@ -87,7 +87,7 @@ const CareerCarousel = () => {
               {[...Array(5)].map((_, index) => (
                 <SwiperSlide key={index}>
                   <div
-                    className={`p-5 mt-4 ease-out cursor-grab bg-white shadow-lg rounded-2xl text-center transition-transform duration-300 scale-90
+                    className={`p-5 mt-4 ease-out cursor-pointer bg-white shadow-lg rounded-2xl text-center transition-transform duration-300 scale-90
                     `}
                   >
                     <div className="w-full aspect-[100/101] rounded-xl overflow-hidden">
@@ -105,7 +105,7 @@ const CareerCarousel = () => {
               {industries.slice(0, 5).map((career, index) => (
                 <SwiperSlide key={career.industryId}>
                   <div
-                    className={`p-5 mt-4 ease-out cursor-grab bg-white shadow-lg rounded-2xl text-center transition-transform duration-300 scale-90
+                    className={`p-5 mt-4 ease-out cursor-pointer hover:scale-95 bg-white shadow-lg rounded-2xl text-center transition-transform duration-300 scale-90
                     `}
                   >
                     {career.imageUrl ? (
