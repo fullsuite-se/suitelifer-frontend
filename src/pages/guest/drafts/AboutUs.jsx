@@ -93,7 +93,7 @@ const AboutUs = () => {
               for startups. Maggie, alongside her co-founders, envisioned that
               instead of piecemeal services, FullSuite will offer an end-to-end
               approach that helps venture-backed startups handle critical data
-              operational functions—especially the ones their AI systems can’t
+              operational functions—especially the ones their AI systems can't
               yet automate.
             </p>
             <p className="text-body">
