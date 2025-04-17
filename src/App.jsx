@@ -18,6 +18,7 @@ import BlogDetails from "./pages/guest/BlogDetails";
 import NewsDetails from "./pages/guest/NewsDetails";
 import ApplicationForm from "./pages/guest/ApplicationForm";
 import CongratsApplicationForm from "./pages/guest/CongratsApplicationForm";
+import PageNotFound from "./pages/guest/PageNotFound";
 
 // Regular Pages
 import EmployeeBlogsFeed from "./pages/employee/EmployeeBlogsFeed";
@@ -92,6 +93,9 @@ function App() {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-use" element={<TermsOfUse />} />
           <Route path="/reset-password" element={<PasswordReset />} />
+          <Route path="/page-not-found" element={<PageNotFound />} />
+  <Route path="*" element={<Navigate to="/page-not-found" replace />} />
+
 
           {/* Routes that are avaialable to admins and employees (guest) */}
           <Route element={<ProtectedRoutes />}>
