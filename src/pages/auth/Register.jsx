@@ -34,13 +34,14 @@ const Form = () => {
     setValue(value);
   };
 
-  const submitRegistration = async () => {
+  const submitRegistration = async (recaptchaToken) => {
     const response = await api.post("/api/register", {
       workEmail,
       password,
       firstName,
       middleName,
       lastName,
+      recaptchaToken,
     });
     return response;
   };
@@ -72,19 +73,10 @@ const Form = () => {
       );
       return;
     }
-
-    const recaptchaToken = await executeRecaptcha("login");
-    const recaptcha = await api.post("/api/verify-recaptcha", {
-      recaptchaToken: recaptchaToken,
-    });
-    if (recaptcha.status !== 200) {
-      toast.error(recaptcha.data.message);
-      return;
-    }
-
     try {
       setLoading(true);
-      const responseRegister = await submitRegistration();
+      const recaptchaToken = await executeRecaptcha("register");
+      const responseRegister = await submitRegistration(recaptchaToken);
       const data = responseRegister.data;
       if (data.isSuccess) {
         const userId = data.userId;
@@ -238,7 +230,10 @@ const Register = () => {
           <Form />
           <p className="text-center">
             <span className="text-gray-400">Already have an account? </span>
-            <Link className="text-primary cursor-pointer no-underline hover:underline!" to={"/login"}>
+            <Link
+              className="text-primary cursor-pointer no-underline hover:underline!"
+              to={"/login"}
+            >
               Log in
             </Link>
           </p>

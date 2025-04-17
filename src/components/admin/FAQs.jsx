@@ -16,11 +16,16 @@ import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-mod
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
 import ContentButtons from "./ContentButtons";
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import {
+  PlusCircleIcon,
+  PencilIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import api from "../../utils/axios";
 
 import { useStore } from "../../store/authStore";
 import toast from "react-hot-toast";
+import ActionButtons from "./ActionButtons";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -129,7 +134,6 @@ function FAQs() {
   const handleFaqDetailsChange = (e) => {
     setCurrentFAQ((td) => ({ ...td, [e.target.name]: e.target.value }));
     console.log(currentFAQ);
-    // console.log(imageFile);
   };
 
   return (
@@ -206,13 +210,15 @@ function FAQs() {
               flex: 1,
               headerClass: "text-primary font-bold bg-gray-100",
               cellRenderer: (params) => (
-                <div className="flex gap-2">
-                  <IconButton onClick={() => handleEdit(params.data)}>
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton onClick={() => handleDelete(params.data.faq_id)}>
-                    <DeleteIcon />
-                  </IconButton>
+                <div className="flex">
+                  <ActionButtons
+                    icon={<PencilIcon className="size-5 cursor-pointer" />}
+                    handleClick={() => handleEdit(params.data)} 
+                  />
+                  <ActionButtons
+                    icon={<TrashIcon className="size-5 cursor-pointer" />}
+                    handleClick={() => handleDelete(params.data.faq_id)}
+                  />
                 </div>
               ),
             },

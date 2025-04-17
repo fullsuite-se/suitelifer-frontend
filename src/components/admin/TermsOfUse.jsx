@@ -17,7 +17,12 @@ import "@ag-grid-community/styles/ag-theme-quartz.css";
 import { showConfirmationToast } from "../toasts/confirm";
 import { ModalDeleteConfirmation } from "../modals/ModalDeleteConfirmation";
 import ContentButtons from "./ContentButtons";
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import {
+  PlusCircleIcon,
+  TrashIcon,
+  PencilIcon,
+} from "@heroicons/react/24/outline";
+import ActionButtons from "./ActionButtons";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -142,15 +147,15 @@ function TermsOfUse() {
                 flex: 1,
                 headerClass: "text-primary font-bold bg-gray-100",
                 cellRenderer: (params) => (
-                  <div className="flex gap-2">
-                    <IconButton onClick={() => handleEdit(params.data)}>
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      onClick={() => handleDeleteClick(params.data.termsId)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
+                  <div className="flex">
+                    <ActionButtons
+                      icon={<PencilIcon className="size-5" />}
+                      handleClick={() => handleEdit(params.data)}
+                    />
+                    <ActionButtons
+                      icon={<TrashIcon className="size-5" />}
+                      handleClick={() => handleDeleteClick(params.data.termsId)}
+                    />
                   </div>
                 ),
               },

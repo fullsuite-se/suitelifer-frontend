@@ -4,10 +4,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  IconButton,
 } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { ModuleRegistry } from "@ag-grid-community/core";
 import { AgGridReact } from "@ag-grid-community/react";
@@ -15,7 +12,12 @@ import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
 import Filter from "./NewsletterFilter";
 import ContentButtons from "./ContentButtons";
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import {
+  PlusCircleIcon,
+  PencilIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
+import ActionButtons from "./ActionButtons";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -210,13 +212,15 @@ function NewsArticle() {
               field: "action",
               flex: 1,
               cellRenderer: (params) => (
-                <div className="flex gap-2">
-                  <IconButton onClick={() => handleEdit(params.data)}>
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton onClick={() => handleDelete(params.data.newsId)}>
-                    <DeleteIcon />
-                  </IconButton>
+                <div className="flex">
+                  <ActionButtons
+                    icon={<PencilIcon className="size-5 cursor-pointer" />}
+                    handleClick={handleEdit}
+                  />
+                  <ActionButtons
+                    icon={<TrashIcon className="size-5 cursor-pointer" />}
+                    handleClick={handleDelete}
+                  />
                 </div>
               ),
             },

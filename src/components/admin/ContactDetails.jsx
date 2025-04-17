@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { EyeIcon, BookmarkSquareIcon } from "@heroicons/react/24/outline";
+import ContentButtons from "./ContentButtons";
 import api from "../../utils/axios";
 import toast from "react-hot-toast";
 import { useStore } from "../../store/authStore";
-import ContentButtons from "./ContentButtons";
 
 const ContactDetails = () => {
   const user = useStore((state) => state.user);
@@ -111,7 +111,7 @@ const ContactDetails = () => {
           />
         </div>
       ))}
-
+      
       <div className="flex justify-end gap-2 mt-6">
         <ContentButtons
           icon={<BookmarkSquareIcon className="size-5" />}

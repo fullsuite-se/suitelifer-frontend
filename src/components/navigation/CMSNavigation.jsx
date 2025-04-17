@@ -4,21 +4,19 @@ import { useStore } from "../../store/authStore";
 import { ModalLogout } from "../modals/ModalLogout";
 import fullsuitelogo from "../../assets/logos/logo-fs-full.svg";
 import {
-  ChartBarIcon,
-  ChatBubbleBottomCenterTextIcon,
   NewspaperIcon,
   CalendarIcon,
   Bars3BottomLeftIcon,
   ArrowRightCircleIcon,
-  BriefcaseIcon,
   Square2StackIcon,
   WrenchScrewdriverIcon,
   ClipboardIcon,
-  UserIcon,
   ArrowPathRoundedSquareIcon,
   ChevronDownIcon,
   BookOpenIcon,
   FaceSmileIcon,
+  UsersIcon,
+  ArrowDownOnSquareIcon,
 } from "@heroicons/react/20/solid";
 import {
   Disclosure,
@@ -27,17 +25,6 @@ import {
 } from "@headlessui/react";
 import SidebarCollapse from "../../assets/icons/SidebarCollapse";
 import { useEffect } from "react";
-
-const iconMap = {
-  dashboard: { default: ChartBarIcon },
-  joblistings: { default: BriefcaseIcon },
-  blogs: { default: ChatBubbleBottomCenterTextIcon },
-  news: { default: NewspaperIcon },
-  events: { default: CalendarIcon },
-  contents: { default: Bars3BottomLeftIcon },
-  courses: { default: BookOpenIcon },
-  personalitytest: { default: FaceSmileIcon },
-};
 
 const regularFeatures = [
   { feature_name: "Blogs Feed", path: "blogs-feed", icon: NewspaperIcon },
@@ -52,7 +39,7 @@ const regularFeatures = [
   {
     feature_name: "Personality Test",
     path: "personality-test",
-    icon: UserIcon,
+    icon: FaceSmileIcon,
   },
 ];
 
@@ -63,7 +50,7 @@ const adminFeatures = [
   { feature_name: "Courses", path: "courses", icon: BookOpenIcon },
   {
     feature_name: "Personality Test",
-    path: "personalitytest",
+    path: "personality-test",
     icon: FaceSmileIcon,
   },
 ];
@@ -72,7 +59,7 @@ const superAdminFeatures = [
   {
     feature_name: "Accounts",
     path: "accounts-management",
-    icon: Bars3BottomLeftIcon,
+    icon: UsersIcon,
   },
 ];
 
@@ -148,6 +135,36 @@ const CMSNavigation = () => {
     }
   };
 
+  const displayFeatures = (features, prefixPath) => {
+    return features.map((service, index) => (
+      <li key={index}>
+        <NavLink
+          to={`${prefixPath}/${service.path}`}
+          className={({ isActive }) =>
+            isActive
+              ? `bg-primary text-white transition-none p-3 rounded-lg flex items-center gap-3 no-underline ${
+                  !isCollapse ? "w-full" : "w-min"
+                }`
+              : `bg-white text-primary transition-none p-3 rounded-lg flex items-center gap-3 no-underline hover:bg-blue-50 ${
+                  !isCollapse ? "w-full" : "w-min"
+                }`
+          }
+        >
+          {service ? (
+            <service.icon className="size-4 group-hover:hidden" />
+          ) : (
+            <Square2StackIcon className="size-4 group-hover:hidden" />
+          )}
+          {!isCollapse && (
+            <span className="no-underline! truncate font-avenir-black">
+              {service.feature_name}
+            </span>
+          )}
+        </NavLink>
+      </li>
+    ));
+  };
+
   if (isLoading) return null;
 
   return (
@@ -192,35 +209,7 @@ const CMSNavigation = () => {
         </section>
         <section className=" flex-1 ">
           <ul className="list-none!">
-            {regularFeatures.map((service, index) => {
-              return (
-                <li key={index}>
-                  <NavLink
-                    to={`/app/${service.path}`}
-                    className={({ isActive }) =>
-                      isActive
-                        ? `bg-primary text-white transition-none p-3 rounded-lg flex items-center gap-3 no-underline ${
-                            !isCollapse ? "w-full" : "w-min"
-                          }`
-                        : `bg-white text-primary transition-none p-3 rounded-lg flex items-center gap-3 no-underline hover:bg-blue-50 ${
-                            !isCollapse ? "w-full" : "w-min"
-                          }`
-                    }
-                  >
-                    {service ? (
-                      <service.icon className="size-4 group-hover:hidden" />
-                    ) : (
-                      <Square2StackIcon className="size-4 group-hover:hidden" />
-                    )}
-                    {!isCollapse && (
-                      <span className="no-underline! truncate font-avenir-black">
-                        {service.feature_name}
-                      </span>
-                    )}
-                  </NavLink>
-                </li>
-              );
-            })}
+            {displayFeatures(regularFeatures, "/app")}
             {user.role === "ADMIN" && (
               <Disclosure as="div" defaultOpen={showTool}>
                 <DisclosureButton
@@ -237,37 +226,7 @@ const CMSNavigation = () => {
                 <DisclosurePanel
                   className={`${!isCollapse && "ml-5"} mt-1 flex flex-col`}
                 >
-                  {adminFeatures.map((feature, index) => {
-                    const icons = iconMap[feature.path] || null;
-                    return (
-                      <li key={index}>
-                        <NavLink
-                          key={feature.path}
-                          to={`/app/${feature.path}`}
-                          className={({ isActive }) =>
-                            isActive
-                              ? `bg-primary text-white transition-none p-3 rounded-lg flex items-center gap-3 no-underline ${
-                                  !isCollapse ? "w-full" : "w-min"
-                                }`
-                              : `bg-white text-primary transition-none p-3 rounded-lg flex items-center gap-3 no-underline hover:bg-blue-50 ${
-                                  !isCollapse ? "w-full" : "w-min"
-                                }`
-                          }
-                        >
-                          {icons ? (
-                            <icons.default className="size-4 group-hover:hidden" />
-                          ) : (
-                            <Square2StackIcon className="size-4 group-hover:hidden" />
-                          )}
-                          {!isCollapse && (
-                            <span className="no-underline! font-avenir-black">
-                              {feature.feature_name}
-                            </span>
-                          )}
-                        </NavLink>
-                      </li>
-                    );
-                  })}
+                  {displayFeatures(adminFeatures, "/app/admin-tools")}
                 </DisclosurePanel>
               </Disclosure>
             )}
@@ -287,37 +246,10 @@ const CMSNavigation = () => {
                 <DisclosurePanel
                   className={`${!isCollapse && "ml-5"} mt-1 flex flex-col`}
                 >
-                  {superAdminFeatures.map((feature, index) => {
-                    const icons = iconMap[feature.path] || null;
-                    return (
-                      <li key={index}>
-                        <NavLink
-                          key={feature.path}
-                          to={`/app/${feature.path}`}
-                          className={({ isActive }) =>
-                            isActive
-                              ? `bg-primary text-white transition-none p-3 rounded-lg flex items-center gap-3 no-underline ${
-                                  !isCollapse ? "w-full" : "w-min"
-                                }`
-                              : `bg-white text-primary transition-none p-3 rounded-lg flex items-center gap-3 no-underline hover:bg-blue-50 ${
-                                  !isCollapse ? "w-full" : "w-min"
-                                }`
-                          }
-                        >
-                          {icons ? (
-                            <icons.default className="size-4 group-hover:hidden" />
-                          ) : (
-                            <Square2StackIcon className="size-4 group-hover:hidden" />
-                          )}
-                          {!isCollapse && (
-                            <span className="no-underline! font-avenir-black">
-                              {feature.feature_name}
-                            </span>
-                          )}
-                        </NavLink>
-                      </li>
-                    );
-                  })}
+                  {displayFeatures(
+                    [...superAdminFeatures, ...adminFeatures],
+                    "/app/admin-tools"
+                  )}
                 </DisclosurePanel>
               </Disclosure>
             )}
@@ -325,17 +257,6 @@ const CMSNavigation = () => {
         </section>
 
         <section className="p-5 py-7 flex flex-col gap-4">
-          {showInstallPrompt && (
-            <div className="mx-auto">
-              <button
-                className="bg-primary text-sm px-3 py-1 rounded-md text-white cursor-pointer"
-                onClick={handleInstallClick}
-              >
-                Install App
-              </button>
-            </div>
-          )}
-
           <div className="flex justify-between">
             {!isCollapse && (
               <img
@@ -344,12 +265,19 @@ const CMSNavigation = () => {
                 className="w-20 h-auto"
               />
             )}
-            <button
-              className=" cursor-pointer"
-              onClick={() => setIsOpenModal(true)}
-            >
-              <ArrowRightCircleIcon className="w-6 h-6 text-primary" />
-            </button>
+            <div className="flex items-start justify-center gap-2">
+              <button
+                className="cursor-pointer"
+                onClick={() => setIsOpenModal(true)}
+              >
+                <ArrowRightCircleIcon className="w-6 h-7 text-primary" />
+              </button>
+              {showInstallPrompt && (
+                <button className="cursor-pointer" onClick={handleInstallClick}>
+                  <ArrowDownOnSquareIcon className="w-6 h-6 text-primary" />
+                </button>
+              )}
+            </div>
           </div>
         </section>
       </nav>
