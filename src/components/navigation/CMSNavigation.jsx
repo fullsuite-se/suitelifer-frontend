@@ -63,7 +63,7 @@ const adminFeatures = [
   { feature_name: "Courses", path: "courses", icon: BookOpenIcon },
   {
     feature_name: "Personality Test",
-    path: "personalitytest",
+    path: "personality-test",
     icon: FaceSmileIcon,
   },
 ];
@@ -243,7 +243,7 @@ const CMSNavigation = () => {
                       <li key={index}>
                         <NavLink
                           key={feature.path}
-                          to={`/app/${feature.path}`}
+                          to={`/app/admin-tools/${feature.path}`}
                           className={({ isActive }) =>
                             isActive
                               ? `bg-primary text-white transition-none p-3 rounded-lg flex items-center gap-3 no-underline ${
@@ -293,7 +293,7 @@ const CMSNavigation = () => {
                       <li key={index}>
                         <NavLink
                           key={feature.path}
-                          to={`/app/${feature.path}`}
+                          to={`/app/admin-tools/${feature.path}`}
                           className={({ isActive }) =>
                             isActive
                               ? `bg-primary text-white transition-none p-3 rounded-lg flex items-center gap-3 no-underline ${
