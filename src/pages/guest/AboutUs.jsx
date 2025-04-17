@@ -6,6 +6,7 @@ import api from "../../utils/axios";
 import CoreValueCard from "../../components/about-us/CoreValueCard";
 import maggie from "../../assets/images/maggie-cutout-circle.png";
 import aboutBanner from "../../assets/images/about-banner.webp";
+import aboutBannerShadow from "../../assets/images/in-action-about-us.png";
 import theSuiteliferValues from "../../assets/images/the-suitelifer-values.webp";
 import ourStoryText from "../../assets/images/our-story-text.webp";
 import imgMission from "../../assets/images/imgMission.svg";
@@ -23,6 +24,7 @@ import PageMeta from "../../components/layout/PageMeta";
 import Footer from "../../components/Footer";
 import MissionVision from "../../components/about-us/MissionVision";
 import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
+import Skeleton from "react-loading-skeleton";
 
 const AboutUs = () => {
   const [aboutContent, setAboutContent] = useState({});
@@ -84,23 +86,37 @@ const AboutUs = () => {
       </div>
       <main className="lg:mt-20 overflow-hidden">
         {isLoading ? (
-          <div className="mt-30 mx-auto w-min">
-            <TwoCirclesLoader
-              bg="transparent"
-              color1="#bfd1a0"
-              color2="#0097b2"
-              height={30}
-              width={40}
-            />
-          </div>
+          <>
+            <div className="md:mt-100 lg:mt-30" />
+            <div className="relative w-full flex justify-center h-[100%] items-end mt-20">
+              <Skeleton
+                className="absolute bottom-0 lg:bottom-30 xl:bottom-5 w-full lg:w-[80%] h-full md:h-[900px] lg:h-[500px] xl:h-[840px] object-cover object-top"
+                style={{
+                  maskImage:
+                    "linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0))",
+                  maskSize: "100% 100%",
+                }}
+              />
+
+              <div className="relative z-10 flex flex-col items-center gap-30 lg:flex-row p-1 md:p-10 md:!pb-0 md:gap-5 lg:gap-10">
+                <Skeleton
+                  count={2}
+                  className="w-[280px] md:w-[500px] lg:w-[600px] h-[30px] md:h-[40px] lg:h-[50px] mb-4"
+                />
+
+                <Skeleton className="w-[200px] md:w-[300px] lg:w-[400px] xl:w-[500px] h-[250px] md:h-[350px] lg:h-[450px] xl:h-[700px]" />
+              </div>
+            </div>
+          </>
         ) : (
           <>
-            {" "}
+            <div className=" md:mt-100 lg:mt-30"></div>
             <div className="relative w-full flex justify-center h-[100%] items-end mt-20">
               <img
-                src={aboutBanner}
+                src={aboutBannerShadow}
                 alt="background banner"
-                className="absolute bottom-0 h-full md:h-[600px] object-cover opacity-10 lg:h-[580px] lg:-right-20 xl:h-[840px] xl:-right-20"
+                className="filter grayscale absolute bottom-0 lg:bottom-30 xl:bottom-5 w-full lg:w-[80%]  h-full md:h-[900px] object-cover object-top opacity-100 lg:h-[500px] lg:right-0 xl:h-[840px] 
+[mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.2),rgba(0,0,0,0))] [mask-size:100%_100%]"
               />
 
               <div className="relative z-10 flex flex-col items-center gap-30 lg:flex-row p-1 md:p-10 md:!pb-0 md:gap-5 lg:gap-10">
@@ -129,7 +145,8 @@ const AboutUs = () => {
                     })
                   ) : (
                     <span>
-                      ABOUT <span className="text-primary">US</span>
+                      Welcome to <span className="text-primary">FullSuite</span>
+                      , where passion meets limitless possibilities
                     </span>
                   )}
                 </p>

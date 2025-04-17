@@ -177,8 +177,7 @@ const Home = () => {
         <MotionUp>
           <div className="text-center text-white px-7 xl:px-17">
             <p className="text-h4 font-avenir-black">
-            Take the <span className="text-secondary">next step</span> in your career journey
-              Here
+            Take the <span className="text-secondary">next step</span> in your career journey here
             </p>
             <p className="text-small">
               Explore diverse industries and career paths—find the perfect fit
