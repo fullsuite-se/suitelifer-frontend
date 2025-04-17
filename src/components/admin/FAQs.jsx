@@ -134,7 +134,6 @@ function FAQs() {
   const handleFaqDetailsChange = (e) => {
     setCurrentFAQ((td) => ({ ...td, [e.target.name]: e.target.value }));
     console.log(currentFAQ);
-    // console.log(imageFile);
   };
 
   return (
@@ -214,11 +213,11 @@ function FAQs() {
                 <div className="flex">
                   <ActionButtons
                     icon={<PencilIcon className="size-5 cursor-pointer" />}
-                    handleClick={handleEdit}
+                    handleClick={() => handleEdit(params.data)} 
                   />
                   <ActionButtons
                     icon={<TrashIcon className="size-5 cursor-pointer" />}
-                    handleClick={handleDelete}
+                    handleClick={() => handleDelete(params.data.faq_id)}
                   />
                 </div>
               ),
