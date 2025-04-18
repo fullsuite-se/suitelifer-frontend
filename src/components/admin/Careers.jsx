@@ -20,12 +20,14 @@ function Careers() {
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
 
+  //This will contain the attached images
   const [files, setFiles] = useState({
     careersMainImage: null,
     careersLeftImage: null,
     careersRightImage: null,
   });
 
+  //This will contain cloudinary image URLs
   const defaultCareerImages = {
     careersLeftImage: "",
     careersMainImage: "",
@@ -48,7 +50,7 @@ function Careers() {
   const handleUpdateCareerImages = async (event) => {
     setIsLoading(true);
     event.preventDefault();
-    let responseOfLeftImage;
+    let response;
     try {
       if (files.careersLeftImage !== null) {
         const formData = new FormData();
@@ -65,14 +67,48 @@ function Careers() {
         // Set cloudinary image url to career image
         careerImages.careersLeftImage = uploadResponse.data.imageUrl;
         console.log(uploadResponse.data.imageUrl);
-
-        //update db
-        responseOfLeftImage = await api.patch("/api/content/careers", {
-          ...careerImages,
-          userId: user.id,
-        });
-        console.log(responseOfLeftImage);
       }
+
+      if (files.careersMainImage !== null) {
+        const formData = new FormData();
+        formData.append("file", files.careersMainImage);
+        console.log("Uploading main image");
+        const uploadResponse = await api.post(
+          "/api/upload-image/careers",
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
+
+        // Set cloudinary image url to career image
+        careerImages.careersMainImage = uploadResponse.data.imageUrl;
+        console.log(uploadResponse.data.imageUrl);
+      }
+
+      if (files.careersRightImage !== null) {
+        const formData = new FormData();
+        formData.append("file", files.careersRightImage);
+        console.log("Uploading right image");
+        const uploadResponse = await api.post(
+          "/api/upload-image/careers",
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
+
+        // Set cloudinary image url to career image
+        careerImages.careersRightImage = uploadResponse.data.imageUrl;
+        console.log(uploadResponse.data.imageUrl);
+      }
+
+      //update db
+      response = await api.patch("/api/content/careers", {
+        ...careerImages,
+        userId: user.id,
+      });
+      console.log(response);
     } catch (e) {
       console.log("Error updating images.", e);
       toast.error("Something went wrong. Please try again later");
@@ -96,7 +132,6 @@ function Careers() {
     try {
       const response = await api.get("/api/content/careers");
       const data = response.data.careersContent;
-      console.log(data);
 
       setCareerImages(data);
     } catch (error) {
@@ -112,7 +147,7 @@ function Careers() {
 
   return (
     <section className={`mb-20`}>
-      {isLoading ? <LoadingAnimation /> : ""}
+      {isLoading ? <LoadingAnimation variant="pulsate" /> : ""}
       <div
         className={`${
           isEditing ? "" : "hidden"
@@ -155,13 +190,19 @@ function Careers() {
                 />
               </div>
 
-              <img
-                className={`${
-                  isFetching ? "hidden" : ""
-                }w-full h-full object-cover`}
-                src={careerImages.careersLeftImage}
-                alt="Left Preview"
-              />
+              {careerImages.careersLeftImage !== "" ? (
+                <img
+                  className={`${
+                    isFetching ? "hidden" : ""
+                  }w-full h-full object-cover`}
+                  src={careerImages.careersLeftImage}
+                  alt="Left Preview"
+                />
+              ) : (
+                <div className="grid p-4 place-content-center w-full h-full">
+                  No image available <br /> Please upload a photo
+                </div>
+              )}
             </div>
           ) : (
             <div className="relative group w-full h-full aspect-3/4 rounded-2xl overflow-hidden cursor-pointer">
@@ -191,7 +232,36 @@ function Careers() {
         </div>
 
         <div className="text-center aspect-3/4 flex justify-center items-center size-[35%] bg-primary/5 border text-primary border-dashed rounded-2xl">
-          {files.careersMainImage !== null ? (
+          {files.careersMainImage === null ? (
+            <div className="relative group w-full h-full aspect-3/4 rounded-2xl overflow-hidden">
+              <div
+                className={`${
+                  isFetching ? "" : "hidden"
+                } w-full h-full grid place-content-center`}
+              >
+                <OrbitProgress
+                  variant="disc"
+                  color="#0097b2"
+                  size="small"
+                  text=""
+                  textColor=""
+                />
+              </div>
+              {careerImages.careersMainImage !== "" ? (
+                <img
+                  className={`${
+                    isFetching ? "hidden" : ""
+                  }w-full h-full object-cover`}
+                  src={careerImages.careersMainImage}
+                  alt="Left Preview"
+                />
+              ) : (
+                <div className="grid p-4 place-content-center w-full h-full">
+                  No image available <br /> Please upload a photo
+                </div>
+              )}
+            </div>
+          ) : (
             <div className="relative group w-full h-full aspect-3/4 rounded-2xl overflow-hidden cursor-pointer">
               <img
                 className="w-full h-full object-cover"
@@ -215,13 +285,40 @@ function Careers() {
                 </div>
               </div>
             </div>
-          ) : (
-            "Main Image Preview"
           )}
         </div>
 
         <div className="text-center aspect-3/4 flex justify-center items-center self-end size-[18%] bg-primary/5 border text-primary border-dashed rounded-2xl">
-          {files.careersRightImage !== null ? (
+        {files.careersRightImage === null ? (
+            <div className="relative group w-full h-full aspect-3/4 rounded-2xl overflow-hidden">
+              <div
+                className={`${
+                  isFetching ? "" : "hidden"
+                } w-full h-full grid place-content-center`}
+              >
+                <OrbitProgress
+                  variant="disc"
+                  color="#0097b2"
+                  size="small"
+                  text=""
+                  textColor=""
+                />
+              </div>
+              {careerImages.careersRightImage !== "" ? (
+                <img
+                  className={`${
+                    isFetching ? "hidden" : ""
+                  }w-full h-full object-cover`}
+                  src={careerImages.careersRightImage}
+                  alt="Left Preview"
+                />
+              ) : (
+                <div className="grid p-4 place-content-center w-full h-full">
+                  No image available <br /> Please upload a photo
+                </div>
+              )}
+            </div>
+          ) : (
             <div className="relative group w-full h-full aspect-3/4 rounded-2xl overflow-hidden cursor-pointer">
               <img
                 className="w-full h-full object-cover"
@@ -245,8 +342,6 @@ function Careers() {
                 </div>
               </div>
             </div>
-          ) : (
-            "Right Image Preview"
           )}
         </div>
       </section>
