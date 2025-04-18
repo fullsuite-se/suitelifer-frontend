@@ -11,18 +11,19 @@ import Footer from "../../components/Footer";
 import { useLocation } from "react-router-dom";
 import DynamicLink from "../../components/buttons/ViewAll";
 import LoadingJobCarousel from "../../components/careers/LoadingJobCarousel";
-
-import careersLeft from "../../assets/images/careers-hero-images/careers-left.png";
-import careersRight from "../../assets/images/careers-hero-images/careers-right.png";
-import careersMain from "../../assets/images/careers-hero-images/careers-main.png";
 import atsAPI from "../../utils/atsAPI";
+import api from "../../utils/axios";
+import Skeleton from "react-loading-skeleton";
 
 const Careers = () => {
-  const heroImages = {
-    careersLeft,
-    careersRight,
-    careersMain,
+  const defaultHeroImages = {
+    careersLeftImage: "",
+    careersMainImage: "",
+    careersRightImage: "",
   };
+
+  const [heroImages, setHeroImages] = useState(defaultHeroImages);
+  const [isHeroLoading, setIsHeroLoading] = useState(true);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -68,7 +69,21 @@ const Careers = () => {
     }
   };
 
+  const fetchHeroImages = async () => {
+    try {
+      const response = await api.get("/api/content/careers");
+      const data = response.data.careersContent;
+      console.log(data);
+
+      setHeroImages(data);
+    } catch (error) {
+      console.log(error);
+    }
+    setIsHeroLoading(false);
+  };
+
   useEffect(() => {
+    fetchHeroImages();
     fetchIndustries();
     fetchJobs();
   }, []);
@@ -122,95 +137,25 @@ const Careers = () => {
                 {/* upper left image MAIN */}
                 <img
                   className="absolute w-[30vw] max-w-[220px] -translate-y-[13vw] -translate-x-[30%] rounded-2xl object-cover aspect-3/4"
-                  src={heroImages.careersLeft}
+                  src={heroImages.careersLeftImage}
                   alt="left hero image"
                 />
                 {/* lower right image MAIN */}
                 <img
                   className="absolute right-0 w-[35vw] translate-y-[30vw] translate-x-[14vw] rounded-2xl object-cover aspect-3/4"
-                  src={heroImages.careersRight}
+                  src={heroImages.careersRightImage}
                   alt="right hero image"
                 />
               </section>
-              {/* TABLET + DESKTOP background images */}
-              <section className="relative hidden md:block mx-auto">
-                {/* left image MAIN */}
-                <div className="hidden relative w-full max-w-[400px] mx-auto">
-                  <img
-                    className="absolute z-10 w-[160px] lg:w-[15vw] max-w-[190px] translate-y-15 -translate-x-[15vw]
-                                rounded-3xl opacity-60 
-                                object-cover aspect-3/4"
-                    src={heroImages.careersLeft}
-                    alt="left hero image"
-                  />
-                </div>
 
-                {/* right image MAIN */}
-                <div className="hidden relative w-full max-w-[400px] mx-auto">
-                  <img
-                    className="right-0 absolute z-10 w-[45%] lg:w-[15vw] max-w-[250px] translate-y-40 lg:translate-y-50 translate-x-[18vw] lg:translate-x-[17vw]
-                                rounded-3xl opacity-60 
-                                object-cover aspect-3/4"
-                    src={heroImages.careersRight}
-                    alt="right hero image"
-                  />
-                </div>
+              <section className={`${isHeroLoading ? '' : 'hidden'} relative md:hidden`}>
+                {/* upper left skeleton */}
+                <div className="absolute w-[30vw] max-w-[220px] -translate-y-[13vw] -translate-x-[30%] rounded-2xl bg-gray-200 animate-pulse aspect-3/4"></div>
 
-                {/* upper right image 1 */}
-                {/* <div className="relative w-full max-w-[400px] mx-auto">
-                  <img
-                    className="right-0 top-0 absolute z-10 w-[18vw] max-w-[260px] -translate-y-40 lg:-translate-y-50 translate-x-[7vw]
-                                rounded-b-3xl opacity-100 
-                                object-cover aspect-3/4"
-                    src="https://www.solidbackgrounds.com/images/5120x2880/5120x2880-yellow-orange-solid-color-background.jpg"
-                    alt=""
-                  />
-                </div> */}
-
-                {/* upper right image 2 */}
-                {/* <div className="relative w-full max-w-[400px] mx-auto">
-                  <img
-                    className="right-0 absolute z-10 w-[15vw] max-w-[240px] -translate-y-none translate-x-[18vw] lg:translate-x-[24vw]
-                                rounded-3xl opacity-5 
-                                object-cover aspect-3/4"
-                    src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt=""
-                  />
-                </div> */}
-
-                {/* bottom image 1 */}
-                {/* <div className="relative w-full max-w-[400px] mx-auto">
-                  <img
-                    className="absolute z-10 w-[15vw] max-w-[200px] translate-y-100 -translate-x-[4vw]
-                                rounded-3xl opacity-10 
-                                object-cover aspect-3/4"
-                    src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt=""
-                  />
-                </div> */}
-
-                {/* bottom image right 2 */}
-                {/* <div className="relative w-full max-w-[400px] mx-auto">
-                  <img
-                    className="absolute right-0 z-10 w-[15vw] max-w-[200px] translate-y-85 translate-x-[4vw]
-                                rounded-3xl opacity-50 
-                                object-cover aspect-3/4"
-                    src="https://www.solidbackgrounds.com/images/5120x2880/5120x2880-yellow-orange-solid-color-background.jpg"
-                    alt=""
-                  />
-                </div> */}
-
-                {/* bottom image leftest 2 */}
-                {/* <div className="relative w-full max-w-[400px] mx-auto">
-                  <img
-                    className="absolute z-10 w-[15vw] max-w-[280px] translate-y-65 -translate-x-[24vw]
-                                rounded-3xl opacity-30 
-                                object-cover aspect-3/4"
-                    src="https://www.solidbackgrounds.com/images/5120x2880/5120x2880-yellow-orange-solid-color-background.jpg"
-                    alt=""
-                  />
-                </div> */}
+                {/* lower right skeleton */}
+                <div className="absolute right-0 w-[35vw] translate-y-[30vw] translate-x-[14vw] rounded-2xl bg-gray-200 animate-pulse aspect-3/4"></div>
               </section>
+
               <div className="relative flex justify-center md:py-4 md:gap-10">
                 <div className="">
                   <div className="absolute right-0">
@@ -239,23 +184,37 @@ const Careers = () => {
                 </div>
 
                 {/* Left Image */}
-                <img
-                  className="hidden md:block size-[18%] z-20 xl:max-w-[200px] object-cover aspect-3/4 rounded-2xl md:rounded-2xl"
-                  src={heroImages.careersLeft}
-                  alt="left hero image"
-                />
-                {/* Main Image (CENTER) */}
-                <img
-                  className="size-[40%] md:size-[35%] z-20 max-w-[350px] xl:max-w-[380px] object-cover aspect-3/4 rounded-2xl md:rounded-4xl"
-                  src={heroImages.careersMain}
-                  alt="main hero image"
-                />
-                {/* Right Image */}
-                <img
-                  className="hidden md:block self-end z-20 size-[20%] xl:max-w-[220px] object-cover aspect-3/4 rounded-2xl md:rounded-2xl"
-                  src={heroImages.careersRight}
-                  alt="right hero image"
-                />
+                {heroImages.careersLeftImage && (
+                  <>
+                    <img
+                      className="hidden md:block size-[18%] z-20 xl:max-w-[200px] object-cover aspect-3/4 rounded-2xl md:rounded-2xl"
+                      src={heroImages.careersLeftImage}
+                      alt="left hero image"
+                    />
+                    {/* Main Image (CENTER) */}
+                    <img
+                      className="size-[40%] md:size-[35%] z-20 max-w-[350px] xl:max-w-[380px] object-cover aspect-3/4 rounded-2xl md:rounded-4xl"
+                      src={heroImages.careersMainImage}
+                      alt="main hero image"
+                    />
+                    {/* Right Image */}
+                    <img
+                      className="hidden md:block self-end z-20 size-[20%] xl:max-w-[220px] object-cover aspect-3/4 rounded-2xl md:rounded-2xl"
+                      src={heroImages.careersRightImage}
+                      alt="right hero image"
+                    />
+                  </>
+                )}
+              </div>
+              <div className={`${isHeroLoading ? '' : 'hidden'} relative flex justify-center md:py-4 md:gap-10`}>
+                {/* Left Skeleton (only shown on md and up) */}
+                <div className="hidden md:block size-[18%] xl:max-w-[200px] rounded-2xl bg-gray-200 animate-pulse aspect-3/4"></div>
+
+                {/* Center Skeleton */}
+                <div className="size-[40%] md:size-[35%] max-w-[350px] xl:max-w-[380px] rounded-2xl md:rounded-4xl bg-gray-200 animate-pulse aspect-3/4"></div>
+
+                {/* Right Skeleton (only shown on md and up) */}
+                <div className="hidden md:block self-end size-[20%] xl:max-w-[220px] rounded-2xl bg-gray-200 animate-pulse aspect-3/4"></div>
               </div>
               <p className="text-end pr-[5%] xl:-translate-x-[4vw] career-hero-text-desktop font-avenir-black max-w-[1800px] mx-auto">
                 hop on <span className="text-primary">now</span>.
