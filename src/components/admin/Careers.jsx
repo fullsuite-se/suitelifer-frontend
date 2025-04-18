@@ -13,12 +13,18 @@ import {
 import { OrbitProgress } from "react-loading-indicators";
 import toast from "react-hot-toast";
 import LoadingAnimation from "../loader/Loading";
+import ConfirmationDialog from "./ConfirmationDialog";
+
 function Careers() {
   const user = useStore((state) => state.user);
   const [isEditing, setIsEditing] = useState(false);
   const [dataUpdated, setIsDataUpdated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
+  const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
+  const leftInputRef = useRef();
+  const mainInputRef = useRef();
+  const rightInputRef = useRef();
 
   //This will contain the attached images
   const [files, setFiles] = useState({
@@ -114,17 +120,43 @@ function Careers() {
       toast.error("Something went wrong. Please try again later");
     } finally {
       setIsLoading(false);
-      handleCancelBtn();
+      handleDiscard();
     }
   };
 
   const handleCancelBtn = () => {
+    if (
+      files.careersLeftImage !== null ||
+      files.careersMainImage !== null ||
+      files.careersRightImage !== null
+    ) {
+      setIsDiscardModalOpen(true);
+      return;
+    }
     setIsEditing(false);
     setFiles({
       careersMainImage: null,
       careersLeftImage: null,
       careersRightImage: null,
     });
+    setIsDiscardModalOpen(false);
+  };
+
+  const handleDiscard = () => {
+    setFiles({
+      careersLeftImage: null,
+      careersMainImage: null,
+      careersRightImage: null,
+    });
+
+    // Clear file inputs using refs
+    if (leftInputRef.current) leftInputRef.current.value = null;
+    if (mainInputRef.current) mainInputRef.current.value = null;
+    if (rightInputRef.current) rightInputRef.current.value = null;
+
+    setIsDiscardModalOpen(false);
+    setIsEditing(false);
+    // setIsDataUpdated(!dataUpdated);
   };
 
   const fetchData = async () => {
@@ -148,6 +180,17 @@ function Careers() {
   return (
     <section className={`mb-20`}>
       {isLoading ? <LoadingAnimation variant="pulsate" /> : ""}
+      <ConfirmationDialog
+        open={isDiscardModalOpen}
+        onClose={() => setIsDiscardModalOpen(false)}
+        onConfirm={handleDiscard}
+        title="Discard Changes?"
+        description="If you go back now, you will lose any changes you've made."
+        confirmLabel="Discard"
+        cancelLabel="Keep editing"
+        cancelBtnClass="p-2 px-4 cursor-pointer rounded-lg hover:bg-gray-200 duration-500 text-gray-700"
+        confirmBtnClass="p-2 px-4 cursor-pointer rounded-lg bg-red-500 hover:bg-red-600 duration-500 text-white"
+      />
       <div
         className={`${
           isEditing ? "" : "hidden"
@@ -157,18 +200,21 @@ function Careers() {
           image={files.careersLeftImage}
           onImageChange={(e) => handleFileChange(e, "careersLeftImage")}
           name="Left"
+          ref={leftInputRef}
         />
 
         <ImageUploader
           image={files.careersMainImage}
           onImageChange={(e) => handleFileChange(e, "careersMainImage")}
           name="Main"
+          ref={mainInputRef}
         />
 
         <ImageUploader
           image={files.careersRightImage}
           onImageChange={(e) => handleFileChange(e, "careersRightImage")}
           name="Right"
+          ref={rightInputRef}
         />
       </div>
 
@@ -215,6 +261,7 @@ function Careers() {
                     ...f,
                     careersLeftImage: null,
                   }));
+                  if (leftInputRef.current) leftInputRef.current.value = null;
                 }}
               />
 
@@ -271,6 +318,7 @@ function Careers() {
                     ...f,
                     careersMainImage: null,
                   }));
+                  if (mainInputRef.current) mainInputRef.current.value = null;
                 }}
               />
 
@@ -287,7 +335,7 @@ function Careers() {
         </div>
 
         <div className="text-center aspect-3/4 flex justify-center items-center self-end size-[18%] bg-primary/5 border text-primary border-dashed rounded-2xl">
-        {files.careersRightImage === null ? (
+          {files.careersRightImage === null ? (
             <div className="relative group w-full h-full aspect-3/4 rounded-2xl overflow-hidden">
               <div
                 className={`${
@@ -327,6 +375,7 @@ function Careers() {
                     ...f,
                     careersRightImage: null,
                   }));
+                  if (rightInputRef.current) rightInputRef.current.value = null;
                 }}
               />
 
