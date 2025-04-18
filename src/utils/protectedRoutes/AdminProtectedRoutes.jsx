@@ -9,7 +9,10 @@ const AdminProtectedRoutes = () => {
     const getUser = async () => {
       try {
         const response = await api.get("/api/user-info");
-        if (response?.data?.user?.role === "ADMIN") {
+        if (
+          response?.data?.user?.role === "ADMIN" ||
+          response?.data?.user?.role === "SUPER ADMIN"
+        ) {
           setIsAdmin(true);
         }
       } catch (error) {
