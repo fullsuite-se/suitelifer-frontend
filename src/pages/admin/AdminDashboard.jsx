@@ -151,50 +151,7 @@ const AdminDashboard = () => {
     <div className="max-h-100vh">
       {/* Header */}
 
-      <section className="mt-3 mb-4 grid grid-cols-4 grid-rows-[7rem] [&>*]:bg-gray-100 [&>*]:border [&>*]:border-gray-200 gap-4">
-        <div
-          className="rounded-md grid place-content-center cursor-pointer"
-          // onClick={() =>
-          //   handleDataChange(
-          //     employeesData,
-          //     "Total Employee Accounts",
-          //     "#0097b2"
-          //   )
-          // }
-        >
-          <span className="text-3xl text-center">52</span>
-          <div className="text-sm text-gray-500 text-center">
-            Active Employee
-          </div>
-        </div>
-        <div
-          className="rounded-md grid place-content-center cursor-pointer"
-          // onClick={() =>
-          //   handleDataChange(applicationsData, "Total Applications", "#0097b2")
-          // }
-        >
-          <span className="text-3xl text-center">{totalApplications}</span>
-          <div className="text-sm text-gray-500 text-center">Applications</div>
-        </div>
-        <div
-          className="rounded-md grid place-content-center cursor-pointer"
-          // onClick={() =>
-          //   handleDataChange(openJobsData, "Open Job Listings", "#0097b2")
-          // }
-        >
-          <span className="text-2xl text-center">{openJobs}</span>
-          <div className="text-sm text-gray-500 text-center">Open Jobs</div>
-        </div>
-        <div
-          className="rounded-md grid place-content-center cursor-pointer"
-          // onClick={() =>
-          //   handleDataChange(closedJobsData, "Closed Job Listings", "#0097b2")
-          // }
-        >
-          <span className="text-2xl text-center">{closedJobs}</span>
-          <div className="text-sm text-gray-500 text-center">Closed Jobs</div>
-        </div>
-      </section>
+     
 
       {/* Chart Display */}
 
