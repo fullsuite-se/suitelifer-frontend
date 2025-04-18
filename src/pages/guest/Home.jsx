@@ -79,6 +79,7 @@ const Home = () => {
 
   const [homeContent, setHomeContent] = useState({
     kickstartVideo: "",
+    getInTouchImage: "",
   });
 
   const fetchHomeContent = async () => {
@@ -134,7 +135,8 @@ const Home = () => {
           <div className="title relative">
             <div>
               <span className="title-line-1">We can help.</span>
-            </div> <br />
+            </div>{" "}
+            <br />
             <div>
               <span className="title-line-2">
                 <span className="text-white">Let's get you on the</span> <br />
@@ -149,7 +151,7 @@ const Home = () => {
       </section>
 
       {/* GOAL AND OPERATIONS */}
-      <HomeGoalsOperations />
+      <HomeGoalsOperations getInTouchImage={homeContent.getInTouchImage} />
 
       <section className="px-5 xl:px-17 pb-[5%]">
         <MotionUp>
@@ -177,7 +179,8 @@ const Home = () => {
         <MotionUp>
           <div className="text-center text-white px-7 xl:px-17">
             <p className="text-h4 font-avenir-black">
-            Take the <span className="text-secondary">next step</span> in your career journey here
+              Take the <span className="text-secondary">next step</span> in your
+              career journey here
             </p>
             <p className="text-small">
               Explore diverse industries and career paths—find the perfect fit
