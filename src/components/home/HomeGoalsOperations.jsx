@@ -8,7 +8,7 @@ const HomeGoalsOperations = () => {
         <div className="w-[45%] h-[0.25vh] bg-primary"></div>
       </div>
       <MotionUp className="p-10 md:px-40 md:py-20 lg:!p-0">
-        <div className="relative max-w-[1300px]">
+        <div className="relative max-w-[1500px]">
           {" "}
           <img
             src={homeIntroImg}
