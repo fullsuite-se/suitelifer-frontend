@@ -1,4 +1,4 @@
-import homeIntroImg from "../../assets/images/home-img.jpg";
+import homeIntroImg from "../../assets/images/home-hero.jpg";
 import MotionUp from "../MotionUp";
 const HomeGoalsOperations = () => {
   return (<>
@@ -8,7 +8,7 @@ const HomeGoalsOperations = () => {
         <div className="w-[45%] h-[0.25vh] bg-primary"></div>
       </div>
       <MotionUp className="p-10 md:px-40 md:py-20 lg:!p-0">
-        <div className="relative max-w-[1500px]">
+        <div className="relative max-w-[1700px]">
           {" "}
           <img
             src={homeIntroImg}
