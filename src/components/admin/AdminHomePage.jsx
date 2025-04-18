@@ -30,7 +30,6 @@ const AdminHomePage = () => {
   const handlePublishChanges = async () => {
     try {
       if (imageFile !== null) {
-        console.log("mag-uupload pa lang");
 
         const formData = new FormData();
         formData.append("file", imageFile);
@@ -42,11 +41,6 @@ const AdminHomePage = () => {
             headers: { "Content-Type": "multipart/form-data" },
           }
         );
-
-        console.log("na-upload na");
-        console.log("database na next");
-
-        console.log(uploadResponse);
 
         homeDetails.getInTouchImage = uploadResponse.data.imageUrl;
       }
