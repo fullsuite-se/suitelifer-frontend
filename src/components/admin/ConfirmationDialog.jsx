@@ -15,10 +15,9 @@ const ConfirmationDialog = ({
   description = "This action cannot be undone.",
   confirmLabel = "Confirm",
   cancelLabel = "Cancel",
-  icon = <ExclamationTriangleIcon className="h-12 w-12 text-red-700" />,
+  icon = <ExclamationTriangleIcon className="h-12 w-12 text-red-500" />,
   confirmBtnClass = "btn-primary",
   cancelBtnClass = "btn-light",
-  isDanger = true,
 }) => {
   return (
     <Dialog
@@ -47,21 +46,15 @@ const ConfirmationDialog = ({
         </div>
       </DialogContent>
 
-      <DialogActions className="flex justify-center gap-0 pb-4">
-        <button
-          type="button"
-          className={cancelBtnClass}
-          onClick={onClose}
-        >
-          {cancelLabel}
-        </button>
-        <button
-          type="button"
-          className={confirmBtnClass}
-          onClick={onConfirm}
-        >
-          {confirmLabel}
-        </button>
+      <DialogActions className="">
+        <div className="flex mr-1 mb-1 gap-2">
+          <button type="button" className={cancelBtnClass} onClick={onClose}>
+            {cancelLabel}
+          </button>
+          <button type="button" className={confirmBtnClass} onClick={onConfirm}>
+            {confirmLabel}
+          </button>
+        </div>
       </DialogActions>
     </Dialog>
   );
