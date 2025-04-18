@@ -215,7 +215,6 @@ function Careers() {
                     ...f,
                     careersLeftImage: null,
                   }));
-                  setIsDataUpdated(!dataUpdated);
                 }}
               />
 
@@ -272,7 +271,6 @@ function Careers() {
                     ...f,
                     careersMainImage: null,
                   }));
-                  setIsDataUpdated(!dataUpdated);
                 }}
               />
 
@@ -329,7 +327,6 @@ function Careers() {
                     ...f,
                     careersRightImage: null,
                   }));
-                  setIsDataUpdated(!dataUpdated);
                 }}
               />
 
