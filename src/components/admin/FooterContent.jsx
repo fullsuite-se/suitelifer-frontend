@@ -19,28 +19,30 @@ ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 const FooterContent = () => {
   const [showModal, setShowModal] = useState(false);
-  const [editingFooter, setEditingFooter] = useState(null); 
+  const [editingFooter, setEditingFooter] = useState(null);
   const [rowFooterData, setRowFooterData] = useState([]);
   const user = useStore((state) => state.user);
 
   const [newCert, setNewCert] = useState({
-    certId: null,
-    imageUrl: "",
-    createdBy: user?.id || "Admin",
-    createdAt: new Date().toISOString(),
+    certId: "",
+    certImageUrl: "",
+    createdBy: user.id,
+    createdAt: new Date(),
   });
+
+  console.log(user)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const payload = { ...newCert, userId: user?.id };
-      console.log("payload", payload)
+      const payload = { ...newCert}; 
+      console.log("payload", payload);
       if (newCert.certId) {
-        const response = await api.put("/api/update-cert", payload);
+        const response = await api.put("/api/update-cert", {...payload, userId: user.id});
         toast.success(response.data.message);
 
         const updatedCerts = rowFooterData.map((c) =>
-          c.certId === newCert.certId ? { ...newCert } : c
+          c.certId === newCert.certd ? { ...newCert } : c
         );
         setRowFooterData(updatedCerts);
       } else {
@@ -50,7 +52,7 @@ const FooterContent = () => {
 
         setRowFooterData((prev) => [
           ...prev,
-          { ...newCert, certId: Date.now() }, 
+          { ...newCert, certId: Date.now() },
         ]);
       }
       setShowModal(false);
@@ -63,11 +65,9 @@ const FooterContent = () => {
   const deleteCert = async (certId) => {
     try {
       const response = await api.post("/api/delete-cert", { cert_id: certId });
-
+  
       if (response.status === 200) {
-        setRowFooterData((prev) =>
-          prev.filter((item) => item.certId !== certId)
-        );
+        setRowFooterData((prev) => prev.filter((item) => item.cert_id !== certId));
       } else {
         alert("Failed to delete certificate.");
       }
@@ -76,22 +76,23 @@ const FooterContent = () => {
       alert("Something went wrong while deleting.");
     }
   };
+  
 
   useEffect(() => {
     const fetchCerts = async () => {
       try {
         const response = await api.get("/api/all-cert");
-        console.log("respons" ,response.data)
+        console.log("respons", response.data);
         const result = response.data;
 
         if (response.status === 200) {
           const formatted = result.map((cert) => ({
             ...cert,
             certId: cert.cert_id,
-            imageUrl:
+            certImageUrl:
               cert.cert_img_url ||
               "https://png.pngtree.com/png-vector/20210604/ourmid/pngtree-gray-network-placeholder-png-image_3416659.jpg",
-            createdBy: cert.createdBy || "Unknown",
+            created_by: cert.createdBy || "Unknown",
           }));
           setRowFooterData(formatted);
         } else {
@@ -112,8 +113,8 @@ const FooterContent = () => {
           icon={<PlusCircleIcon className="size-5" />}
           text="Add Certification"
           handleClick={() => {
-            setEditingFooter(null); // Clear out editing state
-            setNewCert({ ...newCert, certId: null }); // Reset new cert fields
+            setEditingFooter(null);
+            setNewCert({ ...newCert, certId: null });
             setShowModal(true);
           }}
         />
@@ -124,7 +125,7 @@ const FooterContent = () => {
           columnDefs={[
             {
               headerName: "Image",
-              field: "imageUrl",
+              field: "certImageUrl",
               flex: 1,
               cellRenderer: (params) =>
                 params.value ? (
@@ -202,9 +203,9 @@ const FooterContent = () => {
             <TextField
               label="Image URL"
               fullWidth
-              value={newCert.imageUrl}
+              value={newCert.certImageUrl}
               onChange={(e) =>
-                setNewCert({ ...newCert, imageUrl: e.target.value })
+                setNewCert({ ...newCert, certImageUrl: e.target.value })
               }
             />
           </div>
