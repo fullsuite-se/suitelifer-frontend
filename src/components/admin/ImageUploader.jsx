@@ -1,7 +1,7 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 
-const ImageUploader = ({ name, image, onImageChange }) => {
+const ImageUploader = forwardRef(({ name, image, onImageChange }, ref) => {
   return (
     <label
       htmlFor={`${name}-upload`}
@@ -9,6 +9,7 @@ const ImageUploader = ({ name, image, onImageChange }) => {
     >
       <input
         type="file"
+        ref={ref}
         id={`${name}-upload`}
         accept=".jpeg,.jpg,.png,.heic"
         className="hidden"
@@ -24,6 +25,6 @@ const ImageUploader = ({ name, image, onImageChange }) => {
       <p className="text-xss -mt-4 text-gray-500">Max: 10MB</p>
     </label>
   );
-};
+});
 
 export default ImageUploader;
