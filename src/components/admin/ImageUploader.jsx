@@ -21,6 +21,7 @@ const ImageUploader = ({ name, image, onImageChange }) => {
           {image ? "Change Image" : `Upload ${name} Image`}
         </h4>
       </div>
+      <p className="text-xss -mt-4 text-gray-500">Max: 10MB</p>
     </label>
   );
 };
