@@ -1,5 +1,4 @@
-import homeIntroImg from "../../assets/images/home-intro-img.webp";
-
+import homeIntroImg from "../../assets/images/home-img.jpg";
 import MotionUp from "../MotionUp";
 const HomeGoalsOperations = () => {
   return (<>
@@ -9,12 +8,12 @@ const HomeGoalsOperations = () => {
         <div className="w-[45%] h-[0.25vh] bg-primary"></div>
       </div>
       <MotionUp className="p-10 md:px-40 md:py-20 lg:!p-0">
-        <div className="relative">
+        <div className="relative max-w-[1300px]">
           {" "}
           <img
             src={homeIntroImg}
             alt="cutout background"
-            className="w-full rounded-xl lg:rounded-r-2xl lg:rounded-l-none  lg:w-[110%]"
+            className="w-full rounded-xl lg:rounded-r-2xl lg:rounded-l-none aspect-square object-cover lg:w-[110%]"
 
           />
           <div className="absolute -z-1 -bottom-5 -right-5 w-[60%] h-[60%] bg-[#FFA91F] rounded-2xl lg:rounded-3xl lg:-bottom-8 lg:-right-8"></div>
