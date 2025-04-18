@@ -371,8 +371,8 @@ function Testimonials() {
             title="Delete Testimonial"
             description="Are you sure you want to delete this testimonial? This action cannot be undone."
             confirmLabel="Delete"
-            cancelBtnClass="p-2 px-4 cursor-pointer rounded-xl hover:bg-gray-200 duration-500 text-gray-700"
-            confirmBtnClass="p-2 px-4 cursor-pointer rounded-xl bg-red-700 hover:bg-red-800 duration-500 text-white"
+            cancelBtnClass="p-2 px-4 cursor-pointer rounded-lg hover:bg-gray-200 duration-500 text-gray-700"
+            confirmBtnClass="p-2 px-4 cursor-pointer rounded-lg bg-red-500 hover:bg-red-600 duration-500 text-white"
           />
         )}
         {isLoading ? (
