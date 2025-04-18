@@ -1,4 +1,5 @@
 import homeIntroImg from "../../assets/images/home-hero.jpg";
+import homeIntroImg2 from "../../assets/images/home-img.jpg";
 import MotionUp from "../MotionUp";
 const HomeGoalsOperations = () => {
   return (<>
