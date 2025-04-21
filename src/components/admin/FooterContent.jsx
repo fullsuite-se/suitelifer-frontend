@@ -45,9 +45,44 @@ const FooterContent = () => {
           c.certId === newCert.certd ? { ...newCert } : c
         );
         setRowFooterData(updatedCerts);
-      } else {
-        const response = await api.post("/api/add-cert", payload);
 
+  const [rowFooterData, setRowFooterData] = useState([]);
+  const user = useStore((state) => state.user);
+
+  // CERTIFICATIONS
+  const [certModalAddEditIsShown, setCertModalAddEditIsShown] = useState(false);
+
+  const defaultCertificationDetails = {
+    certId: null,
+    certImageUrl: "",
+  };
+
+  const [certificationDetails, setCertificationDetails] = useState(
+    defaultCertificationDetails
+  );
+
+  const [dataUpdated, setDataUpdated] = useState(false);
+
+  const handleCertificationSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      let response;
+      if (certificationDetails.certId === null) {
+        // ADD CERTIFICATION
+        response = await api.post("/api/certification", {
+          ...certificationDetails,
+          userId: user.id,
+        });
+
+      } else {
+        // EDIT CERTIFICATION
+        response = await api.put("/api/certification", {
+          ...certificationDetails,
+          userId: user.id,
+        });
+      }
+
+      if (response.data.success) {
         toast.success(response.data.message);
 
         setRowFooterData((prev) => [
@@ -55,10 +90,13 @@ const FooterContent = () => {
           { ...newCert, certId: Date.now() },
         ]);
       }
-      setShowModal(false);
     } catch (error) {
       toast.error("Failed to save certificate");
       console.error(error);
+    } finally {
+      setDataUpdated(!dataUpdated);
+      setCertModalAddEditIsShown(false);
+      setCertificationDetails(defaultCertificationDetails);
     }
   };
 
@@ -70,14 +108,21 @@ const FooterContent = () => {
         setRowFooterData((prev) => prev.filter((item) => item.cert_id !== certId));
       } else {
         alert("Failed to delete certificate.");
+      const response = await api.delete("/api/certification", {
+        data: { certId },
+      });
+
+      if (response.data.success) {
+        toast.success(response.data.message);
       }
     } catch (error) {
       console.error("Delete error:", error);
-      alert("Something went wrong while deleting.");
+      toast.error("Error Deleting Certification");
+    } finally {
+      setDataUpdated(!dataUpdated);
     }
   };
   
-
   useEffect(() => {
     const fetchCerts = async () => {
       try {
@@ -102,9 +147,19 @@ const FooterContent = () => {
         console.error("Error fetching certificates:", error);
       }
     };
+  const fetchCerts = async () => {
+    try {
+      const response = await api.get("/api/certification");
 
+      setRowFooterData(response.data.certifications);
+    } catch (error) {
+      console.error("Error fetching certificates:", error);
+    }
+  };
+
+  useEffect(() => {
     fetchCerts();
-  }, []);
+  }, [dataUpdated]);
 
   return (
     <>
@@ -117,6 +172,7 @@ const FooterContent = () => {
             setNewCert({ ...newCert, certId: null });
             setShowModal(true);
           }}
+          handleClick={() => setCertModalAddEditIsShown(true)}
         />
       </div>
       <div className="ag-theme-quartz mt-4" style={{ height: "auto" }}>
@@ -162,9 +218,8 @@ const FooterContent = () => {
                 <div className="flex gap-3">
                   <button
                     onClick={() => {
-                      setEditingFooter(params.data);
-                      setNewCert({ ...params.data });
-                      setShowModal(true);
+                      setCertificationDetails(params.data);
+                      setCertModalAddEditIsShown(true);
                     }}
                   >
                     <PencilIcon className="size-5 text-black" />
@@ -194,28 +249,45 @@ const FooterContent = () => {
         />
       </div>
 
-      <Dialog open={showModal} onClose={() => setShowModal(false)}>
+      <Dialog
+        open={certModalAddEditIsShown}
+        onClose={() => setCertModalAddEditIsShown(false)}
+      >
         <DialogTitle className="text-center">
-          {editingFooter ? "Edit Certificate" : "Add Certificate"}
+          {certificationDetails.certId === null
+            ? "Add Certificate"
+            : "Edit Certificate"}
         </DialogTitle>
         <DialogContent>
           <div className="flex flex-col gap-4 mt-2">
             <TextField
               label="Image URL"
-              fullWidth
               value={newCert.certImageUrl}
               onChange={(e) =>
                 setNewCert({ ...newCert, certImageUrl: e.target.value })
+              name="certImageUrl"
+              value={certificationDetails.certImageUrl}
+              onChange={(e) =>
+                setCertificationDetails({
+                  ...certificationDetails,
+                  [e.target.name]: e.target.value,
+                })
               }
             />
           </div>
 
           <div className="flex justify-end gap-2 mt-6">
-            <button className="btn-light" onClick={() => setShowModal(false)}>
+            <button
+              className="btn-light"
+              onClick={() => {
+                setCertificationDetails(defaultCertificationDetails);
+                setCertModalAddEditIsShown(false);
+              }}
+            >
               Cancel
             </button>
-            <button className="btn-primary" onClick={handleSubmit}>
-              {editingFooter ? "Update" : "Add"}
+            <button className="btn-primary" onClick={handleCertificationSubmit}>
+              {certificationDetails.certId === null ? "Add" : "Update"}
             </button>
           </div>
         </DialogContent>

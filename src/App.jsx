@@ -94,8 +94,7 @@ function App() {
           <Route path="/terms-of-use" element={<TermsOfUse />} />
           <Route path="/reset-password" element={<PasswordReset />} />
           <Route path="/page-not-found" element={<PageNotFound />} />
-  <Route path="*" element={<Navigate to="/page-not-found" replace />} />
-
+          <Route path="*" element={<Navigate to="/page-not-found" replace />} />
 
           {/* Routes that are avaialable to admins and employees (guest) */}
           <Route element={<ProtectedRoutes />}>
@@ -129,27 +128,14 @@ function App() {
                 <Route path="contents" element={<AdminContents />} />
                 <Route path="courses" element={<JobCourse />} />
                 <Route path="personality-test" element={<PersonalityTest />} />
-              </Route>
 
-              {/* Super Admin Protected Routes */}
-              <Route path="admin-tools" element={<SuperAdminProtectedRoutes />}>
-                <Route
-                  index
-                  element={<Navigate to="accounts-management" replace />}
-                />
-                <Route
-                  path="accounts-management"
-                  element={<SuperAdminAccountManagement />}
-                />
-                <Route path="suitebite" element={<AdminNews />} />
-                <Route
-                  path="suitebite/new-suitebite"
-                  element={<AdminNewsCreate />}
-                />
-                <Route path="events" element={<AdminEvents />} />
-                <Route path="contents" element={<AdminContents />} />
-                <Route path="courses" element={<JobCourse />} />
-                <Route path="personality-test" element={<PersonalityTest />} />
+                {/* Super Admin Protected Routes */}
+                <Route path="super" element={<SuperAdminProtectedRoutes />}>
+                  <Route
+                    path="accounts-management"
+                    element={<SuperAdminAccountManagement />}
+                  />
+                </Route>
               </Route>
             </Route>
           </Route>

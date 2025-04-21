@@ -58,7 +58,7 @@ const adminFeatures = [
 const superAdminFeatures = [
   {
     feature_name: "Accounts",
-    path: "accounts-management",
+    path: "super/accounts-management",
     icon: UsersIcon,
   },
 ];
