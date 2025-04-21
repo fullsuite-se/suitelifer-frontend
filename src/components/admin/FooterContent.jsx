@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Dialog, DialogTitle, DialogContent, TextField } from "@mui/material";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { ModuleRegistry } from "@ag-grid-community/core";
 import { AgGridReact } from "@ag-grid-community/react";
@@ -14,39 +13,37 @@ import {
 import api from "../../utils/axios";
 import ContentButtons from "./ContentButtons";
 import toast from "react-hot-toast";
+import { Dialog, DialogTitle, DialogContent, TextField } from "@mui/material";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 const FooterContent = () => {
-  const [rowFooterData, setRowFooterData] = useState([]);
   const user = useStore((state) => state.user);
-
-  // CERTIFICATIONS
+  const [rowFooterData, setRowFooterData] = useState([]);
   const [certModalAddEditIsShown, setCertModalAddEditIsShown] = useState(false);
+  const [dataUpdated, setDataUpdated] = useState(false);
 
   const defaultCertificationDetails = {
     certId: null,
     certImageUrl: "",
+    createdBy: user?.id || null,
+    createdAt: new Date(),
   };
 
   const [certificationDetails, setCertificationDetails] = useState(
     defaultCertificationDetails
   );
 
-  const [dataUpdated, setDataUpdated] = useState(false);
-
   const handleCertificationSubmit = async (e) => {
     e.preventDefault();
     try {
       let response;
       if (certificationDetails.certId === null) {
-        // ADD CERTIFICATION
         response = await api.post("/api/certification", {
           ...certificationDetails,
           userId: user.id,
         });
       } else {
-        // EDIT CERTIFICATION
         response = await api.put("/api/certification", {
           ...certificationDetails,
           userId: user.id,
@@ -60,7 +57,7 @@ const FooterContent = () => {
       toast.error("Failed to save certificate");
       console.error(error);
     } finally {
-      setDataUpdated(!dataUpdated);
+      setDataUpdated((prev) => !prev);
       setCertModalAddEditIsShown(false);
       setCertificationDetails(defaultCertificationDetails);
     }
@@ -74,20 +71,24 @@ const FooterContent = () => {
 
       if (response.data.success) {
         toast.success(response.data.message);
+        setRowFooterData((prev) =>
+          prev.filter((item) => item.certId !== certId)
+        );
+      } else {
+        toast.error("Failed to delete certificate.");
       }
     } catch (error) {
       console.error("Delete error:", error);
-      toast.error("Error Deleting Certification");
+      toast.error("Error deleting certification");
     } finally {
-      setDataUpdated(!dataUpdated);
+      setDataUpdated((prev) => !prev);
     }
   };
 
   const fetchCerts = async () => {
     try {
       const response = await api.get("/api/certification");
-
-      setRowFooterData(response.data.certifications);
+      setRowFooterData(response.data.certifications || []);
     } catch (error) {
       console.error("Error fetching certificates:", error);
     }
@@ -103,9 +104,13 @@ const FooterContent = () => {
         <ContentButtons
           icon={<PlusCircleIcon className="size-5" />}
           text="Add Certification"
-          handleClick={() => setCertModalAddEditIsShown(true)}
+          handleClick={() => {
+            setCertificationDetails(defaultCertificationDetails);
+            setCertModalAddEditIsShown(true);
+          }}
         />
       </div>
+
       <div className="ag-theme-quartz mt-4" style={{ height: "auto" }}>
         <AgGridReact
           rowData={rowFooterData}
@@ -119,7 +124,7 @@ const FooterContent = () => {
                   <img
                     src={params.value}
                     alt="CertImage"
-                    className="w-[100px] h-[100px] sm:w-[100px] sm:h-[100px] object-cover mx-auto p-4"
+                    className="w-[100px] h-[100px] object-cover mx-auto p-4"
                   />
                 ) : (
                   <span>No Image</span>
@@ -183,6 +188,13 @@ const FooterContent = () => {
       <Dialog
         open={certModalAddEditIsShown}
         onClose={() => setCertModalAddEditIsShown(false)}
+        sx={{
+          "& .MuiDialog-paper": {
+            borderRadius: "16px",
+            padding: "20px",
+            width: "600px",
+          },
+        }}
       >
         <DialogTitle className="text-center">
           {certificationDetails.certId === null
@@ -190,20 +202,20 @@ const FooterContent = () => {
             : "Edit Certificate"}
         </DialogTitle>
         <DialogContent>
-          <div className="flex flex-col gap-4 mt-2">
-            <TextField
-              label="Image URL"
-              fullWidth
-              name="certImageUrl"
-              value={certificationDetails.certImageUrl}
+          <div className="text-md font-bold pt-4 font-avenir-black">
+            Image Url<span className="text-primary">*</span>
+          </div>
+          <input
+            name="textBanner"
+            value={certificationDetails.certImageUrl}
               onChange={(e) =>
                 setCertificationDetails({
                   ...certificationDetails,
                   [e.target.name]: e.target.value,
                 })
               }
-            />
-          </div>
+            className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+          />
 
           <div className="flex justify-end gap-2 mt-6">
             <button

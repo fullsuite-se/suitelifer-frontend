@@ -5,9 +5,6 @@ import DesktopNav from "../../components/home/DesktopNav";
 import api from "../../utils/axios";
 import CoreValueCard from "../../components/about-us/CoreValueCard";
 import maggie from "../../assets/images/maggie-cutout-circle.png";
-import aboutBanner from "../../assets/images/about-banner.webp";
-import aboutBannerShadow from "../../assets/images/in-action-about-us.png";
-import theSuiteliferValues from "../../assets/images/the-suitelifer-values.webp";
 import ourStoryText from "../../assets/images/our-story-text.webp";
 import imgMission from "../../assets/images/imgMission.svg";
 import imgVision from "../../assets/images/imgVision.svg";
@@ -23,26 +20,23 @@ import UpholdsIcon from "../../assets/icons/UpholdsIcon";
 import PageMeta from "../../components/layout/PageMeta";
 import Footer from "../../components/Footer";
 import MissionVision from "../../components/about-us/MissionVision";
-import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
 import Skeleton from "react-loading-skeleton";
+import useAboutContentStore from "../../store/stores/aboutContentStore";
 
 const AboutUs = () => {
-  const [aboutContent, setAboutContent] = useState({});
-  const [videoTitle, setVideoTitle] = useState("Thought it was over, but...");
-  const [isLoading, setIsLoading] = useState(true);
+  const { aboutContent, isLoading, setAboutContent } =
+    useAboutContentStore();
+
   const contentRef = useRef(null);
   const [lineHeight, setLineHeight] = useState(0);
 
   const fetchContent = async () => {
     try {
-      setIsLoading(true);
       const response = await api.get("/api/content/about");
-
+      console.log("DATA CHANGED");
       setAboutContent(response.data.aboutContent);
     } catch (error) {
-      console.log(err);
-    } finally {
-      setIsLoading(false);
+      console.log(error);
     }
   };
 
@@ -109,7 +103,7 @@ const AboutUs = () => {
             </div>
           </>
         ) : (
-            <>
+          <>
             <div className=" md:mt-100 lg:mt-30"></div>
             <div className="relative w-full flex justify-center h-[100%] items-end mt-20">
               <img
@@ -152,7 +146,7 @@ const AboutUs = () => {
                 </p>
                 <img
                   src={aboutContent.aboutHeroImage}
-                  alt="banner image"
+                  alt="Fullsuite Employees"
                   className="w-auto max-h-[400px] p-1 md:max-h-[400px] lg:max-h-[450px] xl:max-h-[700px]"
                 />{" "}
               </div>
@@ -189,22 +183,23 @@ const AboutUs = () => {
               </div>
               <div className="text-body text-gray-700 xl:leading-10">
                 <p>
-                  FullSuite was originally founded by Maggie Po on October 8, 2014
-                  as Offshore Concept Consulting, Inc. In 2018, the founder
-                  acquired full ownership of the brand name, FullSuite because it
-                  embodied the company vision to provide a comprehensive suite of
-                  solutions for startups. Maggie, alongside her co-founders,
-                  envisioned that instead of piecemeal services, FullSuite will
-                  offer an end-to-end approach that helps venture-backed startups
-                  handle critical data operational functions—especially the ones
-                  their AI systems can't yet automate.
+                  FullSuite was originally founded by Maggie Po on October 8,
+                  2014 as Offshore Concept Consulting, Inc. In 2018, the founder
+                  acquired full ownership of the brand name, FullSuite because
+                  it embodied the company vision to provide a comprehensive
+                  suite of solutions for startups. Maggie, alongside her
+                  co-founders, envisioned that instead of piecemeal services,
+                  FullSuite will offer an end-to-end approach that helps
+                  venture-backed startups handle critical data operational
+                  functions—especially the ones their AI systems can't yet
+                  automate.
                 </p>
                 <br />
                 <p>
                   In 2020, the legal entity was changed to Offshore Concept BPO
                   Services, Inc. to reflect in the name the more accurate
-                  representation of its services. But, the brand name is still in
-                  use which reflects the various suite of operations that the
+                  representation of its services. But, the brand name is still
+                  in use which reflects the various suite of operations that the
                   company offers to help customers scale their businesses
                   efficiently.
                 </p>
