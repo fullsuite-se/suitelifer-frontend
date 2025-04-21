@@ -27,12 +27,16 @@ const Blog = () => {
 
   const [spotifyEpisodes, setEpisodes] = useState([]);
 
+  const [isComingSoon, setIsComingSoon] = useState(true); //Change this to false if okay na ang podcast
+
   const fetchThreeLatestEpisodes = async () => {
     try {
       setSpotifyIsLoading(true);
       const response = await api.get("/api/spotify/latest-three");
 
-      // setEpisodes((e) => response.data.threeLatestEpisodes);
+      if (!isComingSoon) {
+        setEpisodes((e) => response.data.threeLatestEpisodes);
+      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -148,89 +152,93 @@ const Blog = () => {
       {/* PODCAST CONTENT */}
       <main className="px-[5%] md:px-[10%] xl:px-[15%]">
         {/* Podcasts */}
-        <section className="mt-15">
-          {/* Spotify Episodes */}
-          {isSpotifyLoading ? (
-            <section className="px-[5%] md:px-[10%] lg:px-[15%]">
-              <div className="sm:hidden flex flex-col gap-4">
-                <LoadingLargeSpotify />
-                <LoadingSmallSpotify />
-                <LoadingSmallSpotify />
-              </div>
-              <div className="hidden sm:flex gap-4">
-                <div className="w-1/2">
+        {!isComingSoon ? (
+          <section className="mt-15">
+            {/* Spotify Episodes */}
+            {isSpotifyLoading ? (
+              <section className="px-[5%] md:px-[10%] lg:px-[15%]">
+                <div className="sm:hidden flex flex-col gap-4">
                   <LoadingLargeSpotify />
-                </div>
-                <div className="w-1/2 flex flex-col justify-center gap-4">
                   <LoadingSmallSpotify />
                   <LoadingSmallSpotify />
                 </div>
-              </div>
-            </section>
-          ) : (
-            <>
-              {spotifyEpisodes.length > 0 ? (
-                <>
-                  <p className="text-2xl font-avenir-black text-primary">
-                    Latest Podcast Episodes
-                  </p>
-                  <section className="mt-3">
-                    {/* Mobile View: Display all in a column */}
-                    <div className="sm:hidden">
-                      {spotifyEpisodes.map(
-                        ({ spotifyId, embedType }, index) => (
-                          <div className="p-1" key={index}>
-                            <SpotifyEmbed
-                              spotifyId={spotifyId}
-                              embedType={embedType}
-                              index={index + 1}
-                            />
-                          </div>
-                        )
-                      )}
-                    </div>
-
-                    {/* Small Screens and Up: Two-column layout */}
-                    <div className="hidden sm:flex gap-7">
-                      <div className="w-1/2">
-                        <SpotifyEmbed
-                          spotifyId={spotifyEpisodes[0].spotifyId}
-                          embedType={spotifyEpisodes[0].embedType}
-                          index={0}
-                        />
-                      </div>
-                      {/* Right Column: Two Smaller Embeds */}
-                      <div className="w-1/2 flex flex-col justify-center gap-7">
-                        {spotifyEpisodes
-                          .slice(1, 3)
-                          .map(({ spotifyId, embedType }, index) => (
-                            <SpotifyEmbed
-                              key={index + 1}
-                              spotifyId={spotifyId}
-                              embedType={embedType}
-                              index={index + 1}
-                            />
-                          ))}
-                      </div>
-                    </div>
-                  </section>
-                </>
-              ) : (
-                <>
-                  <div className="">
-                    <div className="flex justify-center pt-20">
-                      <img
-                        src={ComingSoon}
-                        alt="coming soon gif"
-                        className="pointer-events-none"
-                      />
-                    </div>
+                <div className="hidden sm:flex gap-4">
+                  <div className="w-1/2">
+                    <LoadingLargeSpotify />
                   </div>
-                </>
-              )}
-            </>
-          )}
-        </section>
+                  <div className="w-1/2 flex flex-col justify-center gap-4">
+                    <LoadingSmallSpotify />
+                    <LoadingSmallSpotify />
+                  </div>
+                </div>
+              </section>
+            ) : (
+              <>
+                {spotifyEpisodes.length > 0 ? (
+                  <>
+                    <p className="text-2xl font-avenir-black text-primary">
+                      Latest Podcast Episodes
+                    </p>
+                    <section className="mt-3">
+                      {/* Mobile View: Display all in a column */}
+                      <div className="sm:hidden">
+                        {spotifyEpisodes.map(
+                          ({ spotifyId, embedType }, index) => (
+                            <div className="p-1" key={index}>
+                              <SpotifyEmbed
+                                spotifyId={spotifyId}
+                                embedType={embedType}
+                                index={index + 1}
+                              />
+                            </div>
+                          )
+                        )}
+                      </div>
+
+                      {/* Small Screens and Up: Two-column layout */}
+                      <div className="hidden sm:flex gap-7">
+                        <div className="w-1/2">
+                          <SpotifyEmbed
+                            spotifyId={spotifyEpisodes[0].spotifyId}
+                            embedType={spotifyEpisodes[0].embedType}
+                            index={0}
+                          />
+                        </div>
+                        {/* Right Column: Two Smaller Embeds */}
+                        <div className="w-1/2 flex flex-col justify-center gap-7">
+                          {spotifyEpisodes
+                            .slice(1, 3)
+                            .map(({ spotifyId, embedType }, index) => (
+                              <SpotifyEmbed
+                                key={index + 1}
+                                spotifyId={spotifyId}
+                                embedType={embedType}
+                                index={index + 1}
+                              />
+                            ))}
+                        </div>
+                      </div>
+                    </section>
+                  </>
+                ) : (
+                  <></>
+                )}
+              </>
+            )}
+          </section>
+        ) : (
+          <>
+            <div className="">
+              <div className="flex justify-center pt-20">
+                <img
+                  src={ComingSoon}
+                  alt="coming soon gif"
+                  className="pointer-events-none"
+                />
+              </div>
+            </div>
+          </>
+        )}
 
         <div className="width-full flex flex-col justify-center mt-10">
           {playlists.length > 0 && spotifyEpisodes.length > 0 ? (
