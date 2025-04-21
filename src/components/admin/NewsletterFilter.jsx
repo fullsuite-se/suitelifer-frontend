@@ -40,17 +40,17 @@ const Filter = ({
   };
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 font-avenir-black text-primary">
       <div>
         <div className="items-center w-full justify-center ">
-          {label && <label className="text-white">{label}</label>}
+          {label && <label>{label}</label>}
         </div>
 
         {showMonth && (
           <select
             value={selectedMonth}
             onChange={handleMonthChange}
-            className="bg-primary rounded-md border-none outline-none p-2 text-white "
+            className=" rounded-md border-none outline-none p-2  "
           >
             {months.map((month) => (
               <option key={month} value={month}>
@@ -66,7 +66,7 @@ const Filter = ({
           <select
             value={selectedYear}
             onChange={handleYearChange}
-            className="bg-primary rounded-md border-none outline-none p-2 text-white"
+            className="rounded-md border-none outline-none p-2 "
           >
             {years.map((year) => (
               <option key={year} value={year}>
