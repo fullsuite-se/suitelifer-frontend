@@ -5,6 +5,7 @@ import ContentButtons from "./ContentButtons";
 import api from "../../utils/axios";
 import { useStore } from "../../store/authStore";
 import atsAPI from "../../utils/atsAPI";
+import Information from "./Information";
 
 const AdminHomePage = () => {
   // USER DETAILS
@@ -13,9 +14,11 @@ const AdminHomePage = () => {
   // HOME DETAILS
   const [homeDetails, setHomeDetails] = useState({
     contentId: null,
-    // getInTouchImage: null,
+    getInTouchImage: "",
     kickstartVideo: "",
   });
+
+  const [imageFile, setImageFile] = useState(null);
 
   const handleHomeDetailsChange = (e) => {
     setHomeDetails((cd) => ({ ...cd, [e.target.name]: e.target.value }));
@@ -26,6 +29,22 @@ const AdminHomePage = () => {
 
   const handlePublishChanges = async () => {
     try {
+      if (imageFile !== null) {
+
+        const formData = new FormData();
+        formData.append("file", imageFile);
+
+        const uploadResponse = await api.post(
+          "/api/upload-image/home",
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
+
+        homeDetails.getInTouchImage = uploadResponse.data.imageUrl;
+      }
+
       const response = await api.patch("/api/content/home", {
         ...homeDetails,
         user_id: user.id,
@@ -121,6 +140,66 @@ const AdminHomePage = () => {
 
   return (
     <>
+      {/* <div className="flex flex-col md:flex-row gap-4 p-4">
+        <div className="flex flex-col md:w-full">
+          <div className="text-md p-1 font-avenir-black">Get In Touch Image</div>
+
+          <input
+            type="text"
+            name="getInTouchImage"
+            value={homeDetails.getInTouchImage}
+            onChange={(e) => handleHomeDetailsChange(e)}
+            className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+        </div>
+      </div> */}
+      {/* ABOUT HERO IMAGE */}
+      <div className="w-full 2xl:w-[50%] mb-3">
+        <label className="block font-avenir-black">Get In Touch Image</label>
+        <div className="mt-3">
+          <input
+            className="mb-2 block w-fit text-sm text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer file:cursor-pointer"
+            type="file"
+            name="getInTouchImage"
+            accept=".jpeg,.jpg,.png,.heic"
+            onChange={(e) => setImageFile(e.target.files[0])}
+          />
+
+          {/* REMINDERS */}
+          <Information
+            type={"warning"}
+            text={"Make sure your image is a 1:1 ratio"}
+          />
+          <Information
+            type={"info"}
+            text={"Recommended: width >= 1080px; height >= 1080px"}
+          />
+          <Information
+            type={"info"}
+            text={"Accepted formats: .jpeg, .jpg, .png, .heic"}
+          />
+          {/* REMINDERS END */}
+
+          {imageFile === null ? (
+            homeDetails.getInTouchImage && (
+              <div className={`preview mt-4`}>
+                <img
+                  className="h-72 mt-2 mx-auto"
+                  src={homeDetails.getInTouchImage}
+                  alt="Preview"
+                />
+              </div>
+            )
+          ) : (
+            <img
+              className="h-72 mt-2 mx-auto"
+              src={URL.createObjectURL(imageFile)}
+            />
+          )}
+        </div>
+      </div>
+      {/* ABOUT HERO IMAGE END */}
+
       <div className="flex flex-col md:flex-row gap-4 p-4">
         <div className="flex flex-col md:w-full">
           <div className="text-md p-1 font-avenir-black">Home Page Video</div>
@@ -137,9 +216,7 @@ const AdminHomePage = () => {
 
       <div className="flex flex-col md:flex-row gap-4 p-4">
         <div className="flex flex-col md:w-full">
-          <div className="text-md p-1 font-avenir-black">
-            Industry Images
-          </div>
+          <div className="text-md p-1 font-avenir-black">Industry Images</div>
 
           {industries.map(({ industryName, industryId, imageUrl }, index) => {
             const nameVariable = convertToCamelCase(industryName);

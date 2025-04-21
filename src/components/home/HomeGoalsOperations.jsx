@@ -1,7 +1,7 @@
-import homeIntroImg from "../../assets/images/home-intro-img.webp";
-
+import homeIntroImg from "../../assets/images/home-hero.jpg";
 import MotionUp from "../MotionUp";
-const HomeGoalsOperations = () => {
+
+const HomeGoalsOperations = ({getInTouchImage}) => {
   return (<>
     <section className="relative mb-[5%] flex flex-col lg:flex-row lg:gap-5 lg:items-center lg:justify-center">
       <div className="flex items-center justify-end lg:hidden">
@@ -9,13 +9,12 @@ const HomeGoalsOperations = () => {
         <div className="w-[45%] h-[0.25vh] bg-primary"></div>
       </div>
       <MotionUp className="p-10 md:px-40 md:py-20 lg:!p-0">
-        <div className="relative">
+        <div className="relative max-w-[1700px]">
           {" "}
           <img
-            src={homeIntroImg}
+            src={getInTouchImage}
             alt="cutout background"
-            className="w-full rounded-xl lg:rounded-r-2xl lg:rounded-l-none  lg:w-[110%]"
-
+            className="w-full rounded-xl lg:rounded-r-2xl lg:rounded-l-none aspect-square object-cover lg:w-[110%]"
           />
           <div className="absolute -z-1 -bottom-5 -right-5 w-[60%] h-[60%] bg-[#FFA91F] rounded-2xl lg:rounded-3xl lg:-bottom-8 lg:-right-8"></div>
         </div>
