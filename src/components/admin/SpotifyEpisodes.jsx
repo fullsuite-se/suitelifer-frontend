@@ -12,7 +12,6 @@ import toast from "react-hot-toast";
 import { useStore } from "../../store/authStore";
 import { showConfirmationToast } from "../toasts/confirm";
 import ButtonsSpotify from "./ButtonsSpotify";
-
 import formatTimestamp from "../TimestampFormatter";
 
 const extractSpotifyId = (url) => {
@@ -23,11 +22,8 @@ const extractSpotifyId = (url) => {
 const isValidEpisodeUrl = (url) => {
   try {
     const parsedUrl = new URL(url);
-
     if (!parsedUrl.hostname.endsWith("spotify.com")) return false;
-
     const embedRegex = /^\/(episode|playlist)\/[a-zA-Z0-9]{22}$/;
-
     return embedRegex.test(parsedUrl.pathname);
   } catch (error) {
     return false;
@@ -35,30 +31,16 @@ const isValidEpisodeUrl = (url) => {
 };
 
 const SpotifyEpisodes = () => {
-  // USER DETAILS
   const user = useStore((state) => state.user);
-
-  // DATA UPDATES
   const [dataUpdated, setDataUpdated] = useState(false);
-
-  // SPOTIFY VARIABLES
-  const defaultEpisodeDetails = {
-    episodeId: null,
-    spotifyId: "",
-  };
-
+  const defaultEpisodeDetails = { episodeId: null, spotifyId: "" };
   const [episodes, setEpisodes] = useState([]);
   const [episodeDetails, setEpisodeDetails] = useState(defaultEpisodeDetails);
-
+  const [embedTypeFilter, setEmbedTypeFilter] = useState("All");
   const [error, setError] = useState(null);
 
-  const showError = (message) => {
-    setError(message);
-  };
-
-  const closeError = () => {
-    setError(null);
-  };
+  const showError = (message) => setError(message);
+  const closeError = () => setError(null);
 
   const handleAddEditEpisode = async (e) => {
     e.preventDefault();
@@ -70,7 +52,7 @@ const SpotifyEpisodes = () => {
 
     if (episodeDetails.episodeId !== null) {
       const index = episodes.findIndex(
-        (episode) => episode.episodeId === episodeDetails.episodeId
+        (ep) => ep.episodeId === episodeDetails.episodeId
       );
       if (
         episodeDetails.spotifyId ===
@@ -92,17 +74,12 @@ const SpotifyEpisodes = () => {
 
     try {
       if (episodeDetails.episodeId === null) {
-        // ADD SPOTIFY EPISODE
         const response = await api.post("/api/spotify/", {
           url: episodeDetails.spotifyId,
           userId: user.id,
         });
-
         toast.success(response.data.message);
-
-        setDataUpdated(!dataUpdated);
       } else {
-        // EDIT SPOTIFY EPISODE
         const response = await api.put(
           `/api/spotify/${episodeDetails.episodeId}`,
           {
@@ -111,16 +88,14 @@ const SpotifyEpisodes = () => {
             userId: user.id,
           }
         );
-
         toast.success(response.data.message);
-
-        setDataUpdated(!dataUpdated);
       }
+
+      setDataUpdated(!dataUpdated);
+      setEpisodeDetails(defaultEpisodeDetails);
     } catch (err) {
       console.log(err);
     }
-
-    setEpisodeDetails(defaultEpisodeDetails);
   };
 
   const cancelEdit = () => {
@@ -137,16 +112,13 @@ const SpotifyEpisodes = () => {
 
   const handleDelete = async (episodeId) => {
     try {
-      const response = await api.delete(
-        `/api/spotify/${episodeDetails.episodeId}`,
-        {
+      const response = await api.delete(`/api/spotify/${episodeId}`, {
+        data: {
           episodeId,
           userId: user.id,
-        }
-      );
-
+        },
+      });
       toast.success(response.data.message);
-
       setDataUpdated(!dataUpdated);
     } catch (err) {
       console.log(err);
@@ -156,11 +128,6 @@ const SpotifyEpisodes = () => {
   const fetchSpotifyEpisodes = async () => {
     try {
       const response = await api.get("/api/spotify/");
-
-      console.log(response.data.data);
-
-      console.log(response.data);
-
       setEpisodes(response.data.data);
     } catch (err) {
       console.log(err);
@@ -170,6 +137,13 @@ const SpotifyEpisodes = () => {
   useEffect(() => {
     fetchSpotifyEpisodes();
   }, [dataUpdated]);
+
+  const filteredEpisodes = episodes.filter((ep) => {
+    if (embedTypeFilter === "All") return true;
+    if (embedTypeFilter === "Episodes") return ep.embedType === "EPISODE";
+    if (embedTypeFilter === "Playlists") return ep.embedType === "PLAYLIST";
+    return true;
+  });
 
   return (
     <div className="w-full space-y-4 bg mb-20">
@@ -207,7 +181,7 @@ const SpotifyEpisodes = () => {
           {episodeDetails.episodeId !== null ? (
             <>
               <button
-                onClick={(e) => handleAddEditEpisode(e)}
+                onClick={handleAddEditEpisode}
                 className="grid place-items-center cursor-pointer hover:bg-gray-100 rounded-full size-10 text-primary"
               >
                 <PlusIcon className="size-5" />
@@ -220,75 +194,66 @@ const SpotifyEpisodes = () => {
               </button>
             </>
           ) : (
-            <button
-              onClick={(e) => handleAddEditEpisode(e)}
-              className="cursor-pointer btn-light"
-            >
+            <button onClick={handleAddEditEpisode} className="btn-light">
               <PlusIcon className="size-5 sm:size-7" />
             </button>
           )}
         </div>
+
         <ButtonsSpotify
           buttons={[
             { label: "All" },
             { label: "Episodes" },
             { label: "Playlists" },
           ]}
+          onFilterChange={(filter) => setEmbedTypeFilter(filter)}
         />
 
-        {episodes.length === 0 ? (
-          <div className="p-4 text-center text-gray-600">
-            No episodes added yet.
-          </div>
-        ) : (
-          episodes.map((episode, index) => {
-            return (
-              <div key={index} className="flex flex-col gap-4 shadow-2xs p-4">
-                <div className="flex-1">
-                  <SingleSpotifyEmbed
-                    spotifyId={episode.spotifyId}
-                    embedType={episode.embedType}
-                  />
-                </div>
-                <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-                  <div className="whitespace-nowrap flex-1/3 text-gray-500">
-                    <p className="">
-                      Created by:{" "}
-                      <span className="font-avenir-black text-primary">
-                        {episode.createdBy ?? "N/A"}
-                      </span>
-                    </p>
-                    <p className="">
-                      Date created:{" "}
-                      <span className="font-avenir-black text-primary">
-                        {formatTimestamp(episode.createdAt ?? "N/A").fullDate}
-                      </span>
-                    </p>
-                  </div>
-                  <div className="flex gap-4">
-                    <button
-                      onClick={() => {
-                        setEpisodeDetails({
-                          episodeId: episode.episodeId,
-                          spotifyId: `https://open.spotify.com/episode/${episode.spotifyId}`,
-                        });
-                      }}
-                      className="whitespace-nowrap p-2.5 px-5 bg-primary text-white rounded-xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e] h-full w-full"
-                    >
-                      <EditIcon className="size-7" /> Edit
-                    </button>
-                    <button
-                      onClick={() => handleDeleteClick(episode.episodeId)}
-                      className="whitespace-nowrap p-2.5 px-4 bg-primary text-white rounded-xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e] h-full w-full"
-                    >
-                      <DeleteIcon className="size-7" /> Delete
-                    </button>
-                  </div>
-                </div>
+        {filteredEpisodes.map((episode, index) => (
+          <div key={index} className="flex flex-col gap-4 shadow-2xs p-4">
+            <div className="flex-1">
+              <SingleSpotifyEmbed
+                spotifyId={episode.spotifyId}
+                embedType={episode.embedType}
+              />
+            </div>
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+              <div className="whitespace-nowrap flex-1/3 text-gray-500">
+                <p>
+                  Created by:{" "}
+                  <span className="font-avenir-black text-primary">
+                    {episode.createdBy ?? "N/A"}
+                  </span>
+                </p>
+                <p>
+                  Date created:{" "}
+                  <span className="font-avenir-black text-primary">
+                    {formatTimestamp(episode.createdAt ?? "N/A").fullDate}
+                  </span>
+                </p>
               </div>
-            );
-          })
-        )}
+              <div className="flex gap-4">
+                <button
+                  onClick={() =>
+                    setEpisodeDetails({
+                      episodeId: episode.episodeId,
+                      spotifyId: `https://open.spotify.com/${episode.embedType}/${episode.spotifyId}`,
+                    })
+                  }
+                  className="p-2.5 px-5 bg-primary text-white rounded-xl hover:bg-[#007a8e]"
+                >
+                  <EditIcon className="size-7" /> Edit
+                </button>
+                <button
+                  onClick={() => handleDeleteClick(episode.episodeId)}
+                  className="p-2.5 px-4 bg-primary text-white rounded-xl hover:bg-[#007a8e]"
+                >
+                  <DeleteIcon className="size-7" /> Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

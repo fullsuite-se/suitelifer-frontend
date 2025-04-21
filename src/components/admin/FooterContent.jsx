@@ -13,12 +13,7 @@ import {
 import api from "../../utils/axios";
 import ContentButtons from "./ContentButtons";
 import toast from "react-hot-toast";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  TextField,
-} from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, TextField } from "@mui/material";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -76,7 +71,9 @@ const FooterContent = () => {
 
       if (response.data.success) {
         toast.success(response.data.message);
-        setRowFooterData((prev) => prev.filter((item) => item.certId !== certId));
+        setRowFooterData((prev) =>
+          prev.filter((item) => item.certId !== certId)
+        );
       } else {
         toast.error("Failed to delete certificate.");
       }
@@ -191,25 +188,34 @@ const FooterContent = () => {
       <Dialog
         open={certModalAddEditIsShown}
         onClose={() => setCertModalAddEditIsShown(false)}
+        sx={{
+          "& .MuiDialog-paper": {
+            borderRadius: "16px",
+            padding: "20px",
+            width: "600px",
+          },
+        }}
       >
         <DialogTitle className="text-center">
-          {certificationDetails.certId === null ? "Add Certificate" : "Edit Certificate"}
+          {certificationDetails.certId === null
+            ? "Add Certificate"
+            : "Edit Certificate"}
         </DialogTitle>
         <DialogContent>
-          <div className="flex flex-col gap-4 mt-2">
-            <TextField
-              label="Image URL"
-              name="certImageUrl"
-              value={certificationDetails.certImageUrl}
+          <div className="text-md font-bold pt-4 font-avenir-black">
+            Image Url<span className="text-primary">*</span>
+          </div>
+          <input
+            name="textBanner"
+            value={certificationDetails.certImageUrl}
               onChange={(e) =>
                 setCertificationDetails({
                   ...certificationDetails,
                   [e.target.name]: e.target.value,
                 })
               }
-              fullWidth
-            />
-          </div>
+            className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+          />
 
           <div className="flex justify-end gap-2 mt-6">
             <button
