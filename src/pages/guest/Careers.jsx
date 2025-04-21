@@ -14,16 +14,24 @@ import LoadingJobCarousel from "../../components/careers/LoadingJobCarousel";
 import atsAPI from "../../utils/atsAPI";
 import api from "../../utils/axios";
 import Skeleton from "react-loading-skeleton";
+import useHeroImagesStore from "../../store/stores/heroImagesStore";
 
 const Careers = () => {
-  const defaultHeroImages = {
-    careersLeftImage: "",
-    careersMainImage: "",
-    careersRightImage: "",
-  };
+  // const defaultHeroImages = {
+  //   careersLeftImage: "",
+  //   careersMainImage: "",
+  //   careersRightImage: "",
+  // };
 
-  const [heroImages, setHeroImages] = useState(defaultHeroImages);
-  const [isHeroLoading, setIsHeroLoading] = useState(true);
+  // const [heroImages, setHeroImages] = useState(defaultHeroImages);
+  // const [isHeroLoading, setIsHeroLoading] = useState(true);
+
+  const {
+    heroImages,
+    isHeroLoading,
+    setHeroImages,
+    setIsHeroLoading,
+  } = useHeroImagesStore();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -74,12 +82,12 @@ const Careers = () => {
       const response = await api.get("/api/content/careers");
       const data = response.data.careersContent;
       console.log(data);
-
-      setHeroImages(data);
+  
+      setHeroImages(data);      
     } catch (error) {
       console.log(error);
+      setIsHeroLoading(false); // just in case it fails
     }
-    setIsHeroLoading(false);
   };
 
   useEffect(() => {
@@ -148,7 +156,11 @@ const Careers = () => {
                 />
               </section>
 
-              <section className={`${isHeroLoading ? '' : 'hidden'} relative md:hidden`}>
+              <section
+                className={`${
+                  isHeroLoading ? "" : "hidden"
+                } relative md:hidden`}
+              >
                 {/* upper left skeleton */}
                 <div className="absolute w-[30vw] max-w-[220px] -translate-y-[13vw] -translate-x-[30%] rounded-2xl bg-gray-200 animate-pulse aspect-3/4"></div>
 
@@ -206,7 +218,11 @@ const Careers = () => {
                   </>
                 )}
               </div>
-              <div className={`${isHeroLoading ? '' : 'hidden'} relative flex justify-center md:py-4 md:gap-10`}>
+              <div
+                className={`${
+                  isHeroLoading ? "" : "hidden"
+                } relative flex justify-center md:py-4 md:gap-10`}
+              >
                 {/* Left Skeleton (only shown on md and up) */}
                 <div className="hidden md:block size-[18%] xl:max-w-[200px] rounded-2xl bg-gray-200 animate-pulse aspect-3/4"></div>
 
