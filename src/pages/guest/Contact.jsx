@@ -19,6 +19,7 @@ import PageMeta from "../../components/layout/PageMeta";
 import Footer from "../../components/Footer";
 import api from "../../utils/axios";
 const Contact = () => {
+  const [selected, setSelected] = useState("Full-Time");
   const fadeInUp = {
     hidden: { opacity: 0, y: 50 },
     visible: {
@@ -193,6 +194,41 @@ const Contact = () => {
               transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
               className="p-8 w-full md:max-w-lg lg:max-w-2xl xl:max-w-4xl"
             >
+              <div className="flex space-x-4">
+                {["Full-Time", "Internship"].map((type) => (
+                  <label
+                    key={type}
+                    className="flex items-center space-x-2 cursor-pointer"
+                  >
+                    <input
+                      type="radio"
+                      name="employmentType"
+                      value={type}
+                      checked={selected === type}
+                      onChange={() => setSelected(type)}
+                      className="hidden"
+                    />
+                    <div
+                      className="w-4 h-4 rounded-full border-2"
+                      style={{
+                        borderColor: selected === type ? "#0097B2" : "#ccc",
+                        backgroundColor:
+                          selected === type ? "#0097B2" : "transparent",
+                      }}
+                    ></div>
+                    <span
+                      className="text-sm"
+                      style={{
+                        color: selected === type ? "#0097B2" : "#6b7280",
+                        fontWeight: selected === type ? "500" : "normal",
+                      }}
+                    >
+                      {type}
+                    </span>
+                  </label>
+                ))}
+              </div>
+              <div className="py-2"></div>
               <form action="#" className="space-y-4">
                 <div>
                   <label className="block text-gray-700 text-small">

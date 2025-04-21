@@ -219,7 +219,11 @@ const Blog = () => {
                 <>
                   <div className="">
                     <div className="flex justify-center pt-20">
-                      <img src={ComingSoon} alt="coming soon gif" />
+                      <img
+                        src={ComingSoon}
+                        alt="coming soon gif"
+                        className="pointer-events-none"
+                      />
                     </div>
                   </div>
                 </>

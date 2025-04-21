@@ -140,7 +140,7 @@ export default function TabletNav() {
                         to="/careers"
                         className={({ isActive }) =>
                           `!no-underline text-black text-lg font-medium hover:text-[#007a8e] ${
-                            isPathActive ? "active-class text-[#007a8e]" : ""
+                            isActive ? "active-class text-[#007a8e]" : ""
                           }`
                         }
                         onClick={handleClose}
@@ -154,7 +154,7 @@ export default function TabletNav() {
                         to="/newsletter"
                         className={({ isActive }) =>
                           `!no-underline text-black text-lg font-medium hover:text-[#007a8e] ${
-                            isPathActive ? "active-class text-[#007a8e]" : ""
+                            isActive ? "active-class text-[#007a8e]" : ""
                           }`
                         }
                         onClick={handleClose}
