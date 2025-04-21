@@ -120,7 +120,7 @@ const Form = () => {
     }
 
     // Recaptcha Verifcation
-    const recaptchaToken = await executeRecaptcha("application-form");
+    const recaptchaToken = await executeRecaptcha("application");
     const recaptcha = await api.post("/api/verify-recaptcha", {
       recaptchaToken: recaptchaToken,
     });
