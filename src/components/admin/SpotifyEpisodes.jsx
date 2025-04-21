@@ -140,8 +140,8 @@ const SpotifyEpisodes = () => {
 
   const filteredEpisodes = episodes.filter((ep) => {
     if (embedTypeFilter === "All") return true;
-    if (embedTypeFilter === "Episodes") return ep.embedType === "episode";
-    if (embedTypeFilter === "Playlists") return ep.embedType === "playlist";
+    if (embedTypeFilter === "Episodes") return ep.embedType === "EPISODE";
+    if (embedTypeFilter === "Playlists") return ep.embedType === "PLAYLIST";
     return true;
   });
 
