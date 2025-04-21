@@ -87,10 +87,11 @@ export default function MobileNav() {
               <div>
                 <NavLink
                   to="/careers"
-                  className={`!no-underline text-black text-lg font-medium transition-all duration-300
-        hover:text-[#007a8e] ${
-          isPathActive ? "active-class text-[#007a8e]" : ""
-        }`}
+                  className={({ isActive }) =>
+                    `!no-underline text-black text-lg font-medium hover:text-[#007a8e] ${
+                      isActive ? "active-class" : ""
+                    }`
+                  }
                   onClick={handleClose}
                 >
                   Careers
@@ -100,10 +101,11 @@ export default function MobileNav() {
               <div>
                 <NavLink
                   to="/newsletter"
-                  className={`!no-underline text-black text-lg font-medium transition-all duration-300
-                  hover:text-[#007a8e] ${
-                    isPathActive ? "active-class text-[#007a8e]" : ""
-                  }`}
+                  className={({ isActive }) =>
+                    `!no-underline text-black text-lg font-medium hover:text-[#007a8e] ${
+                      isActive ? "active-class" : ""
+                    }`
+                  }
                   onClick={handleClose}
                 >
                   Newsletter
