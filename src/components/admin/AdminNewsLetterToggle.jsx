@@ -8,11 +8,12 @@ import {
   CheckCircleIcon,
   ExclamationTriangleIcon,
   InformationCircleIcon,
-  ArrowsUpDownIcon,
+  ArrowDownIcon,
+  ArrowUpIcon,
   MinusCircleIcon,
   RectangleStackIcon,
 } from "@heroicons/react/24/outline";
-
+import emptyIllustration from "../../assets/images/empty-illustration.svg";
 import {
   Modal,
   TextField,
@@ -23,15 +24,75 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
-import Filter from "./NewsletterFilter";
-import { useState } from "react";
+import YearFilterDropDown from "./NewsletterFilter";
+import { useState, useEffect } from "react";
+import api from "../../utils/axios";
+import { set } from "react-hook-form";
+import formatTimestamp from "../TimestampFormatter";
+import { ArrowLeft } from "lucide-react";
 
 <ArrowRightIcon className="h-5 w-5 text-gray-500" />;
 
 function AdminNewsLetterToggle() {
+  const [selectedMonthlyIssue, setSelectedMonthlyIssue] = useState(null);
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(currentYear);
-  const [currentPublishedIssue, setCurrentPublishedIssue] = useState(0);
+
+  const [currentPublishedIssue, setCurrentPublishedIssue] = useState({});
+  const [oldestIssue, setOldestIssue] = useState({});
+
+  const [issues, setIssues] = useState([]);
+  const [isNewestFirst, setIsNewestFirst] = useState(true);
+
+  const fetchIssuesByYear = async (year, isNewestFirst = true) => {
+    try {
+      const response = await api.get("/api/issues?year=" + year);
+      let issues = response.data.issues;
+
+      if (!isNewestFirst) {
+        issues = issues.slice().reverse();
+      }
+
+      setIssues(issues);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleMonthClick = (monthlyIssue) => {
+    setSelectedMonthlyIssue(monthlyIssue);
+  };
+
+  const handleSortToggle = () => {
+    setIsNewestFirst((prev) => !prev);
+    fetchIssuesByYear(selectedYear, !isNewestFirst);
+  };
+
+  const fetchCurrentIssue = async () => {
+    try {
+      const response = await api.get("/api/issues/current");
+      setCurrentPublishedIssue(response.data.currentIssue);
+      console.log(response.data.currentIssue);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchOldestIssue = async () => {
+    try {
+      const response = await api.get("/api/issues/oldest");
+      setOldestIssue(response.data.oldestIssue);
+      console.log(response.data.oldestIssue);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchIssuesByYear(selectedYear);
+    fetchCurrentIssue();
+    fetchOldestIssue();
+  }, [selectedYear]);
 
   const tabs = [
     { label: "Issues", component: Issues },
@@ -724,163 +785,191 @@ function AdminNewsLetterToggle() {
     },
   ];
 
+  function getMonthName(monthNumber) {
+    monthNumber = parseInt(monthNumber, 10);
+    if (
+      typeof monthNumber !== "number" ||
+      monthNumber < 1 ||
+      monthNumber > 12
+    ) {
+      throw new Error("Invalid month number. Must be between 1 and 12.");
+    }
+
+    return new Date(0, monthNumber - 1).toLocaleString("default", {
+      month: "long",
+    });
+  }
+
   return (
-    <>
-      <h3>Current Published Issue</h3>
-      <div className="flex flex-row items-center justify-between bg-primary text-white p-4 rounded-lg mb-4 cursor-pointer hover:scale-101 hover:shadow-lg transition duration-300 ease-in-out">
-        <h3 className="font-avenir-black">
-          {sampleNewsLetterList[0].month + " " + sampleNewsLetterList[0].year}
-        </h3>
-        <div className="flex flex-row items-center justify-center gap-1">
-          <RectangleStackIcon className="h-5 w-5 text-white" />
-          <p className="-mb-1 font-avenir-black">
-            {sampleNewsLetterList[0].newsletterList.length} articles
-          </p>
-        </div>
-        <div className="flex flex-row items-center justify-center gap-1">
-          <CheckCircleIcon className="h-5 w-5 text-white" />
-          <p className="font-avenir-black">
-            {
-              sampleNewsLetterList[0].newsletterList.filter(
-                (newsletter) =>
-                  newsletter.newsletter_section >= 1 &&
-                  newsletter.newsletter_section <= 7
-              ).length
-            }
-            /7 assigned
-          </p>
-        </div>
-        <div className="flex flex-row items-center justify-center gap-1">
-          <MinusCircleIcon className="h-5 w-5 text-white" />
-          <p className="font-avenir-black">
-            {
-              sampleNewsLetterList[0].newsletterList.filter(
-                (newsletter) =>
-                  !(
-                    newsletter.newsletter_section >= 1 &&
-                    newsletter.newsletter_section <= 7
-                  )
-              ).length
-            }{" "}
-            unassigned
-          </p>
-        </div>
-
-        <ArrowRightIcon className="h-5 w-5 text-white" />
-      </div>
-      <div className="py-3"></div>
-      <div className="flex flex-row items-center justify-between">
-        <h3>All Issues</h3>
-
-        <InformationCircleIcon className="w-5 h-5 text-primary cursor-pointer" />
-      </div>
-      <div className="flex flex-row items-center justify-between">
-        <div className="flex justify-start items-center">
-          <div className="bg-primary/20 rounded-md text-white pr-4 flex items-center cursor-pointer">
-            <Filter
-              showMonth={false}
-              showYear={true}
-              onYearChange={setSelectedYear}
-            />
+    <div>
+      {!selectedMonthlyIssue ? (
+        <>
+          <h3>Current Published Issue</h3>
+          <div className="flex flex-row items-center justify-between bg-primary text-white p-4 rounded-lg mb-4 cursor-pointer hover:scale-101 hover:shadow-lg transition duration-300 ease-in-out">
+            <h3 className="font-avenir-black">
+              {getMonthName(currentPublishedIssue.month) +
+                " " +
+                currentPublishedIssue.year}
+            </h3>
+            <div className="flex flex-row items-center justify-center gap-1">
+              <RectangleStackIcon className="h-5 w-5 text-white" />
+              <p className="-mb-1 font-avenir-black">
+                {currentPublishedIssue.articleCount} articles
+              </p>
+            </div>
+            <div className="flex flex-row items-center justify-center gap-1">
+              <CheckCircleIcon className="h-5 w-5 text-white" />
+              <p className="font-avenir-black">
+                {currentPublishedIssue.assigned}/7 assigned
+              </p>
+            </div>
+            <div className="flex flex-row items-center justify-center gap-1">
+              <MinusCircleIcon className="h-5 w-5 text-white" />
+              <p className="font-avenir-black">
+                {currentPublishedIssue.unassigned} unassigned
+              </p>
+            </div>
+            <ArrowRightIcon className="h-5 w-5 text-white" />
           </div>
-          <div className="flex flex-row items-center justify-center gap-1 ml-4 text-gray-500 cursor-pointer text-xs">
+          <div className="py-3"></div>
+          <div className="flex flex-row items-center justify-between">
+            <h3>All Issues</h3>
+            <InformationCircleIcon className="w-5 h-5 text-primary cursor-pointer" />
+          </div>
+          <div className="flex flex-row items-center justify-between">
+            <div className="flex justify-start items-center">
+              <div className="bg-primary/20 rounded-md text-white pr-4 flex items-center cursor-pointer">
+                <YearFilterDropDown
+                  startYear={oldestIssue.year}
+                  endYear={currentYear}
+                  onYearChange={setSelectedYear}
+                />
+              </div>
+              <div
+                className="flex flex-row items-center justify-center gap-1 ml-4 text-gray-500 cursor-pointer text-xs"
+                onClick={handleSortToggle}
+              >
+                <div>
+                  {isNewestFirst ? (
+                    <ArrowDownIcon className="h-4 w-4" />
+                  ) : (
+                    <ArrowUpIcon className="h-4 w-4" />
+                  )}
+                </div>
+                <div>{isNewestFirst ? "Newest first" : "Oldest first"}</div>
+              </div>
+            </div>
             <div>
-              <ArrowsUpDownIcon className="h-4 w-4 " />
+              <p className="font-avenir-black text-primary cursor-pointer ">
+                + Add new issue
+              </p>
             </div>
-            <div> Newest first</div>
           </div>
-        </div>
-        <div>
-          <p className="font-avenir-black text-primary cursor-pointer ">
-            + Add new issue
-          </p>
-        </div>
-      </div>
-      <div className="py-5"></div>
-      <div className="flex flex-wrap justify-center lg:justify-start gap-10 p-1">
-        {sampleNewsLetterList.map((issue) => (
-          <div key={issue.id}>
-            <div
-              className={`group border ${
-                issue.is_published
-                  ? "border-primary border-2 "
-                  : "border-gray-500/50"
-              } p-5 rounded-xl flex flex-col cursor-pointer hover:shadow-lg transition duration-300 ease-in-out hover:scale-101`}
-            >
-              <div className="flex flex-row justify-start items-center gap-2">
+          <div className="py-5"></div>
+          {issues.length > 0 ? (
+            <div className="flex flex-wrap justify-center lg:justify-start gap-10 p-1">
+              {issues.map((issue) => (
                 <div
-                  className={`w-2 h-2 ${
-                    issue.newsletterList.filter(
-                      (newsletter) =>
-                        newsletter.newsletter_section >= 1 &&
-                        newsletter.newsletter_section <= 7
-                    ).length < 7 && !issue.is_published
-                      ? "bg-orange-400"
-                      : issue.newsletterList.filter(
-                          (newsletter) =>
-                            newsletter.newsletter_section >= 1 &&
-                            newsletter.newsletter_section <= 7
-                        ).length == 7 && !issue.is_published
-                      ? "bg-primary"
-                      : "bg-green-600"
-                  } rounded-full`}
-                ></div>
-
-                <p className="font-avenir-black text-body">{issue.month}</p>
-              </div>
-              <div className="py-2"></div>
-
-              <div className="flex flex-col gap-2 pr-20">
-                <div className="flex flex-row justify-start items-center gap-2 text-gray-400">
-                  <RectangleStackIcon className="h-4 w-4 " />
-                  <p className=" text-xs">
-                    {issue.newsletterList.length} articles
-                  </p>
+                  key={issue.issueId}
+                  onClick={() => handleMonthClick(issue)}
+                >
+                  <div
+                    className={`group border ${
+                      issue.is_published
+                        ? "border-primary border-2 "
+                        : "border-gray-500/50"
+                    } p-5 rounded-xl flex flex-col cursor-pointer hover:shadow-lg transition duration-300 ease-in-out hover:scale-101`}
+                  >
+                    <div className="flex flex-row justify-start items-center gap-2">
+                      <div
+                        className={`w-2 h-2 ${
+                          issue.assigned < 7 && !issue.is_published
+                            ? "bg-orange-400"
+                            : issue.assigned >= 7 && !issue.is_published
+                            ? "bg-primary"
+                            : "bg-green-600"
+                        } rounded-full`}
+                      ></div>
+                      <p className="font-avenir-black text-body">
+                        {getMonthName(issue.month)}
+                      </p>
+                    </div>
+                    <div className="py-2"></div>
+                    <div className="flex flex-col gap-2 pr-20">
+                      <div className="flex flex-row justify-start items-center gap-2 text-gray-400">
+                        <RectangleStackIcon className="h-4 w-4 " />
+                        <p className=" text-xs">
+                          {issue.articleCount} articles
+                        </p>
+                      </div>
+                      <div className="flex flex-row justify-start items-center gap-2 text-gray-400">
+                        <CheckCircleIcon className="h-4 w-4 " />
+                        <p className=" text-xs">
+                          {issue.assigned}
+                          /7 assigned
+                        </p>
+                      </div>
+                      <div className="flex flex-row justify-start items-center gap-2 text-gray-400">
+                        <MinusCircleIcon className="h-4 w-4 " />
+                        <p className=" text-xs">
+                          {issue.unassigned} unassigned
+                        </p>
+                      </div>
+                    </div>
+                    <div className="py-3"></div>
+                    <div className="w-full justify-end flex ">
+                      <p className="text-xs scale-90 text-gray-400 font-avenir-roman-oblique ">
+                        created on{" "}
+                        {formatTimestamp(issue.issueCreatedAt).fullDate}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex flex-row justify-start items-center gap-2 text-gray-400">
-                  <CheckCircleIcon className="h-4 w-4 " />
-                  <p className=" text-xs">
-                    {
-                      issue.newsletterList.filter(
-                        (newsletter) =>
-                          newsletter.newsletter_section >= 1 &&
-                          newsletter.newsletter_section <= 7
-                      ).length
-                    }
-                    /7 assigned
-                  </p>
-                </div>
-                <div className="flex flex-row justify-start items-center gap-2 text-gray-400">
-                  <MinusCircleIcon className="h-4 w-4 " />
-                  <p className=" text-xs">
-                    {
-                      issue.newsletterList.filter(
-                        (newsletter) =>
-                          !(
-                            newsletter.newsletter_section >= 1 &&
-                            newsletter.newsletter_section <= 7
-                          )
-                      ).length
-                    }{" "}
-                    unassigned
-                  </p>
-                </div>
-              </div>
-              <div className="py-3"></div>
-              <div className="w-full justify-end flex ">
-                <p className="text-xs scale-90 text-gray-400 font-avenir-roman-oblique ">
-                  created on Feb 23, 2025
-                </p>
-              </div>
+              ))}
             </div>
+          ) : (
+            <div className="grid place-content-center px-5 text-center text-small text-gray-400 min-h-70 my-7">
+              <img
+                src={emptyIllustration}
+                alt="No issues illustration"
+                className="w-auto h-30 mx-auto mb-6"
+              />
+              <p>No issues have been published for this selected year.</p>
+            </div>
+          )}
+          {/* <div className="py-15"></div> */}
+          {/* <PageToggle tabs={tabs} /> */}
+        </>
+      ) : (
+        <>
+          <div className="py-5"></div>
+          <button
+            onClick={() => handleMonthClick(null)}
+            className="group cursor-pointer flex items-center gap-2 text-primary text-xss transition active:font-avenir-black"
+          >
+            <ArrowLeft size={15} />
+            <span className="mt-1 group-hover:font-avenir-black">Back</span>
+          </button>
+          <div className="py-2"></div>
+          <div className="flex flex-row justify-start items-center gap-2">
+            <div
+              className={`w-2 h-2 ${
+                selectedMonthlyIssue.assigned < 7 && !selectedMonthlyIssue.is_published
+                  ? "bg-orange-400"
+                  : selectedMonthlyIssue.assigned >= 7 && !selectedMonthlyIssue.is_published
+                  ? "bg-primary"
+                  : "bg-green-600"
+              } rounded-full`}
+            ></div>
+            <h3 className="font-avenir-black">
+              {getMonthName(selectedMonthlyIssue.month) +
+                " " +
+                selectedMonthlyIssue.year}           <span className="text-sm text-gray-500 font-avenir-roman">({selectedMonthlyIssue.articleCount})</span>
+            </h3>
           </div>
-        ))}
-
-
-      </div>
-      {/* <div className="py-15"></div> */}
-      {/* <PageToggle tabs={tabs} /> */}
-    </>
+        </>
+      )}
+    </div>
   );
 }
 
