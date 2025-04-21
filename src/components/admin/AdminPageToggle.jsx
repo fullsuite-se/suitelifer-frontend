@@ -9,7 +9,7 @@ const AdminPageToggle = () => {
       { label: "About Page Content", component: AboutPageContent },
       {label: "Testimonials", component: Testimonials},
       
-    ];
+    ]; 
   
     return <PageToggle tabs={tabs} />;
   };
