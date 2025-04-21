@@ -30,7 +30,6 @@ const AdminHomePage = () => {
   const handlePublishChanges = async () => {
     try {
       if (imageFile !== null) {
-
         const formData = new FormData();
         formData.append("file", imageFile);
 
@@ -213,11 +212,9 @@ const AdminHomePage = () => {
           />
         </div>
       </div>
-
+      <div className="text-md p-1 font-avenir-black">Industry Images</div>
       <div className="flex flex-col md:flex-row gap-4 p-4">
-        <div className="flex flex-col md:w-full">
-          <div className="text-md p-1 font-avenir-black">Industry Images</div>
-
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 mt-6 ">
           {industries.map(({ industryName, industryId, imageUrl }, index) => {
             const nameVariable = convertToCamelCase(industryName);
 
@@ -234,7 +231,7 @@ const AdminHomePage = () => {
                   {imageUrl && (
                     <img
                       src={imageUrl}
-                      className="w-[25%]"
+                      className="w-[50%] max-h-100"
                       alt={industryName}
                     />
                   )}
