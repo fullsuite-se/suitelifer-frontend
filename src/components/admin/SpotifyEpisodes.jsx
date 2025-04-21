@@ -212,7 +212,10 @@ const SpotifyEpisodes = () => {
               >
                 <PlusIcon className="size-5" />
               </button>
-              <button onClick={cancelEdit} className="hover:text-[#007a8e] cursor-pointer text-primary">
+              <button
+                onClick={cancelEdit}
+                className="hover:text-[#007a8e] cursor-pointer text-primary"
+              >
                 <XCircleIcon className="size-8" />
               </button>
             </>
@@ -225,7 +228,6 @@ const SpotifyEpisodes = () => {
             </button>
           )}
         </div>
-
         <ButtonsSpotify
           buttons={[
             { label: "All" },
@@ -250,27 +252,37 @@ const SpotifyEpisodes = () => {
                 </div>
                 <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
                   <div className="whitespace-nowrap flex-1/3 text-gray-500">
-                    <p className="">Created by: <span className="font-avenir-black text-primary">{episode.createdBy ?? "N/A"}</span></p>
-                    <p className="">Date created: <span className="font-avenir-black text-primary">{formatTimestamp(episode.createdAt ?? "N/A").fullDate}</span></p>
+                    <p className="">
+                      Created by:{" "}
+                      <span className="font-avenir-black text-primary">
+                        {episode.createdBy ?? "N/A"}
+                      </span>
+                    </p>
+                    <p className="">
+                      Date created:{" "}
+                      <span className="font-avenir-black text-primary">
+                        {formatTimestamp(episode.createdAt ?? "N/A").fullDate}
+                      </span>
+                    </p>
                   </div>
                   <div className="flex gap-4">
-                  <button
-                    onClick={() => {
-                      setEpisodeDetails({
-                        episodeId: episode.episodeId,
-                        spotifyId: `https://open.spotify.com/episode/${episode.spotifyId}`,
-                      });
-                    }}
-                    className="whitespace-nowrap p-2.5 px-5 bg-primary text-white rounded-xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e] h-full w-full"
-                  >
-                    <EditIcon className="size-7" /> Edit
-                  </button>
-                  <button
-                    onClick={() => handleDeleteClick(episode.episodeId)}
-                    className="whitespace-nowrap p-2.5 px-4 bg-primary text-white rounded-xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e] h-full w-full"
-                  >
-                    <DeleteIcon className="size-7" /> Delete
-                  </button>
+                    <button
+                      onClick={() => {
+                        setEpisodeDetails({
+                          episodeId: episode.episodeId,
+                          spotifyId: `https://open.spotify.com/episode/${episode.spotifyId}`,
+                        });
+                      }}
+                      className="whitespace-nowrap p-2.5 px-5 bg-primary text-white rounded-xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e] h-full w-full"
+                    >
+                      <EditIcon className="size-7" /> Edit
+                    </button>
+                    <button
+                      onClick={() => handleDeleteClick(episode.episodeId)}
+                      className="whitespace-nowrap p-2.5 px-4 bg-primary text-white rounded-xl cursor-pointer transition-all duration-500 hover:bg-[#007a8e] h-full w-full"
+                    >
+                      <DeleteIcon className="size-7" /> Delete
+                    </button>
                   </div>
                 </div>
               </div>
