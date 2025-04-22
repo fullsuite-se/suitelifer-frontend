@@ -1,4 +1,4 @@
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 
@@ -27,11 +27,19 @@ const NewsletterDetails = ({
 }) => {
   // Dummy data
   const article = NewsletterArticles[0];
-  const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
 
   const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [newsletterItem, setNewsletterItem] = useState({});
+
+  const previousPage = location.state?.from;
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    navigate("/newsletter")
+  };
 
   useEffect(() => {
     const fetchNewsletter = async () => {
@@ -100,7 +108,7 @@ const NewsletterDetails = ({
         </div>
 
         <main className="px-[5%] md:px-[10%] lg:px-[15%] xl:px-[25%] lg:my-20 mb-20">
-          <BackButton backPath={-1} />
+          <BackButton backPath={handleBack} />
           {/* Main Article */}
           <section className="mt-4">
             {article.image ? (
