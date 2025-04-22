@@ -1,16 +1,35 @@
 import React from "react";
+import { useState } from "react";
 import { CalendarDaysIcon, Clock } from "lucide-react";
+import ComingSoon from "../admin/ComingSoon";
 
 const EmployeeEvents = () => {
+  const [isComingSoon, setComingSoon] = useState(true); //Change this when the page is ready.
+
+  if (isComingSoon) {
+    return <ComingSoon />;
+  }
+
   return (
     <section className="p-5 border border-primary rounded-2xl flex flex-col gap-4 mb-25">
       <div className="">
         <label className="text-sm text-gray-500">DATE</label>
-        <p className="text-primary font-avenir-black flex gap-2"> <span><CalendarDaysIcon className="size-5"/></span>April 02, 2025</p>
+        <p className="text-primary font-avenir-black flex gap-2">
+          {" "}
+          <span>
+            <CalendarDaysIcon className="size-5" />
+          </span>
+          April 02, 2025
+        </p>
       </div>
       <div className="">
         <label className="text-sm text-gray-500">TIME</label>
-        <p className="text-primary font-avenir-black flex gap-2"><span><Clock className="size-5"/></span> 7:00 AM - 6:00 PM</p>
+        <p className="text-primary font-avenir-black flex gap-2">
+          <span>
+            <Clock className="size-5" />
+          </span>{" "}
+          7:00 AM - 6:00 PM
+        </p>
       </div>
       <div className="">
         <label className="text-sm text-gray-500">EVENT TITLE</label>
@@ -35,10 +54,13 @@ const EmployeeEvents = () => {
           ceremony, recognizing the best teams and outstanding individual
           performances. Join us as we promote wellness, unity, and a strong
           company culture through the spirit of sports! Mark your calendars and
-          start preparing—Sports Fest 2025 is coming soon! <br /><br />📍 Venue: FullSuite
-          Covered Court <br />👕 Dress Code: Sportswear / Team Colors <br /><br />Stay tuned for
-          team assignments, schedules, and additional details. Let's make this
-          event a memorable one! 🏆🔥
+          start preparing—Sports Fest 2025 is coming soon! <br />
+          <br />
+          📍 Venue: FullSuite Covered Court <br />
+          👕 Dress Code: Sportswear / Team Colors <br />
+          <br />
+          Stay tuned for team assignments, schedules, and additional details.
+          Let's make this event a memorable one! 🏆🔥
         </p>
       </div>
     </section>
