@@ -43,7 +43,6 @@ const News = () => {
     setInputValue(e.target.value);
   };
 
-
   useEffect(() => {
     const fetchNews = async () => {
       try {
@@ -66,7 +65,7 @@ const News = () => {
       style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
     >
       <PageMeta
-        title="News - SuiteLifer"
+        title="News - Suitelifer"
         desc="Stay informed with company news, product launches, and industry insights from Fullsuite."
         isDefer={false}
       />
@@ -180,7 +179,7 @@ const News = () => {
                 </p>
                 <div className="layout-small-news-cards gap-4 sm:gap-5">
                   {[...Array(2)].map((_, index) => (
-                    <LoadingNewsCardSmall/>
+                    <LoadingNewsCardSmall />
                   ))}
                 </div>
               </div>
@@ -192,9 +191,11 @@ const News = () => {
                 </p>
                 <div className="layout-small-news-cards gap-4 sm:gap-5">
                   {news.length > 0 &&
-                    news.slice(1).map((news, index) => (
-                      <NewsCardSmall key={news.id || index} {...news} />
-                    ))}
+                    news
+                      .slice(1)
+                      .map((news, index) => (
+                        <NewsCardSmall key={news.id || index} {...news} />
+                      ))}
                 </div>
               </>
             )}

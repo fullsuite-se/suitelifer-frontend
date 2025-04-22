@@ -92,7 +92,7 @@ const Blog = () => {
   return (
     <section className="gap-4" style={{ maxWidth: "2000px", margin: "0 auto" }}>
       <PageMeta
-        title="Blogs - SuiteLifer"
+        title="Blogs - Suitelifer"
         desc="Dive into our collection of valuable perspectives on all things Startup, Careers, Baguio, and Fullsuite."
         isDefer={false}
       />

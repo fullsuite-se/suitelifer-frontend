@@ -110,7 +110,7 @@ const Careers = () => {
         style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
       >
         <PageMeta
-          title="Careers - SuiteLifer"
+          title="Careers - Suitelifer"
           desc="Your career journey has to start somewhere. Grab the opportunity, start it with us."
           isDefer={false}
         />
@@ -148,7 +148,11 @@ const Careers = () => {
                 />
               </section>
 
-              <section className={`${isHeroLoading ? '' : 'hidden'} relative md:hidden`}>
+              <section
+                className={`${
+                  isHeroLoading ? "" : "hidden"
+                } relative md:hidden`}
+              >
                 {/* upper left skeleton */}
                 <div className="absolute w-[30vw] max-w-[220px] -translate-y-[13vw] -translate-x-[30%] rounded-2xl bg-gray-200 animate-pulse aspect-3/4"></div>
 
@@ -206,7 +210,11 @@ const Careers = () => {
                   </>
                 )}
               </div>
-              <div className={`${isHeroLoading ? '' : 'hidden'} relative flex justify-center md:py-4 md:gap-10`}>
+              <div
+                className={`${
+                  isHeroLoading ? "" : "hidden"
+                } relative flex justify-center md:py-4 md:gap-10`}
+              >
                 {/* Left Skeleton (only shown on md and up) */}
                 <div className="hidden md:block size-[18%] xl:max-w-[200px] rounded-2xl bg-gray-200 animate-pulse aspect-3/4"></div>
 

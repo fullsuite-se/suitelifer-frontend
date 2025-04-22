@@ -1,1 +1,23 @@
-{"name":"Suitelifer","short_name":"Suitelifer","description":"SuiteLifer is a streamlined platform for job applications and employee engagement at FullSuite. It automates hiring, document submissions, and communication while providing training, company updates, and event management—all in one secure and scalable system.","start_url":"/app/blogs-feed","display":"standalone","background_color":"#ffffff","theme_color":"#ffffff","lang":"en","scope":"/","icons":[{"src":"/icons/android-chrome-192x192.png","sizes":"192x192","type":"image/png"},{"src":"/icons/android-chrome-512x512.png","sizes":"512x512","type":"image/png"}]}
+{
+  "name": "Suitelifer",
+  "short_name": "Suitelifer",
+  "description": "Suitelifer is a streamlined platform for job applications and employee engagement at FullSuite. It automates hiring, document submissions, and communication while providing training, company updates, and event management—all in one secure and scalable system.",
+  "start_url": "/app/blogs-feed",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "lang": "en",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icons/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

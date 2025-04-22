@@ -1,12 +1,11 @@
-
-# SuiteLifer Website
+# Suitelifer Website
 
 This website is designed to streamline and enhance the job application and employee engagement process for Offshore Concept BPO Services, Inc. - FullSuite.
-
 
 ## Features
 
 Functional Requirements:
+
 - Content Management system
 - Company and Employee Blog Management
 - News Management
@@ -17,6 +16,7 @@ Functional Requirements:
 - Audit Logs
 
 Non-Functional Requirements:
+
 - Scalability
 - Security
 - Performance

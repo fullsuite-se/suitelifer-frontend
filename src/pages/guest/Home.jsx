@@ -98,7 +98,7 @@ const Home = () => {
       style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
     >
       <PageMeta
-        title="Home | Empowering Careers & Opportunities - SuiteLifer"
+        title="Home | Empowering Careers & Opportunities - Suitelifer"
         desc="Discover career opportunities, company insights, and the latest updates at FullSuite. Your journey to success starts here."
         isDefer={false}
       />

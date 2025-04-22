@@ -69,7 +69,7 @@ const AboutUs = () => {
       style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
     >
       <PageMeta
-        title="About Us - SuiteLifer"
+        title="About Us - Suitelifer"
         desc="A launchpad that transforms careers. We'll help you pave the way to your professional success."
         isDefer={false}
       />
@@ -109,7 +109,7 @@ const AboutUs = () => {
             </div>
           </>
         ) : (
-            <>
+          <>
             <div className=" md:mt-100 lg:mt-30"></div>
             <div className="relative w-full flex justify-center h-[100%] items-end mt-20">
               <img
@@ -189,22 +189,23 @@ const AboutUs = () => {
               </div>
               <div className="text-body text-gray-700 xl:leading-10">
                 <p>
-                  FullSuite was originally founded by Maggie Po on October 8, 2014
-                  as Offshore Concept Consulting, Inc. In 2018, the founder
-                  acquired full ownership of the brand name, FullSuite because it
-                  embodied the company vision to provide a comprehensive suite of
-                  solutions for startups. Maggie, alongside her co-founders,
-                  envisioned that instead of piecemeal services, FullSuite will
-                  offer an end-to-end approach that helps venture-backed startups
-                  handle critical data operational functions—especially the ones
-                  their AI systems can't yet automate.
+                  FullSuite was originally founded by Maggie Po on October 8,
+                  2014 as Offshore Concept Consulting, Inc. In 2018, the founder
+                  acquired full ownership of the brand name, FullSuite because
+                  it embodied the company vision to provide a comprehensive
+                  suite of solutions for startups. Maggie, alongside her
+                  co-founders, envisioned that instead of piecemeal services,
+                  FullSuite will offer an end-to-end approach that helps
+                  venture-backed startups handle critical data operational
+                  functions—especially the ones their AI systems can't yet
+                  automate.
                 </p>
                 <br />
                 <p>
                   In 2020, the legal entity was changed to Offshore Concept BPO
                   Services, Inc. to reflect in the name the more accurate
-                  representation of its services. But, the brand name is still in
-                  use which reflects the various suite of operations that the
+                  representation of its services. But, the brand name is still
+                  in use which reflects the various suite of operations that the
                   company offers to help customers scale their businesses
                   efficiently.
                 </p>
