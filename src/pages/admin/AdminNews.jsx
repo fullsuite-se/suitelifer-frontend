@@ -8,11 +8,14 @@ import "@ag-grid-community/styles/ag-theme-quartz.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import api from "../../utils/axios";
+import ComingSoon from "./ComingSoon";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 const AdminNews = () => {
+  const [isComingSoon, setComingSoon] = useState(true); //Change this when the page is ready.
+
   const [showModal, setShowModal] = useState(false);
   const [editingNews, setEditingNews] = useState(null);
   const [newNews, setNewNews] = useState({
@@ -129,6 +132,10 @@ const AdminNews = () => {
 
     fetchBlogs();
   }, []);
+
+  if(isComingSoon){
+    return <ComingSoon/>
+  }
 
   return (
     <>

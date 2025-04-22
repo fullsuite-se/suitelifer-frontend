@@ -48,7 +48,7 @@ const Home = () => {
       text: "the Suite Spot",
     },
     {
-      href: "https://www.youtube.com/",
+      href: "https://www.youtube.com/@fs_thesuitepod",
       icon: YoutubeIcon,
       text: "the Suite Tube",
     },

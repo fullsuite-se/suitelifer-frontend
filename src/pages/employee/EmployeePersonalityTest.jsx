@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import TestCardComponent from "../../components/employee/TestCard";
 import api from "../../utils/axios";
+import ComingSoon from "../admin/ComingSoon";
 
 const EmployeePersonalityTest = () => {
+  const [isComingSoon, setComingSoon] = useState(true); //Change this when the page is ready.
+
   const [personalityTests, setPersonalityTests] = useState([]);
 
   const fetchPersonalityTests = async () => {
@@ -18,6 +21,10 @@ const EmployeePersonalityTest = () => {
   useEffect(() => {
     fetchPersonalityTests();
   }, []);
+
+  if (isComingSoon) {
+    return <ComingSoon />;
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4">
