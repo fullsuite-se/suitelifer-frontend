@@ -16,6 +16,9 @@ import toast from "react-hot-toast";
 import { Dialog, DialogTitle, DialogContent, TextField } from "@mui/material";
 import ActionButtons from "./ActionButtons";
 
+import LoadingAnimation from "../loader/Loading";
+import ConfirmationDialog from "./ConfirmationDialog";
+
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 const FooterContent = () => {
@@ -23,6 +26,8 @@ const FooterContent = () => {
   const [rowFooterData, setRowFooterData] = useState([]);
   const [certModalAddEditIsShown, setCertModalAddEditIsShown] = useState(false);
   const [dataUpdated, setDataUpdated] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
 
   const defaultCertificationDetails = {
     certId: null,
@@ -38,6 +43,7 @@ const FooterContent = () => {
   const handleCertificationSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       let response;
       if (certificationDetails.certId === null) {
         response = await api.post("/api/certification", {
@@ -58,16 +64,23 @@ const FooterContent = () => {
       toast.error("Failed to save certificate");
       console.error(error);
     } finally {
+      setIsLoading(false);
       setDataUpdated((prev) => !prev);
       setCertModalAddEditIsShown(false);
       setCertificationDetails(defaultCertificationDetails);
     }
   };
 
-  const deleteCert = async (certId) => {
+  const handleDeleteClick = (certId) => {
+    setCertificationDetails((cd) => ({ ...cd, certId }));
+    setDeleteModalIsOpen(true);
+  };
+
+  const handleDelete = async (certId) => {
     try {
+      setIsLoading(true);
       const response = await api.delete("/api/certification", {
-        data: { certId },
+        data: { certId: certificationDetails.certId },
       });
 
       if (response.data.success) {
@@ -82,8 +95,12 @@ const FooterContent = () => {
       console.error("Delete error:", error);
       toast.error("Error deleting certification");
     } finally {
-      setDataUpdated((prev) => !prev);
+      setIsLoading(false);
+      setDeleteModalIsOpen(false);
     }
+
+    setDataUpdated(!dataUpdated);
+    setCertificationDetails(defaultCertificationDetails);
   };
 
   const fetchCerts = async () => {
@@ -163,7 +180,7 @@ const FooterContent = () => {
                   <ActionButtons
                     icon={<TrashIcon className="size-5" />}
                     handleClick={() => {
-                      deleteCert(params.data.certId);
+                      handleDeleteClick(params.data.certId)
                     }}
                   />
                 </div>
@@ -188,55 +205,76 @@ const FooterContent = () => {
         />
       </div>
 
-      <Dialog
-        open={certModalAddEditIsShown}
-        onClose={() => setCertModalAddEditIsShown(false)}
-        sx={{
-          "& .MuiDialog-paper": {
-            borderRadius: "16px",
-            padding: "20px",
-            width: "600px",
-          },
-        }}
-      >
-        <DialogTitle className="text-center">
-          {certificationDetails.certId === null
-            ? "Add Certificate"
-            : "Edit Certificate"}
-        </DialogTitle>
-        <DialogContent>
-          <div className="text-md font-bold pt-4 font-avenir-black">
-            Image Url<span className="text-primary">*</span>
-          </div>
-          <input
-            name="certImageUrl"
-            type="text"
-            value={certificationDetails.certImageUrl}
-            onChange={(e) =>
-              setCertificationDetails({
-                ...certificationDetails,
-                [e.target.name]: e.target.value,
-              })
-            }
-            className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
-          />
+      {isLoading ? (
+        <LoadingAnimation />
+      ) : (
+        <Dialog
+          open={certModalAddEditIsShown}
+          onClose={() => setCertModalAddEditIsShown(false)}
+          sx={{
+            "& .MuiDialog-paper": {
+              borderRadius: "16px",
+              padding: "20px",
+              width: "600px",
+            },
+          }}
+        >
+          <DialogTitle className="text-center">
+            {certificationDetails.certId === null
+              ? "Add Certificate"
+              : "Edit Certificate"}
+          </DialogTitle>
+          <DialogContent>
+            <div className="text-md font-bold pt-4 font-avenir-black">
+              Image Url<span className="text-primary">*</span>
+            </div>
+            <input
+              name="certImageUrl"
+              type="text"
+              value={certificationDetails.certImageUrl}
+              onChange={(e) =>
+                setCertificationDetails({
+                  ...certificationDetails,
+                  [e.target.name]: e.target.value,
+                })
+              }
+              className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+            />
 
-          <div className="flex justify-end gap-2 mt-6">
-            <button
-              className="btn-light"
-              onClick={() => {
-                setCertificationDetails(defaultCertificationDetails);
-                setCertModalAddEditIsShown(false);
-              }}
-            >
-              Cancel
-            </button>
-            <button className="btn-primary" onClick={handleCertificationSubmit}>
-              {certificationDetails.certId === null ? "Add" : "Update"}
-            </button>
-          </div>
-        </DialogContent>
-      </Dialog>
+            <div className="flex justify-end gap-2 mt-6">
+              <button
+                className="btn-light"
+                onClick={() => {
+                  setCertificationDetails(defaultCertificationDetails);
+                  setCertModalAddEditIsShown(false);
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn-primary"
+                onClick={handleCertificationSubmit}
+              >
+                {certificationDetails.certId === null ? "Add" : "Update"}
+              </button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+      {isLoading ? (
+        <LoadingAnimation />
+      ) : (
+        <ConfirmationDialog
+          open={deleteModalIsOpen}
+          onClose={() => setDeleteModalIsOpen(false)}
+          onConfirm={handleDelete}
+          title="Delete Certification"
+          description="Are you sure you want to delete this certification? This action cannot be undone."
+          confirmLabel="Delete"
+          cancelBtnClass="p-2 px-4 cursor-pointer rounded-lg hover:bg-gray-200 duration-500 text-gray-700"
+          confirmBtnClass="p-2 px-4 cursor-pointer rounded-lg bg-red-500 hover:bg-red-600 duration-500 text-white"
+        />
+      )}
     </>
   );
 };
