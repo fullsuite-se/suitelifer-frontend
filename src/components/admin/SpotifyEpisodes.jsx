@@ -14,6 +14,7 @@ import { useStore } from "../../store/authStore";
 import { showConfirmationToast } from "../toasts/confirm";
 import ButtonsSpotify from "./ButtonsSpotify";
 import formatTimestamp from "../TimestampFormatter";
+import ConfirmationDialog from "./ConfirmationDialog";
 import {
   Dialog,
   DialogTitle,
@@ -23,6 +24,7 @@ import {
   Button,
 } from "@mui/material";
 import ContentButtons from "./ContentButtons";
+
 
 const extractSpotifyId = (url) => {
   const match = url.match(/(?:episode|playlist)\/([^?]+)/);
@@ -39,6 +41,8 @@ const isValidEpisodeUrl = (url) => {
     return false;
   }
 };
+
+
 
 const SpotifyEpisodes = () => {
   const user = useStore((state) => state.user);
@@ -193,6 +197,7 @@ const SpotifyEpisodes = () => {
       )}
 
       <div className="flex justify-end px-4">
+        <>
         <ContentButtons
           icon={<PlusCircleIcon className="size-5" />}
           text={
@@ -204,6 +209,7 @@ const SpotifyEpisodes = () => {
           }
           handleClick={openAddModal}
         />
+        </>
       </div>
 
       <Dialog open={openModal} onClose={closeModal} fullWidth maxWidth="sm">
@@ -276,13 +282,13 @@ const SpotifyEpisodes = () => {
                 onClick={() => openEditModal(episode)}
                 className="p-2.5 px-5 bg-primary text-white rounded-md hover:bg-[#007a8e]"
               >
-                <EditIcon className="size-7" /> Edit
+                <EditIcon className="size-5" /> Edit
               </button>
               <button
                 onClick={() => handleDeleteClick(episode.episodeId)}
                 className="p-2.5 px-4 bg-primary text-white rounded-md hover:bg-[#007a8e]"
               >
-                <DeleteIcon className="size-7" /> Delete
+                <DeleteIcon className="size-5" /> Delete
               </button>
 
             </div>
