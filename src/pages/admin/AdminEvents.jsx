@@ -16,7 +16,7 @@ import ComingSoon from "./ComingSoon";
 import { EyeIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
 
 const AdminEvents = () => {
-  const [isComingSoon, setComingSoon] = useState(true); //Change this if page is ready
+  const [isComingSoon, setComingSoon] = useState(true); //Change false if page is ready
 
   const [openDialog, setOpenDialog] = useState(false);
   const [events, setEvents] = useState([]);
