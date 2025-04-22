@@ -182,7 +182,6 @@ function AdminNewsLetterToggle() {
     try {
       const response = await api.get("/api/issues/current");
       setCurrentPublishedIssue(response.data.currentIssue);
-      console.log(response.data.currentIssue);
     } catch (err) {
       console.log(err);
     }
@@ -192,7 +191,6 @@ function AdminNewsLetterToggle() {
     try {
       const response = await api.get("/api/issues/oldest");
       setOldestIssue(response.data.oldestIssue);
-      console.log(response.data.oldestIssue);
     } catch (err) {
       console.log(err);
     }

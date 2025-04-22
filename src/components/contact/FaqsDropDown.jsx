@@ -13,7 +13,6 @@ const FAQ = () => {
       const response = await api.get("/api/get-all-faqs");
       const visibleFaqs = response.data.faqs.filter((faq) => faq.is_shown === 1);
       setFaqs(visibleFaqs);
-      console.log(response.data.setFaqs);
     } catch (err) {
       console.log(err);
     }

@@ -96,8 +96,7 @@ const JobCarouselVersion2 = ({ jobs }) => {
                     )}
                     {isActive && (
                       <NavLink
-                        to={`/careers/${toSlug(job.jobTitle)}`}
-                        state={{ jobId: job.jobId }}
+                        to={`/careers/${toSlug(job.jobTitle)}?id=${job.jobId}`}
                         className={`mt-5`}
                       >
                         <button className="bg-primary cursor-pointer transition-all duration-300 ease-in-out hover:bg-[#007a8e] text-white p-2 rounded-xl w-full mt-auto text-small">

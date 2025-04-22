@@ -51,8 +51,6 @@ const Blog = () => {
       setSpotifyIsLoading(true);
       const response = await api.get("/api/spotify/playlists");
 
-      console.log(response.data);
-
       setPlaylists(response.data.playlists);
     } catch (err) {
       console.error(err);

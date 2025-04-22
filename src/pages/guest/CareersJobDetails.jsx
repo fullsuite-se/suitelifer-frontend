@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import config from "../../config.js";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import MobileNav from "../../components/home/MobileNav.jsx";
 import TabletNav from "../../components/home/TabletNav.jsx";
 import DesktopNav from "../../components/home/DesktopNav.jsx";
@@ -14,34 +13,26 @@ import atsAPI from "../../utils/atsAPI.js";
 const CareersJobDetails = () => {
   const [jobDetails, setJobDetails] = useState(null);
   const location = useLocation();
-  const { jobId } = location.state;
+  const [searchParams] = useSearchParams();
+  const jobId = searchParams.get("id");
   const navigate = useNavigate();
   const previousPage = location.state?.from;
 
   const handleBack = () => {
     if (previousPage?.startsWith("/careers/application-form/")) {
-      console.log("Navigating back to careers page");
       navigate("/careers");
     } else if (previousPage) {
-      console.log("Navigating back to:", previousPage);
       navigate(-1);
     } else {
-      console.log("No previous page, going to careers");
-      navigate("/careers"); // Default fallback if no previous state
+      navigate("/careers");
     }
   };
 
   useEffect(() => {
     const fetchJobDetails = async () => {
       try {
-        console.log("Fetching job details for jobId:", jobId);
-
-        console.log(config.apiBaseUrl);
-
         const response = await atsAPI.get(`/jobs/details/${jobId}`);
         setJobDetails(response.data.data);
-
-        console.log(response.data.data);
       } catch (error) {
         console.error("Error fetching job details:", error);
       }
@@ -187,7 +178,11 @@ const CareersJobDetails = () => {
               </>
             )}
             <button
-              className={`mx-auto font-avenir-black ${jobDetails.isOpen === 1 ? 'bg-primary cursor-pointer' : 'bg-gray-300 cursor-not-allowed'} mt-10 py-3 text-white rounded-xl min-w-70 md:min-w-100 mb-50 text-small`}
+              className={`mx-auto font-avenir-black ${
+                jobDetails.isOpen === 1
+                  ? "bg-primary cursor-pointer"
+                  : "bg-gray-300 cursor-not-allowed"
+              } mt-10 py-3 text-white rounded-xl min-w-70 md:min-w-100 mb-50 text-small`}
               type="button"
               disabled={jobDetails.isOpen === 0}
               onClick={() => {

@@ -58,7 +58,6 @@ const Form = () => {
 
   const handleApplicationDetailsChange = (e) => {
     setApplicationDetails((ad) => ({ ...ad, [e.target.name]: e.target.value }));
-    console.log(applicationDetails);
   };
 
   // =========== START: drag and drop using dropzone ===========
@@ -78,8 +77,6 @@ const Form = () => {
       setIsFileTooLarge(false);
       setIsFileRemovedOnce(false);
       setCV(selectedFile);
-      // setProgress(0);
-      console.log(selectedFile);
     }
   }, []);
 
@@ -103,7 +100,7 @@ const Form = () => {
     formData.append("file", CV);
 
     const upload_response = await atsAPI.post("/upload/gdrive/cv", formData);
-    console.log(upload_response.data.fileUrl);
+
     setApplicationDetails((ad) => ({
       ...ad,
       cv_link: upload_response.data.fileUrl,
@@ -187,8 +184,6 @@ const Form = () => {
       const response = await atsAPI.post("/applicants/pending", {
         applicant: JSON.stringify(applicationDetails),
       });
-
-      console.log(response.status);
 
       if (response.status === 201) {
         toast.success("Thank you! We’ll be in touch with you soon.");

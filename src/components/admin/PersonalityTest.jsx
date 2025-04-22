@@ -19,7 +19,15 @@ import toast from "react-hot-toast";
 import { ModalDeleteConfirmation } from "../modals/ModalDeleteConfirmation";
 import ContentButtons from "./ContentButtons";
 import ComingSoon from "../../pages/admin/ComingSoon";
-import { EyeIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
+import {
+  EyeIcon,
+  PlusCircleIcon,
+  TrashIcon,
+  PencilIcon,
+} from "@heroicons/react/24/outline";
+import LoadingAnimation from "../loader/Loading";
+import ConfirmationDialog from "./ConfirmationDialog";
+import ActionButtons from "./ActionButtons";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -31,6 +39,8 @@ function PersonalityTest() {
 
   // PERSONALITY TEST VARIABLES
   const [personalityTests, setPersonalityTests] = useState([]);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const defaultPersonalityTestDetails = {
     testId: null,
@@ -64,6 +74,7 @@ function PersonalityTest() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       if (personalityTestDetails.testId === null) {
         // ADD PERSONALITY TEST
         const response = await api.post("/api/personality-test", {
@@ -92,6 +103,8 @@ function PersonalityTest() {
       setDataUpdated(!dataUpdated);
     } catch (err) {
       toast.error("Encountered an error");
+    } finally {
+      setIsLoading(false);
     }
 
     setPTDetails(defaultPersonalityTestDetails);
@@ -115,6 +128,7 @@ function PersonalityTest() {
 
   const handleDelete = async () => {
     try {
+      setIsLoading(true);
       const response = await api.delete("/api/personality-test", {
         data: {
           testId: personalityTestDetails.testId,
@@ -124,6 +138,9 @@ function PersonalityTest() {
       toast.success(response.data.message);
     } catch (err) {
       toast.error("Encountered an error deleting personality test");
+    } finally {
+      setIsLoading(false);
+      setDeleteModalIsOpen(false);
     }
     setDataUpdated(!dataUpdated);
     setPTDetails(defaultPersonalityTestDetails);
@@ -216,15 +233,17 @@ function PersonalityTest() {
 
                   headerClass: "text-primary font-bold bg-gray-100",
                   cellRenderer: (params) => (
-                    <div className="flex gap-2">
-                      <IconButton onClick={() => handleEditClick(params.data)}>
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => handleDeleteClick(params.data.testId)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
+                    <div className="flex">
+                      <ActionButtons
+                        icon={<PencilIcon className="size-5" />}
+                        handleClick={() => handleEditClick(params.data)}
+                      />
+                      <ActionButtons
+                        icon={<TrashIcon className="size-5" />}
+                        handleClick={() =>
+                          handleDeleteClick(params.data.testId)
+                        }
+                      />
                     </div>
                   ),
                 },
@@ -249,87 +268,100 @@ function PersonalityTest() {
         </div>
 
         {/* Dialog for Add/Edit */}
-        <Dialog
-          open={openDialog}
-          onClose={handleModalClose}
-          sx={{
-            "& .MuiDialog-paper": {
-              borderRadius: "16px",
-              padding: "20px",
-              width: "500px",
-            },
-          }}
-        >
-          <form onSubmit={(e) => handleSubmit(e)}>
-            <DialogTitle className="flex w-full justify-center items-center">
-              {personalityTestDetails.id ? "Edit Test" : "Add Test"}
-            </DialogTitle>
-            <DialogContent className="">
-              <div className="w-full mb-3">
-                <label className="block text-gray-700 font-avenir-black">
-                  Title<span className="text-primary">*</span>
-                </label>
+        {isLoading ? (
+          <LoadingAnimation />
+        ) : (
+          <Dialog
+            open={openDialog}
+            onClose={handleModalClose}
+            sx={{
+              "& .MuiDialog-paper": {
+                borderRadius: "16px",
+                padding: "20px",
+                width: "500px",
+              },
+            }}
+          >
+            <form onSubmit={(e) => handleSubmit(e)}>
+              <DialogTitle className="flex w-full justify-center items-center">
+                {personalityTestDetails.id ? "Edit Test" : "Add Test"}
+              </DialogTitle>
+              <DialogContent className="">
+                <div className="w-full mb-3">
+                  <label className="block text-gray-700 font-avenir-black">
+                    Title<span className="text-primary">*</span>
+                  </label>
 
-                <input
-                  name="testTitle"
-                  required
-                  value={personalityTestDetails.testTitle}
-                  onChange={(e) => handlePersonalityTestDetailsChange(e)}
-                  rows={3}
-                  className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
-                />
-              </div>
+                  <input
+                    name="testTitle"
+                    required
+                    value={personalityTestDetails.testTitle}
+                    onChange={(e) => handlePersonalityTestDetailsChange(e)}
+                    rows={3}
+                    className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
+                  />
+                </div>
 
-              <div className="w-full mb-3">
-                <label className="block text-gray-700 font-avenir-black">
-                  URL<span className="text-primary">*</span>
-                </label>
+                <div className="w-full mb-3">
+                  <label className="block text-gray-700 font-avenir-black">
+                    URL<span className="text-primary">*</span>
+                  </label>
 
-                <input
-                  name="testUrl"
-                  required
-                  value={personalityTestDetails.testUrl}
-                  onChange={(e) => handlePersonalityTestDetailsChange(e)}
-                  rows={3}
-                  className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
-                />
-              </div>
+                  <input
+                    name="testUrl"
+                    required
+                    value={personalityTestDetails.testUrl}
+                    onChange={(e) => handlePersonalityTestDetailsChange(e)}
+                    rows={3}
+                    className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
+                  />
+                </div>
 
-              <div className="w-full">
-                <label className="block text-gray-700 font-avenir-black">
-                  Description<span className="text-primary">*</span>
-                </label>
+                <div className="w-full">
+                  <label className="block text-gray-700 font-avenir-black">
+                    Description<span className="text-primary">*</span>
+                  </label>
 
-                <textarea
-                  name="testDescription"
-                  required
-                  value={personalityTestDetails.testDescription}
-                  onChange={(e) => handlePersonalityTestDetailsChange(e)}
-                  rows={3}
-                  className="w-full p-3 border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4 mt-2 resize-y"
-                />
-              </div>
-            </DialogContent>
-            <DialogActions>
-              <button className="btn-light" onClick={handleModalClose}>
-                Cancel
-              </button>
-              <button className="btn-primary" type="submit" variant="contained">
-                Save
-              </button>
-            </DialogActions>
-          </form>
-        </Dialog>
+                  <textarea
+                    name="testDescription"
+                    required
+                    value={personalityTestDetails.testDescription}
+                    onChange={(e) => handlePersonalityTestDetailsChange(e)}
+                    rows={3}
+                    className="w-full p-3 border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4 mt-2 resize-y"
+                  />
+                </div>
+              </DialogContent>
+              <DialogActions>
+                <button className="btn-light" onClick={handleModalClose}>
+                  Cancel
+                </button>
+                <button
+                  className="btn-primary"
+                  type="submit"
+                  variant="contained"
+                >
+                  Save
+                </button>
+              </DialogActions>
+            </form>
+          </Dialog>
+        )}
       </div>
-      <ModalDeleteConfirmation
-        isOpen={deleteModalIsOpen}
-        handleClose={() => {
-          setDeleteModalIsOpen(false);
-          setPTDetails(defaultPersonalityTestDetails);
-        }}
-        onConfirm={handleDelete}
-        message="Are you sure you want to delete this personality test? This action cannot be undone."
-      />
+      {isLoading ? (
+        <LoadingAnimation />
+      ) : (
+        <ConfirmationDialog
+          open={deleteModalIsOpen}
+          onClose={() => setDeleteModalIsOpen(false)}
+          onConfirm={handleDelete}
+          title="Delete Personality Test"
+          description="Are you sure you want to delete this personality test? This action cannot be undone."
+          confirmLabel="Delete"
+          cancelBtnClass="p-2 px-4 cursor-pointer rounded-lg hover:bg-gray-200 duration-500 text-gray-700"
+          confirmBtnClass="p-2 px-4 cursor-pointer rounded-lg bg-red-500 hover:bg-red-600 duration-500 text-white"
+        />
+      )}
     </>
   );
 }

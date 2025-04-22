@@ -20,7 +20,14 @@ import formatTimestamp from "../TimestampFormatter";
 import { ModalDeleteConfirmation } from "../modals/ModalDeleteConfirmation";
 import ContentButtons from "./ContentButtons";
 import ComingSoon from "../../pages/admin/ComingSoon";
-import { EyeIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
+import {
+  PlusCircleIcon,
+  TrashIcon,
+  PencilIcon,
+} from "@heroicons/react/24/outline";
+import LoadingAnimation from "../loader/Loading";
+import ConfirmationDialog from "./ConfirmationDialog";
+import ActionButtons from "./ActionButtons";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -28,6 +35,7 @@ function JobCourse() {
   const [isComingSoon, setComingSoon] = useState(false);
 
   const user = useStore((state) => state.user);
+  const [isLoading, setIsLoading] = useState(false);
 
   // DATA UPDATES
   const [dataUpdated, setDataUpdated] = useState(false);
@@ -65,6 +73,7 @@ function JobCourse() {
 
   const handleDelete = async () => {
     try {
+      setIsLoading(true);
       const response = await api.delete("api/course", {
         data: { courseId: courseDetails.courseId },
       });
@@ -75,6 +84,9 @@ function JobCourse() {
       setCourseDetails(defaultCourseDetails);
     } catch (err) {
       console.log(err);
+    } finally {
+      setIsLoading(false);
+      setDeleteModalIsOpen(false);
     }
   };
 
@@ -86,6 +98,7 @@ function JobCourse() {
     e.preventDefault();
 
     try {
+      setIsLoading(true);
       if (courseDetails.courseId === null || courseDetails.courseId === "") {
         // ADD COURSE
         const response = await api.post("/api/course", {
@@ -108,8 +121,9 @@ function JobCourse() {
       setCourseDetails(defaultCourseDetails);
       setAddEditModalIsOpen(false);
     } catch (error) {
-      console.log("Error adding course");
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -125,7 +139,6 @@ function JobCourse() {
       const response = await api.get("api/course");
       setRowCourseData(response.data.courses);
     } catch (error) {
-      console.log("Error Fetching Job Courses");
       console.log(error);
     }
   };
@@ -187,8 +200,6 @@ function JobCourse() {
                   field: "createdBy",
                   flex: 1,
                   headerClass: "text-primary font-bold bg-gray-100",
-                  // valueGetter: (params) =>
-                  //   `${params.data.first_name} ${params.data.last_name}`,
                 },
                 {
                   headerName: "Action",
@@ -196,15 +207,17 @@ function JobCourse() {
                   flex: 1,
                   headerClass: "text-primary font-bold bg-gray-100",
                   cellRenderer: (params) => (
-                    <div className="flex gap-2">
-                      <IconButton onClick={() => handleEdit(params.data)}>
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => handleDeleteClick(params.data.courseId)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
+                    <div className="flex">
+                      <ActionButtons
+                        icon={<PencilIcon className="size-5" />}
+                        handleClick={() => handleEdit(params.data)}
+                      />
+                      <ActionButtons
+                        icon={<TrashIcon className="size-5" />}
+                        handleClick={() =>
+                          handleDeleteClick(params.data.courseId)
+                        }
+                      />
                     </div>
                   ),
                 },
@@ -229,89 +242,105 @@ function JobCourse() {
         </div>
 
         {/* Dialog for Add/Edit */}
-        <Dialog
-          open={addEditModalIsOpen}
-          onClose={() => setAddEditModalIsOpen(false)}
-          sx={{
-            "& .MuiDialog-paper": {
-              borderRadius: "16px",
-              padding: "20px",
-              width: "600px",
-            },
-          }}
-        >
-          <form onSubmit={(e) => handleAddEditCourse(e)}>
-            <DialogTitle className="flex w-full justify-center items-center">
-              {courseDetails.courseId ? "Edit Course" : "Add Course"}
-            </DialogTitle>
-            <DialogContent>
-              <div className="w-full">
-                <label className="block text-gray-700 font-avenir-black mt-2">
-                  Title<span className="text-primary">*</span>
-                </label>
+        {isLoading ? (
+          <LoadingAnimation />
+        ) : (
+          <Dialog
+            open={addEditModalIsOpen}
+            onClose={() => setAddEditModalIsOpen(false)}
+            sx={{
+              "& .MuiDialog-paper": {
+                borderRadius: "16px",
+                padding: "20px",
+                width: "600px",
+              },
+            }}
+          >
+            <form onSubmit={(e) => handleAddEditCourse(e)}>
+              <DialogTitle className="flex w-full justify-center items-center">
+                {courseDetails.courseId ? "Edit Course" : "Add Course"}
+              </DialogTitle>
+              <DialogContent>
+                <div className="w-full">
+                  <label className="block text-gray-700 font-avenir-black mt-2">
+                    Title<span className="text-primary">*</span>
+                  </label>
 
-                <input
-                  name="title"
-                  required
-                  value={courseDetails.title}
-                  onChange={(e) => handleInputChange(e)}
-                  rows={3}
-                  className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-avenir-black mt-2">
-                  URL<span className="text-primary">*</span>
-                </label>
-                <input
-                  name="url"
-                  required
-                  value={courseDetails.url}
-                  onChange={(e) => handleInputChange(e)}
-                  className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-avenir-black mt-2">
-                  Description<span className="text-primary">*</span>
-                </label>
-                <textarea
-                  name="description"
-                  required
-                  value={courseDetails.description}
-                  onChange={(e) => handleInputChange(e)}
-                  rows={3}
-                  className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
-                ></textarea>
-              </div>
-            </DialogContent>
-            <DialogActions>
-              <button
-                type="button"
-                className="btn-light"
-                onClick={() => {
-                  setAddEditModalIsOpen(false);
-                  setCourseDetails(defaultCourseDetails);
-                }}
-              >
-                Cancel
-              </button>
-              <button type="submit" className="btn-primary" variant="contained">
-                Save
-              </button>
-            </DialogActions>
-          </form>
-        </Dialog>
+                  <input
+                    name="title"
+                    required
+                    value={courseDetails.title}
+                    onChange={(e) => handleInputChange(e)}
+                    rows={3}
+                    className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-avenir-black mt-2">
+                    URL<span className="text-primary">*</span>
+                  </label>
+                  <input
+                    name="url"
+                    required
+                    value={courseDetails.url}
+                    onChange={(e) => handleInputChange(e)}
+                    className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-avenir-black mt-2">
+                    Description<span className="text-primary">*</span>
+                  </label>
+                  <textarea
+                    name="description"
+                    required
+                    value={courseDetails.description}
+                    onChange={(e) => handleInputChange(e)}
+                    rows={3}
+                    className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
+                  ></textarea>
+                </div>
+              </DialogContent>
+              <DialogActions>
+                <button
+                  type="button"
+                  className="btn-light"
+                  onClick={() => {
+                    setAddEditModalIsOpen(false);
+                    setCourseDetails(defaultCourseDetails);
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn-primary"
+                  variant="contained"
+                >
+                  Save
+                </button>
+              </DialogActions>
+            </form>
+          </Dialog>
+        )}
       </div>
-      <ModalDeleteConfirmation
-        isOpen={deleteModalIsOpen}
-        handleClose={() => {
-          setDeleteModalIsOpen(false);
-          setCourseDetails(defaultCourseDetails);
-        }}
-        onConfirm={handleDelete}
-        message="Are you sure you want to delete this course? This action cannot be undone."
-      />
+      {isLoading ? (
+        <LoadingAnimation />
+      ) : (
+        <ConfirmationDialog
+          open={deleteModalIsOpen}
+          onClose={() => {
+            setDeleteModalIsOpen(false);
+            setCourseDetails(defaultCourseDetails);
+          }}
+          onConfirm={handleDelete}
+          title="Delete Course"
+          description="Are you sure you want to delete this course? This action cannot be undone."
+          confirmLabel="Delete"
+          cancelBtnClass="p-2 px-4 cursor-pointer rounded-lg hover:bg-gray-200 duration-500 text-gray-700"
+          confirmBtnClass="p-2 px-4 cursor-pointer rounded-lg bg-red-500 hover:bg-red-600 duration-500 text-white"
+        />
+      )}
     </>
   );
 }

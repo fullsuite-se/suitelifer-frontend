@@ -21,7 +21,6 @@ const Testimonials = () => {
       console.error(error);
     } finally {
       setIsLoading(false);
-      console.log(testimonials.length);
     }
   };
 

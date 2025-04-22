@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
-import api from "../../utils/axios";
 import GuestIndustryTags from "../../components/careers/GuestIndustriesTags";
 import BackToTop from "../../components/BackToTop";
 import BackButton from "../../components/BackButton";
@@ -29,7 +28,6 @@ const CareersAll = () => {
     try {
       const response = await atsAPI.get("/industries/");
       setIndustries((i) => response.data.data);
-      console.log(response.data.data);
     } catch (err) {
       console.log(err);
     }
@@ -123,8 +121,7 @@ const CareersAll = () => {
                     jobs.map((job, index) => (
                       <NavLink
                         key={index}
-                        to={`/careers/${toSlug(job.jobTitle)}`}
-                        state={{ jobId: job.jobId, from: location.pathname }}
+                        to={`/careers/${toSlug(job.jobTitle)}?id=${job.jobId}`}
                         className={`group no-underline`}
                       >
                         <div className="group p-6 bg-white group-hover:bg-primary shadow-md rounded-xl transition-transform duration-400 hover:shadow-xl hover:scale-102 flex flex-col gap-3 relative mb-5">

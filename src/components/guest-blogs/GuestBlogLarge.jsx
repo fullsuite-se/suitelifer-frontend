@@ -14,7 +14,6 @@ const GuestBlogLarge = ({
   imageUrl,
 }) => {
   const { day, fullDate, time } = formatTimestamp(createdAt);
-  console.log(article);
 
   return (
     <section

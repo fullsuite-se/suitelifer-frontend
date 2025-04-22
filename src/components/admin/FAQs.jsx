@@ -39,7 +39,6 @@ function FAQs() {
       const response = await api.get("/api/get-all-faqs");
       const fetchedFaqs = response.data.faqs;
       setFaqs(fetchedFaqs);
-      console.log(fetchedFaqs);
     } catch (err) {
       console.log(err);
     }
@@ -68,13 +67,10 @@ function FAQs() {
         prev.map((faq) => (faq.faq_id === currentFAQ.faq_id ? currentFAQ : faq))
       );
       try {
-        console.log("Sending to backend:", currentFAQ);
-
         const response = await api.post("/api/edit-faq", {
           ...currentFAQ,
           user_id: user.id,
         });
-        console.log(response.data);
 
         if (response.data?.success) {
           toast.success(response.data.message);
@@ -93,10 +89,7 @@ function FAQs() {
       };
       setFaqs((prev) => [newFaq, ...prev]);
       try {
-        console.log("Sending to backend:", newFaq);
-
         const response = await api.post("/api/add-faq", newFaq);
-        console.log(response.data);
 
         if (response.data?.success) {
           toast.success(response.data.message);
@@ -133,7 +126,6 @@ function FAQs() {
 
   const handleFaqDetailsChange = (e) => {
     setCurrentFAQ((td) => ({ ...td, [e.target.name]: e.target.value }));
-    console.log(currentFAQ);
   };
 
   return (

@@ -4,7 +4,7 @@ import api from "../../utils/axios";
 import ComingSoon from "../admin/ComingSoon";
 
 const EmployeePersonalityTest = () => {
-  const [isComingSoon, setComingSoon] = useState(true); //Change this when the page is ready.
+  const [isComingSoon, setComingSoon] = useState(false); //Change this when the page is ready.
 
   const [personalityTests, setPersonalityTests] = useState([]);
 
