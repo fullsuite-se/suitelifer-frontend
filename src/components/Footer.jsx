@@ -9,6 +9,7 @@ import { HashLink } from "react-router-hash-link";
 import { getUserFromCookie } from "../utils/cookie.js";
 import Certifications from "./footer/Certifications.jsx";
 import api from "../utils/axios";
+import atsAPI from "../utils/atsAPI.js";
 
 const handleLoginBtn = async (navigate) => {
   try {
@@ -28,9 +29,8 @@ const Footer = () => {
   const [industries, setIndustries] = useState([]);
   const fetchIndustries = async () => {
     try {
-      const response = await api.get("/api/get-all-industries");
+      const response = await atsAPI.get("/industries");
       setIndustries((i) => response.data.data);
-      console.log(response.data.data);
     } catch (err) {
       console.log(err);
     }

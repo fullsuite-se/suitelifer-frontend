@@ -34,14 +34,8 @@ const CareersJobDetails = () => {
   useEffect(() => {
     const fetchJobDetails = async () => {
       try {
-        console.log("Fetching job details for jobId:", jobId);
-
-        console.log(config.apiBaseUrl);
-
         const response = await atsAPI.get(`/jobs/details/${jobId}`);
         setJobDetails(response.data.data);
-
-        console.log(response.data.data);
       } catch (error) {
         console.error("Error fetching job details:", error);
       }

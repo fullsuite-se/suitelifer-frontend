@@ -50,7 +50,6 @@ function Careers() {
         [key]: file,
       }));
     }
-    console.log(files[key]);
   };
 
   const handleUpdateCareerImages = async (event) => {

@@ -57,8 +57,6 @@ function Testimonials() {
 
   const handleTestimonialDetailsChange = (e) => {
     setTestimonialDetails((td) => ({ ...td, [e.target.name]: e.target.value }));
-    console.log(testimonialDetails);
-    console.log(imageFile);
   };
 
   const handleAddEditTestimonial = async (e) => {
@@ -88,8 +86,6 @@ function Testimonials() {
 
         formData.append("file", imageFile);
 
-        console.log("mag-uupload na dapat");
-
         // UPLOAD EMPLOYEE IMAGE
         const uploadResponse = await api.post(
           "/api/upload-image/testimonials",
@@ -101,8 +97,6 @@ function Testimonials() {
         // SET CLOUDINARY IMAGE URL TO TESTIMONIAL DETAILS
         testimonialDetails.employeeImageUrl = uploadResponse.data.imageUrl;
 
-        console.log("mag-add ng testimonial sa database");
-
         // ADD TESTIMONIAL
         response = await api.post("/api/testimonials", {
           ...testimonialDetails,
@@ -113,8 +107,6 @@ function Testimonials() {
           const formData = new FormData();
 
           formData.append("file", imageFile);
-
-          console.log("mag-uupload na dapat");
 
           // UPLOAD EMPLOYEE IMAGE
           const uploadResponse = await api.post(
@@ -174,8 +166,6 @@ function Testimonials() {
     setIsDeleting(true);
     let testimonial_id = testimonialId;
     try {
-      console.log("Deleting testimonial with ID:", testimonial_id);
-
       const response = await api.delete("/api/testimonials", {
         data: {
           testimonialId: testimonial_id,

@@ -50,7 +50,6 @@ const AdminHomePage = () => {
 
       setDataUpdated(!dataUpdated);
     } catch (err) {
-      console.log(err.response);
       toast.error(
         "Encountered an error while publishing changes. Try again in a few minutes..."
       );

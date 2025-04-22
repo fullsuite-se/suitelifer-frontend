@@ -78,7 +78,6 @@ const Careers = () => {
     try {
       const response = await api.get("/api/content/careers");
       const data = response.data.careersContent;
-      console.log(data);
 
       setHeroImages(data);
     } catch (error) {
