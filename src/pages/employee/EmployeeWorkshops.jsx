@@ -1,12 +1,15 @@
 import React from "react";
+import { useState } from "react";
+import ComingSoon from "../admin/ComingSoon";
 
 const EmployeeWorkshops = () => {
-  return (
-    <div className="flex w-full justify-center items-center">
+  const [isComingSoon, setComingSoon] = useState(true); //Change this when the page is ready.
 
-    </div>
-  );
+  if (isComingSoon) {
+    return <ComingSoon />;
+  }
+
+  return <div className="flex w-full justify-center items-center"></div>;
 };
 
 export default EmployeeWorkshops;
-                 
