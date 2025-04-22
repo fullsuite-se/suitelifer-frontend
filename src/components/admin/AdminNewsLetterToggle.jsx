@@ -130,7 +130,6 @@ function AdminNewsLetterToggle() {
         } else {
           toast.error(response.data.message || "Failed to save issue.");
         }
-
       } catch (err) {
         console.error(err.message);
       }
@@ -1157,8 +1156,7 @@ function AdminNewsLetterToggle() {
                   }
                   className="w-full p-3 mt-2 border rounded bg-primary/10 focus:ring-2 focus:ring-primary"
                 >
-
-<option value="">Select year</option>
+                  <option value="">Select year</option>
                   {yearOptions.map((year) => (
                     <option key={year} value={year}>
                       {year}
@@ -1179,7 +1177,7 @@ function AdminNewsLetterToggle() {
                   className="w-full p-3 mt-2 border rounded bg-primary/10 focus:ring-2 focus:ring-primary"
                 >
                   {monthOptions.map((monthIndex) => (
-                    <option key={monthIndex} value={monthIndex+1}>
+                    <option key={monthIndex} value={monthIndex + 1}>
                       {months[monthIndex]}
                     </option>
                   ))}
