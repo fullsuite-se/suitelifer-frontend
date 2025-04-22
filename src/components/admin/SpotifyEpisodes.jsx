@@ -166,7 +166,7 @@ const SpotifyEpisodes = () => {
   const filteredEpisodes = episodes.filter((ep) => {
     if (embedTypeFilter === "All") return true;
     if (embedTypeFilter === "Episodes") return ep.embedType === "EPISODE";
-    if (embedTypeFilter === "Playlists") return ep.embedType === "PLAYLIST";
+    if (embedTypeFilter === "Playlists") return ep.embedType === "PLAYLIST"; 
     return true;
   });
 
@@ -274,16 +274,17 @@ const SpotifyEpisodes = () => {
             <div className="flex gap-4">
               <button
                 onClick={() => openEditModal(episode)}
-                className="p-2.5 px-5 bg-primary text-white rounded-xl hover:bg-[#007a8e]"
+                className="p-2.5 px-5 bg-primary text-white rounded-md hover:bg-[#007a8e]"
               >
                 <EditIcon className="size-7" /> Edit
               </button>
               <button
                 onClick={() => handleDeleteClick(episode.episodeId)}
-                className="p-2.5 px-4 bg-primary text-white rounded-xl hover:bg-[#007a8e]"
+                className="p-2.5 px-4 bg-primary text-white rounded-md hover:bg-[#007a8e]"
               >
                 <DeleteIcon className="size-7" /> Delete
               </button>
+
             </div>
           </div>
         </div>
