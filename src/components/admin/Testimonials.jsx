@@ -407,7 +407,7 @@ function Testimonials() {
               >
                 <div className="w-full mb-3">
                   <label className="block text-gray-700 font-avenir-black">
-                    Employee Name<span className="text-primary">*</span>
+                    Name<span className="text-primary">*</span>
                   </label>
                   <input
                     name="employeeName"
@@ -473,7 +473,7 @@ function Testimonials() {
 
                 <div className="w-full mb-3">
                   <label className="block text-gray-700 font-avenir-black">
-                    Employee Image<span className="text-primary">*</span>
+                    Image<span className="text-primary">*</span>
                   </label>
 
                   <div className="mt-3">
