@@ -14,6 +14,7 @@ import api from "../../utils/axios";
 import ContentButtons from "./ContentButtons";
 import toast from "react-hot-toast";
 import { Dialog, DialogTitle, DialogContent, TextField } from "@mui/material";
+import ActionButtons from "./ActionButtons";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -148,21 +149,23 @@ const FooterContent = () => {
             {
               headerName: "Action",
               field: "action",
-              flex: 2,
+              flex: 1,
               headerClass: "text-primary font-bold bg-gray-100",
               cellRenderer: (params) => (
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => {
-                      setCertificationDetails(params.data);
-                      setCertModalAddEditIsShown(true);
+                <div className="flex">
+                  <ActionButtons
+                    icon={<PencilIcon className="size-5" />}
+                    handleClick={() => {
+                      setCertificationDetails(params.data),
+                        setCertModalAddEditIsShown(true);
                     }}
-                  >
-                    <PencilIcon className="size-5 text-black" />
-                  </button>
-                  <button onClick={() => deleteCert(params.data.certId)}>
-                    <TrashIcon className="size-5 text-black" />
-                  </button>
+                  />
+                  <ActionButtons
+                    icon={<TrashIcon className="size-5" />}
+                    handleClick={() => {
+                      deleteCert(params.data.certId);
+                    }}
+                  />
                 </div>
               ),
             },
