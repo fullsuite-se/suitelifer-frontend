@@ -25,7 +25,7 @@ import { EyeIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 function JobCourse() {
-  const [isComingSoon, setComingSoon] = useState(true); //Change this when the page is ready.
+  const [isComingSoon, setComingSoon] = useState(false);
 
   const user = useStore((state) => state.user);
 
@@ -133,9 +133,9 @@ function JobCourse() {
   useEffect(() => {
     fetchJobCourses();
   }, [dataUpdated]);
-  
-  if(isComingSoon){
-    return <ComingSoon/>
+
+  if (isComingSoon) {
+    return <ComingSoon />;
   }
 
   return (
@@ -146,7 +146,7 @@ function JobCourse() {
           text="Add Course"
           handleClick={showAddDialog}
         />
-      </div> 
+      </div>
       <div className="border-primary rounded-md w-full overflow-hidden">
         <div className="w-full overflow-x-auto">
           <div
