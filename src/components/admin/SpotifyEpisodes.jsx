@@ -25,7 +25,6 @@ import {
 } from "@mui/material";
 import ContentButtons from "./ContentButtons";
 
-
 const extractSpotifyId = (url) => {
   const match = url.match(/(?:episode|playlist)\/([^?]+)/);
   return match ? match[1] : null;
@@ -41,8 +40,6 @@ const isValidEpisodeUrl = (url) => {
     return false;
   }
 };
-
-
 
 const SpotifyEpisodes = () => {
   const user = useStore((state) => state.user);
@@ -170,7 +167,7 @@ const SpotifyEpisodes = () => {
   const filteredEpisodes = episodes.filter((ep) => {
     if (embedTypeFilter === "All") return true;
     if (embedTypeFilter === "Episodes") return ep.embedType === "EPISODE";
-    if (embedTypeFilter === "Playlists") return ep.embedType === "PLAYLIST"; 
+    if (embedTypeFilter === "Playlists") return ep.embedType === "PLAYLIST";
     return true;
   });
 
@@ -198,17 +195,17 @@ const SpotifyEpisodes = () => {
 
       <div className="flex justify-end px-4">
         <>
-        <ContentButtons
-          icon={<PlusCircleIcon className="size-5" />}
-          text={
-            embedTypeFilter === "Episodes"
-              ? "Add Episode"
-              : embedTypeFilter === "Playlists"
-              ? "Add Playlist"
-              : "Add Episode/Playlist"
-          }
-          handleClick={openAddModal}
-        />
+          <ContentButtons
+            icon={<PlusCircleIcon className="size-5" />}
+            text={
+              embedTypeFilter === "Episodes"
+                ? "Add Episode"
+                : embedTypeFilter === "Playlists"
+                ? "Add Playlist"
+                : "Add Episode/Playlist"
+            }
+            handleClick={openAddModal}
+          />
         </>
       </div>
 
@@ -290,7 +287,6 @@ const SpotifyEpisodes = () => {
               >
                 <DeleteIcon className="size-5" /> Delete
               </button>
-
             </div>
           </div>
         </div>

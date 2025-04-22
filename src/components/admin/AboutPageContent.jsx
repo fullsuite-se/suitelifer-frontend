@@ -63,20 +63,14 @@ const AboutPageContent = ({}) => {
         [key]: file,
       }));
     }
-    console.log(files);
   };
 
   const handleContentDetailsChange = (e) => {
     setAboutDetails((cd) => ({ ...cd, [e.target.name]: e.target.value }));
-
-    console.log(aboutDetails);
   };
 
   const fetchAbout = async () => {
     const response = await api.get("/api/content/about");
-
-    console.log(response.data.aboutContent);
-
     setAboutDetails(response.data.aboutContent);
   };
 
@@ -103,11 +97,7 @@ const AboutPageContent = ({}) => {
               },
             }
           );
-
           const imageUrl = uploadResponse.data.imageUrl;
-
-          console.log(key, imageUrl);
-
           aboutDetails[key] = imageUrl;
         }
       });
@@ -115,17 +105,10 @@ const AboutPageContent = ({}) => {
       await Promise.all(uploadPromises);
 
       setAboutDetails((ad) => ({ ...ad, changed: true }));
-      console.log(aboutDetails);
-
-      console.log("na-upload na lahat");
-
       const response = await api.patch("/api/content/about", {
         ...aboutDetails,
         userId: user.id,
       });
-
-      console.log("na-update na yung database");
-
       toast.success(response.data.message);
 
       setDataUpdated(!dataUpdated);
