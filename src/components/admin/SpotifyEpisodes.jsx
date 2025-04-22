@@ -50,7 +50,8 @@ const SpotifyEpisodes = () => {
   const [embedTypeFilter, setEmbedTypeFilter] = useState("All");
   const [error, setError] = useState(null);
   const [openModal, setOpenModal] = useState(false);
-
+  const [confirmationOpen, setConfirmationOpen] = useState(false);
+  const [episodeToDelete, setEpisodeToDelete] = useState(null);
   const showError = (message) => setError(message);
   const closeError = () => setError(null);
 
@@ -76,8 +77,9 @@ const SpotifyEpisodes = () => {
     e.preventDefault();
 
     if (!isValidEpisodeUrl(episodeDetails.spotifyId)) {
-      setEpisodeDetails(defaultEpisodeDetails);
-      return showError("Invalid Spotify episode URL.");
+      showError("Invalid Spotify episode URL.");
+      closeModal();
+      return;
     }
 
     if (episodeDetails.episodeId !== null) {
@@ -88,7 +90,7 @@ const SpotifyEpisodes = () => {
         episodeDetails.spotifyId ===
         `https://open.spotify.com/episode/${episodes[index].spotifyId}`
       ) {
-        setEpisodeDetails(defaultEpisodeDetails);
+        closeModal();
         return;
       }
     }
@@ -98,8 +100,9 @@ const SpotifyEpisodes = () => {
         (ep) => ep.spotifyId === extractSpotifyId(episodeDetails.spotifyId)
       )
     ) {
-      setEpisodeDetails(defaultEpisodeDetails);
-      return showError("Episode already added!");
+      showError("Episode already added!");
+      closeModal();
+      return;
     }
 
     try {
@@ -122,18 +125,29 @@ const SpotifyEpisodes = () => {
       }
 
       setDataUpdated(!dataUpdated);
-      closeModal();
     } catch (err) {
       console.log(err);
+    } finally {
+      closeModal();
     }
   };
 
   const handleDeleteClick = (episodeId) => {
-    showConfirmationToast({
-      message: "Delete spotify episode?",
-      onConfirm: () => handleDelete(episodeId),
-      onCancel: null,
-    });
+    setEpisodeToDelete(episodeId);
+    setConfirmationOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (episodeToDelete !== null) {
+      handleDelete(episodeToDelete);
+    }
+    setConfirmationOpen(false);
+    setEpisodeToDelete(null);
+  };
+
+  const handleCloseDialog = () => {
+    setConfirmationOpen(false);
+    setEpisodeToDelete(null);
   };
 
   const handleDelete = async (episodeId) => {
@@ -279,18 +293,31 @@ const SpotifyEpisodes = () => {
                 onClick={() => openEditModal(episode)}
                 className="p-2.5 px-5 bg-primary text-white rounded-md hover:bg-[#007a8e]"
               >
-                <EditIcon className="size-5" /> Edit
+                <EditIcon className="size-7" /> Edit
               </button>
               <button
                 onClick={() => handleDeleteClick(episode.episodeId)}
                 className="p-2.5 px-4 bg-primary text-white rounded-md hover:bg-[#007a8e]"
               >
-                <DeleteIcon className="size-5" /> Delete
+                <DeleteIcon className="size-7" /> Delete
               </button>
             </div>
           </div>
         </div>
       ))}
+
+      <ConfirmationDialog
+        open={confirmationOpen}
+        onClose={handleCloseDialog}
+        onConfirm={handleConfirmDelete}
+        title="Delete Spotify Episode?"
+        description="Are you sure you want to delete this episode? This action cannot be undone."
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        icon={<ExclamationTriangleIcon className="h-12 w-12 text-red-500" />}
+        cancelBtnClass="p-2 px-4 cursor-pointer rounded-lg hover:bg-gray-200 duration-500 text-gray-700"
+        confirmBtnClass="p-2 px-4 cursor-pointer rounded-lg bg-red-500 hover:bg-red-600 duration-500 text-white"
+      />
     </div>
   );
 };
