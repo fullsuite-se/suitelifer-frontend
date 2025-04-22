@@ -40,23 +40,10 @@ const BlogCreate = () => {
       return;
     }
 
-    // console.log("Title: ", blogTitle);
-    // console.log("Desc: ", blogDescription);
-
-    // return;
-
-    // if (files.length === 0) {
-    //   alert("Please select at least one file before submitting.");
-    //   return;
-    // }
-
     const eBlogData = {
       title: blogTitle,
       description: blogDescription,
     };
-
-    console.log(eBlogData);
-    console.log(files);
 
     return;
 

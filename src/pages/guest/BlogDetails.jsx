@@ -20,8 +20,6 @@ const BlogDetails = () => {
     try {
       const response = await api.get(`/api/get-company-blog/${cblog_id}`);
 
-      console.log(response.data.data);
-
       setBlogDetails(response.data.data);
       setIsLoading(false);
     } catch (err) {

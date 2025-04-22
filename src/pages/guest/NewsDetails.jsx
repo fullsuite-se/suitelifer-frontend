@@ -10,7 +10,6 @@ const NewsDetails = () => {
   const { id } = useParams();
 
   const location = useLocation();
-  console.log(location.state?.id);
 
   const relatedNews = NewsList.filter(
     (news) => news.id.toString() !== id
@@ -28,7 +27,6 @@ const NewsDetails = () => {
         if (!newsId) return;
 
         const response = await api.get(`/api/get-news/${newsId}`);
-        console.log(response.data);
 
         setNewsItem(response.data);
       } catch (error) {

@@ -108,7 +108,6 @@ function JobCourse() {
       setCourseDetails(defaultCourseDetails);
       setAddEditModalIsOpen(false);
     } catch (error) {
-      console.log("Error adding course");
       console.log(error);
     }
   };
@@ -125,7 +124,6 @@ function JobCourse() {
       const response = await api.get("api/course");
       setRowCourseData(response.data.courses);
     } catch (error) {
-      console.log("Error Fetching Job Courses");
       console.log(error);
     }
   };

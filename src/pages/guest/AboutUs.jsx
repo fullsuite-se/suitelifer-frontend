@@ -33,7 +33,7 @@ const AboutUs = () => {
   const fetchContent = async () => {
     try {
       const response = await api.get("/api/content/about");
-      console.log("DATA CHANGED");
+
       setAboutContent(response.data.aboutContent);
     } catch (error) {
       console.log(error);

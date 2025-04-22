@@ -29,7 +29,6 @@ const CareersAll = () => {
     try {
       const response = await atsAPI.get("/industries/");
       setIndustries((i) => response.data.data);
-      console.log(response.data.data);
     } catch (err) {
       console.log(err);
     }

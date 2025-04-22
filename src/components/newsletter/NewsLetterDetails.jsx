@@ -30,9 +30,6 @@ const NewsletterDetails = ({
   const { id } = useParams();
 
   const location = useLocation();
-  console.log("ID: ");
-
-  console.log(location.state?.id);
   const [loading, setLoading] = useState(false);
   const [newsletterItem, setNewsletterItem] = useState({});
 

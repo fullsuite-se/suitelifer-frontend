@@ -17,7 +17,6 @@ export const ModalLogout = ({ isOpen, handleClose }) => {
       if (response.data.isLoggedOut) {
         window.location.href = "/";
       } else {
-        // Modal to show error
         console.log("Failed to log out");
       }
     } catch (error) {
