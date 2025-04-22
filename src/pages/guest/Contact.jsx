@@ -58,7 +58,7 @@ const Contact = () => {
       style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
     >
       <PageMeta
-        title="Contact - SuiteLifer"
+        title="Contact - Suitelifer"
         desc="Your career rocket ship is fueled and ready. Want to hop on? Contact us now."
         isDefer={false}
       />

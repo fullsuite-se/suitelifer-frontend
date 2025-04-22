@@ -240,7 +240,7 @@ const Register = () => {
               ACCOUNT
             </h2>
             <p className="text-gray-400">
-              Join the SuiteLifer Community: Post, Engage, and Grow
+              Join the Suitelifer Community: Post, Engage, and Grow
               Professionally!
             </p>
           </header>
