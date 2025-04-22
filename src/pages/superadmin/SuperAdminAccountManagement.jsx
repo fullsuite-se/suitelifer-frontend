@@ -13,6 +13,8 @@ const SuperAdminAccountManagement = () => {
       { headerName: "User ID", field: "id", checkboxSelection: true },
       { headerName: "Full Name", field: "fullName" },
       { headerName: "Email", field: "email" },
+      { headerName: "Verification", field: "verification" },
+      { headerName: "Role", field: "role" },
       { headerName: "Status", field: "status" },
       { headerName: "Created At", field: "createdAt" },
     ],
@@ -21,6 +23,7 @@ const SuperAdminAccountManagement = () => {
 
   const defaultColDef = useMemo(
     () => ({
+      flex: 1,
       sortable: true,
       filter: true,
       resizable: true,
@@ -34,112 +37,144 @@ const SuperAdminAccountManagement = () => {
         id: 1,
         fullName: "Alice Johnson",
         email: "alice@example.com",
-        status: "Verified",
+        verification: "Verified",
+        role: "SUPERADMIN",
+        status: 1,
         createdAt: "2025-03-01",
       },
       {
         id: 2,
         fullName: "Bob Smith",
         email: "bob@example.com",
-        status: "Unverified",
+        verification: "Verified",
+        role: "SUPERADMIN",
+        status: 1,
         createdAt: "2025-03-05",
       },
       {
         id: 3,
         fullName: "Charlie Rose",
         email: "charlie@example.com",
-        status: "Verified",
+        verification: "Verified",
+        role: "ADMIN",
+        status: 1,
         createdAt: "2025-03-10",
       },
       {
         id: 4,
         fullName: "Diana Prince",
         email: "diana@example.com",
-        status: "Unverified",
+        verification: "Unverified",
+        role: "ADMIN",
+        status: 1,
+        createdAt: "2025-04-01",
+      },
+      {
+        id: 5,
+        fullName: "Diana Prince",
+        email: "diana@example.com",
+        verification: "Unverified",
+        role: "EMPLOYEE",
+        status: 0,
         createdAt: "2025-04-01",
       },
       {
         id: 4,
         fullName: "Diana Prince",
         email: "diana@example.com",
-        status: "Unverified",
+        verification: "Unverified",
+        role: "EMPLOYEE",
+        status: 1,
         createdAt: "2025-04-01",
       },
       {
         id: 4,
         fullName: "Diana Prince",
         email: "diana@example.com",
-        status: "Unverified",
+        verification: "Unverified",
+        role: "EMPLOYEE",
+        status: 0,
         createdAt: "2025-04-01",
       },
       {
         id: 4,
         fullName: "Diana Prince",
         email: "diana@example.com",
-        status: "Unverified",
+        verification: "Unverified",
+        role: "EMPLOYEE",
+        status: 1,
         createdAt: "2025-04-01",
       },
       {
         id: 4,
         fullName: "Diana Prince",
         email: "diana@example.com",
-        status: "Unverified",
+        verification: "Unverified",
+        role: "EMPLOYEE",
+        status: 1,
         createdAt: "2025-04-01",
       },
       {
         id: 4,
         fullName: "Diana Prince",
         email: "diana@example.com",
-        status: "Unverified",
+        verification: "Unverified",
+        role: "EMPLOYEE",
+        status: 1,
         createdAt: "2025-04-01",
       },
       {
         id: 4,
         fullName: "Diana Prince",
         email: "diana@example.com",
-        status: "Unverified",
+        verification: "Unverified",
+        role: "EMPLOYEE",
+        status: 1,
         createdAt: "2025-04-01",
       },
       {
         id: 4,
         fullName: "Diana Prince",
         email: "diana@example.com",
-        status: "Unverified",
+        verification: "Unverified",
+        role: "EMPLOYEE",
+        status: 1,
         createdAt: "2025-04-01",
       },
       {
         id: 4,
         fullName: "Diana Prince",
         email: "diana@example.com",
-        status: "Unverified",
+        verification: "Unverified",
+        role: "EMPLOYEE",
+        status: 1,
         createdAt: "2025-04-01",
       },
       {
         id: 4,
         fullName: "Diana Prince",
         email: "diana@example.com",
-        status: "Unverified",
+        verification: "Unverified",
+        role: "EMPLOYEE",
+        status: 1,
         createdAt: "2025-04-01",
       },
       {
         id: 4,
         fullName: "Diana Prince",
         email: "diana@example.com",
-        status: "Unverified",
+        verification: "Unverified",
+        role: "EMPLOYEE",
+        status: 1,
         createdAt: "2025-04-01",
       },
       {
         id: 4,
         fullName: "Diana Prince",
         email: "diana@example.com",
-        status: "Unverified",
-        createdAt: "2025-04-01",
-      },
-      {
-        id: 4,
-        fullName: "Diana Prince",
-        email: "diana@example.com",
-        status: "Unverified",
+        verification: "Unverified",
+        role: "EMPLOYEE",
+        status: 1,
         createdAt: "2025-04-01",
       },
 
@@ -147,77 +182,99 @@ const SuperAdminAccountManagement = () => {
         id: 4,
         fullName: "Diana Prince",
         email: "diana@example.com",
-        status: "Unverified",
+        verification: "Unverified",
+        role: "EMPLOYEE",
+        status: 1,
         createdAt: "2025-04-01",
       },
       {
         id: 4,
         fullName: "Diana Prince",
         email: "diana@example.com",
-        status: "Unverified",
+        verification: "Unverified",
+        role: "EMPLOYEE",
+        status: 1,
         createdAt: "2025-04-01",
       },
       {
         id: 4,
         fullName: "Diana Prince",
         email: "diana@example.com",
-        status: "Unverified",
+        verification: "Unverified",
+        role: "EMPLOYEE",
+        status: 1,
         createdAt: "2025-04-01",
       },
       {
         id: 4,
         fullName: "Diana Prince",
         email: "diana@example.com",
-        status: "Unverified",
+        verification: "Unverified",
+        role: "EMPLOYEE",
+        status: 1,
         createdAt: "2025-04-01",
       },
       {
         id: 4,
         fullName: "Diana Prince",
         email: "diana@example.com",
-        status: "Unverified",
+        verification: "Unverified",
+        role: "EMPLOYEE",
+        status: 1,
         createdAt: "2025-04-01",
       },
       {
         id: 4,
         fullName: "Diana Prince",
         email: "diana@example.com",
-        status: "Unverified",
+        verification: "Unverified",
+        role: "EMPLOYEE",
+        status: 1,
         createdAt: "2025-04-01",
       },
       {
         id: 4,
         fullName: "Diana Prince",
         email: "diana@example.com",
-        status: "Unverified",
+        verification: "Unverified",
+        role: "EMPLOYEE",
+        status: 1,
         createdAt: "2025-04-01",
       },
       {
         id: 4,
         fullName: "Diana Prince",
         email: "diana@example.com",
-        status: "Unverified",
+        verification: "Unverified",
+        role: "EMPLOYEE",
+        status: 1,
         createdAt: "2025-04-01",
       },
       {
         id: 4,
         fullName: "Diana Prince",
         email: "diana@example.com",
-        status: "Unverified",
+        verification: "Unverified",
+        role: "EMPLOYEE",
+        status: 1,
         createdAt: "2025-04-01",
       },
       {
         id: 4,
         fullName: "Diana Prince",
         email: "diana@example.com",
-        status: "Unverified",
+        verification: "Unverified",
+        role: "EMPLOYEE",
+        status: 1,
         createdAt: "2025-04-01",
       },
       {
         id: 4,
         fullName: "Diana Prince",
         email: "diana@example.com",
-        status: "Unverified",
+        verification: "Unverified",
+        role: "EMPLOYEE",
+        status: 1,
         createdAt: "2025-04-01",
       },
     ],
@@ -226,14 +283,48 @@ const SuperAdminAccountManagement = () => {
 
   return (
     <div className="flex flex-col">
-      <section className="mt-3 mb-4 grid grid-cols-1 sm:grid-cols-2 grid-rows-[5rem] [&>*]:bg-gray-100 [&>*]:border [&>*]:border-gray-200 gap-4">
+      <section className="mt-3 mb-4 grid grid-cols-1 sm:grid-cols-7 grid-rows-[5rem] [&>*]:bg-white [&>*]:border [&>*]:border-gray-300 gap-4">
         <div className="rounded-md grid place-content-center cursor-pointer">
-          <span className="text-base text-center">Total Users</span>
-          <div className="text-sm text-gray-500 text-center">123</div>
+          <span className="text-small font-avenir-black text-primary text-center">
+            Total
+          </span>
+          <div className="text-body  text-black text-center">27</div>
         </div>
         <div className="rounded-md grid place-content-center cursor-pointer">
-          <span className="text-base text-center">Verified Users</span>
-          <div className="text-sm text-gray-500 text-center">32</div>
+          <span className="text-small font-avenir-black text-gray-500 text-center">
+            Verified
+          </span>
+          <div className="text-body text-black text-center">25</div>
+        </div>
+        <div className="rounded-md grid place-content-center cursor-pointer">
+          <span className="text-small font-avenir-black text-orange-400 text-center">
+            Unverified
+          </span>
+          <div className="text-body text-black text-center">2</div>
+        </div>
+        <div className="rounded-md grid place-content-center cursor-pointer">
+          <span className="text-small font-avenir-black text-gray-500 text-center">
+            Active
+          </span>
+          <div className="text-body text-black text-center">24</div>
+        </div>
+        <div className="rounded-md grid place-content-center cursor-pointer">
+          <span className="text-small font-avenir-black text-red-800 text-center">
+            Disabled
+          </span>
+          <div className="text-body text-black text-center">3</div>
+        </div>
+        <div className="rounded-md grid place-content-center cursor-pointer">
+          <span className="text-small font-avenir-black text-violet-800 text-center">
+            Admin
+          </span>
+          <div className="text-body text-black text-center">2</div>
+        </div>
+        <div className="rounded-md grid place-content-center cursor-pointer">
+          <span className="text-small font-avenir-black text-gray-500 text-center">
+            Employees
+          </span>
+          <div className="text-body text-black text-center">25</div>
         </div>
       </section>
 
