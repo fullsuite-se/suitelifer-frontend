@@ -22,9 +22,6 @@ const AdminHomePage = () => {
 
   const handleHomeDetailsChange = (e) => {
     setHomeDetails((cd) => ({ ...cd, [e.target.name]: e.target.value }));
-
-    console.log(homeDetails);
-    console.log(industryImages);
   };
 
   const handlePublishChanges = async () => {
@@ -139,19 +136,6 @@ const AdminHomePage = () => {
 
   return (
     <>
-      {/* <div className="flex flex-col md:flex-row gap-4 p-4">
-        <div className="flex flex-col md:w-full">
-          <div className="text-md p-1 font-avenir-black">Get In Touch Image</div>
-
-          <input
-            type="text"
-            name="getInTouchImage"
-            value={homeDetails.getInTouchImage}
-            onChange={(e) => handleHomeDetailsChange(e)}
-            className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-        </div>
-      </div> */}
       {/* ABOUT HERO IMAGE */}
       <div className="w-full 2xl:w-[50%] mb-3">
         <label className="block font-avenir-black">Get In Touch Image</label>
@@ -199,7 +183,7 @@ const AdminHomePage = () => {
       </div>
       {/* ABOUT HERO IMAGE END */}
 
-      <div className="flex flex-col md:flex-row gap-4 p-4">
+      <div className="flex flex-col md:flex-row gap-4 p-2">
         <div className="flex flex-col md:w-full">
           <div className="text-md p-1 font-avenir-black">Home Page Video</div>
 
@@ -212,9 +196,25 @@ const AdminHomePage = () => {
           />
         </div>
       </div>
-      <div className="text-md p-1 font-avenir-black">Industry Images</div>
+
+      <div className="text-md p-2 font-avenir-black">Industry Images</div>
+
+      <div className="p-2">
+        <Information
+          type={"warning"}
+          text={"Make sure your image is a 1:1 ratio"}
+        />
+        <Information
+          type={"info"}
+          text={"Recommended: width >= 1080px; height >= 1080px"}
+        />
+        <Information
+          type={"info"}
+          text={"Accepted formats: .jpeg, .jpg, .png, .heic"}
+        />
+      </div>
       <div className="flex flex-col md:flex-row gap-4 p-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 mt-6 ">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1">
           {industries.map(({ industryName, industryId, imageUrl }, index) => {
             const nameVariable = convertToCamelCase(industryName);
 
@@ -231,7 +231,7 @@ const AdminHomePage = () => {
                   {imageUrl && (
                     <img
                       src={imageUrl}
-                      className="w-[50%] max-h-100"
+                      className="w-[50%] min-h-50"
                       alt={industryName}
                     />
                   )}
@@ -255,11 +255,6 @@ const AdminHomePage = () => {
       </div>
 
       <div className="flex justify-end gap-2 mb-20">
-        <ContentButtons
-          icon={<EyeIcon className="size-5" />}
-          text="Preview Changes"
-          handleClick={null}
-        />
         <ContentButtons
           icon={<BookmarkSquareIcon className="size-5" />}
           text="Publish Changes"

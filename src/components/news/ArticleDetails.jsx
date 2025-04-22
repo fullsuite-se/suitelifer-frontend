@@ -38,22 +38,21 @@ const ArticleDetails = ({
     }
   }, [id, location]);
 
-
   return (
     <>
       <Helmet>
-        <title>{title || "SuiteLifer"}</title>
+        <title>{title || "Suitelifer"}</title>
         <meta
           name="description"
           content={
             content
               ? content.substring(0, 150) + "..."
-              : "Read the latest newsletters on SuiteLifer."
+              : "Read the latest newsletters on Suitelifer."
           }
         />
         <meta
           name="keywords"
-          content={`${title}, ${type}, SuiteLifer Newsletter, SuiteLifer Blogs, blog, news, newsletter`}
+          content={`${title}, ${type}, Suitelifer Newsletter, Suitelifer Blogs, blog, news, newsletter`}
         />
         {/* 
           TODO :
@@ -76,18 +75,15 @@ const ArticleDetails = ({
         <div className="desktop-nav">
           <DesktopNav />
         </div>
-   
         <main className="px-[7%] pt-[10%] xl:pt-[8%] md:px-[5%] lg:px-[8%]">
-         <BackButton backPath={-1}/>
+          <BackButton backPath={-1} />
           <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-10">
             {/* Main Article */}
             <div>
-              <p className="text-gray-400 font-avenir-black-oblique uppercase mt-5">{type}</p>
-              <p
-                className="text-h4  my-1 font-avenir-black"
-              >
-                {title}
+              <p className="text-gray-400 font-avenir-black-oblique uppercase mt-5">
+                {type}
               </p>
+              <p className="text-h4  my-1 font-avenir-black">{title}</p>
               <p className="text-small text-gray-400">
                 <span className="text-primary font-avenir-black">
                   {createdBy}
@@ -95,18 +91,15 @@ const ArticleDetails = ({
                 | {readingTime("Hello", 238).text}
               </p>
               <p className="text-xss text-gray-400 mt-1 mb-10">{fullDate}</p>
-            
+
               {/* Image Carousel */}
               <Carousel
                 images={Array.isArray(images) ? images : []}
                 isButtonOutside={false}
               />
 
-              <p
-                className="mt-10 text-body text-gray-700 whitespace-pre-line"
-              >
-               <div dangerouslySetInnerHTML={{ __html: content }} />
-
+              <p className="mt-10 text-body text-gray-700 whitespace-pre-line">
+                <div dangerouslySetInnerHTML={{ __html: content }} />
               </p>
             </div>
 
@@ -117,23 +110,22 @@ const ArticleDetails = ({
               </p>
               <div className="grid grid-cols-1 gap-2 justify-center items-center">
                 {type === "Blog" ? (
-                relatedArticles.slice(0, 5).map((article, index) => (
-                  <div key={article.id || index}>
-                    <GuestBlogCardSmall
-                      id={article.id}
-                      title={article.title}
-                      author={article.author}
-                      article={article.article}
-                      readTime={article.readTime || article.read_time}
-                      created_at={article.created_at}
-                      images={article.images || article.imagesWithCaption}
-                    />
-                  </div>
-                ))
-                
+                  relatedArticles.slice(0, 5).map((article, index) => (
+                    <div key={article.id || index}>
+                      <GuestBlogCardSmall
+                        id={article.id}
+                        title={article.title}
+                        author={article.author}
+                        article={article.article}
+                        readTime={article.readTime || article.read_time}
+                        created_at={article.created_at}
+                        images={article.images || article.imagesWithCaption}
+                      />
+                    </div>
+                  ))
                 ) : (
                   <div className="grid grid-cols-1 gap-4 justify-center items-center">
-                    {relatedArticles.slice(0,5).map((news, index) => (
+                    {relatedArticles.slice(0, 5).map((news, index) => (
                       <NewsCardNoSnippet
                         key={news.id || index}
                         id={news.id}

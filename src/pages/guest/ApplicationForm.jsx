@@ -24,6 +24,7 @@ import {
 } from "react-google-recaptcha-v3";
 import ModalConfirmApplication from "../../components/modals/ModalConfirmApplication";
 import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
+import LoadingAnimation from "../../components/loader/Loading";
 
 const Form = () => {
   const navigate = useNavigate();
@@ -207,6 +208,7 @@ const Form = () => {
         onSubmit={handleSubmitApplication}
         className="space-y-4 text-sm p-6 md:p-12 lg:p-15 shadow-sm border-primary border-1  rounded-lg bg-white"
       >
+        {isLoading ? <LoadingAnimation /> : <> </>}
         <p className="!text-lg lg:!text-2xl font-avenir-black mb-10">
           Job Application Form
           <span className="font-avenir-roman"> - {unSlug(jobPosition)}</span>
@@ -442,19 +444,7 @@ const Form = () => {
           type="submit"
           className="w-full cursor-pointer font-avenir-black bg-primary text-white py-3 rounded-md hover:bg-primary/90 transition"
         >
-          {isLoading ? (
-            <div className="mx-auto w-fit">
-              <TwoCirclesLoader
-                bg={"transparent"}
-                color1={"#bfd1a0"}
-                color2={"#ffffff"}
-                width={"135"}
-                height={"24"}
-              />
-            </div>
-          ) : (
-            "SUBMIT APPLICATION"
-          )}
+          SUBMIT APPLICATION
         </button>
         <button
           type="button"

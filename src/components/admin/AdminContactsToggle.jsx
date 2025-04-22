@@ -5,8 +5,7 @@ import PageToggle from './PageToggle'
 function AdminContactsToggle() {
     const tabs = [
         { label: "Contact Details", component: ContactDetails },
-        {label: "FAQs", component: FAQs},
-        
+        {label: "FAQs", component: FAQs},      
       ];
     
       return <PageToggle tabs={tabs} />;

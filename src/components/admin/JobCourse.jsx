@@ -19,11 +19,14 @@ import toast from "react-hot-toast";
 import formatTimestamp from "../TimestampFormatter";
 import { ModalDeleteConfirmation } from "../modals/ModalDeleteConfirmation";
 import ContentButtons from "./ContentButtons";
+import ComingSoon from "../../pages/admin/ComingSoon";
 import { EyeIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 function JobCourse() {
+  const [isComingSoon, setComingSoon] = useState(true); //Change this when the page is ready.
+
   const user = useStore((state) => state.user);
 
   // DATA UPDATES
@@ -120,9 +123,6 @@ function JobCourse() {
   const fetchJobCourses = async () => {
     try {
       const response = await api.get("api/course");
-
-      console.log(response.data.courses);
-
       setRowCourseData(response.data.courses);
     } catch (error) {
       console.log("Error Fetching Job Courses");
@@ -133,6 +133,10 @@ function JobCourse() {
   useEffect(() => {
     fetchJobCourses();
   }, [dataUpdated]);
+  
+  if(isComingSoon){
+    return <ComingSoon/>
+  }
 
   return (
     <>
@@ -142,7 +146,7 @@ function JobCourse() {
           text="Add Course"
           handleClick={showAddDialog}
         />
-      </div>
+      </div> 
       <div className="border-primary rounded-md w-full overflow-hidden">
         <div className="w-full overflow-x-auto">
           <div

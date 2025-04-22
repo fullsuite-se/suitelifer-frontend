@@ -208,7 +208,7 @@ const Login = () => {
               className="w-28 h-auto mx-auto cursor-pointer"
             />
             <p className="text-center text-base my-4 text-gray-500 mb-10">
-              Welcome, SuiteLifer!
+              Welcome, Suitelifer!
             </p>
             <LoginForm
               email={email}

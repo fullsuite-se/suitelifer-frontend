@@ -63,7 +63,7 @@ const AboutUs = () => {
       style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
     >
       <PageMeta
-        title="About Us - SuiteLifer"
+        title="About Us - Suitelifer"
         desc="A launchpad that transforms careers. We'll help you pave the way to your professional success."
         isDefer={false}
       />

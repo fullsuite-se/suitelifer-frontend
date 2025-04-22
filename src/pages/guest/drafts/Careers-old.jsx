@@ -107,7 +107,7 @@ const Careers = () => {
         style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
       >
         <PageMeta
-          title="Careers - SuiteLifer"
+          title="Careers - Suitelifer"
           desc="Your career journey has to start somewhere. Grab the opportunity, start it with us."
           isDefer={false}
         />
@@ -293,7 +293,7 @@ const Careers = () => {
                 hop on <span className="text-primary">now</span>.
               </p>
             </div>
-          </section>          
+          </section>
 
           {/* Three dots one line */}
           <div
@@ -453,7 +453,6 @@ const Careers = () => {
               </>
             )}
           </section>
-
         </main>
         <BackToTop />
 

@@ -12,9 +12,12 @@ import {
 import moment from "moment";
 import EventCalendar from "./../../components/admin/EventCalendar";
 import ContentButtons from "../../components/admin/ContentButtons";
+import ComingSoon from "./ComingSoon";
 import { EyeIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
 
 const AdminEvents = () => {
+  const [isComingSoon, setComingSoon] = useState(true); //Change false if page is ready
+
   const [openDialog, setOpenDialog] = useState(false);
   const [events, setEvents] = useState([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -77,6 +80,10 @@ const AdminEvents = () => {
     setIsEventDetailsModalOpen(false);
     setIsAddModalOpen(true);
   };
+  
+  if(isComingSoon){
+    return <ComingSoon/>
+  }
 
   return (
     <div className="bg-white p-2">

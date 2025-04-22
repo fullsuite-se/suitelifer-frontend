@@ -43,7 +43,7 @@ const AboutUs = () => {
       style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
     >
       <PageMeta
-        title="About Us - SuiteLifer"
+        title="About Us - Suitelifer"
         desc="A launchpad that transforms careers. We'll help you pave the way to your professional success."
         isDefer={false}
       />
@@ -69,7 +69,9 @@ const AboutUs = () => {
             />
           </div>
           <div className="about-text-banner flex flex-col mb-2 xl:pl-10">
-            <h2 className="font-avenir-black px-5">{aboutContent.textBanner}</h2>
+            <h2 className="font-avenir-black px-5">
+              {aboutContent.textBanner}
+            </h2>
           </div>
 
           <div className="mx-5">

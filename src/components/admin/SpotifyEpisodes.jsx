@@ -4,6 +4,7 @@ import {
   PlusIcon,
   XCircleIcon,
   ExclamationTriangleIcon,
+  PlusCircleIcon,
 } from "@heroicons/react/24/outline";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -13,6 +14,16 @@ import { useStore } from "../../store/authStore";
 import { showConfirmationToast } from "../toasts/confirm";
 import ButtonsSpotify from "./ButtonsSpotify";
 import formatTimestamp from "../TimestampFormatter";
+import ConfirmationDialog from "./ConfirmationDialog";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Button,
+} from "@mui/material";
+import ContentButtons from "./ContentButtons";
 
 const extractSpotifyId = (url) => {
   const match = url.match(/(?:episode|playlist)\/([^?]+)/);
@@ -38,9 +49,28 @@ const SpotifyEpisodes = () => {
   const [episodeDetails, setEpisodeDetails] = useState(defaultEpisodeDetails);
   const [embedTypeFilter, setEmbedTypeFilter] = useState("All");
   const [error, setError] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
 
   const showError = (message) => setError(message);
   const closeError = () => setError(null);
+
+  const openAddModal = () => {
+    setEpisodeDetails(defaultEpisodeDetails);
+    setOpenModal(true);
+  };
+
+  const openEditModal = (episode) => {
+    setEpisodeDetails({
+      episodeId: episode.episodeId,
+      spotifyId: `https://open.spotify.com/${episode.embedType}/${episode.spotifyId}`,
+    });
+    setOpenModal(true);
+  };
+
+  const closeModal = () => {
+    setOpenModal(false);
+    setEpisodeDetails(defaultEpisodeDetails);
+  };
 
   const handleAddEditEpisode = async (e) => {
     e.preventDefault();
@@ -92,14 +122,10 @@ const SpotifyEpisodes = () => {
       }
 
       setDataUpdated(!dataUpdated);
-      setEpisodeDetails(defaultEpisodeDetails);
+      closeModal();
     } catch (err) {
       console.log(err);
     }
-  };
-
-  const cancelEdit = () => {
-    setEpisodeDetails(defaultEpisodeDetails);
   };
 
   const handleDeleteClick = (episodeId) => {
@@ -167,94 +193,104 @@ const SpotifyEpisodes = () => {
         </div>
       )}
 
-      <div className="overflow-y-auto space-y-4">
-        <div className="flex gap-2">
+      <div className="flex justify-end px-4">
+        <>
+          <ContentButtons
+            icon={<PlusCircleIcon className="size-5" />}
+            text={
+              embedTypeFilter === "Episodes"
+                ? "Add Episode"
+                : embedTypeFilter === "Playlists"
+                ? "Add Playlist"
+                : "Add Episode/Playlist"
+            }
+            handleClick={openAddModal}
+          />
+        </>
+      </div>
+
+      <Dialog open={openModal} onClose={closeModal} fullWidth maxWidth="sm">
+        <DialogTitle>
+          {episodeDetails.episodeId
+            ? "Edit Spotify Episode"
+            : "Add Spotify Episode"}
+        </DialogTitle>
+        <DialogContent>
+          <div className="text-md p-1 font-avenir-black">
+            Spotify Link<span className="text-primary">*</span>
+          </div>
           <input
             type="text"
+            name="kickstartVideo"
             value={episodeDetails.spotifyId}
             onChange={(e) =>
-              setEpisodeDetails((ed) => ({ ...ed, spotifyId: e.target.value }))
+              setEpisodeDetails((ed) => ({
+                ...ed,
+                spotifyId: e.target.value,
+              }))
             }
-            placeholder="Enter Spotify episode URL"
-            className="border p-2 px-4 rounded-2xl w-full"
+            className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
           />
-          {episodeDetails.episodeId !== null ? (
-            <>
-              <button
-                onClick={handleAddEditEpisode}
-                className="grid place-items-center cursor-pointer hover:bg-gray-100 rounded-full size-10 text-primary"
-              >
-                <PlusIcon className="size-5" />
-              </button>
-              <button
-                onClick={cancelEdit}
-                className="hover:text-[#007a8e] cursor-pointer text-primary"
-              >
-                <XCircleIcon className="size-8" />
-              </button>
-            </>
-          ) : (
-            <button onClick={handleAddEditEpisode} className="btn-light">
-              <PlusIcon className="size-5 sm:size-7" />
-            </button>
-          )}
-        </div>
+        </DialogContent>
+        <DialogActions>
+          <button onClick={closeModal} className="btn-light">
+            Cancel
+          </button>
+          <button onClick={handleAddEditEpisode} className="btn-primary">
+            {episodeDetails.episodeId ? "Update" : "Add"}
+          </button>
+        </DialogActions>
+      </Dialog>
 
-        <ButtonsSpotify
-          buttons={[
-            { label: "All" },
-            { label: "Episodes" },
-            { label: "Playlists" },
-          ]}
-          onFilterChange={(filter) => setEmbedTypeFilter(filter)}
-        />
+      <ButtonsSpotify
+        buttons={[
+          { label: "All" },
+          { label: "Episodes" },
+          { label: "Playlists" },
+        ]}
+        onFilterChange={(filter) => setEmbedTypeFilter(filter)}
+      />
 
-        {filteredEpisodes.map((episode, index) => (
-          <div key={index} className="flex flex-col gap-4 shadow-2xs p-4">
-            <div className="flex-1">
-              <SingleSpotifyEmbed
-                spotifyId={episode.spotifyId}
-                embedType={episode.embedType}
-              />
+      {filteredEpisodes.map((episode, index) => (
+        <div key={index} className="flex flex-col gap-4 shadow-2xs p-4">
+          <div className="flex-1">
+            <SingleSpotifyEmbed
+              spotifyId={episode.spotifyId}
+              embedType={episode.embedType}
+            />
+          </div>
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+            <div className="whitespace-nowrap flex-1/3 text-gray-500">
+              <p>
+                Created by:{" "}
+                <span className="font-avenir-black text-primary">
+                  {episode.createdBy ?? "N/A"}
+                </span>
+              </p>
+              <p>
+                Date created:{" "}
+                <span className="font-avenir-black text-primary">
+                  {formatTimestamp(episode.createdAt ?? "N/A").fullDate}
+                </span>
+              </p>
             </div>
-            <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-              <div className="whitespace-nowrap flex-1/3 text-gray-500">
-                <p>
-                  Created by:{" "}
-                  <span className="font-avenir-black text-primary">
-                    {episode.createdBy ?? "N/A"}
-                  </span>
-                </p>
-                <p>
-                  Date created:{" "}
-                  <span className="font-avenir-black text-primary">
-                    {formatTimestamp(episode.createdAt ?? "N/A").fullDate}
-                  </span>
-                </p>
-              </div>
-              <div className="flex gap-4">
-                <button
-                  onClick={() =>
-                    setEpisodeDetails({
-                      episodeId: episode.episodeId,
-                      spotifyId: `https://open.spotify.com/${episode.embedType}/${episode.spotifyId}`,
-                    })
-                  }
-                  className="p-2.5 px-5 bg-primary text-white rounded-xl hover:bg-[#007a8e]"
-                >
-                  <EditIcon className="size-7" /> Edit
-                </button>
-                <button
-                  onClick={() => handleDeleteClick(episode.episodeId)}
-                  className="p-2.5 px-4 bg-primary text-white rounded-xl hover:bg-[#007a8e]"
-                >
-                  <DeleteIcon className="size-7" /> Delete
-                </button>
-              </div>
+            <div className="flex gap-4">
+              <button
+                onClick={() => openEditModal(episode)}
+                className="p-2.5 px-5 bg-primary text-white rounded-md hover:bg-[#007a8e]"
+              >
+                <EditIcon className="size-5" /> Edit
+              </button>
+              <button
+                onClick={() => handleDeleteClick(episode.episodeId)}
+                className="p-2.5 px-4 bg-primary text-white rounded-md hover:bg-[#007a8e]"
+              >
+                <DeleteIcon className="size-5" /> Delete
+              </button>
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 };

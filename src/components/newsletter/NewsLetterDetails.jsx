@@ -65,18 +65,18 @@ const NewsletterDetails = ({
   return (
     <>
       <Helmet>
-        <title>{article.title || "SuiteLifer"}</title>
+        <title>{article.title || "Suitelifer"}</title>
         <meta
           name="description"
           // content={
           //   content
           //     ? content.substring(0, 150) + "..."
-          //     : "Read the latest newsletters on SuiteLifer."
+          //     : "Read the latest newsletters on Suitelifer."
           // }
         />
         <meta
           name="keywords"
-          content={`${article.title}, SuiteLifer Newsletter, news, newsletter`}
+          content={`${article.title}, Suitelifer Newsletter, news, newsletter`}
         />
         {/* 
               TODO :

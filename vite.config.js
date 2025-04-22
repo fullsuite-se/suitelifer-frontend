@@ -27,7 +27,7 @@ export default withMT({
         name: "Suitelifer",
         short_name: "Suitelifer",
         description:
-          "SuiteLifer is a streamlined platform for job applications and employee engagement at FullSuite. It automates hiring, document submissions, and communication while providing training, company updates, and event management—all in one secure and scalable system.",
+          "Suitelifer is a streamlined platform for job applications and employee engagement at FullSuite. It automates hiring, document submissions, and communication while providing training, company updates, and event management—all in one secure and scalable system.",
         theme_color: "#ffffff",
         background_color: "#ffffff",
         display: "standalone",
