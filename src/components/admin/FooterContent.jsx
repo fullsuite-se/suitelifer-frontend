@@ -206,14 +206,15 @@ const FooterContent = () => {
             Image Url<span className="text-primary">*</span>
           </div>
           <input
-            name="textBanner"
+            name="certImageUrl"
+            type="text"
             value={certificationDetails.certImageUrl}
-              onChange={(e) =>
-                setCertificationDetails({
-                  ...certificationDetails,
-                  [e.target.name]: e.target.value,
-                })
-              }
+            onChange={(e) =>
+              setCertificationDetails({
+                ...certificationDetails,
+                [e.target.name]: e.target.value,
+              })
+            }
             className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
           />
 
