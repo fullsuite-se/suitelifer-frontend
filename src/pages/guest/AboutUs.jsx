@@ -426,8 +426,8 @@ const AboutUs = () => {
               <MotionUp>
                 <div className="text-center pb-7">
                   <p className="text-h5 font-avenir-black">
-                    Feel like you embody the
-                    <span className="text-primary">SuiteLife</span>?
+                    Feel like you embody the 
+                    <span className="text-primary"> SuiteLife</span>?
                   </p>
                   <p className="text-small text-gray-500">
                     Transform that feeling into your future. Discover your
