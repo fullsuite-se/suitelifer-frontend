@@ -24,7 +24,7 @@ import { EyeIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 function PersonalityTest() {
-  const [isComingSoon, setComingSoon] = useState(true); //Change this when the page is ready.
+  const [isComingSoon, setComingSoon] = useState(false);
 
   // USER DETAILS
   const user = useStore((state) => state.user);
@@ -150,9 +150,9 @@ function PersonalityTest() {
 
   // DELETE MODAL VARIABLES
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
-  
-  if(isComingSoon){
-    return <ComingSoon/>
+
+  if (isComingSoon) {
+    return <ComingSoon />;
   }
 
   return (
