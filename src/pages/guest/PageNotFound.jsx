@@ -1,18 +1,9 @@
 import React from "react";
-
-import MobileNav from "../../components/home/MobileNav";
-import TabletNav from "../../components/home/TabletNav";
-import DesktopNav from "../../components/home/DesktopNav";
 import notFoundImg from "../../assets/images/404.svg";
 import fullsuitelogo from "../../assets/logos/logo-fs-full.svg";
 import { useLocation, useNavigate } from "react-router-dom";
-import Footer from "../../components/Footer";
 
 const PageNotFound = () => {
-  const location = useLocation();
-
-  const navigate = useNavigate();
-
   return (
     <section
       className="gap-4 h-dvh"
