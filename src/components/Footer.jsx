@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import FacebookIcon from "../assets/logos/Facebook.jsx";
 import InstagramIcon from "../assets/logos/Instagram.jsx";
 import LinkedlnIcon from "../assets/logos/Linkedln.jsx";
+import YoutubeIcon from "../assets/logos/Youtube.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import { getUserFromCookie } from "../utils/cookie.js";
@@ -24,9 +25,6 @@ const handleLoginBtn = async (navigate) => {
 };
 
 const Footer = () => {
-
-
-
   const [industries, setIndustries] = useState([]);
   const fetchIndustries = async () => {
     try {
@@ -42,19 +40,8 @@ const Footer = () => {
     fetchIndustries();
   }, []);
 
-
-
-
-
-
-
-
-
-
-
-
   const navigate = useNavigate();
-  
+
   const maxItems = 5;
   const showSeeAll = industries.length > maxItems;
 
@@ -113,6 +100,14 @@ const Footer = () => {
                     to={"https://www.linkedin.com/company/fullsuite"}
                   >
                     <LinkedlnIcon color={"white"} height="20" width="20" />
+                  </Link>
+                </li>
+                <li className="hover:scale-150 transition-all duration-100">
+                  <Link
+                    target="_blank"
+                    to={"https://www.youtube.com/@fs_thesuitepod"}
+                  >
+                    <YoutubeIcon color={"white"} height="24" width="24" />
                   </Link>
                 </li>
               </ul>
@@ -187,10 +182,7 @@ const Footer = () => {
               </span>
               <ul className="flex flex-wrap gap-1 flex-col mt-3 list-none! -ml-5">
                 {industries.slice(0, maxItems).map((industry, index) => (
-                  <li
-                    key={industry.industryId}
-                    className="   text-white"
-                  >
+                  <li key={industry.industryId} className="   text-white">
                     <Link to={""} className="no-underline hover:text-secondary">
                       {industry.industryName}
                     </Link>
@@ -209,9 +201,7 @@ const Footer = () => {
               </ul>
             </div>
             <div>
-              <span className=" text-white font-avenir-black ">
-                Legal
-              </span>
+              <span className=" text-white font-avenir-black ">Legal</span>
               <ul className="flex-wrap flex gap-1 mt-3 flex-col list-none! -ml-5">
                 <li className="  ">
                   <Link
