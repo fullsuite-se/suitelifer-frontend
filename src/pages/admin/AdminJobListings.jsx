@@ -85,26 +85,21 @@ export default function AdminJobListing() {
   const [jobListings, setJobListings] = useState([]);
   const [jobDetails, setJobDetails] = useState(defaultJobDetails);
   const [jobModalIsOpen, setJobModalIsOpen] = useState(false);
-
-  // JOB FUNCTIONS
   const handleAddJobListingButtonClick = () => {
     setJobModalIsOpen((io) => true);
   };
 
   const handleAddEditJobListing = async (e) => {
     e.preventDefault();
-    console.log("Job Details:", jobDetails);
 
     try {
       let response;
       if (jobDetails.jobId === null) {
-        // ADD JOB LISTING
         response = await api.post("/api/add-job", {
           ...jobDetails,
           userId: user.id,
         });
       } else {
-        // EDIT JOB LISTING
         response = await api.post("/api/edit-job", {
           ...jobDetails,
           userId: user.id,
@@ -166,8 +161,6 @@ export default function AdminJobListing() {
   const [statusFilter, setStatusFilter] = useState(null);
 
   const fetchJobListingsByStatus = async (status) => {
-    console.log("Clicked");
-
     try {
       const response = await api.get(
         `/api/get-jobs-filtered-by-status/${status}`
@@ -203,7 +196,6 @@ export default function AdminJobListing() {
 
   const handleAddEditIndustry = async (e) => {
     e.preventDefault();
-    console.log("Industry Details:", industryDetails);
 
     try {
       let response;
@@ -281,7 +273,6 @@ export default function AdminJobListing() {
 
   const handleAddEditSetup = async (e) => {
     e.preventDefault();
-    console.log("Setup Details:", setupDetails);
 
     try {
       let response;

@@ -32,7 +32,6 @@ const AdminContents = () => {
   };
 
   const handleSave = () => {
-    console.log("Changes saved!");
     setUnsavedChanges(false);
     setDialogOpen(false);
     setActiveTab(pendingTab);

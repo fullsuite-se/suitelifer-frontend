@@ -34,7 +34,6 @@ const AdminNews = () => {
         ...newNews,
         is_shown: parseInt(editingNews?.isShown ?? newNews.isShown ?? 0),
       };
-      console.log("createdBy:", createdBy);
 
       const response = await api.post("/api/add-employee-blog", payload);
       const result = response.data;
@@ -73,7 +72,6 @@ const AdminNews = () => {
   };
 
   const deleteNews = async (eblog_id) => {
-    console.log("Deleting blog with ID:", eblog_id);
     try {
       const response = await api.post("/api/delete-employee-blog", {
         eblog_id,
@@ -85,7 +83,7 @@ const AdminNews = () => {
         alert("Failed to delete blog.");
       }
     } catch (error) {
-      console.error("Delete error:", error);
+      console.error(error);
       alert("Something went wrong while deleting.");
     }
   };
@@ -99,8 +97,6 @@ const AdminNews = () => {
         const result = response.data;
 
         if (response.status === 200) {
-          console.log(response.data);
-
           const formatted = result.map((blog) => ({
             ...blog,
             id: blog.eblogId,
@@ -123,18 +119,18 @@ const AdminNews = () => {
 
           setRowNewsData(formatted);
         } else {
-          console.error("Failed to fetch blogs:", result.error);
+          console.error(result.error);
         }
       } catch (error) {
-        console.error("Error fetching blogs:", error);
+        console.error(error);
       }
     };
 
     fetchBlogs();
   }, []);
 
-  if(isComingSoon){
-    return <ComingSoon/>
+  if (isComingSoon) {
+    return <ComingSoon />;
   }
 
   return (

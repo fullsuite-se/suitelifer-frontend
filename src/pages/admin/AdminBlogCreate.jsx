@@ -65,7 +65,6 @@ const AdminBlogCreate = () => {
       }
 
       const blogId = blogResponse.data.id;
-      console.log(blogId);
 
       if (files.length > 0) {
         const formData = new FormData();
