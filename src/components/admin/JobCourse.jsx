@@ -20,9 +20,14 @@ import formatTimestamp from "../TimestampFormatter";
 import { ModalDeleteConfirmation } from "../modals/ModalDeleteConfirmation";
 import ContentButtons from "./ContentButtons";
 import ComingSoon from "../../pages/admin/ComingSoon";
-import { EyeIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
+import {
+  PlusCircleIcon,
+  TrashIcon,
+  PencilIcon,
+} from "@heroicons/react/24/outline";
 import LoadingAnimation from "../loader/Loading";
 import ConfirmationDialog from "./ConfirmationDialog";
+import ActionButtons from "./ActionButtons";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -197,8 +202,6 @@ function JobCourse() {
                   field: "createdBy",
                   flex: 1,
                   headerClass: "text-primary font-bold bg-gray-100",
-                  // valueGetter: (params) =>
-                  //   `${params.data.first_name} ${params.data.last_name}`,
                 },
                 {
                   headerName: "Action",
@@ -206,15 +209,17 @@ function JobCourse() {
                   flex: 1,
                   headerClass: "text-primary font-bold bg-gray-100",
                   cellRenderer: (params) => (
-                    <div className="flex gap-2">
-                      <IconButton onClick={() => handleEdit(params.data)}>
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => handleDeleteClick(params.data.courseId)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
+                    <div className="flex">
+                      <ActionButtons
+                        icon={<PencilIcon className="size-5" />}
+                        handleClick={() => handleEdit(params.data)}
+                      />
+                      <ActionButtons
+                        icon={<TrashIcon className="size-5" />}
+                        handleClick={() =>
+                          handleDeleteClick(params.data.courseId)
+                        }
+                      />
                     </div>
                   ),
                 },

@@ -19,9 +19,15 @@ import toast from "react-hot-toast";
 import { ModalDeleteConfirmation } from "../modals/ModalDeleteConfirmation";
 import ContentButtons from "./ContentButtons";
 import ComingSoon from "../../pages/admin/ComingSoon";
-import { EyeIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
+import {
+  EyeIcon,
+  PlusCircleIcon,
+  TrashIcon,
+  PencilIcon,
+} from "@heroicons/react/24/outline";
 import LoadingAnimation from "../loader/Loading";
 import ConfirmationDialog from "./ConfirmationDialog";
+import ActionButtons from "./ActionButtons";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -134,7 +140,7 @@ function PersonalityTest() {
       toast.error("Encountered an error deleting personality test");
     } finally {
       setIsLoading(false);
-      setDeleteModalIsOpen(false);  
+      setDeleteModalIsOpen(false);
     }
     setDataUpdated(!dataUpdated);
     setPTDetails(defaultPersonalityTestDetails);
@@ -227,15 +233,17 @@ function PersonalityTest() {
 
                   headerClass: "text-primary font-bold bg-gray-100",
                   cellRenderer: (params) => (
-                    <div className="flex gap-2">
-                      <IconButton onClick={() => handleEditClick(params.data)}>
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => handleDeleteClick(params.data.testId)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
+                    <div className="flex">
+                      <ActionButtons
+                        icon={<PencilIcon className="size-5" />}
+                        handleClick={() => handleEditClick(params.data)}
+                      />
+                      <ActionButtons
+                        icon={<TrashIcon className="size-5" />}
+                        handleClick={() =>
+                          handleDeleteClick(params.data.testId)
+                        }
+                      />
                     </div>
                   ),
                 },
