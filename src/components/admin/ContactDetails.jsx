@@ -28,9 +28,6 @@ const ContactDetails = () => {
   const fetchContactDetails = async () => {
     try {
       const response = await api.get("/api/contact");
-
-      console.log(response.data);
-
       response.data.contact && setContactDetails(response.data.contact);
     } catch (err) {
       console.log(err);

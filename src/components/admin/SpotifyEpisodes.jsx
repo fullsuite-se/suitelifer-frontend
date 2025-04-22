@@ -14,6 +14,7 @@ import { useStore } from "../../store/authStore";
 import { showConfirmationToast } from "../toasts/confirm";
 import ButtonsSpotify from "./ButtonsSpotify";
 import formatTimestamp from "../TimestampFormatter";
+import ConfirmationDialog from "./ConfirmationDialog";
 import {
   Dialog,
   DialogTitle,
@@ -193,17 +194,19 @@ const SpotifyEpisodes = () => {
       )}
 
       <div className="flex justify-end px-4">
-        <ContentButtons
-          icon={<PlusCircleIcon className="size-5" />}
-          text={
-            embedTypeFilter === "Episodes"
-              ? "Add Episode"
-              : embedTypeFilter === "Playlists"
-              ? "Add Playlist"
-              : "Add Episode/Playlist"
-          }
-          handleClick={openAddModal}
-        />
+        <>
+          <ContentButtons
+            icon={<PlusCircleIcon className="size-5" />}
+            text={
+              embedTypeFilter === "Episodes"
+                ? "Add Episode"
+                : embedTypeFilter === "Playlists"
+                ? "Add Playlist"
+                : "Add Episode/Playlist"
+            }
+            handleClick={openAddModal}
+          />
+        </>
       </div>
 
       <Dialog open={openModal} onClose={closeModal} fullWidth maxWidth="sm">
@@ -274,15 +277,15 @@ const SpotifyEpisodes = () => {
             <div className="flex gap-4">
               <button
                 onClick={() => openEditModal(episode)}
-                className="p-2.5 px-5 bg-primary text-white rounded-xl hover:bg-[#007a8e]"
+                className="p-2.5 px-5 bg-primary text-white rounded-md hover:bg-[#007a8e]"
               >
-                <EditIcon className="size-7" /> Edit
+                <EditIcon className="size-5" /> Edit
               </button>
               <button
                 onClick={() => handleDeleteClick(episode.episodeId)}
-                className="p-2.5 px-4 bg-primary text-white rounded-xl hover:bg-[#007a8e]"
+                className="p-2.5 px-4 bg-primary text-white rounded-md hover:bg-[#007a8e]"
               >
-                <DeleteIcon className="size-7" /> Delete
+                <DeleteIcon className="size-5" /> Delete
               </button>
             </div>
           </div>

@@ -61,7 +61,6 @@ function Careers() {
       if (files.careersLeftImage !== null) {
         const formData = new FormData();
         formData.append("file", files.careersLeftImage);
-        console.log("Uploading left image");
         const uploadResponse = await api.post(
           "/api/upload-image/careers",
           formData,
@@ -72,13 +71,11 @@ function Careers() {
 
         // Set cloudinary image url to career image
         careerImages.careersLeftImage = uploadResponse.data.imageUrl;
-        console.log(uploadResponse.data.imageUrl);
       }
 
       if (files.careersMainImage !== null) {
         const formData = new FormData();
         formData.append("file", files.careersMainImage);
-        console.log("Uploading main image");
         const uploadResponse = await api.post(
           "/api/upload-image/careers",
           formData,
@@ -86,16 +83,13 @@ function Careers() {
             headers: { "Content-Type": "multipart/form-data" },
           }
         );
-
         // Set cloudinary image url to career image
         careerImages.careersMainImage = uploadResponse.data.imageUrl;
-        console.log(uploadResponse.data.imageUrl);
       }
 
       if (files.careersRightImage !== null) {
         const formData = new FormData();
         formData.append("file", files.careersRightImage);
-        console.log("Uploading right image");
         const uploadResponse = await api.post(
           "/api/upload-image/careers",
           formData,
@@ -106,7 +100,6 @@ function Careers() {
 
         // Set cloudinary image url to career image
         careerImages.careersRightImage = uploadResponse.data.imageUrl;
-        console.log(uploadResponse.data.imageUrl);
       }
 
       //update db
@@ -114,7 +107,6 @@ function Careers() {
         ...careerImages,
         userId: user.id,
       });
-      console.log(response);
     } catch (e) {
       console.log("Error updating images.", e);
       toast.error("Something went wrong. Please try again later");

@@ -123,9 +123,6 @@ function JobCourse() {
   const fetchJobCourses = async () => {
     try {
       const response = await api.get("api/course");
-
-      console.log(response.data.courses);
-
       setRowCourseData(response.data.courses);
     } catch (error) {
       console.log("Error Fetching Job Courses");
