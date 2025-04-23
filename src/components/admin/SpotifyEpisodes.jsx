@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import SingleSpotifyEmbed from "../../components/home/SingleSpotifyEmbed";
 import {
-  PlusIcon,
-  XCircleIcon,
   ExclamationTriangleIcon,
   PlusCircleIcon,
 } from "@heroicons/react/24/outline";
@@ -20,8 +18,6 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  TextField,
-  Button,
 } from "@mui/material";
 import ContentButtons from "./ContentButtons";
 

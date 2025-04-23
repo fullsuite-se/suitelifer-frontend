@@ -1,13 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import {
-  IconButton,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
 } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { ModuleRegistry } from "@ag-grid-community/core";
 import { AgGridReact } from "@ag-grid-community/react";
@@ -16,11 +13,9 @@ import "@ag-grid-community/styles/ag-theme-quartz.css";
 import api from "../../utils/axios";
 import { useStore } from "../../store/authStore";
 import toast from "react-hot-toast";
-import { ModalDeleteConfirmation } from "../modals/ModalDeleteConfirmation";
 import ContentButtons from "./ContentButtons";
 import ComingSoon from "../../pages/admin/ComingSoon";
 import {
-  EyeIcon,
   PlusCircleIcon,
   TrashIcon,
   PencilIcon,

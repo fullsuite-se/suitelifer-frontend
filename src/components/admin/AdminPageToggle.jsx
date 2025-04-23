@@ -1,4 +1,3 @@
-import { useState } from "react";
 import AboutPageContent from "./AboutPageContent";
 import Testimonials from "./Testimonials";
 import PageToggle from "./PageToggle";

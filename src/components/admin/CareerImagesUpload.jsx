@@ -7,7 +7,6 @@ const CareerImage = ({ onUpload }) => {
   const [filename, setFilename] = useState("");
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [modalImage, setModalImage] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState("");
 
