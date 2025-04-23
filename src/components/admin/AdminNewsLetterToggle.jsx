@@ -3,46 +3,147 @@ import NewsArticle from "./NewsArticle";
 import Issues from "./Issues";
 import PageToggle from "../buttons/PageToggle";
 import { ArrowRightIcon } from "@heroicons/react/24/solid";
+import { AgGridReact } from "@ag-grid-community/react";
+import { ModuleRegistry } from "@ag-grid-community/core";
+import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
+import "@ag-grid-community/styles/ag-grid.css";
+import "@ag-grid-community/styles/ag-theme-quartz.css";
+
 import {
-  DocumentIcon,
   CheckCircleIcon,
-  ExclamationTriangleIcon,
   InformationCircleIcon,
   ArrowDownIcon,
   ArrowUpIcon,
   MinusCircleIcon,
   RectangleStackIcon,
+  PencilIcon,
+  TrashIcon,
 } from "@heroicons/react/24/outline";
 import emptyIllustration from "../../assets/images/empty-illustration.svg";
 import {
-  Modal,
-  TextField,
-  Typography,
   Box,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
+  Popper,
+  Paper,
+  ClickAwayListener,
 } from "@mui/material";
 import YearFilterDropDown from "./NewsletterFilter";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import api from "../../utils/axios";
 import { set } from "react-hook-form";
 import formatTimestamp from "../../utils/formatTimestamp";
 import { ArrowLeft } from "lucide-react";
-
-<ArrowRightIcon className="h-5 w-5 text-gray-500" />;
-
+import ActionButtons from "./ActionButtons";
+import { useStore } from "../../store/authStore";
+import toast from "react-hot-toast";
+ModuleRegistry.registerModules([ClientSideRowModelModule]);
 function AdminNewsLetterToggle() {
+  const user = useStore((state) => state.user);
+  const [open, setOpen] = useState(false);
+  const anchorRef = useRef(null);
   const [selectedMonthlyIssue, setSelectedMonthlyIssue] = useState(null);
-  const currentYear = new Date().getFullYear();
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth() + 1;
   const [selectedYear, setSelectedYear] = useState(currentYear);
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
   const [currentPublishedIssue, setCurrentPublishedIssue] = useState({});
   const [oldestIssue, setOldestIssue] = useState({});
 
   const [issues, setIssues] = useState([]);
   const [isNewestFirst, setIsNewestFirst] = useState(true);
+
+  const [newslettersByMonth, setNewslettersByMonth] = useState([]);
+  const [openIssueDialog, setOpenIssueDialog] = useState(false);
+  const [currentIssue, setCurrentIssue] = useState({
+    issueId: "",
+    month: "",
+    year: "",
+  });
+
+  const yearOptions = [currentYear];
+  if (currentMonth === 12) {
+    yearOptions.push(currentYear + 1);
+  }
+
+  const monthOptions =
+    currentMonth === 12
+      ? [0]
+      : Array.from({ length: 12 - currentMonth }, (_, i) => currentMonth + i);
+
+  const handleSaveIssue = async () => {
+    if (currentIssue.issueId) {
+      // try {
+      //   console.log("Sending to backend:", currentIssue);
+      //   const response = await api.post("/api/edit-faq", {
+      //     ...currentIssue,
+      //     user_id: user.id,
+      //   });
+      //   console.log(response.data);
+      //   if (response.data?.success) {
+      //     toast.success(response.data.message);
+      //   } else {
+      //     toast.error(response.data.message || "Failed to update faq.");
+      //   }
+      //   setDataUpdated(!dataUpdated);
+      // } catch (err) {
+      //   console.error(err.message);
+      // }
+    } else {
+      const newIssue = {
+        ...currentIssue,
+        userId: user.id,
+      };
+      try {
+        console.log("Sending to backend:", newIssue);
+
+        const response = await api.post("/api/issues", newIssue);
+        console.log(response.data);
+
+        if (response.data?.success) {
+          toast.success(response.data.message);
+        } else {
+          toast.error(response.data.message || "Failed to save issue.");
+        }
+      } catch (err) {
+        console.error(err.message);
+      }
+      setSelectedYear(2025);
+    }
+
+    setCurrentIssue({ issueId: "", month: "", year: "" });
+    setOpenIssueDialog(false);
+  };
+
+  const fetchNewsLettersByMonth = async (issueId) => {
+    try {
+      const response = await api.get("/api/newsletter?issueId=" + issueId);
+      const fetchedNewslettersByMonth = response.data.newsletters;
+      setNewslettersByMonth(fetchedNewslettersByMonth);
+      console.log(fetchedNewslettersByMonth);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const gridRef = useRef();
 
   const fetchIssuesByYear = async (year, isNewestFirst = true) => {
     try {
@@ -61,6 +162,7 @@ function AdminNewsLetterToggle() {
 
   const handleMonthClick = (monthlyIssue) => {
     setSelectedMonthlyIssue(monthlyIssue);
+    fetchNewsLettersByMonth(monthlyIssue.issueId);
   };
 
   const handleSortToggle = () => {
@@ -802,8 +904,11 @@ function AdminNewsLetterToggle() {
     <div>
       {!selectedMonthlyIssue ? (
         <>
-          <h3>Current Published Issue</h3>
-          <div className="flex flex-row items-center justify-between bg-primary text-white p-4 rounded-lg mb-4 cursor-pointer hover:scale-101 hover:shadow-lg transition duration-300 ease-in-out">
+          <h3>Currently Published Issue</h3>
+          <div
+            onClick={() => handleMonthClick(currentPublishedIssue)}
+            className="flex flex-row items-center justify-between bg-primary text-white p-4 rounded-lg mb-4 cursor-pointer hover:scale-101 hover:shadow-lg transition duration-300 ease-in-out"
+          >
             <h3 className="font-avenir-black">
               {getMonthName(currentPublishedIssue.month) +
                 " " +
@@ -832,7 +937,13 @@ function AdminNewsLetterToggle() {
           <div className="py-3"></div>
           <div className="flex flex-row items-center justify-between">
             <h3>All Issues</h3>
-            <InformationCircleIcon className="w-5 h-5 text-primary cursor-pointer" />
+            {/* <InformationCircleIcon className="w-5 h-5 text-primary cursor-pointer" /> */}
+
+            <InformationCircleIcon
+              className="w-5 h-5 text-primary cursor-pointer"
+              ref={anchorRef}
+              onClick={() => setOpen((prev) => !prev)}
+            />
           </div>
           <div className="flex flex-row items-center justify-between">
             <div className="flex justify-start items-center">
@@ -857,8 +968,14 @@ function AdminNewsLetterToggle() {
                 <div>{isNewestFirst ? "Newest first" : "Oldest first"}</div>
               </div>
             </div>
-            <div>
-              <p className="font-avenir-black text-primary cursor-pointer ">
+            <div
+              className="cursor-pointer"
+              onClick={() => {
+                setOpenIssueDialog(true);
+                setCurrentIssue({ issueId: "", month: "", year: "" });
+              }}
+            >
+              <p className="font-avenir-black text-primary  ">
                 + Add new issue
               </p>
             </div>
@@ -937,6 +1054,138 @@ function AdminNewsLetterToggle() {
           )}
           {/* <div className="py-15"></div> */}
           {/* <PageToggle tabs={tabs} /> */}
+          <Popper
+            open={open}
+            anchorEl={anchorRef.current}
+            placement="bottom-start"
+          >
+            <ClickAwayListener onClickAway={() => setOpen(false)}>
+              <Paper
+                sx={{
+                  p: 3,
+                  borderRadius: 2,
+                  border: "1px solid #E7E7E7",
+                  mt: 1,
+                  width: 220,
+                  bgcolor: "white",
+                  boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.08)",
+                }}
+              >
+                <p className="font-avenir-black mb-3  text-small">LEGEND</p>
+
+                <Box display="flex" alignItems="center" gap={1} mb={1}>
+                  <Box
+                    width={12}
+                    height={12}
+                    borderRadius="50%"
+                    bgcolor="green"
+                  />
+                  <p className=" font-avenir-roman text-xs text-gray-500">
+                    Currently Published
+                  </p>
+                </Box>
+
+                <Box display="flex" alignItems="center" gap={1} mb={1}>
+                  <Box
+                    width={12}
+                    height={12}
+                    borderRadius="50%"
+                    bgcolor="#0097A7"
+                  />
+                  <p className=" font-avenir-roman text-xs text-gray-500">
+                    Complete/Ready to Publish
+                  </p>
+                </Box>
+
+                <Box display="flex" alignItems="center" gap={1}>
+                  <Box
+                    width={12}
+                    height={12}
+                    borderRadius="50%"
+                    bgcolor="#F57C00"
+                  />
+                  <p className=" font-avenir-roman text-xs text-gray-500">
+                    In Progress/Incomplete
+                  </p>
+                </Box>
+              </Paper>
+            </ClickAwayListener>
+          </Popper>
+          <Dialog
+            open={openIssueDialog}
+            onClose={(event, reason) => {
+              if (reason !== "backdropClick" && reason !== "escapeKeyDown") {
+                setOpenIssueDialog(false);
+              }
+            }}
+            fullWidth
+            disableEscapeKeyDown={true}
+            sx={{
+              "& .MuiDialog-paper": {
+                width: "600px",
+                height: "auto",
+                maxHeight: "90vh",
+              },
+            }}
+          >
+            <DialogTitle>
+              {currentIssue.issueId ? "Edit Issue" : "Add New Issue"}
+            </DialogTitle>
+            <DialogContent>
+              <div className="mb-4">
+                <label className="block text-gray-700 font-avenir-black">
+                  Year<span className="text-primary">*</span>
+                </label>
+                <select
+                  value={currentIssue.year}
+                  onChange={(e) =>
+                    setCurrentIssue({
+                      ...currentIssue,
+                      year: parseInt(e.target.value),
+                    })
+                  }
+                  className="w-full p-3 mt-2 border rounded bg-primary/10 focus:ring-2 focus:ring-primary"
+                >
+                  <option value="">Select year</option>
+                  {yearOptions.map((year) => (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-gray-700 font-avenir-black">
+                  Month<span className="text-primary">*</span>
+                </label>
+                <select
+                  value={currentIssue.month}
+                  onChange={(e) =>
+                    setCurrentIssue({ ...currentIssue, month: e.target.value })
+                  }
+                  className="w-full p-3 mt-2 border rounded bg-primary/10 focus:ring-2 focus:ring-primary"
+                >
+                  {monthOptions.map((monthIndex) => (
+                    <option key={monthIndex} value={monthIndex + 1}>
+                      {months[monthIndex]}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </DialogContent>
+            <DialogActions>
+              <button
+                className="btn-light"
+                onClick={() => setOpenIssueDialog(false)}
+              >
+                Cancel
+              </button>
+              <button className="btn-primary" onClick={handleSaveIssue}>
+                Save
+              </button>
+            </DialogActions>
+          </Dialog>
         </>
       ) : (
         <>
@@ -949,26 +1198,159 @@ function AdminNewsLetterToggle() {
             <span className="mt-1 group-hover:font-avenir-black">Back</span>
           </button>
           <div className="py-2"></div>
-          <div className="flex flex-row justify-start items-center gap-2">
-            <div
-              className={`w-2 h-2 ${
-                selectedMonthlyIssue.assigned < 7 &&
-                !selectedMonthlyIssue.is_published
-                  ? "bg-orange-400"
-                  : selectedMonthlyIssue.assigned >= 7 &&
-                    !selectedMonthlyIssue.is_published
-                  ? "bg-primary"
-                  : "bg-green-600"
-              } rounded-full`}
-            ></div>
-            <h3 className="font-avenir-black">
-              {getMonthName(selectedMonthlyIssue.month) +
-                " " +
-                selectedMonthlyIssue.year}{" "}
-              <span className="text-sm text-gray-500 font-avenir-roman">
-                ({selectedMonthlyIssue.articleCount})
+          <div className="flex flex-row items-center justify-between">
+            <div className="flex flex-row justify-start items-center gap-2">
+              <div
+                className={`w-2 h-2  ${
+                  selectedMonthlyIssue.assigned < 7 &&
+                  !selectedMonthlyIssue.is_published
+                    ? "bg-orange-400"
+                    : selectedMonthlyIssue.assigned >= 7 &&
+                      !selectedMonthlyIssue.is_published
+                    ? "bg-primary"
+                    : "bg-green-600"
+                } rounded-full`}
+              ></div>
+              <h3 className="font-avenir-black">
+                {getMonthName(selectedMonthlyIssue.month) +
+                  " " +
+                  selectedMonthlyIssue.year}{" "}
+                {/* <span className="text-sm text-gray-500 font-avenir-roman">
+                  ({selectedMonthlyIssue.articleCount})
+                </span> */}
+                <span className="text-sm text-gray-500 font-avenir-roman">
+                  {!selectedMonthlyIssue.is_published
+                    ? ""
+                    : "(Currently Published)"}
+                </span>
+              </h3>
+            </div>
+            <div>
+              {" "}
+              <p className="font-avenir-black text-primary cursor-pointer ">
+                + Add new article
+              </p>
+            </div>
+          </div>
+
+          <div className="py-1"></div>
+          <section className=" mb-4 grid grid-cols-1 sm:grid-cols-3 grid-rows-[5rem] [&>*]:bg-white [&>*]:border [&>*]:border-gray-300 gap-4">
+            <div className="rounded-md grid place-content-center ">
+              <span className="text-small font-avenir-black text-primary text-center">
+                Total
               </span>
-            </h3>
+              <div className="text-body  text-black text-center">
+                {selectedMonthlyIssue.articleCount}
+              </div>
+            </div>
+            <div className="rounded-md grid place-content-center">
+              <span className="text-small font-avenir-black text-gray-500 text-center">
+                Assigned
+              </span>
+              <div className="text-body text-black text-center">
+                {selectedMonthlyIssue.assigned}/7
+              </div>
+            </div>
+            <div className="rounded-md grid place-content-center">
+              <span className="text-small font-avenir-black text-gray-500 text-center">
+                Unassigned
+              </span>
+              <div className="text-body text-black text-center">
+                {selectedMonthlyIssue.unassigned}
+              </div>
+            </div>
+          </section>
+          <div className="py-1"></div>
+          <div
+            className="ag-theme-quartz min-w-[600px] lg:w-full "
+            style={{ height: "500px", width: "100%" }}
+          >
+            <AgGridReact
+              enableBrowserTooltips={true}
+              ref={gridRef}
+              rowData={newslettersByMonth}
+              columnDefs={[
+                {
+                  headerName: "Title",
+                  field: "title",
+                  flex: 3,
+                  tooltipField: "title",
+                  headerClass: "text-primary font-bold bg-gray-100",
+                },
+                {
+                  headerName: "Article",
+                  field: "article",
+                  flex: 3,
+                  headerClass: "text-primary font-bold bg-gray-100",
+                  tooltipField: "article",
+                  cellStyle: {
+                    display: "block",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    WebkitLineClamp: 3,
+                    WebkitBoxOrient: "vertical",
+                    whiteSpace: "normal",
+                  },
+                },
+                {
+                  headerName: "Author",
+                  field: "pseudonym",
+                  flex: 1,
+                  tooltipField: "author",
+                  headerClass: "text-primary font-bold bg-gray-100",
+                },
+                {
+                  headerName: "Section",
+                  field: "section",
+                  flex: 1,
+                  headerClass: "text-primary font-bold bg-gray-100",
+                  valueFormatter: (params) =>
+                    params.value === 0 ? "Unassigned" : params.value,
+                },
+                {
+                  headerName: "Date Created",
+                  field: "createdAt",
+                  flex: 2,
+                  headerClass: "text-primary font-bold bg-gray-100",
+                  valueGetter: (params) =>
+                    params.data?.createdAt
+                      ? new Date(params.data.createdAt).toLocaleString()
+                      : "N/A",
+                },
+
+                {
+                  headerName: "Action",
+                  field: "action",
+                  flex: 1,
+                  headerClass: "text-primary font-bold bg-gray-100",
+                  cellRenderer: (params) => (
+                    <div className="flex">
+                      <ActionButtons
+                        icon={<PencilIcon className="size-5 cursor-pointer" />}
+                        // handleClick={() => handleEdit(params.data)}
+                      />
+                      <ActionButtons
+                        icon={<TrashIcon className="size-5 cursor-pointer" />}
+                        // handleClick={() => handleDelete(params.data.faq_id)}
+                      />
+                    </div>
+                  ),
+                },
+              ]}
+              defaultColDef={{
+                filter: "agTextColumnFilter",
+                floatingFilter: true,
+                sortable: true,
+                cellStyle: {
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "left",
+                },
+              }}
+              pagination
+              paginationPageSize={10}
+              paginationPageSizeSelector={[5, 10, 20, 50]}
+            />
           </div>
         </>
       )}

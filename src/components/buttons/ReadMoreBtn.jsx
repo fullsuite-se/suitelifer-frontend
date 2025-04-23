@@ -1,21 +1,10 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { toSlug } from "../../utils/slugUrl";
-const ReadMoreBtn = ({
-  id,
-  title,
-  image,
-  author,
-  readTime,
-  datePublished,
-  article,
-}) => {
+const ReadMoreBtn = ({ id, title }) => {
   return (
     <NavLink
-      to={{
-        pathname: `/newsletter/${toSlug(title)}`,
-      }}
-      state={{ id: id }}
+      to={`/newsletter/${toSlug(title)}?id=${id}`}
       className="no-underline"
     >
       <div className="flex justify-end cursor-pointer">

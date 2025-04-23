@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { PlayCircleIcon } from "@heroicons/react/24/solid";
+import MotionUp from "../MotionUp";
 
 const CoreValueCard = ({ icon, text, className, youtubeUrl }) => {
   const [isHovered, setIsHovered] = useState(false);

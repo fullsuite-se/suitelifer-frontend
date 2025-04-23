@@ -3,10 +3,6 @@ import React, { useState } from "react";
 import {
   Tabs,
   Tab,
-  Dialog,
-  DialogTitle,
-  DialogActions,
-  Button,
 } from "@mui/material";
 import Careers from "../../components/admin/Careers";
 import SpotifyEpisodes from "../../components/admin/SpotifyEpisodes";
@@ -19,8 +15,6 @@ import AdminNewsLetterToggle from "../../components/admin/AdminNewsLetterToggle"
 const AdminContents = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
-  const [pendingTab, setPendingTab] = useState(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleChange = (event, newValue) => {
     if (unsavedChanges) {
@@ -29,20 +23,6 @@ const AdminContents = () => {
     } else {
       setActiveTab(newValue);
     }
-  };
-
-  const handleSave = () => {
-    setUnsavedChanges(false);
-    setDialogOpen(false);
-    setActiveTab(pendingTab);
-    setPendingTab(null);
-  };
-
-  const handleDiscard = () => {
-    setUnsavedChanges(false);
-    setDialogOpen(false);
-    setActiveTab(pendingTab);
-    setPendingTab(null);
   };
 
   return (
@@ -86,42 +66,14 @@ const AdminContents = () => {
       </div>
 
       <div className="p-4">
-        {activeTab === 0 && (
-          <AdminHomePage setUnsavedChanges={setUnsavedChanges} />
-        )}
-        {activeTab === 1 && (
-          <PageToggle setUnsavedChanges={setUnsavedChanges} />
-        )}
-        {activeTab === 2 && <Careers setUnsavedChanges={setUnsavedChanges} />}
-        {activeTab === 3 && (
-          <AdminNewsLetterToggle setUnsavedChanges={setUnsavedChanges} />
-        )}
-        {activeTab === 4 && (
-          <SpotifyEpisodes setUnsavedChanges={setUnsavedChanges} />
-        )}
-        {activeTab === 5 && (
-          <AdminContactsToggle setUnsavedChanges={setUnsavedChanges} />
-        )}
-        {activeTab === 6 && (
-          <FooterPageToggle setUnsavedChanges={setUnsavedChanges} />
-        )}
+        {activeTab === 0 && <AdminHomePage />}
+        {activeTab === 1 && <PageToggle />}
+        {activeTab === 2 && <Careers />}
+        {activeTab === 3 && <AdminNewsLetterToggle />}
+        {activeTab === 4 && <SpotifyEpisodes />}
+        {activeTab === 5 && <AdminContactsToggle />}
+        {activeTab === 6 && <FooterPageToggle />}
       </div>
-
-      {/* Confirmation Dialog */}
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-        <DialogTitle>
-          You have unsaved changes. What do you want to do?
-        </DialogTitle>
-        <DialogActions>
-          <Button onClick={handleDiscard} color="error">
-            Discard
-          </Button>
-          <Button onClick={handleSave} color="primary">
-            Save
-          </Button>
-          <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
-        </DialogActions>
-      </Dialog>
     </div>
   );
 };

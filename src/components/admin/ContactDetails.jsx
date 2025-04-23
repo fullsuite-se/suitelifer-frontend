@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { EyeIcon, BookmarkSquareIcon } from "@heroicons/react/24/outline";
+import { BookmarkSquareIcon } from "@heroicons/react/24/outline";
 import ContentButtons from "./ContentButtons";
 import api from "../../utils/axios";
 import toast from "react-hot-toast";

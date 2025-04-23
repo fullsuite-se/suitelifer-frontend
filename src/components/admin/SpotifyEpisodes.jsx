@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import SingleSpotifyEmbed from "../../components/home/SingleSpotifyEmbed";
 import {
-  PlusIcon,
-  XCircleIcon,
   ExclamationTriangleIcon,
   PlusCircleIcon,
 } from "@heroicons/react/24/outline";
@@ -20,8 +18,6 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  TextField,
-  Button,
 } from "@mui/material";
 import ContentButtons from "./ContentButtons";
 
@@ -291,13 +287,13 @@ const SpotifyEpisodes = () => {
             <div className="flex gap-4">
               <button
                 onClick={() => openEditModal(episode)}
-                className="p-2.5 px-5 bg-primary text-white rounded-md hover:bg-[#007a8e]"
+                className="cursor-pointer p-2.5 px-5 bg-primary text-white rounded-md hover:bg-[#007a8e]"
               >
                 <EditIcon className="size-7" /> Edit
               </button>
               <button
                 onClick={() => handleDeleteClick(episode.episodeId)}
-                className="p-2.5 px-4 bg-primary text-white rounded-md hover:bg-[#007a8e]"
+                className="cursor-pointer p-2.5 px-4 bg-primary text-white rounded-md hover:bg-[#007a8e]"
               >
                 <DeleteIcon className="size-7" /> Delete
               </button>
