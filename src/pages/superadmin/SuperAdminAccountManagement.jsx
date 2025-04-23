@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import formatTimestamp from "../../utils/formatTimestamp";
 import ActionButtons from "../../components/buttons/ActionButtons";
 import { TrashIcon } from "@heroicons/react/24/outline";
+import { useStore } from "../../store/authStore";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -41,13 +42,21 @@ const SuperAdminAccountManagement = () => {
             </option>
             <option
               value="ADMIN"
-              disabled={params.data.userType === "SUPER ADMIN"}
+              disabled={
+                user.email === "infosec@fullsuite.ph"
+                  ? false
+                  : params.data.userType === "SUPER ADMIN"
+              }
             >
               Admin
             </option>
             <option
               value="EMPLOYEE"
-              disabled={params.data.userType === "SUPER ADMIN"}
+              disabled={
+                user.email === "infosec@fullsuite.ph"
+                  ? false
+                  : params.data.userType === "SUPER ADMIN"
+              }
             >
               Employee
             </option>
@@ -216,6 +225,8 @@ const SuperAdminAccountManagement = () => {
 
   const [modal, setModal] = useState(defaultModalDetails);
 
+  const user = useStore((state) => state.user);
+
   useEffect(() => {
     fetchUserAccounts();
   }, []);
@@ -293,7 +304,6 @@ const SuperAdminAccountManagement = () => {
           rowData={userAccounts}
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
-          rowSelection="multiple"
           pagination={true}
           paginationPageSize={15}
           domLayout="autoHeight"
