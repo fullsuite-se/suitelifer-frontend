@@ -11,10 +11,14 @@ import toast from "react-hot-toast";
 import { useStore } from "../../store/authStore";
 import ContentButtons from "./ContentButtons";
 import Information from "./Information";
+import { useAddAuditLog } from "../../components/admin/UseAddAuditLog";
 
 const AboutPageContent = ({}) => {
   // USER DETAILS
   const user = useStore((state) => state.user);
+
+  //AUDIT LOG
+  const addLog = useAddAuditLog();
 
   // IMAGES
   const [files, setFiles] = useState({
@@ -109,6 +113,12 @@ const AboutPageContent = ({}) => {
         ...aboutDetails,
         userId: user.id,
       });
+
+      addLog({
+        action: "UPDATE",
+        description: "About page content has been updated",
+      });
+
       toast.success(response.data.message);
 
       setDataUpdated(!dataUpdated);

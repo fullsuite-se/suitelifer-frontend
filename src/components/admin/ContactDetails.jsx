@@ -4,9 +4,11 @@ import ContentButtons from "./ContentButtons";
 import api from "../../utils/axios";
 import toast from "react-hot-toast";
 import { useStore } from "../../store/authStore";
+import { useAddAuditLog } from "../../components/admin/UseAddAuditLog";
 
 const ContactDetails = () => {
   const user = useStore((state) => state.user);
+  const addLog = useAddAuditLog();
 
   const defaultContactDetails = {
     websiteEmail: "",
@@ -55,6 +57,10 @@ const ContactDetails = () => {
       });
 
       toast.success(response.data.message);
+      addLog({
+        action: "UPDATE",
+        description: `Contact details has been updated`,
+      });
       setDataUpdated(!dataUpdated);
     } catch (err) {
       console.log(err);
@@ -108,7 +114,7 @@ const ContactDetails = () => {
           />
         </div>
       ))}
-      
+
       <div className="flex justify-end gap-2 mt-6">
         <ContentButtons
           icon={<BookmarkSquareIcon className="size-5" />}

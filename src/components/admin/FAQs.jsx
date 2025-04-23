@@ -6,7 +6,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-} from "@mui/material"
+} from "@mui/material";
 import { AgGridReact } from "@ag-grid-community/react";
 import { ModuleRegistry } from "@ag-grid-community/core";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
@@ -23,11 +23,15 @@ import api from "../../utils/axios";
 import { useStore } from "../../store/authStore";
 import toast from "react-hot-toast";
 import ActionButtons from "../buttons/ActionButtons";
+import { useAddAuditLog } from "../../components/admin/UseAddAuditLog";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 function FAQs() {
   const user = useStore((state) => state.user);
+
+  //Audit Log
+  const addLog = useAddAuditLog();
 
   const [faqs, setFaqs] = useState([]);
 
@@ -69,6 +73,12 @@ function FAQs() {
           user_id: user.id,
         });
 
+        //Log
+        addLog({
+          action: "UPDATE",
+          description: `FAQ (${currentFAQ.question}) has been updated`,
+        });
+
         if (response.data?.success) {
           toast.success(response.data.message);
         } else {
@@ -93,7 +103,11 @@ function FAQs() {
         } else {
           toast.error(response.data.message || "Failed to save faq.");
         }
-
+        //Log
+        addLog({
+          action: "CREATE",
+          description: `A new FAQ (${newFaq.question}) has been added`,
+        });
         setDataUpdated(!dataUpdated);
       } catch (err) {
         console.error(err.message);
@@ -109,10 +123,16 @@ function FAQs() {
     setOpenDialog(true);
   };
 
-  const handleDelete = async (faq_id) => {
+  const handleDelete = async (faq_id, q) => {
     try {
       await api.post("/api/delete-faq", { faq_id });
       setFaqs((prev) => prev.filter((faq) => faq.faq_id !== faq_id));
+
+      //Log
+      addLog({
+        action: "DELETE",
+        description: `FAQ (${q}) has been deleted`,
+      });
       toast.success("FAQ deleted successfully");
       setDataUpdated((prev) => !prev);
     } catch (err) {
@@ -206,7 +226,7 @@ function FAQs() {
                   />
                   <ActionButtons
                     icon={<TrashIcon className="size-5 cursor-pointer" />}
-                    handleClick={() => handleDelete(params.data.faq_id)}
+                    handleClick={() => handleDelete(params.data.faq_id, params.data.question)}
                   />
                 </div>
               ),

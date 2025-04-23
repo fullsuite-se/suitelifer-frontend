@@ -6,10 +6,15 @@ import api from "../../utils/axios";
 import { useStore } from "../../store/authStore";
 import atsAPI from "../../utils/atsAPI";
 import Information from "./Information";
+import { useAddAuditLog } from "../../components/admin/UseAddAuditLog";
+
 
 const AdminHomePage = () => {
   // USER DETAILS
   const user = useStore((state) => state.user);
+
+  //AUDIT LOG
+  const addLog = useAddAuditLog();
 
   // HOME DETAILS
   const [homeDetails, setHomeDetails] = useState({
@@ -44,6 +49,11 @@ const AdminHomePage = () => {
       const response = await api.patch("/api/content/home", {
         ...homeDetails,
         user_id: user.id,
+      });
+
+      addLog({
+        action: "UPDATE",
+        description: "Home page content has been updated",
       });
 
       toast.success(response.data.message);

@@ -17,6 +17,7 @@ import { Dialog, DialogTitle, DialogContent } from "@mui/material";
 import ActionButtons from "../buttons/ActionButtons";
 import LoadingAnimation from "../loader/Loading";
 import ConfirmationDialog from "./ConfirmationDialog";
+import { useAddAuditLog } from "../../components/admin/UseAddAuditLog";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -27,6 +28,7 @@ const FooterContent = () => {
   const [dataUpdated, setDataUpdated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+  const addLog = useAddAuditLog();
 
   const defaultCertificationDetails = {
     certId: null,
@@ -49,10 +51,22 @@ const FooterContent = () => {
           ...certificationDetails,
           userId: user.id,
         });
+
+        //Log
+        addLog({
+          action: "CREATE",
+          description: `A new certificate URL (${certificationDetails.certImageUrl}) has been added`,
+        });
       } else {
         response = await api.put("/api/certification", {
           ...certificationDetails,
           userId: user.id,
+        });
+
+        //Log
+        addLog({
+          action: "UPDATE",
+          description: `A certificate URL (${certificationDetails.certImageUrl}) has been updated`,
         });
       }
 
@@ -70,22 +84,28 @@ const FooterContent = () => {
     }
   };
 
-  const handleDeleteClick = (certId) => {
-    setCertificationDetails((cd) => ({ ...cd, certId }));
+  const handleDeleteClick = (cert) => {
+    setCertificationDetails(cert);
     setDeleteModalIsOpen(true);
   };
 
-  const handleDelete = async (certId) => {
+  const handleDelete = async () => {
     try {
       setIsLoading(true);
       const response = await api.delete("/api/certification", {
         data: { certId: certificationDetails.certId },
       });
 
+      //Log
+      addLog({
+        action: "DELETE",
+        description: `A certificate URL (${certificationDetails.certImageUrl}) has been deleted`,
+      });
+
       if (response.data.success) {
         toast.success(response.data.message);
         setRowFooterData((prev) =>
-          prev.filter((item) => item.certId !== certId)
+          prev.filter((item) => item.certId !== certificationDetails.certId)
         );
       } else {
         toast.error("Failed to delete certificate.");
@@ -179,7 +199,7 @@ const FooterContent = () => {
                   <ActionButtons
                     icon={<TrashIcon className="size-5" />}
                     handleClick={() => {
-                      handleDeleteClick(params.data.certId);
+                      handleDeleteClick(params.data);
                     }}
                   />
                 </div>

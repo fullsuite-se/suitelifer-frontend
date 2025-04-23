@@ -14,6 +14,7 @@ import { OrbitProgress } from "react-loading-indicators";
 import toast from "react-hot-toast";
 import LoadingAnimation from "../loader/Loading";
 import ConfirmationDialog from "./ConfirmationDialog";
+import { useAddAuditLog } from "../../components/admin/UseAddAuditLog";
 
 function Careers() {
   const user = useStore((state) => state.user);
@@ -25,6 +26,9 @@ function Careers() {
   const leftInputRef = useRef();
   const mainInputRef = useRef();
   const rightInputRef = useRef();
+
+  //Audit Log
+  const addLog = useAddAuditLog();
 
   //This will contain the attached images
   const [files, setFiles] = useState({
@@ -105,6 +109,12 @@ function Careers() {
       response = await api.patch("/api/content/careers", {
         ...careerImages,
         userId: user.id,
+      });
+
+      //Log
+      addLog({
+        action: "UPDATE",
+        description: "Careers page hero images has been updated",
       });
     } catch (e) {
       console.log("Error updating images.", e);
