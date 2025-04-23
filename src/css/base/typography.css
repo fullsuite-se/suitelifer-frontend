@@ -2,42 +2,42 @@
 
 @font-face {
   font-family: "Avenir-Black";
-  src: url("/AvenirLTStd-Black.otf");
+  src: url("/fonts/avenir/AvenirLTStd-Black.otf");
 }
 
 @font-face {
   font-family: "Avenir-BlackOblique";
-  src: url("/AvenirLTStd-BlackOblique.otf");
+  src: url("/fonts/avenir/AvenirLTStd-BlackOblique.otf");
 }
 
 @font-face {
   font-family: "Avenir-Roman";
-  src: url("/AvenirLTStd-Roman.otf");
+  src: url("/fonts/avenir/AvenirLTStd-Roman.otf");
 }
 
 @font-face {
   font-family: "Avenir-RomanOblique";
-  src: url("/AvenirLTStd-RomanOblique.otf");
+  src: url("/fonts/avenir/AvenirLTStd-RomanOblique.otf");
 }
 
 @font-face {
   font-family: "SansitaSwashed-Black";
-  src: url("/SansitaSwashed-Black.ttf");
+  src: url("/fonts/sansita/SansitaSwashed-Black.ttf");
 }
 
 @font-face {
   font-family: "SansitaSwashed-Bold";
-  src: url("/SansitaSwashed-Bold.ttf");
+  src: url("/fonts/sansita/SansitaSwashed-Bold.ttf");
 }
 
 @font-face {
   font-family: "SansitaSwashed-Regular";
-  src: url("/SansitaSwashed-Regular.ttf");
+  src: url("/fonts/sansita/SansitaSwashed-Regular.ttf");
 }
 
 @font-face {
   font-family: "SansitaSwashed-ExtraBold";
-  src: url("/SansitaSwashed-ExtraBold.ttf");
+  src: url("/fonts/sansita/SansitaSwashed-ExtraBold.ttf");
 }
 
 @font-face {
@@ -47,10 +47,10 @@
 
 @font-face {
   font-family: "SansitaSwashed-Medium";
-  src: url("/SansitaSwashed-Medium.ttf");
+  src: url("/fonts/sansita/SansitaSwashed-Medium.ttf");
 }
 
 @font-face {
   font-family: "SansitaSwashed-SemiBold";
-  src: url("/SansitaSwashed-SemiBold.ttf");
+  src: url("/fonts/sansita/SansitaSwashed-SemiBold.ttf");
 }
