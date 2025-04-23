@@ -32,7 +32,7 @@ import ActionButtons from "./ActionButtons";
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 // TODO: AdminPersonalityTest
-function PersonalityTest() {
+function AdminPersonalityTest() {
   const [isComingSoon, setComingSoon] = useState(false);
 
   // USER DETAILS
@@ -367,4 +367,4 @@ function PersonalityTest() {
   );
 }
 
-export default PersonalityTest;
+export default AdminPersonalityTest;

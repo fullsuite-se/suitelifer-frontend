@@ -32,7 +32,7 @@ import ActionButtons from "./ActionButtons";
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 // TODO: AdmimJobCourse
-function JobCourse() {
+function AdmimJobCourse() {
   const [isComingSoon, setComingSoon] = useState(false);
 
   const user = useStore((state) => state.user);
@@ -346,4 +346,4 @@ function JobCourse() {
   );
 }
 
-export default JobCourse;
+export default AdmimJobCourse;

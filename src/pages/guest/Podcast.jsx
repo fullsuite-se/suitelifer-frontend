@@ -19,11 +19,9 @@ import LoadingSmallSpotify from "../../components/careers/LoadingSmallSpotify";
 import emailicon from "../../assets/icons/envelope.svg";
 import tphoneicon from "../../assets/icons/mobile-button.svg";
 import phoneicon from "../../assets/icons/phone-flip.svg";
-import ClockIcon from "../../assets/logos/ClockIcon";
-import MarkerIcon from "../../assets/logos/MarkerIcon";
 
 // TODO: Podcast
-const Blog = () => {
+const Podcast = () => {
   const [isSpotifyLoading, setSpotifyIsLoading] = useState(true);
 
   const [spotifyEpisodes, setEpisodes] = useState([]);
@@ -94,6 +92,7 @@ const Blog = () => {
 
   return (
     <section className="gap-4" style={{ maxWidth: "2000px", margin: "0 auto" }}>
+      {/* TODO: Fix title and desc */}
       <PageMeta
         title="Blogs - Suitelifer"
         desc="Dive into our collection of valuable perspectives on all things Startup, Careers, Baguio, and Fullsuite."
@@ -398,4 +397,4 @@ const Blog = () => {
   );
 };
 
-export default Blog;
+export default Podcast;
