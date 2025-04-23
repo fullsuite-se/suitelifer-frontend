@@ -20,6 +20,7 @@ import {
   DialogActions,
 } from "@mui/material";
 import ContentButtons from "./ContentButtons";
+import { useAddAuditLog } from "../../components/admin/UseAddAuditLog";
 
 const extractSpotifyId = (url) => {
   const match = url.match(/(?:episode|playlist)\/([^?]+)/);
@@ -38,6 +39,7 @@ const isValidEpisodeUrl = (url) => {
 };
 
 const SpotifyEpisodes = () => {
+  const addLog = useAddAuditLog();
   const user = useStore((state) => state.user);
   const [dataUpdated, setDataUpdated] = useState(false);
   const defaultEpisodeDetails = { episodeId: null, spotifyId: "" };
@@ -107,6 +109,11 @@ const SpotifyEpisodes = () => {
           url: episodeDetails.spotifyId,
           userId: user.id,
         });
+        //Log
+        addLog({
+          action: "CREATE",
+          description: "A new spotify link has been added",
+        });
         toast.success(response.data.message);
       } else {
         const response = await api.put(
@@ -117,6 +124,11 @@ const SpotifyEpisodes = () => {
             userId: user.id,
           }
         );
+        //Log
+        addLog({
+          action: "UPDATE",
+          description: `A spotify link has been updated`,
+        });
         toast.success(response.data.message);
       }
 
@@ -153,6 +165,11 @@ const SpotifyEpisodes = () => {
           episodeId,
           userId: user.id,
         },
+      });
+      //Log
+      addLog({
+        action: "DELETE",
+        description: `A spotify link has been deleted`,
       });
       toast.success(response.data.message);
       setDataUpdated(!dataUpdated);
