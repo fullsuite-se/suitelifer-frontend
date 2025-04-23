@@ -137,7 +137,7 @@ function FAQs() {
           }}
         />
       </div>
-
+ 
       <div
         className="ag-theme-quartz min-w-[600px] lg:w-full "
         style={{ height: "500px", width: "100%" }}

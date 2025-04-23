@@ -335,7 +335,7 @@ function AdminNewsLetterToggle() {
                             ? "bg-orange-400"
                             : issue.assigned >= 7 && !issue.is_published
                             ? "bg-primary"
-                            : "bg-green-600"
+                            : "bg-green-700"
                         } rounded-full`}
                       ></div>
                       <p className="font-avenir-black text-body">
@@ -550,7 +550,7 @@ function AdminNewsLetterToggle() {
                     : selectedMonthlyIssue.assigned >= 7 &&
                       !selectedMonthlyIssue.is_published
                     ? "bg-primary"
-                    : "bg-green-600"
+                    : "bg-green-700"
                 } rounded-full`}
               ></div>
               <h3 className="font-avenir-black">
@@ -560,10 +560,10 @@ function AdminNewsLetterToggle() {
                 {/* <span className="text-sm text-gray-500 font-avenir-roman">
                   ({selectedMonthlyIssue.articleCount})
                 </span> */}
-                <span className="text-sm text-gray-500 font-avenir-roman">
+                <span className="text-sm text-green-700 font-avenir-roman">
                   {!selectedMonthlyIssue.is_published
                     ? ""
-                    : "(Currently Published)"}
+                     : "(Currently Published)"}
                 </span>
               </h3>
             </div>

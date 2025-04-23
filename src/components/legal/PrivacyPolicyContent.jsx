@@ -111,6 +111,8 @@ const PrivacyPolicyContent = () => {
           <ul className="mt-2 text-gray-700 list-disc list-inside">
             <li>Name</li>
             <li>Email Address</li>
+            <li>Phone Number</li>
+            <li>Curriculum Vitae/Resume</li>
             <li>Web-behavior information while on our website</li>
           </ul>
         </section>
