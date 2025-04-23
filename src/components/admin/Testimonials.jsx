@@ -25,6 +25,7 @@ import {
 } from "@heroicons/react/24/outline";
 import LoadingAnimation from "../../components/loader/Loading";
 import ConfirmationDialog from "./ConfirmationDialog";
+import { useAddAuditLog } from "../../components/admin/UseAddAuditLog";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -34,6 +35,9 @@ function Testimonials() {
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [imageFile, setImageFile] = useState(null);
+
+  //AUDIT LOG
+  const addLog = useAddAuditLog();
 
   const handleImageFileChange = (e) => {
     const file = e.target.files[0];
@@ -102,6 +106,12 @@ function Testimonials() {
           ...testimonialDetails,
           userId: user.id,
         });
+
+        //LOG
+        addLog({
+          action: "CREATE",
+          description: `A new testimonial has been added`,
+        });
       } else {
         if (imageFile !== null) {
           const formData = new FormData();
@@ -123,6 +133,12 @@ function Testimonials() {
         response = await api.put("/api/testimonials", {
           ...testimonialDetails,
           userId: user.id,
+        });
+
+        //LOG
+        addLog({
+          action: "UPDATE",
+          description: `Testimonial (${testimonialDetails.employeeName}) has been updated`,
         });
       }
 
@@ -157,20 +173,27 @@ function Testimonials() {
     setModalIsOpen(true);
   };
 
-  const handleDeleteClick = (testimonial_id) => {
-    setTestimonialId(testimonial_id);
+  const handleDeleteClick = (testimonial) => {
+    setTestimonialDetails(testimonial);
     setDeleteModalIsOpen(true);
   };
-  const [testimonialId, setTestimonialId] = useState(null);
+
   const handleDelete = async () => {
     setIsDeleting(true);
-    let testimonial_id = testimonialId;
+    let testimonial_id = testimonialDetails.testimonialId;
     try {
       const response = await api.delete("/api/testimonials", {
         data: {
           testimonialId: testimonial_id,
         },
       });
+
+      //LOG
+      addLog({
+        action: "DELETE",
+        description: `Testimonial (${testimonialDetails.employeeName}) has been deleted`,
+      });
+
       if (response.data.success) {
         toast.success(response.data.message);
         setDataUpdated(!dataUpdated);
@@ -181,6 +204,7 @@ function Testimonials() {
       console.error("Error deleting testimonial:", error);
       toast.error("An error occurred while deleting the testimonial");
     } finally {
+      setTestimonialDetails(defaultTestimonialDetails);
       setIsDeleting(false);
       setDeleteModalIsOpen(false);
     }
@@ -225,7 +249,7 @@ function Testimonials() {
       <div className="flex justify-end gap-2 mb-2">
         <ContentButtons
           icon={<PlusCircleIcon className="size-5" />}
-          text="Add Testimonial" 
+          text="Add Testimonial"
           handleClick={handleAddClick}
         />
       </div>
@@ -321,7 +345,7 @@ function Testimonials() {
                       </IconButton>
                       <IconButton
                         onClick={() =>
-                          handleDeleteClick(params.data.testimonialId)
+                          handleDeleteClick(params.data)
                         }
                       >
                         <DeleteIcon />
