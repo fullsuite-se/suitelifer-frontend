@@ -4,8 +4,8 @@ import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
 import PrivacyPolicyContent from "../../components/legal/PrivacyPolicyContent";
-import BackToTop from "../../components/BackToTop";
-import Footer from "../../components/Footer";
+import BackToTop from "../../components/buttons/BackToTop";
+import Footer from "../../components/footer/Footer";
 
 const PrivacyPolicy = () => {
   useEffect(() => {

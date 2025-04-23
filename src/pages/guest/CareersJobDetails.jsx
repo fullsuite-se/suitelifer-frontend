@@ -4,10 +4,10 @@ import MobileNav from "../../components/home/MobileNav.jsx";
 import TabletNav from "../../components/home/TabletNav.jsx";
 import DesktopNav from "../../components/home/DesktopNav.jsx";
 import { toSlug } from "../../utils/slugUrl.js";
-import BackToTop from "../../components/BackToTop.jsx";
+import BackToTop from "../../components/buttons/BackToTop.jsx";
 import OnLoadLayoutAnimation from "../../components/layout/OnLoadLayoutAnimation";
 import PageMeta from "../../components/layout/PageMeta.jsx";
-import BackButton from "../../components/BackButton.jsx";
+import BackButton from "../../components/buttons/BackButton.jsx";
 import atsAPI from "../../utils/atsAPI.js";
 
 const CareersJobDetails = () => {

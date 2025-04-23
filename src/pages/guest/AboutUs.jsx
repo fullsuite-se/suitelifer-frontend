@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import MotionUp from "../../components/MotionUp";
+import MotionUp from "../../components/animated/MotionUp";
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
@@ -12,14 +12,14 @@ import imgVision from "../../assets/images/imgVision.svg";
 import dotsLine from "../../assets/images/socials-dots-line.svg";
 import Testimonials from "../../components/about-us/TestimonialSection";
 import YouTubeEmbed from "../../components/home/YoutubeEmbed";
-import BackToTop from "../../components/BackToTop";
+import BackToTop from "../../components/buttons/BackToTop";
 import FocusedAthleteIcon from "../../assets/icons/FocusedAthleteIcon";
 import TeamPlayerIcon from "../../assets/icons/TeamPlayerIcon";
 import UnderstoodIcon from "../../assets/icons/UnderstoodIcon";
 import WorkLifeHarmonyIcon from "../../assets/icons/WorkLifeHarmonyIcon";
 import UpholdsIcon from "../../assets/icons/UpholdsIcon";
 import PageMeta from "../../components/layout/PageMeta";
-import Footer from "../../components/Footer";
+import Footer from "../../components/footer/Footer";
 import MissionVision from "../../components/about-us/MissionVision";
 import Skeleton from "react-loading-skeleton";
 import useAboutContentStore from "../../store/stores/aboutContentStore";
@@ -426,7 +426,7 @@ const AboutUs = () => {
               <MotionUp>
                 <div className="text-center pb-7">
                   <p className="text-h5 font-avenir-black">
-                    Feel like you embody the 
+                    Feel like you embody the
                     <span className="text-primary"> SuiteLife</span>?
                   </p>
                   <p className="text-small text-gray-500">

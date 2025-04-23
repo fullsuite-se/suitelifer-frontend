@@ -3,8 +3,8 @@ import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
 import GuestIndustryTags from "../../components/careers/GuestIndustriesTags";
-import BackToTop from "../../components/BackToTop";
-import BackButton from "../../components/BackButton";
+import BackToTop from "../../components/buttons/BackToTop";
+import BackButton from "../../components/buttons/BackButton";
 import { NavLink } from "react-router-dom";
 import { toSlug } from "../../utils/slugUrl";
 import OnLoadLayoutAnimation from "../../components/layout/OnLoadLayoutAnimation";
@@ -176,15 +176,13 @@ const CareersAll = () => {
                   )}
                 </>
               )}
-              
-            </main> 
+            </main>
             <TwoCirclesLoader
               bg={"transparent"}
               color1={"#0097b2"}
               color2={"#bfd1a0"}
               height={"35"}
             />
-          
           </section>
 
           {/* <div className="-translate-y-27">

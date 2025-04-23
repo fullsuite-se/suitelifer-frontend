@@ -27,7 +27,7 @@ import {
 } from "@heroicons/react/24/outline";
 import LoadingAnimation from "../loader/Loading";
 import ConfirmationDialog from "./ConfirmationDialog";
-import ActionButtons from "./ActionButtons";
+import ActionButtons from "../buttons/ActionButtons";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 

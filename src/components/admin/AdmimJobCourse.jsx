@@ -16,7 +16,7 @@ import "@ag-grid-community/styles/ag-theme-quartz.css";
 import api from "../../utils/axios";
 import { useStore } from "../../store/authStore";
 import toast from "react-hot-toast";
-import formatTimestamp from "../TimestampFormatter";
+import formatTimestamp from "../../utils/formatTimestamp";
 import { ModalDeleteConfirmation } from "../modals/ModalDeleteConfirmation";
 import ContentButtons from "./ContentButtons";
 import ComingSoon from "../../pages/admin/ComingSoon";
@@ -27,7 +27,7 @@ import {
 } from "@heroicons/react/24/outline";
 import LoadingAnimation from "../loader/Loading";
 import ConfirmationDialog from "./ConfirmationDialog";
-import ActionButtons from "./ActionButtons";
+import ActionButtons from "../buttons/ActionButtons";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 

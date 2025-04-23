@@ -1,7 +1,7 @@
 import React from "react";
 import NewsArticle from "./NewsArticle";
 import Issues from "./Issues";
-import PageToggle from "./PageToggle";
+import PageToggle from "../buttons/PageToggle";
 import { ArrowRightIcon } from "@heroicons/react/24/solid";
 import {
   DocumentIcon,
@@ -28,7 +28,7 @@ import YearFilterDropDown from "./NewsletterFilter";
 import { useState, useEffect } from "react";
 import api from "../../utils/axios";
 import { set } from "react-hook-form";
-import formatTimestamp from "../TimestampFormatter";
+import formatTimestamp from "../../utils/formatTimestamp";
 import { ArrowLeft } from "lucide-react";
 
 <ArrowRightIcon className="h-5 w-5 text-gray-500" />;
@@ -952,9 +952,11 @@ function AdminNewsLetterToggle() {
           <div className="flex flex-row justify-start items-center gap-2">
             <div
               className={`w-2 h-2 ${
-                selectedMonthlyIssue.assigned < 7 && !selectedMonthlyIssue.is_published
+                selectedMonthlyIssue.assigned < 7 &&
+                !selectedMonthlyIssue.is_published
                   ? "bg-orange-400"
-                  : selectedMonthlyIssue.assigned >= 7 && !selectedMonthlyIssue.is_published
+                  : selectedMonthlyIssue.assigned >= 7 &&
+                    !selectedMonthlyIssue.is_published
                   ? "bg-primary"
                   : "bg-green-600"
               } rounded-full`}
@@ -962,7 +964,10 @@ function AdminNewsLetterToggle() {
             <h3 className="font-avenir-black">
               {getMonthName(selectedMonthlyIssue.month) +
                 " " +
-                selectedMonthlyIssue.year}           <span className="text-sm text-gray-500 font-avenir-roman">({selectedMonthlyIssue.articleCount})</span>
+                selectedMonthlyIssue.year}{" "}
+              <span className="text-sm text-gray-500 font-avenir-roman">
+                ({selectedMonthlyIssue.articleCount})
+              </span>
             </h3>
           </div>
         </>

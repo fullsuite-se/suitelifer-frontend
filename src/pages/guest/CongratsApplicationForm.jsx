@@ -6,7 +6,7 @@ import DesktopNav from "../../components/home/DesktopNav";
 import congratsImg from "../../assets/images/congrats-app-form-illustration.jpg";
 import fullsuitelogo from "../../assets/logos/logo-fs-full.svg";
 import { useLocation, useNavigate } from "react-router-dom";
-import Footer from '../../components/Footer';
+import Footer from "../../components/footer/Footer";
 
 const CongratsApplicationForm = () => {
   const location = useLocation();

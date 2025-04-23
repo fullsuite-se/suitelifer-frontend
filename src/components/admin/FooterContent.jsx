@@ -14,7 +14,7 @@ import api from "../../utils/axios";
 import ContentButtons from "./ContentButtons";
 import toast from "react-hot-toast";
 import { Dialog, DialogTitle, DialogContent, TextField } from "@mui/material";
-import ActionButtons from "./ActionButtons";
+import ActionButtons from "../buttons/ActionButtons";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 

@@ -1,11 +1,11 @@
 import newsList from "../news/NewsList";
 import { NavLink } from "react-router-dom";
 import { toSlug } from "../../utils/slugUrl";
-import MotionUp from "../MotionUp";
+import MotionUp from "../animated/MotionUp";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import DynamicLink from "../buttons/ViewAll";
-import formatTimestamp from "../TimestampFormatter";
+import formatTimestamp from "../../utils/formatTimestamp";
 
 // TODO: HomeNewsletter
 const HomeNews = () => {

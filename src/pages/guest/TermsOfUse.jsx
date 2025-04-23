@@ -4,8 +4,8 @@ import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
 import TermsOfUseContent from "../../components/legal/TermsOfUseContent";
-import BackToTop from "../../components/BackToTop";
-import Footer from "../../components/Footer";
+import BackToTop from "../../components/buttons/BackToTop";
+import Footer from "../../components/footer/Footer";
 
 const TermsOfUse = () => {
   useEffect(() => {
@@ -31,11 +31,7 @@ const TermsOfUse = () => {
 
       <div className="relative">
         <main className="mt-0 lg:mt-20 text-[12px] md:text-[14px] lg:text-[16px]">
-   
-
           <section id="terms-of-use-content" className="mb-20">
-         
-
             <TermsOfUseContent />
           </section>
           <BackToTop />

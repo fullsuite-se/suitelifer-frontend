@@ -1,4 +1,4 @@
-import formatTimestamp from "../TimestampFormatter";
+import formatTimestamp from "../../utils/formatTimestamp";
 import { toSlug } from "../../utils/slugUrl";
 import { readingTime } from "reading-time-estimator";
 import { removeHtmlTags } from "../../utils/removeHTMLTags";
@@ -22,11 +22,9 @@ const LoadingBlogCard = ({
   group-hover:shadow-xl group-hover:shadow-secondary/50 active:scale-105 
   active:shadow-xl active:shadow-secondary/50 "
     >
-      <div className="no-underline bg-gray-50 cursor-pointer flex flex-col h-full">       
-        <div className="h-1/2">
-          {/* <Skeleton className="h-full"/> */}
-        </div>
-        <div className="h-1/2 p-4 text-white">          
+      <div className="no-underline bg-gray-50 cursor-pointer flex flex-col h-full">
+        <div className="h-1/2">{/* <Skeleton className="h-full"/> */}</div>
+        <div className="h-1/2 p-4 text-white">
           <Skeleton width={"50%"} />
 
           <Skeleton height={10} />

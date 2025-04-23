@@ -37,9 +37,9 @@ import AdmimJobCourse from "./components/admin/AdmimJobCourse";
 import AdminPersonalityTest from "./components/admin/AdminPersonalityTest";
 
 // Route Management
-import ProtectedRoutes from "./utils/protectedRoutes/ProtectedRoutes";
-import AdminProtectedRoutes from "./utils/protectedRoutes/AdminProtectedRoutes";
-import SuperAdminProtectedRoutes from "./utils/protectedRoutes/SuperAdminProtectedRoutes";
+import ProtectedRoutes from "./routes/ProtectedRoutes";
+import AdminProtectedRoutes from "./routes/AdminProtectedRoutes";
+import SuperAdminProtectedRoutes from "./routes/SuperAdminProtectedRoutes";
 
 // Layout
 import RootLayout from "./components/layout/RootLayout";
@@ -51,7 +51,7 @@ import Register from "./pages/auth/Register";
 
 // Others
 import { Toaster } from "react-hot-toast";
-import ScrollToTop from "./components/ScrollToTop";
+import ScrollToTop from "./components/buttons/ScrollToTop";
 import VerifyAccount from "./pages/auth/VerifyAccount";
 
 function App() {
