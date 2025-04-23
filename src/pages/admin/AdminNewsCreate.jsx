@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import api from "../../utils/axios";
-import ContentEditor from "../../components/ContentEditor";
+import ContentEditor from "../../components/cms/ContentEditor";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../../store/authStore";
 import toast from "react-hot-toast";

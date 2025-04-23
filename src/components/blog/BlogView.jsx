@@ -9,7 +9,7 @@ import {
   ChatBubbleLeftEllipsisIcon,
 } from "@heroicons/react/20/solid";
 
-import Carousel from "../Carousel";
+import Carousel from "../cms/Carousel";
 
 const blog = {
   id: 1,
