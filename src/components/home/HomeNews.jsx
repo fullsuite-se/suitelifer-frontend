@@ -7,7 +7,6 @@ import "react-loading-skeleton/dist/skeleton.css";
 import DynamicLink from "../buttons/ViewAll";
 import formatTimestamp from "../../utils/formatTimestamp";
 
-// TODO: HomeNewsletter
 const HomeNews = () => {
   if (!newsList || newsList.length === 0) {
     return (
