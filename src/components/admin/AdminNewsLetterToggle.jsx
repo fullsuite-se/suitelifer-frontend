@@ -439,7 +439,7 @@ function AdminNewsLetterToggle() {
                   }
                   className="w-full p-3 mt-2 border rounded bg-primary/10 focus:ring-2 focus:ring-primary"
                 >
-                  <option value="">Select year</option>
+                  <option value="" hidden>Select year</option>
                   {yearOptions.map((year) => (
                     <option key={year} value={year}>
                       {year}
@@ -462,7 +462,7 @@ function AdminNewsLetterToggle() {
                   }
                   className="w-full p-3 mt-2 border rounded bg-primary/10 focus:ring-2 focus:ring-primary"
                 >
-                  <option value="">Select month</option>
+                  <option value="" hidden>Select month</option>
                   {monthOptions.map((monthIndex) => (
                     <option key={monthIndex} value={monthIndex + 1}>
                       {months[monthIndex]}
