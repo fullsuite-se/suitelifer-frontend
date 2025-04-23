@@ -39,6 +39,7 @@ import AdminContents from "./pages/admin/AdminContents";
 import AdminNewsCreate from "./pages/admin/AdminNewsCreate";
 import AdminBlogCreate from "./pages/admin/AdminBlogCreate";
 import SuperAdminAccountManagement from "./pages/superadmin/SuperAdminAccountManagement";
+import AuditLogs from "./pages/admin/AuditLogs";
 
 // Route Management
 import ProtectedRoutes from "./utils/protectedRoutes/ProtectedRoutes";
@@ -128,6 +129,7 @@ function App() {
                 <Route path="contents" element={<AdminContents />} />
                 <Route path="courses" element={<JobCourse />} />
                 <Route path="personality-test" element={<PersonalityTest />} />
+                <Route path="audit-logs" element={<AuditLogs />} />
 
                 {/* Super Admin Protected Routes */}
                 <Route path="super" element={<SuperAdminProtectedRoutes />}>
