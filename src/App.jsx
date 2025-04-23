@@ -33,6 +33,7 @@ import AdminEvents from "./pages/admin/AdminEvents";
 import AdminContents from "./pages/admin/AdminContents";
 import AdminNewsCreate from "./pages/admin/AdminNewsCreate";
 import SuperAdminAccountManagement from "./pages/superadmin/SuperAdminAccountManagement";
+import AuditLogs from "./pages/admin/AuditLogs";
 import AdmimJobCourse from "./components/admin/AdmimJobCourse";
 import AdminPersonalityTest from "./components/admin/AdminPersonalityTest";
 
@@ -122,6 +123,7 @@ function App() {
                   path="personality-test"
                   element={<AdminPersonalityTest />}
                 />
+                <Route path="audit-logs" element={<AuditLogs />} />
 
                 {/* Super Admin Protected Routes */}
                 <Route path="super" element={<SuperAdminProtectedRoutes />}>

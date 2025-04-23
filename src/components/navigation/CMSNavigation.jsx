@@ -17,6 +17,7 @@ import {
   FaceSmileIcon,
   UsersIcon,
   ArrowDownOnSquareIcon,
+  TableCellsIcon
 } from "@heroicons/react/20/solid";
 import {
   Disclosure,
@@ -52,6 +53,11 @@ const adminFeatures = [
     feature_name: "Personality Test",
     path: "personality-test",
     icon: FaceSmileIcon,
+  },
+  {
+    feature_name: "Audit Logs",
+    path: "audit-logs",
+    icon: TableCellsIcon,
   },
 ];
 
