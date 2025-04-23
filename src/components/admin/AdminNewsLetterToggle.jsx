@@ -36,7 +36,7 @@ import api from "../../utils/axios";
 import { set } from "react-hook-form";
 import formatTimestamp from "../../utils/formatTimestamp";
 import { ArrowLeft } from "lucide-react";
-import ActionButtons from "./ActionButtons";
+import ActionButtons from "../buttons/ActionButtons";
 import { useStore } from "../../store/authStore";
 import toast from "react-hot-toast";
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
