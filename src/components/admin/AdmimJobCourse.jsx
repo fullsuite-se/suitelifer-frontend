@@ -13,7 +13,8 @@ import "@ag-grid-community/styles/ag-theme-quartz.css";
 import api from "../../utils/axios";
 import { useStore } from "../../store/authStore";
 import toast from "react-hot-toast";
-import formatTimestamp from "../TimestampFormatter";
+import formatTimestamp from "../../utils/formatTimestamp";
+import { ModalDeleteConfirmation } from "../modals/ModalDeleteConfirmation";
 import ContentButtons from "./ContentButtons";
 import ComingSoon from "../../pages/admin/ComingSoon";
 import {
@@ -23,11 +24,12 @@ import {
 } from "@heroicons/react/24/outline";
 import LoadingAnimation from "../loader/Loading";
 import ConfirmationDialog from "./ConfirmationDialog";
-import ActionButtons from "./ActionButtons";
+import ActionButtons from "../buttons/ActionButtons";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
-function JobCourse() {
+// TODO: AdmimJobCourse
+function AdmimJobCourse() {
   const [isComingSoon, setComingSoon] = useState(false);
 
   const user = useStore((state) => state.user);
@@ -341,4 +343,4 @@ function JobCourse() {
   );
 }
 
-export default JobCourse;
+export default AdmimJobCourse;

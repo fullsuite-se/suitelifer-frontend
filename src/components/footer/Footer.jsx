@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 
-import FacebookIcon from "../assets/logos/Facebook.jsx";
-import InstagramIcon from "../assets/logos/Instagram.jsx";
-import LinkedlnIcon from "../assets/logos/Linkedln.jsx";
-import YoutubeIcon from "../assets/logos/Youtube.jsx";
+import FacebookIcon from "../../assets/logos/Facebook.jsx";
+import InstagramIcon from "../../assets/logos/Instagram.jsx";
+import LinkedlnIcon from "../../assets/logos/Linkedln.jsx";
+import YoutubeIcon from "../../assets/logos/Youtube.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
-import { getUserFromCookie } from "../utils/cookie.js";
-import Certifications from "./footer/Certifications.jsx";
-import api from "../utils/axios";
-import atsAPI from "../utils/atsAPI.js";
+import { getUserFromCookie } from "../../utils/cookie.js";
+import Certifications from "./Certifications.jsx";
+import api from "../../utils/axios.js";
+import atsAPI from "../../utils/atsAPI.js";
 
 const handleLoginBtn = async (navigate) => {
   try {

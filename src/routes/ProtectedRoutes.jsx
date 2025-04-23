@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { useStore } from "../../store/authStore";
-import { refreshToken, getUserFromCookie } from "../cookie";
-import OnLoadLayoutAnimation from "../../components/layout/OnLoadLayoutAnimation";
+import { getUserFromCookie, refreshToken } from "../utils/cookie";
+import { useStore } from "../store/authStore";
+import OnLoadLayoutAnimation from "../components/layout/OnLoadLayoutAnimation";
 
 const ProtectedRoutes = () => {
   const user = useStore((state) => state.user);

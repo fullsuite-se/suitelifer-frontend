@@ -10,8 +10,8 @@ import api from "../../utils/axios";
 import toast from "react-hot-toast";
 import { useStore } from "../../store/authStore";
 import { showConfirmationToast } from "../toasts/confirm";
-import ButtonsSpotify from "./ButtonsSpotify";
-import formatTimestamp from "../TimestampFormatter";
+import ButtonsSpotify from "../buttons/ButtonsSpotify";
+import formatTimestamp from "../../utils/formatTimestamp";
 import ConfirmationDialog from "./ConfirmationDialog";
 import {
   Dialog,

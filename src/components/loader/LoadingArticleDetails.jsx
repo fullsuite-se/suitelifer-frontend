@@ -2,11 +2,11 @@ import React from "react";
 import MobileNav from "../home/MobileNav";
 import TabletNav from "../home/TabletNav";
 import DesktopNav from "../home/DesktopNav";
-import BackToTop from "../BackToTop";
-import Footer from "../Footer";
+import BackToTop from "../buttons/BackToTop";
+import Footer from "../footer/Footer";
 import LoadingBlogCard from "../guest-blogs/LoadingBlogCard";
 import { readingTime } from "reading-time-estimator";
-import BackButton from "../BackButton";
+import BackButton from "../buttons/BackButton";
 import Skeleton from "react-loading-skeleton";
 
 const LoadingArticleDetails = () => {
@@ -56,7 +56,7 @@ const LoadingArticleDetails = () => {
               <div className="grid grid-cols-1 gap-2 justify-center items-center">
                 {[...Array(5)].map((_, index) => (
                   <section
-                  key={index}
+                    key={index}
                     className="relative h-30 w-full rounded-xl overflow-hidden"
                   >
                     <div className="no-underline bg-gray-50 cursor-pointer flex flex-col h-full">
@@ -66,7 +66,7 @@ const LoadingArticleDetails = () => {
                       <div className="p-4 text-white">
                         <Skeleton width={"50%"} />
 
-                        <Skeleton height={8} count={2}  />
+                        <Skeleton height={8} count={2} />
                       </div>
                     </div>
                   </section>

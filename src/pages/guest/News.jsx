@@ -4,21 +4,13 @@ import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
 import bgNews from "../../assets/images/bg-news.svg";
-import NewsLarge from "../../components/news/NewsLarge";
-import NewsCardSmall from "../../components/news/NewsCardSmall";
-import SearchingBlogOrNews from "../../components/news/SearchingBlogOrNews";
 import { motion } from "framer-motion";
 import BackToTop from "../../components/BackToTop";
 import PageMeta from "../../components/layout/PageMeta";
 import Footer from "../../components/Footer";
 import api from "../../utils/axios";
 import toast from "react-hot-toast";
-import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
 import { useStore } from "../../store/authStore";
-
-import LoadingNewsLarge from "../../components/news/LoadingNewsLarge";
-import LoadingNewsCardSmall from "../../components/news/LoadingNewsCardSmall";
-
 const News = () => {
   const setSearchValue = useStore((state) => state.setSearchValue);
   const [inputValue, setInputValue] = useState("");

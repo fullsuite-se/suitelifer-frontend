@@ -2,27 +2,26 @@ import React, { useEffect, useState } from "react";
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
-import Footer from "../../components/Footer";
+import Footer from "../../components/footer/Footer";
 import bgBlogs from "../../assets/images/blogs-text-bg.svg";
 import AnimatedText from "../../components/guest-blogs/AnimatedText";
 import { motion } from "framer-motion";
-import BackToTop from "../../components/BackToTop";
+import BackToTop from "../../components/buttons/BackToTop";
 import PageMeta from "../../components/layout/PageMeta";
 import api from "../../utils/axios";
 
 import ComingSoon from "../../assets/images/coming-soon.gif";
 
 import SpotifyEmbed from "../../components/careers/SpotifyEmbed";
-import LoadingLargeSpotify from "../../components/careers/LoadingLargeSpotify";
-import LoadingSmallSpotify from "../../components/careers/LoadingSmallSpotify";
+import LoadingLargeSpotify from "../../components/loader/LoadingLargeSpotify";
+import LoadingSmallSpotify from "../../components/loader/LoadingSmallSpotify";
 
 import emailicon from "../../assets/icons/envelope.svg";
 import tphoneicon from "../../assets/icons/mobile-button.svg";
 import phoneicon from "../../assets/icons/phone-flip.svg";
-import ClockIcon from "../../assets/logos/ClockIcon";
-import MarkerIcon from "../../assets/logos/MarkerIcon";
 
-const Blog = () => {
+// TODO: Podcast
+const Podcast = () => {
   const [isSpotifyLoading, setSpotifyIsLoading] = useState(true);
 
   const [spotifyEpisodes, setEpisodes] = useState([]);
@@ -93,6 +92,7 @@ const Blog = () => {
 
   return (
     <section className="gap-4" style={{ maxWidth: "2000px", margin: "0 auto" }}>
+      {/* TODO: Fix title and desc */}
       <PageMeta
         title="Blogs - Suitelifer"
         desc="Dive into our collection of valuable perspectives on all things Startup, Careers, Baguio, and Fullsuite."
@@ -397,4 +397,4 @@ const Blog = () => {
   );
 };
 
-export default Blog;
+export default Podcast;

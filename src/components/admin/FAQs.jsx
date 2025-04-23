@@ -22,7 +22,7 @@ import api from "../../utils/axios";
 
 import { useStore } from "../../store/authStore";
 import toast from "react-hot-toast";
-import ActionButtons from "./ActionButtons";
+import ActionButtons from "../buttons/ActionButtons";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -202,7 +202,7 @@ function FAQs() {
                 <div className="flex">
                   <ActionButtons
                     icon={<PencilIcon className="size-5 cursor-pointer" />}
-                    handleClick={() => handleEdit(params.data)} 
+                    handleClick={() => handleEdit(params.data)}
                   />
                   <ActionButtons
                     icon={<TrashIcon className="size-5 cursor-pointer" />}

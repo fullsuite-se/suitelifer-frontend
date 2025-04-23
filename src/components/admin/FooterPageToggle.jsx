@@ -1,7 +1,7 @@
 import TermsOfUse from "./TermsOfUse";
 import PrivacyPolicy from "./PrivacyPolicy";
 import FooterContent from "./FooterContent";
-import PageToggle from "./PageToggle";
+import PageToggle from "../buttons/PageToggle";
 
 const FooterPageToggle = () => {
   const tabs = [

@@ -2,7 +2,7 @@ import NewsletterHeader from "../NewsletterHeader";
 import LargeViewDesign01 from "../LargeViewDesign01";
 import ArticleViewDesign from "../ArticleViewDesign";
 import ColoredArticleViewDesign from "../ColoredArticleViewDesign";
-import ReadMoreBtn from "../ReadMoreBtn";
+import ReadMoreBtn from "../../buttons/ReadMoreBtn";
 import NewsletterArticles from "../NewsletterArticles";
 import Divider from "../Divider";
 
@@ -167,10 +167,10 @@ const NewsletterDesign01 = () => {
                 </div>
                 <div className="mt-5"></div>
                 <ReadMoreBtn
-              href={""}
-              title={articles[0].title}
-              id={articles[0].id}
-            />
+                  href={""}
+                  title={articles[0].title}
+                  id={articles[0].id}
+                />
               </div>
             </div>
 
