@@ -37,7 +37,10 @@ const SuperAdminAccountManagement = () => {
             onChange={(e) => confirmTypeChange(params.data, e.target.value)}
             className="w-full"
           >
-            <option value="SUPER ADMIN" disabled>
+            <option
+              value="SUPER ADMIN"
+              disabled={user.email === "infosec@fullsuite.ph"}
+            >
               Super Admin
             </option>
             <option
