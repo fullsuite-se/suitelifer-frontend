@@ -18,8 +18,10 @@ import { useEffect, useState } from "react";
 import PageMeta from "../../components/layout/PageMeta";
 import Footer from "../../components/footer/Footer";
 import api from "../../utils/axios";
+import { useLocation } from "react-router-dom";
 const Contact = () => {
   const [selected, setSelected] = useState("Full-Time");
+  const location = useLocation();
   const fadeInUp = {
     hidden: { opacity: 0, y: 50 },
     visible: {
@@ -61,6 +63,7 @@ const Contact = () => {
         title="Contact - Suitelifer"
         desc="Your career rocket ship is fueled and ready. Want to hop on? Contact us now."
         isDefer={false}
+        url={location.pathname}
       />
       {/* MOBILE NAV */}
       <div className="sm:hidden">

@@ -28,7 +28,6 @@ import ActionButtons from "../buttons/ActionButtons";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
-// TODO: AdmimJobCourse
 function AdmimJobCourse() {
   const [isComingSoon, setComingSoon] = useState(false);
 

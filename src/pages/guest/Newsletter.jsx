@@ -7,8 +7,11 @@ import BackToTop from "../../components/buttons/BackToTop";
 import NewsletterDesign01 from "../../components/newsletter/templates/NewsletterDesign01";
 import NewsletterDesign02 from "../../components/newsletter/templates/NewsletterDesign02";
 import PageMeta from "../../components/layout/PageMeta";
+import { useLocation } from "react-router-dom";
 
 const Newsletter = () => {
+  const location = useLocation();
+
   return (
     <section
       className="gap-4 h-dvh"
@@ -18,6 +21,7 @@ const Newsletter = () => {
         title="Newsletter - Suitelifer"
         desc="Stay informed with company news, product launches, and industry insights from Fullsuite."
         isDefer={false}
+        url={location.pathname}
       />
       {/* MOBILE NAV */}
       <div className="sm:hidden">

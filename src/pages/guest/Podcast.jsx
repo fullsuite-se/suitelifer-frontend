@@ -19,14 +19,13 @@ import LoadingSmallSpotify from "../../components/loader/LoadingSmallSpotify";
 import emailicon from "../../assets/icons/envelope.svg";
 import tphoneicon from "../../assets/icons/mobile-button.svg";
 import phoneicon from "../../assets/icons/phone-flip.svg";
+import { useLocation } from "react-router-dom";
 
-// TODO: Podcast
 const Podcast = () => {
   const [isSpotifyLoading, setSpotifyIsLoading] = useState(true);
-
   const [spotifyEpisodes, setEpisodes] = useState([]);
-
   const [isComingSoon, setIsComingSoon] = useState(true); //Change this to false if okay na ang podcast
+  const location = useLocation();
 
   const fetchThreeLatestEpisodes = async () => {
     try {
@@ -94,9 +93,10 @@ const Podcast = () => {
     <section className="gap-4" style={{ maxWidth: "2000px", margin: "0 auto" }}>
       {/* TODO: Fix title and desc */}
       <PageMeta
-        title="Blogs - Suitelifer"
-        desc="Dive into our collection of valuable perspectives on all things Startup, Careers, Baguio, and Fullsuite."
+        title="Podcast - Suitelifer"
+        desc="Tune in to engaging stories, startup insights, and career talk on the Suitelifer Podcast."
         isDefer={false}
+        url={location.pathname}
       />
       {/* MOBILE NAV */}
       <div className="sm:hidden">
