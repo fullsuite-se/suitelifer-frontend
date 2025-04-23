@@ -15,6 +15,7 @@ import LoadingArticleDetails from "../loader/LoadingArticleDetails";
 
 // DUMMY DATA
 import NewsletterArticles from "./NewsletterArticles";
+import PageMeta from "../layout/PageMeta";
 
 const NewsletterDetails = ({
   // id,
@@ -38,7 +39,7 @@ const NewsletterDetails = ({
   const navigate = useNavigate();
 
   const handleBack = () => {
-    navigate("/newsletter")
+    navigate("/newsletter");
   };
 
   useEffect(() => {
@@ -69,27 +70,16 @@ const NewsletterDetails = ({
 
   return (
     <>
-      <Helmet>
-        <title>{article.title || "Suitelifer"}</title>
-        <meta
-          name="description"
-          // content={
-          //   content
-          //     ? content.substring(0, 150) + "..."
-          //     : "Read the latest newsletters on Suitelifer."
-          // }
-        />
-        <meta
-          name="keywords"
-          content={`${article.title}, Suitelifer Newsletter, news, newsletter`}
-        />
-        {/* 
-              TODO :
-              <meta name="twitter:card" content="summary_large_image" />
-            <meta name="twitter:title" content={data?.title} />
-             <meta name="twitter:description" content={data?.snippet || data?.article?.substring(0, 150)} />
-            <meta name="twitter:image" content={data?.images?.[0] || "https://yourwebsite.com/default-image.jpg"} /> */}
-      </Helmet>
+      <PageMeta
+        isDefer={true}
+        title={
+          article?.title
+            ? `${article.title} | Suitelifer`
+            : "Newsletter | Suitelifer"
+        }
+        description={article?.article}
+        url={`${location.pathname}${location.search}`}
+      />
       <section
         className="gap-4 h-dvh"
         style={{ maxWidth: "2000px", margin: "0 auto" }}
