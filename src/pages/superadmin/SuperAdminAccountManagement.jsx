@@ -39,7 +39,7 @@ const SuperAdminAccountManagement = () => {
           >
             <option
               value="SUPER ADMIN"
-              disabled={user.email === "infosec@fullsuite.ph"}
+              disabled={user.email !== "infosec@fullsuite.ph"}
             >
               Super Admin
             </option>
