@@ -1,5 +1,3 @@
-//TODO: MADE A SPECIFIC TEMPORARY PAGE FOR 404 PAGES
-
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 // Guest Pages
@@ -9,13 +7,10 @@ import Careers from "./pages/guest/Careers";
 import CareersAll from "./pages/guest/CareersAll";
 import Newsletter from "./pages/guest/Newsletter";
 import NewsletterDetails from "./components/newsletter/NewsLetterDetails";
-import News from "./pages/guest/News";
 import Contact from "./pages/guest/Contact";
 import Blog from "./pages/guest/Blog";
 import TermsOfUse from "./pages/guest/TermsOfUse";
 import PrivacyPolicy from "./pages/guest/PrivacyPolicy";
-import BlogDetails from "./pages/guest/BlogDetails";
-import NewsDetails from "./pages/guest/NewsDetails";
 import ApplicationForm from "./pages/guest/ApplicationForm";
 import CongratsApplicationForm from "./pages/guest/CongratsApplicationForm";
 import PageNotFound from "./pages/guest/PageNotFound";
@@ -37,8 +32,9 @@ import AdminNews from "./pages/admin/AdminNews";
 import AdminEvents from "./pages/admin/AdminEvents";
 import AdminContents from "./pages/admin/AdminContents";
 import AdminNewsCreate from "./pages/admin/AdminNewsCreate";
-import AdminBlogCreate from "./pages/admin/AdminBlogCreate";
 import SuperAdminAccountManagement from "./pages/superadmin/SuperAdminAccountManagement";
+import JobCourse from "./components/admin/JobCourse";
+import PersonalityTest from "./components/admin/PersonalityTest";
 
 // Route Management
 import ProtectedRoutes from "./utils/protectedRoutes/ProtectedRoutes";
@@ -57,8 +53,6 @@ import Register from "./pages/auth/Register";
 import { Toaster } from "react-hot-toast";
 import ScrollToTop from "./components/ScrollToTop";
 import VerifyAccount from "./pages/auth/VerifyAccount";
-import JobCourse from "./components/admin/JobCourse";
-import PersonalityTest from "./components/admin/PersonalityTest";
 
 function App() {
   return (
@@ -84,10 +78,8 @@ function App() {
             element={<CongratsApplicationForm />}
           />
           <Route path="/careers/:slug" element={<CareersJobDetails />} />
-          <Route path="/news" element={<News />} />
           <Route path="/newsletter" element={<Newsletter />} />
           <Route path="/newsletter/:slug" element={<NewsletterDetails />} />
-          <Route path="/news/:slug" element={<NewsDetails />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/podcast" element={<Blog />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />

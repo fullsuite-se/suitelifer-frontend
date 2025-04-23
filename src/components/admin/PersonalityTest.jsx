@@ -31,6 +31,7 @@ import ActionButtons from "./ActionButtons";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
+// TODO: AdminPersonalityTest
 function PersonalityTest() {
   const [isComingSoon, setComingSoon] = useState(false);
 

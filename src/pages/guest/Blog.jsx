@@ -22,6 +22,7 @@ import phoneicon from "../../assets/icons/phone-flip.svg";
 import ClockIcon from "../../assets/logos/ClockIcon";
 import MarkerIcon from "../../assets/logos/MarkerIcon";
 
+// TODO: Podcast
 const Blog = () => {
   const [isSpotifyLoading, setSpotifyIsLoading] = useState(true);
 
