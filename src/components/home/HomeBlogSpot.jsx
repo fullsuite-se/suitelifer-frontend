@@ -1,5 +1,4 @@
-
-import MotionUp from "../MotionUp";
+import MotionUp from "../animated/MotionUp";
 import BlogCarousel from "./BlogCarousel";
 
 const HomeBlogSpot = () => {
@@ -16,9 +15,10 @@ const HomeBlogSpot = () => {
           <p className="text-h4 font-avenir-black">
             <span className="text-secondary">New</span> Blog Posts
           </p>
-          <p className="text-small">Insights, tips, and stories—read the latest from our team!</p>
+          <p className="text-small">
+            Insights, tips, and stories—read the latest from our team!
+          </p>
         </div>
-
       </MotionUp>
 
       <MotionUp className="w-full rounded-2xl">

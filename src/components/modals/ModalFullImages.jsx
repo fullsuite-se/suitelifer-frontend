@@ -8,7 +8,7 @@ import {
   TransitionChild,
   DialogPanel,
 } from "@headlessui/react";
-import Carousel from "../Carousel";
+import Carousel from "../cms/Carousel";
 
 const ModalFullImages = ({ images, viewFull, handleViewFull }) => {
   const handleCancel = () => {

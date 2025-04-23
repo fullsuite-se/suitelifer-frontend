@@ -1,11 +1,12 @@
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
-import Footer from "../../components/Footer";
-import BackToTop from "../../components/BackToTop";
+import Footer from "../../components/footer/Footer";
+import BackToTop from "../../components/buttons/BackToTop";
 
 import NewsletterDesign01 from "../../components/newsletter/templates/NewsletterDesign01";
 import NewsletterDesign02 from "../../components/newsletter/templates/NewsletterDesign02";
+import PageMeta from "../../components/layout/PageMeta";
 
 const Newsletter = () => {
   return (
@@ -13,6 +14,11 @@ const Newsletter = () => {
       className="gap-4 h-dvh"
       style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
     >
+      <PageMeta
+        title="Newsletter - Suitelifer"
+        desc="Stay informed with company news, product launches, and industry insights from Fullsuite."
+        isDefer={false}
+      />
       {/* MOBILE NAV */}
       <div className="sm:hidden">
         <MobileNav />

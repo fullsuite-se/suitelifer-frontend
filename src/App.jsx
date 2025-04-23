@@ -1,5 +1,3 @@
-//TODO: MADE A SPECIFIC TEMPORARY PAGE FOR 404 PAGES
-
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 // Guest Pages
@@ -9,16 +7,14 @@ import Careers from "./pages/guest/Careers";
 import CareersAll from "./pages/guest/CareersAll";
 import Newsletter from "./pages/guest/Newsletter";
 import NewsletterDetails from "./components/newsletter/NewsLetterDetails";
-import News from "./pages/guest/News";
 import Contact from "./pages/guest/Contact";
-import Blog from "./pages/guest/Blog";
+import Podcast from "./pages/guest/Podcast";
 import TermsOfUse from "./pages/guest/TermsOfUse";
 import PrivacyPolicy from "./pages/guest/PrivacyPolicy";
-import BlogDetails from "./pages/guest/BlogDetails";
-import NewsDetails from "./pages/guest/NewsDetails";
 import ApplicationForm from "./pages/guest/ApplicationForm";
 import CongratsApplicationForm from "./pages/guest/CongratsApplicationForm";
 import PageNotFound from "./pages/guest/PageNotFound";
+import CareersJobDetails from "./pages/guest/CareersJobDetails";
 
 // Regular Pages
 import EmployeeBlogsFeed from "./pages/employee/EmployeeBlogsFeed";
@@ -29,7 +25,6 @@ import EmployeeEvents from "./pages/employee/EmployeeEvents";
 import EmployeeWorkshops from "./pages/employee/EmployeeWorkshops";
 import EmployeePersonalityTest from "./pages/employee/EmployeePersonalityTest";
 import BlogCreate from "./components/blog/BlogCreate";
-import CareersJobDetails from "./pages/guest/CareersJobDetails";
 
 // Super/Admin Pages
 import AdminBlogs from "./pages/admin/AdminBlogs";
@@ -37,14 +32,15 @@ import AdminNews from "./pages/admin/AdminNews";
 import AdminEvents from "./pages/admin/AdminEvents";
 import AdminContents from "./pages/admin/AdminContents";
 import AdminNewsCreate from "./pages/admin/AdminNewsCreate";
-import AdminBlogCreate from "./pages/admin/AdminBlogCreate";
 import SuperAdminAccountManagement from "./pages/superadmin/SuperAdminAccountManagement";
 import AuditLogs from "./pages/admin/AuditLogs";
+import AdmimJobCourse from "./components/admin/AdmimJobCourse";
+import AdminPersonalityTest from "./components/admin/AdminPersonalityTest";
 
 // Route Management
-import ProtectedRoutes from "./utils/protectedRoutes/ProtectedRoutes";
-import AdminProtectedRoutes from "./utils/protectedRoutes/AdminProtectedRoutes";
-import SuperAdminProtectedRoutes from "./utils/protectedRoutes/SuperAdminProtectedRoutes";
+import ProtectedRoutes from "./routes/ProtectedRoutes";
+import AdminProtectedRoutes from "./routes/AdminProtectedRoutes";
+import SuperAdminProtectedRoutes from "./routes/SuperAdminProtectedRoutes";
 
 // Layout
 import RootLayout from "./components/layout/RootLayout";
@@ -56,10 +52,8 @@ import Register from "./pages/auth/Register";
 
 // Others
 import { Toaster } from "react-hot-toast";
-import ScrollToTop from "./components/ScrollToTop";
+import ScrollToTop from "./components/buttons/ScrollToTop";
 import VerifyAccount from "./pages/auth/VerifyAccount";
-import JobCourse from "./components/admin/JobCourse";
-import PersonalityTest from "./components/admin/PersonalityTest";
 
 function App() {
   return (
@@ -85,12 +79,10 @@ function App() {
             element={<CongratsApplicationForm />}
           />
           <Route path="/careers/:slug" element={<CareersJobDetails />} />
-          <Route path="/news" element={<News />} />
           <Route path="/newsletter" element={<Newsletter />} />
           <Route path="/newsletter/:slug" element={<NewsletterDetails />} />
-          <Route path="/news/:slug" element={<NewsDetails />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/podcast" element={<Blog />} />
+          <Route path="/podcast" element={<Podcast />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-use" element={<TermsOfUse />} />
           <Route path="/reset-password" element={<PasswordReset />} />
@@ -103,7 +95,6 @@ function App() {
               <Route index element={<Navigate to="blogs-feed" replace />} />
               <Route path="blogs-feed" element={<EmployeeBlogsFeed />} />
               <Route path="blogs-feed/blog/:id/:slug" element={<BlogView />} />
-              <Route path="personalitytest" element={<PersonalityTest />} />
               <Route path="my-blogs" element={<EmployeeMyBlogs />} />
               <Route path="my-blogs/blog/:id/:slug" element={<BlogView />} />
               <Route path="my-blogs/new-blog" element={<BlogCreate />} />
@@ -127,8 +118,11 @@ function App() {
                 />
                 <Route path="events" element={<AdminEvents />} />
                 <Route path="contents" element={<AdminContents />} />
-                <Route path="courses" element={<JobCourse />} />
-                <Route path="personality-test" element={<PersonalityTest />} />
+                <Route path="courses" element={<AdmimJobCourse />} />
+                <Route
+                  path="personality-test"
+                  element={<AdminPersonalityTest />}
+                />
                 <Route path="audit-logs" element={<AuditLogs />} />
 
                 {/* Super Admin Protected Routes */}

@@ -1,13 +1,13 @@
-import { ChevronRightIcon } from "@heroicons/react/24/solid";
 import newsList from "../news/NewsList";
 import { NavLink } from "react-router-dom";
 import { toSlug } from "../../utils/slugUrl";
-import MotionUp from "../MotionUp";
+import MotionUp from "../animated/MotionUp";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import DynamicLink from "../buttons/ViewAll";
-import formatTimestamp from "../TimestampFormatter";
+import formatTimestamp from "../../utils/formatTimestamp";
 
+// TODO: HomeNewsletter
 const HomeNews = () => {
   if (!newsList || newsList.length === 0) {
     return (
@@ -42,9 +42,7 @@ const HomeNews = () => {
   const mainReadTime = mainNews?.readTime;
   const mainArticle = mainNews?.article;
   const mainCreatedAt = mainNews?.created_at;
-  const mainNewsLink = mainTitle
-    ? `/newsletter/${toSlug(mainTitle)}`
-    : "";
+  const mainNewsLink = mainTitle ? `/newsletter/${toSlug(mainTitle)}` : "";
 
   return (
     <section className="px-7 xl:px-40">

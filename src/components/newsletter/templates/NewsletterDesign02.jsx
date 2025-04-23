@@ -3,7 +3,7 @@ import NewsletterQuote from "../NewsletterQuote";
 import LargeViewDesign01 from "../LargeViewDesign01";
 import ArticleViewDesign from "../ArticleViewDesign";
 import ColoredArticleViewDesign from "../ColoredArticleViewDesign";
-import ReadMoreBtn from "../ReadMoreBtn";
+import ReadMoreBtn from "../../buttons/ReadMoreBtn";
 import NewsletterArticles from "../NewsletterArticles";
 import Divider from "../Divider";
 

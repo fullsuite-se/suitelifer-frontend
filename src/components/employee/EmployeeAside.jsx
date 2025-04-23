@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Calendar from "../Calendar";
+import Calendar from "../cms/Calendar";
 import {
   Disclosure,
   DisclosureButton,
@@ -150,7 +150,7 @@ const EmployeeAside = () => {
                       />
                     </div>
                   ))}
-                  {events
+                {events
                   .filter((event) => {
                     const today = new Date().toISOString().split("T")[0]; // Get today's date (YYYY-MM-DD)
                     const eventDate = new Date(event.date_time)

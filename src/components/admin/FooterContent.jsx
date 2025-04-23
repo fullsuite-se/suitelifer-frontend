@@ -13,9 +13,8 @@ import {
 import api from "../../utils/axios";
 import ContentButtons from "./ContentButtons";
 import toast from "react-hot-toast";
-import { Dialog, DialogTitle, DialogContent, TextField } from "@mui/material";
-import ActionButtons from "./ActionButtons";
-
+import { Dialog, DialogTitle, DialogContent } from "@mui/material";
+import ActionButtons from "../buttons/ActionButtons";
 import LoadingAnimation from "../loader/Loading";
 import ConfirmationDialog from "./ConfirmationDialog";
 
@@ -180,7 +179,7 @@ const FooterContent = () => {
                   <ActionButtons
                     icon={<TrashIcon className="size-5" />}
                     handleClick={() => {
-                      handleDeleteClick(params.data.certId)
+                      handleDeleteClick(params.data.certId);
                     }}
                   />
                 </div>

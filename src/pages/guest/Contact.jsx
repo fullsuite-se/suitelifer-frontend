@@ -13,10 +13,10 @@ import ClockIcon from "../../assets/logos/ClockIcon";
 import MarkerIcon from "../../assets/logos/MarkerIcon";
 import FAQ from "../../components/contact/FaqsDropDown";
 import { motion } from "framer-motion";
-import BackToTop from "../../components/BackToTop";
+import BackToTop from "../../components/buttons/BackToTop";
 import { useEffect, useState } from "react";
 import PageMeta from "../../components/layout/PageMeta";
-import Footer from "../../components/Footer";
+import Footer from "../../components/footer/Footer";
 import api from "../../utils/axios";
 const Contact = () => {
   const [selected, setSelected] = useState("Full-Time");

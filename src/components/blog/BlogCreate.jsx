@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
-import ContentEditor from "../ContentEditor";
+import ContentEditor from "../cms/ContentEditor";
 import api from "../../utils/axios";
 
 const BlogCreate = () => {

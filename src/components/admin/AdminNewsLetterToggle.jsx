@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useMemo } from "react";
 import NewsArticle from "./NewsArticle";
 import Issues from "./Issues";
-import PageToggle from "./PageToggle";
+import PageToggle from "../buttons/PageToggle";
 import { ArrowRightIcon } from "@heroicons/react/24/solid";
 import { AgGridReact } from "@ag-grid-community/react";
 import { ModuleRegistry } from "@ag-grid-community/core";
@@ -10,23 +10,17 @@ import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
 
 import {
-  DocumentIcon,
   CheckCircleIcon,
-  ExclamationTriangleIcon,
   InformationCircleIcon,
   ArrowDownIcon,
   ArrowUpIcon,
   MinusCircleIcon,
   RectangleStackIcon,
-  PlusCircleIcon,
   PencilIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
 import emptyIllustration from "../../assets/images/empty-illustration.svg";
 import {
-  Modal,
-  TextField,
-  Typography,
   Box,
   Dialog,
   DialogTitle,
@@ -40,11 +34,9 @@ import YearFilterDropDown from "./NewsletterFilter";
 import { useState, useEffect, useRef } from "react";
 import api from "../../utils/axios";
 import { set } from "react-hook-form";
-import formatTimestamp from "../TimestampFormatter";
+import formatTimestamp from "../../utils/formatTimestamp";
 import { ArrowLeft } from "lucide-react";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import ActionButtons from "./ActionButtons";
+import ActionButtons from "../buttons/ActionButtons";
 import { useStore } from "../../store/authStore";
 import toast from "react-hot-toast";
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
@@ -57,6 +49,8 @@ function AdminNewsLetterToggle() {
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth() + 1;
   const [selectedYear, setSelectedYear] = useState(currentYear);
+  const [updateTrigger, setUpdateTrigger] = useState(Date.now());
+
   const months = [
     "January",
     "February",
@@ -80,63 +74,56 @@ function AdminNewsLetterToggle() {
 
   const [newslettersByMonth, setNewslettersByMonth] = useState([]);
   const [openIssueDialog, setOpenIssueDialog] = useState(false);
-  const [currentIssue, setCurrentIssue] = useState({
-    issueId: "",
-    month: "",
-    year: "",
-  });
 
-  const yearOptions = [currentYear];
-  if (currentMonth === 12) {
-    yearOptions.push(currentYear + 1);
+  const today = new Date();
+  let initMonth = today.getMonth() + 2;
+  let initYear = today.getFullYear();
+
+  if (initMonth > 12) {
+    initMonth = 1;
+    initYear += 1;
   }
 
-  const monthOptions =
-    currentMonth === 12
+  const [currentIssue, setCurrentIssue] = useState({
+    issueId: "",
+    month: initMonth,
+    year: initYear,
+  });
+
+  const monthOptions = useMemo(() => {
+    return currentMonth === 12
       ? [0]
       : Array.from({ length: 12 - currentMonth }, (_, i) => currentMonth + i);
+  }, [currentMonth]);
+
+  const yearOptions = useMemo(() => {
+    return currentMonth === 12 ? [currentYear, currentYear + 1] : [currentYear];
+  }, [currentMonth, currentYear]);
 
   const handleSaveIssue = async () => {
-    if (currentIssue.issueId) {
-      // try {
-      //   console.log("Sending to backend:", currentIssue);
-      //   const response = await api.post("/api/edit-faq", {
-      //     ...currentIssue,
-      //     user_id: user.id,
-      //   });
-      //   console.log(response.data);
-      //   if (response.data?.success) {
-      //     toast.success(response.data.message);
-      //   } else {
-      //     toast.error(response.data.message || "Failed to update faq.");
-      //   }
-      //   setDataUpdated(!dataUpdated);
-      // } catch (err) {
-      //   console.error(err.message);
-      // }
-    } else {
-      const newIssue = {
-        ...currentIssue,
-        userId: user.id,
-      };
-      try {
-        console.log("Sending to backend:", newIssue);
+    const newIssue = {
+      ...currentIssue,
+      userId: user.id,
+    };
+    try {
+      console.log("Sending to backend:", newIssue);
 
-        const response = await api.post("/api/issues", newIssue);
-        console.log(response.data);
+      const response = await api.post("/api/issues", newIssue);
+      console.log(response.data);
 
-        if (response.data?.success) {
-          toast.success(response.data.message);
-        } else {
-          toast.error(response.data.message || "Failed to save issue.");
-        }
-      } catch (err) {
-        console.error(err.message);
+      if (response.data?.success) {
+        toast.success(response.data.message);
+      } else {
+        toast.error(response.data.message || "Failed to save issue.");
       }
-      setSelectedYear(2025);
+    } catch (err) {
+      console.error(err.message);
     }
+    setSelectedYear(currentIssue.year);
+    setUpdateTrigger(Date.now());
+    // Reset the current issue state
 
-    setCurrentIssue({ issueId: "", month: "", year: "" });
+    // setCurrentIssue({ issueId: "", month: "", year: "" });
     setOpenIssueDialog(false);
   };
 
@@ -196,717 +183,15 @@ function AdminNewsLetterToggle() {
     }
   };
 
+  function getMonthName(monthNumber) {
+    return months[monthNumber - 1];
+  }
+
   useEffect(() => {
     fetchIssuesByYear(selectedYear);
     fetchCurrentIssue();
     fetchOldestIssue();
-  }, [selectedYear]);
-
-  const tabs = [
-    { label: "Issues", component: Issues },
-    { label: "News Article", component: NewsArticle },
-  ];
-
-  const sampleNewsLetterList = [
-    {
-      id: 1,
-      month: "January",
-      year: "2025",
-      is_published: 1,
-      created_at: "2025-01-01",
-      created_by: "admin",
-      newsletterList: [
-        {
-          newsletter_id: 1,
-          newsletter_title: "Sample Title 1",
-          newsletter_article: "Sample Content 1",
-          newsletter_image: "sample-image-1.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 1,
-        },
-        {
-          newsletter_id: 2,
-          newsletter_title: "Sample Title 2",
-          newsletter_article: "Sample Content 2",
-          newsletter_image: "sample-image-2.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 2,
-        },
-        {
-          newsletter_id: 3,
-          newsletter_title: "Sample Title 3",
-          newsletter_article: "Sample Content 3",
-          newsletter_image: "sample-image-3.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 3,
-        },
-        {
-          newsletter_id: 4,
-          newsletter_title: "Sample Title 4",
-          newsletter_article: "Sample Content 4",
-          newsletter_image: "sample-image-4.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 4,
-        },
-        {
-          newsletter_id: 5,
-          newsletter_title: "Sample Title 5",
-          newsletter_article: "Sample Content 5",
-          newsletter_image: "sample-image-5.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 5,
-        },
-        {
-          newsletter_id: 6,
-          newsletter_title: "Sample Title 6",
-          newsletter_article: "Sample Content 6",
-          newsletter_image: "sample-image-6.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 6,
-        },
-        {
-          newsletter_id: 7,
-          newsletter_title: "Sample Title 7",
-          newsletter_article: "Sample Content 7",
-          newsletter_image: "sample-image-7.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 7,
-        },
-        {
-          newsletter_id: 8,
-          newsletter_title: "Sample Title 8",
-          newsletter_article: "Sample Content 8",
-          newsletter_image: "sample-image-8.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: null,
-        },
-        {
-          newsletter_id: 9,
-          newsletter_title: "Sample Title 9",
-          newsletter_article: "Sample Content 9",
-          newsletter_image: "sample-image-9.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: null,
-        },
-        {
-          newsletter_id: 10,
-          newsletter_title: "Sample Title 10",
-          newsletter_article: "Sample Content 10",
-          newsletter_image: "sample-image-10.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: null,
-        },
-      ],
-    },
-    {
-      id: 2,
-      month: "February",
-      year: "2025",
-      is_published: 0,
-      created_at: "2025-01-01",
-      created_by: "admin",
-      newsletterList: [
-        {
-          newsletter_id: 1,
-          newsletter_title: "Sample Title 1",
-          newsletter_article: "Sample Content 1",
-          newsletter_image: "sample-image-1.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 1,
-        },
-        {
-          newsletter_id: 2,
-          newsletter_title: "Sample Title 2",
-          newsletter_article: "Sample Content 2",
-          newsletter_image: "sample-image-2.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 2,
-        },
-        {
-          newsletter_id: 3,
-          newsletter_title: "Sample Title 3",
-          newsletter_article: "Sample Content 3",
-          newsletter_image: "sample-image-3.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: null,
-        },
-        {
-          newsletter_id: 4,
-          newsletter_title: "Sample Title 4",
-          newsletter_article: "Sample Content 4",
-          newsletter_image: "sample-image-4.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 4,
-        },
-        {
-          newsletter_id: 5,
-          newsletter_title: "Sample Title 5",
-          newsletter_article: "Sample Content 5",
-          newsletter_image: "sample-image-5.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 5,
-        },
-        {
-          newsletter_id: 6,
-          newsletter_title: "Sample Title 6",
-          newsletter_article: "Sample Content 6",
-          newsletter_image: "sample-image-6.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 6,
-        },
-        {
-          newsletter_id: 7,
-          newsletter_title: "Sample Title 7",
-          newsletter_article: "Sample Content 7",
-          newsletter_image: "sample-image-7.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 7,
-        },
-        {
-          newsletter_id: 8,
-          newsletter_title: "Sample Title 8",
-          newsletter_article: "Sample Content 8",
-          newsletter_image: "sample-image-8.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 8,
-        },
-        {
-          newsletter_id: 9,
-          newsletter_title: "Sample Title 9",
-          newsletter_article: "Sample Content 9",
-          newsletter_image: "sample-image-9.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 9,
-        },
-      ],
-    },
-    {
-      id: 3,
-      month: "March",
-      year: "2025",
-      is_published: 0,
-      created_at: "2025-01-01",
-      created_by: "admin",
-      newsletterList: [
-        {
-          newsletter_id: 1,
-          newsletter_title: "Sample Title 1",
-          newsletter_article: "Sample Content 1",
-          newsletter_image: "sample-image-1.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 1,
-        },
-        {
-          newsletter_id: 2,
-          newsletter_title: "Sample Title 2",
-          newsletter_article: "Sample Content 2",
-          newsletter_image: "sample-image-2.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 2,
-        },
-        {
-          newsletter_id: 3,
-          newsletter_title: "Sample Title 3",
-          newsletter_article: "Sample Content 3",
-          newsletter_image: "sample-image-3.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 3,
-        },
-        {
-          newsletter_id: 4,
-          newsletter_title: "Sample Title 4",
-          newsletter_article: "Sample Content 4",
-          newsletter_image: "sample-image-4.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 4,
-        },
-        {
-          newsletter_id: 5,
-          newsletter_title: "Sample Title 5",
-          newsletter_article: "Sample Content 5",
-          newsletter_image: "sample-image-5.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 5,
-        },
-        {
-          newsletter_id: 6,
-          newsletter_title: "Sample Title 6",
-          newsletter_article: "Sample Content 6",
-          newsletter_image: "sample-image-6.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 6,
-        },
-        {
-          newsletter_id: 7,
-          newsletter_title: "Sample Title 7",
-          newsletter_article: "Sample Content 7",
-          newsletter_image: "sample-image-7.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 7,
-        },
-        {
-          newsletter_id: 8,
-          newsletter_title: "Sample Title 8",
-          newsletter_article: "Sample Content 8",
-          newsletter_image: "sample-image-8.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 8,
-        },
-      ],
-    },
-    {
-      id: 4,
-      month: "April",
-      year: "2025",
-      is_published: 0,
-      created_at: "2025-01-01",
-      created_by: "admin",
-      newsletterList: [
-        {
-          newsletter_id: 1,
-          newsletter_title: "Sample Title 1",
-          newsletter_article: "Sample Content 1",
-          newsletter_image: "sample-image-1.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 1,
-        },
-        {
-          newsletter_id: 2,
-          newsletter_title: "Sample Title 2",
-          newsletter_article: "Sample Content 2",
-          newsletter_image: "sample-image-2.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 2,
-        },
-        {
-          newsletter_id: 3,
-          newsletter_title: "Sample Title 3",
-          newsletter_article: "Sample Content 3",
-          newsletter_image: "sample-image-3.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 3,
-        },
-        {
-          newsletter_id: 4,
-          newsletter_title: "Sample Title 4",
-          newsletter_article: "Sample Content 4",
-          newsletter_image: "sample-image-4.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 4,
-        },
-        {
-          newsletter_id: 5,
-          newsletter_title: "Sample Title 5",
-          newsletter_article: "Sample Content 5",
-          newsletter_image: "sample-image-5.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 5,
-        },
-        {
-          newsletter_id: 6,
-          newsletter_title: "Sample Title 6",
-          newsletter_article: "Sample Content 6",
-          newsletter_image: "sample-image-6.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 6,
-        },
-        {
-          newsletter_id: 7,
-          newsletter_title: "Sample Title 7",
-          newsletter_article: "Sample Content 7",
-          newsletter_image: "sample-image-7.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 7,
-        },
-      ],
-    },
-    {
-      id: 5,
-      month: "May",
-      year: "2025",
-      is_published: 0,
-      created_at: "2025-01-01",
-      created_by: "admin",
-      newsletterList: [
-        {
-          newsletter_id: 1,
-          newsletter_title: "Sample Title 1",
-          newsletter_article: "Sample Content 1",
-          newsletter_image: "sample-image-1.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 1,
-        },
-        {
-          newsletter_id: 2,
-          newsletter_title: "Sample Title 2",
-          newsletter_article: "Sample Content 2",
-          newsletter_image: "sample-image-2.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 2,
-        },
-        {
-          newsletter_id: 3,
-          newsletter_title: "Sample Title 3",
-          newsletter_article: "Sample Content 3",
-          newsletter_image: "sample-image-3.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 3,
-        },
-        {
-          newsletter_id: 4,
-          newsletter_title: "Sample Title 4",
-          newsletter_article: "Sample Content 4",
-          newsletter_image: "sample-image-4.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 4,
-        },
-        {
-          newsletter_id: 5,
-          newsletter_title: "Sample Title 5",
-          newsletter_article: "Sample Content 5",
-          newsletter_image: "sample-image-5.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 5,
-        },
-        {
-          newsletter_id: 6,
-          newsletter_title: "Sample Title 6",
-          newsletter_article: "Sample Content 6",
-          newsletter_image: "sample-image-6.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 6,
-        },
-      ],
-    },
-    {
-      id: 6,
-      month: "June",
-      year: "2025",
-      is_published: 0,
-      created_at: "2025-01-01",
-      created_by: "admin",
-      newsletterList: [
-        {
-          newsletter_id: 1,
-          newsletter_title: "Sample Title 1",
-          newsletter_article: "Sample Content 1",
-          newsletter_image: "sample-image-1.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 1,
-        },
-        {
-          newsletter_id: 2,
-          newsletter_title: "Sample Title 2",
-          newsletter_article: "Sample Content 2",
-          newsletter_image: "sample-image-2.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 2,
-        },
-        {
-          newsletter_id: 3,
-          newsletter_title: "Sample Title 3",
-          newsletter_article: "Sample Content 3",
-          newsletter_image: "sample-image-3.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 3,
-        },
-        {
-          newsletter_id: 4,
-          newsletter_title: "Sample Title 4",
-          newsletter_article: "Sample Content 4",
-          newsletter_image: "sample-image-4.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 4,
-        },
-        {
-          newsletter_id: 5,
-          newsletter_title: "Sample Title 5",
-          newsletter_article: "Sample Content 5",
-          newsletter_image: "sample-image-5.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 5,
-        },
-        {
-          newsletter_id: 6,
-          newsletter_title: "Sample Title 6",
-          newsletter_article: "Sample Content 6",
-          newsletter_image: "sample-image-6.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 6,
-        },
-        {
-          newsletter_id: 7,
-          newsletter_title: "Sample Title 7",
-          newsletter_article: "Sample Content 7",
-          newsletter_image: "sample-image-7.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 7,
-        },
-        {
-          newsletter_id: 8,
-          newsletter_title: "Sample Title 8",
-          newsletter_article: "Sample Content 8",
-          newsletter_image: "sample-image-8.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 8,
-        },
-        {
-          newsletter_id: 9,
-          newsletter_title: "Sample Title 9",
-          newsletter_article: "Sample Content 9",
-          newsletter_image: "sample-image-9.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 9,
-        },
-        {
-          newsletter_id: 10,
-          newsletter_title: "Sample Title 10",
-          newsletter_article: "Sample Content 10",
-          newsletter_image: "sample-image-10.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 10,
-        },
-      ],
-    },
-    {
-      id: 7,
-      month: "July",
-      year: "2025",
-      is_published: 0,
-      created_at: "2025-01-01",
-      created_by: "admin",
-      newsletterList: [
-        {
-          newsletter_id: 1,
-          newsletter_title: "Sample Title 1",
-          newsletter_article: "Sample Content 1",
-          newsletter_image: "sample-image-1.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 1,
-        },
-        {
-          newsletter_id: 2,
-          newsletter_title: "Sample Title 2",
-          newsletter_article: "Sample Content 2",
-          newsletter_image: "sample-image-2.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 2,
-        },
-        {
-          newsletter_id: 3,
-          newsletter_title: "Sample Title 3",
-          newsletter_article: "Sample Content 3",
-          newsletter_image: "sample-image-3.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 3,
-        },
-        {
-          newsletter_id: 4,
-          newsletter_title: "Sample Title 4",
-          newsletter_article: "Sample Content 4",
-          newsletter_image: "sample-image-4.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 4,
-        },
-        {
-          newsletter_id: 5,
-          newsletter_title: "Sample Title 5",
-          newsletter_article: "Sample Content 5",
-          newsletter_image: "sample-image-5.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 5,
-        },
-        {
-          newsletter_id: 6,
-          newsletter_title: "Sample Title 6",
-          newsletter_article: "Sample Content 6",
-          newsletter_image: "sample-image-6.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 6,
-        },
-        {
-          newsletter_id: 7,
-          newsletter_title: "Sample Title 7",
-          newsletter_article: "Sample Content 7",
-          newsletter_image: "sample-image-7.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 7,
-        },
-        {
-          newsletter_id: 8,
-          newsletter_title: "Sample Title 8",
-          newsletter_article: "Sample Content 8",
-          newsletter_image: "sample-image-8.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 8,
-        },
-        {
-          newsletter_id: 9,
-          newsletter_title: "Sample Title 9",
-          newsletter_article: "Sample Content 9",
-          newsletter_image: "sample-image-9.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 9,
-        },
-        {
-          newsletter_id: 10,
-          newsletter_title: "Sample Title 10",
-          newsletter_article: "Sample Content 10",
-          newsletter_image: "sample-image-10.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 10,
-        },
-      ],
-    },
-    {
-      id: 8,
-      month: "August",
-      year: "2025",
-      is_published: 0,
-      created_at: "2025-01-01",
-      created_by: "admin",
-      newsletterList: [
-        {
-          newsletter_id: 1,
-          newsletter_title: "Sample Title 1",
-          newsletter_article: "Sample Content 1",
-          newsletter_image: "sample-image-1.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 1,
-        },
-        {
-          newsletter_id: 2,
-          newsletter_title: "Sample Title 2",
-          newsletter_article: "Sample Content 2",
-          newsletter_image: "sample-image-2.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 2,
-        },
-        {
-          newsletter_id: 3,
-          newsletter_title: "Sample Title 3",
-          newsletter_article: "Sample Content 3",
-          newsletter_image: "sample-image-3.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 3,
-        },
-        {
-          newsletter_id: 4,
-          newsletter_title: "Sample Title 4",
-          newsletter_article: "Sample Content 4",
-          newsletter_image: "sample-image-4.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 4,
-        },
-        {
-          newsletter_id: 5,
-          newsletter_title: "Sample Title 5",
-          newsletter_article: "Sample Content 5",
-          newsletter_image: "sample-image-5.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 5,
-        },
-        {
-          newsletter_id: 6,
-          newsletter_title: "Sample Title 6",
-          newsletter_article: "Sample Content 6",
-          newsletter_image: "sample-image-6.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 6,
-        },
-        {
-          newsletter_id: 7,
-          newsletter_title: "Sample Title 7",
-          newsletter_article: "Sample Content 7",
-          newsletter_image: "sample-image-7.jpg",
-          newsletter_created_at: "2025-01-01",
-          newsletter_pseudonym: "admin",
-          newsletter_section: 7,
-        },
-      ],
-    },
-  ];
-
-  function getMonthName(monthNumber) {
-    monthNumber = parseInt(monthNumber, 10);
-    if (
-      typeof monthNumber !== "number" ||
-      monthNumber < 1 ||
-      monthNumber > 12
-    ) {
-      throw new Error("Invalid month number. Must be between 1 and 12.");
-    }
-
-    return new Date(0, monthNumber - 1).toLocaleString("default", {
-      month: "long",
-    });
-  }
+  }, [selectedYear, updateTrigger]);
 
   return (
     <div>
@@ -1154,7 +439,7 @@ function AdminNewsLetterToggle() {
                   }
                   className="w-full p-3 mt-2 border rounded bg-primary/10 focus:ring-2 focus:ring-primary"
                 >
-                  <option value="">Select year</option>
+                  <option value="" hidden>Select year</option>
                   {yearOptions.map((year) => (
                     <option key={year} value={year}>
                       {year}
@@ -1170,10 +455,14 @@ function AdminNewsLetterToggle() {
                 <select
                   value={currentIssue.month}
                   onChange={(e) =>
-                    setCurrentIssue({ ...currentIssue, month: e.target.value })
+                    setCurrentIssue({
+                      ...currentIssue,
+                      month: parseInt(e.target.value),
+                    })
                   }
                   className="w-full p-3 mt-2 border rounded bg-primary/10 focus:ring-2 focus:ring-primary"
                 >
+                  <option value="" hidden>Select month</option>
                   {monthOptions.map((monthIndex) => (
                     <option key={monthIndex} value={monthIndex + 1}>
                       {months[monthIndex]}
@@ -1182,6 +471,7 @@ function AdminNewsLetterToggle() {
                 </select>
               </div>
             </DialogContent>
+
             <DialogActions>
               <button
                 className="btn-light"

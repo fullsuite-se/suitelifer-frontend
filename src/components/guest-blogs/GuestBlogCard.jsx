@@ -1,4 +1,4 @@
-import formatTimestamp from "../TimestampFormatter";
+import formatTimestamp from "../../utils/formatTimestamp";
 import { toSlug } from "../../utils/slugUrl";
 import { readingTime } from "reading-time-estimator";
 import { removeHtmlTags } from "../../utils/removeHTMLTags";
