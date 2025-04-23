@@ -4,7 +4,6 @@ import { useStore } from "../../store/authStore";
 export function useAddAuditLog() {
   const { addAuditLog, error } = useAuditLogStore();
   const user = useStore((state) => state.user);
-  console.log(user);
 
   const handleAddLog = ({ action, description }) => {
     if (!user?.id) {
