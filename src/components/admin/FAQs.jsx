@@ -24,6 +24,7 @@ import { useStore } from "../../store/authStore";
 import toast from "react-hot-toast";
 import ActionButtons from "../buttons/ActionButtons";
 import { useAddAuditLog } from "../../components/admin/UseAddAuditLog";
+import { ModalDeleteConfirmation } from "../modals/ModalDeleteConfirmation";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -52,6 +53,7 @@ function FAQs() {
   }, [dataUpdated]);
 
   const [openDialog, setOpenDialog] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [currentFAQ, setCurrentFAQ] = useState({
     faq_id: "",
     question: "",
@@ -123,6 +125,11 @@ function FAQs() {
     setOpenDialog(true);
   };
 
+  const handleDeleteClick = (faq_id, question) => {
+    setCurrentFAQ({ faq_id, question });
+    setDeleteModalOpen(true);
+  };
+
   const handleDelete = async (faq_id, q) => {
     try {
       await api.post("/api/delete-faq", { faq_id });
@@ -157,7 +164,7 @@ function FAQs() {
           }}
         />
       </div>
- 
+
       <div
         className="ag-theme-quartz min-w-[600px] lg:w-full "
         style={{ height: "500px", width: "100%" }}
@@ -226,7 +233,12 @@ function FAQs() {
                   />
                   <ActionButtons
                     icon={<TrashIcon className="size-5 cursor-pointer" />}
-                    handleClick={() => handleDelete(params.data.faq_id, params.data.question)}
+                    handleClick={() =>
+                      handleDeleteClick(
+                        params.data.faq_id,
+                        params.data.question
+                      )
+                    }
                   />
                 </div>
               ),
@@ -308,6 +320,16 @@ function FAQs() {
           </button>
         </DialogActions>
       </Dialog>
+
+      <ModalDeleteConfirmation
+        isOpen={deleteModalOpen}
+        handleClose={() => {
+          setDeleteModalOpen(false);
+          setCurrentFAQ({ faq_id: "", question: "", answer: "" });
+        }}
+        onConfirm={() => handleDelete(currentFAQ.faq_id, currentFAQ.question)}
+        message="Are you sure you want to delete this FAQ?"
+      />
     </>
   );
 }
