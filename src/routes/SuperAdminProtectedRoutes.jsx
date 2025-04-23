@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import api from "../axios";
 import { Outlet } from "react-router-dom";
+import api from "../utils/axios";
 
 const SuperAdminProtectedRoutes = () => {
   const [isSuperAdmin, setIsSuperAdmin] = useState(null);

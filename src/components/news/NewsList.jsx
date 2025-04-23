@@ -1,14 +1,15 @@
+// TODO: Remove if may backend na for Newsletter
 const newsList = [
-
   {
     id: 5,
     title: "The Role of FullSuite in Startup Success Stories",
     author: "Emily Clark",
     readTime: "7min read",
-    
-      article: "FullSuite-BPO proudly announces the grand opening of its newest office in the heart of Singapore's business district. This expansion marks a significant milestone in the company’s ongoing mission to provide world-class outsourcing solutions to a broader international client base.\n\nThe Singapore branch is set to serve as a strategic hub for clients across Asia-Pacific, offering enhanced accessibility and faster response times. With state-of-the-art facilities and a growing team of local professionals, FullSuite-BPO is poised to deliver even greater efficiency and innovation.\n\n“We’re thrilled to plant roots in one of the most dynamic markets in the world,” said CEO Angela Reyes. “This move allows us to better support our clients’ global ambitions while tapping into top-tier regional talent.”",
-    
-      created_at: "2025-03-08 09:30:45",
+
+    article:
+      "FullSuite-BPO proudly announces the grand opening of its newest office in the heart of Singapore's business district. This expansion marks a significant milestone in the company’s ongoing mission to provide world-class outsourcing solutions to a broader international client base.\n\nThe Singapore branch is set to serve as a strategic hub for clients across Asia-Pacific, offering enhanced accessibility and faster response times. With state-of-the-art facilities and a growing team of local professionals, FullSuite-BPO is poised to deliver even greater efficiency and innovation.\n\n“We’re thrilled to plant roots in one of the most dynamic markets in the world,” said CEO Angela Reyes. “This move allows us to better support our clients’ global ambitions while tapping into top-tier regional talent.”",
+
+    created_at: "2025-03-08 09:30:45",
     imagesWithCaption: [
       {
         image:

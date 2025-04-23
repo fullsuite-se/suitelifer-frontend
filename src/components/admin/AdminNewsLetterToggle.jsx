@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import NewsArticle from "./NewsArticle";
 import Issues from "./Issues";
-import PageToggle from "./PageToggle";
+import PageToggle from "../buttons/PageToggle";
 import { ArrowRightIcon } from "@heroicons/react/24/solid";
 import { AgGridReact } from "@ag-grid-community/react";
 import { ModuleRegistry } from "@ag-grid-community/core";
@@ -10,23 +10,17 @@ import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
 
 import {
-  DocumentIcon,
   CheckCircleIcon,
-  ExclamationTriangleIcon,
   InformationCircleIcon,
   ArrowDownIcon,
   ArrowUpIcon,
   MinusCircleIcon,
   RectangleStackIcon,
-  PlusCircleIcon,
   PencilIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
 import emptyIllustration from "../../assets/images/empty-illustration.svg";
 import {
-  Modal,
-  TextField,
-  Typography,
   Box,
   Dialog,
   DialogTitle,
@@ -40,11 +34,9 @@ import YearFilterDropDown from "./NewsletterFilter";
 import { useState, useEffect, useRef } from "react";
 import api from "../../utils/axios";
 import { set } from "react-hook-form";
-import formatTimestamp from "../TimestampFormatter";
+import formatTimestamp from "../../utils/formatTimestamp";
 import { ArrowLeft } from "lucide-react";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import ActionButtons from "./ActionButtons";
+import ActionButtons from "../buttons/ActionButtons";
 import { useStore } from "../../store/authStore";
 import toast from "react-hot-toast";
 ModuleRegistry.registerModules([ClientSideRowModelModule]);

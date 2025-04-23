@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import TopBarBlogs from "../navigation/top-bar-button/TopBarBlogs";
-import TopBarDashboard from "../navigation/top-bar-button/TopBarDashboard";
+import TopBarBlogs from "./top-bar-button/TopBarBlogs";
+import TopBarDashboard from "./top-bar-button/TopBarDashboard";
 
 const TopBarGeneratedFunction = ({ page }) => {
   switch (page) {

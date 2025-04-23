@@ -7,8 +7,6 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { AgGridReact } from "@ag-grid-community/react";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { ModuleRegistry } from "@ag-grid-community/core";
@@ -22,7 +20,7 @@ import {
   TrashIcon,
   PencilIcon,
 } from "@heroicons/react/24/outline";
-import ActionButtons from "./ActionButtons";
+import ActionButtons from "../buttons/ActionButtons";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 

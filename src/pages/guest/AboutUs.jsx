@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import MotionUp from "../../components/MotionUp";
+import MotionUp from "../../components/animated/MotionUp";
 import MobileNav from "../../components/home/MobileNav";
 import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
@@ -12,14 +12,14 @@ import imgVision from "../../assets/images/imgVision.svg";
 import dotsLine from "../../assets/images/socials-dots-line.svg";
 import Testimonials from "../../components/about-us/TestimonialSection";
 import YouTubeEmbed from "../../components/home/YoutubeEmbed";
-import BackToTop from "../../components/BackToTop";
+import BackToTop from "../../components/buttons/BackToTop";
 import FocusedAthleteIcon from "../../assets/icons/FocusedAthleteIcon";
 import TeamPlayerIcon from "../../assets/icons/TeamPlayerIcon";
 import UnderstoodIcon from "../../assets/icons/UnderstoodIcon";
 import WorkLifeHarmonyIcon from "../../assets/icons/WorkLifeHarmonyIcon";
 import UpholdsIcon from "../../assets/icons/UpholdsIcon";
 import PageMeta from "../../components/layout/PageMeta";
-import Footer from "../../components/Footer";
+import Footer from "../../components/footer/Footer";
 import MissionVision from "../../components/about-us/MissionVision";
 import Skeleton from "react-loading-skeleton";
 import useAboutContentStore from "../../store/stores/aboutContentStore";
@@ -226,95 +226,87 @@ const AboutUs = () => {
           <div className="flex flex-col lg:flex-row lg:justify-center lg:mb-[7%] py-[5%] pb-[12%] md:pb-[4%] gap-6 lg:gap-10 text-base sm:text-lg md:text-xl">
             <div className="flex justify-evenly lg:flex-none lg:gap-10">
               {/* 1 */}
-              <MotionUp>
-                <CoreValueCard
-                  icon={
-                    <TeamPlayerIcon
-                      color="group-hover:fill-white w-20 fill-primary size-40"
-                      size={"45%"}
-                    />
-                  }
-                  text={
-                    <p className="text-body">
-                      is a <br />
-                      <b>team player</b>
-                    </p>
-                  }
-                  youtubeUrl={aboutContent.teamPlayerVideo}
-                />
-              </MotionUp>
+
+              <CoreValueCard
+                icon={
+                  <TeamPlayerIcon
+                    color="group-hover:fill-white w-20 fill-primary size-40"
+                    size={"45%"}
+                  />
+                }
+                text={
+                  <p className="text-body">
+                    is a <br />
+                    <b>team player</b>
+                  </p>
+                }
+                youtubeUrl={aboutContent.teamPlayerVideo}
+              />
+
               {/* 2 */}
-              <MotionUp>
-                <CoreValueCard
-                  className={"lg:translate-y-[40%]"}
-                  icon={
-                    <UnderstoodIcon
-                      color="group-hover:fill-white w-20 fill-primary size-40"
-                      size={"45%"}
-                    />
-                  }
-                  text={
-                    <p className="text-body">
-                      is <br />
-                      <b>understood</b>
-                    </p>
-                  }
-                  youtubeUrl={aboutContent.understoodVideo}
-                />
-              </MotionUp>
+              <CoreValueCard
+                className={"lg:translate-y-[40%]"}
+                icon={
+                  <UnderstoodIcon
+                    color="group-hover:fill-white w-20 fill-primary size-40"
+                    size={"45%"}
+                  />
+                }
+                text={
+                  <p className="text-body">
+                    is <br />
+                    <b>understood</b>
+                  </p>
+                }
+                youtubeUrl={aboutContent.understoodVideo}
+              />
             </div>
             <div className="flex justify-center">
               {/* 3 */}
-              <MotionUp>
-                <CoreValueCard
-                  icon={
-                    <FocusedAthleteIcon
-                      color="group-hover:fill-white w-20 fill-primary size-40"
-                      size={"45%"}
-                    />
-                  }
-                  text={
-                    <p className="text-body">
-                      is a <br />
-                      <b>focused athlete</b>
-                    </p>
-                  }
-                  youtubeUrl={aboutContent.focusedVideo}
-                />
-              </MotionUp>
+              <CoreValueCard
+                icon={
+                  <FocusedAthleteIcon
+                    color="group-hover:fill-white w-20 fill-primary size-40"
+                    size={"45%"}
+                  />
+                }
+                text={
+                  <p className="text-body">
+                    is a <br />
+                    <b>focused athlete</b>
+                  </p>
+                }
+                youtubeUrl={aboutContent.focusedVideo}
+              />
             </div>
             <div className="flex justify-evenly lg:gap-10">
               {/* 4 */}
-              <MotionUp>
-                <CoreValueCard
-                  className={"lg:translate-y-[40%]"}
-                  icon={
-                    <UpholdsIcon
-                      color="group-hover:fill-white w-20 fill-primary size-40"
-                      size={"45%"}
-                    />
-                  }
-                  text={<b className="text-body">upholds</b>}
-                  youtubeUrl={aboutContent.upholdsVideo}
-                />
-              </MotionUp>
+              <CoreValueCard
+                className={"lg:translate-y-[40%]"}
+                icon={
+                  <UpholdsIcon
+                    color="group-hover:fill-white w-20 fill-primary size-40"
+                    size={"45%"}
+                  />
+                }
+                text={<b className="text-body">upholds</b>}
+                youtubeUrl={aboutContent.upholdsVideo}
+              />
               {/* 5 */}
-              <MotionUp>
-                <CoreValueCard
-                  icon={
-                    <WorkLifeHarmonyIcon
-                      color="group-hover:fill-white w-20 fill-primary size-40"
-                      size={"45%"}
-                    />
-                  }
-                  text={
-                    <b className="text-body">
-                      values <br /> work/life harmony
-                    </b>
-                  }
-                  youtubeUrl={aboutContent.harmonyVideo}
-                />
-              </MotionUp>
+              <CoreValueCard
+                icon={
+                  <WorkLifeHarmonyIcon
+                    color="group-hover:fill-white w-20 fill-primary size-40"
+                    size={"45%"}
+                  />
+                }
+                text={
+                  <b className="text-body">
+                    values <br /> work/life harmony
+                  </b>
+                }
+                youtubeUrl={aboutContent.harmonyVideo}
+              />
             </div>
           </div>
         </section>
@@ -426,7 +418,7 @@ const AboutUs = () => {
               <MotionUp>
                 <div className="text-center pb-7">
                   <p className="text-h5 font-avenir-black">
-                    Feel like you embody the 
+                    Feel like you embody the
                     <span className="text-primary"> SuiteLife</span>?
                   </p>
                   <p className="text-small text-gray-500">
