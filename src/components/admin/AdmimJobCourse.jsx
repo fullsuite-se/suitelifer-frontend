@@ -25,6 +25,7 @@ import {
 import LoadingAnimation from "../loader/Loading";
 import ConfirmationDialog from "./ConfirmationDialog";
 import ActionButtons from "../buttons/ActionButtons";
+import { useAddAuditLog } from "../../components/admin/UseAddAuditLog";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -33,6 +34,9 @@ function AdmimJobCourse() {
 
   const user = useStore((state) => state.user);
   const [isLoading, setIsLoading] = useState(false);
+
+  //AUDIT LOG
+  const addLog = useAddAuditLog();
 
   // DATA UPDATES
   const [dataUpdated, setDataUpdated] = useState(false);
@@ -63,18 +67,26 @@ function AdmimJobCourse() {
     setAddEditModalIsOpen(true);
   };
 
-  const handleDeleteClick = (courseId) => {
-    setCourseDetails((cd) => ({ ...cd, courseId }));
+  const handleDeleteClick = (course) => {
+    setCourseDetails((cd) => course);
     setDeleteModalIsOpen(true);
   };
 
   const handleDelete = async () => {
     try {
+      console.log(courseDetails.courseId);
+      console.log(courseDetails.title);
+
       setIsLoading(true);
       const response = await api.delete("api/course", {
         data: { courseId: courseDetails.courseId },
       });
 
+      //Log
+      addLog({
+        action: "DELETE",
+        description: `Course (${courseDetails.title}) has been deleted`,
+      });
       toast.success(response.data.message);
 
       setDataUpdated(!dataUpdated);
@@ -103,12 +115,24 @@ function AdmimJobCourse() {
           userId: user.id,
         });
 
+        //Log
+        addLog({
+          action: "CREATE",
+          description: `A new course (${courseDetails.title}) has been added`,
+        });
+
         toast.success(response.data.message);
       } else {
         // EDIT COURSE
         const response = await api.put("/api/course", {
           ...courseDetails,
           userId: user.id,
+        });
+
+        //Log
+        addLog({
+          action: "UPDATE",
+          description: `Course (${courseDetails.title}) has been updated`,
         });
 
         toast.success(response.data.message);
@@ -211,9 +235,7 @@ function AdmimJobCourse() {
                       />
                       <ActionButtons
                         icon={<TrashIcon className="size-5" />}
-                        handleClick={() =>
-                          handleDeleteClick(params.data.courseId)
-                        }
+                        handleClick={() => handleDeleteClick(params.data)}
                       />
                     </div>
                   ),
