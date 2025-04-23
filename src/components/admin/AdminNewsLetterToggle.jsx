@@ -101,14 +101,47 @@ function AdminNewsLetterToggle() {
   }, [currentMonth, currentYear]);
 
   const handleSaveIssue = async () => {
+    console.log("Saving issue:", currentIssue);
+    if (!currentIssue.month || !currentIssue.year) {
+      toast.error("Please select both month and year.");
+      return;
+    }
+    if (currentIssue.month < currentMonth) {
+      toast.error("You cannot select a month in the past.");
+      return;
+    }
+    if (currentIssue.year < currentYear) {
+      toast.error("You cannot select a year in the past.");
+      return;
+    }
+    if (
+      currentIssue.month === currentMonth &&
+      currentIssue.year === currentYear
+    ) {
+      toast.error("You cannot select the current month.");
+      return;
+    }
+    if (currentIssue.month > 12) {
+      toast.error("Invalid month selected.");
+      return;
+    }
+    if (currentIssue.year < 2000) {
+      toast.error("Invalid year selected.");
+      return;
+    }
+    if (currentIssue.month < 1) {
+      toast.error("Invalid month selected.");
+      return;
+    }
     const newIssue = {
       ...currentIssue,
       userId: user.id,
     };
+    let response;
     try {
       console.log("Sending to backend:", newIssue);
 
-      const response = await api.post("/api/issues", newIssue);
+      response = await api.post("/api/issues", newIssue);
       console.log(response.data);
 
       if (response.data?.success) {
@@ -117,13 +150,20 @@ function AdminNewsLetterToggle() {
         toast.error(response.data.message || "Failed to save issue.");
       }
     } catch (err) {
-      console.error(err.message);
+      if (err.response?.data?.month && err.response?.data?.year) {
+        toast.error(
+          `Issue for ${getMonthName(err.response.data.month)} ${
+            err.response.data.year
+          } already exists.`
+        );
+      } else {
+        toast.error("An error occurred while saving. Please try again.");
+      }
     }
+
     setSelectedYear(currentIssue.year);
     setUpdateTrigger(Date.now());
-    // Reset the current issue state
-
-    // setCurrentIssue({ issueId: "", month: "", year: "" });
+    setIsNewestFirst(true);
     setOpenIssueDialog(false);
   };
 
@@ -439,7 +479,9 @@ function AdminNewsLetterToggle() {
                   }
                   className="w-full p-3 mt-2 border rounded bg-primary/10 focus:ring-2 focus:ring-primary"
                 >
-                  <option value="" hidden>Select year</option>
+                  <option value="" hidden>
+                    Select year
+                  </option>
                   {yearOptions.map((year) => (
                     <option key={year} value={year}>
                       {year}
@@ -462,7 +504,9 @@ function AdminNewsLetterToggle() {
                   }
                   className="w-full p-3 mt-2 border rounded bg-primary/10 focus:ring-2 focus:ring-primary"
                 >
-                  <option value="" hidden>Select month</option>
+                  <option value="" hidden>
+                    Select month
+                  </option>
                   {monthOptions.map((monthIndex) => (
                     <option key={monthIndex} value={monthIndex + 1}>
                       {months[monthIndex]}

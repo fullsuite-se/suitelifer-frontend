@@ -31,6 +31,7 @@ const Form = () => {
   const { id, jobPosition } = useParams();
 
   const [referrerName, setReferrerName] = useState("");
+  const [agree, setAgree] = useState(false);
 
   const defaultApplicationDetails = {
     first_name: "",
@@ -435,9 +436,43 @@ const Form = () => {
         )}
         {/* Drag and Drop Files */}
         <div className="py-2"></div>
+        <div className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            onChange={(e) => setAgree(e.target.checked)}
+            className="accent-primary w-4 h-4 cursor-pointer"
+          />
+          <span>
+            I have read and accept the{" "}
+            <a
+              href="/terms-of-use"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary no-underline"
+            >
+              Terms of Use
+            </a>{" "}
+            and{" "}
+            <a
+              href="/privacy-policy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary no-underline"
+            >
+              Privacy Policy
+            </a>
+            .
+          </span>
+        </div>
+        <div className="py-2"></div>
         <button
           type="submit"
-          className="w-full cursor-pointer font-avenir-black bg-primary text-white py-3 rounded-md hover:bg-primary/90 transition"
+          disabled={!agree}
+          className={`w-full font-avenir-black py-3 rounded-md transition ${
+            agree
+              ? "cursor-pointer bg-primary text-white hover:bg-primary/90"
+              : "cursor-not-allowed bg-gray-300 text-gray-200"
+          }`}
         >
           SUBMIT APPLICATION
         </button>
