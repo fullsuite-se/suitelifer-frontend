@@ -61,6 +61,7 @@ const CareersJobDetails = () => {
             : "Job Opportunity | Suitelifer"
         }
         description={jobDetails?.description}
+        imageUrl={"https://www.suitelifer.com/images/job-link-preview.webp"}
         url={`${location.pathname}${location.search}`}
       />
       {/* MOBILE NAV */}
