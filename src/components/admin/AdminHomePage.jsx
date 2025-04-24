@@ -9,8 +9,12 @@ import atsAPI from "../../utils/atsAPI";
 import Information from "./Information";
 import { useAddAuditLog } from "../../components/admin/UseAddAuditLog";
 import { XMarkIcon } from "@heroicons/react/24/solid";
+import LoadingAnimation from "../loader/Loading";
 
 const AdminHomePage = () => {
+  //Loading
+  const [isLoading, setIsLoading] = useState(false);
+
   // USER DETAILS
   const user = useStore((state) => state.user);
 
@@ -67,6 +71,8 @@ const AdminHomePage = () => {
       toast.error(
         "Encountered an error while publishing changes. Try again in a few minutes..."
       );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -110,6 +116,7 @@ const AdminHomePage = () => {
   };
 
   const handleImageUpload = async () => {
+    setIsLoading(true);
     const uploadPromises = industries.map(
       async ({ industryName, industryId }) => {
         const variableName = convertToCamelCase(industryName);
@@ -144,12 +151,21 @@ const AdminHomePage = () => {
     );
 
     await Promise.all(uploadPromises);
+    
+    Object.values(fileInputRefs.current).forEach((ref) => {
+      if (ref?.current) {
+        ref.current.value = "";
+      }
+    });
 
+    // Clear selected images state
+    setIndustryImages({});
     handlePublishChanges();
   };
 
   return (
-    <>
+    <section>
+      {isLoading ? <LoadingAnimation /> : <></>}
       {/* ABOUT HERO IMAGE */}
       <div className="w-full 2xl:w-[50%] mb-3">
         <label className="block font-avenir-black">Get In Touch Image</label>
@@ -322,7 +338,7 @@ const AdminHomePage = () => {
           handleClick={handleImageUpload}
         />
       </div>
-    </>
+    </section>
   );
 };
 
