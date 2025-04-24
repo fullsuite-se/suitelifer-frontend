@@ -45,42 +45,39 @@ const AdminEvents = () => {
       ...ne,
       [e.target.name]: isDate ? new Date(e.target.value) : e.target.value,
     }));
-    console.log(eventDetails);
+  };
+
+  const [dataUpdated, setDataUpdated] = useState(false);
+
+  const fetchEvents = async () => {
+    try {
+      const response = await api.get("/api/events");
+
+      setEvents(response.data.events);
+    } catch (err) {
+      console.error("Failed to fetch events:", err);
+    }
   };
 
   useEffect(() => {
-    // Example fetch on mount
-    const fetchEvents = async () => {
-      try {
-        const response = await api.get("/api/events");
-
-        console.log("events:", response.data.events);
-
-        setEvents(response.data.events);
-      } catch (err) {
-        console.error("Failed to fetch events:", err);
-      }
-    };
     fetchEvents();
-  }, []);
+  }, [dataUpdated]);
 
   const handleSelectSlot = ({ start }) => {
-    console.log("clicked");
-  
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-  
+
     const selected = new Date(start);
     selected.setHours(0, 0, 0, 0);
-  
+
     if (selected < today) {
       setOpenDialog(true);
       return;
     }
-  
+
     const eventStart = new Date(start);
     const eventEnd = new Date(eventStart.getTime() + 60 * 60 * 1000);
-  
+
     setEventDetails({
       title: "",
       start: eventStart,
@@ -111,8 +108,14 @@ const AdminEvents = () => {
           toast.success(response.data.message);
         }
       }
+
+      setDataUpdated(!dataUpdated);
     } catch (error) {
-      toast.error(`Encountered a problem while ${eventDetails.eventId ? "updating" : "adding"} the event.`)
+      toast.error(
+        `Encountered a problem while ${
+          eventDetails.eventId ? "updating" : "adding"
+        } the event.`
+      );
       console.error("Error saving event:", error);
     } finally {
       setIsAddModalOpen(false);
@@ -122,6 +125,7 @@ const AdminEvents = () => {
 
   const handleEventClick = (event) => {
     setEventDetails(event);
+    setSelectedEvent(event);
     setIsEventDetailsModalOpen(true);
   };
 
@@ -216,6 +220,7 @@ const AdminEvents = () => {
           <TextField
             fullWidth
             label="Title"
+            required
             name="title"
             value={eventDetails.title}
             onChange={(e) => handleEventChange(e, false)}
@@ -223,6 +228,7 @@ const AdminEvents = () => {
           />
           <TextField
             fullWidth
+            required
             label="Start Date"
             type="datetime-local"
             value={moment(eventDetails.start).format("YYYY-MM-DDTHH:mm")}
@@ -249,7 +255,10 @@ const AdminEvents = () => {
           />
           <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1 }}>
             <button
-              onClick={() => setIsAddModalOpen(false)}
+              onClick={() => {
+                setIsAddModalOpen(false);
+                setEventDetails(defaultEventDetails);
+              }}
               className="btn-light"
             >
               Cancel
