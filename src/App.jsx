@@ -103,7 +103,7 @@ function App() {
 
               <Route path="threads" element={<EmployeeThreads />} />
               <Route path="company-events" element={<EmployeeEvents />} />
-              <Route path="workshops" element={<EmployeeWorkshops />} />
+              <Route path="courses" element={<EmployeeWorkshops />} />
               <Route
                 path="personality-test"
                 element={<EmployeePersonalityTest />}
