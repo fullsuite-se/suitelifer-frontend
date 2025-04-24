@@ -243,7 +243,7 @@ function Careers() {
                     isFetching ? "hidden" : ""
                   }w-full h-full object-cover`}
                   src={careerImages.careersLeftImage}
-                  alt="Left Preview"
+                  alt="Fullsuite Employee"
                 />
               ) : (
                 <div className="grid p-4 place-content-center w-full h-full">
@@ -256,7 +256,7 @@ function Careers() {
               <img
                 className="w-full h-full object-cover"
                 src={URL.createObjectURL(files.careersLeftImage)}
-                alt="Left Preview"
+                alt="Fullsuite Employee"
                 onClick={() => {
                   setFiles((f) => ({
                     ...f,
@@ -300,7 +300,7 @@ function Careers() {
                     isFetching ? "hidden" : ""
                   }w-full h-full object-cover`}
                   src={careerImages.careersMainImage}
-                  alt="Left Preview"
+                  alt="Fullsuite Employee"
                 />
               ) : (
                 <div className="grid p-4 place-content-center w-full h-full">
@@ -313,7 +313,7 @@ function Careers() {
               <img
                 className="w-full h-full object-cover"
                 src={URL.createObjectURL(files.careersMainImage)}
-                alt="Left Preview"
+                alt="Fullsuite Employee"
                 onClick={() => {
                   setFiles((f) => ({
                     ...f,
@@ -357,7 +357,7 @@ function Careers() {
                     isFetching ? "hidden" : ""
                   }w-full h-full object-cover`}
                   src={careerImages.careersRightImage}
-                  alt="Left Preview"
+                  alt="Fullsuite Employee"
                 />
               ) : (
                 <div className="grid p-4 place-content-center w-full h-full">
@@ -370,7 +370,7 @@ function Careers() {
               <img
                 className="w-full h-full object-cover"
                 src={URL.createObjectURL(files.careersRightImage)}
-                alt="Left Preview"
+                alt="Fullsuite Employee"
                 onClick={() => {
                   setFiles((f) => ({
                     ...f,
