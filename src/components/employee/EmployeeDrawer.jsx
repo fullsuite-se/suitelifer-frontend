@@ -52,8 +52,6 @@ const regularServices = [
 ];
 
 const EmployeeDrawer = ({ onClose }) => {
-  // TODO: remove
-  // const services = useStore((state) => state.services) || [];
   const [isOpenModal, setIsOpenModal] = useState(false);
 
   const handleClose = () => {

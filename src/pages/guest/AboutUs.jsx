@@ -23,9 +23,11 @@ import Footer from "../../components/footer/Footer";
 import MissionVision from "../../components/about-us/MissionVision";
 import Skeleton from "react-loading-skeleton";
 import useAboutContentStore from "../../store/stores/aboutContentStore";
+import { useLocation } from "react-router-dom";
 
 const AboutUs = () => {
   const { aboutContent, isLoading, setAboutContent } = useAboutContentStore();
+  const location = useLocation();
 
   const contentRef = useRef(null);
   const [lineHeight, setLineHeight] = useState(0);
@@ -66,6 +68,7 @@ const AboutUs = () => {
         title="About Us - Suitelifer"
         desc="A launchpad that transforms careers. We'll help you pave the way to your professional success."
         isDefer={false}
+        url={location.pathname}
       />
       {/* MOBILE NAV */}
       <div className="sm:hidden">

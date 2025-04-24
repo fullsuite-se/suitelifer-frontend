@@ -12,7 +12,13 @@ const ComingSoon = () => {
             alt="Fullsuite Events Page Coming Soon"
           />
         </div>
-        <p className="text-gray-500 text-xl px-40 text-center">Still working on this one. Hang in there — it’s coming together nicely.</p>
+        <p className="text-lg md:text-xl lg:text-3xl font-avenir-black mb-5 lg:mb-0">
+          Coming Soon!
+        </p>
+        <p className="text-gray-600 text-[12px] md:text-[14px] lg:text-base">
+          Still working on this one. Hang in there — it’s coming together
+          nicely.
+        </p>
       </div>
     </div>
   );

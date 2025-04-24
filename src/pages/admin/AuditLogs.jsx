@@ -1,34 +1,119 @@
-import React from "react";
-import { useEffect, useState } from "react";
-import { useAddAuditLog } from "../../components/admin/UseAddAuditLog";
+import React, { useEffect, useState } from "react";
 import api from "../../utils/axios";
+import {
+  ArchiveBoxXMarkIcon,
+  PencilSquareIcon,
+  PlusCircleIcon,
+} from "@heroicons/react/24/outline";
+import dayjs from "dayjs";
 
 const AuditLogs = () => {
-  const [auditLogs, setAuditLogs] = useState({});
-  const addLog = useAddAuditLog();
+  const [logs, setLogs] = useState([]);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [search, setSearch] = useState("");
+  const [query, setQuery] = useState(""); // debounced or submitted query
+  const limit = 10;
 
-  const handleAddLog = () => {
-    addLog({
-      action: "CREATE",
-      description: "NEW LOG INCOMING",
-    });
+  const fetchLogs = async (page, query = "") => {
+    try {
+      const response = await api.get(
+        `/api/audit-logs?limit=${limit}&page=${page}&search=${query}`
+      );
+      setLogs(response.data.logs);
+      setTotal(response.data.total);
+    } catch (e) {
+      console.error("Failed to fetch logs", e);
+    }
   };
 
-  const fetchLogs = async () => {
-    try{
-        const response = await api.get('api/audit-logs');
-        console.log(response.data.logs);
-        setAuditLogs(response.data.logs);
-    } catch (e) {
-        console.log(e);
-    }
-  }
+  useEffect(() => {
+    fetchLogs(page, query);
+  }, [page, query]);
 
-  useEffect(()=>{
-    fetchLogs();
-  }, [])
+  const totalPages = Math.ceil(total / limit);
 
-  return <div><button onClick={handleAddLog}>add</button></div>;
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setPage(1); // reset to first page on new search
+    setQuery(search); // trigger useEffect
+  };
+
+  return (
+    <section className="px-[15%] pb-40 pt-5 space-y-6">
+      <form onSubmit={handleSearch} className="flex gap-4 items-center">
+        <input
+          type="text"
+          placeholder="Search logs..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="border border-none bg-primary/10 rounded px-4 py-2 w-full focus:outline-primary"
+        />
+        <button
+          type="submit"
+          className="cursor-pointer px-4 py-2 bg-primary text-white rounded hover:bg-primary-hovered focus:outline-primary-hovered"
+        >
+          Search
+        </button>
+        {query && (
+          <button
+            type="button"
+            onClick={() => {
+              setSearch("");
+              setQuery("");
+              setPage(1);
+            }}
+            className="cursor-pointer px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
+          >
+            Clear
+          </button>
+        )}
+      </form>
+
+      {logs.map((log) => (
+        <div
+          key={log.logId}
+          className="p-5 flex items-center gap-4 border border-gray-200 rounded-lg"
+        >
+          <div>
+            {log.action === "CREATE" && (
+              <PlusCircleIcon className="size-5 text-green-600" />
+            )}
+            {log.action === "UPDATE" && (
+              <PencilSquareIcon className="size-5 text-blue-600" />
+            )}
+            {log.action === "DELETE" && (
+              <ArchiveBoxXMarkIcon className="size-5 text-red-600" />
+            )}
+          </div>
+          <div className="flex flex-col">
+            <p className="font-avenir-black">{log.description}</p>
+            <p className="text-gray-500 text-xss">
+              {dayjs(log.date).format("MMMM D, YYYY h:mm A")}
+            </p>
+          </div>
+        </div>
+      ))}
+
+      <div className="flex items-center justify-center gap-4 mt-6">
+        <button
+          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+          disabled={page === 1}
+          className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:hover:bg-gray-200 disabled:opacity-50"
+        >
+          Previous
+        </button>
+        <span className="text-md font-semibold">{`Page ${page} of ${totalPages}`}</span>
+        <button
+          onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+          disabled={page === totalPages}
+          className="px-4 py-2 bg-primary text-white rounded hover:bg-primary-hovered disabled:hover:bg-primary disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
+    </section>
+  );
 };
 
 export default AuditLogs;

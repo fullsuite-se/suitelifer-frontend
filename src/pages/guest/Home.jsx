@@ -24,8 +24,11 @@ import SpotifyIcon from "../../assets/logos/Spotify";
 import LinkedlnIcon from "../../assets/logos/Linkedln";
 import YouTubeEmbed from "../../components/home/YoutubeEmbed";
 import api from "../../utils/axios";
+import { useLocation } from "react-router-dom";
 
 const Home = () => {
+  const location = useLocation();
+
   const socmedPlatforms = [
     {
       href: "https://www.facebook.com/thefullsuitepod",
@@ -101,6 +104,7 @@ const Home = () => {
         title="Home | Empowering Careers & Opportunities - Suitelifer"
         desc="Discover career opportunities, company insights, and the latest updates at FullSuite. Your journey to success starts here."
         isDefer={false}
+        url={location.pathname}
       />
       {/* MOBILE NAV */}
       <div className="sm:hidden">

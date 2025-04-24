@@ -9,7 +9,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import api from "../../utils/axios";
 import toast from "react-hot-toast";
 import { useStore } from "../../store/authStore";
-import { showConfirmationToast } from "../toasts/confirm";
 import ButtonsSpotify from "../buttons/ButtonsSpotify";
 import formatTimestamp from "../../utils/formatTimestamp";
 import ConfirmationDialog from "./ConfirmationDialog";
@@ -20,6 +19,7 @@ import {
   DialogActions,
 } from "@mui/material";
 import ContentButtons from "./ContentButtons";
+import { useAddAuditLog } from "../../components/admin/UseAddAuditLog";
 
 const extractSpotifyId = (url) => {
   const match = url.match(/(?:episode|playlist)\/([^?]+)/);
@@ -38,6 +38,7 @@ const isValidEpisodeUrl = (url) => {
 };
 
 const SpotifyEpisodes = () => {
+  const addLog = useAddAuditLog();
   const user = useStore((state) => state.user);
   const [dataUpdated, setDataUpdated] = useState(false);
   const defaultEpisodeDetails = { episodeId: null, spotifyId: "" };
@@ -66,14 +67,15 @@ const SpotifyEpisodes = () => {
 
   const closeModal = () => {
     setOpenModal(false);
-    setEpisodeDetails(defaultEpisodeDetails);
   };
 
   const handleAddEditEpisode = async (e) => {
     e.preventDefault();
 
     if (!isValidEpisodeUrl(episodeDetails.spotifyId)) {
-      showError("Invalid Spotify episode URL.");
+      showError(
+        "The provided Spotify episode URL is invalid. Please verify the link and submit again."
+      );
       closeModal();
       return;
     }
@@ -107,6 +109,11 @@ const SpotifyEpisodes = () => {
           url: episodeDetails.spotifyId,
           userId: user.id,
         });
+        //Log
+        addLog({
+          action: "CREATE",
+          description: "A new spotify link has been added",
+        });
         toast.success(response.data.message);
       } else {
         const response = await api.put(
@@ -117,6 +124,11 @@ const SpotifyEpisodes = () => {
             userId: user.id,
           }
         );
+        //Log
+        addLog({
+          action: "UPDATE",
+          description: `A spotify link has been updated`,
+        });
         toast.success(response.data.message);
       }
 
@@ -154,6 +166,11 @@ const SpotifyEpisodes = () => {
           userId: user.id,
         },
       });
+      //Log
+      addLog({
+        action: "DELETE",
+        description: `A spotify link has been deleted`,
+      });
       toast.success(response.data.message);
       setDataUpdated(!dataUpdated);
     } catch (err) {
@@ -184,19 +201,19 @@ const SpotifyEpisodes = () => {
   return (
     <div className="w-full space-y-4 bg mb-20">
       {error && (
-        <div className="fixed inset-0 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-2xl shadow-lg max-w-md w-full border-2 border-red-500/95">
-            <div className="flex items-center justify-center gap-2 text-lg font-semibold p-3 rounded-2xl">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-4 h-full w-full">
+          <div className="bg-white p-6 rounded-md shadow-lg max-w-md w-full ">
+            <div className="flex flex-col items-center justify-center gap-2 text-lg font-semibold p-3 rounded-2xl ">
+              <span className="text-2xl">Invalid Spotify Link</span>
               <ExclamationTriangleIcon className="size-12 text-red-500" />
-              <span className="text-red-500 text-2xl">Error</span>
             </div>
-            <p className="text-gray-800 mt-4 text-center text-xl">{error}</p>
+            <p className="text-gray-700 mt-4 text-center text-sm ">{error}</p>
             <div className="flex justify-center mt-4">
               <button
                 onClick={closeError}
                 className="btn-light text-white px-4 py-2 rounded-4xl"
               >
-                Close
+                I Understand
               </button>
             </div>
           </div>
@@ -307,7 +324,7 @@ const SpotifyEpisodes = () => {
         onClose={handleCloseDialog}
         onConfirm={handleConfirmDelete}
         title="Delete Spotify Episode?"
-        description="Are you sure you want to delete this episode? This action cannot be undone."
+        description="Are you sure you want to delete this Spotify Link? This action cannot be undone."
         confirmLabel="Delete"
         cancelLabel="Cancel"
         icon={<ExclamationTriangleIcon className="h-12 w-12 text-red-500" />}

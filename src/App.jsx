@@ -41,6 +41,7 @@ import AdminPersonalityTest from "./components/admin/AdminPersonalityTest";
 import ProtectedRoutes from "./routes/ProtectedRoutes";
 import AdminProtectedRoutes from "./routes/AdminProtectedRoutes";
 import SuperAdminProtectedRoutes from "./routes/SuperAdminProtectedRoutes";
+import DeactivatedPage from "./pages/auth/Deactivated";
 
 // Layout
 import RootLayout from "./components/layout/RootLayout";
@@ -69,6 +70,7 @@ function App() {
           <Route path="/verify-account" element={<VerifyAccount />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/careers" element={<Careers />} />
+          <Route path="/careers/:slug" element={<CareersJobDetails />} />
           <Route path="/careers-all" element={<CareersAll />} />
           <Route
             path="careers/application-form/:id/:jobPosition"
@@ -78,7 +80,6 @@ function App() {
             path="/congrats-application-form"
             element={<CongratsApplicationForm />}
           />
-          <Route path="/careers/:slug" element={<CareersJobDetails />} />
           <Route path="/newsletter" element={<Newsletter />} />
           <Route path="/newsletter/:slug" element={<NewsletterDetails />} />
           <Route path="/contact" element={<Contact />} />
@@ -86,6 +87,7 @@ function App() {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-use" element={<TermsOfUse />} />
           <Route path="/reset-password" element={<PasswordReset />} />
+          <Route path="/account-deactivated" element={<DeactivatedPage />} />
           <Route path="/page-not-found" element={<PageNotFound />} />
           <Route path="*" element={<Navigate to="/page-not-found" replace />} />
 
@@ -101,7 +103,7 @@ function App() {
 
               <Route path="threads" element={<EmployeeThreads />} />
               <Route path="company-events" element={<EmployeeEvents />} />
-              <Route path="workshops" element={<EmployeeWorkshops />} />
+              <Route path="courses" element={<EmployeeWorkshops />} />
               <Route
                 path="personality-test"
                 element={<EmployeePersonalityTest />}

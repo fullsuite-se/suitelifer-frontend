@@ -12,7 +12,8 @@ import atsAPI from "../../utils/atsAPI.js";
 
 const CareersJobDetails = () => {
   const [jobDetails, setJobDetails] = useState(null);
-  const location = useLocation();
+  let location = useLocation();
+
   const [searchParams] = useSearchParams();
   const jobId = searchParams.get("id");
   const navigate = useNavigate();
@@ -60,6 +61,8 @@ const CareersJobDetails = () => {
             : "Job Opportunity | Suitelifer"
         }
         description={jobDetails?.description}
+        imageUrl={"https://www.suitelifer.com/images/job-link-preview.webp"}
+        url={`${location.pathname}${location.search}`}
       />
       {/* MOBILE NAV */}
       <div className="sm:hidden">

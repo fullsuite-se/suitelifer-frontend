@@ -1,252 +1,305 @@
-import React, { useRef, useState } from "react";
+"use client";
+
+import React, { useState, useEffect, useRef } from "react";
 import {
-  IconButton,
   Dialog,
-  DialogActions,
-  DialogContent,
   DialogTitle,
-  TextField,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import { AgGridReact } from "@ag-grid-community/react";
-import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { ModuleRegistry } from "@ag-grid-community/core";
+import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
-import { showConfirmationToast } from "../toasts/confirm";
+import api from "../../utils/axios";
+import toast from "react-hot-toast";
+
+import { useStore } from "../../store/authStore";
+import { useAddAuditLog } from "../../components/admin/UseAddAuditLog";
+import ContentButtons from "../admin/ContentButtons";
+import ActionButtons from "../buttons/ActionButtons";
 import { ModalDeleteConfirmation } from "../modals/ModalDeleteConfirmation";
-import ContentButtons from "./ContentButtons";
 import {
   PlusCircleIcon,
-  TrashIcon,
   PencilIcon,
+  TrashIcon,
 } from "@heroicons/react/24/outline";
-import ActionButtons from "../buttons/ActionButtons";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
-const defaultTerms = {
-  termsId: null,
-  title: "",
-  content: "",
-  createdAt: "",
-  createdBy: "",
-};
-
 function TermsOfUse() {
+  const user = useStore((state) => state.user);
+  const addLog = useAddAuditLog();
   const gridRef = useRef();
   const [terms, setTerms] = useState([]);
   const [dataUpdated, setDataUpdated] = useState(false);
-  const [addEditModalOpen, setAddEditModalOpen] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [termsDetails, setTermsDetails] = useState(defaultTerms);
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentTerm, setCurrentTerm] = useState({
+    termsId: null,
+    title: "",
+    description: "",
+  });
 
-  const handleAdd = () => {
-    setTermsDetails(defaultTerms);
-    setAddEditModalOpen(true);
+  const handleAddEditTerms = async () => {
+    const newTerm = {
+      ...currentTerm,
+      user_id: user.id,
+    };
+
+    try {
+      if (!currentTerm.termsId) {
+        const response = await api.post("/api/add-terms", {
+          ...newTerm,
+          userId: user.id,
+        });
+
+        if (response.data?.success) {
+          setTerms((prev) => [response.data.data, ...prev]);
+          toast.success(response.data.message);
+          addLog({
+            action: "CREATE",
+            description: `New Terms of Use (${newTerm.title}) added`,
+          });
+        } else {
+          toast.error(response.data.message || "Failed to save Terms of Use.");
+        }
+      } else {
+        const response = await api.put("/api/edit-terms", {
+          ...currentTerm,
+          userId: user.id,
+        });
+
+        if (response.data?.success) {
+          setTerms((prev) =>
+            prev.map((term) =>
+              term.termsId === currentTerm.termsId ? currentTerm : term
+            )
+          );
+          toast.success(response.data.message);
+          addLog({
+            action: "UPDATE",
+            description: `Terms of Use (${currentTerm.title}) has been updated`,
+          });
+        } else {
+          toast.error(
+            response.data.message || "Failed to update Terms of Use."
+          );
+        }
+      }
+
+      setDataUpdated(!dataUpdated);
+    } catch (err) {
+      console.error("Error in handleAddEditTerms:", err.message);
+      toast.error("An error occurred while saving the Terms of Use.");
+    } finally {
+      setCurrentTerm({ termsId: "", title: "", description: "" });
+      setOpenDialog(false);
+      setIsLoading(false);
+    }
   };
 
-  const handleEdit = (data) => {
-    setTermsDetails(data);
-    setAddEditModalOpen(true);
+  const handleEdit = (term) => {
+    setCurrentTerm(term);
+    setOpenDialog(true);
   };
 
-  const handleDeleteClick = (id) => {
-    setTermsDetails((t) => ({ ...t, termsId: id }));
+  const handleDeleteClick = (termsId, title) => {
+    setCurrentTerm({ termsId, title });
     setDeleteModalOpen(true);
   };
 
-  const handleDelete = () => {
-    const filtered = terms.filter(
-      (item) => item.termsId !== termsDetails.termsId
-    );
-    setTerms(filtered);
-    showConfirmationToast.success("Terms of Use deleted");
-    setDeleteModalOpen(false);
-    setTermsDetails(defaultTerms);
-  };
-
-  const handleSave = (e) => {
-    e.preventDefault();
-
-    if (!termsDetails.title || !termsDetails.content) {
-      showConfirmationToast.error("Title and content are required.");
-      return;
-    }
-
-    let updatedTerms = [...terms];
-
-    if (termsDetails.termsId) {
-      updatedTerms = updatedTerms.map((item) =>
-        item.termsId === termsDetails.termsId ? termsDetails : item
-      );
-    } else {
-      updatedTerms.push({
-        ...termsDetails,
-        termsId: Date.now(),
-        createdAt: new Date().toISOString(),
-        createdBy: "Melbraei Santiago",
+  const handleDelete = async (termsId, title) => {
+    try {
+      setIsLoading(true);
+      const response = await api.delete("/api/delete-terms", {
+        data: { termsId },
       });
+      if (response.data?.success) {
+        setTerms((prev) => prev.filter((term) => term.termsId !== termsId));
+        toast.success(response.data.message);
+        addLog({
+          action: "DELETE",
+          description: `Terms of Use (${title}) has been deleted`,
+        });
+      } else {
+        toast.error(response.data.message || "Failed to delete Terms of Use.");
+      }
+    } catch (err) {
+      console.error("Error in handleDelete:", err.message);
+      toast.error("An error occurred while deleting the Terms of Use.");
+    } finally {
+      setDeleteModalOpen(false);
+      setCurrentTerm({ termsId: "", title: "", description: "" });
+      setIsLoading(false);
+      setDataUpdated(!dataUpdated);
     }
-
-    setTerms(updatedTerms);
-    setTermsDetails(defaultTerms);
-    setAddEditModalOpen(false);
-    setDataUpdated(!dataUpdated);
   };
+
+  const handleChange = (e) => {
+    setCurrentTerm((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  useEffect(() => {
+    const fetchTerms = async () => {
+      try {
+        const response = await api.get("/api/get-all-terms");
+        setTerms(response.data.terms);
+      } catch (err) {
+        console.error(err);
+        toast.error("Failed to fetch Terms of Use");
+      }
+    };
+
+    fetchTerms();
+  }, [dataUpdated]);
 
   return (
     <>
-      <div className="flex justify-end gap-2 mb-2">
+      <div className="flex justify-end mb-2">
         <ContentButtons
           icon={<PlusCircleIcon className="size-5" />}
-          text="Add Terms of Use"
-          handleClick={handleAdd}
+          text="Add Terms"
+          handleClick={() => {
+            setOpenDialog(true);
+            setCurrentTerm({
+              termsId: "",
+              title: "",
+              description: "",
+            });
+          }}
         />
       </div>
 
-      <div className="w-full overflow-x-auto">
-        <div
-          className="ag-theme-quartz min-w-[600px] lg:w-full"
-          style={{ height: "600px" }}
-        >
-          <AgGridReact
-            ref={gridRef}
-            rowData={terms}
-            columnDefs={[
-              {
-                headerName: "Title",
-                field: "title",
-                flex: 1,
-                headerClass: "text-primary font-bold bg-gray-100",
-              },
-              {
-                headerName: "Content",
-                field: "content",
-                flex: 2,
-                headerClass: "text-primary font-bold bg-gray-100",
-              },
-              {
-                headerName: "Date Created",
-                field: "createdAt",
-                flex: 1,
-                valueGetter: (params) =>
-                  new Date(params.data.createdAt).toLocaleString(),
-                headerClass: "text-primary font-bold bg-gray-100",
-              },
-              {
-                headerName: "Created By",
-                field: "createdBy",
-                flex: 1,
-                headerClass: "text-primary font-bold bg-gray-100",
-              },
-              {
-                headerName: "Actions",
-                field: "actions",
-                flex: 1,
-                headerClass: "text-primary font-bold bg-gray-100",
-                cellRenderer: (params) => (
-                  <div className="flex">
-                    <ActionButtons
-                      icon={<PencilIcon className="size-5" />}
-                      handleClick={() => handleEdit(params.data)}
-                    />
-                    <ActionButtons
-                      icon={<TrashIcon className="size-5" />}
-                      handleClick={() => handleDeleteClick(params.data.termsId)}
-                    />
-                  </div>
-                ),
-              },
-            ]}
-            defaultColDef={{
-              filter: "agTextColumnFilter",
-              floatingFilter: true,
-              sortable: true,
-              cellStyle: {
-                display: "flex",
-                alignItems: "center",
-              },
-            }}
-            domLayout="autoHeight"
-            rowHeight={window.innerWidth < 640 ? 60 : 80}
-            pagination={true}
-            paginationPageSize={5}
-            paginationPageSizeSelector={[5, 10]}
-          />
-        </div>
+      <div
+        className="ag-theme-quartz min-w-[600px] lg:w-full"
+        style={{ height: 500 }}
+      >
+        <AgGridReact
+          ref={gridRef}
+          rowData={terms}
+          enableBrowserTooltips
+          columnDefs={[
+            {
+              headerName: "Title",
+              field: "title",
+              flex: 2,
+              tooltipField: "title",
+              headerClass: "text-primary font-bold bg-gray-100",
+            },
+            {
+              headerName: "Description",
+              field: "description",
+              flex: 3,
+              tooltipField: "description",
+              headerClass: "text-primary font-bold bg-gray-100",
+            },
+            {
+              headerName: "Date Created",
+              field: "createdAt",
+              flex: 2,
+              valueGetter: (params) =>
+                params.data?.createdAt
+                  ? new Date(params.data.createdAt).toLocaleString()
+                  : "N/A",
+              headerClass: "text-primary font-bold bg-gray-100",
+            },
+            {
+              headerName: "Created By",
+              field: "createdBy",
+              flex: 2,
+              headerClass: "text-primary font-bold bg-gray-100",
+            },
+            {
+              headerName: "Actions",
+              field: "actions",
+              flex: 1,
+              headerClass: "text-primary font-bold bg-gray-100",
+              cellRenderer: (params) => (
+                <div className="flex">
+                  <ActionButtons
+                    icon={<PencilIcon className="size-5 cursor-pointer" />}
+                    handleClick={() => handleEdit(params.data)}
+                  />
+                  <ActionButtons
+                    icon={<TrashIcon className="size-5 cursor-pointer" />}
+                    handleClick={() =>
+                      handleDeleteClick(params.data.termsId, params.data.title)
+                    }
+                  />
+                </div>
+              ),
+            },
+          ]}
+          defaultColDef={{
+            filter: "agTextColumnFilter",
+            floatingFilter: true,
+            sortable: true,
+            resizable: true,
+            cellStyle: {
+              display: "flex",
+              alignItems: "center",
+            },
+          }}
+          pagination
+          paginationPageSize={10}
+          paginationPageSizeSelector={[5, 10, 20]}
+        />
       </div>
 
-      <Dialog
-        open={addEditModalOpen}
-        onClose={() => setAddEditModalOpen(false)}
-        sx={{
-          "& .MuiDialog-paper": {
-            borderRadius: "16px",
-            padding: "20px",
-            width: "600px",
-          },
-        }}
-      >
-        <form onSubmit={handleSave}>
-          <DialogTitle>
-            {termsDetails.termsId ? "Edit Terms of Use" : "Add Terms of Use"}
-          </DialogTitle>
-          <DialogContent>
-            <div className="text-md font-bold pt-4 font-avenir-black">
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)} fullWidth>
+        <DialogTitle>
+          {currentTerm.termsId ? "Edit Terms" : "Add Terms"}
+        </DialogTitle>
+        <DialogContent>
+          <div className="mb-4">
+            <label className="block text-gray-700 font-avenir-black">
               Title<span className="text-primary">*</span>
-            </div>
+            </label>
             <input
               name="title"
-              value={termsDetails.title}
-              onChange={(e) =>
-                setTermsDetails((prev) => ({
-                  ...prev,
-                  title: e.target.value,
-                }))
-              }
-              className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
-            ></input>
-            <div className="text-md font-bold pt-4 font-avenir-black">
-              Content<span className="text-primary">*</span>
-            </div>
+              value={currentTerm.title}
+              onChange={handleChange}
+              className="w-full p-3 mt-2 border rounded bg-primary/10 focus:ring-2 focus:ring-primary"
+              placeholder="Enter title"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 font-avenir-black">
+              Description<span className="text-primary">*</span>
+            </label>
             <textarea
-              name="title"
-              value={termsDetails.content}
-              onChange={(e) =>
-                setTermsDetails((prev) => ({
-                  ...prev,
-                  content: e.target.value,
-                }))
-              }
-              rows={7}
-              className="w-full p-3 resize-none border rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary mb-4"
-            ></textarea>
-          </DialogContent>
-          <DialogActions>
-            <button
-              type="button"
-              className="btn-light"
-              onClick={() => {
-                setAddEditModalOpen(false);
-                setTermsDetails(defaultTerms);
-              }}
-            >
-              Cancel
-            </button>
-            <button type="submit" className="btn-primary">
-              Save
-            </button>
-          </DialogActions>
-        </form>
+              name="description"
+              rows={4}
+              value={currentTerm.description}
+              onChange={handleChange}
+              className="w-full p-3 mt-2 border rounded bg-primary/10 focus:ring-2 focus:ring-primary"
+              placeholder="Enter description"
+            />
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <button className="btn-light" onClick={() => setOpenDialog(false)}>
+            Cancel
+          </button>
+          <button className="btn-primary" onClick={handleAddEditTerms}>
+            Save
+          </button>
+        </DialogActions>
       </Dialog>
 
       <ModalDeleteConfirmation
         isOpen={deleteModalOpen}
         handleClose={() => {
           setDeleteModalOpen(false);
-          setTermsDetails(defaultTerms);
+          setCurrentTerm({ termsId: "", title: "", description: "" });
         }}
-        onConfirm={handleDelete}
+        onConfirm={() => handleDelete(currentTerm.termsId, currentTerm.title)}
         message="Are you sure you want to delete this Terms of Use?"
       />
     </>

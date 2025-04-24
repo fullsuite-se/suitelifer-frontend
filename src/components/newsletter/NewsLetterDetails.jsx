@@ -17,6 +17,7 @@ import { readingTime } from "reading-time-estimator";
 import { removeHtmlTags } from "../../utils/removeHTMLTags";
 import Carousel from "../cms/Carousel";
 
+import PageMeta from "../layout/PageMeta";
 
 const NewsletterDetails = () => {
   const [searchParams] = useSearchParams();

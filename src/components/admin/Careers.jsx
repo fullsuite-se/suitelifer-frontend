@@ -14,6 +14,7 @@ import { OrbitProgress } from "react-loading-indicators";
 import toast from "react-hot-toast";
 import LoadingAnimation from "../loader/Loading";
 import ConfirmationDialog from "./ConfirmationDialog";
+import { useAddAuditLog } from "../../components/admin/UseAddAuditLog";
 
 function Careers() {
   const user = useStore((state) => state.user);
@@ -25,6 +26,9 @@ function Careers() {
   const leftInputRef = useRef();
   const mainInputRef = useRef();
   const rightInputRef = useRef();
+
+  //Audit Log
+  const addLog = useAddAuditLog();
 
   //This will contain the attached images
   const [files, setFiles] = useState({
@@ -105,6 +109,12 @@ function Careers() {
       response = await api.patch("/api/content/careers", {
         ...careerImages,
         userId: user.id,
+      });
+
+      //Log
+      addLog({
+        action: "UPDATE",
+        description: "Careers page hero images has been updated",
       });
     } catch (e) {
       console.log("Error updating images.", e);
@@ -233,7 +243,7 @@ function Careers() {
                     isFetching ? "hidden" : ""
                   }w-full h-full object-cover`}
                   src={careerImages.careersLeftImage}
-                  alt="Left Preview"
+                  alt="Fullsuite Employee"
                 />
               ) : (
                 <div className="grid p-4 place-content-center w-full h-full">
@@ -246,7 +256,7 @@ function Careers() {
               <img
                 className="w-full h-full object-cover"
                 src={URL.createObjectURL(files.careersLeftImage)}
-                alt="Left Preview"
+                alt="Fullsuite Employee"
                 onClick={() => {
                   setFiles((f) => ({
                     ...f,
@@ -290,7 +300,7 @@ function Careers() {
                     isFetching ? "hidden" : ""
                   }w-full h-full object-cover`}
                   src={careerImages.careersMainImage}
-                  alt="Left Preview"
+                  alt="Fullsuite Employee"
                 />
               ) : (
                 <div className="grid p-4 place-content-center w-full h-full">
@@ -303,7 +313,7 @@ function Careers() {
               <img
                 className="w-full h-full object-cover"
                 src={URL.createObjectURL(files.careersMainImage)}
-                alt="Left Preview"
+                alt="Fullsuite Employee"
                 onClick={() => {
                   setFiles((f) => ({
                     ...f,
@@ -347,7 +357,7 @@ function Careers() {
                     isFetching ? "hidden" : ""
                   }w-full h-full object-cover`}
                   src={careerImages.careersRightImage}
-                  alt="Left Preview"
+                  alt="Fullsuite Employee"
                 />
               ) : (
                 <div className="grid p-4 place-content-center w-full h-full">
@@ -360,7 +370,7 @@ function Careers() {
               <img
                 className="w-full h-full object-cover"
                 src={URL.createObjectURL(files.careersRightImage)}
-                alt="Left Preview"
+                alt="Fullsuite Employee"
                 onClick={() => {
                   setFiles((f) => ({
                     ...f,

@@ -14,25 +14,15 @@ import LoadingJobCarousel from "../../components/loader/LoadingJobCarousel";
 import atsAPI from "../../utils/atsAPI";
 import api from "../../utils/axios";
 import MotionUp from "../../components/animated/MotionUp";
-import Skeleton from "react-loading-skeleton";
 import useHeroImagesStore from "../../store/stores/heroImagesStore";
 
 const Careers = () => {
-  // const defaultHeroImages = {
-  //   careersLeftImage: "",
-  //   careersMainImage: "",
-  //   careersRightImage: "",
-  // };
-
-  // const [heroImages, setHeroImages] = useState(defaultHeroImages);
-  // const [isHeroLoading, setIsHeroLoading] = useState(true);
-
   const { heroImages, isHeroLoading, setHeroImages, setIsHeroLoading } =
     useHeroImagesStore();
-
   const [isLoading, setIsLoading] = useState(false);
-
   const [industries, setIndustries] = useState([]);
+  const location = useLocation();
+
   const fetchIndustries = async () => {
     try {
       const response = await atsAPI.get("/industries/");
@@ -96,8 +86,6 @@ const Careers = () => {
     filter === "All" ? fetchJobs() : fetchFilteredJobs();
   }, [filter]);
 
-  const location = useLocation();
-
   useEffect(() => {
     if (location.hash) {
       const section = document.getElementById(location.hash.substring(1));
@@ -117,6 +105,7 @@ const Careers = () => {
           title="Careers - Suitelifer"
           desc="Your career journey has to start somewhere. Grab the opportunity, start it with us."
           isDefer={false}
+          url={location.pathname}
         />
         {/* MOBILE NAV */}
         <div className="sm:hidden">
