@@ -14,11 +14,16 @@ import EventCalendar from "./../../components/admin/EventCalendar";
 import ContentButtons from "../../components/admin/ContentButtons";
 import ComingSoon from "./ComingSoon";
 import { EyeIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
+import api from "../../utils/axios";
+import { useStore } from "../../store/authStore";
 
 const AdminEvents = () => {
-  const [isComingSoon, setComingSoon] = useState(true); //Change false if page is ready
+  const user = useStore((state) => state.user);
+
+  const [isComingSoon, setComingSoon] = useState(false); //Change false if page is ready
 
   const [openDialog, setOpenDialog] = useState(false);
+
   const [events, setEvents] = useState([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEventDetailsModalOpen, setIsEventDetailsModalOpen] = useState(false);
@@ -27,8 +32,8 @@ const AdminEvents = () => {
 
   const [newEvent, setNewEvent] = useState({
     title: "",
-    start: new Date(),
-    end: new Date(new Date().setDate(new Date().getDate() + 1)),
+    startDate: new Date(),
+    endDate: null,
     description: "",
   });
 
@@ -49,8 +54,17 @@ const AdminEvents = () => {
     setIsAddModalOpen(true);
   };
 
-  const handleAddEvent = () => {
+  const handleAddEvent = async () => {
     if (isEditing) {
+      const response = await api.post("/api/events", {
+        ...newEvent,
+        userId: user.id,
+      });
+
+      if (response.status === 201) {
+        return console.log("Event added successfully.");
+      }
+
       setEvents((prevEvents) =>
         prevEvents.map((event) =>
           event.start === selectedEvent.start ? newEvent : event
@@ -58,6 +72,15 @@ const AdminEvents = () => {
       );
       setIsEditing(false);
     } else {
+      const response = await api.post("/api/events", {
+        ...newEvent,
+        userId: user.id,
+      });
+
+      if (response.status === 201) {
+        return console.log("Event added successfully.");
+      }
+
       setEvents([...events, newEvent]);
     }
     setIsAddModalOpen(false);
@@ -80,9 +103,9 @@ const AdminEvents = () => {
     setIsEventDetailsModalOpen(false);
     setIsAddModalOpen(true);
   };
-  
-  if(isComingSoon){
-    return <ComingSoon/>
+
+  if (isComingSoon) {
+    return <ComingSoon />;
   }
 
   return (
@@ -160,7 +183,7 @@ const AdminEvents = () => {
             label="Title"
             value={newEvent.title}
             onChange={(e) =>
-              setNewEvent({ ...newEvent, title: e.target.value })
+              setNewEvent((ne) => ({ ...ne, title: e.target.value }))
             }
             margin="normal"
           />
@@ -168,9 +191,12 @@ const AdminEvents = () => {
             fullWidth
             label="Start Date"
             type="datetime-local"
-            value={moment(newEvent.start).format("YYYY-MM-DDTHH:mm")}
+            value={moment(newEvent.startDate).format("YYYY-MM-DDTHH:mm")}
             onChange={(e) =>
-              setNewEvent({ ...newEvent, start: new Date(e.target.value) })
+              setNewEvent((ne) => ({
+                ...newEvent,
+                startDate: new Date(e.target.value),
+              }))
             }
             margin="normal"
           />
@@ -178,9 +204,12 @@ const AdminEvents = () => {
             fullWidth
             label="End Date"
             type="datetime-local"
-            value={moment(newEvent.end).format("YYYY-MM-DDTHH:mm")}
+            value={moment(newEvent.endDate).format("YYYY-MM-DDTHH:mm")}
             onChange={(e) =>
-              setNewEvent({ ...newEvent, end: new Date(e.target.value) })
+              setNewEvent((ne) => ({
+                ...newEvent,
+                endDate: new Date(e.target.value),
+              }))
             }
             margin="normal"
           />
@@ -189,7 +218,10 @@ const AdminEvents = () => {
             label="Description"
             value={newEvent.description}
             onChange={(e) =>
-              setNewEvent({ ...newEvent, description: e.target.value })
+              setNewEvent((ne) => ({
+                ...newEvent,
+                description: e.target.value,
+              }))
             }
             margin="normal"
           />
