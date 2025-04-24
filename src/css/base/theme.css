@@ -101,7 +101,11 @@ ol {
   padding-left: 20px;
 }
 
-strong, b {
+strong{
+  font-family: var(--font-avenir-black);
+}
+
+b {
   font-family: var(--font-avenir-black);
 }
 
@@ -133,6 +137,7 @@ em, i{
   --font-sansita-light: SansitaSwashed-Light, "sans-serif";
   --font-sansita-medium: SansitaSwashed-Medium, "sans-serif";
   --font-sansita-semi-bold: SansitaSwashed-SemiBold, "sans-serif";
+  --font-casablanca: Casablanca, "sans-serif";
 }
 
 .btn-primary {

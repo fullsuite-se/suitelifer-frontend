@@ -12,22 +12,14 @@ import BackButton from "../buttons/BackButton";
 import React from "react";
 import api from "../../utils/axios";
 import LoadingArticleDetails from "../loader/LoadingArticleDetails";
+import formatTimestamp from "../../utils/formatTimestamp";
+import { readingTime } from "reading-time-estimator";
+import { removeHtmlTags } from "../../utils/removeHTMLTags";
+import Carousel from "../cms/Carousel";
 
-// DUMMY DATA
-import NewsletterArticles from "./NewsletterArticles";
 import PageMeta from "../layout/PageMeta";
 
-const NewsletterDetails = ({
-  // id,
-  title,
-  image,
-  author,
-  readTime,
-  datePublished,
-  // article,
-}) => {
-  // Dummy data
-  const article = NewsletterArticles[0];
+const NewsletterDetails = () => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
 
@@ -50,10 +42,11 @@ const NewsletterDetails = ({
         const newsletterId = location.state?.id || id;
         if (!newsletterId) return;
 
-        // const response = await api.get(`/api/get-news/${newsId}`);
-        // console.log(response.data);
+        const response = await api.get(`/api/newsletter/` + newsletterId);
+        console.log(newsletterId);
+        console.log(response.data.newsletter);
 
-        // setNewsletterItem(response.data);
+        setNewsletterItem(response.data.newsletter);
       } catch (error) {
         console.error(error);
       } finally {
@@ -62,7 +55,7 @@ const NewsletterDetails = ({
     };
 
     fetchNewsletter();
-  }, [location.state, id]); // ✅ Depend on state or fallback id
+  }, [location.state, id]);
 
   if (loading) {
     return <LoadingArticleDetails />;
@@ -73,13 +66,35 @@ const NewsletterDetails = ({
       <PageMeta
         isDefer={true}
         title={
-          article?.title
-            ? `${article.title} | Suitelifer`
+          newsletterItem?.title
+            ? `${newsletterItem.title} | Suitelifer`
             : "Newsletter | Suitelifer"
         }
-        description={article?.article}
+        description={newsletterItem?.article}
         url={`${location.pathname}${location.search}`}
       />
+      {/* <Helmet>
+        <title>{newsletterItem.title || "Suitelifer"}</title>
+        <meta
+          name="description"
+          content={
+            content
+              ? content.substring(0, 150) + "..."
+              : "Read the latest newsletters on Suitelifer."
+          }
+        />
+        <meta
+          name="keywords"
+          content={`${newsletterItem.title}, Suitelifer Newsletter, news, newsletter`}
+        />
+     
+      </Helmet>  */}
+      {/* 
+              TODO :
+              <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:title" content={data?.title} />
+             <meta name="twitter:description" content={data?.snippet || data?.article?.substring(0, 150)} />
+            <meta name="twitter:image" content={data?.images?.[0] || "https://yourwebsite.com/default-image.jpg"} /> */}
       <section
         className="gap-4 h-dvh"
         style={{ maxWidth: "2000px", margin: "0 auto" }}
@@ -98,36 +113,42 @@ const NewsletterDetails = ({
         </div>
 
         <main className="px-[5%] md:px-[10%] lg:px-[15%] xl:px-[25%] lg:my-20 mb-20">
-          <BackButton backPath={handleBack} />
-          {/* Main Article */}
-          <section className="mt-4">
-            {article.image ? (
-              <>
-                <img
-                  className="mb-5 w-full h-full aspect-video object-cover rounded-lg"
-                  src={article.image}
-                  alt="Article Image"
-                />
-              </>
-            ) : (
-              <></>
-            )}
-            {/* Title */}
-            <p className="text-h4 font-avenir-black">{article.title}</p>
+          <div className="py-3"></div>
 
+          <BackButton backPath={handleBack} />
+          <section className="mt-4">
+            <Carousel
+              images={
+                Array.isArray(newsletterItem.images)
+                  ? newsletterItem.images
+                  : []
+              }
+              isButtonOutside={false}
+            />
+            <div className="py-2"></div>
+            <p className="text-h4 font-avenir-black">{newsletterItem.title}</p>
             <p className="text-small pb-3 pt-1">
-              <span className={`text-primary`}>{article.author}</span>
+              <span className={`text-primary`}>{newsletterItem.pseudonym}</span>
               <span className={`text-gray-400`}>&nbsp; |</span>
               <span className={`text-primary`}>
-                &nbsp;&nbsp;{article.readTime}
+                &nbsp;&nbsp;
+                {
+                  readingTime(
+                    removeHtmlTags(newsletterItem.article ?? "article"),
+                    238
+                  ).text
+                }
               </span>
               <span className={`text-gray-400`}>&nbsp; |</span>
               <span className={`text-primary`}>
-                &nbsp;&nbsp;{article.datePublished}
+                &nbsp;&nbsp;{formatTimestamp(newsletterItem.createdAt).fullDate}
               </span>
-            </p>
+            </p>{" "}
+            <div className="py-3"></div>
             <div className={`text-body text-justify text-gray-500`}>
-              <article>{article.article}</article>
+              <article
+                dangerouslySetInnerHTML={{ __html: newsletterItem.article }}
+              />
             </div>
           </section>
         </main>

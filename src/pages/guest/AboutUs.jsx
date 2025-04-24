@@ -384,6 +384,9 @@ const AboutUs = () => {
                 here to help you achieve your goals.
               </p>
             </div>
+            <div>
+              <p className="font-casablanca text-white text-h5 text-right mt-5 px-5 md:px-10">~ Maggie</p>
+            </div>
           </section>
         </MotionUp>
         <div className="flex justify-end scale-x-[-1]">
