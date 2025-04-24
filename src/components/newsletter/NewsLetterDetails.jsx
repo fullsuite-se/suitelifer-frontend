@@ -55,7 +55,7 @@ const NewsletterDetails = () => {
     };
 
     fetchNewsletter();
-  }, [location.state, id]); 
+  }, [location.state, id]);
 
   if (loading) {
     return <LoadingArticleDetails />;
@@ -63,27 +63,38 @@ const NewsletterDetails = () => {
 
   return (
     <>
-      <Helmet>
+      <PageMeta
+        isDefer={true}
+        title={
+          newsletterItem?.title
+            ? `${newsletterItem.title} | Suitelifer`
+            : "Newsletter | Suitelifer"
+        }
+        description={newsletterItem?.article}
+        url={`${location.pathname}${location.search}`}
+      />
+      {/* <Helmet>
         <title>{newsletterItem.title || "Suitelifer"}</title>
         <meta
           name="description"
-          // content={
-          //   content
-          //     ? content.substring(0, 150) + "..."
-          //     : "Read the latest newsletters on Suitelifer."
-          // }
+          content={
+            content
+              ? content.substring(0, 150) + "..."
+              : "Read the latest newsletters on Suitelifer."
+          }
         />
         <meta
           name="keywords"
           content={`${newsletterItem.title}, Suitelifer Newsletter, news, newsletter`}
         />
-        {/* 
+     
+      </Helmet>  */}
+      {/* 
               TODO :
               <meta name="twitter:card" content="summary_large_image" />
             <meta name="twitter:title" content={data?.title} />
              <meta name="twitter:description" content={data?.snippet || data?.article?.substring(0, 150)} />
             <meta name="twitter:image" content={data?.images?.[0] || "https://yourwebsite.com/default-image.jpg"} /> */}
-      </Helmet>
       <section
         className="gap-4 h-dvh"
         style={{ maxWidth: "2000px", margin: "0 auto" }}
