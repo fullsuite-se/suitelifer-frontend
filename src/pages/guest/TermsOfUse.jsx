@@ -7,6 +7,7 @@ import TermsOfUseContent from "../../components/legal/TermsOfUseContent";
 import BackToTop from "../../components/buttons/BackToTop";
 import Footer from "../../components/footer/Footer";
 import { useLocation } from "react-router-dom";
+import PageMeta from "../../components/layout/PageMeta";
 
 const TermsOfUse = () => {
   const location = useLocation();
