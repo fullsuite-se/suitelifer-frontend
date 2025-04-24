@@ -22,17 +22,25 @@ const EventCard = ({ event }) => {
         <span className="text-black text-base block truncate">
           {event.title}
         </span>
-        <div className="flex items-start gap-3 mt-2">
-          <ListBulletIcon className="size-5 text-primary flex-shrink-0" />
-          <p className="line-clamp-2 text-sm overflow-hidden text-gray-400">
-            {event.description}
-          </p>
-        </div>
+        {event.description !== "" && event.description && (
+          <div className="flex items-start gap-3 mt-2">
+            <ListBulletIcon className="size-5 text-primary flex-shrink-0" />
+            <p className="line-clamp-2 text-sm overflow-hidden text-gray-400">
+              {event.description}
+            </p>
+          </div>
+        )}
+
         <div className="flex items-start gap-3">
           <ClockIcon className="size-5 text-primary flex-shrink-0" />
-          <p className="line-clamp-2 text-sm overflow-hidden font-avenir-black text-gray-400">
-            {format(event.start, "MMM dd yyyy h:mm a")}
-          </p>
+          <div className="flex flex-col">
+            <p className="line-clamp-2 text-sm overflow-hidden font-avenir-black text-gray-400">
+              {format(event.start, "MMM dd yyyy")}
+            </p>
+            <p className="line-clamp-2 text-sm overflow-hidden font-avenir-black text-gray-400">
+              {format(event.start, "h:mm a")}
+            </p>
+          </div>
         </div>
       </div>
     </section>
