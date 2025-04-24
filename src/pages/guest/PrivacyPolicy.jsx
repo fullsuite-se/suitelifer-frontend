@@ -6,14 +6,24 @@ import DesktopNav from "../../components/home/DesktopNav";
 import PrivacyPolicyContent from "../../components/legal/PrivacyPolicyContent";
 import BackToTop from "../../components/buttons/BackToTop";
 import Footer from "../../components/footer/Footer";
+import PageMeta from "../../components/layout/PageMeta";
+import { useLocation } from "react-router-dom";
 
 const PrivacyPolicy = () => {
+  const location = useLocation();
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   return (
     <>
+      <PageMeta
+        title="Data Privacy Policy - Suitelifer"
+        desc="Understand how Fullsuite collects, uses, stores, and protects your personal information through our Data Privacy Policy."
+        isDefer={false}
+        url={location.pathname}
+      />
       {/* MOBILE NAV */}
       <div className="sm:hidden">
         <MobileNav />

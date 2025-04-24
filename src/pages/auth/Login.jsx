@@ -71,6 +71,8 @@ const LoginForm = ({ email, password, setEmail, setPassword }) => {
         } else {
           toast.error("Failed to send verification code.");
         }
+      } else if (error.response?.data?.isNotActive) {
+        navigate("/account-deactivated");
       } else {
         toast.error(
           `${error.response?.data?.message || "Something went wrong."}`

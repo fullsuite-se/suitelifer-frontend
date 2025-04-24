@@ -1,8 +1,7 @@
 import React from "react";
 import deactivatedImg from "../../assets/images/deactivated-acc.webp";
 import fullsuitelogo from "../../assets/logos/logo-fs-full.svg";
-import { useLocation, useNavigate } from "react-router-dom";
-
+// TODO: Disallow web crawler
 const DeactivatedPage = () => {
   return (
     <section
@@ -33,15 +32,16 @@ const DeactivatedPage = () => {
               </p>
               <div className="hidden lg:block"></div>
               <p className="text-gray-600 text-[12px] md:text-[14px] lg:text-base md:mb-7">
-              You no longer have access to the system. If you believe this is a mistake, please contact support.
+                You no longer have access to the system. If you believe this is
+                a mistake, please contact support.
               </p>
               <div className="flex justify-center">
                 <a
                   className="font-avenir-black transition-all duration-300 cursor-pointer hover:bg-[#007a8e] w-full max-w-[200px] rounded-xl mt-10 text-white text-center no-underline bg-primary px-5 py-3 "
-                  href="/sign-out-di-ko-alam"
+                  href="/login"
                 >
                   <button className="cursor-pointer text-small">
-                    Sign out
+                    Login Page
                   </button>
                 </a>
               </div>

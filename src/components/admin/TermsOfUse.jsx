@@ -32,19 +32,118 @@ function TermsOfUse() {
   const user = useStore((state) => state.user);
   const addLog = useAddAuditLog();
   const gridRef = useRef();
-
   const [terms, setTerms] = useState([]);
   const [dataUpdated, setDataUpdated] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
   const [currentTerm, setCurrentTerm] = useState({
-    terms_id: "",
+    termsId: null,
     title: "",
     description: "",
-    createdBy: "",
-    createdAt: "",
   });
+
+  const handleAddEditTerms = async () => {
+    const newTerm = {
+      ...currentTerm,
+      user_id: user.id,
+    };
+
+    try {
+      if (!currentTerm.termsId) {
+        const response = await api.post("/api/add-terms", {
+          ...newTerm,
+          userId: user.id,
+        });
+
+        if (response.data?.success) {
+          setTerms((prev) => [response.data.data, ...prev]);
+          toast.success(response.data.message);
+          addLog({
+            action: "CREATE",
+            description: `New Terms of Use (${newTerm.title}) added`,
+          });
+        } else {
+          toast.error(response.data.message || "Failed to save Terms of Use.");
+        }
+      } else {
+        const response = await api.put("/api/edit-terms", {
+          ...currentTerm,
+          userId: user.id,
+        });
+
+        if (response.data?.success) {
+          setTerms((prev) =>
+            prev.map((term) =>
+              term.termsId === currentTerm.termsId ? currentTerm : term
+            )
+          );
+          toast.success(response.data.message);
+          addLog({
+            action: "UPDATE",
+            description: `Terms of Use (${currentTerm.title}) has been updated`,
+          });
+        } else {
+          toast.error(
+            response.data.message || "Failed to update Terms of Use."
+          );
+        }
+      }
+
+      setDataUpdated(!dataUpdated);
+    } catch (err) {
+      console.error("Error in handleAddEditTerms:", err.message);
+      toast.error("An error occurred while saving the Terms of Use.");
+    } finally {
+      setCurrentTerm({ termsId: "", title: "", description: "" });
+      setOpenDialog(false);
+      setIsLoading(false);
+    }
+  };
+
+  const handleEdit = (term) => {
+    setCurrentTerm(term);
+    setOpenDialog(true);
+  };
+
+  const handleDeleteClick = (termsId, title) => {
+    setCurrentTerm({ termsId, title });
+    setDeleteModalOpen(true);
+  };
+
+  const handleDelete = async (termsId, title) => {
+    try {
+      setIsLoading(true);
+      const response = await api.delete("/api/delete-terms", {
+        data: { termsId },
+      });
+      if (response.data?.success) {
+        setTerms((prev) => prev.filter((term) => term.termsId !== termsId));
+        toast.success(response.data.message);
+        addLog({
+          action: "DELETE",
+          description: `Terms of Use (${title}) has been deleted`,
+        });
+      } else {
+        toast.error(response.data.message || "Failed to delete Terms of Use.");
+      }
+    } catch (err) {
+      console.error("Error in handleDelete:", err.message);
+      toast.error("An error occurred while deleting the Terms of Use.");
+    } finally {
+      setDeleteModalOpen(false);
+      setCurrentTerm({ termsId: "", title: "", description: "" });
+      setIsLoading(false);
+      setDataUpdated(!dataUpdated);
+    }
+  };
+
+  const handleChange = (e) => {
+    setCurrentTerm((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
   useEffect(() => {
     const fetchTerms = async () => {
@@ -60,106 +159,6 @@ function TermsOfUse() {
     fetchTerms();
   }, [dataUpdated]);
 
-  const handleSave = async () => {
-    if (currentTerm.terms_id) {
-      setTerms((prev) =>
-        prev.map((term) =>
-          term.terms_id === currentTerm.terms_id ? currentTerm : term
-        )
-      );
-
-      try {
-        const response = await api.put("/api/edit-terms", {
-          termsId: currentTerm.terms_id,
-          userId: user.id,
-        });
-
-        addLog({
-          action: "UPDATE",
-          description: `Terms of Use (${currentTerm.title}) has been updated`,
-        });
-
-        if (response.data?.success) {
-          toast.success(response.data.message);
-        } else {
-          toast.error(
-            response.data.message || "Failed to update Terms of Use."
-          );
-        }
-
-        setDataUpdated(!dataUpdated);
-      } catch (err) {
-        console.error(err.message);
-      }
-    } else {
-      const newTerm = {
-        ...currentTerm,
-        user_id: user.id,
-      };
-
-      // Optimistically add to UI
-      setTerms((prev) => [newTerm, ...prev]);
-
-      try {
-        const response = await api.post("/api/add-terms", newTerm);
-
-        // Log creation
-        addLog({
-          action: "CREATE",
-          description: `New Terms of Use (${newTerm.title}) added`,
-        });
-
-        if (response.data?.success) {
-          toast.success(response.data.message);
-        } else {
-          toast.error(response.data.message || "Failed to save Terms of Use.");
-        }
-
-        setDataUpdated(!dataUpdated);
-      } catch (err) {
-        console.error(err.message);
-      }
-    }
-
-    setCurrentTerm({ terms_id: "", title: "", description: "" });
-    setOpenDialog(false);
-  };
-
-  const handleEdit = (term) => {
-    setCurrentTerm(term);
-    setOpenDialog(true);
-  };
-
-  const handleDeleteClick = (terms_id, title) => {
-    setCurrentTerm({ terms_id, title });
-    setDeleteModalOpen(true);
-  };
-
-  const handleDelete = async (terms_id, title) => {
-    try {
-      await api.post("/api/delete-terms", { terms_id });
-      setTerms((prev) => prev.filter((t) => t.terms_id !== terms_id));
-      toast.success("Terms of Use deleted successfully");
-
-      addLog({
-        action: "DELETE",
-        description: `Terms of Use (${title}) deleted`,
-      });
-
-      setDataUpdated(!dataUpdated);
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to delete Terms of Use.");
-    }
-  };
-
-  const handleChange = (e) => {
-    setCurrentTerm((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
   return (
     <>
       <div className="flex justify-end mb-2">
@@ -169,7 +168,7 @@ function TermsOfUse() {
           handleClick={() => {
             setOpenDialog(true);
             setCurrentTerm({
-              terms_id: "",
+              termsId: "",
               title: "",
               description: "",
             });
@@ -199,11 +198,6 @@ function TermsOfUse() {
               flex: 3,
               tooltipField: "description",
               headerClass: "text-primary font-bold bg-gray-100",
-              cellStyle: {
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "normal",
-              },
             },
             {
               headerName: "Date Created",
@@ -235,7 +229,7 @@ function TermsOfUse() {
                   <ActionButtons
                     icon={<TrashIcon className="size-5 cursor-pointer" />}
                     handleClick={() =>
-                      handleDeleteClick(params.data.terms_id, params.data.title)
+                      handleDeleteClick(params.data.termsId, params.data.title)
                     }
                   />
                 </div>
@@ -260,7 +254,7 @@ function TermsOfUse() {
 
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)} fullWidth>
         <DialogTitle>
-          {currentTerm.terms_id ? "Edit Terms" : "Add Terms"}
+          {currentTerm.termsId ? "Edit Terms" : "Add Terms"}
         </DialogTitle>
         <DialogContent>
           <div className="mb-4">
@@ -293,7 +287,7 @@ function TermsOfUse() {
           <button className="btn-light" onClick={() => setOpenDialog(false)}>
             Cancel
           </button>
-          <button className="btn-primary" onClick={handleSave}>
+          <button className="btn-primary" onClick={handleAddEditTerms}>
             Save
           </button>
         </DialogActions>
@@ -303,9 +297,9 @@ function TermsOfUse() {
         isOpen={deleteModalOpen}
         handleClose={() => {
           setDeleteModalOpen(false);
-          setCurrentTerm({ terms_id: "", title: "", description: "" });
+          setCurrentTerm({ termsId: "", title: "", description: "" });
         }}
-        onConfirm={() => handleDelete(currentTerm.terms_id, currentTerm.title)}
+        onConfirm={() => handleDelete(currentTerm.termsId, currentTerm.title)}
         message="Are you sure you want to delete this Terms of Use?"
       />
     </>
