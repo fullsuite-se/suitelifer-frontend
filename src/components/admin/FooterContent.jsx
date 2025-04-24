@@ -175,7 +175,7 @@ const FooterContent = () => {
               headerClass: "text-primary font-bold bg-gray-100",
             },
             {
-              headerName: "Created At",
+              headerName: "Date Created",
               field: "createdAt",
               flex: 2,
               headerClass: "text-primary font-bold bg-gray-100",
