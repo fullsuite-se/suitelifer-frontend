@@ -11,12 +11,14 @@ const AuditLogs = () => {
   const [logs, setLogs] = useState([]);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
+  const [search, setSearch] = useState("");
+  const [query, setQuery] = useState(""); // debounced or submitted query
   const limit = 10;
 
-  const fetchLogs = async (page) => {
+  const fetchLogs = async (page, query = "") => {
     try {
       const response = await api.get(
-        `/api/audit-logs?limit=${limit}&page=${page}`
+        `/api/audit-logs?limit=${limit}&page=${page}&search=${query}`
       );
       setLogs(response.data.logs);
       setTotal(response.data.total);
@@ -26,18 +28,52 @@ const AuditLogs = () => {
   };
 
   useEffect(() => {
-    fetchLogs(page);
-  }, [page]);
+    fetchLogs(page, query);
+  }, [page, query]);
 
   const totalPages = Math.ceil(total / limit);
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setPage(1); // reset to first page on new search
+    setQuery(search); // trigger useEffect
+  };
+
   return (
-    <section className="px-[15%] pb-40 pt-5 space-y-4">
+    <section className="px-[15%] pb-40 pt-5 space-y-6">
+      <form onSubmit={handleSearch} className="flex gap-4 items-center">
+        <input
+          type="text"
+          placeholder="Search logs..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="border border-none bg-primary/10 rounded px-4 py-2 w-full focus:outline-primary"
+        />
+        <button
+          type="submit"
+          className="cursor-pointer px-4 py-2 bg-primary text-white rounded hover:bg-primary-hovered focus:outline-primary-hovered"
+        >
+          Search
+        </button>
+        {query && (
+          <button
+            type="button"
+            onClick={() => {
+              setSearch("");
+              setQuery("");
+              setPage(1);
+            }}
+            className="cursor-pointer px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
+          >
+            Clear
+          </button>
+        )}
+      </form>
+
       {logs.map((log) => (
         <div
           key={log.logId}
-          className={`p-5 flex items-center gap-4 border border-gray-200
-        rounded-lg`}
+          className="p-5 flex items-center gap-4 border border-gray-200 rounded-lg"
         >
           <div>
             {log.action === "CREATE" && (
@@ -63,7 +99,7 @@ const AuditLogs = () => {
         <button
           onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
           disabled={page === 1}
-          className="px-4 py-2 cursor-pointer disabled:cursor-default disabled:hover:bg-gray-200 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+          className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:hover:bg-gray-200 disabled:opacity-50"
         >
           Previous
         </button>
@@ -71,7 +107,7 @@ const AuditLogs = () => {
         <button
           onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
           disabled={page === totalPages}
-          className="px-4 py-2 bg-primary text-white rounded hover:bg-primary-hovered cursor-pointer disabled:opacity-50 disabled:cursor-default disabled:hover:bg-primary"
+          className="px-4 py-2 bg-primary text-white rounded hover:bg-primary-hovered disabled:hover:bg-primary disabled:opacity-50"
         >
           Next
         </button>
