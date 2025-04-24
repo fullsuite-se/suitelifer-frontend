@@ -33,7 +33,7 @@ const EventCard = ({ event, isUpcoming }) => {
         <div className="flex items-start gap-3">
           <ClockIcon className="size-5 text-primary flex-shrink-0" />
           <p className="line-clamp-2 text-sm overflow-hidden font-avenir-black text-gray-400">
-            {format(event.dateStart, "dd MMM yyyy hh:mm:ss a")}
+            {format(event.dateStart, "MMM dd yyyy h:mm a")}
           </p>
         </div>
       </div>

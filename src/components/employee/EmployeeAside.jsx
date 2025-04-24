@@ -9,12 +9,13 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import EventCard from "../events/EventCard";
 import api from "../../utils/axios";
 import { format, parseISO, isValid } from "date-fns";
+import moment from "moment";
 
 const EmployeeAside = () => {
   const [events, setEvents] = useState([]);
   const [eventDates, setEventDates] = useState([]);
   const [todayEventCount, setTodayEventCount] = useState(0);
-  const [upcommingEventCount, setUpcomingEventCount] = useState(0);
+  const [upcomingEventCount, setUpcomingEventCount] = useState(0);
   const [showTodayEvent, setShowTodayEvent] = useState(
     JSON.parse(localStorage.getItem("showTodayEvent")) ?? true
   );
@@ -25,45 +26,82 @@ const EmployeeAside = () => {
 
   const toIso = (dateTime) => dateTime.replace(" ", "T") + "Z";
 
-useEffect(() => {
-  const fetchEvents = async () => {
+  const [todayEvents, setTodayEvents] = useState([]);
+
+  const fetchTodayEvents = async () => {
     try {
-      const response = await api.get("/api/events");
-      setEvents(response.data.events);
+      const today = moment().format("YYYY-MM-DD");
 
-      const dates = response.data.events.reduce((acc, current) => {
-        const dateRaw = current.dateStart;
+      console.log(today);
+      
 
-        if (typeof dateRaw === "string") {
-          const parsedDate = parseISO(dateRaw);
+      const response = await api.get(`/api/events/today?today=${today}`);
 
-          if (isValid(parsedDate)) {
-            const formattedDate = format(parsedDate, "yyyy-MM-dd");
-            acc.push(formattedDate);
-          } else {
-            console.warn("Invalid parsed date:", dateRaw);
-          }
-        } else {
-          console.warn("Missing or non-string date:", dateRaw);
-        }
+      console.log(response.data.todayEvents);
 
-        return acc;
-      }, []);
-
-      setEventDates(dates);
-
-      const today = new Date().toISOString().split("T")[0];
-      const todayCount = dates.filter((date) => date === today).length;
-      setTodayEventCount(todayCount);
-      const upcomingCount = dates.filter((date) => date > today).length;
-      setUpcomingEventCount(upcomingCount);
-    } catch (error) {
-      console.log("Error fetching events:", error);
+      setTodayEvents(response.data.todayEvents);
+    } catch (err) {
+      console.log("Error fetching today's events:", err);
     }
   };
 
-  fetchEvents();
-}, []);
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
+
+  const fetchUpcomingEvents = async () => {
+    try {
+      const today = moment().format("YYYY-MM-DD");
+
+      const response = await api.get("/api/events/upcoming", {
+        today,
+      });
+
+      setUpcomingEvents(response.data.upcomingEvents);
+    } catch (err) {
+      console.log("Error fetching upcoming events:", err);
+    }
+  };
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await api.get("/api/events");
+        setEvents(response.data.events);
+
+        const dates = response.data.events.reduce((acc, current) => {
+          const dateRaw = current.dateStart;
+
+          if (typeof dateRaw === "string") {
+            const parsedDate = parseISO(dateRaw);
+
+            if (isValid(parsedDate)) {
+              const formattedDate = format(parsedDate, "yyyy-MM-dd");
+              acc.push(formattedDate);
+            } else {
+              console.warn("Invalid parsed date:", dateRaw);
+            }
+          } else {
+            console.warn("Missing or non-string date:", dateRaw);
+          }
+
+          return acc;
+        }, []);
+
+        setEventDates(dates);
+
+        const today = new Date().toISOString().split("T")[0];
+        const todayCount = dates.filter((date) => date !== today).length;
+        setTodayEventCount(todayCount);
+        const upcomingCount = dates.filter((date) => date === today).length;
+        setUpcomingEventCount(upcomingCount);
+      } catch (error) {
+        console.log("Error fetching events:", error);
+      }
+    };
+
+    fetchEvents();
+    fetchTodayEvents();
+    fetchUpcomingEvents();
+  }, []);
 
   useEffect(() => {
     try {
@@ -104,23 +142,19 @@ useEffect(() => {
       <section className="mt-5">
         <div className="w-full">
           <div className="">
+            {/* Today's Events */}
             <Disclosure as="div" defaultOpen={showTodayEvent}>
               <DisclosureButton
                 className="group flex w-full items-center justify-between"
                 onClick={handleTodayDisclosureBtn}
               >
                 <p className="font-avenir-black text-primary">
-                  Today ({todayEventCount})
+                  Today ({todayEvents.length})
                 </p>
                 <ChevronDownIcon className="size-5 text-primary cursor-pointer group-data-[open]:rotate-180" />
               </DisclosureButton>
               <DisclosurePanel className="mt-3 flex flex-col gap-3">
-                {events
-                  .filter((event) => {
-                    const today = new Date().toISOString().split("T")[0];
-                    // const eventDate = new Date(event.date_time);
-                    return event.dateStart === today;
-                  })
+                {todayEvents
                   .map((event, index) => (
                     <div key={index}>
                       <EventCard event={event} />
@@ -128,36 +162,24 @@ useEffect(() => {
                   ))}
               </DisclosurePanel>
             </Disclosure>
+
+            {/* Upcoming Events */}
             <Disclosure as="div" defaultOpen={showUpcomingEvent}>
               <DisclosureButton
                 className="group my-3 flex w-full items-center justify-between"
                 onClick={handleUpcomingDisclosureBtn}
               >
                 <p className="font-avenir-black text-black">
-                  Upcoming ({upcommingEventCount})
+                  Upcoming ({upcomingEvents.length})
                 </p>
                 <ChevronDownIcon className="size-5 text-primary cursor-pointer group-data-[open]:rotate-180" />
               </DisclosureButton>
               <DisclosurePanel className="mt-3 flex flex-col gap-3">
-                {events
-                  .filter((event) => {
-                    const today = new Date().toISOString().split("T")[0]; // Get today's date (YYYY-MM-DD)
-                    // const eventDate = new Date(event.date_time);
-                    return event.dateStart >= today;
-                  })
-                  .map((event, index) => (
-                    <div key={index}>
-                      <EventCard
-                        event={event}
-                        isUpcoming={
-                          new Date(event.dateStart)
-                            .toISOString()
-                            .split("T")[0] >
-                          new Date()
-                        }
-                      />
-                    </div>
-                  ))}
+                {upcomingEvents.map((event, index) => (
+                  <div key={index}>
+                    <EventCard event={event} />
+                  </div>
+                ))}
               </DisclosurePanel>
             </Disclosure>
           </div>
