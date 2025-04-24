@@ -14,7 +14,7 @@ import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
 import api from "../../utils/axios";
 import toast from "react-hot-toast";
-
+import TermsOfUseEditor from "./TermsOfUseEditor";
 import { useStore } from "../../store/authStore";
 import { useAddAuditLog } from "../../components/admin/UseAddAuditLog";
 import ContentButtons from "../admin/ContentButtons";
@@ -198,7 +198,17 @@ function TermsOfUse() {
               flex: 3,
               tooltipField: "description",
               headerClass: "text-primary font-bold bg-gray-100",
+              cellRenderer: (params) => {
+                const htmlString = params.value || "";
+                return (
+                  <div
+                    className="whitespace-pre-line [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 h-full"
+                    dangerouslySetInnerHTML={{ __html: htmlString }}
+                  />
+                );
+              },
             },
+
             {
               headerName: "Date Created",
               field: "createdAt",
@@ -252,7 +262,7 @@ function TermsOfUse() {
         />
       </div>
 
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)} fullWidth>
+      {/* <Dialog open={openDialog} onClose={() => setOpenDialog(false)} fullWidth>
         <DialogTitle>
           {currentTerm.termsId ? "Edit Terms" : "Add Terms"}
         </DialogTitle>
@@ -289,6 +299,33 @@ function TermsOfUse() {
           </button>
           <button className="btn-primary" onClick={handleAddEditTerms}>
             Save
+          </button>
+        </DialogActions>
+      </Dialog> */}
+
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)} fullWidth>
+        <DialogTitle>
+          {currentTerm.termsId ? "Edit Terms" : "Add Terms"}
+        </DialogTitle>
+        <DialogContent>
+          <TermsOfUseEditor
+            title={currentTerm.title}
+            description={currentTerm.description}
+            handleTitleChange={(title) =>
+              setCurrentTerm((prev) => ({ ...prev, title }))
+            }
+            handleDescriptionChange={(description) =>
+              setCurrentTerm((prev) => ({ ...prev, description }))
+            }
+            handleSubmit={(e) => {
+              e.preventDefault();
+              handleAddEditTerms();
+            }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <button className="btn-light" onClick={() => setOpenDialog(false)}>
+            Cancel
           </button>
         </DialogActions>
       </Dialog>
