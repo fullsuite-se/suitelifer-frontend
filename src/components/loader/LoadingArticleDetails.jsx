@@ -25,21 +25,20 @@ const LoadingArticleDetails = () => {
         <div className="desktop-nav">
           <DesktopNav />
         </div>
-        <main className="px-[7%] pt-[10%] xl:pt-[8%] md:px-[5%] lg:px-[8%]">
+        <main className="px-[5%] md:px-[10%] lg:px-[15%] xl:px-[25%] lg:my-20 mb-20">
+          <div className="py-3"></div>
           <BackButton backPath={-1} />
+          <div className="py-3"></div>
           <div className="grid grid-cols-1 gap-10">
             {/* Main Article */}
             <div>
-              {/* Type */}
-              <Skeleton width={40} />
               {/* Title */}
-              <Skeleton width={"40%"} />
-
+              <Skeleton width={"90%"} height={40} className="mb-1" />
+              <Skeleton width={"50%"} height={40} />
+              <div className="py-1"></div>
               {/* Author | Readtime */}
-              <Skeleton width={"40%"} height={12} />
+              <Skeleton width={"30%"} height={12} />
 
-              {/* Full date */}
-              <Skeleton width={20} />
               <div className="py-5"></div>
               {/* Image Carousel */}
               <Skeleton className="h-[30vh]" />
