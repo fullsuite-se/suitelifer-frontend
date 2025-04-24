@@ -17,7 +17,7 @@ import {
   FaceSmileIcon,
   UsersIcon,
   ArrowDownOnSquareIcon,
-  TableCellsIcon
+  TableCellsIcon,
 } from "@heroicons/react/20/solid";
 import {
   Disclosure,
@@ -36,7 +36,7 @@ const regularFeatures = [
     icon: ArrowPathRoundedSquareIcon,
   },
   { feature_name: "Events", path: "company-events", icon: CalendarIcon },
-  { feature_name: "Workshops", path: "workshops", icon: WrenchScrewdriverIcon },
+  { feature_name: "Courses", path: "courses", icon: BookOpenIcon },
   {
     feature_name: "Personality Test",
     path: "personality-test",
