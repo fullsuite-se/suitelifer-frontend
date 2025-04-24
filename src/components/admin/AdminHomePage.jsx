@@ -1,13 +1,14 @@
-import { useState, useEffect } from "react";
+import React from "react";
+import { useState, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
-import {BookmarkSquareIcon } from "@heroicons/react/24/outline";
+import { BookmarkSquareIcon } from "@heroicons/react/24/outline";
 import ContentButtons from "./ContentButtons";
 import api from "../../utils/axios";
 import { useStore } from "../../store/authStore";
 import atsAPI from "../../utils/atsAPI";
 import Information from "./Information";
 import { useAddAuditLog } from "../../components/admin/UseAddAuditLog";
-
+import { XMarkIcon } from "@heroicons/react/24/solid";
 
 const AdminHomePage = () => {
   // USER DETAILS
@@ -15,6 +16,9 @@ const AdminHomePage = () => {
 
   //AUDIT LOG
   const addLog = useAddAuditLog();
+
+  //REF
+  const fileInputRefs = useRef({});
 
   // HOME DETAILS
   const [homeDetails, setHomeDetails] = useState({
@@ -92,6 +96,7 @@ const AdminHomePage = () => {
     setIndustries(response.data.data);
   };
 
+  //Industry Images
   const [industryImages, setIndustryImages] = useState({});
 
   const convertToCamelCase = (name) => {
@@ -153,7 +158,7 @@ const AdminHomePage = () => {
             className="mb-2 block w-fit text-sm text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer file:cursor-pointer"
             type="file"
             name="getInTouchImage"
-            accept=".jpeg,.jpg,.png,.heic"
+            accept=".jpeg,.jpg,.png,.heic,.webp"
             onChange={(e) => setImageFile(e.target.files[0])}
           />
 
@@ -168,7 +173,7 @@ const AdminHomePage = () => {
           />
           <Information
             type={"info"}
-            text={"Accepted formats: .jpeg, .jpg, .png, .heic"}
+            text={"Accepted formats: .jpeg, .jpg, .png, .heic, .webp"}
           />
           {/* REMINDERS END */}
 
@@ -219,33 +224,80 @@ const AdminHomePage = () => {
         />
         <Information
           type={"info"}
-          text={"Accepted formats: .jpeg, .jpg, .png, .heic"}
+          text={"Accepted formats: .jpeg, .jpg, .png, .webp"}
         />
       </div>
       <div className="flex flex-col md:flex-row gap-4 p-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1">
           {industries.map(({ industryName, industryId, imageUrl }, index) => {
             const nameVariable = convertToCamelCase(industryName);
+            const previewFile = industryImages[nameVariable];
+
+            // Initialize ref if it doesn't exist
+            if (!fileInputRefs.current[industryId]) {
+              fileInputRefs.current[industryId] = React.createRef();
+            }
+
+            const handleRemoveImage = () => {
+              setIndustryImages((prev) => {
+                const newImages = { ...prev };
+                delete newImages[nameVariable];
+                return newImages;
+              });
+
+              // Clear the input value
+              const ref = fileInputRefs.current[industryId];
+              if (ref?.current) {
+                ref.current.value = "";
+              }
+            };
 
             return (
               <div className="flex flex-col gap-2 py-3" key={index}>
                 <label
                   htmlFor={nameVariable}
-                  className="text-sm font-medium text-gray-700"
+                  className="text-lg font-medium text-gray-700 font-avenir-black"
                 >
                   {industryName}
                 </label>
 
-                <div className={`flex gap-2 ${imageUrl && "flex-col"}`}>
-                  {imageUrl && (
-                    <img
-                      src={imageUrl}
-                      className="w-[50%] min-h-50"
-                      alt={industryName}
-                    />
+                <div
+                  className={`flex gap-2 ${
+                    imageUrl || previewFile ? "flex-col" : ""
+                  }`}
+                >
+                  {previewFile ? (
+                    <div className="relative w-[50%] group overflow-hidden cursor-pointer">
+                      <img
+                        src={URL.createObjectURL(previewFile)}
+                        className=" aspect-[100/101] object-cover rounded-xl cursor-pointer"
+                        alt={`${industryName} Preview`}
+                        title="Click to remove"
+                        onClick={handleRemoveImage}
+                      />
+                      <div className="pointer-events-none absolute inset-0 bg-black/60 text-white text-center items-center justify-center hidden group-hover:flex transition duration-300 rounded-2xl">
+                        <div className="flex flex-col gap-2 justify-center px-4">
+                          <div className="flex justify-center">
+                            <XMarkIcon className="size-5" />
+                          </div>
+                          <span className="">Remove this image?</span>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    imageUrl && (
+                      <img
+                        src={imageUrl}
+                        className="w-[50%] aspect-[100/101] object-cover rounded-xl"
+                        alt={industryName}
+                      />
+                    )
                   )}
+
                   <input
                     type="file"
+                    accept=".jpeg,.jpg,.png,.heic,.webp"
+                    ref={fileInputRefs.current[industryId]}
                     name={nameVariable}
                     id={industryId}
                     onChange={(e) =>
