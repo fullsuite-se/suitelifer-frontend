@@ -67,7 +67,6 @@ const SpotifyEpisodes = () => {
 
   const closeModal = () => {
     setOpenModal(false);
-    setEpisodeDetails(defaultEpisodeDetails);
   };
 
   const handleAddEditEpisode = async (e) => {
