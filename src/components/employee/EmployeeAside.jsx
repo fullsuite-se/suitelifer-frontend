@@ -31,13 +31,8 @@ const EmployeeAside = () => {
   const fetchTodayEvents = async () => {
     try {
       const today = moment().format("YYYY-MM-DD");
-
-      console.log(today);
-      
-
+   
       const response = await api.get(`/api/events/today?today=${today}`);
-
-      console.log(response.data.todayEvents);
 
       setTodayEvents(response.data.todayEvents);
     } catch (err) {
@@ -68,7 +63,7 @@ const EmployeeAside = () => {
         setEvents(response.data.events);
 
         const dates = response.data.events.reduce((acc, current) => {
-          const dateRaw = current.dateStart;
+          const dateRaw = current.start;
 
           if (typeof dateRaw === "string") {
             const parsedDate = parseISO(dateRaw);
