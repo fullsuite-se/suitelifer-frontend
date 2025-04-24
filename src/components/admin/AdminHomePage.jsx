@@ -231,7 +231,7 @@ const AdminHomePage = () => {
               <div className="flex flex-col gap-2 py-3" key={index}>
                 <label
                   htmlFor={nameVariable}
-                  className="text-sm font-medium text-gray-700"
+                  className="text-lg font-medium text-gray-700 font-avenir-black"
                 >
                   {industryName}
                 </label>
@@ -240,7 +240,7 @@ const AdminHomePage = () => {
                   {imageUrl && (
                     <img
                       src={imageUrl}
-                      className="w-[50%] min-h-50"
+                      className="w-[50%] aspect-[100/101] object-cover rounded-xl"
                       alt={industryName}
                     />
                   )}
