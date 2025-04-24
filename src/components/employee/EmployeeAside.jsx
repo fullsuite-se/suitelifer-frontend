@@ -8,60 +8,72 @@ import {
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import EventCard from "../events/EventCard";
 import api from "../../utils/axios";
-import { format } from "date-fns";
+import { format, parseISO, isValid } from "date-fns";
 
 const EmployeeAside = () => {
   const [events, setEvents] = useState([]);
   const [eventDates, setEventDates] = useState([]);
   const [todayEventCount, setTodayEventCount] = useState(0);
-  const [upcommingEventCount, setUpcommingEventCount] = useState(0);
+  const [upcommingEventCount, setUpcomingEventCount] = useState(0);
   const [showTodayEvent, setShowTodayEvent] = useState(
     JSON.parse(localStorage.getItem("showTodayEvent")) ?? true
   );
-  const [showUpcommingEvent, setShowUpcommingEvent] = useState(
-    JSON.parse(localStorage.getItem("showUpcommingEvent")) ?? false
+  const [showUpcomingEvent, setShowUpcomingEvent] = useState(
+    JSON.parse(localStorage.getItem("showUpcomingEvent")) ?? false
   );
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await api.get("/api/all-events");
-        setEvents(response.data);
+  const toIso = (dateTime) => dateTime.replace(" ", "T") + "Z";
 
-        const dates = response.data.reduce((acc, current) => {
-          const formattedDate = format(
-            new Date(current.date_time),
-            "yyyy-MM-dd"
-          );
-          acc.push(formattedDate);
-          return acc;
-        }, []);
+useEffect(() => {
+  const fetchEvents = async () => {
+    try {
+      const response = await api.get("/api/events");
+      setEvents(response.data.events);
 
-        setEventDates(dates);
+      const dates = response.data.events.reduce((acc, current) => {
+        const dateRaw = current.dateStart;
 
-        const today = new Date().toISOString().split("T")[0];
-        const todayCount = dates.filter((date) => date === today).length;
-        setTodayEventCount(todayCount);
-        const upcomingCount = dates.filter((date) => date > today).length;
-        setUpcommingEventCount(upcomingCount);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+        if (typeof dateRaw === "string") {
+          const parsedDate = parseISO(dateRaw);
 
-    fetchEvents();
-  }, []);
+          if (isValid(parsedDate)) {
+            const formattedDate = format(parsedDate, "yyyy-MM-dd");
+            acc.push(formattedDate);
+          } else {
+            console.warn("Invalid parsed date:", dateRaw);
+          }
+        } else {
+          console.warn("Missing or non-string date:", dateRaw);
+        }
+
+        return acc;
+      }, []);
+
+      setEventDates(dates);
+
+      const today = new Date().toISOString().split("T")[0];
+      const todayCount = dates.filter((date) => date === today).length;
+      setTodayEventCount(todayCount);
+      const upcomingCount = dates.filter((date) => date > today).length;
+      setUpcomingEventCount(upcomingCount);
+    } catch (error) {
+      console.log("Error fetching events:", error);
+    }
+  };
+
+  fetchEvents();
+}, []);
 
   useEffect(() => {
     try {
       setLoading(true);
       const showToday =
         JSON.parse(localStorage.getItem("showTodayEvent")) ?? true;
-      const showUpcomming =
-        JSON.parse(localStorage.getItem("showUpcommingEvent")) ?? false;
+      const showUpcoming =
+        JSON.parse(localStorage.getItem("showUpcomingEvent")) ?? false;
       setShowTodayEvent(showToday);
-      setShowUpcommingEvent(showUpcomming);
+      setShowUpcomingEvent(showUpcoming);
     } catch (error) {
       console.error(error);
     } finally {
@@ -75,10 +87,10 @@ const EmployeeAside = () => {
     setShowTodayEvent(updatedShowToday);
   };
 
-  const handleUpcommingDisclosureBtn = () => {
-    const updatedShowUpcomming = !showUpcommingEvent;
-    localStorage.setItem("showUpcommingEvent", updatedShowUpcomming);
-    setShowUpcommingEvent(updatedShowUpcomming);
+  const handleUpcomingDisclosureBtn = () => {
+    const updatedShowUpcoming = !showUpcomingEvent;
+    localStorage.setItem("showUpcomingEvent", updatedShowUpcoming);
+    setShowUpcomingEvent(updatedShowUpcoming);
   };
 
   if (loading) return null;
@@ -106,10 +118,8 @@ const EmployeeAside = () => {
                 {events
                   .filter((event) => {
                     const today = new Date().toISOString().split("T")[0];
-                    const eventDate = new Date(event.date_time)
-                      .toISOString()
-                      .split("T")[0];
-                    return eventDate === today;
+                    // const eventDate = new Date(event.date_time);
+                    return event.dateStart === today;
                   })
                   .map((event, index) => (
                     <div key={index}>
@@ -118,10 +128,10 @@ const EmployeeAside = () => {
                   ))}
               </DisclosurePanel>
             </Disclosure>
-            <Disclosure as="div" defaultOpen={showUpcommingEvent}>
+            <Disclosure as="div" defaultOpen={showUpcomingEvent}>
               <DisclosureButton
                 className="group my-3 flex w-full items-center justify-between"
-                onClick={handleUpcommingDisclosureBtn}
+                onClick={handleUpcomingDisclosureBtn}
               >
                 <p className="font-avenir-black text-black">
                   Upcoming ({upcommingEventCount})
@@ -132,41 +142,18 @@ const EmployeeAside = () => {
                 {events
                   .filter((event) => {
                     const today = new Date().toISOString().split("T")[0]; // Get today's date (YYYY-MM-DD)
-                    const eventDate = new Date(event.date_time)
-                      .toISOString()
-                      .split("T")[0];
-                    return eventDate >= today;
+                    // const eventDate = new Date(event.date_time);
+                    return event.dateStart >= today;
                   })
                   .map((event, index) => (
                     <div key={index}>
                       <EventCard
                         event={event}
                         isUpcoming={
-                          new Date(event.date_time)
+                          new Date(event.dateStart)
                             .toISOString()
                             .split("T")[0] >
-                          new Date().toISOString().split("T")[0]
-                        }
-                      />
-                    </div>
-                  ))}
-                {events
-                  .filter((event) => {
-                    const today = new Date().toISOString().split("T")[0]; // Get today's date (YYYY-MM-DD)
-                    const eventDate = new Date(event.date_time)
-                      .toISOString()
-                      .split("T")[0];
-                    return eventDate >= today;
-                  })
-                  .map((event, index) => (
-                    <div key={index}>
-                      <EventCard
-                        event={event}
-                        isUpcoming={
-                          new Date(event.date_time)
-                            .toISOString()
-                            .split("T")[0] >
-                          new Date().toISOString().split("T")[0]
+                          new Date()
                         }
                       />
                     </div>
