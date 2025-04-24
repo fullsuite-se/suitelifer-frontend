@@ -5,14 +5,16 @@ import DesktopNav from "../../components/home/DesktopNav";
 import GuestIndustryTags from "../../components/careers/GuestIndustriesTags";
 import BackToTop from "../../components/buttons/BackToTop";
 import BackButton from "../../components/buttons/BackButton";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { toSlug } from "../../utils/slugUrl";
 import OnLoadLayoutAnimation from "../../components/layout/OnLoadLayoutAnimation";
 import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
 import atsAPI from "../../utils/atsAPI";
+import PageMeta from "../../components/layout/PageMeta";
 
 const CareersAll = () => {
   const [jobs, setJobs] = useState([]);
+  const location = useLocation();
   const fetchJobs = async () => {
     try {
       const response = await atsAPI.get("/jobs/shown");
@@ -60,6 +62,12 @@ const CareersAll = () => {
 
   return (
     <>
+      <PageMeta
+        title="All Jobs - Suitelifer"
+        desc="Explore all available job opportunities at Suitelifer. Find the role that suits you and take the next step in your career."
+        isDefer={false}
+        url={location.pathname}
+      />
       <section
         className="gap-4"
         style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
