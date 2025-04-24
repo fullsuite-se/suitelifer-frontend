@@ -198,11 +198,6 @@ function TermsOfUse() {
               flex: 3,
               tooltipField: "description",
               headerClass: "text-primary font-bold bg-gray-100",
-              cellStyle: {
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "normal",
-              },
             },
             {
               headerName: "Date Created",

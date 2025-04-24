@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import termsOfUseimg from "../../assets/images/terms-of-use.jpg";
@@ -73,24 +72,18 @@ const TermsOfUseContent = () => {
               </li>
             ))}
           </ul>
-       
         </div>
       </div>
 
       <div className="md:w-3/4 md:mr-5 lg:w-4/5 lg:mr-15">
+        <div className="flex items-center gap-3">
+          <img src={termsOfUseimg} alt="terms-of-use" className="w-30 h-30" />
+          <p className="-ml-9 text-3xl md:text-3xl lg:text-5xl font-avenir-black leading-none">
+            Terms of<span className="text-primary"> Use</span>
+          </p>
+        </div>
 
-      <div className="flex items-center gap-3">
-                <img
-                  src={termsOfUseimg}
-                  alt="terms-of-use"
-                  className="w-30 h-30"
-                />
-                <p className="-ml-9 text-3xl md:text-3xl lg:text-5xl font-avenir-black leading-none">
-                  Terms of<span className="text-primary"> Use</span>
-                </p>
-              </div>
-      
-              <br />
+        <br />
         <div>
           <p className="text-gray-500 text-sm">
             Last Updated on March 03, 2023
@@ -211,8 +204,6 @@ const TermsOfUseContent = () => {
             .
           </p>
         </section>
-
-        
       </div>
     </div>
   );
