@@ -31,7 +31,8 @@ const ArticleViewDesign = ({
         <span className={`text-gray-400`}>&nbsp;&nbsp;{datePublished}</span>
       </p>
       <div className={`${lineclamp} mobile-clamper text-body text-justify text-gray-500`}>
-        <article>{article}</article>
+        
+      <article dangerouslySetInnerHTML={{ __html: article }} />
       </div>
     </section>
   );

@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import useIsMobile from "../../utils/useIsMobile";
 
-const Testimonials = () => {
+const Testimonials = () => { 
   const [testimonials, setTestimonials] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 

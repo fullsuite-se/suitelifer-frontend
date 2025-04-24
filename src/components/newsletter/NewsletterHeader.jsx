@@ -1,10 +1,22 @@
-const NewsletterHeader = ({year=new Date().toISOString()}) => {
-  function formatToMonthYear(isoString) {
-    const date = new Date(isoString);
-    return date.toLocaleString('en-US', { month: 'long', year: 'numeric' });
-  }
+const NewsletterHeader = ({month, year}) => {
 
-  const formattedDate = formatToMonthYear(year);
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  function getMonthName(monthNumber) {
+    return months[monthNumber - 1];
+  }
 
   return (
     <header className="flex flex-col">
@@ -24,9 +36,10 @@ const NewsletterHeader = ({year=new Date().toISOString()}) => {
             <div className="size-[1.3vh] bg-primary rounded-full"></div>
             <div className="w-[2ch] lg:w-[5vh] h-[0.25vh] bg-primary"></div>
           </div>
-          <p className="whitespace-nowrap flex-shrink-0 px-2 caption text-primary">
-            {formattedDate}, issue
-          </p>
+
+         { month && year ?  <p className="whitespace-nowrap flex-shrink-0 px-2 caption text-primary">
+            {getMonthName(month)} {year} issue
+          </p> : <></>}
           <div className="w-full h-[0.25vh] bg-primary"></div>
           <p className="whitespace-nowrap flex-shrink-0 px-2 caption text-gray-500">
             Fresh and Bright, Your Monthly Insight!

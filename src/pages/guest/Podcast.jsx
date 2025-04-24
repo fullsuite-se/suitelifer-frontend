@@ -128,7 +128,7 @@ const Podcast = () => {
                 left: 0,
               }}
             ></div>
-            <AnimatedText text="suite" color="white" />
+            <AnimatedText text="the suite" color="white" />
           </div>
           <AnimatedText text="spot" color="black" />
         </div>

@@ -389,7 +389,7 @@ function Testimonials() {
                 ? "Edit Testimonial"
                 : "Add Testimonial"}
             </DialogTitle>
-            <DialogContent>
+            <DialogContent> 
               <form
                 onSubmit={(e) => handleAddEditTestimonial(e)}
                 encType="multipart/form-data"

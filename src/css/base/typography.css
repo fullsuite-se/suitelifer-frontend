@@ -54,3 +54,8 @@
   font-family: "SansitaSwashed-SemiBold";
   src: url("/fonts/sansita/SansitaSwashed-SemiBold.ttf");
 }
+
+@font-face {
+  font-family: "Casablanca";
+  src: url("/fonts/casablanca/Casablanca.ttf");
+}
