@@ -70,6 +70,7 @@ function App() {
           <Route path="/verify-account" element={<VerifyAccount />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/careers" element={<Careers />} />
+          <Route path="/careers/:slug" element={<CareersJobDetails />} />
           <Route path="/careers-all" element={<CareersAll />} />
           <Route
             path="careers/application-form/:id/:jobPosition"
@@ -79,7 +80,6 @@ function App() {
             path="/congrats-application-form"
             element={<CongratsApplicationForm />}
           />
-          <Route path="/careers/:slug" element={<CareersJobDetails />} />
           <Route path="/newsletter" element={<Newsletter />} />
           <Route path="/newsletter/:slug" element={<NewsletterDetails />} />
           <Route path="/contact" element={<Contact />} />
