@@ -23,11 +23,15 @@ import {
 import LoadingAnimation from "../loader/Loading";
 import ConfirmationDialog from "./ConfirmationDialog";
 import ActionButtons from "../buttons/ActionButtons";
+import { useAddAuditLog } from "../../components/admin/UseAddAuditLog";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 function AdminPersonalityTest() {
   const [isComingSoon, setComingSoon] = useState(false);
+
+  //AUDIT LOG
+  const addLog = useAddAuditLog();
 
   // USER DETAILS
   const user = useStore((state) => state.user);
@@ -77,6 +81,12 @@ function AdminPersonalityTest() {
           userId: user.id,
         });
 
+        //Log
+        addLog({
+          action: "CREATE",
+          description: `Personality Test (${personalityTestDetails.testTitle}) has been added`,
+        });
+
         toast.success(response.data.message);
         setPersonalityTests((pt) => [...pt, personalityTestDetails]);
       } else {
@@ -84,6 +94,12 @@ function AdminPersonalityTest() {
         const response = await api.put("/api/personality-test", {
           ...personalityTestDetails,
           userId: user.id,
+        });
+
+        //Log
+        addLog({
+          action: "UPDATE",
+          description: `Personality Test (${personalityTestDetails.testTitle}) has been updated`,
         });
 
         toast.success(response.data.message);
@@ -116,8 +132,8 @@ function AdminPersonalityTest() {
     setOpenDialog(true);
   };
 
-  const handleDeleteClick = (testId) => {
-    setPTDetails((ptd) => ({ ...ptd, testId }));
+  const handleDeleteClick = (test) => {
+    setPTDetails(test);
     setDeleteModalIsOpen(true);
   };
 
@@ -128,6 +144,12 @@ function AdminPersonalityTest() {
         data: {
           testId: personalityTestDetails.testId,
         },
+      });
+
+      //Log
+      addLog({
+        action: "DELETE",
+        description: `Personality Test (${personalityTestDetails.testTitle}) has been deleted`,
       });
 
       toast.success(response.data.message);
@@ -236,7 +258,7 @@ function AdminPersonalityTest() {
                       <ActionButtons
                         icon={<TrashIcon className="size-5" />}
                         handleClick={() =>
-                          handleDeleteClick(params.data.testId)
+                          handleDeleteClick(params.data)
                         }
                       />
                     </div>
