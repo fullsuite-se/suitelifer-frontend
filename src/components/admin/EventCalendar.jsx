@@ -12,14 +12,14 @@ const EventCalendar = ({ events, onSelectSlot, onSelectEvent }) => {
   const CustomToolbar = ({ label, onNavigate, onView }) => (
     <>
       {/* Navigation Controls */}
-      <div className="flex w-full flex-wrap justify-between items-center gap-2">
+      <div className="flex w-full flex-wrap justify-center items-center gap-2">
  
-        <button
+        {/* <button
           className="btn-light p-2 flex w-full md:w-auto text-center justify-center"
           onClick={() => onNavigate("TODAY")}
         >
           Today
-        </button>
+        </button> */}
 
         <div className="flex w-full md:w-auto items-center justify-center gap-2">
 
@@ -42,7 +42,7 @@ const EventCalendar = ({ events, onSelectSlot, onSelectEvent }) => {
           </button>
         </div>
 
-        <select
+        {/* <select
           className="btn-light w-full md:w-auto text-center"
           value={view}
           onChange={(e) => {
@@ -55,7 +55,7 @@ const EventCalendar = ({ events, onSelectSlot, onSelectEvent }) => {
           <option value={Views.WEEK}>Week</option>
           <option value={Views.DAY}>Day</option>
           <option value={Views.AGENDA}>Agenda</option>
-        </select>
+        </select> */}
       </div>
     </>
   );
