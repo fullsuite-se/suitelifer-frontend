@@ -10,80 +10,133 @@ import {
   DialogActions,
 } from "@mui/material";
 import moment from "moment";
-import EventCalendar from "./../../components/admin/EventCalendar";
+import EventCalendar from "../../components/admin/EventCalendar";
 import ContentButtons from "../../components/admin/ContentButtons";
 import ComingSoon from "./ComingSoon";
-import { EyeIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import api from "../../utils/axios";
+import { useStore } from "../../store/authStore";
+import toast from "react-hot-toast";
 
 const AdminEvents = () => {
-  const [isComingSoon, setComingSoon] = useState(true); //Change false if page is ready
+  const user = useStore((state) => state.user);
 
+  const [isComingSoon, setComingSoon] = useState(false); // Set to true if still in development
   const [openDialog, setOpenDialog] = useState(false);
+
   const [events, setEvents] = useState([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEventDetailsModalOpen, setIsEventDetailsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
 
-  const [newEvent, setNewEvent] = useState({
+  const defaultEventDetails = {
+    eventId: null,
     title: "",
     start: new Date(),
-    end: new Date(new Date().setDate(new Date().getDate() + 1)),
+    end: new Date(new Date().getTime() + 60 * 60 * 1000),
     description: "",
-  });
+  };
+
+  const [eventDetails, setEventDetails] = useState(defaultEventDetails);
+
+  const handleEventChange = (e, isDate) => {
+    setEventDetails((ne) => ({
+      ...ne,
+      [e.target.name]: isDate ? new Date(e.target.value) : e.target.value,
+    }));
+  };
+
+  const [dataUpdated, setDataUpdated] = useState(false);
+
+  const fetchEvents = async () => {
+    try {
+      const response = await api.get("/api/events");
+
+      setEvents(response.data.events);
+    } catch (err) {
+      console.error("Failed to fetch events:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchEvents();
+  }, [dataUpdated]);
 
   const handleSelectSlot = ({ start }) => {
-    if (
-      new Date(start).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0)
-    ) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const selected = new Date(start);
+    selected.setHours(0, 0, 0, 0);
+
+    if (selected < today) {
       setOpenDialog(true);
       return;
     }
-    setIsEditing(false);
-    setNewEvent({
+
+    const eventStart = new Date(start);
+    const eventEnd = new Date(eventStart.getTime() + 60 * 60 * 1000);
+
+    setEventDetails({
       title: "",
-      start,
-      end: new Date(start.getTime() + 60 * 60 * 1000),
+      start: eventStart,
+      end: eventEnd,
       description: "",
     });
     setIsAddModalOpen(true);
   };
 
-  const handleAddEvent = () => {
-    if (isEditing) {
-      setEvents((prevEvents) =>
-        prevEvents.map((event) =>
-          event.start === selectedEvent.start ? newEvent : event
-        )
+  const handleAddEditEvent = async () => {
+    try {
+      if (!eventDetails.eventId) {
+        const response = await api.post("/api/events/", {
+          ...eventDetails,
+          userId: user.id,
+        });
+
+        if (response.data.success) {
+          toast.success(response.data.message);
+        }
+      } else {
+        const response = await api.put(`/api/events/${selectedEvent.id}`, {
+          ...eventDetails,
+          userId: user.id,
+        });
+
+        if (response.data.success) {
+          toast.success(response.data.message);
+        }
+      }
+
+      setDataUpdated(!dataUpdated);
+    } catch (error) {
+      toast.error(
+        `Encountered a problem while ${
+          eventDetails.eventId ? "updating" : "adding"
+        } the event.`
       );
-      setIsEditing(false);
-    } else {
-      setEvents([...events, newEvent]);
+      console.error("Error saving event:", error);
+    } finally {
+      setIsAddModalOpen(false);
+      setEventDetails(defaultEventDetails);
     }
-    setIsAddModalOpen(false);
-    setNewEvent({
-      title: "",
-      start: new Date(),
-      end: new Date(new Date().setDate(new Date().getDate() + 1)),
-      description: "",
-    });
   };
 
   const handleEventClick = (event) => {
+    setEventDetails(event);
     setSelectedEvent(event);
     setIsEventDetailsModalOpen(true);
   };
 
   const handleEditEvent = () => {
-    setNewEvent(selectedEvent);
+    setEventDetails(selectedEvent);
     setIsEditing(true);
     setIsEventDetailsModalOpen(false);
     setIsAddModalOpen(true);
   };
-  
-  if(isComingSoon){
-    return <ComingSoon/>
-  }
+
+  if (isComingSoon) return <ComingSoon />;
 
   return (
     <div className="bg-white p-2">
@@ -91,7 +144,16 @@ const AdminEvents = () => {
         <ContentButtons
           icon={<PlusCircleIcon className="size-5" />}
           text="Add Event"
-          handleClick={setIsAddModalOpen}
+          handleClick={() => {
+            setEventDetails({
+              title: "",
+              start: new Date(),
+              end: new Date(new Date().getTime() + 60 * 60 * 1000),
+              description: "",
+            });
+            setIsEditing(false);
+            setIsAddModalOpen(true);
+          }}
         />
       </div>
 
@@ -124,11 +186,11 @@ const AdminEvents = () => {
         </div>
       </div>
 
-      {/* Invalid Date Selection Dialog */}
+      {/* Invalid Date Dialog */}
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Invalid Date Selection</DialogTitle>
         <DialogContent>
-          You can only add events from today onwards.
+          You can only add events from today onward.
         </DialogContent>
         <DialogActions>
           <button onClick={() => setOpenDialog(false)} className="btn-primary">
@@ -137,7 +199,7 @@ const AdminEvents = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Add/Edit Event Modal */}
+      {/* Add/Edit Modal */}
       <Modal open={isAddModalOpen} onClose={() => setIsAddModalOpen(false)}>
         <Box
           sx={{
@@ -158,49 +220,50 @@ const AdminEvents = () => {
           <TextField
             fullWidth
             label="Title"
-            value={newEvent.title}
-            onChange={(e) =>
-              setNewEvent({ ...newEvent, title: e.target.value })
-            }
+            required
+            name="title"
+            value={eventDetails.title}
+            onChange={(e) => handleEventChange(e, false)}
             margin="normal"
           />
           <TextField
             fullWidth
+            required
             label="Start Date"
             type="datetime-local"
-            value={moment(newEvent.start).format("YYYY-MM-DDTHH:mm")}
-            onChange={(e) =>
-              setNewEvent({ ...newEvent, start: new Date(e.target.value) })
-            }
+            value={moment(eventDetails.start).format("YYYY-MM-DDTHH:mm")}
+            name="start"
+            onChange={(e) => handleEventChange(e, true)}
             margin="normal"
           />
           <TextField
             fullWidth
             label="End Date"
             type="datetime-local"
-            value={moment(newEvent.end).format("YYYY-MM-DDTHH:mm")}
-            onChange={(e) =>
-              setNewEvent({ ...newEvent, end: new Date(e.target.value) })
-            }
+            value={moment(eventDetails.end).format("YYYY-MM-DDTHH:mm")}
+            name="end"
+            onChange={(e) => handleEventChange(e, true)}
             margin="normal"
           />
           <TextField
             fullWidth
             label="Description"
-            value={newEvent.description}
-            onChange={(e) =>
-              setNewEvent({ ...newEvent, description: e.target.value })
-            }
+            value={eventDetails.description}
+            name="description"
+            onChange={(e) => handleEventChange(e, false)}
             margin="normal"
           />
-          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1 }}>
             <button
-              onClick={() => setIsAddModalOpen(false)}
+              onClick={() => {
+                setIsAddModalOpen(false);
+                setEventDetails(defaultEventDetails);
+              }}
               className="btn-light"
             >
               Cancel
             </button>
-            <button onClick={handleAddEvent} className="btn-primary">
+            <button onClick={handleAddEditEvent} className="btn-primary">
               {isEditing ? "Update Event" : "Add Event"}
             </button>
           </Box>
@@ -228,12 +291,7 @@ const AdminEvents = () => {
           {selectedEvent && (
             <>
               <div className="flex flex-col gap-y-4 items-start">
-                <Typography
-                  variant="h5"
-                  align="center"
-                  fontWeight="bold"
-                  color="#0097b2"
-                >
+                <Typography variant="h5" className="text-primary font-bold">
                   {selectedEvent.title}
                 </Typography>
                 <Typography>
@@ -249,15 +307,21 @@ const AdminEvents = () => {
                   {selectedEvent.description || "No description"}
                 </Typography>
               </div>
-
-              <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  mt: 2,
+                  gap: 1,
+                }}
+              >
                 <button
                   onClick={() => setIsEventDetailsModalOpen(false)}
                   className="btn-light"
                 >
                   Close
                 </button>
-                <button onClick={handleEditEvent} className="btn-primary mr-2">
+                <button onClick={handleEditEvent} className="btn-primary">
                   Edit
                 </button>
               </Box>
