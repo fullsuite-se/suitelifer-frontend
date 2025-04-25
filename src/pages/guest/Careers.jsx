@@ -15,7 +15,6 @@ import atsAPI from "../../utils/atsAPI";
 import api from "../../utils/axios";
 import MotionUp from "../../components/animated/MotionUp";
 import useHeroImagesStore from "../../store/stores/heroImagesStore";
-import { Helmet } from "react-helmet-async";
 
 const Careers = () => {
   const { heroImages, isHeroLoading, setHeroImages, setIsHeroLoading } =
@@ -102,40 +101,12 @@ const Careers = () => {
         className="gap-4 overflow-hidden"
         style={{ maxWidth: "2000px", margin: "0 auto", padding: "0 0rem" }}
       >
-        <Helmet>
-          <title>Careers - Suitelifer</title>
-          <meta
-            name="description"
-            content="Your career journey has to start somewhere. Grab the opportunity, start it with us."
-          />
-
-          <meta property="og:title" content="Careers - Suitelifer" />
-          <meta
-            property="og:description"
-            content="Your career journey has to start somewhere. Grab the opportunity, start it with us."
-          />
-          <meta
-            property="og:image"
-            content="https://www.suitelifer.com/images/job-link-preview.webp"
-          />
-          <meta
-            property="og:url"
-            content="https://www.suitelifer.com/careers"
-          />
-          <meta property="og:type" content="website" />
-
-          {/* Twitter Cards */}
-          <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:title" content="Careers - Suitelifer" />
-          <meta
-            name="twitter:description"
-            content="Your career journey has to start somewhere. Grab the opportunity, start it with us."
-          />
-          <meta
-            name="twitter:image"
-            content="https://www.suitelifer.com/images/job-link-preview.webp"
-          />
-        </Helmet>
+        <PageMeta
+          title="Careers - Suitelifer"
+          desc="Your career journey has to start somewhere. Grab the opportunity, start it with us."
+          isDefer={false}
+          url={location.pathname}
+        />
         {/* MOBILE NAV */}
         <div className="sm:hidden">
           <MobileNav />
