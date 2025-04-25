@@ -94,7 +94,7 @@ const ContentEditor = ({
 
       <section className="flex justify-center">
         <button className="bg-primary p-3 rounded-md cursor-pointer w-full mx-auto text-white font-avenir-black">
-          Publish
+          {type === "newsletter" ? "Save" : "Publish"}
         </button>
       </section>
     </form>
