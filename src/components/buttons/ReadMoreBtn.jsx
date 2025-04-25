@@ -8,7 +8,7 @@ const ReadMoreBtn = ({ id, title }) => {
       className="no-underline"
     >
       <div className="flex justify-end cursor-pointer">
-        <div className="text-white hover:bg-[#007a8e] duration-500 bg-primary p-2 px-4 rounded-lg">
+        <div className="text-primary border border-primary hover:bg-primary hover:text-white duration-500 p-2 px-4 rounded-lg">
           Read more
         </div>
       </div>

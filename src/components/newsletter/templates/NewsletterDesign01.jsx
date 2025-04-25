@@ -237,7 +237,7 @@ const NewsletterDesign01 = () => {
                     </span>
                   </p>
                   <div
-                    className={`line-clamp-5 text-body text-justify text-gray-500`}
+                    className={`line-clamp-17 text-body text-justify text-gray-500`}
                   >
                     <article dangerouslySetInnerHTML={{ __html: section4.article }} />
                   </div>
@@ -330,13 +330,13 @@ const NewsletterDesign01 = () => {
                         className={`line-clamp-4 text-body text-justify text-gray-500`}
                       >
                         {" "}
-                        <article>{section6.article}</article>
+                        <article dangerouslySetInnerHTML={{ __html: section6.article }} />
                       </div>
                       <div className="mt-5"></div>
                       <ReadMoreBtn
                         href={""}
                         title={section6.title}
-                        id={section6.newsletterIdd}
+                        id={section6.newsletterId}
                       />
                     </div>
                   </div>
@@ -375,7 +375,7 @@ const NewsletterDesign01 = () => {
                     <div
                       className={`line-clamp-4 text-body text-justify text-gray-500`}
                     >
-                      <article>{section7.article}</article>
+                       <article dangerouslySetInnerHTML={{ __html: section7.article }} />
                     </div>
                     <div className="mt-5"></div>
                     <ReadMoreBtn
