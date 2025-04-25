@@ -101,7 +101,7 @@ ol {
   padding-left: 20px;
 }
 
-strong{
+strong {
   font-family: var(--font-avenir-black);
 }
 
@@ -109,19 +109,18 @@ b {
   font-family: var(--font-avenir-black);
 }
 
-em, i{
+em,
+i {
   font-family: var(--font-avenir-roman-oblique);
-
 }
-
 
 /* Color Themes */
 @theme {
   --color-primary: #0097b2;
   --color-primary-hovered: #007a8e;
   --color-secondary: #bfd1a0;
-  --color-secondarydark: #4FAFAB;
-  --color-tertiary: #ECF1E3;
+  --color-secondarydark: #4fafab;
+  --color-tertiary: #ecf1e3;
   --color-dark: #1a0202;
   --color-light: #ffffff;
   --color-accent-1: #eee3e3;
@@ -235,4 +234,10 @@ em, i{
 
 .swiper-button-prev::before {
   transform: rotate(180deg);
+}
+
+/* TipTag */
+.ProseMirror-focused {
+  outline: none !important;
+  box-shadow: none !important;
 }
