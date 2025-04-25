@@ -200,10 +200,13 @@ function TermsOfUse() {
               headerClass: "text-primary font-bold bg-gray-100",
               cellRenderer: (params) => {
                 const htmlString = params.value || "";
+                const cleanedHtmlString = htmlString.replace(/<\/?p>/g, "");
                 return (
                   <div
                     className="whitespace-pre-line [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 h-full"
-                    dangerouslySetInnerHTML={{ __html: htmlString }}
+                    dangerouslySetInnerHTML={{
+                      __html: cleanedHtmlString,
+                    }}
                   />
                 );
               },
