@@ -8,11 +8,18 @@ const LargeViewDesign01 = ({
 }) => {
   return (
     <section className="">
-      <img
+         {image ? (
+        <>
+         <img
         className="mb-5 w-full h-full aspect-video object-cover rounded-lg"
         src={image}
         alt="Article Image"
       />
+        </>
+      ) : (
+        <></>
+      )}
+     
       <p className="font-avenir-black text-h6 line-clamp-2">{title}</p>
       <p className="text-small pb-3 pt-1">
         <span className="text-primary">{author}</span>
