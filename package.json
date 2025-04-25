@@ -51,7 +51,7 @@
     "react-hot-toast": "^2.5.2",
     "react-loading-indicators": "^1.0.0",
     "react-loading-skeleton": "^3.5.0",
-    "react-router-dom": "^7.2.0",
+    "react-router-dom": "^7.5.2",
     "react-router-hash-link": "^2.4.3",
     "react-transition-group": "^4.4.5",
     "reading-time-estimator": "^1.11.0",
