@@ -39,50 +39,61 @@ const ContentEditor = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <input
-        type="file"
-        accept="image/*"
-        onChange={handleFileOnChange}
-        className="border p-2 rounded w-full "
-        multiple
-      />
-
-      <input
-        type="text"
-        className="border p-2 font-serif font-bold w-full rounded-md"
-        onChange={handleTitleOnChange}
-        style={{
-          fontSize: "1.17em",
-          margin: "0.75em 0",
-        }}
-        placeholder="Write your title here"
-      />
-      <div className="flex gap-3 mb-2 place-items-center">
-        <BoldIcon
-          className="size-5 cursor-pointer"
-          onClick={() => editor.chain().focus().toggleBold().run()}
-        />
-        <ItalicIcon
-          className="size-5 cursor-pointer"
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-        />
-        <UnderlineIcon
-          className="size-5 cursor-pointer"
-          onClick={() => editor.chain().focus().toggleUnderline().run()}
-        />
-        <ListBulletIcon
-          className="size-6 cursor-pointer"
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-        />
-        <NumberedListIcon
-          className="size-5 cursor-pointer"
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-        />
-      </div>
-      <EditorContent
-        editor={editor}
-        className="border p-2 rounded bg-[--color-accent-1] text-[--color-dark] 
+    <>
+      {type === "newsletter" ? (
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {" "}
+          <label>
+            <span className="text-primary text-sm">Title</span>
+            <input
+              type="text"
+              className="border border-gray-400 focus:border-primary outline-none p-2 font-avenir-black w-full rounded-md mb-4"
+              onChange={handleTitleOnChange}
+              style={{}}
+              placeholder="Write the title here"
+            />
+          </label>
+          <label className="">
+            <span className="text-primary text-sm">Author</span>
+            <input
+              type="text"
+              className="border border-gray-400 focus:border-primary outline-none p-2 font-avenir-roman w-full rounded-md mb-4"
+              onChange={handleTitleOnChange}
+              placeholder="Write the pseudonym here"
+            />
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileOnChange}
+            className="border border-gray-400 focus:border-primary outline-none p-2 rounded w-full "
+            multiple
+          />
+          <div className="flex gap-3 mb-2 place-items-center">
+            <BoldIcon
+              className="size-5 cursor-pointer"
+              onClick={() => editor.chain().focus().toggleBold().run()}
+            />
+            <ItalicIcon
+              className="size-5 cursor-pointer"
+              onClick={() => editor.chain().focus().toggleItalic().run()}
+            />
+            <UnderlineIcon
+              className="size-5 cursor-pointer"
+              onClick={() => editor.chain().focus().toggleUnderline().run()}
+            />
+            <ListBulletIcon
+              className="size-6 cursor-pointer"
+              onClick={() => editor.chain().focus().toggleBulletList().run()}
+            />
+            <NumberedListIcon
+              className="size-5 cursor-pointer"
+              onClick={() => editor.chain().focus().toggleOrderedList().run()}
+            />
+          </div>
+          <EditorContent
+            editor={editor}
+            className="border border-gray-400 focus:border-primary outline-none p-2 rounded bg-[--color-accent-1] text-[--color-dark] 
              font-avenir
              [&_ul]:list-disc [&_ul]:pl-6 
              [&_ol]:list-decimal [&_ol]:pl-6
@@ -90,14 +101,75 @@ const ContentEditor = ({
              [&_strong]:font-avenir-black
              [&_strong_em]:font-inherit
              [&_em_strong]:font-inherit"
-      />
+          />
+          <section className="flex justify-center">
+            <button className="bg-primary p-3 rounded-md cursor-pointer w-full mx-auto text-white font-avenir-black">
+              Save
+            </button>
+          </section>
+        </form>
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileOnChange}
+            className="border p-2 rounded w-full "
+            multiple
+          />
 
-      <section className="flex justify-center">
-        <button className="bg-primary p-3 rounded-md cursor-pointer w-full mx-auto text-white font-avenir-black">
-          {type === "newsletter" ? "Save" : "Publish"}
-        </button>
-      </section>
-    </form>
+          <input
+            type="text"
+            className="border p-2 font-avenir-black w-full rounded-md"
+            onChange={handleTitleOnChange}
+            style={{
+              fontSize: "1.17em",
+              margin: "0.75em 0",
+            }}
+            placeholder="Write your title here"
+          />
+          <div className="flex gap-3 mb-2 place-items-center">
+            <BoldIcon
+              className="size-5 cursor-pointer"
+              onClick={() => editor.chain().focus().toggleBold().run()}
+            />
+            <ItalicIcon
+              className="size-5 cursor-pointer"
+              onClick={() => editor.chain().focus().toggleItalic().run()}
+            />
+            <UnderlineIcon
+              className="size-5 cursor-pointer"
+              onClick={() => editor.chain().focus().toggleUnderline().run()}
+            />
+            <ListBulletIcon
+              className="size-6 cursor-pointer"
+              onClick={() => editor.chain().focus().toggleBulletList().run()}
+            />
+            <NumberedListIcon
+              className="size-5 cursor-pointer"
+              onClick={() => editor.chain().focus().toggleOrderedList().run()}
+            />
+          </div>
+          <EditorContent
+            editor={editor}
+            className="border p-2 rounded bg-[--color-accent-1] text-[--color-dark] 
+             font-avenir
+             [&_ul]:list-disc [&_ul]:pl-6 
+             [&_ol]:list-decimal [&_ol]:pl-6
+             [&_em]:font-inherit
+             [&_strong]:font-avenir-black
+             [&_strong_em]:font-inherit
+             [&_em_strong]:font-inherit"
+          />
+
+          <section className="flex justify-center">
+            <button className="bg-primary p-3 rounded-md cursor-pointer w-full mx-auto text-white font-avenir-black">
+              Publish
+            </button>
+          </section>
+        </form>
+      )}
+    </>
   );
 };
 
