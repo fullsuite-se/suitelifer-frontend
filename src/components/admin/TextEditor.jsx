@@ -10,7 +10,7 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 
-const TermsOfUseEditor = ({
+const TextEditor = ({
   title = "",
   description = "",
   handleTitleChange,
@@ -77,4 +77,4 @@ const TermsOfUseEditor = ({
   );
 };
 
-export default TermsOfUseEditor;
+export default TextEditor;
