@@ -9,10 +9,13 @@ import formatTimestamp from "../../utils/formatTimestamp";
 import ActionButtons from "../../components/buttons/ActionButtons";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { useStore } from "../../store/authStore";
+import { useAddAuditLog } from "../../components/admin/UseAddAuditLog";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 const SuperAdminAccountManagement = () => {
+  const addLog = useAddAuditLog();
+
   // User Accounts Table Essentials
   const gridRef = useRef(null);
 
@@ -75,8 +78,8 @@ const SuperAdminAccountManagement = () => {
             onChange={(e) => confirmStatusChange(params.data, e.target.value)}
             className="w-full"
           >
-            <option value="1">Active</option>
-            <option value="0">Disabled</option>
+            <option value={1}>Active</option>
+            <option value={0}>Disabled</option>
           </select>
         ),
       },
@@ -136,12 +139,18 @@ const SuperAdminAccountManagement = () => {
       message =
         "This grants the user access to content management features. Their role can be changed later if needed.";
     } else {
-      title = `Change ${data.fullName}'s role to employee?`;
+      title = `Change ${data.fullName}'s role to ${value}?`;
       message =
         "This removes the user’s access to content management features. Their admin privileges can be reassigned at any time.";
     }
 
-    modal.onConfirm = () => handleTypeChange(value, data.userId);
+    modal.onConfirm = () => {
+      addLog({
+        action: "UPDATE",
+        description: `${data.fullName}'s role has been updated from ${data.userType} to ${value}`,
+      });
+      handleTypeChange(value, data.userId);
+    };
 
     setModal((m) => ({
       ...m,
@@ -170,14 +179,14 @@ const SuperAdminAccountManagement = () => {
   };
 
   const confirmStatusChange = (data, value) => {
-    if (data.isActive === value) {
+    if (data.isActive === Number(value)) {
       return;
     }
 
     let title;
     let message;
 
-    if (data.isActive === 1 && value === 0) {
+    if (data.isActive === 1 && Number(value) === 0) {
       title = `Disable ${data.fullName}'s account?`;
       message =
         "This prevents the user from accessing the system. The account can be reactivated later if needed.";
@@ -187,7 +196,17 @@ const SuperAdminAccountManagement = () => {
         "This restores the user’s access to the system. The account can be disabled again at any time.";
     }
 
-    modal.onConfirm = () => handleStatusChange(value, data.userId);
+    modal.onConfirm = () => {
+      addLog({
+        action: "UPDATE",
+        description: `${data.fullName}'s account has been ${
+          data.isActive === 1 && Number(value) === 0
+            ? "disabled"
+            : "reactivated"
+        }`,
+      });
+      handleStatusChange(Number(value), data.userId);
+    };
 
     setModal((m) => ({
       ...m,
