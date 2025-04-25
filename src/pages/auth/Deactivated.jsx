@@ -33,7 +33,7 @@ const DeactivatedPage = () => {
               <div className="hidden lg:block"></div>
               <p className="text-gray-600 text-[12px] md:text-[14px] lg:text-base md:mb-7">
                 You no longer have access to the system. If you believe this is
-                a mistake, please contact support.
+                a mistake, please contact the Information Security Team.
               </p>
               <div className="flex justify-center">
                 <a
