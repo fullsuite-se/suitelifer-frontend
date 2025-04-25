@@ -784,7 +784,7 @@ function AdminNewsLetterToggle() {
       ) : (
         <>
           {" "}
-          <section className="p-2 xl:p-3">
+          <section className="">
             <div className="py-5"></div>
             <button
               onClick={() => {
@@ -806,7 +806,7 @@ function AdminNewsLetterToggle() {
                 onClick={() => navigate("/app/my-blogs")}
                 className="font-avenir-black text-red-400 text-sm cursor-pointer"
               >
-                Discard Blog
+                Cancel
               </span>
             </div>
 
@@ -831,7 +831,7 @@ function AdminNewsLetterToggle() {
                 handleTitleChange={handleTitleChange}
                 handleDescriptionChange={handleDescriptionChange}
                 handleSubmit={handleSubmit}
-                type={"eblog"}
+                type={"newsletter"}
               />
             </section>
           </section>
