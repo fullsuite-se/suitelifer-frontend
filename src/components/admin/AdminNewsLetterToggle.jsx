@@ -811,21 +811,12 @@ function AdminNewsLetterToggle() {
             </div>
 
             <section
-              className="p-5 rounded-lg"
+              className="p-10 rounded-lg"
               style={{
                 boxShadow: "rgba(0, 0, 0, 0.08) 0px 4px 12px",
               }}
             >
-              <div className="flex items-center gap-4">
-                <div className="w-13 h-13 mb-3">
-                  <img
-                    src="http://sa.kapamilya.com/absnews/abscbnnews/media/2020/tvpatrol/06/01/james-reid.jpg"
-                    alt="Hernani"
-                    className="w-full h-full object-cover rounded-full"
-                  />
-                </div>
-                <p className="font-avenir-black text-center">Hernani Domingo</p>
-              </div>
+              
               <ContentEditor
                 handleFileChange={handleFileChange}
                 handleTitleChange={handleTitleChange}
