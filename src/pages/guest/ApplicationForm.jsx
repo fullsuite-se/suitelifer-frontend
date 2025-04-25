@@ -48,6 +48,7 @@ const Form = () => {
     test_result: null,
     created_by: null,
     updated_by: null,
+    cv_link: "",
   };
 
   const [applicationDetails, setApplicationDetails] = useState(
@@ -102,10 +103,9 @@ const Form = () => {
 
     const upload_response = await atsAPI.post("/upload/gdrive/cv", formData);
 
-    setApplicationDetails((ad) => ({
-      ...ad,
-      cv_link: upload_response.data.fileUrl,
-    }));
+    console.log(upload_response.data.fileUrl);
+
+    applicationDetails.cv_link = upload_response.data.fileUrl;
   };
 
   const [isLoading, setIsLoading] = useState(false);
