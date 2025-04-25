@@ -1,15 +1,17 @@
 import NewsArticle from "./NewsArticle";
 import Issues from "./Issues";
 import PageToggle from "../buttons/PageToggle";
+import SuiteLetterLayout from "../../assets/images/suiteletter-section-layout.webp";
 import { ArrowRightIcon } from "@heroicons/react/24/solid";
 import { AgGridReact } from "@ag-grid-community/react";
 import { ModuleRegistry } from "@ag-grid-community/core";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
-
+import ContentButtons from "./ContentButtons";
 import {
   CheckCircleIcon,
+  BookmarkSquareIcon,
   InformationCircleIcon,
   ArrowDownIcon,
   ArrowUpIcon,
@@ -40,6 +42,7 @@ import { useStore } from "../../store/authStore";
 import toast from "react-hot-toast";
 import ContentEditor from "../cms/ContentEditor";
 import { useNavigate } from "react-router-dom";
+import NewsletterHeader from "../newsletter/NewsletterHeader";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 function AdminNewsLetterToggle() {
@@ -78,6 +81,10 @@ function AdminNewsLetterToggle() {
   const [openIssueDialog, setOpenIssueDialog] = useState(false);
   const [isOpenArticleForm, setIsOpenArticleForm] = useState(false);
   const [prevClickedIssue, setPrevClickedIssue] = useState({});
+
+  const [openSuiteletterLayoutInfoDialog, setOpenSuiteletterLayoutInfoDialog] =
+    useState(false);
+
   const defaultArticleDetails = {
     newsletterId: "",
     title: "",
@@ -315,6 +322,10 @@ function AdminNewsLetterToggle() {
     uploadBlog();
   };
 
+  const handlePublishIssue = async () => {
+    try {
+    } catch (error) {}
+  };
   return (
     <div>
       {!selectedMonthlyIssue && !isOpenArticleForm ? (
@@ -618,13 +629,21 @@ function AdminNewsLetterToggle() {
       ) : selectedMonthlyIssue && !isOpenArticleForm ? (
         <>
           <div className="py-5"></div>
-          <button
-            onClick={() => handleMonthClick(null)}
-            className="group cursor-pointer flex items-center gap-2 text-primary text-xss transition active:font-avenir-black"
-          >
-            <ArrowLeft size={15} />
-            <span className="mt-1 group-hover:font-avenir-black">Back</span>
-          </button>
+          <div className="flex flex-row items-center justify-between">
+            <button
+              onClick={() => handleMonthClick(null)}
+              className="group cursor-pointer flex items-center gap-2 text-primary text-xss transition active:font-avenir-black"
+            >
+              <ArrowLeft size={15} />
+              <span className="mt-1 group-hover:font-avenir-black">Back</span>
+            </button>
+            {prevClickedIssue.is_published === 0 ? ( <ContentButtons
+              icon={<BookmarkSquareIcon className="size-5" />}
+              text="Publish this issue"
+              handleClick={handlePublishIssue}
+            />): (<></>)}
+            
+          </div>
           <div className="py-2"></div>
           <div className="flex flex-row items-center justify-between">
             <div className="flex flex-row justify-start items-center gap-2">
@@ -652,6 +671,12 @@ function AdminNewsLetterToggle() {
                     : "(Currently Published)"}
                 </span>
               </h3>
+              <InformationCircleIcon
+                className="w-4 h-4 text-gray-500 cursor-pointer"
+                onClick={() =>
+                  setOpenSuiteletterLayoutInfoDialog((prev) => !prev)
+                }
+              />
             </div>
             <div onClick={(e) => handleAddEditArticle(e)}>
               {" "}
@@ -660,7 +685,6 @@ function AdminNewsLetterToggle() {
               </p>
             </div>
           </div>
-
           <div className="py-1"></div>
           <section className=" mb-4 grid grid-cols-1 sm:grid-cols-3 grid-rows-[5rem] [&>*]:bg-white [&>*]:border [&>*]:border-gray-300 gap-4">
             <div className="rounded-md grid place-content-center ">
@@ -779,12 +803,13 @@ function AdminNewsLetterToggle() {
               paginationPageSize={10}
               paginationPageSizeSelector={[5, 10, 20, 50]}
             />
-          </div>
+          </div>{" "}
+         
         </>
       ) : (
         <>
           {" "}
-          <section className="">
+          <section className="h-[100vh] overflow-auto">
             <div className="py-5"></div>
             <button
               onClick={() => {
@@ -800,23 +825,27 @@ function AdminNewsLetterToggle() {
             <div className="lg:flex items-center justify-between hidden">
               <div className="flex items-center gap-2">
                 <h2 className="font-avenir-black">Add New Article</h2>
-                <InformationCircleIcon className="w-4 h-4 text-gray-500" />
+                <InformationCircleIcon
+                  className="w-4 h-4 text-gray-500 cursor-pointer"
+                  onClick={() =>
+                    setOpenSuiteletterLayoutInfoDialog((prev) => !prev)
+                  }
+                />
               </div>
-              <span
+              {/* <span
                 onClick={() => navigate("/app/my-blogs")}
                 className="font-avenir-black text-red-400 text-sm cursor-pointer"
               >
                 Cancel
-              </span>
+              </span> */}
             </div>
 
             <section
-              className="p-10 rounded-lg"
-              style={{
-                boxShadow: "rgba(0, 0, 0, 0.08) 0px 4px 12px",
-              }}
+            // className="p-10 rounded-lg"
+            // style={{
+            //   boxShadow: "rgba(0, 0, 0, 0.08) 0px 4px 12px",
+            // }}
             >
-              
               <ContentEditor
                 handleFileChange={handleFileChange}
                 handleTitleChange={handleTitleChange}
@@ -827,7 +856,46 @@ function AdminNewsLetterToggle() {
             </section>
           </section>
         </>
-      )}
+      )}{" "}
+      <Dialog
+        open={openSuiteletterLayoutInfoDialog}
+        onClose={() => setOpenSuiteletterLayoutInfoDialog(false)}
+        fullWidth
+        disableEscapeKeyDown={false}
+        sx={{
+          "& .MuiDialog-paper": {
+            width: "600px",
+            height: "auto",
+            maxHeight: "90vh",
+            borderRadius: "0.75rem",
+          },
+        }}
+      >
+        <DialogTitle>
+          {" "}
+          <span className="flex flex-row items-center">
+            <InformationCircleIcon className="w-6 h-6 text-gray-500 " />
+            &nbsp; Suiteletter Section Layout
+          </span>
+        </DialogTitle>
+        <DialogContent>
+          <div className="p-2">
+            {" "}
+            <p className="text-sm text-gray-500">
+              Preview the newsletter layout. Articles will appear in the section
+              you assign (1–7).
+            </p>
+            <div className="py-1"></div>
+            <div>
+              <img
+                src={SuiteLetterLayout}
+                alt="suiteletter layout"
+                className="border border-gray-300 rounded-md h-auto "
+              />
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
