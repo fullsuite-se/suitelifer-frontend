@@ -218,13 +218,24 @@ import privacyPolicyimg from "../../assets/images/fingerprint-and-loupe.jpg";
 
 const PrivacyPolicyContent = () => {
   const [policy, setPolicy] = useState([]);
+  const [latestPolicyDate, setLatestPolicyDate] = useState(null);
   const [activeSection, setActiveSection] = useState("");
 
   useEffect(() => {
     const fetchPolicies = async () => {
       try {
         const response = await api.get("/api/get-all-policy");
-        setPolicy(response.data.policy);
+
+        const allPolicy = response.data.policy;
+        setPolicy(allPolicy);
+
+        const latestCreatedAt = allPolicy.reduce((latest, policy) => {
+          return new Date(policy.createdAt) > new Date(latest)
+            ? policy.createdAt
+            : latest;
+        }, allPolicy[0]?.createdAt);
+
+        setLatestPolicyDate(latestCreatedAt);
       } catch (err) {
         console.error(err);
         toast.error("Failed to fetch Privacy Policy");
@@ -305,9 +316,16 @@ const PrivacyPolicyContent = () => {
             </p>
           </div>
 
-          <p className="text-gray-500 text-sm mt-3">
-            Last Updated on March 03, 2023
-          </p>
+          {latestPolicyDate && (
+            <p className="text-gray-500 text-sm mt-3">
+              Last Updated on{" "}
+              {new Date(latestPolicyDate).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
+          )}
 
           <div className="mt-5 lg:mt-10">
             At FullSuite (“Company”), we are committed to protecting the privacy
@@ -337,16 +355,16 @@ const PrivacyPolicyContent = () => {
                 }}
               />
             </section>
-          ))}
-        </div>
-      </div>
-      <div className="py-10 flex md:flex-row gap-6 pt-5 pb-5 lg:px-[50px] lg:pt-10 lg:pb-10">
+          ))} <div className="mt-10">
         By using your website, writing your name, and submitting this form, you
         understand the contents of this Privacy Notice and consent to the
         collection, use, and processing of your personal data as part of the
         recruitment process of the Company. You also understand the intention
         and consequences of this Privacy Notice.
       </div>
+        </div>
+      </div>
+     
     </>
   );
 };

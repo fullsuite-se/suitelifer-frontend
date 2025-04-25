@@ -7,12 +7,22 @@ import api from "../../utils/axios";
 const TermsOfUseContent = () => {
   const [terms, setTerms] = useState([]);
   const [activeSection, setActiveSection] = useState("");
+  const [latestTermDate, setLatestTermDate] = useState(null);
 
   useEffect(() => {
     const fetchTerms = async () => {
       try {
         const response = await api.get("/api/get-all-terms");
-        setTerms(response.data.terms);
+        const allTerms = response.data.terms;
+  
+        setTerms(allTerms);
+  
+        // Get latest date
+        const latestCreatedAt = allTerms.reduce((latest, term) => {
+          return new Date(term.createdAt) > new Date(latest) ? term.createdAt : latest;
+        }, allTerms[0]?.createdAt);
+  
+        setLatestTermDate(latestCreatedAt);
       } catch (err) {
         console.error(err);
         toast.error("Failed to fetch Terms of Use");
@@ -106,9 +116,16 @@ const TermsOfUseContent = () => {
           </p>
         </div>
 
-        <p className="text-gray-500 text-sm mt-3">
-          Last Updated on March 03, 2023
-        </p>
+        {latestTermDate && (
+  <p className="text-gray-500 text-sm mt-3">
+    Last Updated on {new Date(latestTermDate).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })}
+  </p>
+)}
+
 
         <div className="mt-5 lg:mt-10">
           Welcome to the FullSuite website. By using this website, you agree to
