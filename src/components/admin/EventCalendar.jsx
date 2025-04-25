@@ -70,10 +70,6 @@ const EventCalendar = ({ events, onSelectSlot, onSelectEvent }) => {
       onSelectEvent={onSelectEvent}
       style={{ height: 600, width: "100%" }}
       eventPropGetter={(event) => {
-        console.log("Original:", event.start);
-        console.log("As Date:", new Date(event.start));
-        console.log("Local:", moment.utc(event.start).local().format());
-
         const eventDate = new Date(event.start).setHours(0, 0, 0, 0);
         const today = new Date().setHours(0, 0, 0, 0);
         const isWeekend =

@@ -53,7 +53,17 @@ const AdminEvents = () => {
     try {
       const response = await api.get("/api/events");
 
-      setEvents(response.data.events);
+      console.log(response.data.events);
+      
+
+      const rawEvents = response.data.events;
+      const adjustedEvents = rawEvents.map((event) => ({
+        ...event,
+        start: moment.utc(event.start).local().toDate(),
+        end: moment.utc(event.end).local().toDate(),
+      }));
+
+      setEvents(adjustedEvents);
     } catch (err) {
       console.error("Failed to fetch events:", err);
     }
