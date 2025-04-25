@@ -14,7 +14,6 @@ import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
 import api from "../../utils/axios";
 import toast from "react-hot-toast";
-import TermsOfUseEditor from "./TermsOfUseEditor";
 import { useStore } from "../../store/authStore";
 import { useAddAuditLog } from "../../components/admin/UseAddAuditLog";
 import ContentButtons from "../admin/ContentButtons";
@@ -25,6 +24,7 @@ import {
   PencilIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
+import TextEditor from "./TextEditor";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -262,53 +262,12 @@ function TermsOfUse() {
         />
       </div>
 
-      {/* <Dialog open={openDialog} onClose={() => setOpenDialog(false)} fullWidth>
-        <DialogTitle>
-          {currentTerm.termsId ? "Edit Terms" : "Add Terms"}
-        </DialogTitle>
-        <DialogContent>
-          <div className="mb-4">
-            <label className="block text-gray-700 font-avenir-black">
-              Title<span className="text-primary">*</span>
-            </label>
-            <input
-              name="title"
-              value={currentTerm.title}
-              onChange={handleChange}
-              className="w-full p-3 mt-2 border rounded bg-primary/10 focus:ring-2 focus:ring-primary"
-              placeholder="Enter title"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 font-avenir-black">
-              Description<span className="text-primary">*</span>
-            </label>
-            <textarea
-              name="description"
-              rows={4}
-              value={currentTerm.description}
-              onChange={handleChange}
-              className="w-full p-3 mt-2 border rounded bg-primary/10 focus:ring-2 focus:ring-primary"
-              placeholder="Enter description"
-            />
-          </div>
-        </DialogContent>
-        <DialogActions>
-          <button className="btn-light" onClick={() => setOpenDialog(false)}>
-            Cancel
-          </button>
-          <button className="btn-primary" onClick={handleAddEditTerms}>
-            Save
-          </button>
-        </DialogActions>
-      </Dialog> */}
-
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)} fullWidth>
         <DialogTitle>
           {currentTerm.termsId ? "Edit Terms" : "Add Terms"}
         </DialogTitle>
         <DialogContent>
-          <TermsOfUseEditor
+          <TextEditor
             title={currentTerm.title}
             description={currentTerm.description}
             handleTitleChange={(title) =>
