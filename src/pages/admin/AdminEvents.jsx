@@ -109,7 +109,7 @@ const AdminEvents = () => {
           toast.success(response.data.message);
         }
       } else {
-        const response = await api.put(`/api/events/${selectedEvent.id}`, {
+        const response = await api.put(`/api/events/`, {
           ...eventDetails,
           userId: user.id,
         });
