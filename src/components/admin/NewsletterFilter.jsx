@@ -5,6 +5,7 @@ const YearFilterDropDown = ({
   showYear = true,
   startYear = 2000,
   endYear = new Date().getFullYear(),
+  selectedYear,
   onYearChange,
 }) => {
   const years = Array.from(
@@ -12,11 +13,8 @@ const YearFilterDropDown = ({
     (_, i) => startYear + i
   );
 
-  const [selectedYear, setSelectedYear] = useState(endYear);
-
   const handleYearChange = (e) => {
     const value = Number(e.target.value);
-    setSelectedYear(value);
     onYearChange?.(value);
   };
 
@@ -41,5 +39,6 @@ const YearFilterDropDown = ({
     </div>
   );
 };
+
 
 export default YearFilterDropDown;
