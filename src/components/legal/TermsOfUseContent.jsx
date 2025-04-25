@@ -42,7 +42,6 @@ const TermsOfUseContent = () => {
 
   return (
     <div className="flex flex-col md:flex-row gap-6 px-7 pt-5 pb-5 lg:px-[50px] lg:pt-10 lg:pb-10">
-      {/* Sidebar Table of Contents */}
       <div className="hidden md:block md:w-1/4 lg:w-1/5">
         <div className="sticky top-20 bg-white p-7 shadow-md rounded-xl w-fit min-w-[180px]">
           <h4 className="font-avenir-black text-gray-700">TABLE OF CONTENTS</h4>
@@ -93,14 +92,12 @@ const TermsOfUseContent = () => {
                     ? "text-primary font-bold"
                     : "text-gray-600"
                 } hover:text-primary`}
-              >
-              </button>
+              ></button>
             </li>
           </ul>
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="md:w-3/4 md:mr-5 lg:w-4/5 lg:mr-15">
         <div className="flex items-center gap-3">
           <img src={termsOfUseimg} alt="terms-of-use" className="w-30 h-30" />
@@ -119,7 +116,6 @@ const TermsOfUseContent = () => {
           read them carefully.
         </div>
 
-        {/* Static Contact Section */}
         {terms.map((term, index) => (
           <section
             key={term.terms_id}
@@ -129,9 +125,12 @@ const TermsOfUseContent = () => {
             <h3 className="font-avenir-black">{`${index + 1}. ${
               term.title
             }`}</h3>
-            <p className="text-gray-700 mt-2 whitespace-pre-line">
-              {term.description}
-            </p>
+            <div
+              className="text-gray-700 mt-2 whitespace-pre-line"
+              dangerouslySetInnerHTML={{
+                __html: term.description,
+              }}
+            />
           </section>
         ))}
       </div>
