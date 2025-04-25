@@ -239,7 +239,7 @@ const NewsletterDesign01 = () => {
                   <div
                     className={`line-clamp-5 text-body text-justify text-gray-500`}
                   >
-                    <article>{section4.article}</article>
+                    <article dangerouslySetInnerHTML={{ __html: section4.article }} />
                   </div>
                   <div className="mt-5"></div>
                   <ReadMoreBtn
