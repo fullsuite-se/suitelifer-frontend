@@ -126,7 +126,7 @@ const TermsOfUseContent = () => {
               term.title
             }`}</h3>
             <div
-              className="text-gray-700 mt-2 whitespace-pre-line"
+              className="text-gray-700 mt-2 whitespace-pre-line [&_a]:no-underline"
               dangerouslySetInnerHTML={{
                 __html: term.description,
               }}

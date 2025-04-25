@@ -28,6 +28,7 @@
     "@tailwindcss/vite": "^4.0.6",
     "@tiptap/extension-bold": "^2.11.5",
     "@tiptap/extension-italic": "^2.11.5",
+    "@tiptap/extension-link": "^2.11.7",
     "@tiptap/extension-underline": "^2.11.5",
     "@tiptap/react": "^2.11.5",
     "@tiptap/starter-kit": "^2.11.5",

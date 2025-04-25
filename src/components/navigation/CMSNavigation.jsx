@@ -206,9 +206,7 @@ const CMSNavigation = () => {
                 }`}
               </p>
               <p className="text-sm text-center text-primary">
-                {`@${user?.first_name?.trim()?.toLowerCase() ?? "unknown"}.${
-                  user?.last_name?.trim()?.toLowerCase() ?? "user"
-                }`}
+                {`@${user.email.split("@")[0]}`}
               </p>
             </>
           )}
