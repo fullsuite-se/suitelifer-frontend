@@ -32,7 +32,7 @@ import {
   ClickAwayListener,
 } from "@mui/material";
 import YearFilterDropDown from "./NewsletterFilter";
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef, useMemo, use } from "react";
 import api from "../../utils/axios";
 import { set } from "react-hook-form";
 import formatTimestamp from "../../utils/formatTimestamp";
@@ -326,13 +326,19 @@ function AdminNewsLetterToggle() {
     try {
     } catch (error) {}
   };
+
+  const [agree, setAgree] = useState(false);
+
   return (
     <div>
       {!selectedMonthlyIssue && !isOpenArticleForm ? (
         <>
           <h3>Currently Published Issue</h3>
           <div
-            onClick={() => handleMonthClick(currentPublishedIssue)}
+            onClick={() => {
+              handleMonthClick(currentPublishedIssue);
+              setPrevClickedIssue(currentPublishedIssue);
+            }}
             className="flex flex-row items-center justify-between bg-primary text-white p-4 rounded-lg mb-4 cursor-pointer hover:scale-101 hover:shadow-lg transition duration-300 ease-in-out"
           >
             <h3 className="font-avenir-black">
@@ -416,6 +422,8 @@ function AdminNewsLetterToggle() {
                   onClick={() => {
                     handleMonthClick(issue);
                     setPrevClickedIssue(issue);
+                    console.log("ETOOOO: ");
+                    console.log(issue);
                   }}
                 >
                   <div
@@ -637,12 +645,24 @@ function AdminNewsLetterToggle() {
               <ArrowLeft size={15} />
               <span className="mt-1 group-hover:font-avenir-black">Back</span>
             </button>
-            {prevClickedIssue.is_published === 0 ? ( <ContentButtons
-              icon={<BookmarkSquareIcon className="size-5" />}
-              text="Publish this issue"
-              handleClick={handlePublishIssue}
-            />): (<></>)}
-            
+            {prevClickedIssue.is_published === 0 ? (
+              <button
+                onClick={handlePublishIssue}
+                disabled={selectedMonthlyIssue.assigned < 7}
+                className={`flex gap-2   font-avenir-black p-2 px-3  items-center rounded-md transition ${
+                  selectedMonthlyIssue.assigned === 7
+                    ? "cursor-pointer bg-primary text-white hover:bg-primary/90"
+                    : "cursor-not-allowed bg-gray-300 text-gray-200"
+                }`}
+              >
+                <BookmarkSquareIcon className="size-5" />
+                <span className="hidden sm:flex flex-col">
+                  Publish this issue
+                </span>
+              </button>
+            ) : (
+              <></>
+            )}
           </div>
           <div className="py-2"></div>
           <div className="flex flex-row items-center justify-between">
@@ -804,7 +824,6 @@ function AdminNewsLetterToggle() {
               paginationPageSizeSelector={[5, 10, 20, 50]}
             />
           </div>{" "}
-         
         </>
       ) : (
         <>
