@@ -42,7 +42,7 @@ const Form = () => {
     birth_date: null,
     mobile_number_1: "",
     discovered_at: "",
-    applied_source: "Suitelife",
+    applied_source: "COMPANY_WEBSITE",
     referrer_name: referrerName,
     position_id: id,
     test_result: null,
@@ -176,6 +176,14 @@ const Form = () => {
     }
   };
 
+  const formatSource = (source) => {
+    return source
+      .toLowerCase()
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
 
   const handleConfirm = async () => {
@@ -292,11 +300,14 @@ const Form = () => {
           </label>
           <div className="flex flex-col gap-3 mt-3">
             {[
-              "Referral",
-              "Website",
-              "Social Media",
-              "Podcast",
-              "Career Fair (Startup Caravan, University Visit, etc.)",
+              "INDEED",
+              "LINKEDIN",
+              "SOCIAL_MEDIA",
+              "COMPANY_WEBSITE",
+              "REFERRAL",
+              "CAREER_FAIR",
+              "JOBSTREET",
+              "PODCAST",
             ].map((option) => (
               <label key={option} className="flex items-center">
                 <input
@@ -306,11 +317,13 @@ const Form = () => {
                   required
                   className="text-primary focus:ring-primary"
                   onChange={(e) => {
-                    setShowReferralInput(option === "Referral");
+                    setShowReferralInput(option === "REFERRAL");
                     handleApplicationDetailsChange(e);
                   }}
                 />
-                <span className="ml-2 text-gray-700">{option}</span>
+                <span className="ml-2 text-gray-700">
+                  {formatSource(option)}
+                </span>
               </label>
             ))}
           </div>
