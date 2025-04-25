@@ -7,17 +7,18 @@ This website is designed to streamline and enhance the job application and emplo
 Functional Requirements:
 
 - Content Management System
-- Testimonial Management
-- Job Filter Options
+  - Testimonials
+  - Newsletters
+  - Podcast episodes
+  - Events
+  - Employee Blogs
+  - Courses
+  - Personality Tests
 - Job Application Automation
-- Newsletter Management
-- Podcast Management
 - User Management
-- Event Management
-- Employee Blog Management
-- Course/Workshop Management
-- Personality Test Management
-- Audit Logs
+- Contact and Support System
+- Search and Filter Options
+- Compliance and Audit Logs
 
 Non-Functional Requirements:
 
