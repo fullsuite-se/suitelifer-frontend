@@ -5,6 +5,7 @@ import {
   UnderlineIcon,
   ListBulletIcon,
   NumberedListIcon,
+  LinkIcon,
 } from "@heroicons/react/24/outline";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -54,6 +55,19 @@ const TextEditor = ({
         <NumberedListIcon
           className="size-5 cursor-pointer"
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
+        />
+        <LinkIcon
+          className="size-5 cursor-pointer"
+          onClick={() => {
+            const previousUrl = editor.getAttributes("link").href;
+            const url = window.prompt("Enter URL", previousUrl || "");
+            if (url === null) return;
+            if (url === "") {
+              editor.chain().focus().unsetLink().run();
+            } else {
+              editor.chain().focus().setLink({ href: url }).run();
+            }
+          }}
         />
       </div>
 

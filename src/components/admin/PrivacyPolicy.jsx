@@ -32,7 +32,7 @@ function PrivacyPolicy() {
   const user = useStore((state) => state.user);
   const addLog = useAddAuditLog();
   const gridRef = useRef();
-  const [policies, setPolicies] = useState([]);
+  const [policy, setPolicy] = useState([]);
   const [dataUpdated, setDataUpdated] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -51,29 +51,31 @@ function PrivacyPolicy() {
 
     try {
       if (!currentPolicy.policyId) {
-        const response = await api.post("/api/add-privacy-policy", {
+        const response = await api.post("/api/add-policy", {
           ...newPolicy,
           userId: user.id,
         });
 
         if (response.data?.success) {
-          setPolicies((prev) => [response.data.data, ...prev]);
+          setPolicy((prev) => [response.data.data, ...prev]);
           toast.success(response.data.message);
           addLog({
             action: "CREATE",
             description: `New Privacy Policy (${newPolicy.title}) added`,
           });
         } else {
-          toast.error(response.data.message || "Failed to save Privacy Policy.");
+          toast.error(
+            response.data.message || "Failed to save Privacy Policy."
+          );
         }
       } else {
-        const response = await api.put("/api/edit-privacy-policy", {
+        const response = await api.put("/api/edit-policy", {
           ...currentPolicy,
           userId: user.id,
         });
 
         if (response.data?.success) {
-          setPolicies((prev) =>
+          setPolicy((prev) =>
             prev.map((policy) =>
               policy.policyId === currentPolicy.policyId
                 ? currentPolicy
@@ -116,11 +118,11 @@ function PrivacyPolicy() {
   const handleDelete = async (policyId, title) => {
     try {
       setIsLoading(true);
-      const response = await api.delete("/api/delete-privacy-policy", {
+      const response = await api.delete("/api/delete-policy", {
         data: { policyId },
       });
       if (response.data?.success) {
-        setPolicies((prev) =>
+        setPolicy((prev) =>
           prev.filter((policy) => policy.policyId !== policyId)
         );
         toast.success(response.data.message);
@@ -145,17 +147,17 @@ function PrivacyPolicy() {
   };
 
   useEffect(() => {
-    const fetchPolicies = async () => {
+    const fetchPolicy = async () => {
       try {
-        const response = await api.get("/api/get-all-privacy-policy");
-        setPolicies(response.data.privacyPolicies);
+        const response = await api.get("/api/get-all-policy");
+        setPolicy(response.data.policy);
       } catch (err) {
         console.error(err);
-        toast.error("Failed to fetch Privacy Policies");
+        toast.error("Failed to fetch Privacy policy");
       }
     };
 
-    fetchPolicies();
+    fetchPolicy();
   }, [dataUpdated]);
 
   return (
@@ -181,7 +183,7 @@ function PrivacyPolicy() {
       >
         <AgGridReact
           ref={gridRef}
-          rowData={policies}
+          rowData={policy}
           enableBrowserTooltips
           columnDefs={[
             {
@@ -234,10 +236,7 @@ function PrivacyPolicy() {
                   <ActionButtons
                     icon={<TrashIcon className="size-5 cursor-pointer" />}
                     handleClick={() =>
-                      handleDeleteClick(
-                        params.data.policyId,
-                        params.data.title
-                      )
+                      handleDeleteClick(params.data.policyId, params.data.title)
                     }
                   />
                 </div>
