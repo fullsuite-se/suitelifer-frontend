@@ -7,7 +7,6 @@ import YoutubeIcon from "../../assets/logos/Youtube.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import { getUserFromCookie } from "../../utils/cookie.js";
-import Certifications from "./Certifications.jsx";
 import api from "../../utils/axios.js";
 import atsAPI from "../../utils/atsAPI.js";
 
@@ -20,7 +19,6 @@ const handleLoginBtn = async (navigate) => {
       navigate("/login");
     }
   } catch (error) {
-    console.log(err);
     navigate("/login");
   }
 };
@@ -41,18 +39,14 @@ const Footer = () => {
       );
 
       setCertifications(certificationsData);
-    } catch (error) {
-      console.error("Error fetching certifications:", error);
-    }
+    } catch (error) {}
   };
 
   const fetchIndustries = async () => {
     try {
       const response = await atsAPI.get("/industries");
       setIndustries((i) => response.data.data);
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   useEffect(() => {
