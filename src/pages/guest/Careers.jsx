@@ -55,7 +55,9 @@ const Careers = () => {
       setIsLoading(true);
 
       const response = await atsAPI.get(`/jobs/open-filter/${filter}`);
-
+      console.log("EROOOOO")
+console.log(filter);
+console.log(response.data.data);
       setJobs((j) => response.data.data);
     } catch (err) {
       console.log(err);

@@ -24,7 +24,7 @@ import { useLocation } from "react-router-dom";
 const Podcast = () => {
   const [isSpotifyLoading, setSpotifyIsLoading] = useState(true);
   const [spotifyEpisodes, setEpisodes] = useState([]);
-  const [isComingSoon, setIsComingSoon] = useState(true); //Change this to false if okay na ang podcast
+  // const [isComingSoon, setIsComingSoon] = useState(true); //Change this to false if okay na ang podcast
   const location = useLocation();
 
   const fetchThreeLatestEpisodes = async () => {
@@ -32,7 +32,10 @@ const Podcast = () => {
       setSpotifyIsLoading(true);
       const response = await api.get("/api/spotify/latest-three");
 
-      if (!isComingSoon) {
+      if (response.data.threeLatestEpisodes.length < 1) {
+        // setIsComingSoon(true);
+      } else {
+        // setIsComingSoon(false);
         setEpisodes((e) => response.data.threeLatestEpisodes);
       }
     } catch (err) {
@@ -150,7 +153,7 @@ const Podcast = () => {
       {/* PODCAST CONTENT */}
       <main className="px-[5%] md:px-[10%] xl:px-[15%]">
         {/* Podcasts */}
-        {!isComingSoon ? (
+        {isLoaded ? (
           <section className="mt-15">
             {/* Spotify Episodes */}
             {isSpotifyLoading ? (
@@ -175,7 +178,9 @@ const Podcast = () => {
                 {spotifyEpisodes.length > 0 ? (
                   <>
                     <p className="text-2xl font-avenir-black text-primary">
-                      Latest Podcast Episodes
+                      {spotifyEpisodes.length === 1
+                        ? "Latest Podcast Episode"
+                        : "Latest Podcast Episodes"}
                     </p>
                     <section className="mt-3">
                       {/* Mobile View: Display all in a column */}
@@ -193,76 +198,146 @@ const Podcast = () => {
                         )}
                       </div>
 
-                      {/* Small Screens and Up: Two-column layout */}
-                      <div className="hidden sm:flex gap-7">
-                        <div className="w-1/2">
-                          <SpotifyEmbed
-                            spotifyId={spotifyEpisodes[0].spotifyId}
-                            embedType={spotifyEpisodes[0].embedType}
-                            index={0}
-                          />
-                        </div>
-                        {/* Right Column: Two Smaller Embeds */}
-                        <div className="w-1/2 flex flex-col justify-center gap-7">
-                          {spotifyEpisodes
-                            .slice(1, 3)
-                            .map(({ spotifyId, embedType }, index) => (
+                      {spotifyEpisodes.length === 1 ? (
+                        <div>
+                          <div className="hidden sm:flex gap-7">
+                            <div className="w-full">
                               <SpotifyEmbed
-                                key={index + 1}
-                                spotifyId={spotifyId}
-                                embedType={embedType}
-                                index={index + 1}
+                                spotifyId={spotifyEpisodes[0].spotifyId}
+                                embedType={spotifyEpisodes[0].embedType}
+                                index={0}
                               />
-                            ))}
+                            </div>
+                          </div>
                         </div>
-                      </div>
+                      ) : spotifyEpisodes.length === 2 ? (
+                        <>
+                          <div className="hidden sm:flex gap-7">
+                            {spotifyEpisodes
+                              .slice(0, 2)
+                              .map(({ spotifyId, embedType }, index) => (
+                                <div className="w-1/2" key={index + 1}>
+                                  <SpotifyEmbed
+                                    spotifyId={spotifyId}
+                                    embedType={embedType}
+                                    index={index + 1}
+                                  />
+                                </div>
+                              ))}
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="hidden sm:flex gap-7">
+                            <div className="w-1/2">
+                              <SpotifyEmbed
+                                spotifyId={spotifyEpisodes[0].spotifyId}
+                                embedType={spotifyEpisodes[0].embedType}
+                                index={0}
+                              />
+                            </div>
+                            <div className="w-1/2 flex flex-col justify-center gap-7">
+                              {spotifyEpisodes
+                                .slice(1, 3)
+                                .map(({ spotifyId, embedType }, index) => (
+                                  <SpotifyEmbed
+                                    key={index + 1}
+                                    spotifyId={spotifyId}
+                                    embedType={embedType}
+                                    index={index + 1}
+                                  />
+                                ))}
+                            </div>
+                          </div>
+                        </>
+                      )}
                     </section>
                   </>
                 ) : (
-                  <></>
+                  <>
+                    {isLoaded &&
+                    spotifyEpisodes.length < 1 &&
+                    playlists.length < 1 ? (
+                      <div className="">
+                        <div className="flex justify-center pt-20">
+                          <img
+                            src={ComingSoon}
+                            alt="coming soon gif"
+                            className="pointer-events-none"
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <></>
+                    )}
+                  </>
                 )}
               </>
             )}
           </section>
         ) : (
-          <>
-            <div className="">
-              <div className="flex justify-center pt-20">
-                <img
-                  src={ComingSoon}
-                  alt="coming soon gif"
-                  className="pointer-events-none"
-                />
-              </div>
-            </div>
-          </>
+          <></>
         )}
 
-        <div className="width-full flex flex-col justify-center mt-10">
-          {playlists.length > 0 && spotifyEpisodes.length > 0 ? (
-            <>
-              <p className="text-2xl font-avenir-black text-black/75">
-                Check out these Fresh Playlists:
-              </p>{" "}
-              <div className="mt-3 flex flex-col lg:grid lg:grid-cols-2 gap-7">
-                {playlists?.map((playlist, index) => (
-                  <iframe
-                    key={index}
-                    style={{ borderRadius: "12px" }}
-                    src={`https://open.spotify.com/embed/playlist/${playlist.spotifyId}?utm_source=generator`}
-                    width="100%"
-                    height="400"
-                    allowFullScreen
-                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                    loading="lazy"
-                  ></iframe>
-                ))}
-              </div>{" "}
-            </>
-          ) : (
-            ""
-          )}
-        </div>
+        {playlists.length === 1 ? (
+          <div className="mt-15">
+            <p className="text-2xl font-avenir-black text-black/75">
+              {playlists.length === 1
+                ? " Check out this Fresh Playlist"
+                : " Check out these Fresh Playlists"}
+            </p>{" "}
+            <div className="mt-3 flex flex-col lg:grid  gap-7">
+              {playlists?.map((playlist, index) => (
+                <iframe
+                  key={index}
+                  style={{ borderRadius: "12px" }}
+                  src={`https://open.spotify.com/embed/playlist/${playlist.spotifyId}?utm_source=generator`}
+                  width="100%"
+                  height="500"
+                  allowFullScreen
+                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                  loading="lazy"
+                ></iframe>
+              ))}
+            </div>{" "}
+          </div>
+        ) : playlists.length > 1 ? (
+          <div className="mt-15">
+            <p className="text-2xl font-avenir-black text-black/75">
+              Check out these Fresh Playlists
+            </p>{" "}
+            <div className="mt-3 flex flex-col lg:grid lg:grid-cols-2 gap-7">
+              {playlists?.map((playlist, index) => (
+                <iframe
+                  key={index}
+                  style={{ borderRadius: "12px" }}
+                  src={`https://open.spotify.com/embed/playlist/${playlist.spotifyId}?utm_source=generator`}
+                  width="100%"
+                  height="400"
+                  allowFullScreen
+                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                  loading="lazy"
+                ></iframe>
+              ))}
+            </div>{" "}
+          </div>
+        ) : (
+          <></>
+        )}
+
+        {!isLoaded && spotifyEpisodes.length < 1 && playlists.length < 1 ? (
+          <div className="">
+            <div className="flex justify-center pt-20">
+              <img
+                src={ComingSoon}
+                alt="coming soon gif"
+                className="pointer-events-none"
+              />
+            </div>
+          </div>
+        ) : (
+          <></>
+        )}
       </main>
       <section className="">
         <div className="h-30"></div>

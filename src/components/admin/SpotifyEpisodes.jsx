@@ -205,7 +205,7 @@ const SpotifyEpisodes = () => {
           <div className="bg-white p-6 rounded-md shadow-lg max-w-md w-full ">
             <div className="flex flex-col items-center justify-center gap-2 text-lg font-semibold p-3 rounded-2xl ">
               <span className="text-2xl">Invalid Spotify Link</span>
-              <ExclamationTriangleIcon className="size-12 text-red-500" />
+              <ExclamationTriangleIcon className="size-12 text-red-700" />
             </div>
             <p className="text-gray-700 mt-4 text-center text-sm ">{error}</p>
             <div className="flex justify-center mt-4">
@@ -238,9 +238,17 @@ const SpotifyEpisodes = () => {
 
       <Dialog open={openModal} onClose={closeModal} fullWidth maxWidth="sm">
         <DialogTitle>
-          {episodeDetails.episodeId
-            ? "Edit Spotify Episode"
-            : "Add Spotify Episode"}
+          {embedTypeFilter === "Episodes"
+            ? episodeDetails.episodeId
+              ? "Edit Spotify Episode"
+              : "Add Spotify Episode"
+            : embedTypeFilter === "Playlists"
+            ? episodeDetails.episodeId
+              ? "Edit Spotify Playlist"
+              : "Add Spotify Playlist"
+            : episodeDetails.episodeId
+            ? "Edit Spotify Link"
+            : "Add Spotify Link"}
         </DialogTitle>
         <DialogContent>
           <div className="text-md p-1 font-avenir-black">
@@ -327,9 +335,9 @@ const SpotifyEpisodes = () => {
         description="Are you sure you want to delete this Spotify Link? This action cannot be undone."
         confirmLabel="Delete"
         cancelLabel="Cancel"
-        icon={<ExclamationTriangleIcon className="h-12 w-12 text-red-500" />}
+        icon={<ExclamationTriangleIcon className="h-12 w-12 text-red-700" />}
         cancelBtnClass="p-2 px-4 cursor-pointer rounded-lg hover:bg-gray-200 duration-500 text-gray-700"
-        confirmBtnClass="p-2 px-4 cursor-pointer rounded-lg bg-red-500 hover:bg-red-600 duration-500 text-white"
+        confirmBtnClass="p-2 px-4 cursor-pointer rounded-lg bg-red-700 hover:bg-red-800 duration-800 text-white"
       />
     </div>
   );

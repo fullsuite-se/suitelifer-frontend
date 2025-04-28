@@ -15,7 +15,7 @@ const ConfirmationDialog = ({
   description = "This action cannot be undone.",
   confirmLabel = "Confirm",
   cancelLabel = "Cancel",
-  icon = <ExclamationTriangleIcon className="h-12 w-12 text-red-500" />,
+  icon = <ExclamationTriangleIcon className="h-12 w-12 text-red-700" />,
   confirmBtnClass = "btn-primary",
   cancelBtnClass = "btn-light",
 }) => {

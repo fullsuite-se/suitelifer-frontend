@@ -15,6 +15,9 @@ import PageMeta from "../../components/layout/PageMeta";
 const CareersAll = () => {
   const [jobs, setJobs] = useState([]);
   const location = useLocation();
+
+  const [filter, setFilter] = useState("All");
+
   const fetchJobs = async () => {
     try {
       const response = await atsAPI.get("/jobs/shown");
@@ -35,16 +38,6 @@ const CareersAll = () => {
     }
   };
 
-  useEffect(() => {
-    fetchJobs();
-    fetchIndustries();
-  }, []);
-
-  const [filter, setFilter] = useState("All");
-  const handleFilterChange = (filter) => {
-    setFilter((f) => filter);
-  };
-
   const fetchFilteredJobs = async () => {
     try {
       const response = await atsAPI.get(`/jobs/${filter}`);
@@ -57,8 +50,31 @@ const CareersAll = () => {
   };
 
   useEffect(() => {
-    filter === "All" ? fetchJobs() : fetchFilteredJobs();
+    fetchIndustries();
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const urlFilter = params.get("filter");
+
+    if (urlFilter) {
+      setFilter(urlFilter);
+    } else {
+      setFilter("All");
+    }
+  }, [location.search]);
+
+  useEffect(() => {
+    if (filter === "All") {
+      fetchJobs();
+    } else {
+      fetchFilteredJobs();
+    }
   }, [filter]);
+
+  const handleFilterChange = (filter) => {
+    setFilter(filter);
+  };
 
   return (
     <>

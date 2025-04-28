@@ -114,7 +114,7 @@ const AboutUs = () => {
                   src={aboutContent.aboutBackgroundImage}
                   alt="background banner"
                   className="filter grayscale absolute bottom-0 lg:bottom-30 xl:bottom-5 w-full lg:w-[80%]  h-full md:h-[900px] object-cover object-top opacity-100 lg:h-[500px] lg:right-0 xl:h-[840px] 
-[mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.2),rgba(0,0,0,0))] [mask-size:100%_100%]"
+[mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.2),rgba(0,0,0,0))] [mask-size:100%_100%] pointer-events-none"
                 />
 
                 <div className="relative z-10 flex flex-col items-center gap-30 lg:flex-row p-1 md:p-10 md:!pb-0 md:gap-5 lg:gap-10">
@@ -152,7 +152,7 @@ const AboutUs = () => {
                   <img
                     src={aboutContent.aboutHeroImage}
                     alt="Fullsuite Employees"
-                    className="w-auto max-h-[400px] p-1 md:max-h-[400px] lg:max-h-[450px] xl:max-h-[700px]"
+                    className="w-auto max-h-[400px] p-1 md:max-h-[400px] lg:max-h-[450px] xl:max-h-[700px] pointer-events-none"
                   />{" "}
                 </div>
               </div>
