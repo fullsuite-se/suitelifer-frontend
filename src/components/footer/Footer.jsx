@@ -32,19 +32,15 @@ const Footer = () => {
   const [certifications, setCertifications] = useState([]);
   const fetchCertifications = async () => {
     try {
-      console.log("Fetching certifications...");
       const response = await api.get("/api/certification");
-      console.log("Response received:", response);
 
       const certificationsData = (response.data.certifications || []).map(
         (cert) => ({
           cert_img_url: cert.certImageUrl,
         })
       );
-      console.log("Certifications data mapped:", certificationsData);
 
       setCertifications(certificationsData);
-      console.log("Certifications state updated:", certificationsData);
     } catch (error) {
       console.error("Error fetching certifications:", error);
     }
