@@ -6,21 +6,47 @@ import {
   PlusCircleIcon,
 } from "@heroicons/react/24/outline";
 import dayjs from "dayjs";
+import Skeleton from "react-loading-skeleton";
 
 const AuditLogs = () => {
   const [logs, setLogs] = useState([]);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState("");
-  const [query, setQuery] = useState(""); // debounced or submitted query
+  const [query, setQuery] = useState("");
   const limit = 10;
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchLogs = async (page, query = "") => {
     try {
+      setIsLoading(true);
       const response = await api.get(
         `/api/audit-logs?limit=${limit}&page=${page}&search=${query}`
       );
-      setLogs(response.data.logs);
+
+      const processedLogs = response.data.logs.map((log) => {
+        const urlPattern = /https?:\/\/[^\s]+/g;
+        const match = log.description.match(urlPattern);
+
+        if (match && match[0]) {
+          const url = match[0];
+          const descriptionWithoutUrl = log.description.replace(url, "");
+
+          const clickableText = `<a href="${url}" target="_blank" class="text-primary no-underline hover:!underline">this is the link</a>`;
+          return {
+            ...log,
+            description: `${descriptionWithoutUrl} (${clickableText})`,
+          };
+        }
+        return {
+          ...log,
+          description: log.description,
+        };
+      });
+      setIsLoading(false);
+
+      setLogs(processedLogs);
       setTotal(response.data.total);
     } catch (e) {
       console.error("Failed to fetch logs", e);
@@ -35,8 +61,8 @@ const AuditLogs = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    setPage(1); // reset to first page on new search
-    setQuery(search); // trigger useEffect
+    setPage(1);
+    setQuery(search);
   };
 
   return (
@@ -47,11 +73,16 @@ const AuditLogs = () => {
           placeholder="Search logs..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="border border-none bg-primary/10 rounded px-4 py-2 w-full focus:outline-primary"
+          className={`border border-none rounded px-4 py-2 w-full focus:outline-primary 
+            ${isLoading ? "bg-gray-100" : "bg-primary/10"}`}
         />
         <button
           type="submit"
-          className="cursor-pointer px-4 py-2 bg-primary text-white rounded hover:bg-primary-hovered focus:outline-primary-hovered"
+          disabled={isLoading}
+          className={`cursor-pointer px-4 py-2 rounded text-white focus:outline-primary-hovered 
+            ${
+              isLoading ? "bg-gray-200" : "bg-primary hover:bg-primary-hovered"
+            }`}
         >
           Search
         </button>
@@ -70,6 +101,21 @@ const AuditLogs = () => {
         )}
       </form>
 
+      {isLoading && (
+        <div className="space-y-4">
+          {Array(10)
+            .fill(null)
+            .map((_, index) => (
+              <div
+                key={index}
+                className="p-5 flex items-center gap-4  bg-gray-100 rounded-lg"
+              >
+                <Skeleton height={30} className="w-full" />
+              </div>
+            ))}
+        </div>
+      )}
+
       {logs.map((log) => (
         <div
           key={log.logId}
@@ -87,7 +133,10 @@ const AuditLogs = () => {
             )}
           </div>
           <div className="flex flex-col">
-            <p className="font-avenir-black">{log.description}</p>
+            <p
+              className="font-avenir-black"
+              dangerouslySetInnerHTML={{ __html: log.description }}
+            ></p>
             <p className="text-gray-500 text-xss">
               {dayjs(log.date).format("MMMM D, YYYY h:mm A")}
             </p>
