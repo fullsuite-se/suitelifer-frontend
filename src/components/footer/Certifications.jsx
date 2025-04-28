@@ -1,23 +1,15 @@
-import logoSOC from "../../assets/logos/logo-soc.svg";
+// CertificationsList.jsx
+import React from "react";
 
-const Certifications = () => {
-  const localLogos = [
-    logoSOC,
-  ];
-
-  const baseSize = 80;
-  const minSize = 30;
-  const calculatedSize = Math.max(minSize, baseSize - localLogos.length * 5);
-
+const Certifications = ({ certifications }) => {
   return (
-    <div className="flex justify-end items-center flex-wrap gap-4 ">
-      {localLogos.map((logo, index) => (
+    <div className="flex justify-end items-center flex-wrap gap-4">
+      {certifications.map((cert, index) => (
         <img
           key={index}
-          src={logo}
+          src={cert.cert_img_url}
           alt={`Certification ${index + 1}`}
-          className="transition-all duration-300"
-          style={{ width: `${calculatedSize}px`, height: `${calculatedSize}px` }}
+          className="h-12 w-auto object-contain"
         />
       ))}
     </div>
