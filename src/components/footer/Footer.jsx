@@ -26,6 +26,8 @@ const handleLoginBtn = async (navigate) => {
 };
 
 const Footer = () => {
+  const baseSize = 80;
+  const minSize = 30;
   const [industries, setIndustries] = useState([]);
   const [certifications, setCertifications] = useState([]);
   const fetchCertifications = async () => {
@@ -259,7 +261,17 @@ const Footer = () => {
                   key={index}
                   src={cert.cert_img_url}
                   alt={`Certification ${index + 1}`}
-                  className="h-12 w-auto object-contain"
+                  className=" object-contain transition-all duration-300"
+                  style={{
+                    width: `${Math.max(
+                      minSize,
+                      baseSize - certifications.length * 5
+                    )}px`,
+                    height: `${Math.max(
+                      minSize,
+                      baseSize - certifications.length * 5
+                    )}px`,
+                  }}
                 />
               ))}
             </div>
