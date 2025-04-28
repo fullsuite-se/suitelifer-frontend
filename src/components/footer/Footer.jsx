@@ -27,6 +27,27 @@ const handleLoginBtn = async (navigate) => {
 
 const Footer = () => {
   const [industries, setIndustries] = useState([]);
+  const [certifications, setCertifications] = useState([]);
+  const fetchCertifications = async () => {
+    try {
+      console.log("Fetching certifications...");
+      const response = await api.get("/api/certification");
+      console.log("Response received:", response);
+
+      const certificationsData = (response.data.certifications || []).map(
+        (cert) => ({
+          cert_img_url: cert.certImageUrl,
+        })
+      );
+      console.log("Certifications data mapped:", certificationsData);
+
+      setCertifications(certificationsData);
+      console.log("Certifications state updated:", certificationsData);
+    } catch (error) {
+      console.error("Error fetching certifications:", error);
+    }
+  };
+
   const fetchIndustries = async () => {
     try {
       const response = await atsAPI.get("/industries");
@@ -38,6 +59,7 @@ const Footer = () => {
 
   useEffect(() => {
     fetchIndustries();
+    fetchCertifications();
   }, []);
 
   const navigate = useNavigate();
@@ -231,7 +253,16 @@ const Footer = () => {
             </div>
           </div>
           <div className="md:mt-30">
-            <Certifications />
+            <div className="flex justify-end items-center flex-wrap gap-4 ">
+              {certifications.map((cert, index) => (
+                <img
+                  key={index}
+                  src={cert.cert_img_url}
+                  alt={`Certification ${index + 1}`}
+                  className="h-12 w-auto object-contain"
+                />
+              ))}
+            </div>
           </div>
         </div>
       </div>{" "}
