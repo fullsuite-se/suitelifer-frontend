@@ -1,4 +1,3 @@
-// CertificationsList.jsx
 import React from "react";
 
 const Certifications = ({ certifications }) => {
