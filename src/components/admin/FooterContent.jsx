@@ -158,7 +158,7 @@ const FooterContent = () => {
         <span className="flex text-sm text-gray-400">
           {" "}
           <ExclamationTriangleIcon className="size-5  text-orange-500/70" />
-          &nbsp;Make sure all images are in 3:4 ratio
+          &nbsp;Make sure all images are in 1:1 ratio
         </span>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -167,26 +167,26 @@ const FooterContent = () => {
             <img
               src={cert.certImageUrl}
               alt="Certification"
-              className="w-full h-64 object-cover rounded-lg"
+              className="w-full h-64 object-contain rounded-lg"
             />
             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex justify-center items-center gap-4 transition-opacity duration-300 rounded-lg cursor-pointer">
               <button
-                className="p-2 bg-secondary cursor-pointer rounded-full shadow-md hover:bg-gray-200"
+                className="p-2 bg-primary cursor-pointer rounded-full shadow-md hover:bg-primary-hovered"
                 onClick={() => {
                   setCertificationDetails(cert);
                   setIsEditing(true);
                 }}
               >
-                <PencilIcon className="w-5 h-5 text-black" />
+                <PencilIcon className="w-5 h-5 text-white" />
               </button>
               <button
-                className="p-2 bg-secondary cursor-pointer rounded-full shadow-md hover:bg-gray-200"
+                className="p-2 bg-primary cursor-pointer rounded-full shadow-md hover:bg-primary-hovered"
                 onClick={() => {
                   setSelectedCert(cert);
                   setDeleteModalIsOpen(true);
                 }}
               >
-                <TrashIcon className="w-5 h-5 text-red-500" />
+                <TrashIcon className="w-5 h-5 text-white" />
               </button>
             </div>
           </div>
