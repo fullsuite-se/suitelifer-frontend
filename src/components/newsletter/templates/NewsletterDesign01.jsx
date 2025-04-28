@@ -17,7 +17,7 @@ import MotionUp from "../../animated/MotionUp";
 
 const NewsletterDesign01 = () => {
   const { newsletterContent, setNewsletterContent, isLoading, setIsLoading } =
-    newsletterStore();
+    newsletterStore(); 
 
   useEffect(() => {
     const fetchIssueAndArticles = async () => {
