@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-const newsletterStore = create(
+const newsletterStore = create( 
   persist(
     (set) => ({
       newsletterContent: {},

@@ -199,7 +199,9 @@ const Home = () => {
       </section>
 
       {/* NEWS SECTION */}
-      <HomeNews />
+      <section id="homenews">
+        <HomeNews />
+      </section>
 
       <div className="h-10"></div>
       <div className="flex items-center justify-end pl-7 xl:pl-40">

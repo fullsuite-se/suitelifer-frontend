@@ -18,48 +18,37 @@ import { removeHtmlTags } from "../../utils/removeHTMLTags";
 import Carousel from "../cms/Carousel";
 
 import PageMeta from "../layout/PageMeta";
+import useNewsletterDetailsStore from "../../store/stores/newsletterDetailsStore";
 
 const NewsletterDetails = () => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
-
   const location = useLocation();
-  const [loading, setLoading] = useState(false);
-  const [newsletterItem, setNewsletterItem] = useState({});
-
-  const previousPage = location.state?.from;
   const navigate = useNavigate();
 
+  const fromHome = location.state?.fromHome || false;
+
+  const {
+    newsletterItem,
+    isLoading,
+    fetchNewsletterItem,
+    resetNewsletterItem,
+  } = useNewsletterDetailsStore();
+
   const handleBack = () => {
-    navigate("/newsletter");
+    navigate(fromHome ? "/#homenews" : "/newsletter");
   };
 
   useEffect(() => {
-    const fetchNewsletter = async () => {
-      try {
-        setLoading(true);
+    const newsletterId = location.state?.id || id;
+    if (!newsletterId) return;
 
-        const newsletterId = location.state?.id || id;
-        if (!newsletterId) return;
+    fetchNewsletterItem(newsletterId);
 
-        const response = await api.get(`/api/newsletter/` + newsletterId);
-        console.log(newsletterId);
-        console.log(response.data.newsletter);
+    return () => resetNewsletterItem();
+  }, [location.state, id, fetchNewsletterItem, resetNewsletterItem]);
 
-        setNewsletterItem(response.data.newsletter);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchNewsletter();
-  }, [location.state, id]);
-
-  if (loading) {
-    return <LoadingArticleDetails />;
-  }
+  if (isLoading) return <LoadingArticleDetails />;
 
   return (
     <>

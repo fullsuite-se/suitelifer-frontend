@@ -6,9 +6,63 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import DynamicLink from "../buttons/ViewAll";
 import formatTimestamp from "../../utils/formatTimestamp";
+import newsletterStore from "../../store/stores/newsletterStore";
+import { useEffect } from "react";
+import api from "../../utils/axios";
+import { readingTime } from "reading-time-estimator";
+import { removeHtmlTags } from "../../utils/removeHTMLTags";
 
 const HomeNews = () => {
-  if (!newsList || newsList.length === 0) {
+  const { newsletterContent, setNewsletterContent, isLoading, setIsLoading } =
+    newsletterStore();
+  useEffect(() => {
+    const fetchIssueAndArticles = async () => {
+      try {
+        const issueRes = await api.get("api/issues/current");
+        const current = issueRes.data.currentIssue;
+
+        const articlesRes = await api.get(
+          `/api/newsletter?issueId=${current.issueId}`
+        );
+
+        const allArticles = articlesRes.data.newsletters || [];
+
+        const filteredArticles = Array.from({ length: 7 }, (_, i) => {
+          const sectionNumber = i + 1;
+          return (
+            allArticles.find(
+              (article) => article.section === sectionNumber
+            ) || {
+              title: "Coming Soon",
+              article: "This section is being prepared. Stay tuned!",
+              pseudonym: "FullSuite Team",
+              createdAt: new Date().toISOString(),
+              newsletterId: "",
+              images: [],
+              section: sectionNumber,
+            }
+          );
+        });
+
+        setNewsletterContent({
+          articles: filteredArticles,
+          currentIssue: current,
+        });
+      } catch (error) {
+        console.error(error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchIssueAndArticles();
+  }, [setNewsletterContent, setIsLoading]);
+
+  const articles = newsletterContent.articles || [];
+  const currentIssue = newsletterContent.currentIssue || {};
+
+
+  if (!articles || articles.length === 0) {
     return (
       <section className="px-7 xl:px-40 text-center">
         <div className="mb-5 relative">
@@ -33,15 +87,6 @@ const HomeNews = () => {
       </section>
     );
   }
-
-  const mainNews = newsList?.[0]; // Get the first news item
-  const mainImage = mainNews?.imagesWithCaption?.[0]?.image?.trim();
-  const mainTitle = mainNews?.title;
-  const mainAuthor = mainNews?.author;
-  const mainReadTime = mainNews?.readTime;
-  const mainArticle = mainNews?.article;
-  const mainCreatedAt = mainNews?.created_at;
-  const mainNewsLink = mainTitle ? `/newsletter/${toSlug(mainTitle)}` : "";
 
   return (
     <section className="px-7 xl:px-40">
@@ -88,18 +133,21 @@ const HomeNews = () => {
         </div>
         {/* MAIN NEWS (First Item) */}
         <MotionUp className="lg:w-1/2 flex  flex-col items-center justify-center">
-          {mainNews && (
+          {articles[0] && (
             <NavLink
-              to={mainNewsLink}
+              to={`/newsletter/${toSlug(articles[0].title)}?id=${
+                articles[0].newsletterId
+              }`}
+              state={{ fromHome: true }}
               className="no-underline rounded-2xl cursor-pointer group hover:bg-white w-full h-full"
             >
               <div className="group-hover:!text-primary bg-primary p-5 md:p-10 lg:p-15 rounded-xl  md:rounded-2xl ">
                 {/* IMAGE */}
                 <MotionUp className="mb-5">
-                  {mainImage ? (
+                  {articles[0].images ? (
                     <img
                       className="aspect-video object-cover rounded-xl md:rounded-2xl lg:w-full xl:h-[400px]!"
-                      src={mainImage}
+                      src={articles[0].images[0]}
                       alt="Main content news image"
                     />
                   ) : (
@@ -114,9 +162,9 @@ const HomeNews = () => {
                   transition={{ duration: 0.4, ease: "easeOut" }}
                   className="title "
                 >
-                  {mainTitle ? (
+                  {articles[0].title ? (
                     <p className="font-avenir-black text-white text-body line-clamp-2 group-hover:text-secondary! duration-300">
-                      {mainTitle}
+                      {articles[0].title}
                     </p>
                   ) : (
                     <Skeleton width={"70%"} />
@@ -130,17 +178,24 @@ const HomeNews = () => {
                   transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
                   className="news-info py-1 md:py-2 mb-2 no-underline!"
                 >
-                  {mainAuthor && mainReadTime ? (
+                  {articles[0].pseudonym && articles[0].createdAt ? (
                     <p className="text-xss opacity-80">
-                      <span className="text-white">{mainAuthor}</span>
+                      <span className="text-white">{articles[0].pseudonym}</span>
                       <span className="text-white">&nbsp; |</span>
                       <span className="text-white">
-                        &nbsp;&nbsp;{mainReadTime}
+                        &nbsp;&nbsp;
+                        {
+                          readingTime(
+                            removeHtmlTags(articles[0].article ?? "article"),
+                            238
+                          ).text
+                        }
                         <span className="text-white">&nbsp; |</span>
                       </span>
                       <span className="text-white">
                         {" "}
-                        &nbsp;&nbsp;{formatTimestamp(mainCreatedAt).fullDate}
+                        &nbsp;&nbsp;
+                        {formatTimestamp(articles[0].createdAt).fullDate}
                       </span>
                     </p>
                   ) : (
@@ -150,10 +205,11 @@ const HomeNews = () => {
 
                 {/* DESCRIPTION */}
                 <div className="news-desc pr-2 mb-2">
-                  {mainArticle ? (
-                    <p className="font-avenir line-clamp-3 md:line-clamp-5! lg:line-clamp-20! xl:line-clamp-3! text-small text-white">
-                      {mainArticle}
-                    </p>
+                  {articles[0].article ? (
+                    <article
+                      dangerouslySetInnerHTML={{ __html: articles[0].article }}
+                      className="font-avenir line-clamp-3 md:line-clamp-5! lg:line-clamp-20! xl:line-clamp-7! text-small text-white"
+                    />
                   ) : (
                     <Skeleton count={3} />
                   )}
@@ -166,27 +222,40 @@ const HomeNews = () => {
 
         {/* OTHER NEWS (Remaining Items) */}
         <div className="lg:w-1/2 flex flex-col max-h-full overflow-y-auto gap-2 pb-2">
-          {newsList.slice(1, 5).map((news) => {
-            const newsImage = news?.imagesWithCaption?.[0]?.image?.trim();
-            const newsTitle = news?.title;
-            const newsArticle = news?.article;
-            const newsAuthor = news?.author;
-            const newsReadTime = news?.readTime;
-            const newsCreatedAt = news?.created_at;
-            const newsLink = newsTitle
-              ? `/newsletter/${toSlug(newsTitle)}`
+          {articles.slice(1, 5).map((news) => {
+            const {
+              images: newsImage,
+              title: newsTitle,
+              article: newsArticle,
+              pseudonym: newsAuthor,
+              createdAt,
+              newsletterId,
+            } = news || {};
+
+            const newsReadTime = readingTime(
+              removeHtmlTags(newsArticle ?? "article"),
+              238
+            ).text;
+
+            const newsCreatedAt = createdAt
+              ? formatTimestamp(createdAt).fullDate
               : "";
+            const newsLink = newsletterId
+              ? `/newsletter/${toSlug(newsTitle)}?id=${newsletterId}`
+              : "/newsletter";
 
             return (
               <NavLink
-                key={news.id}
+                key={newsletterId}
                 to={newsLink}
+                state={{ fromHome: true }}
                 className="duration-500 group no-underline rounded-2xl cursor-pointer px-2 py-3 lg:px-4 md:mb-2 transition-all hover:shadow-sm hover:bg-white"
               >
                 <MotionUp>
                   <div className="flex justify-center items-center gap-2">
                     {/* CONTENT */}
                     <div className="flex flex-col w-full">
+                      {/* CREATED AT */}
                       <MotionUp
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -195,44 +264,48 @@ const HomeNews = () => {
                           ease: "easeOut",
                           delay: 0.1,
                         }}
-                        className="news-info py-1 md:py-2 mb-2 no-underline!"
+                        className="news-info py-1 md:py-2 mb-2"
                       >
-                        {mainAuthor && mainReadTime ? (
+                        {newsCreatedAt ? (
                           <p className="text-xss">
                             <span className="text-gray-400">
-                              {" "}
-                              {formatTimestamp(newsCreatedAt).fullDate}
+                              {newsCreatedAt}
                             </span>
                           </p>
                         ) : (
                           <Skeleton width={"25%"} />
                         )}
                       </MotionUp>
+
+                      {/* TITLE */}
                       <div className="group-hover:!text-primary duration-300">
-                        {/* TITLE */}
                         <p
                           title={newsTitle}
-                          className="font-avenir-black text-body  font-avenir-black"
+                          className="font-avenir-black text-body font-avenir-black"
                         >
                           {newsTitle || <Skeleton width={"70%"} />}
                         </p>
                       </div>
+
                       {/* DESCRIPTION */}
-                      <div className="hidden md:block news-desc  mb-2">
-                        <p className="font-avenir line-clamp-2 text-small sm:line-clamp-3   text-gray-500">
-                          {newsArticle || <Skeleton count={2} />}
-                        </p>
+                      <div className="hidden md:block news-desc mb-2">
+                        {newsArticle ? (
+                          <article
+                            dangerouslySetInnerHTML={{ __html: newsArticle }}
+                            className="font-avenir line-clamp-2 text-small sm:line-clamp-2 text-gray-500"
+                          />
+                        ) : (
+                          <Skeleton count={2} />
+                        )}
                       </div>
+
+                      {/* AUTHOR + READ TIME */}
                       <div>
-                        {" "}
-                        {/* AUTHOR AND READ TIME */}
                         <p className="text-xss">
                           {newsAuthor && newsReadTime ? (
                             <>
-                              <span className="text-primary">
-                                {newsAuthor} &nbsp; |
-                              </span>
-                              &nbsp; &nbsp;
+                              <span className="text-primary">{newsAuthor}</span>
+                              &nbsp;|&nbsp;
                               <span className="text-gray-400">
                                 {newsReadTime}
                               </span>
@@ -243,20 +316,6 @@ const HomeNews = () => {
                         </p>
                       </div>
                     </div>
-                    {/* IMAGE */}
-                    {/* <div className="w-[50%] sm:w-[40%] h-full flex items-center">
-                      {newsImage ? (
-                        <img
-                          className="aspect-video h-full object-cover rounded-md sm:rounded-xl"
-                          src={newsImage}
-                          alt="News image"
-                        />
-                      ) : (
-                        <div className="w-full aspect-video h-full object-cover rounded-md sm:rounded-xl">
-                          <Skeleton className="h-full w-full" />
-                        </div>
-                      )}
-                    </div> */}
                   </div>
                 </MotionUp>
               </NavLink>
