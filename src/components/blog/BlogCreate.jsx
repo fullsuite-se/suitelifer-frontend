@@ -58,9 +58,7 @@ const BlogCreate = () => {
           `/api/upload-image/blogs/${eblogId}`,
           imagesData
         );
-
-        console.log("Blog uploaded successfully:", responseBlog.data);
-        console.log("File uploaded successfully:", responseImg.data);
+        
       } catch (error) {
         console.error("Error uploading file:", error);
       }

@@ -32,7 +32,7 @@ const ContactDetails = () => {
       const response = await api.get("/api/contact");
       response.data.contact && setContactDetails(response.data.contact);
     } catch (err) {
-      console.log(err);
+      console.log("Unable to fetch contact details", err);
       toast.error("Failed to fetch contact details.");
     }
   };
@@ -63,7 +63,7 @@ const ContactDetails = () => {
       });
       setDataUpdated(!dataUpdated);
     } catch (err) {
-      console.log(err);
+      console.log("Unable to Update Contact Details",err);
       toast.error("Error updating contact details.");
     }
   };

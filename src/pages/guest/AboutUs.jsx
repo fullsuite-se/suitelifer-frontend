@@ -38,7 +38,7 @@ const AboutUs = () => {
 
       setAboutContent(response.data.aboutContent);
     } catch (error) {
-      console.log(error);
+      console.log("Unable to fetch Content",error);
     }
   };
 

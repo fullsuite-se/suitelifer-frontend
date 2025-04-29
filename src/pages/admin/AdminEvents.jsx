@@ -52,10 +52,6 @@ const AdminEvents = () => {
   const fetchEvents = async () => {
     try {
       const response = await api.get("/api/events");
-
-      console.log(response.data.events);
-      
-
       const rawEvents = response.data.events;
       const adjustedEvents = rawEvents.map((event) => ({
         ...event,

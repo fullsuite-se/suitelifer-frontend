@@ -9,8 +9,10 @@ const useAuditLogStore = create((set) => ({
       await api.post("api/audit-logs", log);
       console.log("Audit log added.");
     } catch (error) {
-        console.log("Error adding audit log: ", error);
-        set({error: error.response?.data?.message || 'Failed to add audit log'});
+      console.log("Error adding audit log: ", error);
+      set({
+        error: error.response?.data?.message || "Failed to add audit log",
+      });
     }
   },
 }));

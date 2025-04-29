@@ -112,7 +112,7 @@ const AdminDashboard = () => {
 
       setApplicationTrend(filledData);
     } catch (err) {
-      console.log(err);
+      console.log("Unable to fetch Application Data",err);
     }
   };
 
@@ -127,7 +127,7 @@ const AdminDashboard = () => {
 
       setOpenJobs((oj) => response.data.data.count);
     } catch (err) {
-      console.log(err);
+      console.log("Unable to fetch Available Jobs",err);
     }
   };
 
@@ -137,7 +137,7 @@ const AdminDashboard = () => {
 
       setClosedJobs((cj) => response.data.data.count);
     } catch (err) {
-      console.log(err);
+      console.log("Unable to fetch Unavailable Jobs",err);
     }
   };
 
