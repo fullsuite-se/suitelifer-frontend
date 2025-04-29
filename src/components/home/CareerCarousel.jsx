@@ -43,10 +43,9 @@ const CareerCarousel = () => {
     try {
       setIsLoading(true);
       const response = await atsAPI.get("/industries/pr");
-
       setIndustries(response.data.data);
     } catch (err) {
-      console.log(err);
+      console.log("Unable to fetch Industries",err);
     } finally {
       setIsLoading(false);
     }

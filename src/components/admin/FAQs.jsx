@@ -42,7 +42,7 @@ function FAQs() {
       const fetchedFaqs = response.data.faqs;
       setFaqs(fetchedFaqs);
     } catch (err) {
-      console.log(err);
+      console.log("Unable to fetch FAQs",err);
     }
   };
 
