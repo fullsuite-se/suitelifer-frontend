@@ -2004,9 +2004,7 @@ function Fr() {
       try {
         const h = await fe.get("/api/get-all-personality-tests");
         p(h.data.data);
-      } catch (h) {
-        console.log(h);
-      }
+      } catch (error) {}
     };
   return (
     l.useEffect(() => {
@@ -2747,7 +2745,6 @@ const ke = (t) => {
         return i ? i[1] : null;
       },
       v = () => {
-        console.log({ videoFile: r });
       };
     return e.jsx(e.Fragment, {
       children: e.jsxs("div", {

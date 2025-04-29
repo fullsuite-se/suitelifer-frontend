@@ -35,9 +35,7 @@ const FooterContent = () => {
     try {
       const response = await api.get("/api/certification");
       setCertifications(response.data.certifications || []);
-    } catch (error) {
-      console.error("Error fetching certifications:", error);
-    }
+    } catch (error) {}
   };
 
   const handleDelete = async () => {
@@ -61,7 +59,6 @@ const FooterContent = () => {
         toast.error("Failed to delete certificate.");
       }
     } catch (error) {
-      console.error("Delete error:", error);
       toast.error("Error deleting certification");
     } finally {
       setIsLoading(false);
@@ -102,7 +99,6 @@ const FooterContent = () => {
       }
     } catch (error) {
       toast.error("Failed to save certificate");
-      console.error(error);
     } finally {
       setIsLoading(false);
       setIsEditing(false);

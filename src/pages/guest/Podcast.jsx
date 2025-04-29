@@ -81,7 +81,7 @@ const Podcast = () => {
 
       setContactDetails(response.data.contact);
     } catch (err) {
-      console.log(err);
+      console.log("Unable to fetch Contacts",err);
     }
   };
 

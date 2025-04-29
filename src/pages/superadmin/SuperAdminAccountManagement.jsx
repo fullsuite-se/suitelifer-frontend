@@ -122,7 +122,7 @@ const SuperAdminAccountManagement = () => {
 
       setUserAccounts(response.data.users);
     } catch (err) {
-      console.log(err);
+      console.log("Unable to fetch User Accounts",err);
     }
   };
 
@@ -171,7 +171,7 @@ const SuperAdminAccountManagement = () => {
         toast.success("Role Updated Successfully");
       }
     } catch (err) {
-      console.log(err);
+      console.log("Unable to Update User Type",err);
     } finally {
       window.location.reload();
       setModal((m) => defaultModalDetails);
@@ -227,7 +227,7 @@ const SuperAdminAccountManagement = () => {
         toast.success("Status Updated Successfully");
       }
     } catch (err) {
-      console.log(err);
+      console.log("Unable to Update Status",err);
     } finally {
       window.location.reload();
       setModal((m) => defaultModalDetails);

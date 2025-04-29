@@ -23,7 +23,6 @@ import {
   useGoogleReCaptcha,
 } from "react-google-recaptcha-v3";
 import ModalConfirmApplication from "../../components/modals/ModalConfirmApplication";
-import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
 import LoadingAnimation from "../../components/loader/Loading";
 
 const Form = () => {
@@ -55,7 +54,6 @@ const Form = () => {
     defaultApplicationDetails
   );
 
-  // For Captcha
   const { executeRecaptcha } = useGoogleReCaptcha();
 
   const handleApplicationDetailsChange = (e) => {
@@ -102,8 +100,6 @@ const Form = () => {
     formData.append("file", CV);
 
     const upload_response = await atsAPI.post("/upload/gdrive/cv", formData);
-
-    console.log(upload_response.data.fileUrl);
 
     applicationDetails.cv_link = upload_response.data.fileUrl;
   };
@@ -169,7 +165,7 @@ const Form = () => {
         }
       }
     } catch (err) {
-      console.log(err);
+      console.log("Unable to Submit Application Job",err);
       toast.error("Job Application Unsuccessful.");
     } finally {
       setIsLoading(false);

@@ -32,7 +32,7 @@ const CareersAll = () => {
       const response = await atsAPI.get("/jobs/shown");
       setJobs(response.data.data);
     } catch (err) {
-      console.log(err);
+      console.log("Unable to fetch Jobs",err);
     }
   };
 
@@ -41,7 +41,7 @@ const CareersAll = () => {
       const response = await atsAPI.get(`/jobs/${industryId}`);
       setJobs(response.data.data);
     } catch (err) {
-      console.log(err);
+      console.log("Unable to fetch Industries",err);
     }
   };
 

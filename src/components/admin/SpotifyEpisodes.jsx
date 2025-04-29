@@ -174,7 +174,7 @@ const SpotifyEpisodes = () => {
       toast.success(response.data.message);
       setDataUpdated(!dataUpdated);
     } catch (err) {
-      console.log(err);
+      console.log("unable to delete spotify link", err);
     }
   };
 
@@ -183,7 +183,7 @@ const SpotifyEpisodes = () => {
       const response = await api.get("/api/spotify/");
       setEpisodes(response.data.data);
     } catch (err) {
-      console.log(err);
+      console.log("Unable to fetch Spotify Episodes", err);
     }
   };
 

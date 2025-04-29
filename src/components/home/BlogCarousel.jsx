@@ -17,12 +17,11 @@ const BlogCarousel = () => {
 
   const fetchCompanyBlogs = async () => {
     try {
-      // await new Promise((resolve) => setTimeout(resolve, 3000));
       const response = await api.get("/api/all-company-blogs");
       setCompanyBlogs(response.data);
       setIsLoading(false);
     } catch (err) {
-      console.log(err);
+      console.log("Unable to fetch Company Blogs",err);
     }
   };
 

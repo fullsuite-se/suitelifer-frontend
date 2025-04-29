@@ -28,7 +28,7 @@ const Careers = () => {
       const response = await atsAPI.get("/industries/");
       setIndustries((i) => response.data.data);
     } catch (err) {
-      console.log(err);
+      console.log("Unable to fetch Industries",err);
     }
   };
 
@@ -44,7 +44,7 @@ const Careers = () => {
       const response = await atsAPI.get("/jobs/open");
       setJobs((j) => response.data.data);
     } catch (err) {
-      console.log(err);
+      console.log("Unable to fetch Jobs",err);
     } finally {
       setIsLoading(false);
     }
@@ -60,7 +60,7 @@ console.log(filter);
 console.log(response.data.data);
       setJobs((j) => response.data.data);
     } catch (err) {
-      console.log(err);
+      console.log("Unable to fetch Filtered Jobs",err);
     } finally {
       setIsLoading(false);
     }
@@ -73,7 +73,7 @@ console.log(response.data.data);
 
       setHeroImages(data);
     } catch (error) {
-      console.log(error);
+      console.log("Uable to fetch Image",error);
       setIsHeroLoading(false); // just in case it fails
     }
   };

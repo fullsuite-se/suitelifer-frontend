@@ -36,7 +36,7 @@ export default function AdminJobListing() {
 
       setTotalApplications(response.data.data.total);
     } catch (err) {
-      console.log(err);
+      console.log("Unable to fetch Total Applications", err);
     }
   };
 
@@ -46,7 +46,7 @@ export default function AdminJobListing() {
 
       setOpenJobs((oj) => response.data.data.count);
     } catch (err) {
-      console.log(err);
+      console.log("Unable to fetch Available Jobs ",err);
     }
   };
 
@@ -56,7 +56,7 @@ export default function AdminJobListing() {
 
       setClosedJobs((cj) => response.data.data.count);
     } catch (err) {
-      console.log(err);
+      console.log("Unable to fetch Unavailable Jobs",err);
     }
   };
 
@@ -169,7 +169,7 @@ export default function AdminJobListing() {
       setJobListings(response.data.data);
       setRowJobData(response.data.data);
     } catch (err) {
-      console.log(err);
+      console.log("Unable to fetch Job Lists",err);
     }
   };
 
