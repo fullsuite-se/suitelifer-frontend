@@ -1,4 +1,5 @@
 import React from "react";
+import ArticlePreviewWithHyphenation from "./ArticlePreviewWithHyphenation";
 
 const ColoredArticleViewDesign = ({
   title,
@@ -8,6 +9,7 @@ const ColoredArticleViewDesign = ({
   article,
   lineclamp,
 }) => {
+  article += article
   return (
     <div className="p-[5%] md:px-[10%] md:py-[5%] rounded-bl-2xl rounded-tr-2xl md:rounded-2xl bg-primary">
       <p className={`font-avenir-black text-h6 line-clamp-2 text-white`}>
@@ -23,7 +25,8 @@ const ColoredArticleViewDesign = ({
       <div style={{
         
       }} className={`${lineclamp} mobile-clamper text-body text-justify text-white`}>
-      <article dangerouslySetInnerHTML={{ __html: article }} />
+
+<ArticlePreviewWithHyphenation content={article}/>
 
       </div>
     </div>

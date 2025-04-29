@@ -10,7 +10,7 @@ import FinanceOperations from "../../assets/images/careers-industry-images/Finan
 import SoftwareDevelopment from "../../assets/images/careers-industry-images/Software-Engineering-A.webp";
 import Compliance from "../../assets/images/careers-industry-images/Compliance.webp";
 import atsAPI from "../../utils/atsAPI.js";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; 
 
 const CareerCarousel = () => {
   const navigate = useNavigate(); 
