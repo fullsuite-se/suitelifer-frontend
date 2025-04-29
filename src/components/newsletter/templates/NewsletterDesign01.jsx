@@ -14,6 +14,7 @@ import TwoCirclesLoader from "../../../assets/loaders/TwoCirclesLoader";
 import Skeleton from "react-loading-skeleton";
 import newsletterStore from "../../../store/stores/newsletterStore";
 import MotionUp from "../../animated/MotionUp";
+import ArticlePreviewWithHyphenation from "../ArticlePreviewWithHyphenation";
 
 const NewsletterDesign01 = () => {
   const { newsletterContent, setNewsletterContent, isLoading, setIsLoading } =
@@ -239,7 +240,7 @@ const NewsletterDesign01 = () => {
                   <div
                     className={`line-clamp-17 text-body text-justify text-gray-500`}
                   >
-                    <article dangerouslySetInnerHTML={{ __html: section4.article }} />
+                      <ArticlePreviewWithHyphenation content={section4.article}/>
                   </div>
                   <div className="mt-5"></div>
                   <ReadMoreBtn
@@ -263,7 +264,7 @@ const NewsletterDesign01 = () => {
                   }
                   datePublished={formatTimestamp(section5.createdAt).fullDate}
                   article={section5.article}
-                  lineclamp="line-clamp-42"
+                  lineclamp="md:line-clamp-17 lg:line-clamp-17 xl:line-clamp-25"
                 />
                 <div className="mt-5"></div>
                 <div className="px-[5%] md:px-0">
@@ -330,7 +331,8 @@ const NewsletterDesign01 = () => {
                         className={`line-clamp-4 text-body text-justify text-gray-500`}
                       >
                         {" "}
-                        <article dangerouslySetInnerHTML={{ __html: section6.article }} />
+                   
+                        <ArticlePreviewWithHyphenation content={section6.article}/>
                       </div>
                       <div className="mt-5"></div>
                       <ReadMoreBtn
@@ -375,7 +377,8 @@ const NewsletterDesign01 = () => {
                     <div
                       className={`line-clamp-4 text-body text-justify text-gray-500`}
                     >
-                       <article dangerouslySetInnerHTML={{ __html: section7.article }} />
+                    
+                    <ArticlePreviewWithHyphenation content={section7.article}/>
                     </div>
                     <div className="mt-5"></div>
                     <ReadMoreBtn
@@ -390,9 +393,14 @@ const NewsletterDesign01 = () => {
           </section>
         </section>
       ) : (
-        <div className="flex items-center justify-center h-screen w-full text-center">
-          <p>No articles found for this issue.</p>
-        </div>
+        <div className="flex flex-col items-center justify-center text-center p-10 min-h-[60vh]">
+        <h1 className="text-3xl md:text-5xl font-avenir-black mb-4">
+          📬 Your Next Big Read Is On Its Way!
+        </h1>
+        <p className="text-lg md:text-xl text-gray-600 max-w-xl">
+          We're putting the final touches on something special. Fresh stories, insights, and updates will be landing here very soon — <span className="font-avenir-black text-primary">stay excited!</span>
+        </p>
+      </div>
       )}
     </div>
   );

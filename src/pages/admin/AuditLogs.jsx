@@ -17,33 +17,51 @@ const AuditLogs = () => {
   const limit = 10;
 
   const [isLoading, setIsLoading] = useState(false);
-
   const fetchLogs = async (page, query = "") => {
     try {
       setIsLoading(true);
       const response = await api.get(
         `/api/audit-logs?limit=${limit}&page=${page}&search=${query}`
       );
-
       const processedLogs = response.data.logs.map((log) => {
-        const urlPattern = /https?:\/\/[^\s]+/g;
-        const match = log.description.match(urlPattern);
-
-        if (match && match[0]) {
-          const url = match[0];
-          const descriptionWithoutUrl = log.description.replace(url, "");
-
-          const clickableText = `<a href="${url}" target="_blank" class="text-primary no-underline hover:!underline">this is the link</a>`;
+        let description = log.description;
+        
+        const urlWithParenthesesPattern = /\(https?:\/\/[^\s)]+\)/;
+        const urlPattern = /https?:\/\/[^\s)]+/;
+      
+        const matchWithParentheses = description.match(urlWithParenthesesPattern);
+        const matchWithoutParentheses = description.match(urlPattern);
+      
+        if (matchWithParentheses) {
+          const cleanUrl = matchWithParentheses[0].slice(1, -1);
+      
+          const descriptionWithoutUrl = description.replace(matchWithParentheses[0], "").trim();
+      
+          const clickableText = `<a href="${cleanUrl}" target="_blank" class="text-primary no-underline hover:!underline">this is the link</a>`;
+      
+          return {
+            ...log,
+            description: `${descriptionWithoutUrl} (${clickableText})`,
+          };
+        } else if (matchWithoutParentheses) {
+          const cleanUrl = matchWithoutParentheses[0];
+      
+          const descriptionWithoutUrl = description.replace(cleanUrl, "").trim();
+      
+          const clickableText = `<a href="${cleanUrl}" target="_blank" class="text-primary no-underline hover:!underline">this is the link</a>`;
+      
           return {
             ...log,
             description: `${descriptionWithoutUrl} (${clickableText})`,
           };
         }
+      
         return {
           ...log,
-          description: log.description,
+          description: description,
         };
       });
+      
       setIsLoading(false);
 
       setLogs(processedLogs);

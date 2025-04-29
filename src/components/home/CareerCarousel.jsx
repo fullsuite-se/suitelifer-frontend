@@ -10,31 +10,16 @@ import FinanceOperations from "../../assets/images/careers-industry-images/Finan
 import SoftwareDevelopment from "../../assets/images/careers-industry-images/Software-Engineering-A.webp";
 import Compliance from "../../assets/images/careers-industry-images/Compliance.webp";
 import atsAPI from "../../utils/atsAPI.js";
-
-const careerIndustries = [
-  {
-    industryId: 1,
-    imageUrl: BusinessOperations,
-    name: "Business Operations",
-  },
-  {
-    industryId: 2,
-    imageUrl: FinanceOperations,
-    name: "Finance Operations",
-  },
-  {
-    industryId: 3,
-    imageUrl: SoftwareDevelopment,
-    name: "Software Development",
-  },
-  {
-    industryId: 4,
-    imageUrl: Compliance,
-    name: "Compliance",
-  },
-];
+import { useNavigate } from "react-router-dom"; 
 
 const CareerCarousel = () => {
+  const navigate = useNavigate(); 
+
+  const handleCardClick = (industryId) => {
+    navigate(`/careers-all?filter=${encodeURIComponent(industryId)}`);
+  };
+
+
   const [isLoading, setIsLoading] = useState(false);
 
   const [industries, setIndustries] = useState([]);
@@ -103,7 +88,7 @@ const CareerCarousel = () => {
             <>
               {industries.slice(0, 5).map((career, index) => (
                 <SwiperSlide key={career.industryId}>
-                  <div
+                  <div onClick={() => handleCardClick(career.industryId)}
                     className={`p-5 mt-4 ease-out cursor-pointer hover:scale-95 bg-white shadow-lg rounded-2xl text-center transition-transform duration-300 scale-90
                     `}
                   >

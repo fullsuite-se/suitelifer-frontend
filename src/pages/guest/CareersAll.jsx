@@ -4,7 +4,7 @@ import TabletNav from "../../components/home/TabletNav";
 import DesktopNav from "../../components/home/DesktopNav";
 import GuestIndustryTags from "../../components/careers/GuestIndustriesTags";
 import BackToTop from "../../components/buttons/BackToTop";
-import BackButton from "../../components/buttons/BackButton";
+import BackButton from "../../components/buttons/BackButton"; 
 import { NavLink, useLocation } from "react-router-dom";
 import { toSlug } from "../../utils/slugUrl";
 import OnLoadLayoutAnimation from "../../components/layout/OnLoadLayoutAnimation";
@@ -14,50 +14,63 @@ import PageMeta from "../../components/layout/PageMeta";
 
 const CareersAll = () => {
   const [jobs, setJobs] = useState([]);
+  const [industries, setIndustries] = useState([]);
+  const [filter, setFilter] = useState(null); 
   const location = useLocation();
+
+  const fetchIndustries = async () => {
+    try {
+      const response = await atsAPI.get("/industries/");
+      setIndustries(response.data.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const fetchJobs = async () => {
     try {
       const response = await atsAPI.get("/jobs/shown");
-
       setJobs(response.data.data);
     } catch (err) {
       console.log("Unable to fetch Jobs",err);
     }
   };
 
-  const [industries, setIndustries] = useState([]);
-  const fetchIndustries = async () => {
+  const fetchFilteredJobs = async (industryId) => {
     try {
-      const response = await atsAPI.get("/industries/");
-      setIndustries((i) => response.data.data);
+      const response = await atsAPI.get(`/jobs/${industryId}`);
+      setJobs(response.data.data);
     } catch (err) {
       console.log("Unable to fetch Industries",err);
     }
   };
 
   useEffect(() => {
-    fetchJobs();
     fetchIndustries();
-  }, []);
 
-  const [filter, setFilter] = useState("All");
-  const handleFilterChange = (filter) => {
-    setFilter((f) => filter);
-  };
+    const params = new URLSearchParams(location.search);
+    const urlFilter = params.get("filter");
 
-  const fetchFilteredJobs = async () => {
-    try {
-      const response = await atsAPI.get(`/jobs/${filter}`);
-      setJobs((j) => response.data.data);
-    } catch (err) {
-      console.log("Unable to fetch Filtered Jobs",err);
+    if (urlFilter) {
+      setFilter(urlFilter);
+    } else {
+      setFilter("All");
     }
-  };
+  }, [location.search]);
 
   useEffect(() => {
-    filter === "All" ? fetchJobs() : fetchFilteredJobs();
+    if (filter === null) return; 
+
+    if (filter === "All") {
+      fetchJobs();
+    } else {
+      fetchFilteredJobs(filter);
+    }
   }, [filter]);
 
+  const handleFilterChange = (newFilter) => {
+    setFilter(newFilter);
+  };
   return (
     <>
       <PageMeta
@@ -183,12 +196,12 @@ const CareersAll = () => {
                 </>
               )}
             </main>
-            <TwoCirclesLoader
+            {/* <TwoCirclesLoader
               bg={"transparent"}
               color1={"#0097b2"}
               color2={"#bfd1a0"}
               height={"35"}
-            />
+            /> */}
           </section>
 
           {/* <div className="-translate-y-27">

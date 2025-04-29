@@ -1,4 +1,5 @@
 import React from "react";
+import ArticlePreviewWithHyphenation from "./ArticlePreviewWithHyphenation";
 
 const ArticleViewDesign = ({
   image,
@@ -31,7 +32,8 @@ const ArticleViewDesign = ({
       </p>
       <div className={`${image ? 'line-clamp-7' : 'line-clamp-15'} mobile-clamper text-body text-justify text-gray-500`}>
         
-      <article dangerouslySetInnerHTML={{ __html: article }} />
+
+      <ArticlePreviewWithHyphenation content={article}/>
       </div>
     </section>
   );
