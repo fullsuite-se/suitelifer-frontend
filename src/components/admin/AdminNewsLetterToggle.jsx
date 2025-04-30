@@ -43,9 +43,13 @@ import toast from "react-hot-toast";
 import ContentEditor from "../cms/ContentEditor";
 import { useNavigate } from "react-router-dom";
 import NewsletterHeader from "../newsletter/NewsletterHeader";
+import { useAddAuditLog } from "./UseAddAuditLog";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 function AdminNewsLetterToggle() {
+  const [sectionsNewsletterByMonth, setSectionsNewsletterByMonth] = useState(
+    []
+  );
   const user = useStore((state) => state.user);
   const [open, setOpen] = useState(false);
   const anchorRef = useRef(null);
@@ -192,8 +196,36 @@ function AdminNewsLetterToggle() {
     try {
       const response = await api.get("/api/newsletter?issueId=" + issueId);
       const fetchedNewslettersByMonth = response.data.newsletters;
-      setNewslettersByMonth(fetchedNewslettersByMonth);
-      console.log(fetchedNewslettersByMonth);
+
+      const sortedNewsletters = [...fetchedNewslettersByMonth].sort((a, b) => {
+        const aNum = Number(a.section);
+        const bNum = Number(b.section);
+
+        const inRange = (n) => n >= 1 && n <= 7;
+
+        if (inRange(aNum) && inRange(bNum)) {
+          return aNum - bNum;
+        } else if (inRange(aNum)) {
+          return -1;
+        } else if (inRange(bNum)) {
+          return 1;
+        } else {
+          return aNum - bNum;
+        }
+      });
+
+      setNewslettersByMonth(sortedNewsletters);
+      const sectionsOfThisNewsletter = [
+        ...new Set(
+          fetchedNewslettersByMonth
+            .map((newsletter) => newsletter.section)
+            .filter((section) => section !== 0)
+        )
+      ];
+      
+      setSectionsNewsletterByMonth(sectionsOfThisNewsletter);      
+      console.log("Sections of this newsletter:", sectionsOfThisNewsletter);
+      console.log(sortedNewsletters);
     } catch (err) {
       console.log(err);
     }
@@ -290,7 +322,8 @@ function AdminNewsLetterToggle() {
     e.preventDefault();
 
     if (!blogTitle.trim() || !blogDescription.trim()) {
-      alert("Please write something in the editor.");
+      toast.error("Please fill in all fields.");
+
       return;
     }
 
@@ -327,7 +360,18 @@ function AdminNewsLetterToggle() {
     } catch (error) {}
   };
 
-  const [agree, setAgree] = useState(false);
+  const [editingData, setEditingData] = useState(null);
+
+  const handleEditClick = (article) => {
+    setEditingData(article);
+  };
+
+  const handleBackAfterSubmitForm = () => {
+    setEditingData(null);
+    setUpdateTrigger(Date.now());
+    handleMonthClick(prevClickedIssue);
+    setIsOpenArticleForm(false);
+  };
 
   return (
     <div>
@@ -755,6 +799,8 @@ function AdminNewsLetterToggle() {
                   flex: 3,
                   headerClass: "text-primary font-bold bg-gray-100",
                   tooltipField: "article",
+                  valueFormatter: (params) =>
+                    params.value?.replace(/<[^>]+>/g, ""),
                   cellStyle: {
                     display: "block",
                     overflow: "hidden",
@@ -824,11 +870,13 @@ function AdminNewsLetterToggle() {
               paginationPageSizeSelector={[5, 10, 20, 50]}
             />
           </div>{" "}
+          <div className="py-20"></div>
         </>
       ) : (
         <>
-          {" "}
-          <section className="h-[100vh] overflow-auto">
+          {/* DITO ANG FORM ADDING/EDITING ARTICLE */}
+          {/* <section className="h-[100vh] overflow-auto"> */}
+          <section>
             <div className="py-5"></div>
             <button
               onClick={() => {
@@ -841,7 +889,7 @@ function AdminNewsLetterToggle() {
               <span className="mt-1 group-hover:font-avenir-black">Back</span>
             </button>
             <div className="py-2"></div>
-            <div className="lg:flex items-center justify-between hidden">
+            <div className="flex items-center justify-between ">
               <div className="flex items-center gap-2">
                 <h2 className="font-avenir-black">Add New Article</h2>
                 <InformationCircleIcon
@@ -851,29 +899,35 @@ function AdminNewsLetterToggle() {
                   }
                 />
               </div>
-              {/* <span
-                onClick={() => navigate("/app/my-blogs")}
-                className="font-avenir-black text-red-400 text-sm cursor-pointer"
+              <span
+                onClick={() => {
+                  handleMonthClick(prevClickedIssue);
+                  setIsOpenArticleForm(false);
+                }}
+                className="font-avenir-black text-red-700 text-sm cursor-pointer"
               >
                 Cancel
-              </span> */}
+              </span>
             </div>
 
-            <section
-            // className="p-10 rounded-lg"
-            // style={{
-            //   boxShadow: "rgba(0, 0, 0, 0.08) 0px 4px 12px",
-            // }}
-            >
+            <section>
               <ContentEditor
+              sectionsNewsletterByMonth={sectionsNewsletterByMonth}
+                handleBackAfterSubmitForm={handleBackAfterSubmitForm}
+                editingData={editingData}
                 handleFileChange={handleFileChange}
                 handleTitleChange={handleTitleChange}
                 handleDescriptionChange={handleDescriptionChange}
                 handleSubmit={handleSubmit}
                 type={"newsletter"}
+                issueId={selectedMonthlyIssue.issueId}
+                user={user}
               />
             </section>
+
+            <div className="pb-40"></div>
           </section>
+          {/* DITO ANG END NG ADDING/EDITING FORM NG NEWS ARTICLE */}
         </>
       )}{" "}
       <Dialog

@@ -18,13 +18,17 @@ import ArticlePreviewWithHyphenation from "../ArticlePreviewWithHyphenation";
 
 const NewsletterDesign01 = () => {
   const { newsletterContent, setNewsletterContent, isLoading, setIsLoading } =
-    newsletterStore(); 
+    newsletterStore();
 
   useEffect(() => {
     const fetchIssueAndArticles = async () => {
       try {
         const issueRes = await api.get("api/issues/current");
         const current = issueRes.data.currentIssue;
+
+        if (issueRes.data.currentIssue === undefined) {
+          return setNewsletterContent({ articles: [], currentIssue: {} });
+        }
 
         const articlesRes = await api.get(
           `/api/newsletter?issueId=${current.issueId}`
@@ -125,7 +129,7 @@ const NewsletterDesign01 = () => {
             </div>
           </section>
         </div>
-      ) : articles.length > 0 ? (
+      ) : articles.length === 7 ? (
         <section>
           <MotionUp>
             <NewsletterHeader
@@ -175,7 +179,9 @@ const NewsletterDesign01 = () => {
                           238
                         ).text
                       }
-                      datePublished={formatTimestamp(section2.createdAt).fullDate}
+                      datePublished={
+                        formatTimestamp(section2.createdAt).fullDate
+                      }
                       article={section2.article}
                       lineclamp="line-clamp-6"
                     />{" "}
@@ -197,7 +203,9 @@ const NewsletterDesign01 = () => {
                           238
                         ).text
                       }
-                      datePublished={formatTimestamp(section3.createdAt).fullDate}
+                      datePublished={
+                        formatTimestamp(section3.createdAt).fullDate
+                      }
                       article={section3.article}
                       lineclamp="line-clamp-7"
                     />
@@ -240,7 +248,7 @@ const NewsletterDesign01 = () => {
                   <div
                     className={`line-clamp-17 text-body text-justify text-gray-500`}
                   >
-                      <ArticlePreviewWithHyphenation content={section4.article}/>
+                    <ArticlePreviewWithHyphenation content={section4.article} />
                   </div>
                   <div className="mt-5"></div>
                   <ReadMoreBtn
@@ -331,8 +339,9 @@ const NewsletterDesign01 = () => {
                         className={`line-clamp-4 text-body text-justify text-gray-500`}
                       >
                         {" "}
-                   
-                        <ArticlePreviewWithHyphenation content={section6.article}/>
+                        <ArticlePreviewWithHyphenation
+                          content={section6.article}
+                        />
                       </div>
                       <div className="mt-5"></div>
                       <ReadMoreBtn
@@ -357,7 +366,9 @@ const NewsletterDesign01 = () => {
                       {section7.title}
                     </p>
                     <p className="text-small pb-3 pt-1">
-                      <span className={`text-primary`}>{section7.pseudonym}</span>
+                      <span className={`text-primary`}>
+                        {section7.pseudonym}
+                      </span>
                       <span className={`text-gray-400`}>&nbsp; |</span>
                       <span className={`text-primary`}>
                         &nbsp;&nbsp;
@@ -377,8 +388,9 @@ const NewsletterDesign01 = () => {
                     <div
                       className={`line-clamp-4 text-body text-justify text-gray-500`}
                     >
-                    
-                    <ArticlePreviewWithHyphenation content={section7.article}/>
+                      <ArticlePreviewWithHyphenation
+                        content={section7.article}
+                      />
                     </div>
                     <div className="mt-5"></div>
                     <ReadMoreBtn
@@ -394,13 +406,17 @@ const NewsletterDesign01 = () => {
         </section>
       ) : (
         <div className="flex flex-col items-center justify-center text-center p-10 min-h-[60vh]">
-        <h1 className="text-3xl md:text-5xl font-avenir-black mb-4">
-          📬 Your Next Big Read Is On Its Way!
-        </h1>
-        <p className="text-lg md:text-xl text-gray-600 max-w-xl">
-          We're putting the final touches on something special. Fresh stories, insights, and updates will be landing here very soon — <span className="font-avenir-black text-primary">stay excited!</span>
-        </p>
-      </div>
+          <h1 className="text-3xl md:text-5xl font-avenir-black mb-4">
+            📬 Your Next Big Read Is On Its Way!
+          </h1>
+          <p className="text-lg md:text-xl text-gray-600 max-w-xl">
+            We're putting the final touches on something special. Fresh stories,
+            insights, and updates will be landing here very soon —{" "}
+            <span className="font-avenir-black text-primary">
+              stay excited!
+            </span>
+          </p>
+        </div>
       )}
     </div>
   );
