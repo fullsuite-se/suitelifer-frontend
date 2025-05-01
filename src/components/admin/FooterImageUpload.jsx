@@ -66,6 +66,7 @@ const FooterImageUpload = ({
               <input
                 type="radio"
                 value="url"
+                accept="image/*"
                 checked={inputMethod === "url"}
                 onChange={handleRadioChange}
               />
@@ -75,6 +76,7 @@ const FooterImageUpload = ({
               <input
                 type="radio"
                 value="upload"
+                accept="image/*"
                 checked={inputMethod === "upload"}
                 onChange={handleRadioChange}
               />
