@@ -109,6 +109,8 @@ const Form = () => {
   const handleSubmitApplication = async (e) => {
     e.preventDefault();
 
+    setIsLoading(true);
+
     if (!executeRecaptcha) {
       toast.error("reCAPTCHA is not ready.");
       return;
@@ -133,8 +135,6 @@ const Form = () => {
     }
 
     try {
-      setIsLoading(true);
-
       const duplicateResponse = await atsAPI.post(
         "/applicants/check/check-existing",
         {
@@ -165,7 +165,7 @@ const Form = () => {
         }
       }
     } catch (err) {
-      console.log("Unable to Submit Application Job",err);
+      console.log("Unable to Submit Application Job", err);
       toast.error("Job Application Unsuccessful.");
     } finally {
       setIsLoading(false);
