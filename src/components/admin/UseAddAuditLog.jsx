@@ -17,7 +17,7 @@ export function useAddAuditLog() {
       description: `${description} by ${user.first_name} ${user.last_name}`,
     });
 
-    console.log("Unable to record the action", error);
+    console.log(error);
   };
 
   return handleAddLog;

@@ -77,10 +77,10 @@ const FooterContent = () => {
           userId: user.id,
         });
 
-        addLog({
-          action: "CREATE",
-          description: `A new certificate URL (${certificationDetails.certImageUrl}) has been added`,
-        });
+       addLog({
+        action:"CREATE",
+        description: `A new certificate URL (${certificationDetails.certImageUrl}) has been added`,
+       })
       } else {
         response = await api.put("/api/certification", {
           ...certificationDetails,

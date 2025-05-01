@@ -65,7 +65,7 @@ function Testimonials() {
 
   const handleAddEditTestimonial = async (e) => {
     e.preventDefault();
- 
+
     if (
       !testimonialDetails.employeeName ||
       !testimonialDetails.testimony ||
@@ -286,7 +286,7 @@ function Testimonials() {
                 },
 
                 {
-                  headerName: "Employee Name",
+                  headerName: "Name",
                   field: "employeeName",
                   flex: 1,
                   headerClass: "text-primary font-bold bg-gray-100",
@@ -301,12 +301,6 @@ function Testimonials() {
                   headerName: "Testimony",
                   field: "testimony",
                   flex: 2,
-                  headerClass: "text-primary font-bold bg-gray-100",
-                },
-                {
-                  headerName: "Position",
-                  field: "position",
-                  flex: 1,
                   headerClass: "text-primary font-bold bg-gray-100",
                 },
                 {
@@ -344,9 +338,7 @@ function Testimonials() {
                         <EditIcon />
                       </IconButton>
                       <IconButton
-                        onClick={() =>
-                          handleDeleteClick(params.data)
-                        }
+                        onClick={() => handleDeleteClick(params.data)}
                       >
                         <DeleteIcon />
                       </IconButton>
@@ -413,7 +405,7 @@ function Testimonials() {
                 ? "Edit Testimonial"
                 : "Add Testimonial"}
             </DialogTitle>
-            <DialogContent> 
+            <DialogContent>
               <form
                 onSubmit={(e) => handleAddEditTestimonial(e)}
                 encType="multipart/form-data"
