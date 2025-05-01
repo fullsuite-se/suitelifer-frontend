@@ -28,6 +28,9 @@ const Footer = () => {
   const minSize = 30;
   const [industries, setIndustries] = useState([]);
   const [certifications, setCertifications] = useState([]);
+
+  const navigate = useNavigate();
+
   const fetchCertifications = async () => {
     try {
       const response = await api.get("/api/certification");
@@ -53,8 +56,6 @@ const Footer = () => {
     fetchIndustries();
     fetchCertifications();
   }, []);
-
-  const navigate = useNavigate();
 
   const maxItems = 5;
   const showSeeAll = industries.length > maxItems;
@@ -197,17 +198,19 @@ const Footer = () => {
               <ul className="flex flex-wrap gap-1 flex-col mt-3 list-none! -ml-5">
                 {industries.slice(0, maxItems).map((industry, index) => (
                   <li key={industry.industryId} className="   text-white">
-                    <Link to={""} className="no-underline hover:text-secondary">
+                    <Link
+                      to={`/careers-all?filter=${encodeURIComponent(
+                        industry.industryId
+                      )}`}
+                      className="no-underline hover:text-secondary"
+                    >
                       {industry.industryName}
                     </Link>
                   </li>
                 ))}
                 {showSeeAll && (
                   <li className=" text-white  ">
-                    <Link
-                      to="/careers-all"
-                      className="no-underline hover:text-secondary font-avenir-black"
-                    >
+                    <Link className="no-underline hover:text-secondary font-avenir-black">
                       See all careers
                     </Link>
                   </li>
