@@ -17,6 +17,7 @@ import api from "../../utils/axios";
 import { useAddAuditLog } from "../admin/UseAddAuditLog";
 import toast from "react-hot-toast";
 import ConfirmationDialog from "../admin/ConfirmationDialog";
+import Placeholder from "@tiptap/extension-placeholder";
 
 const ContentEditor = ({
   editingData,
@@ -45,8 +46,21 @@ const ContentEditor = ({
   const [section, setSection] = useState("");
   const [article, setArticle] = useState("");
   const editor = useEditor({
-    extensions: [StarterKit, Underline],
+    extensions: [
+      StarterKit,
+      Underline,
+      Placeholder.configure({
+        placeholder: "Click here to start writing...",
+        emptyEditorClass: "is-editor-empty",
+      }),
+    ],
     content: "",
+    editorProps: {
+      attributes: {
+        class:
+          "prose prose-sm sm:prose lg:prose-lg max-w-none focus:outline-none",
+      },
+    },
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
       handleDescriptionChange(html);
@@ -153,6 +167,104 @@ const ContentEditor = ({
   const submitNewsletter = async (isOverride = false) => {
     setIsLoading(true);
 
+    if (editingData) {
+      toast.error(`Wait, still working on this po sorry!`);
+    } else {
+      let uploadedImageUrls = [];
+
+      if (images.length > 0) {
+        setTotalImages(images.length);
+        const uploadImagePromises = images.map((image) => {
+          const formData = new FormData();
+          formData.append("file", image.file);
+
+          return api
+            .post("/api/upload-image/newsletter", formData, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                timeout: 30000,
+              },
+            })
+            .then((response) => {
+              setCurrentImageIndex((prevIndex) => prevIndex + 1);
+              return response.data.imageUrl;
+            })
+            .catch((error) => {
+              setCurrentImageIndex(0);
+              console.error("Failed to upload image:", error);
+              toast.error("Failed to upload images. Please try again.");
+              setIsLoading(false);
+              throw error;
+            });
+        });
+
+        try {
+          const uploadResponses = await Promise.all(uploadImagePromises);
+          const isValidUrl = (url) =>
+            /^https:\/\/res\.cloudinary\.com\/.+\.(webp|jpg|jpeg|png|heic)$/.test(
+              url
+            );
+
+          const uniqueUrls = Array.from(new Set(uploadResponses));
+          uploadedImageUrls = uniqueUrls.filter(isValidUrl);
+
+          if (uploadedImageUrls.length === 0) {
+            toast.error("All uploaded images are invalid or duplicate.");
+            setIsLoading(false);
+            return;
+          }
+        } catch (error) {
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      try {
+        const response = await api.post("/api/newsletter", {
+          title,
+          pseudonym,
+          section,
+          article,
+          images: uploadedImageUrls,
+          userId: user.id,
+          issueId,
+          isOverride,
+        });
+
+        const newsletterId = response.data?.newsletterId;
+
+        if (newsletterId && uploadedImageUrls.length > 0) {
+          await api.post(
+            "/api/newsletterImages",
+            { newsletterId, images: uploadedImageUrls },
+            { timeout: 30000 }
+          );
+        }
+
+        addLog({
+          action: "CREATE",
+          description: `A new article has been added`,
+        });
+
+        toast.success("Article saved successfully!");
+        handleBackAfterSubmitForm();
+        resetForm();
+      } catch (error) {
+        console.error("Failed to save article:", error);
+        toast.error("Failed to save article. Please try again.");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
+
+  const handleSubmitNewsletter = async (e) => {
+    e.preventDefault();
+
+    if (section === "1" && images.length === 0) {
+      toast.error("At least one image is required for Section 1.");
+      return;
+    }
     if (!article) {
       toast.error("Please write the content of the article.");
       setIsLoading(false);
@@ -164,93 +276,6 @@ const ContentEditor = ({
       setIsLoading(false);
       return;
     }
-
-    let uploadedImageUrls = [];
-
-    if (images.length > 0) {
-      setTotalImages(images.length);
-      const uploadImagePromises = images.map((image) => {
-        const formData = new FormData();
-        formData.append("file", image.file);
-
-        return api
-          .post("/api/upload-image/newsletter", formData, {
-            headers: { "Content-Type": "multipart/form-data", timeout: 30000 },
-          })
-          .then((response) => {
-            setCurrentImageIndex((prevIndex) => prevIndex + 1);
-            return response.data.imageUrl;
-          })
-          .catch((error) => {
-            setCurrentImageIndex(0);
-            console.error("Failed to upload image:", error);
-            toast.error("Failed to upload images. Please try again.");
-            setIsLoading(false);
-            throw error;
-          });
-      });
-
-      try {
-        const uploadResponses = await Promise.all(uploadImagePromises);
-        const isValidUrl = (url) =>
-          /^https:\/\/res\.cloudinary\.com\/.+\.(webp|jpg|jpeg|png|heic)$/.test(
-            url
-          );
-
-        const uniqueUrls = Array.from(new Set(uploadResponses));
-        uploadedImageUrls = uniqueUrls.filter(isValidUrl);
-
-        if (uploadedImageUrls.length === 0) {
-          toast.error("All uploaded images are invalid or duplicate.");
-          setIsLoading(false);
-          return;
-        }
-      } catch (error) {
-        setIsLoading(false);
-        return;
-      }
-    }
-
-    try {
-      const response = await api.post("/api/newsletter", {
-        title,
-        pseudonym,
-        section,
-        article,
-        images: uploadedImageUrls,
-        userId: user.id,
-        issueId,
-        isOverride,
-      });
-
-      const newsletterId = response.data?.newsletterId;
-
-      if (newsletterId && uploadedImageUrls.length > 0) {
-        await api.post(
-          "/api/newsletterImages",
-          { newsletterId, images: uploadedImageUrls },
-          { timeout: 30000 }
-        );
-      }
-
-      addLog({
-        action: "CREATE",
-        description: `A new article has been added`,
-      });
-
-      toast.success("Article saved successfully!");
-      handleBackAfterSubmitForm();
-      resetForm();
-    } catch (error) {
-      console.error("Failed to save article:", error);
-      toast.error("Failed to save article. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSubmitNewsletter = async (e) => {
-    e.preventDefault();
 
     if (sectionsNewsletterByMonth.includes(Number(section))) {
       setIsOverrideModalOpen(true);
@@ -385,40 +410,44 @@ const ContentEditor = ({
                     </button>
                   )}
                   <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 w-full max-w-5xl mt-6">
-                    {imageList.map((image, index) => (
-                      <div
-                        key={index}
-                        className="relative group rounded overflow-hidden shadow-md aspect-square bg-gray-100"
-                      >
-                        <img
-                          src={image["data_url"]}
-                          alt=""
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute inset-0 bg-black/50 bg-opacity-40 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-4 transition-opacity">
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onImageUpdate(index);
-                            }}
-                            className="bg-white p-2 rounded-full hover:bg-gray-200"
-                          >
-                            <PencilIcon className="h-5 w-5 text-gray-800" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onImageRemove(index);
-                            }}
-                            className="bg-white p-2 rounded-full hover:bg-gray-200"
-                          >
-                            <TrashIcon className="h-5 w-5 text-gray-800" />
-                          </button>
+                    {imageList.map((image, index) => {
+                      const imageUrl = image.data_url || image;
+
+                      return (
+                        <div
+                          key={index}
+                          className="relative group rounded overflow-hidden shadow-md aspect-square bg-gray-100"
+                        >
+                          <img
+                            src={imageUrl}
+                            alt={`Image ${index + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-black/50 bg-opacity-40 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-4 transition-opacity">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onImageUpdate(index);
+                              }}
+                              className="bg-white p-2 rounded-full hover:bg-gray-200"
+                            >
+                              <PencilIcon className="h-5 w-5 text-gray-800" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onImageRemove(index);
+                              }}
+                              className="bg-white p-2 rounded-full hover:bg-gray-200"
+                            >
+                              <TrashIcon className="h-5 w-5 text-gray-800" />
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -458,7 +487,7 @@ const ContentEditor = ({
             <div className="border border-gray-400 focus-within:border-primary outline-none p-2 min-h-50 rounded  bg-[--color-accent-1] text-[--color-dark]">
               <EditorContent
                 editor={editor}
-                className="font-avenir w-full
+                className="is-editor-empty:before:content-[attr(data-placeholder)] font-avenir w-full
                           [&_ul]:list-disc [&_ul]:pl-6
                           [&_ol]:list-decimal [&_ol]:pl-6
                           [&_em]:font-inherit
@@ -482,6 +511,8 @@ const ContentEditor = ({
                   </p>
                 ) : isLoading ? (
                   "Saving..."
+                ) : editingData ? (
+                  <p>Save Changes to this Article</p>
                 ) : (
                   "Save this Article"
                 )}

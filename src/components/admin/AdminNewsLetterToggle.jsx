@@ -44,9 +44,12 @@ import ContentEditor from "../cms/ContentEditor";
 import { useNavigate } from "react-router-dom";
 import NewsletterHeader from "../newsletter/NewsletterHeader";
 import { useAddAuditLog } from "./UseAddAuditLog";
+import ConfirmationDialog from "./ConfirmationDialog";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 function AdminNewsLetterToggle() {
+  const addLog = useAddAuditLog();
+  const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
   const [sectionsNewsletterByMonth, setSectionsNewsletterByMonth] = useState(
     []
   );
@@ -196,7 +199,7 @@ function AdminNewsLetterToggle() {
     try {
       const response = await api.get("/api/newsletter?issueId=" + issueId);
       const fetchedNewslettersByMonth = response.data.newsletters;
-
+      console.log(response);
       const sortedNewsletters = [...fetchedNewslettersByMonth].sort((a, b) => {
         const aNum = Number(a.section);
         const bNum = Number(b.section);
@@ -215,17 +218,43 @@ function AdminNewsLetterToggle() {
       });
 
       setNewslettersByMonth(sortedNewsletters);
+
       const sectionsOfThisNewsletter = [
         ...new Set(
           fetchedNewslettersByMonth
             .map((newsletter) => newsletter.section)
             .filter((section) => section !== 0)
-        )
+        ),
       ];
-      
-      setSectionsNewsletterByMonth(sectionsOfThisNewsletter);      
-      console.log("Sections of this newsletter:", sectionsOfThisNewsletter);
-      console.log(sortedNewsletters);
+      setSectionsNewsletterByMonth(sectionsOfThisNewsletter);
+
+      setSelectedMonthlyIssue((prev) => ({
+        ...prev,
+        articleCount: fetchedNewslettersByMonth.length,
+        assigned: fetchedNewslettersByMonth.filter(
+          (newsletter) => newsletter.section > 0
+        ).length,
+        unassigned: fetchedNewslettersByMonth.filter(
+          (newsletter) => newsletter.section === 0
+        ).length,
+      }));
+
+      setIssues((prev) =>
+        prev.map((issue) =>
+          issue.issueId === issueId
+            ? {
+                ...issue,
+                articleCount: fetchedNewslettersByMonth.length,
+                assigned: fetchedNewslettersByMonth.filter(
+                  (newsletter) => newsletter.section > 0
+                ).length,
+                unassigned: fetchedNewslettersByMonth.filter(
+                  (newsletter) => newsletter.section === 0
+                ).length,
+              }
+            : issue
+        )
+      );
     } catch (err) {
       console.log(err);
     }
@@ -254,6 +283,7 @@ function AdminNewsLetterToggle() {
   };
 
   const handleAddEditArticle = (e) => {
+    setEditingData(null);
     setIsOpenArticleForm(true);
   };
 
@@ -357,14 +387,45 @@ function AdminNewsLetterToggle() {
 
   const handlePublishIssue = async () => {
     try {
-    } catch (error) {}
+      const response = await api.patch(
+        "/api/issues",
+        {
+          issueId: selectedMonthlyIssue.issueId,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.success) {
+        toast.success(
+          `${getMonthName(selectedMonthlyIssue.month)} ${
+            selectedMonthlyIssue.year
+          } issue published successfully.`
+        );
+        setUpdateTrigger(Date.now());
+        setSelectedMonthlyIssue(null);
+        setIsOpenArticleForm(false);
+      } else {
+        toast.error(response.data.message || "Failed to publish issue.");
+      }
+      addLog({
+        action: "CREATE",
+        description: `${getMonthName(selectedMonthlyIssue.month)} ${
+          selectedMonthlyIssue.year
+        } issue has been published`,
+      });
+    } catch (error) {
+      console.error("Error publishing issue:", error);
+      toast.error(
+        "An error occurred while publishing the issue. Please try again."
+      );
+    }
   };
 
   const [editingData, setEditingData] = useState(null);
-
-  const handleEditClick = (article) => {
-    setEditingData(article);
-  };
 
   const handleBackAfterSubmitForm = () => {
     setEditingData(null);
@@ -373,43 +434,107 @@ function AdminNewsLetterToggle() {
     setIsOpenArticleForm(false);
   };
 
+  const [newsletterDetails, setNewsletterDetails] = useState({});
+  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+
+  const handleEditClick = (article) => {
+    console.log("Editing article:", article);
+    setEditingData(article);
+    setIsOpenArticleForm(true);
+  };
+
+  const handleDeleteClick = (article) => {
+    console.log("Deleting article:", article);
+    setNewsletterDetails(article);
+    setDeleteModalIsOpen(true);
+  };
+
+  const [updateTableTrigger, setUpdateTableTrigger] = useState(Date.now());
+  useEffect(() => {
+    if (updateTableTrigger) {
+      fetchNewsLettersByMonth(newsletterDetails.issueId);
+    }
+  }, [updateTableTrigger]);
+
+  const handleDelete = async () => {
+    try {
+      const response = await api.delete(`/api/newsletter`, {
+        data: {
+          newsletterId: newsletterDetails.newsletterId,
+          images: newsletterDetails.images,
+        },
+      });
+
+      addLog({
+        action: "DELETE",
+        description: `"${newsletterDetails.title}" newsletter article has been deleted`,
+      });
+
+      if (response.data.success) {
+        toast.success("Article deleted successfully.");
+        setUpdateTableTrigger(Date.now());
+        setDeleteModalIsOpen(false);
+      } else {
+        toast.error(response.data.message || "Failed to delete article.");
+      }
+    } catch (error) {
+      console.error("Error deleting article:", error);
+      toast.error("An error occurred while deleting the article.");
+    }
+  };
+
+  const [confirmBackModalOpen, setConfirmBackModalOpen] = useState(false);
+
   return (
     <div>
-      {!selectedMonthlyIssue && !isOpenArticleForm ? (
+      {(!selectedMonthlyIssue || selectedMonthlyIssue.month === undefined) &&
+      !isOpenArticleForm ? (
         <>
-          <h3>Currently Published Issue</h3>
-          <div
-            onClick={() => {
-              handleMonthClick(currentPublishedIssue);
-              setPrevClickedIssue(currentPublishedIssue);
-            }}
-            className="flex flex-row items-center justify-between bg-primary text-white p-4 rounded-lg mb-4 cursor-pointer hover:scale-101 hover:shadow-lg transition duration-300 ease-in-out"
-          >
-            <h3 className="font-avenir-black">
-              {getMonthName(currentPublishedIssue.month) +
-                " " +
-                currentPublishedIssue.year}
-            </h3>
-            <div className="flex flex-row items-center justify-center gap-1">
-              <RectangleStackIcon className="h-5 w-5 text-white" />
+          {!currentPublishedIssue ? (
+            <div className="mt-10 py-7 flex flex-row items-center justify-between bg-gray-300 text-white p-4 rounded-lg mb-4 ">
               <p className="-mb-1 font-avenir-black">
-                {currentPublishedIssue.articleCount} articles
+                No issue is currently published. Once an issue is published, it
+                will appear here.
               </p>
             </div>
-            <div className="flex flex-row items-center justify-center gap-1">
-              <CheckCircleIcon className="h-5 w-5 text-white" />
-              <p className="font-avenir-black">
-                {currentPublishedIssue.assigned}/7 assigned
-              </p>
+          ) : (
+            <div>
+              <h3>Currently Published Issue</h3>
+              <div
+                onClick={() => {
+                  handleMonthClick(currentPublishedIssue);
+                  setPrevClickedIssue(currentPublishedIssue);
+                }}
+                className="flex flex-row items-center justify-between bg-primary text-white p-4 rounded-lg mb-4 cursor-pointer hover:scale-101 hover:shadow-lg transition duration-300 ease-in-out"
+              >
+                <h3 className="font-avenir-black">
+                  {getMonthName(currentPublishedIssue.month) +
+                    " " +
+                    currentPublishedIssue.year}
+                </h3>
+                <div className="flex flex-row items-center justify-center gap-1">
+                  <RectangleStackIcon className="h-5 w-5 text-white" />
+                  <p className="-mb-1 font-avenir-black">
+                    {currentPublishedIssue.articleCount} articles
+                  </p>
+                </div>
+                <div className="flex flex-row items-center justify-center gap-1">
+                  <CheckCircleIcon className="h-5 w-5 text-white" />
+                  <p className="font-avenir-black">
+                    {currentPublishedIssue.assigned}/7 assigned
+                  </p>
+                </div>
+                <div className="flex flex-row items-center justify-center gap-1">
+                  <MinusCircleIcon className="h-5 w-5 text-white" />
+                  <p className="font-avenir-black">
+                    {currentPublishedIssue.unassigned} unassigned
+                  </p>
+                </div>
+                <ArrowRightIcon className="h-5 w-5 text-white" />
+              </div>
             </div>
-            <div className="flex flex-row items-center justify-center gap-1">
-              <MinusCircleIcon className="h-5 w-5 text-white" />
-              <p className="font-avenir-black">
-                {currentPublishedIssue.unassigned} unassigned
-              </p>
-            </div>
-            <ArrowRightIcon className="h-5 w-5 text-white" />
-          </div>
+          )}
+
           <div className="py-3"></div>
           <div className="flex flex-row items-center justify-between">
             <h3>All Issues</h3>
@@ -680,6 +805,21 @@ function AdminNewsLetterToggle() {
         </>
       ) : selectedMonthlyIssue && !isOpenArticleForm ? (
         <>
+          <ConfirmationDialog
+            open={isPublishModalOpen}
+            onClose={() => setIsPublishModalOpen(false)}
+            onConfirm={async () => {
+              setIsPublishModalOpen(false);
+              await handlePublishIssue();
+            }}
+            title={`Publish ${getMonthName(selectedMonthlyIssue.month)} ${
+              selectedMonthlyIssue.year
+            } issue?`}
+            description={`This will publish the issue and make it visible to the public. Are you sure you want to proceed?`}
+            confirmLabel="Continue"
+            cancelBtnClass="p-2 px-4 cursor-pointer rounded-lg hover:bg-gray-200 duration-500 text-gray-700"
+            confirmBtnClass="p-2 px-4 cursor-pointer rounded-lg bg-red-700 hover:bg-red-800 duration-500 text-white"
+          />
           <div className="py-5"></div>
           <div className="flex flex-row items-center justify-between">
             <button
@@ -691,7 +831,7 @@ function AdminNewsLetterToggle() {
             </button>
             {prevClickedIssue.is_published === 0 ? (
               <button
-                onClick={handlePublishIssue}
+                onClick={() => setIsPublishModalOpen(true)}
                 disabled={selectedMonthlyIssue.assigned < 7}
                 className={`flex gap-2   font-avenir-black p-2 px-3  items-center rounded-md transition ${
                   selectedMonthlyIssue.assigned === 7
@@ -845,11 +985,11 @@ function AdminNewsLetterToggle() {
                     <div className="flex">
                       <ActionButtons
                         icon={<PencilIcon className="size-5 cursor-pointer" />}
-                        // handleClick={() => handleEdit(params.data)}
+                        handleClick={() => handleEditClick(params.data)}
                       />
                       <ActionButtons
                         icon={<TrashIcon className="size-5 cursor-pointer" />}
-                        // handleClick={() => handleDelete(params.data.faq_id)}
+                        handleClick={() => handleDeleteClick(params.data)}
                       />
                     </div>
                   ),
@@ -871,6 +1011,18 @@ function AdminNewsLetterToggle() {
             />
           </div>{" "}
           <div className="py-20"></div>
+          <ConfirmationDialog
+            open={deleteModalIsOpen}
+            onClose={() => setDeleteModalIsOpen(false)}
+            onConfirm={async () => {
+              await handleDelete();
+            }}
+            title={`Delete this article?`}
+            description={`"${newsletterDetails.title}" will be permanently deleted. Are you sure you want to proceed?`}
+            confirmLabel="Continue"
+            cancelBtnClass="p-2 px-4 cursor-pointer rounded-lg hover:bg-gray-200 duration-500 text-gray-700"
+            confirmBtnClass="p-2 px-4 cursor-pointer rounded-lg bg-red-700 hover:bg-red-800 duration-500 text-white"
+          />
         </>
       ) : (
         <>
@@ -880,8 +1032,7 @@ function AdminNewsLetterToggle() {
             <div className="py-5"></div>
             <button
               onClick={() => {
-                handleMonthClick(prevClickedIssue);
-                setIsOpenArticleForm(false);
+                setConfirmBackModalOpen(true);
               }}
               className="group cursor-pointer flex items-center gap-2 text-primary text-xss transition active:font-avenir-black"
             >
@@ -891,7 +1042,9 @@ function AdminNewsLetterToggle() {
             <div className="py-2"></div>
             <div className="flex items-center justify-between ">
               <div className="flex items-center gap-2">
-                <h2 className="font-avenir-black">Add New Article</h2>
+                <h2 className="font-avenir-black">
+                  {!editingData ? "Add New Article" : "Edit Article"}
+                </h2>
                 <InformationCircleIcon
                   className="w-4 h-4 text-gray-500 cursor-pointer"
                   onClick={() =>
@@ -899,26 +1052,26 @@ function AdminNewsLetterToggle() {
                   }
                 />
               </div>
-              <span
+              {/* <span
                 onClick={() => {
                   handleMonthClick(prevClickedIssue);
                   setIsOpenArticleForm(false);
                 }}
                 className="font-avenir-black text-red-700 text-sm cursor-pointer"
               >
-                Cancel
-              </span>
+              
+              </span> */}
             </div>
 
             <section>
               <ContentEditor
-              sectionsNewsletterByMonth={sectionsNewsletterByMonth}
+                sectionsNewsletterByMonth={sectionsNewsletterByMonth}
                 handleBackAfterSubmitForm={handleBackAfterSubmitForm}
                 editingData={editingData}
                 handleFileChange={handleFileChange}
                 handleTitleChange={handleTitleChange}
                 handleDescriptionChange={handleDescriptionChange}
-                handleSubmit={handleSubmit}
+                // handleSubmit={handleSubmit}
                 type={"newsletter"}
                 issueId={selectedMonthlyIssue.issueId}
                 user={user}
@@ -927,6 +1080,22 @@ function AdminNewsLetterToggle() {
 
             <div className="pb-40"></div>
           </section>
+          <ConfirmationDialog
+            open={confirmBackModalOpen}
+            onClose={() => setConfirmBackModalOpen(false)}
+            onConfirm={async () => {
+              await handleMonthClick(prevClickedIssue);
+              setIsOpenArticleForm(false);
+              setConfirmBackModalOpen(false);
+            }}
+            title={`Are you sure to cancel ${
+              editingData ? "editing" : "adding"
+            } this article?`}
+            description={`This will discard any unsaved changes. Are you sure you want to proceed?`}
+            confirmLabel="Continue"
+            cancelBtnClass="p-2 px-4 cursor-pointer rounded-lg hover:bg-gray-200 duration-500 text-gray-700"
+            confirmBtnClass="p-2 px-4 cursor-pointer rounded-lg bg-red-700 hover:bg-red-800 duration-500 text-white"
+          />
           {/* DITO ANG END NG ADDING/EDITING FORM NG NEWS ARTICLE */}
         </>
       )}{" "}
@@ -974,3 +1143,4 @@ function AdminNewsLetterToggle() {
 }
 
 export default AdminNewsLetterToggle;
+//SORRRY ANG HABAAA NAA POOO :(  

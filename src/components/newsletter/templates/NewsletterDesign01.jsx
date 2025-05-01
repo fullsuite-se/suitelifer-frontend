@@ -17,33 +17,42 @@ import MotionUp from "../../animated/MotionUp";
 import ArticlePreviewWithHyphenation from "../ArticlePreviewWithHyphenation";
 
 const NewsletterDesign01 = () => {
-  const { newsletterContent, setNewsletterContent, isLoading, setIsLoading } =
-    newsletterStore();
+  const {
+    newsletterContent,
+    setNewsletterContent,
+    isLoading,
+    setIsLoading,
+  } = newsletterStore();
 
   useEffect(() => {
     const fetchIssueAndArticles = async () => {
       try {
         const issueRes = await api.get("api/issues/current");
-        const current = issueRes.data.currentIssue;
-
-        if (issueRes.data.currentIssue === undefined) {
-          return setNewsletterContent({ articles: [], currentIssue: {} });
+        const current = issueRes.data?.currentIssue ?? null;
+    
+        console.log("Current Issue:", current);
+    
+        if (!current) {
+          setNewsletterContent({ articles: [], currentIssue: null });
+          return;
         }
-
+    
         const articlesRes = await api.get(
           `/api/newsletter?issueId=${current.issueId}`
         );
-
+    
         setNewsletterContent({
-          articles: articlesRes.data.newsletters,
+          articles: articlesRes.data?.newsletters ?? [],
           currentIssue: current,
         });
       } catch (error) {
-        console.error(error.message);
+        console.error("Error fetching issue/articles:", error.message);
+        setNewsletterContent({ articles: [], currentIssue: null }); // fallback
       } finally {
         setIsLoading(false);
       }
     };
+    
 
     fetchIssueAndArticles();
   }, [setNewsletterContent, setIsLoading]);
@@ -129,7 +138,7 @@ const NewsletterDesign01 = () => {
             </div>
           </section>
         </div>
-      ) : articles.length === 7 ? (
+      ) : newsletterContent.currentIssue?.assigned === 7 ? (
         <section>
           <MotionUp>
             <NewsletterHeader
