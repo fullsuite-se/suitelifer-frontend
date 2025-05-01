@@ -149,14 +149,16 @@ const Form = () => {
         await uploadFile();
 
         const response = await atsAPI.post("/applicants/add", {
-          applicant: JSON.stringify(applicationDetails),
+          applicant: JSON.stringify({...applicationDetails, mobile_number_1: "09" + applicationDetails.mobile_number_1}),
         });
 
-        if (response.data.message === "successfully inserted") {
+        console.log(response.data.message);        
+
+        if (response.data.message === "Successfully inserted") {
           const res = await atsAPI.post("/jobs/assessment-url", {
             job_id: id,
           });
-
+          
           const assessmentUrl = res.data.data.assessmentUrl;
 
           toast.success("Job Application Successful.");
