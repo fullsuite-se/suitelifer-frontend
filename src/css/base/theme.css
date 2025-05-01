@@ -241,3 +241,12 @@ i {
   outline: none !important;
   box-shadow: none !important;
 }
+
+
+.is-editor-empty::before {
+  content: attr(data-placeholder);
+  color: #9ca3af;
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
