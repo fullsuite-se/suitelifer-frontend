@@ -502,8 +502,8 @@ const ContentEditor = ({
               <span className="mb-1 flex text-xs text-gray-400">
                 <InformationCircleIcon className="size-4 text-primary/70" />
                 <span className="ml-2">
-                Optional — but
-                <strong> required for the main article (Section 1)</strong>
+                  Optional — but
+                  <strong> required for the main article (Section 1)</strong>
                 </span>
               </span>
               <span className="mb-1 flex text-xs text-gray-400">
@@ -704,7 +704,7 @@ const ContentEditor = ({
                 disabled={isLoading}
                 className="bg-primary p-3 mt-10 rounded-md cursor-pointer w-full mx-auto text-white font-avenir-black disabled:opacity-50"
               >
-                {isLoading && totalImages > 0 ? (
+                {isLoading && totalImages > 0 && images > 0 ? (
                   <p>
                     Uploading {currentImageIndex} of {totalImages}{" "}
                     {editingData
