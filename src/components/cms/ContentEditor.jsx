@@ -23,16 +23,16 @@ import Placeholder from "@tiptap/extension-placeholder";
 import { set } from "react-hook-form";
 
 const ContentEditor = ({
-  editingData,
-  handleFileChange,
-  handleTitleChange,
-  handleDescriptionChange,
-  handleSubmit,
-  type,
-  handleBackAfterSubmitForm,
-  issueId,
-  user,
-  sectionsNewsletterByMonth,
+  editingData = null,
+  handleFileChange = () => {},
+  handleTitleChange = () => {},
+  handleDescriptionChange = () => {},
+  handleSubmit = () => {},
+  type = "default",
+  handleBackAfterSubmitForm = () => {},
+  issueId = null,
+  user = null,
+  sectionsNewsletterByMonth = [],
 }) => {
   const [isOverride, setIsOverride] = useState(false);
   const [isOverrideModalOpen, setIsOverrideModalOpen] = useState(false);
@@ -741,7 +741,7 @@ const ContentEditor = ({
             confirmBtnClass="p-2 px-4 cursor-pointer rounded-lg bg-red-700 hover:bg-red-800 duration-500 text-white"
           />
         </div>
-      ) : (
+      ) : type === "eblog" ? (
         // END NA DITOOO FORMMMM FOR NEWSLETTER
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
@@ -802,6 +802,8 @@ const ContentEditor = ({
             </button>
           </section>
         </form>
+      ) : (
+        <></>
       )}
     </div>
   );
