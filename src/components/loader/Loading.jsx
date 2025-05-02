@@ -1,18 +1,29 @@
 import React from "react";
 import { ThreeDot } from "react-loading-indicators";
+import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
 
-const Loading = ({variant = "pulsate"}) => {
+const Loading = ({ variant = "pulsate" }) => {
   return (
+    // <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/10 bg-opacity-50 pointer-events-auto">
+    //   <div className="pointer-events-none">
+    //     <ThreeDot
+    //       variant={variant}
+    //       color="#0097b2"
+    //       size="medium"
+    //       text=""
+    //       textColor=""
+    //     />
+    //   </div>
+    // </div>
+
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/10 bg-opacity-50 pointer-events-auto">
-      <div className="pointer-events-none">
-        <ThreeDot
-          variant={variant}
-          color="#0097b2"
-          size="medium"
-          text=""
-          textColor=""
-        />
-      </div>
+      <TwoCirclesLoader
+        bg={"transparent"}
+        color1={"#bfd1a0"}
+        color2={"#0097b2"}
+        height={30}
+        width={40}
+      />
     </div>
   );
 };

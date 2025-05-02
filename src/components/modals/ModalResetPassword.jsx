@@ -83,8 +83,7 @@ export const ModalResetPassword = ({ isOpen, handleClose }) => {
                     Reset Your Password
                   </DialogTitle>
                   <p className="mt-1 text-base text-gray-600">
-                    Enter your email to receive a one-time password (OTP) for
-                    verification and reset your password.
+                  Enter your email to receive a one-time password (OTP) for verification. It may take a minute—please check your inbox or spam folder.
                   </p>
                   <div className="mt-4">
                     <input
