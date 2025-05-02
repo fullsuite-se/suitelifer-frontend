@@ -40,7 +40,7 @@ const VerifyPasswordStrength = ({
       {password && confirmPassword && !isPasswordValid ? (
         <ul className="text-sm">
           {passwordStrength(password).hasMatched ? (
-            <li className="text-blue-400">
+            <li className="text-primary">
               Password and Confirm Password match. 👍
             </li>
           ) : (
@@ -49,7 +49,7 @@ const VerifyPasswordStrength = ({
             </li>
           )}
           {passwordStrength(password).hasRequiredLength ? (
-            <li className="text-blue-400">
+            <li className="text-primary">
               Password must be at least 10 characters long. 👍
             </li>
           ) : (
@@ -58,7 +58,7 @@ const VerifyPasswordStrength = ({
             </li>
           )}
           {passwordStrength(password).hasUppercase ? (
-            <li className="text-blue-400">
+            <li className="text-primary">
               Password must include at least one uppercase letter. 👍
             </li>
           ) : (
@@ -67,7 +67,7 @@ const VerifyPasswordStrength = ({
             </li>
           )}
           {passwordStrength(password).hasLowercase ? (
-            <li className="text-blue-400">
+            <li className="text-primary">
               Password must include at least one lowercase letter. 👍
             </li>
           ) : (
@@ -76,7 +76,7 @@ const VerifyPasswordStrength = ({
             </li>
           )}
           {passwordStrength(password).hasDigit ? (
-            <li className="text-blue-400">
+            <li className="text-primary">
               Password must include at least one number. 👍
             </li>
           ) : (
@@ -85,7 +85,7 @@ const VerifyPasswordStrength = ({
             </li>
           )}
           {passwordStrength(password).hasSpecialChar ? (
-            <li className="text-blue-400">
+            <li className="text-primary">
               Password must include at least one special character (e.g.
               !@#$%^&*). 👍
             </li>
@@ -99,7 +99,7 @@ const VerifyPasswordStrength = ({
       ) : (
         <>
           {password && confirmPassword && (
-            <p className="text-blue-400 text-sm">
+            <p className="text-primary text-sm">
               Great job! Your password is so strong, the InfoSec Team just did a
               happy dance. 💃🕺
             </p>
