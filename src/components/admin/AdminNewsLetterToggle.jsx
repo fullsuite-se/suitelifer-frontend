@@ -19,6 +19,7 @@ import {
   RectangleStackIcon,
   PencilIcon,
   TrashIcon,
+  ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
 import emptyIllustration from "../../assets/images/empty-illustration.svg";
 import {
@@ -1126,6 +1127,12 @@ function AdminNewsLetterToggle() {
             <p className="text-sm text-gray-500">
               Preview the newsletter layout. Articles will appear in the section
               you assign (1–7).
+              <span className="flex text-xs text-gray-600 mb-4 mt-2">
+        <ExclamationTriangleIcon className="size-4 text-orange-500/70" />
+        <span className="ml-2">
+          The currently published issue will <strong className="text-red-800">not be visible to the public</strong> until <strong className="text-black">all 7 sections</strong> are assigned with an article.
+        </span>
+      </span>
             </p>
             <div className="py-1"></div>
             <div>
