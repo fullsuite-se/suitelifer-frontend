@@ -189,6 +189,13 @@ function AdminNewsLetterToggle() {
 
       if (response.data?.success) {
         toast.success(response.data.message);
+
+        addLog({
+          action: "CREATE",
+          description: `New issue for ${getMonthName(currentIssue.month)} ${
+            currentIssue.year
+          } has been created`,
+        });
       } else {
         toast.error(response.data.message || "Failed to save issue.");
       }
