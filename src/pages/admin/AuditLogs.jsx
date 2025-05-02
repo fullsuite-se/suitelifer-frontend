@@ -7,7 +7,7 @@ import {
 } from "@heroicons/react/24/outline";
 import dayjs from "dayjs";
 import Skeleton from "react-loading-skeleton";
-
+import Empty from "../../assets/images/empty.svg";
 const AuditLogs = () => {
   const [logs, setLogs] = useState([]);
   const [page, setPage] = useState(1);
@@ -25,43 +25,49 @@ const AuditLogs = () => {
       );
       const processedLogs = response.data.logs.map((log) => {
         let description = log.description;
-        
+
         const urlWithParenthesesPattern = /\(https?:\/\/[^\s)]+\)/;
         const urlPattern = /https?:\/\/[^\s)]+/;
-      
-        const matchWithParentheses = description.match(urlWithParenthesesPattern);
+
+        const matchWithParentheses = description.match(
+          urlWithParenthesesPattern
+        );
         const matchWithoutParentheses = description.match(urlPattern);
-      
+
         if (matchWithParentheses) {
           const cleanUrl = matchWithParentheses[0].slice(1, -1);
-      
-          const descriptionWithoutUrl = description.replace(matchWithParentheses[0], "").trim();
-      
+
+          const descriptionWithoutUrl = description
+            .replace(matchWithParentheses[0], "")
+            .trim();
+
           const clickableText = `<a href="${cleanUrl}" target="_blank" class="text-primary no-underline hover:!underline">this is the link</a>`;
-      
+
           return {
             ...log,
             description: `${descriptionWithoutUrl} (${clickableText})`,
           };
         } else if (matchWithoutParentheses) {
           const cleanUrl = matchWithoutParentheses[0];
-      
-          const descriptionWithoutUrl = description.replace(cleanUrl, "").trim();
-      
+
+          const descriptionWithoutUrl = description
+            .replace(cleanUrl, "")
+            .trim();
+
           const clickableText = `<a href="${cleanUrl}" target="_blank" class="text-primary no-underline hover:!underline">this is the link</a>`;
-      
+
           return {
             ...log,
             description: `${descriptionWithoutUrl} (${clickableText})`,
           };
         }
-      
+
         return {
           ...log,
           description: description,
         };
       });
-      
+
       setIsLoading(false);
 
       setLogs(processedLogs);
@@ -83,7 +89,25 @@ const AuditLogs = () => {
     setQuery(search);
   };
 
-  return (
+  return logs.length === 0 && !isLoading ? (
+    <div className="grid place-content-center h-full">
+           <div className="flex gap-4 flex-col items-center">
+             <div className="w-[20vw] -mt-50">
+               <img
+                 className=""
+                 src={Empty}
+                 alt="Fullsuite Events Page Coming Soon"
+               />
+             </div>
+             <p className="text-lg md:text-xl lg:text-3xl font-avenir-black text-primary mb-5 lg:mb-0 mt-10">
+             No audit activity yet — <span className="text-black font-semibold">everything’s quiet for now.</span>
+</p>
+<p className="text-center text-gray-600 text-[12px] md:text-[14px] lg:text-base">
+  Once actions are taken by admins or users, you’ll see the audit logs appear here.
+</p>
+           </div>
+         </div>
+  ) : (
     <section className="px-[15%] pb-40 pt-5 space-y-6">
       <form onSubmit={handleSearch} className="flex gap-4 items-center">
         <input
