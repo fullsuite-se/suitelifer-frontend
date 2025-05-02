@@ -19,10 +19,18 @@ const CareersJobDetails = () => {
   const navigate = useNavigate();
   const previousPage = location.state?.from;
 
+  // const handleBack = () => {
+  //   if (previousPage?.startsWith("/careers/application-form/")) {
+  //     navigate("/careers");
+  //   } else if (previousPage) {
+  //     navigate(-1);
+  //   } else {
+  //     navigate("/careers");
+  //   }
+  // };
+
   const handleBack = () => {
-    if (previousPage?.startsWith("/careers/application-form/")) {
-      navigate("/careers");
-    } else if (previousPage) {
+    if (location.key !== "default") {
       navigate(-1);
     } else {
       navigate("/careers");
