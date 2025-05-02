@@ -8,6 +8,8 @@ import {
   PencilIcon,
   TrashIcon,
   CloudArrowUpIcon,
+  InformationCircleIcon,
+  ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -40,7 +42,7 @@ const ContentEditor = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const [images, setImages] = useState([]);
-  const maxNumber = 10;
+  const maxNumber = 5;
 
   const [title, setTitle] = useState("");
   const [pseudonym, setPseudonym] = useState("");
@@ -139,6 +141,16 @@ const ContentEditor = ({
   }, []);
 
   useEffect(() => {
+    return () => {
+      images.forEach((image) => {
+        if (!image.data_url && image.file instanceof File) {
+          URL.revokeObjectURL(image.file);
+        }
+      });
+    };
+  }, [images]);
+
+  useEffect(() => {
     if (editingData) {
       setTitle(editingData.title || "");
       setPseudonym(editingData.pseudonym || "");
@@ -226,8 +238,10 @@ const ContentEditor = ({
               setCurrentImageIndex(0);
 
               console.error("Failed to upload image:", error);
-              toast.error("Failed to upload images. Please try again.");
+              toast.error("Failed to upload image. Please try again.");
+
               setIsLoading(false);
+
               throw error;
             });
         });
@@ -484,15 +498,34 @@ const ContentEditor = ({
               />
             </label>
             <span className="text-primary text-sm ">
-              Photos{" "}
-              <span className=" text-xs text-gray-400 font-avenir-roman-oblique ">
-                Optional — but required for the main article (Section 1)
+              Photos
+              <span className="mb-1 flex text-xs text-gray-400">
+                <InformationCircleIcon className="size-4 text-primary/70" />
+                <span className="ml-2">
+                Optional — but
+                <strong> required for the main article (Section 1)</strong>
+                </span>
+              </span>
+              <span className="mb-1 flex text-xs text-gray-400">
+                <InformationCircleIcon className="size-4 text-primary/70" />
+                <span className="ml-2">
+                  Upload images in <strong>.jpg</strong>, <strong>.png</strong>,{" "}
+                  <strong>.jpeg</strong>, <strong>.webp</strong>, or{" "}
+                  <strong>.heic</strong> formats.
+                </span>
+              </span>
+              <span className="flex text-xs text-gray-400 mb-4">
+                <ExclamationTriangleIcon className="size-4 text-orange-500/70" />
+                <span className="ml-2">
+                  Each image must be <strong>4MB or smaller</strong> for
+                  successful upload.
+                </span>
               </span>
             </span>
             <ReactImageUploading
               allowNonImageTypes={false}
               acceptType={["jpg", "png", "jpeg", "webp", "heic"]}
-              maxFileSize={10 * 1024 * 1024} // 10MB lang max size or what
+              maxFileSize={4 * 1024 * 1024}
               name="images"
               multiple
               value={images}
@@ -501,7 +534,7 @@ const ContentEditor = ({
               dataURLKey="data_url"
               onError={(errors, files) => {
                 if (errors.maxNumber) {
-                  toast.error("Maximum of 10 images allowed");
+                  toast.error("Maximum of 5 images allowed");
                 }
                 if (errors.acceptType) {
                   toast.error(
@@ -509,7 +542,7 @@ const ContentEditor = ({
                   );
                 }
                 if (errors.maxFileSize) {
-                  toast.error("Maximum file size is 10MB");
+                  toast.error("Maximum file size is 4MB");
                 }
               }}
             >
@@ -557,18 +590,32 @@ const ContentEditor = ({
                   )}
                   <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 w-full max-w-5xl mt-6">
                     {imageList.map((image, index) => {
-                      const imageUrl = image.data_url || image;
+                      const imageUrl =
+                        typeof image === "string"
+                          ? image
+                          : image.data_url
+                          ? image.data_url
+                          : image.file instanceof File
+                          ? URL.createObjectURL(image.file)
+                          : null;
 
                       return (
                         <div
                           key={index}
                           className="relative group rounded overflow-hidden shadow-md aspect-square bg-gray-100"
                         >
-                          <img
-                            src={imageUrl}
-                            alt={`Image ${index + 1}`}
-                            className="w-full h-full object-cover"
-                          />
+                          {imageUrl ? (
+                            <img
+                              src={imageUrl}
+                              alt={`Image ${index + 1}`}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-gray-500">
+                              Failed to preview image
+                            </div>
+                          )}
+
                           <div className="absolute inset-0 bg-black/50 bg-opacity-40 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-4 transition-opacity">
                             <button
                               type="button"
