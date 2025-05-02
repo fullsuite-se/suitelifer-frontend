@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import api from "../../utils/axios";
+import { Dialog, DialogTitle, DialogContent, Button } from "@mui/material";
 
 const FooterImageUpload = ({
   isOpen,
@@ -9,43 +11,69 @@ const FooterImageUpload = ({
 }) => {
   const [inputMethod, setInputMethod] = useState("url");
   const [file, setFile] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [modalType, setModalType] = useState("");
 
   if (!isOpen) return null;
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (inputMethod === "upload" && file) {
-      const fileURL = URL.createObjectURL(file);
-      setCertificationDetails({
-        ...certificationDetails,
-        certImageUrl: fileURL,
-      });
-    }
-
-    onSave();
-  };
-
-  const handleRadioChange = (e) => {
-    setInputMethod(e.target.value);
-    if (e.target.value === "url") {
-      setFile(null);
-    } else {
-      setCertificationDetails({
-        ...certificationDetails,
-        certImageUrl: "",
-      });
-    }
-  };
 
   const handleFileChange = (e) => {
     const uploadedFile = e.target.files[0];
     if (uploadedFile && uploadedFile.type.startsWith("image/")) {
       setFile(uploadedFile);
-      setCertificationDetails({
-        ...certificationDetails,
-        certImageUrl: URL.createObjectURL(uploadedFile),
-      });
+      const previewUrl = URL.createObjectURL(uploadedFile);
+      setCertificationDetails((prev) => ({
+        ...prev,
+        certImageUrl: previewUrl,
+        previewFile: previewUrl,
+      }));
+    }
+  };
+
+  const handleRadioChange = (e) => {
+    const method = e.target.value;
+    setInputMethod(method);
+    setFile(null);
+    setCertificationDetails((prev) => ({
+      ...prev,
+      certImageUrl: "",
+      previewFile: "",
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (inputMethod === "upload" && file) {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        const response = await api.post(
+          "/api/upload-image/certifications",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        const imageUrl = response.data.imageUrl;
+
+        const updated = {
+          ...certificationDetails,
+          certImageUrl: imageUrl,
+          previewFile: imageUrl,
+        };
+
+        setCertificationDetails(updated);
+        onSave(updated);
+      } catch (error) {
+        console.error("Error uploading image to server", error);
+      }
+    } else if (inputMethod === "url") {
+      onSave(certificationDetails);
     }
   };
 
@@ -89,10 +117,11 @@ const FooterImageUpload = ({
                 name="certImageUrl"
                 value={certificationDetails.certImageUrl}
                 onChange={(e) =>
-                  setCertificationDetails({
-                    ...certificationDetails,
-                    [e.target.name]: e.target.value,
-                  })
+                  setCertificationDetails((prev) => ({
+                    ...prev,
+                    certImageUrl: e.target.value,
+                    previewFile: e.target.value,
+                  }))
                 }
                 placeholder="Enter Certification Image URL"
                 className="w-full p-3 border rounded-md"
@@ -111,17 +140,7 @@ const FooterImageUpload = ({
               <input
                 type="file"
                 accept="image/*"
-                onChange={(e) => {
-                  handleFileChange(e);
-                  const file = e.target.files[0];
-                  if (file) {
-                    const previewUrl = URL.createObjectURL(file);
-                    setCertificationDetails((prev) => ({
-                      ...prev,
-                      previewFile: previewUrl,
-                    }));
-                  }
-                }}
+                onChange={handleFileChange}
                 className="w-full"
                 required
               />
@@ -145,6 +164,32 @@ const FooterImageUpload = ({
           </div>
         </form>
       </div>
+
+      <Dialog open={showModal} onClose={() => setShowModal(false)}>
+        <DialogTitle>
+          {modalType === "view" ? "View Image" : "Edit Image"}
+        </DialogTitle>
+        <DialogContent>
+          {modalType === "view" && certificationDetails.previewFile && (
+            <img
+              src={certificationDetails.previewFile}
+              alt="Uploaded Preview"
+              style={{ maxWidth: "100%", borderRadius: "24px", border: "none" }}
+            />
+          )}
+          {modalType === "edit" && (
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              style={{ width: "100%" }}
+            />
+          )}
+          <div className="flex justify-center mt-4 space-x-4">
+            <Button onClick={() => setShowModal(false)}>Close</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

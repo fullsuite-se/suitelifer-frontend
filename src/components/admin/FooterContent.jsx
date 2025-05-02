@@ -67,29 +67,30 @@ const FooterContent = () => {
     }
   };
 
-  const handleAddOrEdit = async () => {
+  const handleAddOrEdit = async (details = certificationDetails) => {
     try {
       setIsLoading(true);
       let response;
-      if (certificationDetails.certId === null) {
+
+      if (details.certId === null) {
         response = await api.post("/api/certification", {
-          ...certificationDetails,
+          ...details,
           userId: user.id,
         });
 
-       addLog({
-        action:"CREATE",
-        description: `A new certificate URL (${certificationDetails.certImageUrl}) has been added`,
-       })
+        addLog({
+          action: "CREATE",
+          description: `A new certificate URL (${details.certImageUrl}) has been added`,
+        });
       } else {
         response = await api.put("/api/certification", {
-          ...certificationDetails,
+          ...details,
           userId: user.id,
         });
 
         addLog({
           action: "UPDATE",
-          description: `A certificate URL (${certificationDetails.certImageUrl}) has been updated`,
+          description: `A certificate URL (${details.certImageUrl}) has been updated`,
         });
       }
 
@@ -192,7 +193,7 @@ const FooterContent = () => {
       <FooterImageUpload
         isOpen={isEditing}
         onClose={() => setIsEditing(false)}
-        onSave={handleAddOrEdit}
+        onSave={handleAddOrEdit} 
         certificationDetails={certificationDetails}
         setCertificationDetails={setCertificationDetails}
         isEditing={isEditing}
