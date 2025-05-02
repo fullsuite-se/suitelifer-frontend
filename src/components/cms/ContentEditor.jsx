@@ -195,13 +195,20 @@ const ContentEditor = ({
           filesToAdd.push(image.file);
         }
       }
+      console.log("filesToAdd", filesToAdd);
+
       setToBeAddedImagesFile(filesToAdd);
       let uploadedImageUrlsForUpdate = [];
       if (filesToAdd.length > 0) {
-        const uploadImagePromises = images.map((image) => {
-          const formData = new FormData();
-          formData.append("file", image.file);
+        setTotalImages(filesToAdd.length);
+        console.log("passed here 1");
 
+        const uploadImagePromises = filesToAdd.map((image) => {
+          console.log("passed here 2");
+
+          const formData = new FormData();
+          formData.append("file", image);
+          console.log("passed here 3");
           return api
             .post("/api/upload-image/newsletter", formData, {
               headers: {
@@ -211,10 +218,13 @@ const ContentEditor = ({
             })
             .then((response) => {
               setCurrentImageIndex((prevIndex) => prevIndex + 1);
+              console.log("passed here 4");
+
               return response.data.imageUrl;
             })
             .catch((error) => {
               setCurrentImageIndex(0);
+
               console.error("Failed to upload image:", error);
               toast.error("Failed to upload images. Please try again.");
               setIsLoading(false);
@@ -649,10 +659,14 @@ const ContentEditor = ({
               >
                 {isLoading && totalImages > 0 ? (
                   <p>
-                    Uploading {currentImageIndex} of {totalImages} images...
+                    Uploading {currentImageIndex} of {totalImages}{" "}
+                    {editingData
+                      ? "new image" + (totalImages > 1 ? "s" : "")
+                      : "image" + (totalImages > 1 ? "s" : "")}
+                    ...
                   </p>
                 ) : isLoading ? (
-                  "Saving..."
+                  <p>{editingData ? "Updating changes..." : "Saving..."}</p>
                 ) : editingData ? (
                   <p>Save Changes to this Article</p>
                 ) : (
