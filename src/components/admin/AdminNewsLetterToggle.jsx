@@ -51,6 +51,7 @@ ModuleRegistry.registerModules([ClientSideRowModelModule]);
 function AdminNewsLetterToggle() {
   const addLog = useAddAuditLog();
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
+  const [isUnPublishModalOpen, setIsUnPublishModalOpen] = useState(false);
   const [sectionsNewsletterByMonth, setSectionsNewsletterByMonth] = useState(
     []
   );
@@ -422,6 +423,45 @@ function AdminNewsLetterToggle() {
       console.error("Error publishing issue:", error);
       toast.error(
         "An error occurred while publishing the issue. Please try again."
+      );
+    }
+  };
+
+  const handleUnPublishIssue = async () => {
+    try {
+      const response = await api.patch(
+        "/api/issues/unpublish",
+        {
+          issueId: selectedMonthlyIssue.issueId,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.data.success) {
+        toast.success(
+          `${getMonthName(selectedMonthlyIssue.month)} ${
+            selectedMonthlyIssue.year
+          } issue unpublished successfully.`
+        );
+        setUpdateTrigger(Date.now());
+        setSelectedMonthlyIssue(null);
+        setIsOpenArticleForm(false);
+      } else {
+        toast.error(response.data.message || "Failed to unpublish issue.");
+      }
+      addLog({
+        action: "UPDATE",
+        description: `${getMonthName(selectedMonthlyIssue.month)} ${
+          selectedMonthlyIssue.year
+        } issue has been unpublished`,
+      });
+    } catch (error) {
+      console.error("Error unpublishing issue:", error);
+      toast.error(
+        "An error occurred while unpublishing the issue. Please try again."
       );
     }
   };
@@ -846,7 +886,38 @@ function AdminNewsLetterToggle() {
                 </span>
               </button>
             ) : (
-              <></>
+              <>
+                {" "}
+                <button
+                  onClick={() => setIsUnPublishModalOpen(true)}
+                  disabled={selectedMonthlyIssue.assigned < 7}
+                  className={`flex gap-2   font-avenir-black p-2 px-3  items-center rounded-md transition ${
+                    selectedMonthlyIssue.assigned === 7
+                      ? "cursor-pointer bg-red-700 text-white hover:bg-red-800"
+                      : "cursor-not-allowed bg-gray-300 text-gray-200"
+                  }`}
+                >
+                  <BookmarkSquareIcon className="size-5" />
+                  <span className="hidden sm:flex flex-col">
+                    Unpublish this issue
+                  </span>
+                </button>
+                <ConfirmationDialog
+                  open={isUnPublishModalOpen}
+                  onClose={() => setIsUnPublishModalOpen(false)}
+                  onConfirm={async () => {
+                    setIsUnPublishModalOpen(false);
+                    await handleUnPublishIssue();
+                  }}
+                  title={`Unpublish ${getMonthName(
+                    selectedMonthlyIssue.month
+                  )} ${selectedMonthlyIssue.year} issue?`}
+                  description={`This will unpublish the issue and hide it from the public. Are you sure you want to proceed?`}
+                  confirmLabel="Continue"
+                  cancelBtnClass="p-2 px-4 cursor-pointer rounded-lg hover:bg-gray-200 duration-500 text-gray-700"
+                  confirmBtnClass="p-2 px-4 cursor-pointer rounded-lg bg-red-700 hover:bg-red-800 duration-500 text-white"
+                />
+              </>
             )}
           </div>
           <div className="py-2"></div>
@@ -1128,11 +1199,17 @@ function AdminNewsLetterToggle() {
               Preview the newsletter layout. Articles will appear in the section
               you assign (1–7).
               <span className="flex text-xs text-gray-600 mb-4 mt-2">
-        <ExclamationTriangleIcon className="size-4 text-orange-500/70" />
-        <span className="ml-2">
-          The currently published issue will <strong className="text-red-800">not be visible to the public</strong> until <strong className="text-black">all 7 sections</strong> are assigned with an article.
-        </span>
-      </span>
+                <ExclamationTriangleIcon className="size-4 text-orange-500/70" />
+                <span className="ml-2">
+                  You can't publish the issue until{" "}
+                  <strong className="text-black">all 7 sections </strong>
+                  have assigned articles. The issue will{" "}
+                  <strong className="text-red-800">
+                    not be visible to the public{" "}
+                  </strong>
+                  until then.
+                </span>
+              </span>
             </p>
             <div className="py-1"></div>
             <div>
