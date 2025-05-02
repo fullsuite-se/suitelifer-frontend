@@ -401,7 +401,7 @@ const ContentEditor = ({
 
         addLog({
           action: "CREATE",
-          description: `A new article has been added`,
+          description: `New article "${title}" has been added`,
         });
 
         toast.success("Article saved successfully!");
@@ -419,7 +419,7 @@ const ContentEditor = ({
   const handleSubmitNewsletter = async (e) => {
     e.preventDefault();
 
-    if (section === "1" && images.length === 0) {
+    if (section === 1 && images.length === 0) {
       toast.error("At least one image is required for Section 1.");
       return;
     }
