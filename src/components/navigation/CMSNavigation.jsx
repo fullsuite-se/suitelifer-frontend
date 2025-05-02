@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import { useStore } from "../../store/authStore";
 import { ModalLogout } from "../modals/ModalLogout";
 import fullsuitelogo from "../../assets/logos/logo-fs-full.svg";
+import defaultProfileImg from "../../assets/images/defaultAvatar.svg";
 import {
   NewspaperIcon,
   CalendarIcon,
@@ -193,8 +194,8 @@ const CMSNavigation = () => {
             className={`size-20 mx-auto mb-3 ${isCollapse ? "mt-3" : "mb-3"}`}
           >
             <img
-              src="http://sa.kapamilya.com/absnews/abscbnnews/media/2020/tvpatrol/06/01/james-reid.jpg"
-              alt="Hernani"
+              src={defaultProfileImg}
+              alt="profile picture"
               className="w-full h-full object-cover rounded-full"
             />
           </div>
