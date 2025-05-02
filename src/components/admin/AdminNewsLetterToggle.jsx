@@ -508,7 +508,7 @@ function AdminNewsLetterToggle() {
 
       addLog({
         action: "DELETE",
-        description: `"${newsletterDetails.title}" newsletter article has been deleted`,
+        description: `Article "${newsletterDetails.title}" has been deleted`,
       });
 
       if (response.data.success) {
