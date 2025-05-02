@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import {
   BoldIcon,
   ItalicIcon,
@@ -18,6 +18,7 @@ import { useAddAuditLog } from "../admin/UseAddAuditLog";
 import toast from "react-hot-toast";
 import ConfirmationDialog from "../admin/ConfirmationDialog";
 import Placeholder from "@tiptap/extension-placeholder";
+import { set } from "react-hook-form";
 
 const ContentEditor = ({
   editingData,
@@ -130,11 +131,18 @@ const ContentEditor = ({
   };
   const [articleLength, setArticleLength] = useState(0);
 
+  const [toBeDeletedImageUrls, setToBeDeletedImageUrls] = useState([]);
+  const [toBeAddedImagesFile, setToBeAddedImagesFile] = useState([]);
+
+  useEffect(() => {
+    console.log("editingData ETOOO BOIII", editingData);
+  }, []);
+
   useEffect(() => {
     if (editingData) {
       setTitle(editingData.title || "");
       setPseudonym(editingData.pseudonym || "");
-      setSection(editingData.section || "");
+      setSection(editingData.section || 0);
       setImages(editingData.images || []);
       setArticle(editingData.article || "");
       editor.commands.setContent(editingData.article || "");
@@ -149,6 +157,8 @@ const ContentEditor = ({
     setArticle("");
     editor?.commands.setContent("");
     setArticleLength(0);
+    setToBeAddedImagesFile([]);
+    setToBeDeletedImageUrls([]);
   };
   function checkArticleLength(articleText) {
     if (typeof articleText !== "string") return false;
@@ -164,14 +174,148 @@ const ContentEditor = ({
     return wordCount < 150;
   }
 
+  useEffect(() => {
+    if (toBeAddedImagesFile.length > 0) {
+      console.log("tobeaddedimagesfile", toBeAddedImagesFile);
+    }
+  }, [toBeAddedImagesFile]);
+
   const submitNewsletter = async (isOverride = false) => {
     setIsLoading(true);
 
-    if (editingData) {
-      toast.error(`Wait, still working on this po sorry!`);
-    } else {
-      let uploadedImageUrls = [];
+    if (editingData && editingData.newsletterId) {
+      //UPDATE DITOOOOO STARTT
+      console.log("EDIIIIIT SUBMIIIIT");
+      console.log("editingData", editingData);
+      console.log("images", images);
+      console.log("tobedeleted", toBeDeletedImageUrls);
+      const filesToAdd = [];
+      for (let image of images) {
+        if (typeof image === "object" && image.file instanceof File) {
+          filesToAdd.push(image.file);
+        }
+      }
+      console.log("filesToAdd", filesToAdd);
 
+      setToBeAddedImagesFile(filesToAdd);
+      let uploadedImageUrlsForUpdate = [];
+      if (filesToAdd.length > 0) {
+        setTotalImages(filesToAdd.length);
+        console.log("passed here 1");
+
+        const uploadImagePromises = filesToAdd.map((image) => {
+          console.log("passed here 2");
+
+          const formData = new FormData();
+          formData.append("file", image);
+          console.log("passed here 3");
+          return api
+            .post("/api/upload-image/newsletter", formData, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                timeout: 30000,
+              },
+            })
+            .then((response) => {
+              setCurrentImageIndex((prevIndex) => prevIndex + 1);
+              console.log("passed here 4");
+
+              return response.data.imageUrl;
+            })
+            .catch((error) => {
+              setCurrentImageIndex(0);
+
+              console.error("Failed to upload image:", error);
+              toast.error("Failed to upload images. Please try again.");
+              setIsLoading(false);
+              throw error;
+            });
+        });
+
+        try {
+          const uploadResponses = await Promise.all(uploadImagePromises);
+          const isValidUrl = (url) =>
+            /^https:\/\/res\.cloudinary\.com\/.+\.(webp|jpg|jpeg|png|heic)$/.test(
+              url
+            );
+
+          const uniqueUrls = Array.from(new Set(uploadResponses));
+          uploadedImageUrlsForUpdate = uniqueUrls.filter(isValidUrl);
+
+          if (uploadedImageUrlsForUpdate.length === 0) {
+            toast.error("All uploaded images are invalid or duplicate.");
+            setIsLoading(false);
+            return;
+          }
+        } catch (error) {
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      if (uploadedImageUrlsForUpdate.length > 0) {
+        try {
+          await api.post(
+            "/api/newsletterImages",
+            {
+              newsletterId: editingData.newsletterId,
+              images: uploadedImageUrlsForUpdate,
+            },
+            { timeout: 30000 }
+          );
+        } catch (error) {
+          console.error("Failed to upload image:", error);
+          toast.error("Failed to upload images. Please try again.");
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      if (toBeDeletedImageUrls.length > 0) {
+        try {
+          for (let imageUrl of toBeDeletedImageUrls) {
+            await api.delete("/api/delete-newsletter-by-imageurl", {
+              data: { image_url: imageUrl },
+            });
+          }
+        } catch (error) {
+          console.error("Failed to delete image:", error);
+          toast.error("Failed to delete images. Please try again.");
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      try {
+        await api.put("/api/newsletter", {
+          newsletterId: editingData.newsletterId,
+          title,
+          pseudonym,
+          section,
+          article,
+          userId: user.id,
+          issueId,
+        });
+        toast.success("Article updated successfully!");
+        addLog({
+          action: "UPDATE",
+          description: `Article "${editingData.title}" has been updated`,
+        });
+
+        handleBackAfterSubmitForm();
+        resetForm();
+      } catch (error) {
+        console.error("Failed to update article:", error);
+        toast.error("Failed to update article. Please try again.");
+      } finally {
+        setIsLoading(false);
+      }
+
+      //END NG EDITT DIITOOOOOO
+    } else {
+      //ADDING DITOOOOOO STARTT
+      let uploadedImageUrls = [];
+      console.log("images", images);
       if (images.length > 0) {
         setTotalImages(images.length);
         const uploadImagePromises = images.map((image) => {
@@ -298,9 +442,8 @@ const ContentEditor = ({
                 required
                 className="border border-gray-400 focus:border-primary outline-none p-2 font-avenir-black w-full rounded-md mt-1"
                 onChange={(e) => {
-                  setSection(e.target.value);
+                  setSection(Number(e.target.value));
                 }}
-                defaultValue=""
                 value={section}
               >
                 <option value="" disabled hidden>
@@ -404,7 +547,10 @@ const ContentEditor = ({
                     <button
                       type="button"
                       className="mt-4 text-sm text-red-700 hover:underline cursor-pointer"
-                      onClick={onImageRemoveAll}
+                      onClick={() => {
+                        setToBeDeletedImageUrls(images);
+                        onImageRemoveAll();
+                      }}
                     >
                       Remove All Images
                     </button>
@@ -439,6 +585,12 @@ const ContentEditor = ({
                               onClick={(e) => {
                                 e.stopPropagation();
                                 onImageRemove(index);
+                                if (editingData) {
+                                  setToBeDeletedImageUrls((prev) => [
+                                    ...prev,
+                                    imageUrl,
+                                  ]);
+                                }
                               }}
                               className="bg-white p-2 rounded-full hover:bg-gray-200"
                             >
@@ -507,10 +659,14 @@ const ContentEditor = ({
               >
                 {isLoading && totalImages > 0 ? (
                   <p>
-                    Uploading {currentImageIndex} of {totalImages} images...
+                    Uploading {currentImageIndex} of {totalImages}{" "}
+                    {editingData
+                      ? "new image" + (totalImages > 1 ? "s" : "")
+                      : "image" + (totalImages > 1 ? "s" : "")}
+                    ...
                   </p>
                 ) : isLoading ? (
-                  "Saving..."
+                  <p>{editingData ? "Updating changes..." : "Saving..."}</p>
                 ) : editingData ? (
                   <p>Save Changes to this Article</p>
                 ) : (
