@@ -59,26 +59,8 @@ function AdminNewsLetterToggle() {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef(null);
   const [selectedMonthlyIssue, setSelectedMonthlyIssue] = useState(null);
-  const currentDate = new Date();
-  const currentYear = currentDate.getFullYear();
-  const currentMonth = currentDate.getMonth() + 1;
-  const [selectedYear, setSelectedYear] = useState(currentYear);
-  const [updateTrigger, setUpdateTrigger] = useState(Date.now());
 
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
+  const [updateTrigger, setUpdateTrigger] = useState(Date.now());
 
   const [currentPublishedIssue, setCurrentPublishedIssue] = useState({});
   const [oldestIssue, setOldestIssue] = useState({});
@@ -103,11 +85,28 @@ function AdminNewsLetterToggle() {
   };
 
   const [articleDetails, setArticleDetails] = useState(defaultArticleDetails);
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth() + 1;
 
-  const today = new Date();
-  let initMonth = today.getMonth() + 2;
-  let initYear = today.getFullYear();
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const [selectedYear, setSelectedYear] = useState(currentYear);
 
+  let initMonth = currentMonth + 1;
+  let initYear = currentYear;
   if (initMonth > 12) {
     initMonth = 1;
     initYear += 1;
@@ -119,15 +118,30 @@ function AdminNewsLetterToggle() {
     year: initYear,
   });
 
-  const monthOptions = useMemo(() => {
-    return currentMonth === 12
-      ? [0]
-      : Array.from({ length: 12 - currentMonth }, (_, i) => currentMonth + i);
-  }, [currentMonth]);
-
   const yearOptions = useMemo(() => {
     return currentMonth === 12 ? [currentYear, currentYear + 1] : [currentYear];
   }, [currentMonth, currentYear]);
+
+  const monthOptions = useMemo(() => {
+    if (currentMonth === 12) {
+      if (currentIssue.year === currentYear) return [12];
+      if (currentIssue.year === currentYear + 1) return [1];
+      return [];
+    }
+
+    if (currentIssue.year === currentYear) {
+      return Array.from(
+        { length: 12 - currentMonth + 1 },
+        (_, i) => currentMonth + i
+      );
+    }
+
+    if (currentIssue.year > currentYear) {
+      return Array.from({ length: 12 }, (_, i) => i + 1);
+    }
+
+    return [];
+  }, [currentIssue.year, currentMonth, currentYear]);
 
   const handleSaveIssue = async () => {
     console.log("Saving issue:", currentIssue);
@@ -143,13 +157,13 @@ function AdminNewsLetterToggle() {
       toast.error("You cannot select a year in the past.");
       return;
     }
-    if (
-      currentIssue.month === currentMonth &&
-      currentIssue.year === currentYear
-    ) {
-      toast.error("You cannot select the current month.");
-      return;
-    }
+    // if (
+    //   currentIssue.month === currentMonth &&
+    //   currentIssue.year === currentYear
+    // ) {
+    //   toast.error("You cannot select the current month.");
+    //   return;
+    // }
     if (currentIssue.month > 12) {
       toast.error("Invalid month selected.");
       return;
@@ -331,61 +345,12 @@ function AdminNewsLetterToggle() {
   const refTitle = useRef();
   const refDesc = useRef();
 
-  const handleFileChange = (e) => {
-    setFiles([...e.target.files]);
-  };
-
-  const handleTitleChange = (content) => {
-    setBlogTitle(content);
-  };
-
-  const handleDescriptionChange = (content) => {
-    setBlogDescription(content);
-  };
-
   useEffect(() => {
     if (refTitle.current) {
       refTitle.current.innerHTML = blogTitle;
       refDesc.current.innerHTML = blogDescription;
     }
   }, [blogTitle, blogDescription]);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (!blogTitle.trim() || !blogDescription.trim()) {
-      toast.error("Please fill in all fields.");
-
-      return;
-    }
-
-    const eBlogData = {
-      title: blogTitle,
-      description: blogDescription,
-    };
-
-    return;
-
-    const uploadBlog = async () => {
-      try {
-        const responseBlog = await api.post(
-          "/api/add-employee-blog",
-          eBlogData
-        );
-        const eblogId = responseBlog.data.eblog_id;
-        const responseImg = await api.post(
-          `/api/upload-image/blogs/${eblogId}`,
-          imagesData
-        );
-
-        console.log("Blog uploaded successfully:", responseBlog.data);
-        console.log("File uploaded successfully:", responseImg.data);
-      } catch (error) {
-        console.error("Error uploading file:", error);
-      }
-    };
-    uploadBlog();
-  };
 
   const handlePublishIssue = async () => {
     try {
@@ -577,7 +542,7 @@ function AdminNewsLetterToggle() {
           )}
 
           <div className="py-3"></div>
-          <div className="flex flex-row items-center justify-between">
+          <div className="flex flex-row items-center justify-start gap-2">
             <h3>All Issues</h3>
             {/* <InformationCircleIcon className="w-5 h-5 text-primary cursor-pointer" /> */}
 
@@ -790,6 +755,8 @@ function AdminNewsLetterToggle() {
                     setCurrentIssue({
                       ...currentIssue,
                       year: parseInt(e.target.value),
+                      // Reset month when year changes to avoid mismatch
+                      month: "",
                     })
                   }
                   className="w-full p-3 mt-2 border rounded bg-primary/10 focus:ring-2 focus:ring-primary"
@@ -822,9 +789,9 @@ function AdminNewsLetterToggle() {
                   <option value="" hidden>
                     Select month
                   </option>
-                  {monthOptions.map((monthIndex) => (
-                    <option key={monthIndex} value={monthIndex + 1}>
-                      {months[monthIndex]}
+                  {monthOptions.map((monthNumber) => (
+                    <option key={monthNumber} value={monthNumber}>
+                      {months[monthNumber - 1]}
                     </option>
                   ))}
                 </select>
@@ -1140,10 +1107,6 @@ function AdminNewsLetterToggle() {
                 sectionsNewsletterByMonth={sectionsNewsletterByMonth}
                 handleBackAfterSubmitForm={handleBackAfterSubmitForm}
                 editingData={editingData}
-                handleFileChange={handleFileChange}
-                handleTitleChange={handleTitleChange}
-                handleDescriptionChange={handleDescriptionChange}
-                // handleSubmit={handleSubmit}
                 type={"newsletter"}
                 issueId={selectedMonthlyIssue.issueId}
                 user={user}

@@ -25,7 +25,7 @@ const CMSTopNavigation = () => {
         <div className="flex items-center gap-2">
           <h2 className="font-avenir-black">{formatTitle(currentPage)}</h2>
           {/* <span className="text-sm text-gray-500 font-avenir-roman">(6)</span> */}
-          <InformationCircleIcon className="w-4 h-4 text-gray-500" />
+          {/* <InformationCircleIcon className="w-4 h-4 text-gray-500" /> */}
         </div>
         <TopBarGeneratedFunction page={formatTitle(currentPage)} />
       </div>
