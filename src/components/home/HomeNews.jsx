@@ -20,7 +20,10 @@ const HomeNews = () => {
       try {
         const issueRes = await api.get("api/issues/current");
         const current = issueRes.data.currentIssue;
-
+        if (!current) {
+          setNewsletterContent({ articles: [], currentIssue: null });
+          return;
+        }
         const articlesRes = await api.get(
           `/api/newsletter?issueId=${current.issueId}`
         );
@@ -61,8 +64,8 @@ const HomeNews = () => {
   const articles = newsletterContent.articles || [];
   const currentIssue = newsletterContent.currentIssue || {};
 
-
-  if (!articles || articles.length === 0) {
+  if (!articles || articles.length === 0 || newsletterContent.currentIssue?.assigned 
+    !== 7){
     return (
       <section className="px-7 xl:px-40 text-center">
         <div className="mb-5 relative">
@@ -76,13 +79,17 @@ const HomeNews = () => {
             </p>
           </MotionUp>
         </div>
-        <div className="py-10 text-gray-500 flex flex-col items-center">
-          <img
-            src="src/assets/gif/nothing-found-icon.gif"
-            alt="No articles illustration"
-            className="w-40 h-40 mb-4 opacity-50"
-          />
-          <p>No news articles available.</p>
+        <div className="flex flex-col items-center justify-center text-center p-10 min-h-[60vh]">
+          <h1 className="text-3xl md:text-5xl font-avenir-black mb-4">
+            📬 Your Next Big Read Is On Its Way!
+          </h1>
+          <p className="text-lg md:text-xl text-gray-600 max-w-xl">
+            We're putting the final touches on something special. Fresh stories,
+            insights, and updates will be landing here very soon —{" "}
+            <span className="font-avenir-black text-primary">
+              stay excited!
+            </span>
+          </p>
         </div>
       </section>
     );
@@ -180,7 +187,9 @@ const HomeNews = () => {
                 >
                   {articles[0].pseudonym && articles[0].createdAt ? (
                     <p className="text-xss opacity-80">
-                      <span className="text-white">{articles[0].pseudonym}</span>
+                      <span className="text-white">
+                        {articles[0].pseudonym}
+                      </span>
                       <span className="text-white">&nbsp; |</span>
                       <span className="text-white">
                         &nbsp;&nbsp;
