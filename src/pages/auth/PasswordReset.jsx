@@ -101,6 +101,10 @@ const PasswordReset = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary placeholder-primary/50"
               required
+
+          onPaste={(e) => e.preventDefault()}
+          onCopy={(e) => e.preventDefault()}
+          onCut={(e) => e.preventDefault()}
             />
             <button
               type="button"
@@ -126,6 +130,10 @@ const PasswordReset = () => {
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary placeholder-primary/50"
               required
+
+          onPaste={(e) => e.preventDefault()}
+          onCopy={(e) => e.preventDefault()}
+          onCut={(e) => e.preventDefault()}
             />
             <button
               type="button"

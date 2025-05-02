@@ -164,6 +164,9 @@ const Form = () => {
           placeholder="Enter your password"
           className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary placeholder-primary/50"
           required
+          onPaste={(e) => e.preventDefault()}
+          onCopy={(e) => e.preventDefault()}
+          onCut={(e) => e.preventDefault()}
           value={password}
           onChange={(e) => handleInputChange(e.target.value, setPassword)}
         />
@@ -189,6 +192,10 @@ const Form = () => {
           onChange={(e) =>
             handleInputChange(e.target.value, setConfirmPassword)
           }
+
+          onPaste={(e) => e.preventDefault()}
+          onCopy={(e) => e.preventDefault()}
+          onCut={(e) => e.preventDefault()}
         />
         <button
           type="button"
