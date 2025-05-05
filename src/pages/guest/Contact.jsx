@@ -21,6 +21,25 @@ import api from "../../utils/axios";
 import { useLocation } from "react-router-dom";
 const Contact = () => {
   const [selected, setSelected] = useState("Full-Time");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const recipient =
+      selected.toLowerCase() === "Full-Time".toLowerCase()
+        ? contactDetails.careersEmail
+        : contactDetails.internshipEmail;
+
+    const emailBody = `${message}\n\nSincerely,\n${fullName}`;
+
+    window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(
+      subject
+    )}&body=${encodeURIComponent(emailBody)}`;
+  };
   const location = useLocation();
   const fadeInUp = {
     hidden: { opacity: 0, y: 50 },
@@ -45,7 +64,7 @@ const Contact = () => {
 
       setContactDetails(response.data.contact);
     } catch (err) {
-      console.log("Unable to fetch Contacts",err);
+      console.log("Unable to fetch Contacts", err);
     }
   };
 
@@ -141,7 +160,7 @@ const Contact = () => {
                     <div className="flex flex-col xl:flex-row">
                       <div className="">
                         <a
-                          href="mailto:hireme@fullsuite.ph"
+                          href={`mailto:${contactDetails.careersEmail}`}
                           className="hover:text-secondary transition-colors  no-underline!"
                         >
                           {contactDetails.careersEmail}
@@ -152,7 +171,7 @@ const Contact = () => {
                       </div>
                       <div className="">
                         <a
-                          href="mailto:internships@fullsuite.ph"
+                          href={`mailto:${contactDetails.internshipEmail}`}
                           className="hover:text-secondary transition-colors  no-underline!"
                         >
                           {contactDetails.internshipEmail}
@@ -197,83 +216,102 @@ const Contact = () => {
               transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
               className="p-8 w-full md:max-w-lg lg:max-w-2xl xl:max-w-4xl"
             >
-              <div className="flex space-x-4">
-                {["Full-Time", "Internship"].map((type) => (
-                  <label
-                    key={type}
-                    className="flex items-center space-x-2 cursor-pointer"
-                  >
-                    <input
-                      type="radio"
-                      name="employmentType"
-                      value={type}
-                      checked={selected === type}
-                      onChange={() => setSelected(type)}
-                      className="hidden"
-                    />
-                    <div
-                      className="w-4 h-4 rounded-full border-2"
-                      style={{
-                        borderColor: selected === type ? "#0097B2" : "#ccc",
-                        backgroundColor:
-                          selected === type ? "#0097B2" : "transparent",
-                      }}
-                    ></div>
-                    <span
-                      className="text-sm"
-                      style={{
-                        color: selected === type ? "#0097B2" : "#6b7280",
-                        fontWeight: selected === type ? "500" : "normal",
-                      }}
+              <div>
+                <div className="flex space-x-4">
+                  {["Full-Time", "Internship"].map((type) => (
+                    <label
+                      key={type}
+                      className="flex items-center space-x-2 cursor-pointer"
                     >
-                      {type}
-                    </span>
-                  </label>
-                ))}
+                      <input
+                        type="radio"
+                        name="employmentType"
+                        value={type}
+                        checked={selected === type}
+                        onChange={() => setSelected(type)}
+                        className="hidden"
+                      />
+                      <div
+                        className="w-4 h-4 rounded-full border-2"
+                        style={{
+                          borderColor: selected === type ? "#0097B2" : "#ccc",
+                          backgroundColor:
+                            selected === type ? "#0097B2" : "transparent",
+                        }}
+                      ></div>
+                      <span
+                        className="text-sm"
+                        style={{
+                          color: selected === type ? "#0097B2" : "#6b7280",
+                          fontWeight: selected === type ? "500" : "normal",
+                        }}
+                      >
+                        {type}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+
+                <div className="py-2"></div>
+
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <label className="block text-gray-700 text-small">
+                      Full Name<span className="text-primary">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 text-small">
+                      Email Address<span className="text-primary">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 text-small">
+                      Subject<span className="text-primary">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={subject}
+                      onChange={(e) => setSubject(e.target.value)}
+                      className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 text-small">
+                      Message<span className="text-primary">*</span>
+                    </label>
+                    <textarea
+                      rows="4"
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary placeholder-primary/50"
+                      placeholder="Type your message here"
+                      required
+                    ></textarea>
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full font-avenir-black bg-primary text-small text-white py-3 rounded-md hover:bg-primary/90 transition"
+                  >
+                    SEND
+                  </button>
+                </form>
               </div>
-              <div className="py-2"></div>
-              <form action="#" className="space-y-4">
-                <div>
-                  <label className="block text-gray-700 text-small">
-                    Full Name<span className="text-primary">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 text-small">
-                    Email Address<span className="text-primary">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 text-small">
-                    Subject<span className="text-primary">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 text-small">
-                    Message<span className="text-primary">*</span>
-                  </label>
-                  <textarea
-                    rows="4"
-                    className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary placeholder-primary/50"
-                    placeholder="Type your message here"
-                  ></textarea>
-                </div>
-                <button className="w-full font-avenir-black bg-primary  text-small text-white py-3 rounded-md hover:bg-primary/90 transition">
-                  SEND
-                </button>
-              </form>
             </motion.div>
           </motion.div>
 
