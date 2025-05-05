@@ -35,7 +35,7 @@ const Contact = () => {
     setSubject("");
     setMessage("");
   };
-
+//
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
