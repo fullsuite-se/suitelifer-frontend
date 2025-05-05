@@ -28,7 +28,7 @@ const Careers = () => {
       const response = await atsAPI.get("/industries/");
       setIndustries((i) => response.data.data);
     } catch (err) {
-      console.log("Unable to fetch Industries",err);
+      console.log("Unable to fetch Industries", err);
     }
   };
 
@@ -44,7 +44,7 @@ const Careers = () => {
       const response = await atsAPI.get("/jobs/open");
       setJobs((j) => response.data.data);
     } catch (err) {
-      console.log("Unable to fetch Jobs",err);
+      console.log("Unable to fetch Jobs", err);
     } finally {
       setIsLoading(false);
     }
@@ -55,12 +55,12 @@ const Careers = () => {
       setIsLoading(true);
 
       const response = await atsAPI.get(`/jobs/open-filter/${filter}`);
-      console.log("EROOOOO")
-console.log(filter);
-console.log(response.data.data);
+      console.log("EROOOOO");
+      console.log(filter);
+      console.log(response.data.data);
       setJobs((j) => response.data.data);
     } catch (err) {
-      console.log("Unable to fetch Filtered Jobs",err);
+      console.log("Unable to fetch Filtered Jobs", err);
     } finally {
       setIsLoading(false);
     }
@@ -73,7 +73,7 @@ console.log(response.data.data);
 
       setHeroImages(data);
     } catch (error) {
-      console.log("Uable to fetch Image",error);
+      console.log("Uable to fetch Image", error);
       setIsHeroLoading(false); // just in case it fails
     }
   };
@@ -300,9 +300,8 @@ console.log(response.data.data);
                 {jobs.length === 0 ? (
                   <div className="grid place-content-center px-5 text-center text-2xl min-h-100 my-7">
                     <p>
-                      No job listings are available for this industry{" "}
+                      No open positions in this industry{" "}
                       <span className="font-avenir-black">at the moment</span>
-                      —but stay tuned!
                     </p>
                     <p>
                       Exciting{" "}

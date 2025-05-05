@@ -19,27 +19,63 @@ import PageMeta from "../../components/layout/PageMeta";
 import Footer from "../../components/footer/Footer";
 import api from "../../utils/axios";
 import { useLocation } from "react-router-dom";
+import toast from "react-hot-toast";
+import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
 const Contact = () => {
   const [selected, setSelected] = useState("Full-Time");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const recipient =
-      selected.toLowerCase() === "Full-Time".toLowerCase()
-        ? contactDetails.careersEmail
-        : contactDetails.internshipEmail;
-
-    const emailBody = `${message}\n\nSincerely,\n${fullName}`;
-
-    window.location.href = `mailto:${recipient}?subject=${encodeURIComponent(
-      subject
-    )}&body=${encodeURIComponent(emailBody)}`;
+  const resetForm = () => {
+    setFullName("");
+    setEmail("");
+    setSubject("");
+    setMessage("");
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+
+      if (!fullName || !email || !subject || !message) {
+        toast.error("Please fill in all fields.");
+        return;
+      }
+      // const receiver_email = "allen.alvaro@fullsuite.ph";
+      const receiver_email =
+        selected.toLowerCase() === "full-time"
+          ? contactDetails.careersEmail
+          : contactDetails.internshipEmail;
+      const response = await api.post("/api/send-inquiry-email", {
+        fullName,
+        receiver_email,
+        sender_email: email,
+        subject,
+        message,
+      });
+
+      if (response?.data?.isSuccess) {
+        resetForm();
+        toast.success(response.data.message);
+      } else {
+        toast.error(
+          response?.data?.message || "Something went wrong. Try again."
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(
+        error?.response?.data?.message || "Failed to send message. Try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const location = useLocation();
   const fadeInUp = {
     hidden: { opacity: 0, y: 50 },
@@ -305,10 +341,28 @@ const Contact = () => {
                     ></textarea>
                   </div>
                   <button
+                    disabled={loading}
                     type="submit"
-                    className="w-full font-avenir-black bg-primary text-small text-white py-3 rounded-md hover:bg-primary/90 transition"
+                    className={`w-full font-avenir-black text-small py-3 rounded-md transition text-white bg-primary  
+                      ${
+                        loading
+                          ? " cursor-not-allowed"
+                          : "hover:bg-primary/90 cursor-pointer"
+                      }`}
                   >
-                    SEND
+                    {loading ? (
+                      <div className="mx-auto w-fit">
+                        <TwoCirclesLoader
+                          bg={"transparent"}
+                          color1={"#bfd1a0"}
+                          color2={"#ffffff"}
+                          width={"135"}
+                          height={"24"}
+                        />
+                      </div>
+                    ) : (
+                      "SEND MESSAGE"
+                    )}
                   </button>
                 </form>
               </div>
