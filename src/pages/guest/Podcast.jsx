@@ -20,8 +20,60 @@ import emailicon from "../../assets/icons/envelope.svg";
 import tphoneicon from "../../assets/icons/mobile-button.svg";
 import phoneicon from "../../assets/icons/phone-flip.svg";
 import { useLocation } from "react-router-dom";
+import TwoCirclesLoader from "../../assets/loaders/TwoCirclesLoader";
+import toast from "react-hot-toast";
 
 const Podcast = () => {
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const resetForm = () => {
+    setFullName("");
+    setEmail("");
+    setSubject("");
+    setMessage("");
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+
+      if (!fullName || !email || !subject || !message) {
+        toast.error("Please fill in all fields.");
+        return;
+      }
+      // const receiver_email = "allen.alvaro@fullsuite.ph";
+      const receiver_email = contactDetails.websiteEmail;
+      const response = await api.post("/api/send-inquiry-email", {
+        fullName,
+        receiver_email,
+        sender_email: email,
+        subject,
+        message,
+        type: "podcast",
+      });
+
+      if (response?.data?.isSuccess) {
+        resetForm();
+        toast.success("Message sent successfully!");
+      } else {
+        toast.error(
+          response?.data?.message || "Something went wrong. Try again."
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(
+        error?.response?.data?.message || "Failed to send message. Try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
   const [isSpotifyLoading, setSpotifyIsLoading] = useState(true);
   const [spotifyEpisodes, setEpisodes] = useState([]);
   // const [isComingSoon, setIsComingSoon] = useState(true); //Change this to false if okay na ang podcast
@@ -81,7 +133,7 @@ const Podcast = () => {
 
       setContactDetails(response.data.contact);
     } catch (err) {
-      console.log("Unable to fetch Contacts",err);
+      console.log("Unable to fetch Contacts", err);
     }
   };
 
@@ -339,7 +391,7 @@ const Podcast = () => {
           <></>
         )}
       </main>
-      <section className="">
+      <section className="" id="inquiry">
         <div className="h-30"></div>
         <motion.div
           initial="hidden"
@@ -375,7 +427,7 @@ const Podcast = () => {
                   />
                   <div className="flex">
                     <a
-                      href="mailto:suitelifer@fullsuite.ph"
+                      href={`mailto:${contactDetails.websiteEmail}`}
                       className="hover:text-accent-2 transition-colors  no-underline!"
                     >
                       {contactDetails.websiteEmail}
@@ -419,12 +471,15 @@ const Podcast = () => {
             transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
             className="p-8 w-full md:max-w-lg lg:max-w-2xl xl:max-w-4xl"
           >
-            <form action="#" className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-gray-700 text-small">
                   Full Name<span className="text-primary">*</span>
                 </label>
                 <input
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
                   type="text"
                   className="text-accent-2 w-full p-3 border-none rounded-md bg-secondary/10 focus:outline-none focus:ring-2 focus:ring-secondary"
                 />
@@ -434,6 +489,9 @@ const Podcast = () => {
                   Email Address<span className="text-primary">*</span>
                 </label>
                 <input
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
                   type="email"
                   className="text-accent-2 w-full p-3 border-none rounded-md bg-secondary/10 focus:outline-none focus:ring-2 focus:ring-secondary"
                 />
@@ -443,6 +501,9 @@ const Podcast = () => {
                   Subject<span className="text-primary">*</span>
                 </label>
                 <input
+                  value={subject}
+                  onChange={(e) => setSubject(e.target.value)}
+                  required
                   type="text"
                   className="text-accent-2 w-full p-3 border-none rounded-md bg-secondary/10 focus:outline-none focus:ring-2 focus:ring-secondary"
                 />
@@ -452,13 +513,39 @@ const Podcast = () => {
                   Message<span className="text-primary">*</span>
                 </label>
                 <textarea
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  required
                   rows="4"
                   className="w-full p-3 border-none rounded-md bg-secondary/10 focus:outline-none focus:ring-2 focus:ring-secondary placeholder-accent-2/50 text-accent-2"
                   placeholder="Type your message here"
                 ></textarea>
               </div>
-              <button className="w-full font-avenir-black bg-secondary cursor-pointer  text-small text-white py-3 rounded-md hover:bg-secondary/90 transition">
-                SEND
+              <button
+                disabled={loading}
+                className={`w-full font-avenir-black  text-small text-white py-3 rounded-md transition bg-secondary 
+                   ${
+                     loading
+                       ? " cursor-not-allowed"
+                       : "  hover:bg-secondary/90 cursor-pointer "
+                   }
+                  
+                  `}
+                type="submit"
+              >
+                {loading ? (
+                  <div className="mx-auto w-fit">
+                    <TwoCirclesLoader
+                      bg={"transparent"}
+                      color1={"#0097B2"}
+                      color2={"#ffffff"}
+                      width={"135"}
+                      height={"24"}
+                    />
+                  </div>
+                ) : (
+                  "SEND MESSAGE"
+                )}
               </button>
             </form>
           </motion.div>
