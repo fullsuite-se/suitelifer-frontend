@@ -361,7 +361,7 @@ const Contact = () => {
                         />
                       </div>
                     ) : (
-                      "SEND MESSAGE"
+                      "SEND MESSAGE SAMPLE CHANGES"
                     )}
                   </button>
                 </form>
