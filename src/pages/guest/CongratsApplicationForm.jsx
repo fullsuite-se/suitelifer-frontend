@@ -12,6 +12,15 @@ const CongratsApplicationForm = () => {
   const location = useLocation();
   const assessmentUrl = location.state?.assessmentUrl;
 
+  const isValidURL = (url) => {
+    try {
+      new URL(url);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  };
+
   const navigate = useNavigate();
 
   return (
@@ -46,25 +55,42 @@ const CongratsApplicationForm = () => {
                 Congratulations!
               </p>
               <div className="hidden lg:block"></div>
-              <p className="text-gray-600 text-[12px] md:text-[14px] lg:text-base md:mb-7">
-                You have successfully submitted your application. Now, click the
-                link below to start your pre-assessment. It will take 1 hour and
-                30 minutes or shorter depending on you.
-              </p>
-              <div className="hidden lg:block"></div>
-              <p className="text-gray-600 text-[12px] md:text-[14px] lg:text-base">
-                If you have no time now, you can take it later. Just open your
-                email inbox and click the link we have sent you there. Hope the
-                best for your initial test! Fighting!!
-              </p>
-              <a
-                href={assessmentUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="md:text-lg font-avenir-black text-primary "
-              >
-                {assessmentUrl}
-              </a>
+              {isValidURL(assessmentUrl) ? (
+                <>
+                  <p className="text-gray-600 text-[12px] md:text-[14px] lg:text-base md:mb-7">
+                    You have successfully submitted your application. Now, click
+                    the link below to start your pre-assessment. It will take 1
+                    hour and 30 minutes or shorter depending on you.
+                  </p>
+                  <div className="hidden lg:block"></div>
+                  <p className="text-gray-600 text-[12px] md:text-[14px] lg:text-base">
+                    If you have no time now, you can take it later. Just open
+                    your email inbox and click the link we have sent you there.
+                    Hope the best for your initial test! Fighting!!
+                  </p>
+                  <a
+                    href={assessmentUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="md:text-lg font-avenir-black text-primary "
+                  >
+                    {assessmentUrl}
+                  </a>
+                </>
+              ) : (
+                <>
+                  <p className="text-gray-600 text-[12px] md:text-[14px] lg:text-base md:mb-7">
+                    You have successfully submitted your application.
+                  </p>
+                  <div className="hidden lg:block"></div>
+                  <p className="text-gray-600 text-[12px] md:text-[14px] lg:text-base">
+                    Our team will review your application and get in touch with
+                    you soon.
+                    <br />
+                    Thank you for your interest in joining Fullsuite.
+                  </p>
+                </>
+              )}
               <div className="hidden lg:block"></div>
               <p className="text-gray-400 text-[12px] md:text-[14px] lg:text-base mb-2 mt-10">
                 from
