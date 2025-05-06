@@ -28,7 +28,7 @@ import LoadingAnimation from "../../components/loader/Loading";
 const Form = () => {
   const navigate = useNavigate();
   const { id, jobPosition } = useParams();
-
+  const [referralInputName, setReferralInputName] = useState("");
   const [referrerName, setReferrerName] = useState("");
   const [agree, setAgree] = useState(false);
 
@@ -56,8 +56,34 @@ const Form = () => {
 
   const { executeRecaptcha } = useGoogleReCaptcha();
 
+  // const handleApplicationDetailsChange = (e) => {
+  //   setApplicationDetails((ad) => ({ ...ad, [e.target.name]: e.target.value }));
+  // };
+
   const handleApplicationDetailsChange = (e) => {
-    setApplicationDetails((ad) => ({ ...ad, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+
+    if (name === "referrer_name") {
+      setShowReferralInput(value === "REFERRAL");
+
+      setApplicationDetails((ad) => ({
+        ...ad,
+        referrer_name:
+          value === "REFERRAL" ? `REFERRAL (${referralInputName})` : value,
+      }));
+    } else if (name === "referral_input") {
+      setReferralInputName(value);
+
+      setApplicationDetails((ad) => ({
+        ...ad,
+        referrer_name: `REFERRAL (${value})`,
+      }));
+    } else {
+      setApplicationDetails((ad) => ({
+        ...ad,
+        [name]: value,
+      }));
+    }
   };
 
   // =========== START: drag and drop using dropzone ===========
@@ -131,6 +157,8 @@ const Form = () => {
     if (CV === null) {
       setIsFileRemovedOnce(true);
       toast.error("Please attach your CV");
+      setIsLoading(false);
+      setAgree(false);
       return;
     }
 
@@ -149,16 +177,19 @@ const Form = () => {
         await uploadFile();
 
         const response = await atsAPI.post("/applicants/add", {
-          applicant: JSON.stringify({...applicationDetails, mobile_number_1: "09" + applicationDetails.mobile_number_1}),
+          applicant: JSON.stringify({
+            ...applicationDetails,
+            mobile_number_1: "09" + applicationDetails.mobile_number_1,
+          }),
         });
 
-        console.log(response.data.message);        
+        console.log(response.data.message);
 
         if (response.data.message === "Successfully inserted") {
           const res = await atsAPI.post("/jobs/assessment-url", {
             job_id: id,
           });
-          
+
           const assessmentUrl = res.data.data.assessmentUrl;
 
           toast.success("Job Application Successful.");
@@ -197,7 +228,7 @@ const Form = () => {
 
         navigate("/careers");
       } else {
-        toast.error("May problema.");
+        toast.error("Something went wrong. Try again later.");
       }
     } catch (err) {
       console.error(err);
@@ -310,7 +341,7 @@ const Form = () => {
               <label key={option} className="flex items-center">
                 <input
                   type="radio"
-                  name="discovered_at"
+                  name="referrer_name"
                   value={option}
                   required
                   className="text-primary focus:ring-primary"
@@ -333,14 +364,10 @@ const Form = () => {
               </label>
               <input
                 type="text"
-                name="referrer_name"
+                name="referral_input"
                 required={showReferralInput}
-                onChange={(e) =>
-                  setApplicationDetails((ad) => ({
-                    ...ad,
-                    referrer_name: e.target.value,
-                  }))
-                }
+                value={referralInputName}
+                onChange={handleApplicationDetailsChange}
                 className="w-full p-3 border-none rounded-md bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
@@ -450,6 +477,7 @@ const Form = () => {
         <div className="flex items-center space-x-2">
           <input
             type="checkbox"
+            checked={agree}
             onChange={(e) => setAgree(e.target.checked)}
             className="accent-primary w-4 h-4 cursor-pointer"
           />
