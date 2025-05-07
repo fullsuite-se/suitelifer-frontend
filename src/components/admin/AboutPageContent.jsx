@@ -357,11 +357,11 @@ const AboutPageContent = ({}) => {
       />
 
       <div className="flex justify-end gap-2 mb-30">
-        <ContentButtons
+        {/* <ContentButtons
           icon={<EyeIcon className="size-5" />}
           text="Preview Changes"
           handleClick={null}
-        />
+        /> */}
 
         <ContentButtons
           icon={<BookmarkSquareIcon className="size-5" />}
