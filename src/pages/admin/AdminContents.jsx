@@ -60,7 +60,7 @@ const AdminContents = () => {
           <Tab label="Careers" value={2} />
           <Tab label="Newsletter" value={3} />
           <Tab label="Podcast" value={4} />
-          <Tab label="Contacts" value={5} />
+          <Tab label="Contact" value={5} />
           <Tab label="Footer" value={6} />
         </Tabs>
       </div>
