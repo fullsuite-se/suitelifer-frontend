@@ -55,6 +55,7 @@ import Register from "./pages/auth/Register";
 import { Toaster } from "react-hot-toast";
 import ScrollToTop from "./components/buttons/ScrollToTop";
 import VerifyAccount from "./pages/auth/VerifyAccount";
+import DevelopersPage from "./pages/guest/Developers";
 
 function App() {
   return (
@@ -80,6 +81,11 @@ function App() {
             path="/congrats-application-form"
             element={<CongratsApplicationForm />}
           />
+
+          <Route path="/developers" element={<DevelopersPage />} />
+          <Route path="/developer" element={<Navigate to="/developers"/>} />
+          <Route path="/dev" element={<Navigate to="/developers"/>} />
+          <Route path="/d" element={<Navigate to="/developers"/>} />
           <Route path="/newsletter" element={<Newsletter />} />
           <Route path="/newsletter/:slug" element={<NewsletterDetails />} />
           <Route path="/contact" element={<Contact />} />
