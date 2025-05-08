@@ -285,6 +285,24 @@ const SpotifyEpisodes = () => {
         ]}
         onFilterChange={(filter) => setEmbedTypeFilter(filter)}
       />
+      {filteredEpisodes.length < 1 ? (
+        <div className="text-center py-8">
+          <p className="text-lg text-primary font-semibold">
+            No{" "}
+            {embedTypeFilter.toLowerCase().toString() === "all"
+              ? "episode/playlist"
+              : embedTypeFilter.toLowerCase().toString()}{" "}
+            available
+          </p>
+          <p className="text-sm text-gray-500">
+            You haven’t added any podcast{" "}
+            {embedTypeFilter.toLowerCase().toString() === "all"
+              ? "episode/playlist"
+              : embedTypeFilter.toLowerCase().toString()}{" "}
+            yet. Once you do, they’ll show up here automatically.
+          </p>
+        </div>
+      ) : null}
 
       {filteredEpisodes.map((episode, index) => (
         <div key={index} className="flex flex-col gap-4 shadow-2xs p-4">
