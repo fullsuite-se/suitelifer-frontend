@@ -138,7 +138,7 @@ const Home = () => {
         <div id="left-side" className="side pb-17 relative ">
           <div className="title relative">
             <div>
-              <span className="title-line-1">We can ahelp.</span>
+              <span className="title-line-1">We can help.</span>
             </div>{" "}
             <br />
             <div>
