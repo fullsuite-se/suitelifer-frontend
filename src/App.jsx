@@ -25,6 +25,8 @@ import EmployeeEvents from "./pages/employee/EmployeeEvents";
 // import EmployeeWorkshops from "./pages/employee/EmployeeWorkshops";
 import EmployeePersonalityTest from "./pages/employee/EmployeePersonalityTest";
 import BlogCreate from "./components/blog/BlogCreate";
+import CheerPage from "./pages/employee/CheerPage";
+import PointsDashboard from "./pages/employee/PointsDashboard";
 
 // Points Shop Pages
 // import PointsShopDashboard from "./pages/employee/PointsShopDashboard";
@@ -131,7 +133,8 @@ function App() {
 
               {/* Suitebite (Points Shop) Routes for Employees - Removed legacy features */}
               <Route path="mood" element={<MoodPage />} />
-              <Route path="mood" element={<MoodPage />} />
+              <Route path="cheer" element={<CheerPage />} />
+              <Route path="points-dashboard" element={<PointsDashboard />} />
 
               {/* Admin Protected Routes */}
               <Route path="admin-tools" element={<AdminProtectedRoutes />}>
