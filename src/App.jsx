@@ -22,9 +22,23 @@ import EmployeeMyBlogs from "./pages/employee/EmployeeMyBlogs";
 import BlogView from "./components/blog/BlogView";
 import EmployeeThreads from "./pages/employee/EmployeeThreads";
 import EmployeeEvents from "./pages/employee/EmployeeEvents";
-import EmployeeWorkshops from "./pages/employee/EmployeeWorkshops";
+// import EmployeeWorkshops from "./pages/employee/EmployeeWorkshops";
 import EmployeePersonalityTest from "./pages/employee/EmployeePersonalityTest";
 import BlogCreate from "./components/blog/BlogCreate";
+
+// Points Shop Pages
+// import PointsShopDashboard from "./pages/employee/PointsShopDashboard";
+// import CheerAPeerPage from "./pages/employee/CheerAPeerPage";
+// import PointsPage from "./pages/employee/PointsPage";
+// import ShopPage from "./pages/employee/ShopPage";
+import MoodPage from "./pages/employee/MoodPage";
+
+// Points Shop Admin Pages
+// import AdminPointsDashboard from "./pages/admin/AdminPointsDashboard";
+// import AdminPointsUsers from "./pages/admin/AdminPointsUsers";
+// import AdminPointsProducts from "./pages/admin/AdminPointsProducts";
+// import AdminPointsOrders from "./pages/admin/AdminPointsOrders";
+import AdminPointsSystem from "./pages/admin/AdminPointsSystem";
 
 // Super/Admin Pages
 import AdminBlogs from "./pages/admin/AdminBlogs";
@@ -109,12 +123,15 @@ function App() {
 
               <Route path="threads" element={<EmployeeThreads />} />
               <Route path="company-events" element={<EmployeeEvents />} />
-              <Route path="courses" element={<EmployeeWorkshops />} />
+              {/* <Route path="courses" element={<EmployeeWorkshops />} /> */}
               <Route
                 path="personality-test"
                 element={<EmployeePersonalityTest />}
               />
-              <Route />
+
+              {/* Suitebite (Points Shop) Routes for Employees - Removed legacy features */}
+              <Route path="mood" element={<MoodPage />} />
+              <Route path="mood" element={<MoodPage />} />
 
               {/* Admin Protected Routes */}
               <Route path="admin-tools" element={<AdminProtectedRoutes />}>
@@ -124,6 +141,9 @@ function App() {
                   path="suitebite/new-suitebite"
                   element={<AdminNewsCreate />}
                 />
+                {/* Points Shop Admin Routes - Removed legacy features */}
+                <Route path="suitebite/system" element={<AdminPointsSystem />} />
+                
                 <Route path="events" element={<AdminEvents />} />
                 <Route path="contents" element={<AdminContents />} />
                 <Route path="courses" element={<AdmimJobCourse />} />
