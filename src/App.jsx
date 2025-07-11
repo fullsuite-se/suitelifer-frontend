@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // Guest Pages
 import Home from "./pages/guest/Home";
@@ -25,6 +26,8 @@ import EmployeeEvents from "./pages/employee/EmployeeEvents";
 import EmployeeWorkshops from "./pages/employee/EmployeeWorkshops";
 import EmployeePersonalityTest from "./pages/employee/EmployeePersonalityTest";
 import BlogCreate from "./components/blog/BlogCreate";
+import CheerPage from "./pages/employee/CheerPage";
+import PointsDashboard from "./pages/employee/PointsDashboard";
 
 // Super/Admin Pages
 import AdminBlogs from "./pages/admin/AdminBlogs";
@@ -56,10 +59,13 @@ import { Toaster } from "react-hot-toast";
 import ScrollToTop from "./components/buttons/ScrollToTop";
 import VerifyAccount from "./pages/auth/VerifyAccount";
 import DevelopersPage from "./pages/guest/Developers";
+import { CheerPageUIOnly, PointsDashboardUIOnly } from "./pages/ui-demo";
+
+const queryClient = new QueryClient();
 
 function App() {
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <ScrollToTop />
         <Toaster position="top-center" reverseOrder={false} />
@@ -83,9 +89,9 @@ function App() {
           />
 
           <Route path="/developers" element={<DevelopersPage />} />
-          <Route path="/developer" element={<Navigate to="/developers"/>} />
-          <Route path="/dev" element={<Navigate to="/developers"/>} />
-          <Route path="/d" element={<Navigate to="/developers"/>} />
+          <Route path="/developer" element={<Navigate to="/developers" />} />
+          <Route path="/dev" element={<Navigate to="/developers" />} />
+          <Route path="/d" element={<Navigate to="/developers" />} />
           <Route path="/newsletter" element={<Newsletter />} />
           <Route path="/newsletter/:slug" element={<NewsletterDetails />} />
           <Route path="/contact" element={<Contact />} />
@@ -106,6 +112,8 @@ function App() {
               <Route path="my-blogs" element={<EmployeeMyBlogs />} />
               <Route path="my-blogs/blog/:id/:slug" element={<BlogView />} />
               <Route path="my-blogs/new-blog" element={<BlogCreate />} />
+              <Route path="cheer" element={<CheerPage />} />
+              <Route path="points" element={<PointsDashboard />} />
 
               <Route path="threads" element={<EmployeeThreads />} />
               <Route path="company-events" element={<EmployeeEvents />} />
@@ -143,9 +151,13 @@ function App() {
               </Route>
             </Route>
           </Route>
+
+          {/* UI Demo Routes */}
+          <Route path="/ui-demo/cheer" element={<CheerPageUIOnly />} />
+          <Route path="/ui-demo/points" element={<PointsDashboardUIOnly />} />
         </Routes>
       </BrowserRouter>
-    </>
+    </QueryClientProvider>
   );
 }
 

@@ -43,6 +43,8 @@ const regularFeatures = [
     path: "personality-test",
     icon: FaceSmileIcon,
   },
+  { feature_name: "Points Dashboard", path: "points", icon: Square2StackIcon },
+  { feature_name: "Cheer a Peer", path: "cheer", icon: UsersIcon },
 ];
 
 const adminFeatures = [
