@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useStore } from '../../store/authStore';
+import { moodApi } from '../../utils/moodApi';
 
 
 const MoodPage = () => {
@@ -28,14 +29,22 @@ const MoodPage = () => {
     try {
       setLoading(true);
       
-      // Fetch all required data
-      // TODO: Replace with real API calls. For now, use mock data.
-      setMoodHistory([]);
-      setTodayMood(null);
-      setMoodStats(null);
-      setWeeklyStats(null);
-      setMonthlyStats(null);
-      setYearlyStats(null);
+      // Fetch all required data using real API
+      const [historyData, todayData, statsData, weeklyData, monthlyData, yearlyData] = await Promise.all([
+        moodApi.getMoodHistory().catch(() => ({ data: [] })),
+        moodApi.getTodayMood().catch(() => ({ data: null })),
+        moodApi.getMoodStats().catch(() => ({ data: null })),
+        moodApi.getWeeklyStats().catch(() => ({ data: null })),
+        moodApi.getMonthlyStats().catch(() => ({ data: null })),
+        moodApi.getYearlyStats().catch(() => ({ data: null }))
+      ]);
+
+      setMoodHistory(historyData.data || []);
+      setTodayMood(todayData.data);
+      setMoodStats(statsData.data);
+      setWeeklyStats(weeklyData.data);
+      setMonthlyStats(monthlyData.data);
+      setYearlyStats(yearlyData.data);
       
     } catch (error) {
       console.error('Error fetching mood data:', error);
@@ -50,9 +59,13 @@ const MoodPage = () => {
     try {
       setSending(true);
       
-      // TODO: Replace with real API call. For now, just show success.
+      // Submit mood using real API
+      await moodApi.submitMood(currentMoodLevel);
+      
       setShowSuccessMessage(true);
       setTimeout(() => setShowSuccessMessage(false), 3000);
+      
+      // Refresh data after submission
       fetchAllData();
     } catch (error) {
       console.error('Error submitting mood:', error);
