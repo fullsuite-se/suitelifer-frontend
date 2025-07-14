@@ -346,7 +346,7 @@ const ProductManagement = () => {
   };
 
   return (
-    <div className="product-management-container bg-white rounded-lg shadow-sm p-6">
+    <div className="product-management-container bg-white rounded-lg shadow-sm">
       {/* Toast Notification */}
       {notification.show && (
         <div className={`notification-toast fixed top-20 right-4 z-50 p-4 rounded-lg shadow-lg text-sm font-medium max-w-sm ${
@@ -360,27 +360,9 @@ const ProductManagement = () => {
         </div>
       )}
 
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Product Management</h2>
-          <p className="text-gray-600">Manage your Suitebite shop products and inventory</p>
-        </div>
-        <div className="flex items-center gap-3">
-          {/* Remove Add Category and Manage Variations buttons from header */}
-          <button
-            onClick={handleAddProduct}
-            className="bg-[#0097b2] text-white px-4 py-2 rounded-lg hover:bg-[#007a8e] transition-colors duration-200 flex items-center gap-2"
-          >
-            <PlusIcon className="h-5 w-5" />
-            Add Product
-          </button>
-        </div>
-      </div>
-
       {/* Filters and Search */}
-      <div className="filters-section mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="filters-section sticky top-0 z-10 bg-white pb-1">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
           {/* Search */}
           <div className="search-field">
             <div className="relative">
@@ -430,11 +412,22 @@ const ProductManagement = () => {
               <option key="desc" value="desc">Descending</option>
             </select>
           </div>
+
+          {/* Add Product Button - moved here */}
+          <div className="flex justify-end md:col-span-1">
+            <button
+              onClick={handleAddProduct}
+              className="bg-[#0097b2] text-white px-4 py-2 rounded-lg hover:bg-[#007a8e] transition-colors duration-200 flex items-center gap-2 w-full md:w-auto"
+            >
+              <PlusIcon className="h-5 w-5" />
+              Add Product
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Products Table */}
-      <div className="products-table-container">
+      <div className="products-table-container max-h-[80vh] overflow-y-auto rounded-lg border mb-0">
         {loading ? (
           <div className="text-center py-8">
             <div className="spinner mx-auto mb-4"></div>
@@ -445,17 +438,17 @@ const ProductManagement = () => {
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-gray-50">
-                  <th className="text-left p-3 border-b font-medium text-gray-700">Image</th>
-                  <th className="text-left p-3 border-b font-medium text-gray-700">Name</th>
-                  <th className="text-left p-3 border-b font-medium text-gray-700">Category</th>
-                  <th className="text-left p-3 border-b font-medium text-gray-700">Price</th>
-                  <th className="text-left p-3 border-b font-medium text-gray-700">Actions</th>
+                  <th className="text-left p-2 border-b font-medium text-gray-700">Image</th>
+                  <th className="text-left p-2 border-b font-medium text-gray-700">Name</th>
+                  <th className="text-left p-2 border-b font-medium text-gray-700">Category</th>
+                  <th className="text-left p-2 border-b font-medium text-gray-700">Price</th>
+                  <th className="text-left p-2 border-b font-medium text-gray-700">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredProducts.map((product) => (
                   <tr key={product.product_id} className="hover:bg-gray-50">
-                    <td className="p-3 border-b">
+                    <td className="p-2 border-b">
                       <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
                         {product.image_url ? (
                           <img
@@ -468,7 +461,7 @@ const ProductManagement = () => {
                         )}
                       </div>
                     </td>
-                    <td className="p-3 border-b">
+                    <td className="p-2 border-b">
                       <div>
                         <p className="font-medium text-gray-900">{product.name}</p>
                         <p className="text-sm text-gray-500 truncate max-w-xs">
@@ -476,15 +469,15 @@ const ProductManagement = () => {
                         </p>
                       </div>
                     </td>
-                    <td className="p-3 border-b">
+                    <td className="p-2 border-b">
                       {renderCategoryBadge(product.category)}
                     </td>
-                    <td className="p-3 border-b">
+                    <td className="p-2 border-b">
                       <span className="font-medium text-[#0097b2]">
                         {product.price || product.price_points || 0} pts
                       </span>
                     </td>
-                    <td className="p-3 border-b">
+                    <td className="p-2 border-b">
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleEditProduct(product)}

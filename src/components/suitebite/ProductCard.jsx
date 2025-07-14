@@ -30,6 +30,7 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
   
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState('buy-now'); // 'buy-now' or 'add-to-cart'
   
   // Variation selection state
   const [selectedVariation, setSelectedVariation] = useState(null);
@@ -108,25 +109,14 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
   };
 
   /**
-   * Handles adding the product to cart with selected quantity and variation
+   * Handles adding the product to the shopping cart with selected quantity and variation
    */
   const handleAddToCart = async () => {
     if (isAddingToCart || isBuying) return;
 
-    // If this product has variations, open the detail modal to select options
-    if (availableVariations.length > 0) {
-      setIsModalOpen(true);
-      return;
-    }
-
-    try {
-      setIsAddingToCart(true);
-      await onAddToCart(product.product_id, quantity, selectedVariation?.variation_id);
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-    } finally {
-      setIsAddingToCart(false);
-    }
+    // Always open the detail modal to show product details
+    setIsModalOpen(true);
+    setModalMode('add-to-cart');
   };
 
   /**
@@ -134,6 +124,7 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
    */
   const handleBuyNow = async () => {
     setIsModalOpen(true);
+    setModalMode('buy-now');
   };
 
   /**
@@ -141,6 +132,7 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
    */
   const handleViewDetails = () => {
     setIsModalOpen(true);
+    setModalMode('buy-now');
   };
 
   // Calculate product availability and affordability
@@ -330,6 +322,7 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
         onAddToCart={onAddToCart}
         onBuyNow={onBuyNow}
         userHeartbits={userHeartbits}
+        mode={modalMode}
       />
     </>
   );

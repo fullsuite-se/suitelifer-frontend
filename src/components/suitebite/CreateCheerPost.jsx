@@ -355,9 +355,12 @@ const CreateCheerPost = ({ onCheerPostCreated }) => {
 
         {/* Monthly Limit Info */}
         {monthlyLimit.limit > 0 && (
-          <div className="text-center">
+          <div className="text-center mt-2">
             <p className="text-xs text-[#4a6e7e]">
-              Monthly limit: {monthlyLimit.used}/{monthlyLimit.limit} cheers used
+              Monthly heartbits used: <b>{monthlyLimit.used}</b> / <b>{monthlyLimit.limit}</b> heartbits
+            </p>
+            <p className="text-xs text-[#4a6e7e]">
+              Remaining: <b>{monthlyLimit.limit - monthlyLimit.used}</b> heartbits
             </p>
           </div>
         )}

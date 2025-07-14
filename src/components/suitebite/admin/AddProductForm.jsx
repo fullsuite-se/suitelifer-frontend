@@ -839,7 +839,9 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
             disabled={loading || uploadingImages}
             className="flex-1 px-4 py-2 bg-[#0097b2] text-white rounded-lg hover:bg-[#007a8e] transition-colors disabled:opacity-50"
           >
-            {loading ? 'Creating Product...' : uploadingImages ? 'Uploading Images...' : 'Create Product'}
+            {loading ? (mode === 'edit' ? 'Updating Product...' : 'Creating Product...') : 
+             uploadingImages ? 'Uploading Images...' : 
+             mode === 'edit' ? 'Update Product' : 'Create Product'}
           </button>
         </div>
       </form>

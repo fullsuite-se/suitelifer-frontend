@@ -12,7 +12,8 @@ import {
   UserGroupIcon,
   HeartIcon,
   PlusIcon,
-  MinusIcon
+  MinusIcon,
+  PencilIcon
 } from '@heroicons/react/24/outline';
 
 const UserHeartbitsManagement = () => {
@@ -347,7 +348,7 @@ const UserHeartbitsManagement = () => {
   };
 
   return (
-    <div className="user-heartbits-management bg-gray-50 min-h-screen p-6">
+    <div className="user-heartbits-management bg-white rounded-lg shadow-sm pb-0 px-6 pt-6">
       {/* Notification */}
       {notification.show && (
         <div className={`fixed top-20 right-4 z-50 p-4 rounded-lg shadow-lg text-sm font-medium max-w-sm ${
@@ -363,277 +364,202 @@ const UserHeartbitsManagement = () => {
         </div>
       )}
 
-      {/* Enhanced Search and Filter Controls */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-        
-        {/* Info Section */}
-        <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <div className="flex items-start gap-3">
-            <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-              <CogIcon className="w-4 h-4 text-blue-600" />
-            </div>
-            <div className="flex-1">
-              <h3 className="text-sm font-semibold text-blue-900 mb-1">Automatic Monthly Reset</h3>
-              <p className="text-sm text-blue-700 mb-2">
-                Every first day of the month at 00:01, the system automatically resets all users' monthly limits and gives them their {globalLimit} heartbits allowance.
-              </p>
-              <p className="text-xs text-blue-600">
-                💡 You can manually trigger this process using the "Trigger Monthly Reset" button below for testing purposes.
-              </p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      {/* Concise Search and Filter Controls */}
+      <div className="bg-gray-50 rounded-lg border border-gray-200 p-1 mt-2 mb-2">
+        <div className="flex flex-wrap items-center gap-1">
           {/* Search Section */}
-          <div className="flex-1">
-            <label htmlFor="user-search" className="sr-only">Search users</label>
-            <div className="relative">
-              <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <input
-                id="user-search"
-                name="user-search"
-                type="text"
-                placeholder="Search users by name or email..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent text-sm"
-                aria-describedby="search-help"
-              />
-            </div>
-            <div id="search-help" className="sr-only">
-              Enter name or email to filter the user list
-            </div>
+          <div className="relative">
+            <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search users by name or email..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-56 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent text-sm"
+            />
           </div>
-          
           {/* Sort Controls */}
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <label htmlFor="sort-by" className="text-sm font-medium text-gray-700">Sort by:</label>
-              <select 
-                id="sort-by"
-                name="sort-by"
-                value={sortBy} 
-                onChange={(e) => setSortBy(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent text-sm"
-                aria-describedby="sort-help"
-              >
-                <option value="name">Name (A-Z)</option>
-                <option value="points">Points</option>
-              </select>
-              <div id="sort-help" className="sr-only">
-                Choose how to sort the user list
-              </div>
-            </div>
-            
-            <button 
-              onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-              className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-[#0097b2] focus:border-transparent text-sm font-medium"
-            >
-              {sortOrder === 'asc' ? '↑ Ascending' : '↓ Descending'}
-            </button>
-
-
-
-            {/* Reset All Button */}
-            <button
-              onClick={resetFilters}
-              className="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 focus:ring-2 focus:ring-[#0097b2] focus:border-transparent text-sm font-medium flex items-center gap-2"
-            >
-              <ArrowPathIcon className="w-4 h-4" />
-              Reset All
-            </button>
-          </div>
-        </div>
-
-
-
-        {/* Results Summary & Bulk Actions */}
-        <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
-          <div className="flex items-center justify-between text-sm text-gray-600">
-            <span>
-              {filteredUsers.length} user{filteredUsers.length !== 1 ? 's' : ''} found
-              {searchTerm && <span className="ml-2">• Filtered by "{searchTerm}"</span>}
-            </span>
-            {selectedUsers.length > 0 && (
-              <span className="text-[#0097b2] font-medium">
-                {selectedUsers.length} selected
-              </span>
-            )}
-          </div>
-          
-          {/* Enhanced Bulk Actions */}
-          <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="text-sm font-medium text-gray-700">User Selection:</span>
-              <button 
-                onClick={selectAllUsers}
-                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-[#0097b2] focus:border-transparent text-sm font-medium transition-all duration-200 flex items-center gap-2"
-              >
-                <CheckIcon className="w-4 h-4" />
-                {selectedUsers.length === filteredUsers.length ? 'Deselect All' : 'Select All'}
-              </button>
-              
-              {selectedUsers.length > 0 && (
-                <button 
-                  onClick={() => setShowBulkUpdateModal(true)}
-                  className="px-4 py-2 bg-[#0097b2] text-white rounded-lg hover:bg-[#007a8e] text-sm font-medium transition-all duration-200 flex items-center gap-2 shadow-sm hover:shadow-md"
-                >
-                  <HeartIcon className="w-4 h-4" />
-                  Give Heartbits to Selected ({selectedUsers.length})
-                </button>
-              )}
-            </div>
-            
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="text-sm font-medium text-gray-700">Global Limit: {globalLimit} heartbits</span>
-              <button
-                onClick={() => setShowGlobalLimitModal(true)}
-                className="px-3 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 text-sm font-medium transition-all duration-200 flex items-center gap-2"
-              >
-                <CogIcon className="w-4 h-4" />
-                Edit Limit
-              </button>
-              <button 
-                onClick={async () => {
-                  if (window.confirm(`Trigger monthly reset and give all users their ${globalLimit} heartbits monthly allowance? This simulates the automatic first-day-of-month process.`)) {
-                    try {
-                      setLoading(true);
-                      const response = await suitebiteAPI.triggerMonthlyReset();
-                      if (response.success) {
-                        showNotification('success', `Monthly reset completed! ${response.results.users_processed} users received ${response.results.total_allowance_given} total heartbits.`);
-                        loadUsersWithHeartbits();
-                      } else {
-                        showNotification('error', 'Failed to trigger monthly reset. Please try again.');
-                      }
-                    } catch (error) {
-                      console.error('Error triggering monthly reset:', error);
-                      showNotification('error', 'Failed to trigger monthly reset. Please check your connection and try again.');
-                    } finally {
-                      setLoading(false);
-                    }
+          <label className="text-sm font-medium text-gray-700 ml-2">Sort:</label>
+          <select 
+            value={sortBy} 
+            onChange={(e) => setSortBy(e.target.value)}
+            className="px-2 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent text-sm"
+            style={{ minWidth: '80px' }}
+          >
+            <option value="name">Name</option>
+            <option value="points">Points</option>
+          </select>
+          <button 
+            onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+            className="px-2 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-[#0097b2] focus:border-transparent text-sm font-medium flex items-center"
+            title={sortOrder === 'asc' ? 'Ascending' : 'Descending'}
+          >
+            {sortOrder === 'asc' ? '↑' : '↓'}
+          </button>
+          <button
+            onClick={resetFilters}
+            className="px-2 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 focus:ring-2 focus:ring-[#0097b2] focus:border-transparent text-sm font-medium"
+          >
+            Reset
+          </button>
+          <button 
+            onClick={selectAllUsers}
+            className="px-2 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium flex items-center gap-2"
+          >
+            <CheckIcon className="w-4 h-4" />
+            {selectedUsers.length === filteredUsers.length ? 'Deselect All' : 'Select All'}
+          </button>
+          <span className="text-sm text-gray-600">Global Limit: {globalLimit}</span>
+          <button
+            onClick={() => setShowGlobalLimitModal(true)}
+            className="px-2 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 text-sm font-medium flex items-center gap-2"
+          >
+            <CogIcon className="w-4 h-4" />
+            Edit Limit
+          </button>
+          <button
+            onClick={async () => {
+              if (window.confirm(`Trigger monthly reset and give all users their ${globalLimit} heartbits monthly allowance?`)) {
+                try {
+                  setLoading(true);
+                  const response = await suitebiteAPI.triggerMonthlyReset();
+                  if (response.success) {
+                    showNotification('success', `Monthly reset completed! ${response.results.users_processed} users received ${response.results.total_allowance_given} total heartbits.`);
+                    loadUsersWithHeartbits();
+                  } else {
+                    showNotification('error', 'Failed to trigger monthly reset. Please try again.');
                   }
-                }}
-                className="px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 text-sm font-medium transition-all duration-200 flex items-center gap-2 shadow-sm hover:shadow-md"
-              >
-                <ArrowPathIcon className="w-4 h-4" />
-                Trigger Monthly Reset
-              </button>
-            </div>
-          </div>
+                } catch (error) {
+                  console.error('Error triggering monthly reset:', error);
+                  showNotification('error', 'Failed to trigger monthly reset. Please check your connection and try again.');
+                } finally {
+                  setLoading(false);
+                }
+              }
+            }}
+            className="px-2 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 text-sm font-medium flex items-center gap-2"
+          >
+            <ArrowPathIcon className="w-4 h-4" />
+            Monthly Reset
+          </button>
         </div>
       </div>
 
-      {/* Users Table */}
-      {loading ? (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-          <ArrowPathIcon className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0097b2] mx-auto mb-4" />
-          <p className="text-gray-600">Loading users...</p>
+      {/* Results Summary & Bulk Actions */}
+      <div className="mt-4 pt-4 border-t border-gray-200">
+        <div className="flex items-center justify-between text-sm text-gray-600">
+          {selectedUsers.length > 0 && (
+            <span className="text-[#0097b2] font-medium">
+              {selectedUsers.length} selected
+            </span>
+          )}
         </div>
-      ) : (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+        
+        {/* Compact Bulk Actions */}
+        <div className="flex flex-wrap items-center gap-3 mt-3">
+          
+          {selectedUsers.length > 0 && (
+            <button 
+              onClick={() => setShowBulkUpdateModal(true)}
+              className="px-3 py-1 bg-[#0097b2] text-white rounded-lg hover:bg-[#007a8e] text-sm font-medium transition-all duration-200 flex items-center gap-2"
+            >
+              <HeartIcon className="w-4 h-4" />
+              Give to Selected ({selectedUsers.length})
+            </button>
+          )}
+          
+        </div>
+      </div>
+
+      {/* Users Table - only this is scrollable */}
+      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <div className="users-table-container overflow-y-auto" style={{ maxHeight: '80vh' }}>
+          <table className="w-full border-collapse">
+            <thead className="bg-gray-50 sticky top-0">
+              <tr>
+                <th className="text-left p-2 border-b font-medium text-gray-700 bg-gray-50">
+                  <input
+                    type="checkbox"
+                    checked={selectedUsers.length === filteredUsers.length && filteredUsers.length > 0}
+                    onChange={selectAllUsers}
+                    className="w-4 h-4 text-[#0097b2] border-gray-300 rounded focus:ring-[#0097b2]"
+                  />
+                </th>
+                <th className="text-left p-2 border-b font-medium text-gray-700 bg-gray-50">User</th>
+                <th className="text-left p-2 border-b font-medium text-gray-700 bg-gray-50">Role</th>
+                <th className="text-left p-2 border-b font-medium text-gray-700 bg-gray-50">Heartbits</th>
+                <th className="text-left p-2 border-b font-medium text-gray-700 bg-gray-50">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sortedUsers.length === 0 ? (
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                    <label htmlFor="select-all-users" className="sr-only">Select all users</label>
-                    <input
-                      id="select-all-users"
-                      name="select-all-users"
-                      type="checkbox"
-                      checked={selectedUsers.length === filteredUsers.length && filteredUsers.length > 0}
-                      onChange={selectAllUsers}
-                      className="w-4 h-4 text-[#0097b2] border-gray-300 rounded focus:ring-[#0097b2]"
-                      aria-describedby="select-all-help"
-                    />
-                    <div id="select-all-help" className="sr-only">
-                      Toggle selection for all visible users
-                    </div>
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">User</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Role</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Heartbits</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
+                  <td colSpan={5} className="p-12 text-center text-gray-500">
+                    <UserGroupIcon className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                    <p className="text-lg font-medium text-gray-900 mb-2">No users found</p>
+                    <p className="text-sm">
+                      {searchTerm
+                        ? 'Try adjusting your search criteria.' 
+                        : 'No users are currently registered in the system.'}
+                    </p>
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {sortedUsers.length === 0 ? (
-                  <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
-                      <UserGroupIcon className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                      <p className="text-lg font-medium text-gray-900 mb-2">No users found</p>
-                      <p className="text-sm">
-                        {searchTerm
-                          ? 'Try adjusting your search criteria.' 
-                          : 'No users are currently registered in the system.'}
-                      </p>
+              ) : (
+                sortedUsers.map(user => (
+                  <tr key={user.user_id} className="hover:bg-gray-50">
+                    <td className="p-2 border-b">
+                      <input
+                        type="checkbox"
+                        checked={selectedUsers.includes(user.user_id)}
+                        onChange={() => toggleUserSelection(user.user_id)}
+                        className="w-4 h-4 text-[#0097b2] border-gray-300 rounded focus:ring-[#0097b2]"
+                      />
                     </td>
-                  </tr>
-                ) : (
-                  sortedUsers.map(user => (
-                    <tr key={user.user_id} className="hover:bg-gray-50 transition-colors duration-200">
-                      <td className="px-6 py-4">
-                        <label htmlFor={`select-user-${user.user_id}`} className="sr-only">
-                          Select {`${user.first_name || ''} ${user.last_name || ''}`.trim()}
-                        </label>
-                        <input
-                          id={`select-user-${user.user_id}`}
-                          name={`select-user-${user.user_id}`}
-                          type="checkbox"
-                          checked={selectedUsers.includes(user.user_id)}
-                          onChange={() => toggleUserSelection(user.user_id)}
-                          className="w-4 h-4 text-[#0097b2] border-gray-300 rounded focus:ring-[#0097b2]"
-                          aria-describedby={`select-user-help-${user.user_id}`}
+                    <td className="p-2 border-b">
+                      <div className="flex items-center">
+                        <img 
+                          src={user.avatar || '/default-avatar.png'} 
+                          alt={`${user.first_name || ''} ${user.last_name || ''}`.trim()}
+                          className="w-10 h-10 rounded-full border-2 border-gray-200 object-cover" 
                         />
-                        <div id={`select-user-help-${user.user_id}`} className="sr-only">
-                          Toggle selection for {`${user.first_name || ''} ${user.last_name || ''}`.trim()}
+                        <div className="ml-4">
+                          <div className="font-medium text-gray-900">{`${user.first_name || ''} ${user.last_name || ''}`.trim()}</div>
+                          <div className="text-sm text-gray-500">{user.user_email}</div>
                         </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center">
-                          <img 
-                            src={user.avatar || '/default-avatar.png'} 
-                            alt={`${user.first_name || ''} ${user.last_name || ''}`.trim()}
-                            className="w-10 h-10 rounded-full border-2 border-gray-200 object-cover" 
-                          />
-                          <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">{`${user.first_name || ''} ${user.last_name || ''}`.trim()}</div>
-                            <div className="text-sm text-gray-500">{user.user_email}</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          user.user_type === 'SUPER_ADMIN' ? 'bg-purple-100 text-purple-800' :
-                          user.user_type === 'ADMIN' ? 'bg-blue-100 text-blue-800' :
-                          'bg-gray-100 text-gray-800'
-                        }`}>
-                          {user.user_type || 'EMPLOYEE'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <HeartIcon className="h-5 w-5 text-red-500" />
-                          <span className="text-sm font-medium text-gray-900">{user.heartbits_balance || 0}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
+                      </div>
+                    </td>
+                    <td className="p-2 border-b">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        user.user_type === 'SUPER_ADMIN' ? 'bg-purple-100 text-purple-800' :
+                        user.user_type === 'ADMIN' ? 'bg-blue-100 text-blue-800' :
+                        'bg-gray-100 text-gray-800'
+                      }`}>
+                        {user.user_type || 'EMPLOYEE'}
+                      </span>
+                    </td>
+                    <td className="p-2 border-b">
+                      <div className="flex items-center gap-2">
+                        <HeartIcon className="h-5 w-5 text-red-500" />
+                        <span className="font-medium text-[#0097b2]">{user.heartbits_balance || 0}</span>
+                      </div>
+                    </td>
+                    <td className="p-2 border-b">
+                      <div className="flex items-center gap-2">
                         <button
                           onClick={() => setSelectedUser(user)}
-                          className="text-[#0097b2] hover:text-[#007a8e] text-sm font-medium transition-colors duration-200"
+                          className="p-1 text-blue-600 hover:text-blue-800 transition-colors"
                         >
-                          Give Heartbits
+                          <PencilIcon className="h-4 w-4" />
                         </button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
-      )}
+      </div>
 
       {/* Modals */}
       {selectedUser && (

@@ -123,6 +123,59 @@ const ShopTabContent = () => {
   };
 
   /**
+   * Handles direct purchase (buy now) functionality
+   * @param {number} productId - ID of the product to buy
+   * @param {number} quantity - Quantity to buy (default: 1)
+   * @param {number} variationId - Optional variation ID
+   */
+  const handleBuyNow = async (productId, quantity = 1, variationId = null) => {
+    try {
+      const cartData = { 
+        product_id: productId, 
+        quantity: quantity 
+      };
+
+      if (variationId) {
+        cartData.variation_id = variationId;
+      }
+
+      const response = await suitebiteAPI.addToCart(cartData);
+      
+      if (response.success) {
+        // Get the cart item that was just added
+        const cartResponse = await suitebiteAPI.getCart();
+        if (cartResponse.success) {
+          const newCartItem = cartResponse.cartItems.find(item => 
+            item.product_id === productId && 
+            (!variationId || item.variation_id === variationId)
+          );
+          
+          if (newCartItem) {
+            const mappedItem = {
+              cart_item_id: newCartItem.cart_item_id,
+              product_id: newCartItem.product_id,
+              product_name: newCartItem.product_name || newCartItem.name,
+              price_points: newCartItem.price_points || newCartItem.points_cost || newCartItem.price,
+              quantity: newCartItem.quantity,
+              image_url: newCartItem.image_url,
+              variation_id: newCartItem.variation_id,
+              variation_details: newCartItem.variation_details
+            };
+            
+            // Checkout immediately
+            await handleCheckout([mappedItem]);
+          }
+        }
+      } else {
+        showNotification('error', response.message || 'Failed to add item to cart');
+      }
+    } catch (error) {
+      console.error('Error with buy now:', error);
+      showNotification('error', 'Buy now failed. Please try again.');
+    }
+  };
+
+  /**
    * Processes checkout and creates order
    * Handles payment with heartbits
    */
@@ -394,6 +447,7 @@ const ShopTabContent = () => {
                     key={product.product_id}
                     product={product}
                     onAddToCart={handleAddToCart}
+                    onBuyNow={handleBuyNow}
                     userHeartbits={userHeartbits}
                   />
                 ))}
@@ -404,14 +458,14 @@ const ShopTabContent = () => {
 
         {/* Orders Tab - Order history interface */}
         {activeTab === 'orders' && (
-          <div className="orders-section">
+          <div className="orders-section mb-0">
             <OrderHistory onCartUpdate={loadShopData} onHeartbitsUpdate={loadShopData} />
           </div>
         )}
       </div>
 
       {/* Tab Navigation */}
-      <div className="tab-navigation mt-8">
+      <div className="tab-navigation mt-2">
         <div className="flex border-b border-gray-200">
           {/* Products Tab */}
           <button

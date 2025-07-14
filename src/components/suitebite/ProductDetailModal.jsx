@@ -20,8 +20,21 @@ import useCategoryStore from '../../store/stores/categoryStore';
  * @param {Function} onAddToCart - Callback when product is added to cart
  * @param {Function} onBuyNow - Callback when buy now is triggered
  * @param {number} userHeartbits - User's current heartbits balance
+ * @param {string} mode - Modal mode: 'buy-now' or 'add-to-cart'
+ * @param {number} initialQuantity - Initial quantity (default: 1)
+ * @param {Object} initialSelectedOptions - Initial selected options
  */
-const ProductDetailModal = ({ product, isOpen, onClose, onAddToCart, onBuyNow, userHeartbits, initialQuantity = 1, initialSelectedOptions }) => {
+const ProductDetailModal = ({ 
+  product, 
+  isOpen, 
+  onClose, 
+  onAddToCart, 
+  onBuyNow, 
+  userHeartbits, 
+  mode = 'buy-now',
+  initialQuantity = 1, 
+  initialSelectedOptions 
+}) => {
   // Local state for cart interaction
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [isBuying, setIsBuying] = useState(false);
@@ -123,6 +136,29 @@ const ProductDetailModal = ({ product, isOpen, onClose, onAddToCart, onBuyNow, u
       console.error('Error adding to cart from modal:', error);
     } finally {
       setIsAddingToCart(false);
+    }
+  };
+
+  /**
+   * Handles direct purchase (buy now) from modal
+   */
+  const handleBuyNowFromModal = async () => {
+    if (isBuying) return;
+
+    // Ensure variation selection if required
+    if (availableVariations.length > 0 && !selectedVariation) {
+      alert('Please select all product options before confirming order.');
+      return;
+    }
+
+    try {
+      setIsBuying(true);
+      await onBuyNow(product.product_id, quantity, selectedVariation?.variation_id);
+      onClose(); // Close modal after purchase
+    } catch (error) {
+      console.error('Error processing buy now from modal:', error);
+    } finally {
+      setIsBuying(false);
     }
   };
 
@@ -330,29 +366,55 @@ const ProductDetailModal = ({ product, isOpen, onClose, onAddToCart, onBuyNow, u
 
               {/* Action Buttons */}
               <div className="action-buttons">
-                {/* Confirm Order Button */}
-                <button
-                  onClick={handleAddToCartFromModal}
-                  disabled={!canAfford || !isActive || isBuying || isAddingToCart}
-                  className="confirm-order-btn w-full bg-[#0097b2] text-white py-4 px-6 rounded-lg font-semibold hover:bg-[#007a8e] transition-colors duration-200 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed text-lg"
-                >
-                  {isBuying ? (
-                    <>
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      <span>Processing...</span>
-                    </>
-                  ) : !canAfford ? (
-                    <>
-                      <HeartIcon className="h-5 w-5" />
-                      <span>Need {totalCost - userHeartbits} more heartbits</span>
-                    </>
-                  ) : (
-                    <>
-                      <ShoppingBagIcon className="h-5 w-5" />
-                      <span>Add to Cart</span>
-                    </>
-                  )}
-                </button>
+                {(mode === 'buy-now' || mode === 'details') ? (
+                  /* Confirm Order Button for Buy Now mode */
+                  <button
+                    onClick={handleBuyNowFromModal}
+                    disabled={!canAfford || !isActive || isBuying || isAddingToCart}
+                    className="confirm-order-btn w-full bg-[#0097b2] text-white py-4 px-6 rounded-lg font-semibold hover:bg-[#007a8e] transition-colors duration-200 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed text-lg"
+                  >
+                    {isBuying ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        <span>Processing...</span>
+                      </>
+                    ) : !canAfford ? (
+                      <>
+                        <HeartIcon className="h-5 w-5" />
+                        <span>Need {totalCost - userHeartbits} more heartbits</span>
+                      </>
+                    ) : (
+                      <>
+                        <ShoppingBagIcon className="h-5 w-5" />
+                        <span>Confirm Order</span>
+                      </>
+                    )}
+                  </button>
+                ) : (
+                  /* Add to Cart Button for Add to Cart mode */
+                  <button
+                    onClick={handleAddToCartFromModal}
+                    disabled={!canAfford || !isActive || isBuying || isAddingToCart}
+                    className="add-to-cart-btn w-full bg-[#0097b2] text-white py-4 px-6 rounded-lg font-semibold hover:bg-[#007a8e] transition-colors duration-200 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed text-lg"
+                  >
+                    {isAddingToCart ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        <span>Adding...</span>
+                      </>
+                    ) : !canAfford ? (
+                      <>
+                        <HeartIcon className="h-5 w-5" />
+                        <span>Need {totalCost - userHeartbits} more heartbits</span>
+                      </>
+                    ) : (
+                      <>
+                        <ShoppingCartIcon className="h-5 w-5" />
+                        <span>Add to Cart</span>
+                      </>
+                    )}
+                  </button>
+                )}
               </div>
             </div>
           </div>
