@@ -23,11 +23,18 @@ import EmployeeMyBlogs from "./pages/employee/EmployeeMyBlogs";
 import BlogView from "./components/blog/BlogView";
 import EmployeeThreads from "./pages/employee/EmployeeThreads";
 import EmployeeEvents from "./pages/employee/EmployeeEvents";
-import EmployeeWorkshops from "./pages/employee/EmployeeWorkshops";
+// import EmployeeWorkshops from "./pages/employee/EmployeeWorkshops";
 import EmployeePersonalityTest from "./pages/employee/EmployeePersonalityTest";
 import BlogCreate from "./components/blog/BlogCreate";
-import CheerPage from "./pages/employee/CheerPage";
-import PointsDashboard from "./pages/employee/PointsDashboard";
+import EmployeeCheerPage from "./pages/employee/EmployeeCheerPage";
+import EmployeePointsDashboard from "./pages/employee/EmployeePointsDashboard";
+
+// Points Shop Pages
+import MoodPage from "./pages/employee/MoodPage";
+
+// Points Shop Admin Pages
+import AdminPointsSystem from "./pages/admin/AdminPointsSystem";
+>>>>>>> Stashed changes
 
 // Super/Admin Pages
 import AdminBlogs from "./pages/admin/AdminBlogs";
@@ -117,7 +124,7 @@ function App() {
 
               <Route path="threads" element={<EmployeeThreads />} />
               <Route path="company-events" element={<EmployeeEvents />} />
-              <Route path="courses" element={<EmployeeWorkshops />} />
+              {/* <Route path="courses" element={<EmployeeWorkshops />} /> */}
               <Route
                 path="personality-test"
                 element={<EmployeePersonalityTest />}

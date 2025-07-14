@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { pointsShopApi } from '../../utils/pointsShopApi';
+import { pointsShopApi } from '../../api/pointsShopApi';
 import { useStore } from '../../store/authStore';
 import { toast } from 'react-hot-toast';
 import {
@@ -225,7 +225,7 @@ const PointsDashboard = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-yellow-100 text-sm font-medium">Current Balance</p>
-              <p className="text-3xl font-bold">{pointsData?.currentBalance || 0}</p>
+              <p className="text-3xl font-bold">{pointsData?.data?.currentBalance || 0}</p>
               <p className="text-yellow-100 text-xs">Points</p>
             </div>
             <StarIconSolid className="w-12 h-12 text-yellow-200" />
@@ -238,7 +238,7 @@ const PointsDashboard = () => {
             <div>
               <p className="text-pink-100 text-sm font-medium">Heartbits Remaining</p>
               <p className="text-3xl font-bold">
-                {(pointsData?.monthlyCheerLimit || 100) - (pointsData?.monthlyCheerUsed || 0)}
+                {(pointsData?.data?.monthlyCheerLimit || 100) - (pointsData?.data?.monthlyCheerUsed || 0)}
               </p>
               <p className="text-pink-100 text-xs">This Month</p>
             </div>
@@ -251,7 +251,7 @@ const PointsDashboard = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-green-100 text-sm font-medium">Total Earned</p>
-              <p className="text-3xl font-bold">{pointsData?.totalEarned || 0}</p>
+              <p className="text-3xl font-bold">{pointsData?.data?.totalEarned || 0}</p>
               <p className="text-green-100 text-xs">All Time</p>
             </div>
             <ArrowTrendingUpIcon className="w-12 h-12 text-green-200" />
@@ -263,7 +263,7 @@ const PointsDashboard = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-blue-100 text-sm font-medium">Total Spent</p>
-              <p className="text-3xl font-bold">{pointsData?.totalSpent || 0}</p>
+              <p className="text-3xl font-bold">{pointsData?.data?.totalSpent || 0}</p>
               <p className="text-blue-100 text-xs">Points</p>
             </div>
             <GiftIcon className="w-12 h-12 text-blue-200" />
@@ -284,8 +284,8 @@ const PointsDashboard = () => {
             <div className="p-6 text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
             </div>
-          ) : Array.isArray(historyData) && historyData.length > 0 ? (
-            historyData.map((transaction, index) => (
+          ) : Array.isArray(historyData?.data) && historyData.data.length > 0 ? (
+            historyData.data.map((transaction, index) => (
               <div key={index} className="p-4 hover:bg-gray-50 transition-colors">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -297,6 +297,9 @@ const PointsDashboard = () => {
                       <p className="text-sm text-gray-500">
                         {formatDateSafely(transaction.createdAt || transaction.created_at)}
                       </p>
+                      {transaction.message && (
+                        <p className="text-sm text-pink-600 mt-1">{transaction.message}</p>
+                      )}
                     </div>
                   </div>
                   <div className="text-right">
@@ -357,7 +360,7 @@ const PointsDashboard = () => {
                 <input
                   type="number"
                   min="1"
-                  max={pointsData?.currentBalance || 0}
+                  max={pointsData?.data?.currentBalance || 0}
                   value={cheerAmount}
                   onChange={(e) => setCheerAmount(parseInt(e.target.value))}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-pink-500 focus:border-transparent"
@@ -402,3 +405,4 @@ const PointsDashboard = () => {
 };
 
 export default PointsDashboard;
+

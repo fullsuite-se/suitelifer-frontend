@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { pointsShopApi } from '../../utils/pointsShopApi';
+import { pointsShopApi } from '../../api/pointsShopApi';
 import { useStore } from '../../store/authStore';
 import { toast } from 'react-hot-toast';
 import {
@@ -119,13 +119,31 @@ const CheerPage = () => {
     enabled: !!user && Object.keys(user).length > 0,
   });
 
+  // Debug: log leaderboard data
+  useEffect(() => {
+    console.log('CheerPage - activeTab:', activeTab);
+    console.log('CheerPage - leaderboardData:', leaderboardData);
+  }, [activeTab, leaderboardData]);
+
   // User search for @ mentions
   const { data: searchResults = [] } = useQuery({
     queryKey: ['user-search', searchQuery],
     queryFn: () => pointsShopApi.searchUsers(searchQuery),
-    enabled: searchQuery.length >= 2 && (!!user && Object.keys(user).length > 0),
+    enabled: searchQuery.length >= 1 && (!!user && Object.keys(user).length > 0),
     staleTime: 30 * 1000,
   });
+
+  // Debug: log searchQuery and searchResults
+  useEffect(() => {
+    console.log('CheerPage - searchQuery:', searchQuery);
+    console.log('CheerPage - searchResults:', searchResults);
+  }, [searchQuery, searchResults]);
+
+  // Debug: log searchQuery and searchResults
+  useEffect(() => {
+    console.log('CheerPage - searchQuery:', searchQuery);
+    console.log('CheerPage - searchResults:', searchResults);
+  }, [searchQuery, searchResults]);
 
   // Send cheer mutation
   const cheerMutation = useMutation({
@@ -147,7 +165,9 @@ const CheerPage = () => {
       queryClient.invalidateQueries(['leaderboard']);
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || 'Failed to send cheer');
+      const backendMsg = error?.response?.data?.message || error?.message || 'Failed to send cheer';
+      toast.error(backendMsg);
+      console.error('Cheer mutation error:', error);
     },
   });
 
@@ -179,23 +199,28 @@ const CheerPage = () => {
   const commentMutation = useMutation({
     mutationFn: ({ cheerId, comment }) => pointsShopApi.addCheerComment(cheerId, comment),
     onSuccess: (data, variables) => {
+      console.log('Comment added successfully:', data); // Debug log
       setCommentText('');
       // Add the new comment to local state immediately
       setCheerComments(prev => {
         const newComments = new Map(prev);
-        const existing = newComments.get(variables.cheerId) || [];
+        const existing = newComments.get(variables.cheerId);
+        // Ensure existing is always an array
+        const existingArray = Array.isArray(existing) ? existing : [];
+        
         // The new comment should match the API response format
         const newComment = {
-          _id: data.id,
+          _id: data.id || data._id,
           comment: data.comment,
           fromUser: {
             _id: user.id,
             name: `${user.first_name} ${user.last_name}`,
             avatar: user.profile_pic
           },
-          createdAt: data.created_at
+          createdAt: data.created_at || data.createdAt
         };
-        newComments.set(variables.cheerId, [newComment, ...existing]);
+        console.log('New comment object:', newComment); // Debug log
+        newComments.set(variables.cheerId, [newComment, ...existingArray]);
         return newComments;
       });
       queryClient.invalidateQueries(['cheer-feed']);
@@ -216,14 +241,24 @@ const CheerPage = () => {
     setLoadingComments(true);
     try {
       const comments = await pointsShopApi.getCheerComments(cheerId);
+      console.log('Fetched comments:', comments); // Debug log
+      
       setCheerComments(prev => {
         const newComments = new Map(prev);
-        newComments.set(cheerId, comments || []);
+        // Ensure comments is always an array
+        const commentsArray = Array.isArray(comments) ? comments : [];
+        newComments.set(cheerId, commentsArray);
         return newComments;
       });
     } catch (error) {
       console.error('Error loading comments:', error);
       toast.error('Failed to load comments');
+      // Set empty array on error
+      setCheerComments(prev => {
+        const newComments = new Map(prev);
+        newComments.set(cheerId, []);
+        return newComments;
+      });
     } finally {
       setLoadingComments(false);
     }
@@ -256,26 +291,28 @@ const CheerPage = () => {
     }
   };
 
-  const handleUserSelect = (selectedUser) => {
-    // Replace the @ mention with the selected user
-    const newText = cheerText.replace(/@\w*$/, `@${selectedUser.name} `);
-    setCheerText(newText);
-    setSelectedUser(selectedUser);
+  const handleUserSelect = (user) => {
+    // Replace only the @mention part, preserving the rest of the message
+    setCheerText((prev) => prev.replace(/@\w*$/, `@${user.name} `));
+    setSelectedUser(user);
     setShowUserDropdown(false);
   };
 
   const handleCheerSubmit = (e) => {
     e.preventDefault();
-    if (!selectedUser || !cheerText.trim()) {
+    if (!selectedUser || !selectedUser.user_id || !cheerText.trim()) {
       toast.error('Please select a user and write a message');
       return;
     }
 
     const cheerData = {
-      recipientId: selectedUser.user_id || selectedUser.id,
+      recipientId: selectedUser.user_id,
       amount: cheerPoints,
       message: cheerText.trim(),
     };
+
+    // Debug: log cheer payload before sending
+    console.log('Sending cheer payload:', cheerData, 'Selected user:', selectedUser);
 
     cheerMutation.mutate(cheerData);
   };
@@ -324,10 +361,10 @@ const CheerPage = () => {
     );
   }
 
-  const availableHeartbits = (pointsData?.monthlyCheerLimit || 100) - (pointsData?.monthlyCheerUsed || 0);
-  const stats = statsData || {};
-  const points = pointsData || {};
-  const feed = Array.isArray(cheerFeed) ? cheerFeed : [];
+  const availableHeartbits = (pointsData?.data?.monthlyCheerLimit || 100) - (pointsData?.data?.monthlyCheerUsed || 0);
+  const stats = statsData?.data || {};
+  const points = pointsData?.data || {};
+  const feed = Array.isArray(cheerFeed?.data?.cheers) ? cheerFeed.data.cheers : [];
   const received = Array.isArray(receivedCheers) ? receivedCheers : [];
   const leaderboard = leaderboardData?.leaderboard || [];
   const currentUserLeaderboard = leaderboardData?.currentUser;
@@ -416,8 +453,8 @@ const CheerPage = () => {
                   <button
                     type="submit"
                     disabled={
-                      !selectedUser || 
-                      !cheerText.trim() || 
+                      !selectedUser || !selectedUser.user_id ||
+                      !cheerText.trim() ||
                       cheerMutation.isLoading ||
                       cheerPoints > availableHeartbits
                     }
@@ -451,7 +488,7 @@ const CheerPage = () => {
               <div className="space-y-4">
                 <div className="text-center">
                   <div className="text-4xl font-bold text-orange-600 mb-2">
-                    {availableHeartbits} | {pointsData?.monthlyReceivedHeartbits || 0}
+                    {availableHeartbits} | {pointsData?.data?.monthlyReceivedHeartbits || 0}
                   </div>
                   <div className="text-lg text-gray-700 font-medium">heartbits remaining | received this month</div>
                 </div>
@@ -459,10 +496,10 @@ const CheerPage = () => {
                 <div className="border-t border-orange-200 pt-4 space-y-3">
                   <div className="flex justify-between items-center">
                     <span className="text-lg font-bold text-gray-800">
-                      {pointsData?.monthlyCheerUsed || 0} used
+                      {pointsData?.data?.monthlyCheerUsed || 0} used
                     </span>
                     <span className="text-sm text-gray-600 bg-white px-3 py-1 rounded-full font-medium">
-                      out of {pointsData?.monthlyCheerLimit || 100}
+                      out of {pointsData?.data?.monthlyCheerLimit || 100}
                     </span>
                   </div>
                   
@@ -470,12 +507,12 @@ const CheerPage = () => {
                     <div className="w-full bg-gray-200 rounded-full h-3">
                       <div 
                         className="bg-gradient-to-r from-orange-400 to-pink-500 h-3 rounded-full transition-all duration-700"
-                        style={{ width: `${Math.min(((pointsData?.monthlyCheerUsed || 0) / (pointsData?.monthlyCheerLimit || 100)) * 100, 100)}%` }}
+                        style={{ width: `${Math.min(((pointsData?.data?.monthlyCheerUsed || 0) / (pointsData?.data?.monthlyCheerLimit || 100)) * 100, 100)}%` }}
                       ></div>
                     </div>
                     <div className="absolute inset-0 flex items-center justify-center">
                       <span className="text-xs font-bold text-gray-700">
-                        {Math.round(((pointsData?.monthlyCheerUsed || 0) / (pointsData?.monthlyCheerLimit || 100)) * 100)}%
+                        {Math.round(((pointsData?.data?.monthlyCheerUsed || 0) / (pointsData?.data?.monthlyCheerLimit || 100)) * 100)}%
                       </span>
                     </div>
                   </div>
@@ -599,34 +636,41 @@ const CheerPage = () => {
                                       <span className="ml-2 text-sm text-gray-500">Loading comments...</span>
                                     </div>
                                   ) : (
-                                    (cheerComments.get(cheer.cheer_id) || []).map((comment, index) => (
-                                      <div key={comment._id || `comment-${cheer.cheer_id}-${index}`} className="bg-gray-50 rounded-lg p-3">
-                                        <div className="flex items-start space-x-2">
-                                          <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                            <span className="text-xs font-medium text-blue-600">
-                                              {comment.fromUser?.name ? comment.fromUser.name.charAt(0) : '?'}
-                                            </span>
-                                          </div>
-                                          <div className="flex-1 min-w-0">
-                                            <div className="flex items-center space-x-2">
-                                              <span className="text-sm font-medium text-gray-900">
-                                                {comment.fromUser?.name || 'Anonymous'}
-                                              </span>
-                                              <span className="text-xs text-gray-500">
-                                                {formatTimeAgo(comment.createdAt)}
-                                              </span>
+                                    (() => {
+                                      const comments = cheerComments.get(cheer.cheer_id);
+                                      console.log(`Comments for cheer ${cheer.cheer_id}:`, comments); // Debug log
+                                      
+                                      if (Array.isArray(comments) && comments.length > 0) {
+                                        return comments.map((comment, index) => (
+                                          <div key={comment._id || `comment-${cheer.cheer_id}-${index}`} className="bg-gray-50 rounded-lg p-3">
+                                            <div className="flex items-start space-x-2">
+                                              <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                                <span className="text-xs font-medium text-blue-600">
+                                                  {comment.fromUser?.name ? comment.fromUser.name.charAt(0) : '?'}
+                                                </span>
+                                              </div>
+                                              <div className="flex-1 min-w-0">
+                                                <div className="flex items-center space-x-2">
+                                                  <span className="text-sm font-medium text-gray-900">
+                                                    {comment.fromUser?.name || 'Anonymous'}
+                                                  </span>
+                                                  <span className="text-xs text-gray-500">
+                                                    {formatTimeAgo(comment.createdAt)}
+                                                  </span>
+                                                </div>
+                                                <p className="text-sm text-gray-700 mt-1">{comment.comment}</p>
+                                              </div>
                                             </div>
-                                            <p className="text-sm text-gray-700 mt-1">{comment.comment}</p>
                                           </div>
-                                        </div>
-                                      </div>
-                                    ))
-                                  )}
-                                  
-                                  {cheerComments.get(cheer.cheer_id)?.length === 0 && !loadingComments && (
-                                    <p className="text-sm text-gray-500 text-center py-2">
-                                      No comments yet. Be the first to comment!
-                                    </p>
+                                        ));
+                                      } else {
+                                        return (
+                                          <p className="text-sm text-gray-500 text-center py-2">
+                                            No comments yet. Be the first to comment!
+                                          </p>
+                                        );
+                                      }
+                                    })()
                                   )}
                                 </div>
                               </div>
@@ -653,7 +697,7 @@ const CheerPage = () => {
                   Leaderboard
                 </h3>
                 <div className="flex space-x-2">
-                  {['weekly', 'monthly', 'all-time'].map((period) => (
+                  {['weekly', 'monthly', 'alltime'].map((period) => (
                     <button
                       key={period}
                       onClick={() => setActiveTab(period)}
@@ -663,7 +707,7 @@ const CheerPage = () => {
                           : 'text-gray-500 hover:text-gray-700'
                       }`}
                     >
-                      {period.charAt(0).toUpperCase() + period.slice(1).replace('-', ' ')}
+                      {period === 'alltime' ? 'All Time' : period.charAt(0).toUpperCase() + period.slice(1)}
                     </button>
                   ))}
                 </div>
@@ -673,10 +717,10 @@ const CheerPage = () => {
                 <div className="text-center py-8">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
                 </div>
-              ) : leaderboardData?.leaderboard?.length > 0 ? (
+              ) : leaderboard.length > 0 ? (
                 <div className="space-y-3">
-                  {leaderboardData.leaderboard.slice(0, 5).map((entry, index) => (
-                    <div key={entry.userId} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                  {leaderboard.slice(0, 5).map((entry, index) => (
+                    <div key={entry._id || entry.userId || entry.user_id || index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
                         index === 0 ? 'bg-yellow-100 text-yellow-800' :
                         index === 1 ? 'bg-gray-100 text-gray-800' :
@@ -687,13 +731,13 @@ const CheerPage = () => {
                       </div>
                       <img
                         src={entry.avatar || '/images/default-avatar.png'}
-                        alt={entry.name}
+                        alt={entry.name || entry.userName}
                         className="w-8 h-8 rounded-full"
                       />
                       <div className="flex-1">
-                        <p className="font-medium text-gray-900">{entry.name}</p>
+                        <p className="font-medium text-gray-900">{entry.name || entry.userName}</p>
                       </div>
-                      <span className="font-bold text-purple-600">{entry.totalPoints} pts</span>
+                      <span className="font-bold text-purple-600">{entry.totalPoints || entry.total_earned} pts</span>
                     </div>
                   ))}
                 </div>
@@ -712,3 +756,4 @@ const CheerPage = () => {
 };
 
 export default CheerPage;
+
