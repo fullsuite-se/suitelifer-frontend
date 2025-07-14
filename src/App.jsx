@@ -26,18 +26,15 @@ import EmployeeEvents from "./pages/employee/EmployeeEvents";
 // import EmployeeWorkshops from "./pages/employee/EmployeeWorkshops";
 import EmployeePersonalityTest from "./pages/employee/EmployeePersonalityTest";
 import BlogCreate from "./components/blog/BlogCreate";
-import EmployeeCheerPage from "./pages/employee/EmployeeCheerPage";
-import EmployeePointsDashboard from "./pages/employee/EmployeePointsDashboard";
 
 // Points Shop Pages
-import MoodPage from "./pages/employee/MoodPage";
+//import MoodPage from "./pages/employee/MoodPage";
 
 // Points Shop Admin Pages
-import AdminPointsSystem from "./pages/admin/AdminPointsSystem";
->>>>>>> Stashed changes
+//import AdminPointsSystem from "./pages/admin/AdminPointsSystem";
 
 // Super/Admin Pages
-import AdminBlogs from "./pages/admin/AdminBlogs";
+//import AdminBlogs from "./pages/admin/AdminBlogs";
 import AdminNews from "./pages/admin/AdminNews";
 import AdminEvents from "./pages/admin/AdminEvents";
 import AdminContents from "./pages/admin/AdminContents";
@@ -66,7 +63,10 @@ import { Toaster } from "react-hot-toast";
 import ScrollToTop from "./components/buttons/ScrollToTop";
 import VerifyAccount from "./pages/auth/VerifyAccount";
 import DevelopersPage from "./pages/guest/Developers";
-import { CheerPageUIOnly, PointsDashboardUIOnly } from "./pages/ui-demo";
+import CheerPage from "./pages/employee/EmployeeCheerPage";
+import PointsDashboard from "./pages/employee/EmployeePointsDashboard";
+
+
 
 const queryClient = new QueryClient();
 
@@ -160,8 +160,8 @@ function App() {
           </Route>
 
           {/* UI Demo Routes */}
-          <Route path="/ui-demo/cheer" element={<CheerPageUIOnly />} />
-          <Route path="/ui-demo/points" element={<PointsDashboardUIOnly />} />
+          {/* <Route path="/ui-demo/cheer" element={<CheerPage />} />
+          <Route path="/ui-demo/points" element={<PointsDashboard />} /> */}
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>
