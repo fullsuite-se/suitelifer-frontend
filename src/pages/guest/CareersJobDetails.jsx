@@ -129,7 +129,7 @@ const CareersJobDetails = () => {
             {jobDetails.responsibility && (
               <>
                 <p className="text-primary text-body  font-avenir-black">
-                  Responsibilities:
+                  {jobDetails.responsibilityHeader ?? 'Responsibilities'}
                 </p>
                 <ul className="text-body">
                   {jobDetails.responsibility
@@ -148,7 +148,7 @@ const CareersJobDetails = () => {
             {jobDetails.requirement && (
               <>
                 <p className="text-primary text-body font-avenir-black">
-                  Requirements:
+                   {jobDetails.requirementHeader ?? 'Requirements'}
                 </p>
                 <ul className="text-body">
                   {jobDetails.requirement
@@ -167,7 +167,7 @@ const CareersJobDetails = () => {
             {jobDetails.preferredQualification && (
               <>
                 <p className="text-primary text-body font-avenir-black">
-                  Preferred Qualifications:
+                    {jobDetails.qualificationHeader ?? 'Preferred Qualifications'}
                 </p>
                 <ul className="text-body">
                   {jobDetails.preferredQualification
