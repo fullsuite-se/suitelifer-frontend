@@ -26,6 +26,8 @@ import EmployeeEvents from "./pages/employee/EmployeeEvents";
 // import EmployeeWorkshops from "./pages/employee/EmployeeWorkshops";
 import EmployeePersonalityTest from "./pages/employee/EmployeePersonalityTest";
 import BlogCreate from "./components/blog/BlogCreate";
+import CheerPage from "./pages/employee/EmployeeCheerPage";
+import PointsDashboard from "./pages/employee/EmployeePointsDashboard";
 
 // Points Shop Pages
 //import MoodPage from "./pages/employee/MoodPage";
@@ -63,8 +65,7 @@ import { Toaster } from "react-hot-toast";
 import ScrollToTop from "./components/buttons/ScrollToTop";
 import VerifyAccount from "./pages/auth/VerifyAccount";
 import DevelopersPage from "./pages/guest/Developers";
-import CheerPage from "./pages/employee/EmployeeCheerPage";
-import PointsDashboard from "./pages/employee/EmployeePointsDashboard";
+
 
 
 
