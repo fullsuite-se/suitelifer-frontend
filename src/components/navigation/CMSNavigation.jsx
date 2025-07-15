@@ -26,6 +26,7 @@ import {
   CubeIcon,
   ClockIcon,
   Cog6ToothIcon,
+  PlusIcon,
 } from "@heroicons/react/20/solid";
 import {
   Disclosure,
@@ -50,6 +51,11 @@ const regularFeatures = [
     path: "personality-test",
     icon: FaceSmileIcon,
   },
+  {
+    feature_name: "Suitebite",
+    path: "suitebite",
+    icon: HeartIcon,
+  },
 ];
 
 // Suitebite features for employees (only Mood page remains)
@@ -62,7 +68,7 @@ const suitebiteFeaturesForEmployees = [
 const adminFeatures = [
   { feature_name: "Content", path: "contents", icon: Bars3BottomLeftIcon },
   { feature_name: "Events", path: "events", icon: CalendarIcon },
-  // Suitebite section without dropdown and with only Suite Settings
+  { feature_name: "Suitebite", path: "suitebite", icon: HeartIcon },
   { feature_name: "Suite Settings", path: "suitebite/system", icon: Cog6ToothIcon },
   { feature_name: "Courses", path: "courses", icon: BookOpenIcon },
   {
@@ -83,6 +89,11 @@ const superAdminFeatures = [
     path: "super/accounts-management",
     icon: UsersIcon,
   },
+];
+
+const suitebiteSubFeatures = [
+  { feature_name: 'Cheer a Peer', path: 'suitebite/cheer', icon: HeartIcon },
+  { feature_name: 'Shop', path: 'suitebite/shop', icon: ShoppingBagIcon },
 ];
 
 const CMSNavigation = () => {
@@ -247,6 +258,35 @@ const CMSNavigation = () => {
     });
   };
 
+  const displaySuitebiteDropdown = (isCollapse) => (
+    <Disclosure as="div" defaultOpen={true}>
+      <DisclosureButton className="group cursor-pointer flex w-full items-center justify-between">
+        {!isCollapse && (
+          <span className="font-avenir-black text-primary p-3 flex items-center gap-3">
+            <HeartIcon className="size-4" /> Suitebite
+          </span>
+        )}
+        <ChevronDownIcon className="size-5 text-primary group-data-[open]:rotate-180" />
+      </DisclosureButton>
+      <DisclosurePanel className={`${!isCollapse && 'ml-5'} mt-1 flex flex-col`}>
+        {suitebiteSubFeatures.map((service, idx) => (
+          <NavLink
+            key={idx}
+            to={`/app/${service.path}`}
+            className={({ isActive }) =>
+              isActive
+                ? `bg-primary text-white transition-none p-3 rounded-lg flex items-center gap-3 no-underline ${!isCollapse ? 'w-full' : 'w-min'}`
+                : `bg-white text-primary transition-none p-3 rounded-lg flex items-center gap-3 no-underline hover:bg-blue-50 ${!isCollapse ? 'w-full' : 'w-min'}`
+            }
+          >
+            <service.icon className="size-4" />
+            {!isCollapse && <span className="no-underline! truncate font-avenir-black">{service.feature_name}</span>}
+          </NavLink>
+        ))}
+      </DisclosurePanel>
+    </Disclosure>
+  );
+
   if (isLoading) return null;
 
   return (
@@ -288,32 +328,15 @@ const CMSNavigation = () => {
           )}
         </section>        <section className=" flex-1 ">
           <ul className="list-none!">
-            {displayFeatures(regularFeatures, "/app")}
+            {displayFeatures(regularFeatures.filter(f => f.feature_name !== 'Suitebite'), "/app")}
             
-            {/* Mood page only (no Suitebite dropdown) */}
+            {/* Suitebite Dropdown */}
+            <li>{displaySuitebiteDropdown(isCollapse)}</li>
+            
+            {/* Mood and Points features */}
             {displayFeatures(suitebiteFeaturesForEmployees, "/app")}
 
-            {user.role === "ADMIN" && (
-              <Disclosure as="div" defaultOpen={showTool}>
-                <DisclosureButton
-                  className="group cursor-pointer flex w-full items-center justify-between"
-                  onClick={handleDisclosureBtn}
-                >
-                  {!isCollapse && (
-                    <p className="font-avenir-black text-primary p-3">
-                      Admin Tools
-                    </p>
-                  )}
-                <ChevronDownIcon className="size-5 text-primary  group-data-[open]:rotate-180" />
-                </DisclosureButton>
-                <DisclosurePanel
-                  className={`${!isCollapse && "ml-5"} mt-1 flex flex-col`}
-                >
-                  {displayFeatures(adminFeatures, "/app/admin-tools")}
-                </DisclosurePanel>
-              </Disclosure>
-            )}
-            {user.role === "SUPER ADMIN" && (
+            {(user.role === "ADMIN" || user.role === "SUPER ADMIN") && (
               <Disclosure as="div" defaultOpen={showTool}>
                 <DisclosureButton
                   className="group cursor-pointer flex w-full items-center justify-between"
@@ -330,7 +353,9 @@ const CMSNavigation = () => {
                   className={`${!isCollapse && "ml-5"} mt-1 flex flex-col`}
                 >
                   {displayFeatures(
-                    [...superAdminFeatures, ...adminFeatures],
+                    user.role === "SUPER ADMIN" 
+                      ? [...superAdminFeatures, ...adminFeatures]
+                      : adminFeatures,
                     "/app/admin-tools"
                   )}
                 </DisclosurePanel>
