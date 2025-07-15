@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { pointsShopApi } from '../../api/pointsShopApi';
@@ -8,40 +9,99 @@ import {
   StarIcon,
   GiftIcon,
   UsersIcon,
+
+import {
+  StarIcon,
+  GiftIcon,
+
   ChartBarIcon,
   HeartIcon,
   ClockIcon,
   PlusIcon,
   ArrowTrendingUpIcon,
+
   ChatBubbleLeftEllipsisIcon,
   MagnifyingGlassIcon,
   SparklesIcon,
 } from '@heroicons/react/24/outline';
 import { 
+
+} from '@heroicons/react/24/outline';
+import {
+
   StarIcon as StarIconSolid,
   HeartIcon as HeartIconSolid,
 } from '@heroicons/react/24/solid';
+
 
 const PointsDashboard = () => {
   const user = useStore((state) => state.user);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
+// Mock data for UI only
+const mockUser = { id: 1, first_name: 'Jane', last_name: 'Doe' };
+const mockPointsData = {
+  currentBalance: 80,
+  monthlyCheerLimit: 100,
+  monthlyCheerUsed: 20,
+  totalEarned: 200,
+  totalSpent: 120,
+};
+const mockHistoryData = [
+  {
+    type: 'purchase',
+    amount: 10,
+    description: 'Bought a mug',
+    createdAt: new Date().toISOString(),
+    related_user: null,
+  },
+  {
+    type: 'given',
+    amount: 5,
+    description: 'Cheered John',
+    createdAt: new Date(Date.now() - 3600 * 1000).toISOString(),
+    related_user: 'John Smith',
+  },
+  {
+    type: 'received',
+    amount: 8,
+    description: 'Received from Alice',
+    createdAt: new Date(Date.now() - 7200 * 1000).toISOString(),
+    related_user: 'Alice Lee',
+  },
+];
+const mockUsers = [
+  { id: 2, first_name: 'John', last_name: 'Smith' },
+  { id: 3, first_name: 'Alice', last_name: 'Lee' },
+];
+
+const PointsDashboardUIOnly = () => {
+
   const [cheerModalOpen, setCheerModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState('');
   const [cheerAmount, setCheerAmount] = useState(10);
   const [cheerMessage, setCheerMessage] = useState('');
+
   const [userSearch, setUserSearch] = useState('');
   const [showCheerFeed, setShowCheerFeed] = useState(true);
   const [activeTab, setActiveTab] = useState('feed'); // 'feed', 'leaderboard', 'history'
+
+
 
   // Safe date formatting function
   const formatDateSafely = (dateValue) => {
     try {
       if (!dateValue) return 'No date';
+
       
       const date = new Date(dateValue);
       if (isNaN(date.getTime())) return 'Invalid date';
       
+
+      const date = new Date(dateValue);
+      if (isNaN(date.getTime())) return 'Invalid date';
+
       return date.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'short',
@@ -49,11 +109,16 @@ const PointsDashboard = () => {
         hour: '2-digit',
         minute: '2-digit',
       });
+
     } catch (error) {
       console.error('Date formatting error:', error, 'for value:', dateValue);
+
+    } catch {
+
       return 'Invalid date';
     }
   };
+
 
   // Fetch user's points data
   const { data: pointsData, isLoading: pointsLoading, error: pointsError } = useQuery({
@@ -165,6 +230,8 @@ const PointsDashboard = () => {
     );
   }
 
+
+
   const getTransactionIcon = (type) => {
     switch (type) {
       case 'purchase':
@@ -198,6 +265,22 @@ const PointsDashboard = () => {
     }
   };
 
+
+
+  const handleSendCheer = (e) => {
+    e.preventDefault();
+    if (!selectedUser || cheerAmount < 1) {
+      alert('Please select a user and enter a valid amount');
+      return;
+    }
+    alert('Cheer sent successfully!');
+    setCheerModalOpen(false);
+    setSelectedUser('');
+    setCheerMessage('');
+    setCheerAmount(10);
+  };
+
+
   return (
     <div className="p-6 max-w-6xl mx-auto space-y-6">
       {/* Header */}
@@ -210,13 +293,20 @@ const PointsDashboard = () => {
           <p className="text-gray-600 mt-1">Manage your points, rewards, and heartbits</p>
         </div>
         <button
+
           onClick={() => navigate('/app/cheer')}
+
+          onClick={() => setCheerModalOpen(true)}
+
           className="flex items-center gap-2 bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg transition-colors"
         >
           <HeartIcon className="w-5 h-5" />
           Send Heartbits
         </button>
       </div>
+
+
+
 
       {/* Points Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -225,7 +315,11 @@ const PointsDashboard = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-yellow-100 text-sm font-medium">Current Balance</p>
+
               <p className="text-3xl font-bold">{pointsData?.data?.currentBalance || 0}</p>
+
+              <p className="text-3xl font-bold">{mockPointsData.currentBalance}</p>
+
               <p className="text-yellow-100 text-xs">Points</p>
             </div>
             <StarIconSolid className="w-12 h-12 text-yellow-200" />
@@ -238,7 +332,11 @@ const PointsDashboard = () => {
             <div>
               <p className="text-pink-100 text-sm font-medium">Heartbits Remaining</p>
               <p className="text-3xl font-bold">
+
                 {(pointsData?.data?.monthlyCheerLimit || 100) - (pointsData?.data?.monthlyCheerUsed || 0)}
+
+                {mockPointsData.monthlyCheerLimit - mockPointsData.monthlyCheerUsed}
+
               </p>
               <p className="text-pink-100 text-xs">This Month</p>
             </div>
@@ -251,7 +349,11 @@ const PointsDashboard = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-green-100 text-sm font-medium">Total Earned</p>
+
               <p className="text-3xl font-bold">{pointsData?.data?.totalEarned || 0}</p>
+
+              <p className="text-3xl font-bold">{mockPointsData.totalEarned}</p>
+
               <p className="text-green-100 text-xs">All Time</p>
             </div>
             <ArrowTrendingUpIcon className="w-12 h-12 text-green-200" />
@@ -263,7 +365,11 @@ const PointsDashboard = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-blue-100 text-sm font-medium">Total Spent</p>
+
               <p className="text-3xl font-bold">{pointsData?.data?.totalSpent || 0}</p>
+
+              <p className="text-3xl font-bold">{mockPointsData.totalSpent}</p>
+
               <p className="text-blue-100 text-xs">Points</p>
             </div>
             <GiftIcon className="w-12 h-12 text-blue-200" />
@@ -280,12 +386,17 @@ const PointsDashboard = () => {
           </h2>
         </div>
         <div className="divide-y divide-gray-200">
+
           {historyLoading ? (
             <div className="p-6 text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
             </div>
           ) : Array.isArray(historyData?.data) && historyData.data.length > 0 ? (
             historyData.data.map((transaction, index) => (
+
+          {mockHistoryData.length > 0 ? (
+            mockHistoryData.map((transaction, index) => (
+
               <div key={index} className="p-4 hover:bg-gray-50 transition-colors">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -295,11 +406,16 @@ const PointsDashboard = () => {
                         {transaction.description || transaction.type.replace('_', ' ').toUpperCase()}
                       </p>
                       <p className="text-sm text-gray-500">
+
                         {formatDateSafely(transaction.createdAt || transaction.created_at)}
                       </p>
                       {transaction.message && (
                         <p className="text-sm text-pink-600 mt-1">{transaction.message}</p>
                       )}
+
+                        {formatDateSafely(transaction.createdAt)}
+                      </p>
+
                     </div>
                   </div>
                   <div className="text-right">
@@ -345,14 +461,18 @@ const PointsDashboard = () => {
                   required
                 >
                   <option value="">Choose a user...</option>
+
                   {Array.isArray(usersData) && usersData.map((user) => (
+
+                  {mockUsers.map((user) => (
+
                     <option key={user.id} value={user.id}>
                       {user.first_name} {user.last_name}
                     </option>
                   ))}
                 </select>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Amount (Points)
@@ -360,14 +480,18 @@ const PointsDashboard = () => {
                 <input
                   type="number"
                   min="1"
+
                   max={pointsData?.data?.currentBalance || 0}
+
+                  max={mockPointsData.currentBalance}
+
                   value={cheerAmount}
                   onChange={(e) => setCheerAmount(parseInt(e.target.value))}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                   required
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Message (Optional)
@@ -379,7 +503,7 @@ const PointsDashboard = () => {
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 h-24 resize-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                 />
               </div>
-              
+
               <div className="flex gap-3 pt-4">
                 <button
                   type="button"
@@ -390,10 +514,16 @@ const PointsDashboard = () => {
                 </button>
                 <button
                   type="submit"
+
                   disabled={cheerMutation.isPending}
                   className="flex-1 bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
                 >
                   {cheerMutation.isPending ? 'Sending...' : 'Send Heartbits'}
+
+                  className="flex-1 bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
+                >
+                  Send Heartbits
+
                 </button>
               </div>
             </form>
@@ -404,5 +534,9 @@ const PointsDashboard = () => {
   );
 };
 
+
 export default PointsDashboard;
+
+
+export default PointsDashboardUIOnly;
 
