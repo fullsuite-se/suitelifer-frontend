@@ -191,27 +191,47 @@ const CheerPostCard = ({ post, onInteraction }) => {
                 {/* Recipients - Handle both single and group cheers */}
                 {post.additional_recipients && post.additional_recipients.length > 0 ? (
                   /* Group cheer with multiple recipients */
-                  <div className="flex items-center gap-1 flex-wrap">
-                    <h4 className="font-medium text-[#0097b2] text-sm">
-                      {post.peer_first_name} {post.peer_last_name}
-                    </h4>
-                    {post.additional_recipients.map((recipient, index) => (
-                      <span key={recipient.peer_id || index} className="flex items-center gap-1">
-                        <span className="text-xs text-[#4a6e7e]">,</span>
-                        <h4 className="font-medium text-[#0097b2] text-sm">
-                          {recipient.additional_first_name} {recipient.additional_last_name}
-                        </h4>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {/* Main recipient */}
+                    <div className="flex items-center gap-1">
+                      <div className="w-6 h-6 bg-gradient-to-br from-[#0097b2] to-[#007a8e] text-white rounded-lg flex items-center justify-center font-semibold text-xs">
+                        {getInitials(post.peer_first_name, post.peer_last_name)}
+                      </div>
+                      <span className="font-medium text-[#0097b2] text-sm">
+                        {post.peer_first_name} {post.peer_last_name}
                       </span>
+                    </div>
+                    
+                    {/* Additional recipients */}
+                    {post.additional_recipients.map((recipient, index) => (
+                      <div key={recipient.peer_id || index} className="flex items-center gap-1">
+                        <div className="w-6 h-6 bg-gradient-to-br from-[#0097b2] to-[#007a8e] text-white rounded-lg flex items-center justify-center font-semibold text-xs">
+                          {getInitials(recipient.additional_first_name, recipient.additional_last_name)}
+                        </div>
+                        <span className="font-medium text-[#0097b2] text-sm">
+                          {recipient.additional_first_name} {recipient.additional_last_name}
+                        </span>
+                      </div>
                     ))}
-                    <span className="text-xs text-[#4a6e7e] bg-[#0097b2]/10 px-2 py-1 rounded-full ml-2">
-                      Group Cheer ({post.additional_recipients.length + 1} people)
-                    </span>
+                    
+                    {/* Group indicator */}
+                    <div className="bg-gradient-to-r from-[#0097b2]/10 to-[#0097b2]/20 text-[#0097b2] px-3 py-1 rounded-full text-xs font-medium border border-[#0097b2]/20">
+                      <span className="flex items-center gap-1">
+                        <span>👥</span>
+                        <span>Group ({post.additional_recipients.length + 1})</span>
+                      </span>
+                    </div>
                   </div>
                 ) : (
                   /* Single recipient */
-                  <h4 className="font-medium text-[#0097b2] text-sm">
-                    {post.peer_first_name} {post.peer_last_name}
-                  </h4>
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 bg-gradient-to-br from-[#0097b2] to-[#007a8e] text-white rounded-lg flex items-center justify-center font-semibold text-xs">
+                      {getInitials(post.peer_first_name, post.peer_last_name)}
+                    </div>
+                    <span className="font-medium text-[#0097b2] text-sm">
+                      {post.peer_first_name} {post.peer_last_name}
+                    </span>
+                  </div>
                 )}
               </div>
               {/* Timestamp */}
@@ -223,8 +243,27 @@ const CheerPostCard = ({ post, onInteraction }) => {
           </div>
           
           {/* Heartbits Earned Badge - Show total for group cheers */}
-          <div className="heartbits-badge bg-[#bfd1a0] text-[#1a0202] px-2 py-1 rounded-full text-xs font-medium">
-            ❤️ +{post.heartbits_given}{post.additional_recipients && post.additional_recipients.length > 0 && ` each (${post.heartbits_given * (post.additional_recipients.length + 1)} total)`}
+          <div className="heartbits-badge flex items-center gap-2">
+            {post.additional_recipients && post.additional_recipients.length > 0 ? (
+              /* Group cheer heartbits */
+              <div className="bg-gradient-to-r from-[#bfd1a0] to-[#a8c084] text-[#1a0202] px-3 py-1.5 rounded-xl text-xs font-semibold border border-[#bfd1a0]">
+                <div className="flex items-center gap-1">
+                  <span>❤️</span>
+                  <span>+{post.heartbits_given} each</span>
+                </div>
+                <div className="text-xs font-medium opacity-80">
+                  Total: {post.heartbits_given * (post.additional_recipients.length + 1)} heartbits
+                </div>
+              </div>
+            ) : (
+              /* Single cheer heartbits */
+              <div className="bg-gradient-to-r from-[#bfd1a0] to-[#a8c084] text-[#1a0202] px-3 py-1.5 rounded-xl text-xs font-semibold border border-[#bfd1a0]">
+                <span className="flex items-center gap-1">
+                  <span>❤️</span>
+                  <span>+{post.heartbits_given} heartbits</span>
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -283,11 +322,6 @@ const CheerPostCard = ({ post, onInteraction }) => {
                 {commentsCount} {commentsCount === 1 ? 'comment' : 'comments'}
               </span>
             </button>
-          </div>
-          
-          {/* Post ID for reference */}
-          <div className="post-meta text-xs text-[#4a6e7e]">
-            <span>#{post.cheer_post_id}</span>
           </div>
         </div>
       </div>

@@ -11,14 +11,16 @@ const createAuthHeaders = () => {
     return {
       headers: {
         'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache'
       }
     };
   } else {
     // Fallback to cookie-based authentication if no token in localStorage
     return {
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache'
       },
       withCredentials: true
     };
@@ -34,7 +36,8 @@ export const suitebiteAPI = {
   },
   
   getCheerFeed: async (page = 1, limit = 20) => {
-    const response = await axios.get(`${API_BASE_URL}/cheers/feed?page=${page}&limit=${limit}`, createAuthHeaders());
+    const timestamp = Date.now();
+    const response = await axios.get(`${API_BASE_URL}/cheers/feed?page=${page}&limit=${limit}&_t=${timestamp}`, createAuthHeaders());
     return response.data;
   },
   
@@ -210,7 +213,8 @@ export const suitebiteAPI = {
   // ========== LEADERBOARD ==========
   
   getLeaderboard: async (type = 'received', period = 'all') => {
-    const response = await axios.get(`${API_BASE_URL}/leaderboard?type=${type}&period=${period}`, createAuthHeaders());
+    const timestamp = Date.now();
+    const response = await axios.get(`${API_BASE_URL}/leaderboard?type=${type}&period=${period}&_t=${timestamp}`, createAuthHeaders());
     return response.data;
   },
   
@@ -252,7 +256,8 @@ export const suitebiteAPI = {
   // ========== USER HEARTBITS ==========
   
   getUserHeartbits: async () => {
-    const response = await axios.get(`${API_BASE_URL}/heartbits`, createAuthHeaders());
+    const timestamp = Date.now();
+    const response = await axios.get(`${API_BASE_URL}/heartbits?_t=${timestamp}`, createAuthHeaders());
     return response.data;
   },
   
@@ -262,13 +267,15 @@ export const suitebiteAPI = {
   },
   
   getMonthlyLimits: async () => {
-    const response = await axios.get(`${API_BASE_URL}/limits/monthly`, createAuthHeaders());
+    const timestamp = Date.now();
+    const response = await axios.get(`${API_BASE_URL}/limits/monthly?_t=${timestamp}`, createAuthHeaders());
     return response.data;
   },
 
   // Add missing function for peers who cheered
   getPeersWhoCheered: async () => {
-    const response = await axios.get(`${API_BASE_URL}/peers/cheered`, createAuthHeaders());
+    const timestamp = Date.now();
+    const response = await axios.get(`${API_BASE_URL}/peers/cheered?_t=${timestamp}`, createAuthHeaders());
     return response.data;
   },
 
