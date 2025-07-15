@@ -15,7 +15,7 @@ const SuitebiteLeaderboard = () => {
   } = useSuitebiteStore();
 
   const [activeTab, setActiveTab] = useState('all-time');
-  const [leaderboardType, setLeaderboardType] = useState('received'); // 'received' or 'given'
+  // Only show received leaderboard
   const [loading, setLoading] = useState(false);
   const [allTimeData, setAllTimeData] = useState([]);
   const [dailyData, setDailyData] = useState([]);
@@ -24,7 +24,7 @@ const SuitebiteLeaderboard = () => {
 
   useEffect(() => {
     loadLeaderboards();
-  }, [activeTab, leaderboardType]);
+  }, [activeTab]);
 
   const loadLeaderboards = async () => {
     try {
@@ -34,17 +34,17 @@ const SuitebiteLeaderboard = () => {
       
       switch (activeTab) {
         case 'daily':
-          response = await suitebiteAPI.getLeaderboard(leaderboardType, 'day');
+          response = await suitebiteAPI.getLeaderboard('received', 'day');
           break;
         case 'weekly':
-          response = await suitebiteAPI.getLeaderboard(leaderboardType, 'week');
+          response = await suitebiteAPI.getLeaderboard('received', 'week');
           break;
         case 'monthly':
-          response = await suitebiteAPI.getLeaderboard(leaderboardType, 'month');
+          response = await suitebiteAPI.getLeaderboard('received', 'month');
           break;
         case 'all-time':
         default:
-          response = await suitebiteAPI.getLeaderboard(leaderboardType, 'all');
+          response = await suitebiteAPI.getLeaderboard('received', 'all');
           break;
       }
 
@@ -88,6 +88,12 @@ const SuitebiteLeaderboard = () => {
 
   const currentLeaderboard = leaderboard || [];
 
+  // Helper to get the correct heartbit points for a user
+  const getHeartbitsPoints = (user) => {
+    const points = Number(user.total_heartbits);
+    return isNaN(points) ? 0 : points;
+  };
+
   return (
     <div className="suitebite-leaderboard bg-gray-50 min-h-screen">
       <div className="suitebite-container max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -123,29 +129,6 @@ const SuitebiteLeaderboard = () => {
 
             {/* Type Toggle and Back Button */}
             <div className="flex items-center gap-4">
-              {/* Leaderboard Type Toggle */}
-              <div className="flex bg-gray-100 rounded-lg p-1">
-                <button
-                  className={`px-3 py-1 text-sm font-medium rounded-md transition-all duration-200 ${
-                    leaderboardType === 'received'
-                      ? 'bg-white text-primary shadow-sm'
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                  onClick={() => setLeaderboardType('received')}
-                >
-                  🏅 Top Receivers
-                </button>
-                <button
-                  className={`px-3 py-1 text-sm font-medium rounded-md transition-all duration-200 ${
-                    leaderboardType === 'given'
-                      ? 'bg-white text-primary shadow-sm'
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                  onClick={() => setLeaderboardType('given')}
-                >
-                  🏆 Top Givers
-                </button>
-              </div>
               
               <button 
                 className="back-btn inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors duration-200"
@@ -179,7 +162,7 @@ const SuitebiteLeaderboard = () => {
               {currentLeaderboard.length >= 3 && (
                 <div className="podium bg-white rounded-lg shadow-sm p-8 mb-8">
                   <h3 className="text-xl font-semibold text-gray-900 mb-6 text-center">
-                    {getTypeIcon(leaderboardType)} {getTabLabel(activeTab)} Champions - {getTypeLabel(leaderboardType)}
+                    {getTypeIcon('received')} {getTabLabel(activeTab)} Champions - {getTypeLabel('received')}
                   </h3>
                   
                   <div className="flex items-end justify-center gap-4">
@@ -190,7 +173,7 @@ const SuitebiteLeaderboard = () => {
                         user={currentLeaderboard[1]} 
                         rank={2}
                         isPodium={true}
-                        type={leaderboardType}
+                        type={'received'}
                       />
                     </div>
                     
@@ -202,7 +185,7 @@ const SuitebiteLeaderboard = () => {
                         user={currentLeaderboard[0]} 
                         rank={1}
                         isPodium={true}
-                        type={leaderboardType}
+                        type={'received'}
                       />
                     </div>
                     
@@ -213,7 +196,7 @@ const SuitebiteLeaderboard = () => {
                         user={currentLeaderboard[2]} 
                         rank={3}
                         isPodium={true}
-                        type={leaderboardType}
+                        type={'received'}
                       />
                     </div>
                   </div>
@@ -224,7 +207,7 @@ const SuitebiteLeaderboard = () => {
               <div className="leaderboard-list bg-white rounded-lg shadow-sm">
                 <div className="px-6 py-4 border-b border-gray-200">
                   <h3 className="text-lg font-semibold text-gray-900">
-                    {getTypeIcon(leaderboardType)} {getTypeLabel(leaderboardType)} - {getTabLabel(activeTab)}
+                    {getTypeIcon('received')} {getTypeLabel('received')} - {getTabLabel(activeTab)}
                   </h3>
                   <p className="text-sm text-gray-600">Showing all participants</p>
                 </div>
@@ -261,13 +244,10 @@ const SuitebiteLeaderboard = () => {
                             {/* Points */}
                             <div className="text-right">
                               <div className="text-lg font-semibold text-gray-900">
-                                ❤️ {leaderboardType === 'received' ? user.cheers_received || 0 : user.cheers_given || 0}
+                                ❤️ {getHeartbitsPoints(user)}
                               </div>
                               <div className="text-xs text-gray-500">
-                                {leaderboardType === 'received' ? 
-                                  `${user.cheers_given || 0} given` : 
-                                  `${user.cheers_received || 0} received`
-                                }
+                                {`${user.cheers_received || 0} received`}
                               </div>
                             </div>
                           </div>

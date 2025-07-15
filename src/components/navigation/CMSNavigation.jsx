@@ -26,6 +26,7 @@ import {
   CubeIcon,
   ClockIcon,
   Cog6ToothIcon,
+  PlusIcon,
 } from "@heroicons/react/20/solid";
 import {
   Disclosure,
@@ -67,7 +68,7 @@ const suitebiteFeaturesForEmployees = [
 const adminFeatures = [
   { feature_name: "Content", path: "contents", icon: Bars3BottomLeftIcon },
   { feature_name: "Events", path: "events", icon: CalendarIcon },
-  // Suitebite section without dropdown and with only Suite Settings
+  { feature_name: "Suitebite", path: "suitebite", icon: HeartIcon },
   { feature_name: "Suite Settings", path: "suitebite/system", icon: Cog6ToothIcon },
   { feature_name: "Courses", path: "courses", icon: BookOpenIcon },
   {

@@ -15,8 +15,10 @@ import {
   MinusIcon,
   PencilIcon
 } from '@heroicons/react/24/outline';
+import { useStore } from '../../../store/authStore';
 
 const UserHeartbitsManagement = () => {
+  const currentUser = useStore((state) => state.user);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -506,7 +508,10 @@ const UserHeartbitsManagement = () => {
                 </tr>
               ) : (
                 sortedUsers.map(user => (
-                  <tr key={user.user_id} className="hover:bg-gray-50">
+                  <tr
+                    key={user.user_id}
+                    className={user.user_email === currentUser.email ? 'superadmin-current-user-row' : ''}
+                  >
                     <td className="p-2 border-b">
                       <input
                         type="checkbox"
@@ -522,8 +527,11 @@ const UserHeartbitsManagement = () => {
                           alt={`${user.first_name || ''} ${user.last_name || ''}`.trim()}
                           className="w-10 h-10 rounded-full border-2 border-gray-200 object-cover" 
                         />
-                        <div className="ml-4">
+                        <div className="ml-4 flex items-center gap-2">
                           <div className="font-medium text-gray-900">{`${user.first_name || ''} ${user.last_name || ''}`.trim()}</div>
+                          {user.user_email === currentUser.email && (
+                            <span className="badge bg-blue-200 text-blue-800 px-2 py-1 rounded">You</span>
+                          )}
                           <div className="text-sm text-gray-500">{user.user_email}</div>
                         </div>
                       </div>

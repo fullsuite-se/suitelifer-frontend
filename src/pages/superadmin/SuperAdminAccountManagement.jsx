@@ -330,6 +330,7 @@ const SuperAdminAccountManagement = () => {
           paginationPageSize={15}
           domLayout="autoHeight"
           paginationPageSizeSelector={[15, 25, 50]}
+          getRowClass={params => params.data && params.data.userEmail === user.email ? 'superadmin-current-user-row' : ''}
           className=" bg-red-300 h-[calc(100% - 100px)]"
         />
       </section>

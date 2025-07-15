@@ -257,15 +257,15 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
       const response = await suitebiteAPI.deleteCategory(categoryToDelete.category_id);
 
       if (response.success) {
-        removeCategory(categoryToDelete.category_name);
+        removeCategory(categoryToDelete.name || categoryToDelete.category_name);
         await refreshCategories(); // Refresh from backend
         // If the deleted category was selected, clear the selection
-        if (formData.category === categoryToDelete.category_name) {
+        if (formData.category === (categoryToDelete.name || categoryToDelete.category_name)) {
           setFormData(prev => ({ ...prev, category: '' }));
         }
         setShowDeleteCategoryModal(false);
         setCategoryToDelete(null);
-        showNotification('success', `Category "${categoryToDelete.category_name}" deleted successfully`);
+        showNotification('success', `Category "${categoryToDelete.name || categoryToDelete.category_name}" deleted successfully`);
       } else {
         showNotification('error', 'Failed to delete category');
       }
@@ -408,6 +408,14 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
           throw new Error(productResponse.message || 'Failed to update product');
         }
         productId = product.product_id;
+
+        // Remove all old variations before adding new ones
+        const existingVariationsRes = await suitebiteAPI.getProductVariations(productId);
+        if (existingVariationsRes.success && Array.isArray(existingVariationsRes.variations)) {
+          for (const variation of existingVariationsRes.variations) {
+            await suitebiteAPI.deleteProductVariation(variation.variation_id);
+          }
+        }
       } else {
         // Add product
         const productData = {
@@ -431,12 +439,14 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
         if (images.length === 1) {
           const imageResponse = await suitebiteAPI.uploadProductImage(productId, images[0]);
           if (!imageResponse.success) {
-            throw new Error('Failed to upload product image');
+            // Show backend error message if available
+            throw new Error(imageResponse.message || 'Failed to upload product image');
           }
         } else {
           const imageResponse = await suitebiteAPI.uploadMultipleProductImages(productId, images);
           if (!imageResponse.success) {
-            throw new Error('Failed to upload product images');
+            // Show backend error message if available
+            throw new Error(imageResponse.message || 'Failed to upload product images');
           }
         }
         setUploadingImages(false);

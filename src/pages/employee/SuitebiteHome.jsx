@@ -197,12 +197,6 @@ const SuitebiteHome = () => {
           {/* Send Cheer Form - Left Half */}
           <div className="lg:col-span-1">
             <div className="bg-white p-4 rounded-2xl shadow-sm h-full">
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="text-sm font-semibold text-gray-800">Send a Cheer</h2>
-                <div className="text-xs text-gray-500">
-                  Spread positivity & recognition
-                </div>
-              </div>
               <CreateCheerPost onCheerPostCreated={handleCheerPostCreated} />
             </div>
           </div>
