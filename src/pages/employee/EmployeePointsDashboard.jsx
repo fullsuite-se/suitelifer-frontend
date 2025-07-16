@@ -189,10 +189,13 @@ const PointsDashboard = () => {
       <div className="max-w-6xl mx-auto p-6 space-y-6 pb-20">
         {/* Header */}
         <div className="flex items-center justify-between">
+
+          {/* Commented out for now */}
           {/* <h1 className="text-3xl font-bold flex items-center gap-2" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif', fontWeight: '800' }}>
             <StarIcon className="w-8 h-8" style={{ color: '#0097b2' }} />
             Points Dashboard
           </h1> */}
+          
           <button
           onClick={() => navigate('/app/cheer')}
           className="flex items-center gap-2 text-white px-4 py-2 rounded-lg transition-colors"

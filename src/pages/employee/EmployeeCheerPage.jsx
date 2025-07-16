@@ -350,10 +350,13 @@ const CheerPage = () => {
       <div className="max-w-7xl mx-auto px-4 py-6">
         {/* Header */}
         <div className="mb-6">
+
+          {/* Commented out for now */}
           {/* <h1 className="text-3xl font-bold flex items-center" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif', fontWeight: '800' }}>
             <HeartIconSolid className="w-8 h-8 mr-3" style={{ color: '#0097b2' }} />
             Cheer a Peer
           </h1> */}
+          
         </div>
 
         {/* Main Content Grid */}

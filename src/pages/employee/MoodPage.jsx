@@ -137,9 +137,9 @@ const MoodPage = () => {
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6 pb-20" style={{ backgroundColor: 'rgb(255,255,255)', minHeight: '100vh' }}>
       {/* Header */}
-      <div className="rounded-lg shadow-sm p-6" style={{ backgroundColor: '#ffffff', border: '1px solid #eee3e3' }}>
+      {/* <div className="rounded-lg shadow-sm p-6" style={{ backgroundColor: '#ffffff', border: '1px solid #eee3e3' }}>
         <h1 className="text-2xl font-bold mb-2" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif', fontWeight: '800' }}>Mood Tracker</h1>
-      </div>
+      </div> */}
 
       {/* Success Message */}
       {showSuccessMessage && (
