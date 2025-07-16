@@ -53,6 +53,13 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
   const [newColorHex, setNewColorHex] = useState('#000000');
   const [newDesign, setNewDesign] = useState('');
 
+  // New integrated variation state
+  const [hasVariations, setHasVariations] = useState(false);
+  const [selectedVariationTypes, setSelectedVariationTypes] = useState([]);
+  const [selectedVariationsByType, setSelectedVariationsByType] = useState({});
+  const [showAddOptionModal, setShowAddOptionModal] = useState(false);
+  const [newOptionData, setNewOptionData] = useState({ typeId: null, typeName: '', value: '', hexColor: '#000000' });
+
   // UI state
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -103,23 +110,53 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
       suitebiteAPI.getProductVariations(product.product_id)
         .then(res => {
           if (res.success && Array.isArray(res.variations)) {
-            const sizeSet = new Set();
-            const colorSet = new Set();
-            const designSet = new Set();
-
-            res.variations.forEach(variation => {
-              (variation.options || []).forEach(opt => {
-                if (opt.type_name === 'size') sizeSet.add(opt.option_id);
-                if (opt.type_name === 'color') colorSet.add(opt.option_id);
-                if (opt.type_name === 'design') designSet.add(opt.option_id);
+            if (res.variations.length > 0) {
+              setHasVariations(true);
+              
+              // Group variations by type
+              const variationsByType = {};
+              const usedTypes = new Set();
+              
+              res.variations.forEach(variation => {
+                (variation.options || []).forEach(opt => {
+                  const typeId = opt.variation_type_id;
+                  usedTypes.add(typeId);
+                  
+                  if (!variationsByType[typeId]) {
+                    variationsByType[typeId] = new Set();
+                  }
+                  variationsByType[typeId].add(opt.option_id);
+                });
               });
-            });
 
-            setSelectedVariations({
-              sizes: Array.from(sizeSet),
-              colors: Array.from(colorSet),
-              designs: Array.from(designSet)
-            });
+              // Convert sets to arrays
+              const finalVariationsByType = {};
+              Object.keys(variationsByType).forEach(typeId => {
+                finalVariationsByType[parseInt(typeId)] = Array.from(variationsByType[typeId]);
+              });
+
+              setSelectedVariationTypes(Array.from(usedTypes));
+              setSelectedVariationsByType(finalVariationsByType);
+
+              // Keep backward compatibility with old system
+              const sizeSet = new Set();
+              const colorSet = new Set();
+              const designSet = new Set();
+
+              res.variations.forEach(variation => {
+                (variation.options || []).forEach(opt => {
+                  if (opt.type_name === 'size') sizeSet.add(opt.option_id);
+                  if (opt.type_name === 'color') colorSet.add(opt.option_id);
+                  if (opt.type_name === 'design') designSet.add(opt.option_id);
+                });
+              });
+
+              setSelectedVariations({
+                sizes: Array.from(sizeSet),
+                colors: Array.from(colorSet),
+                designs: Array.from(designSet)
+              });
+            }
           }
         })
         .catch(err => {
@@ -337,31 +374,66 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
   };
 
   const generateVariations = () => {
-    const variations = [];
-    const { sizes, colors, designs } = selectedVariations;
+    if (!hasVariations || selectedVariationTypes.length === 0) {
+      return [];
+    }
 
-    // Generate all combinations
-    const sizeOptions = sizes.length > 0 ? sizes : [null];
-    const colorOptions = colors.length > 0 ? colors : [null];
-    const designOptions = designs.length > 0 ? designs : [null];
-
-    sizeOptions.forEach(sizeId => {
-      colorOptions.forEach(colorId => {
-        designOptions.forEach(designId => {
-          if (sizeId || colorId || designId) {
-            variations.push({
-              size_id: sizeId,
-              color_id: colorId,
-              design_id: designId,
-              price_adjustment: 0,
-              sku_suffix: generateSkuSuffix(sizeId, colorId, designId)
-            });
-          }
+    // Get all selected options for each variation type
+    const variationData = [];
+    selectedVariationTypes.forEach(typeId => {
+      const selectedOptions = getSelectedOptionsForType(typeId);
+      if (selectedOptions.length > 0) {
+        variationData.push({
+          typeId,
+          options: selectedOptions.map(optionId => 
+            variationOptions.find(opt => opt.option_id === optionId)
+          ).filter(Boolean)
         });
-      });
+      }
     });
 
-    return variations;
+    if (variationData.length === 0) return [];
+
+    // Generate all combinations
+    const generateCombinations = (index, currentCombination) => {
+      if (index >= variationData.length) {
+        return [currentCombination.slice()];
+      }
+
+      const combinations = [];
+      const currentType = variationData[index];
+      
+      currentType.options.forEach(option => {
+        currentCombination.push(option);
+        combinations.push(...generateCombinations(index + 1, currentCombination));
+        currentCombination.pop();
+      });
+
+      return combinations;
+    };
+
+    const allCombinations = generateCombinations(0, []);
+    
+    // Convert to the format expected by the backend
+    return allCombinations.map(combination => {
+      const variation = {
+        price_adjustment: 0,
+        sku_suffix: combination.map(opt => opt.option_value.toUpperCase()).join('-')
+      };
+
+      // Map options to their respective type IDs for the backend
+      combination.forEach(option => {
+        const variationType = variationTypes.find(t => t.variation_type_id === option.variation_type_id);
+        if (variationType) {
+          // For backward compatibility with existing backend structure
+          if (variationType.type_name === 'size') variation.size_id = option.option_id;
+          if (variationType.type_name === 'color') variation.color_id = option.option_id;
+          if (variationType.type_name === 'design') variation.design_id = option.option_id;
+        }
+      });
+
+      return variation;
+    });
   };
 
   const generateSkuSuffix = (sizeId, colorId, designId) => {
@@ -475,6 +547,116 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
     } finally {
       setLoading(false);
     }
+  };
+
+  // Integrated variation helper functions
+  const handleVariationTypeChange = (typeId, checked) => {
+    if (checked) {
+      setSelectedVariationTypes(prev => [...prev, typeId]);
+      setSelectedVariationsByType(prev => ({ ...prev, [typeId]: [] }));
+    } else {
+      setSelectedVariationTypes(prev => prev.filter(id => id !== typeId));
+      setSelectedVariationsByType(prev => {
+        const newState = { ...prev };
+        delete newState[typeId];
+        return newState;
+      });
+    }
+  };
+
+  const handleVariationOptionChange = (typeId, optionId, checked) => {
+    setSelectedVariationsByType(prev => ({
+      ...prev,
+      [typeId]: checked 
+        ? [...(prev[typeId] || []), optionId]
+        : (prev[typeId] || []).filter(id => id !== optionId)
+    }));
+  };
+
+  const getSelectedOptionsForType = (typeId) => {
+    return selectedVariationsByType[typeId] || [];
+  };
+
+  const openAddOptionModal = (typeId, typeName) => {
+    setNewOptionData({ typeId, typeName, value: '', hexColor: '#000000' });
+    setShowAddOptionModal(true);
+  };
+
+  const handleAddNewOption = async () => {
+    const { typeId, typeName, value, hexColor } = newOptionData;
+    if (!value.trim()) {
+      showNotification('error', 'Option name is required');
+      return;
+    }
+
+    try {
+      const res = await suitebiteAPI.addVariationOption({
+        variation_type_id: typeId,
+        option_value: value.trim(),
+        option_label: value.trim(),
+        ...(typeName === 'color' && { hex_color: hexColor })
+      });
+
+      if (res.success) {
+        const newOption = {
+          option_id: res.option_id,
+          variation_type_id: typeId,
+          option_value: value.trim(),
+          option_label: value.trim(),
+          hex_color: typeName === 'color' ? hexColor : undefined,
+          type_name: typeName,
+          is_active: true
+        };
+
+        setVariationOptions(prev => [...prev, newOption]);
+        handleVariationOptionChange(typeId, newOption.option_id, true);
+        setShowAddOptionModal(false);
+        setNewOptionData({ typeId: null, typeName: '', value: '', hexColor: '#000000' });
+        
+        const variationType = variationTypes.find(v => v.variation_type_id === typeId);
+        showNotification('success', `${variationType?.type_label} option added successfully`);
+      } else {
+        showNotification('error', res.message || 'Failed to add option');
+      }
+    } catch (err) {
+      console.error('Error adding variation option:', err);
+      showNotification('error', 'Failed to add option');
+    }
+  };
+
+  const generateVariationPreview = () => {
+    const combinations = [];
+    const selectedTypes = selectedVariationTypes.filter(typeId => 
+      getSelectedOptionsForType(typeId).length > 0
+    );
+
+    if (selectedTypes.length === 0) return [];
+
+    const generateCombinations = (typeIndex, currentCombination) => {
+      if (typeIndex >= selectedTypes.length) {
+        combinations.push([...currentCombination]);
+        return;
+      }
+
+      const typeId = selectedTypes[typeIndex];
+      const options = getSelectedOptionsForType(typeId);
+      
+      options.forEach(optionId => {
+        const option = variationOptions.find(opt => opt.option_id === optionId);
+        if (option) {
+          currentCombination.push(option);
+          generateCombinations(typeIndex + 1, currentCombination);
+          currentCombination.pop();
+        }
+      });
+    };
+
+    generateCombinations(0, []);
+    return combinations;
+  };
+
+  const getTotalVariationCombinations = () => {
+    return generateVariationPreview().length;
   };
 
   const categories = getAllCategories();
@@ -645,129 +827,184 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
 
 
 
-            {/* Variations Section */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Product Variations
-              </label>
-              <button
-                type="button"
-                onClick={() => setShowVariationsModal(true)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-left"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">
-                    {Object.values(selectedVariations).flat().length > 0 
-                      ? `${Object.values(selectedVariations).flat().length} variation(s) selected`
-                      : 'Add variations (size, color, design)'
+            {/* Variations Section - Integrated */}
+            <div className="space-y-4">
+              {/* Enable Variations Toggle */}
+              <div className="flex items-center space-x-3">
+                <input
+                  type="checkbox"
+                  id="hasVariations"
+                  checked={hasVariations}
+                  onChange={(e) => {
+                    setHasVariations(e.target.checked);
+                    if (!e.target.checked) {
+                      setSelectedVariationTypes([]);
+                      setSelectedVariationsByType({});
+                      setSelectedVariations({ sizes: [], colors: [], designs: [] });
                     }
-                  </span>
-                  <CubeIcon className="h-4 w-4 text-gray-400" />
-                </div>
-              </button>
+                  }}
+                  className="h-4 w-4 text-[#0097b2] focus:ring-[#0097b2] border-gray-300 rounded"
+                />
+                <label htmlFor="hasVariations" className="text-sm font-medium text-gray-700">
+                  This product has variations
+                </label>
+              </div>
 
-              {/* Selected Variations Display */}
-              {Object.values(selectedVariations).flat().length > 0 && (
-                <div className="mt-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-xs text-gray-600">Selected Variations:</p>
-                    <button
-                      type="button"
-                      onClick={() => setSelectedVariations({ sizes: [], colors: [], designs: [] })}
-                      className="text-xs text-red-500 hover:text-red-700"
-                    >
-                      Clear All
-                    </button>
+              {/* Variation Configuration */}
+              {hasVariations && (
+                <div className="space-y-6 p-4 bg-gray-50 rounded-lg border">
+                  <div className="flex items-center space-x-2 text-sm text-gray-600">
+                    <SwatchIcon className="h-4 w-4" />
+                    <span>Configure product variations (sizes, colors, styles, etc.)</span>
                   </div>
-                  
-                  <div className="space-y-2">
-                    {/* Sizes */}
-                    {selectedVariations.sizes.length > 0 && (
-                      <div>
-                        <p className="text-xs font-medium text-gray-700">Sizes:</p>
-                        <div className="flex flex-wrap gap-1">
-                          {selectedVariations.sizes.map(sizeId => {
-                            const option = variationOptions.find(opt => opt.option_id === sizeId);
-                            return option ? (
-                              <span
-                                key={sizeId}
-                                className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded"
-                              >
-                                {option.option_label}
-                                <button
-                                  type="button"
-                                  onClick={() => handleVariationChange('sizes', sizeId, false)}
-                                  className="text-blue-600 hover:text-blue-800"
-                                >
-                                  <XMarkIcon className="h-3 w-3" />
-                                </button>
-                              </span>
-                            ) : null;
-                          })}
-                        </div>
-                      </div>
-                    )}
 
-                    {/* Colors */}
-                    {selectedVariations.colors.length > 0 && (
-                      <div>
-                        <p className="text-xs font-medium text-gray-700">Colors:</p>
-                        <div className="flex flex-wrap gap-1">
-                          {selectedVariations.colors.map(colorId => {
-                            const option = variationOptions.find(opt => opt.option_id === colorId);
-                            return option ? (
-                              <span
-                                key={colorId}
-                                className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 text-xs rounded"
-                              >
+                  {/* Variation Types Selection */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-3">
+                      Select variation types for this product:
+                    </label>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {variationTypes.map(type => (
+                        <label key={type.variation_type_id} className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            checked={selectedVariationTypes.includes(type.variation_type_id)}
+                            onChange={(e) => handleVariationTypeChange(type.variation_type_id, e.target.checked)}
+                            className="h-4 w-4 text-[#0097b2] focus:ring-[#0097b2] border-gray-300 rounded"
+                          />
+                          <span className="text-sm text-gray-700">{type.type_label}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Options per Variation Type */}
+                  {selectedVariationTypes.map(typeId => {
+                    const variationType = variationTypes.find(t => t.variation_type_id === typeId);
+                    const typeOptions = variationOptions.filter(opt => opt.variation_type_id === typeId);
+                    const selectedOptions = getSelectedOptionsForType(typeId);
+                    
+                    return (
+                      <div key={typeId} className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-sm font-medium text-gray-800">
+                            Available {variationType?.type_label} Options:
+                          </h4>
+                          <button
+                            type="button"
+                            onClick={() => openAddOptionModal(typeId, variationType?.type_name)}
+                            className="text-xs bg-[#0097b2] text-white px-2 py-1 rounded hover:bg-[#007a8e] transition-colors flex items-center space-x-1"
+                          >
+                            <PlusIcon className="h-3 w-3" />
+                            <span>Add new {variationType?.type_label?.toLowerCase()}</span>
+                          </button>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 max-h-32 overflow-y-auto">
+                          {typeOptions.map(option => (
+                            <label key={option.option_id} className="flex items-center space-x-2 p-2 bg-white rounded border hover:bg-gray-50">
+                              <input
+                                type="checkbox"
+                                checked={selectedOptions.includes(option.option_id)}
+                                onChange={(e) => handleVariationOptionChange(typeId, option.option_id, e.target.checked)}
+                                className="h-4 w-4 text-[#0097b2] focus:ring-[#0097b2] border-gray-300 rounded"
+                              />
+                              <div className="flex items-center space-x-2 flex-1 min-w-0">
                                 {option.hex_color && (
-                                  <div 
-                                    className="w-3 h-3 rounded-full border border-gray-300"
+                                  <div
+                                    className="w-4 h-4 rounded-full border border-gray-300 flex-shrink-0"
                                     style={{ backgroundColor: option.hex_color }}
                                   />
                                 )}
-                                {option.option_label}
-                                <button
-                                  type="button"
-                                  onClick={() => handleVariationChange('colors', colorId, false)}
-                                  className="text-green-600 hover:text-green-800"
-                                >
-                                  <XMarkIcon className="h-3 w-3" />
-                                </button>
-                              </span>
-                            ) : null;
-                          })}
+                                <span className="text-sm text-gray-700 truncate">{option.option_label}</span>
+                              </div>
+                            </label>
+                          ))}
                         </div>
+                        
+                        {selectedOptions.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mt-2">
+                            {selectedOptions.map(optionId => {
+                              const option = variationOptions.find(opt => opt.option_id === optionId);
+                              return option ? (
+                                <span
+                                  key={optionId}
+                                  className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded"
+                                >
+                                  {option.hex_color && (
+                                    <div 
+                                      className="w-3 h-3 rounded-full border border-gray-300"
+                                      style={{ backgroundColor: option.hex_color }}
+                                    />
+                                  )}
+                                  {option.option_label}
+                                  <button
+                                    type="button"
+                                    onClick={() => handleVariationOptionChange(typeId, optionId, false)}
+                                    className="text-blue-600 hover:text-blue-800"
+                                  >
+                                    <XMarkIcon className="h-3 w-3" />
+                                  </button>
+                                </span>
+                              ) : null;
+                            })}
+                          </div>
+                        )}
                       </div>
-                    )}
+                    );
+                  })}
 
-                    {/* Designs */}
-                    {selectedVariations.designs.length > 0 && (
-                      <div>
-                        <p className="text-xs font-medium text-gray-700">Designs:</p>
-                        <div className="flex flex-wrap gap-1">
-                          {selectedVariations.designs.map(designId => {
-                            const option = variationOptions.find(opt => opt.option_id === designId);
-                            return option ? (
-                              <span
-                                key={designId}
-                                className="inline-flex items-center gap-1 px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded"
-                              >
-                                {option.option_label}
-                                <button
-                                  type="button"
-                                  onClick={() => handleVariationChange('designs', designId, false)}
-                                  className="text-purple-600 hover:text-purple-800"
-                                >
-                                  <XMarkIcon className="h-3 w-3" />
-                                </button>
-                              </span>
-                            ) : null;
-                          })}
-                        </div>
+                  {/* Summary View */}
+                  {selectedVariationTypes.length > 0 && getTotalVariationCombinations() > 0 && (
+                    <div className="mt-6 p-4 bg-white border rounded-lg">
+                      <h4 className="text-sm font-medium text-gray-800 mb-3">Variation Combinations Preview:</h4>
+                      <div className="overflow-x-auto">
+                        <table className="min-w-full text-xs">
+                          <thead>
+                            <tr className="border-b">
+                              {selectedVariationTypes.map(typeId => {
+                                const type = variationTypes.find(t => t.variation_type_id === typeId);
+                                return (
+                                  <th key={typeId} className="text-left p-2 font-medium text-gray-600">
+                                    {type?.type_label}
+                                  </th>
+                                );
+                              })}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {generateVariationPreview().slice(0, 10).map((combination, index) => (
+                              <tr key={index} className="border-b">
+                                {selectedVariationTypes.map(typeId => {
+                                  const option = combination.find(opt => opt.variation_type_id === typeId);
+                                  return (
+                                    <td key={typeId} className="p-2 text-gray-700">
+                                      {option ? (
+                                        <div className="flex items-center space-x-2">
+                                          {option.hex_color && (
+                                            <div
+                                              className="w-3 h-3 rounded-full border border-gray-300"
+                                              style={{ backgroundColor: option.hex_color }}
+                                            />
+                                          )}
+                                          <span>{option.option_label}</span>
+                                        </div>
+                                      ) : '-'}
+                                    </td>
+                                  );
+                                })}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                        {getTotalVariationCombinations() > 10 && (
+                          <p className="text-xs text-gray-500 mt-2 text-center">
+                            Showing first 10 of {getTotalVariationCombinations()} total combinations
+                          </p>
+                        )}
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -900,148 +1137,72 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
         </div>
       )}
 
-      {/* Variations Modal */}
-      {showVariationsModal && (
+      {/* Add Option Modal */}
+      {showAddOptionModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900">Product Variations</h3>
+          <div className="bg-white rounded-lg max-w-md w-full p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">
+                Add New {variationTypes.find(t => t.variation_type_id === newOptionData.typeId)?.type_label}
+              </h3>
               <button
-                onClick={() => setShowVariationsModal(false)}
+                onClick={() => setShowAddOptionModal(false)}
                 className="text-gray-400 hover:text-gray-600"
               >
                 <XMarkIcon className="h-6 w-6" />
               </button>
             </div>
-
-            <div className="space-y-6">
-              {/* Size Variations */}
+            
+            <div className="space-y-4">
               <div>
-                {/* Add new size option */}
-                <div className="flex items-center gap-2 mb-2">
-                  <input
-                    type="text"
-                    placeholder="New size"
-                    value={newSize}
-                    onChange={e => setNewSize(e.target.value)}
-                    className="flex-1 px-2 py-1 border rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleAddVariationOption('size')}
-                    className="px-3 py-1 bg-[#0097b2] text-white rounded-lg hover:bg-[#007a8e] transition-colors"
-                  >Add Size</button>
-                </div>
-                <h4 className="text-sm font-medium text-gray-700 mb-3">Sizes</h4>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                  {variationOptions
-                    .filter(option => option.type_name === 'size')
-                    .map(option => (
-                      <label key={option.option_id} className="flex items-center space-x-2">
-                        <input
-                          type="checkbox"
-                          checked={selectedVariations.sizes.includes(option.option_id)}
-                          onChange={e => handleVariationChange('sizes', option.option_id, e.target.checked)}
-                          className="rounded"
-                        />
-                        <span className="text-sm">{option.option_label}</span>
-                      </label>
-                    ))}
-                </div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Option Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={newOptionData.value}
+                  onChange={(e) => setNewOptionData(prev => ({ ...prev, value: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
+                  placeholder={`Enter ${newOptionData.typeName} name`}
+                />
               </div>
-
-              {/* Color Variations */}
-              <div>
-                {/* Add new color option */}
-                <div className="flex items-center gap-2 mb-2">
-                  <input
-                    type="text"
-                    placeholder="New color"
-                    value={newColor}
-                    onChange={e => setNewColor(e.target.value)}
-                    className="px-2 py-1 border rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
-                  />
-                  <input
-                    type="color"
-                    value={newColorHex}
-                    onChange={e => setNewColorHex(e.target.value)}
-                    className="w-8 h-8 p-0 border-0"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleAddVariationOption('color')}
-                    className="px-3 py-1 bg-[#0097b2] text-white rounded-lg hover:bg-[#007a8e] transition-colors"
-                  >Add Color</button>
+              
+              {newOptionData.typeName === 'color' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Color
+                  </label>
+                  <div className="flex items-center space-x-3">
+                    <input
+                      type="color"
+                      value={newOptionData.hexColor}
+                      onChange={(e) => setNewOptionData(prev => ({ ...prev, hexColor: e.target.value }))}
+                      className="w-12 h-10 rounded border border-gray-300"
+                    />
+                    <div
+                      className="w-10 h-10 rounded border border-gray-300"
+                      style={{ backgroundColor: newOptionData.hexColor }}
+                    />
+                    <span className="text-sm text-gray-600">{newOptionData.hexColor}</span>
+                  </div>
                 </div>
-                <h4 className="text-sm font-medium text-gray-700 mb-3">Colors</h4>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                  {variationOptions
-                    .filter(option => option.type_name === 'color')
-                    .map(option => (
-                      <label key={option.option_id} className="flex items-center space-x-2">
-                        <input
-                          type="checkbox"
-                          checked={selectedVariations.colors.includes(option.option_id)}
-                          onChange={e => handleVariationChange('colors', option.option_id, e.target.checked)}
-                          className="rounded"
-                        />
-                        <div className="flex items-center space-x-2">
-                          {option.hex_color && (
-                            <div
-                              className="w-4 h-4 rounded-full border border-gray-300"
-                              style={{ backgroundColor: option.hex_color }}
-                            />
-                          )}
-                          <span className="text-sm">{option.option_label}</span>
-                        </div>
-                      </label>
-                    ))}
-                </div>
-              </div>
-
-              {/* Design Variations */}
-              <div>
-                {/* Add new design option */}
-                <div className="flex items-center gap-2 mb-2">
-                  <input
-                    type="text"
-                    placeholder="New design"
-                    value={newDesign}
-                    onChange={e => setNewDesign(e.target.value)}
-                    className="flex-1 px-2 py-1 border rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleAddVariationOption('design')}
-                    className="px-3 py-1 bg-[#0097b2] text-white rounded-lg hover:bg-[#007a8e] transition-colors"
-                  >Add Design</button>
-                </div>
-                <h4 className="text-sm font-medium text-gray-700 mb-3">Designs</h4>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                  {variationOptions
-                    .filter(option => option.type_name === 'design')
-                    .map(option => (
-                      <label key={option.option_id} className="flex items-center space-x-2">
-                        <input
-                          type="checkbox"
-                          checked={selectedVariations.designs.includes(option.option_id)}
-                          onChange={e => handleVariationChange('designs', option.option_id, e.target.checked)}
-                          className="rounded"
-                        />
-                        <span className="text-sm">{option.option_label}</span>
-                      </label>
-                    ))}
-                </div>
-              </div>
+              )}
             </div>
 
-            <div className="flex gap-4 pt-6 border-t mt-6">
+            <div className="flex gap-4 mt-6">
               <button
                 type="button"
-                onClick={() => setShowVariationsModal(false)}
+                onClick={() => setShowAddOptionModal(false)}
                 className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
               >
-                Done
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleAddNewOption}
+                className="flex-1 px-4 py-2 bg-[#0097b2] text-white rounded-lg hover:bg-[#007a8e] transition-colors"
+              >
+                Add Option
               </button>
             </div>
           </div>
@@ -1105,4 +1266,4 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
   );
 };
 
-export default AddProductForm; 
+export default AddProductForm;
