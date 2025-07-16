@@ -69,12 +69,40 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
   const [categoryToDelete, setCategoryToDelete] = useState(null);
   const [notification, setNotification] = useState({ show: false, type: '', message: '' });
 
+  // Warning state for order impact
+  const [orderWarning, setOrderWarning] = useState(null);
+  const [showOrderWarningModal, setShowOrderWarningModal] = useState(false);
+  const [pendingSubmit, setPendingSubmit] = useState(false);
+
   // Refs
   const fileInputRef = useRef(null);
   const imageUploadRef = useRef(null);
 
   // Category store
   const { getAllCategories, addCategory, removeCategory, refreshCategories } = useCategoryStore();
+
+  // Remove inline add type state, add modal state
+  const [showAddTypeModal, setShowAddTypeModal] = useState(false);
+  const [newTypeData, setNewTypeData] = useState({ type_name: '', type_label: '' });
+  const [addTypeError, setAddTypeError] = useState('');
+  const [addTypeLoading, setAddTypeLoading] = useState(false);
+  const [addOptionError, setAddOptionError] = useState('');
+  const [addOptionLoading, setAddOptionLoading] = useState(false);
+
+  // Auto-generate type_name from type_label
+  useEffect(() => {
+    if (showAddTypeModal && newTypeData.type_label.trim()) {
+      const generatedTypeName = newTypeData.type_label
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '_')
+        .replace(/^_+|_+$/g, '');
+      
+      setNewTypeData(prev => ({
+        ...prev,
+        type_name: generatedTypeName || prev.type_label.toLowerCase()
+      }));
+    }
+  }, [newTypeData.type_label, showAddTypeModal]);
 
   // Load initial data
   useEffect(() => {
@@ -228,6 +256,29 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
       newErrors.price_points = 'Price must be a positive number';
     }
 
+    // Variation validation
+    if (hasVariations) {
+      if (selectedVariationTypes.length === 0) {
+        newErrors.variations = 'Please select at least one variation type or disable variations';
+      } else {
+        // Check if each selected variation type has at least one option
+        const typesWithoutOptions = [];
+        selectedVariationTypes.forEach(typeId => {
+          const selectedOptions = getSelectedOptionsForType(typeId);
+          if (selectedOptions.length === 0) {
+            const variationType = variationTypes.find(t => t.variation_type_id === typeId);
+            if (variationType) {
+              typesWithoutOptions.push(variationType.type_label);
+            }
+          }
+        });
+        
+        if (typesWithoutOptions.length > 0) {
+          newErrors.variations = `Please select at least one option for: ${typesWithoutOptions.join(', ')}`;
+        }
+      }
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -373,6 +424,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
     }
   };
 
+  // Update generateVariations to return an array of option IDs for each combination
   const generateVariations = () => {
     if (!hasVariations || selectedVariationTypes.length === 0) {
       return [];
@@ -385,7 +437,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
       if (selectedOptions.length > 0) {
         variationData.push({
           typeId,
-          options: selectedOptions.map(optionId => 
+          options: selectedOptions.map(optionId =>
             variationOptions.find(opt => opt.option_id === optionId)
           ).filter(Boolean)
         });
@@ -402,38 +454,22 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
 
       const combinations = [];
       const currentType = variationData[index];
-      
       currentType.options.forEach(option => {
         currentCombination.push(option);
         combinations.push(...generateCombinations(index + 1, currentCombination));
         currentCombination.pop();
       });
-
       return combinations;
     };
 
     const allCombinations = generateCombinations(0, []);
-    
-    // Convert to the format expected by the backend
-    return allCombinations.map(combination => {
-      const variation = {
-        price_adjustment: 0,
-        sku_suffix: combination.map(opt => opt.option_value.toUpperCase()).join('-')
-      };
 
-      // Map options to their respective type IDs for the backend
-      combination.forEach(option => {
-        const variationType = variationTypes.find(t => t.variation_type_id === option.variation_type_id);
-        if (variationType) {
-          // For backward compatibility with existing backend structure
-          if (variationType.type_name === 'size') variation.size_id = option.option_id;
-          if (variationType.type_name === 'color') variation.color_id = option.option_id;
-          if (variationType.type_name === 'design') variation.design_id = option.option_id;
-        }
-      });
-
-      return variation;
-    });
+    // Return array of { options: [option_id, ...], variation_sku }
+    return allCombinations.map(combination => ({
+      options: combination.map(opt => opt.option_id),
+      variation_sku: combination.map(opt => opt.option_value.toUpperCase()).join('-'),
+      price_adjustment: 0
+    }));
   };
 
   const generateSkuSuffix = (sizeId, colorId, designId) => {
@@ -460,18 +496,33 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
       return;
     }
 
+    // For edit mode, check if variations changed and product has orders
+    if (mode === 'edit' && product && hasVariations) {
+      const hasOrderImpact = await checkOrderImpact(product.product_id);
+      if (hasOrderImpact && !pendingSubmit) {
+        setShowOrderWarningModal(true);
+        return;
+      }
+    }
+
+    await executeSubmit();
+  };
+
+  const executeSubmit = async () => {
     setLoading(true);
+    setPendingSubmit(false);
+    setShowOrderWarningModal(false);
 
     try {
       let productId;
       let productResponse;
+      
       if (mode === 'edit' && product) {
         // Update product
         const updateData = {
           name: formData.name.trim(),
           description: formData.description.trim(),
           price_points: parseInt(formData.price_points),
-          category: formData.category,
           slug: formData.slug,
           is_active: formData.is_active
         };
@@ -481,20 +532,74 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
         }
         productId = product.product_id;
 
-        // Remove all old variations before adding new ones
-        const existingVariationsRes = await suitebiteAPI.getProductVariations(productId);
-        if (existingVariationsRes.success && Array.isArray(existingVariationsRes.variations)) {
-          for (const variation of existingVariationsRes.variations) {
-            await suitebiteAPI.deleteProductVariation(variation.variation_id);
+        // Smart variation management for edit mode
+        if (hasVariations) {
+          // Get current variations to compare
+          const existingVariationsRes = await suitebiteAPI.getProductVariations(productId);
+          const existingVariations = existingVariationsRes.success ? existingVariationsRes.variations : [];
+          
+          // Generate new variations
+          const newVariations = generateVariations();
+          
+          // Remove only variations that are no longer needed
+          const variationsToRemove = existingVariations.filter(existing => {
+            return !newVariations.some(newVar => 
+              existing.size_id === newVar.size_id &&
+              existing.color_id === newVar.color_id &&
+              existing.design_id === newVar.design_id
+            );
+          });
+
+          // Remove unused variations
+          for (const variation of variationsToRemove) {
+            try {
+              await suitebiteAPI.deleteProductVariation(variation.variation_id);
+            } catch (error) {
+              console.warn('Failed to delete variation:', error);
+            }
+          }
+
+          // Add only new variations
+          const variationsToAdd = newVariations.filter(newVar => {
+            return !existingVariations.some(existing =>
+              existing.size_id === newVar.size_id &&
+              existing.color_id === newVar.color_id &&
+              existing.design_id === newVar.design_id
+            );
+          });
+
+          // Add new variations
+          for (const variation of variationsToAdd) {
+            try {
+              await suitebiteAPI.addProductVariation({
+                product_id: productId,
+                options: variation.options,
+                variation_sku: variation.variation_sku,
+                price_adjustment: variation.price_adjustment
+              });
+            } catch (variationError) {
+              console.warn('Failed to create variation:', variationError);
+            }
+          }
+        } else {
+          // Remove all variations if variations are disabled
+          const existingVariationsRes = await suitebiteAPI.getProductVariations(productId);
+          if (existingVariationsRes.success && Array.isArray(existingVariationsRes.variations)) {
+            for (const variation of existingVariationsRes.variations) {
+              try {
+                await suitebiteAPI.deleteProductVariation(variation.variation_id);
+              } catch (error) {
+                console.warn('Failed to delete variation:', error);
+              }
+            }
           }
         }
       } else {
-        // Add product
+        // Add product (original logic)
         const productData = {
           name: formData.name.trim(),
           description: formData.description.trim(),
           price_points: parseInt(formData.price_points),
-          category: formData.category,
           slug: formData.slug,
           is_active: formData.is_active
         };
@@ -503,40 +608,40 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
           throw new Error(productResponse.message || 'Failed to create product');
         }
         productId = productResponse.product.product_id;
+
+        // Add variations for new product
+        if (hasVariations) {
+          const variations = generateVariations();
+          for (const variation of variations) {
+            try {
+              await suitebiteAPI.addProductVariation({
+                product_id: productId,
+                options: variation.options,
+                variation_sku: variation.variation_sku,
+                price_adjustment: variation.price_adjustment
+              });
+            } catch (variationError) {
+              console.warn('Failed to create variation:', variationError);
+            }
+          }
+        }
       }
 
-      // 2. Upload images (add or edit)
+      // Upload images (unchanged logic)
       if (images.length > 0) {
         setUploadingImages(true);
         if (images.length === 1) {
           const imageResponse = await suitebiteAPI.uploadProductImage(productId, images[0]);
           if (!imageResponse.success) {
-            // Show backend error message if available
             throw new Error(imageResponse.message || 'Failed to upload product image');
           }
         } else {
           const imageResponse = await suitebiteAPI.uploadMultipleProductImages(productId, images);
           if (!imageResponse.success) {
-            // Show backend error message if available
             throw new Error(imageResponse.message || 'Failed to upload product images');
           }
         }
         setUploadingImages(false);
-      }
-
-      // 3. Create or update variations (add or edit)
-      const variations = generateVariations();
-      if (variations.length > 0) {
-        for (const variation of variations) {
-          try {
-            await suitebiteAPI.addProductVariation({
-              product_id: productId,
-              ...variation
-            });
-          } catch (variationError) {
-            console.warn('Failed to create variation:', variationError);
-          }
-        }
       }
 
       showNotification('success', `Product ${mode === 'edit' ? 'updated' : 'created'} successfully!`);
@@ -550,15 +655,15 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
   };
 
   // Integrated variation helper functions
-  const handleVariationTypeChange = (typeId, checked) => {
+  const handleVariationTypeChange = (type, checked) => {
     if (checked) {
-      setSelectedVariationTypes(prev => [...prev, typeId]);
-      setSelectedVariationsByType(prev => ({ ...prev, [typeId]: [] }));
+      setSelectedVariationTypes(prev => [...prev, type]);
+      setSelectedVariationsByType(prev => ({ ...prev, [type]: [] }));
     } else {
-      setSelectedVariationTypes(prev => prev.filter(id => id !== typeId));
+      setSelectedVariationTypes(prev => prev.filter(id => id !== type));
       setSelectedVariationsByType(prev => {
         const newState = { ...prev };
-        delete newState[typeId];
+        delete newState[type];
         return newState;
       });
     }
@@ -582,45 +687,61 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
     setShowAddOptionModal(true);
   };
 
+  // Update handleAddNewOption to robustly add new options for any type
   const handleAddNewOption = async () => {
-    const { typeId, typeName, value, hexColor } = newOptionData;
-    if (!value.trim()) {
-      showNotification('error', 'Option name is required');
+    setAddOptionError('');
+    if (!newOptionData.typeId || !newOptionData.value.trim()) {
+      setAddOptionError('Option name is required');
       return;
     }
-
+    setAddOptionLoading(true);
+    
+    console.log('Adding new variation option:', {
+      variation_type_id: newOptionData.typeId,
+      option_value: newOptionData.value.trim(),
+      option_label: newOptionData.value.trim(),
+      hex_color: newOptionData.typeName === 'color' ? newOptionData.hexColor : undefined
+    });
+    
     try {
       const res = await suitebiteAPI.addVariationOption({
-        variation_type_id: typeId,
-        option_value: value.trim(),
-        option_label: value.trim(),
-        ...(typeName === 'color' && { hex_color: hexColor })
+        variation_type_id: newOptionData.typeId,
+        option_value: newOptionData.value.trim(),
+        option_label: newOptionData.value.trim(),
+        hex_color: newOptionData.typeName === 'color' ? newOptionData.hexColor : undefined
       });
-
-      if (res.success) {
-        const newOption = {
-          option_id: res.option_id,
-          variation_type_id: typeId,
-          option_value: value.trim(),
-          option_label: value.trim(),
-          hex_color: typeName === 'color' ? hexColor : undefined,
-          type_name: typeName,
-          is_active: true
-        };
-
-        setVariationOptions(prev => [...prev, newOption]);
-        handleVariationOptionChange(typeId, newOption.option_id, true);
+      
+      console.log('Add variation option response:', res);
+      if (res.success && res.option_id) {
+        // Add the new option to variationOptions state
+        setVariationOptions(prev => [
+          ...prev,
+          {
+            option_id: res.option_id,
+            variation_type_id: newOptionData.typeId,
+            option_value: newOptionData.value.trim(),
+            option_label: newOptionData.value.trim(),
+            hex_color: newOptionData.typeName === 'color' ? newOptionData.hexColor : undefined,
+            type_name: newOptionData.typeName,
+            type_label: variationTypes.find(t => t.variation_type_id === newOptionData.typeId)?.type_label,
+            is_active: true
+          }
+        ]);
+        // Immediately select the new option for this type
+        setSelectedVariationsByType(prev => ({
+          ...prev,
+          [newOptionData.typeId]: [...(prev[newOptionData.typeId] || []), res.option_id]
+        }));
         setShowAddOptionModal(false);
         setNewOptionData({ typeId: null, typeName: '', value: '', hexColor: '#000000' });
-        
-        const variationType = variationTypes.find(v => v.variation_type_id === typeId);
-        showNotification('success', `${variationType?.type_label} option added successfully`);
+        setAddOptionError('');
       } else {
-        showNotification('error', res.message || 'Failed to add option');
+        setAddOptionError(res.message || 'Failed to add option');
       }
     } catch (err) {
-      console.error('Error adding variation option:', err);
-      showNotification('error', 'Failed to add option');
+      setAddOptionError('Failed to add option');
+    } finally {
+      setAddOptionLoading(false);
     }
   };
 
@@ -659,7 +780,119 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
     return generateVariationPreview().length;
   };
 
+  // Check if product variations are used in orders
+  const checkOrderImpact = async (productId) => {
+    try {
+      // This would need to be implemented in your backend API
+      const response = await suitebiteAPI.checkProductOrderUsage(productId);
+      if (response.success && response.hasOrders) {
+        setOrderWarning({
+          orderCount: response.orderCount,
+          lastOrderDate: response.lastOrderDate,
+          affectedVariations: response.affectedVariations || []
+        });
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.warn('Could not check order impact:', error);
+      return false;
+    }
+  };
+
   const categories = getAllCategories();
+
+  // Handler for adding new variation type (modal)
+  const handleAddNewType = async () => {
+    
+    if (!newTypeData.type_label.trim()) {
+      setAddTypeError('Type label is required');
+      return;
+    }
+    
+    if (!newTypeData.type_name.trim()) {
+      setAddTypeError('Type name could not be generated from label');
+      return;
+    }
+    
+    setAddTypeLoading(true);
+    
+    console.log('Adding new variation type:', {
+      type_name: newTypeData.type_name.trim(),
+      type_label: newTypeData.type_label.trim(),
+    });
+    
+    try {
+      const res = await suitebiteAPI.addVariationType({
+        type_name: newTypeData.type_name.trim(),
+        type_label: newTypeData.type_label.trim(),
+      });
+      
+      console.log('Add variation type response:', res);
+      
+      if (res.success && res.variation_type_id) {
+        setVariationTypes(prev => [
+          ...prev,
+          {
+            variation_type_id: res.variation_type_id,
+            type_name: newTypeData.type_name.trim(),
+            type_label: newTypeData.type_label.trim(),
+            sort_order: 0, // Default sort order for UI compatibility
+            is_active: true
+          }
+        ]);
+        setShowAddTypeModal(false);
+        setNewTypeData({ type_name: '', type_label: '' });
+        setAddTypeError('');
+      } else {
+        setAddTypeError(res.message || 'Failed to add variation type');
+      }
+    } catch (err) {
+      console.error('Error adding variation type:', err);
+      setAddTypeError('Failed to add variation type');
+    } finally {
+      setAddTypeLoading(false);
+    }
+  };
+
+  const [deletingTypeId, setDeletingTypeId] = useState(null);
+  const [deletingOptionId, setDeletingOptionId] = useState(null);
+
+  const handleDeleteVariationType = async (variationTypeId) => {
+    if (!window.confirm('Are you sure you want to delete this variation type and all its options?')) return;
+    setDeletingTypeId(variationTypeId);
+    try {
+      const res = await suitebiteAPI.deleteVariationType(variationTypeId);
+      if (res.success) {
+        showNotification('success', 'Variation type deleted successfully');
+        await loadInitialData();
+      } else {
+        showNotification('error', res.message || 'Failed to delete variation type');
+      }
+    } catch (err) {
+      showNotification('error', 'Failed to delete variation type');
+    } finally {
+      setDeletingTypeId(null);
+    }
+  };
+
+  const handleDeleteVariationOption = async (optionId) => {
+    if (!window.confirm('Are you sure you want to delete this variation option?')) return;
+    setDeletingOptionId(optionId);
+    try {
+      const res = await suitebiteAPI.deleteVariationOption(optionId);
+      if (res.success) {
+        showNotification('success', 'Variation option deleted successfully');
+        await loadInitialData();
+      } else {
+        showNotification('error', res.message || 'Failed to delete variation option');
+      }
+    } catch (err) {
+      showNotification('error', 'Failed to delete variation option');
+    } finally {
+      setDeletingOptionId(null);
+    }
+  };
 
   return (
     <div className="add-product-form bg-white rounded-lg shadow-sm p-6">
@@ -678,7 +911,6 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">{mode === 'edit' ? 'Edit Product' : 'Add New Product'}</h2>
-          <p className="text-gray-600">{mode === 'edit' ? 'Update this product' : 'Create a new product for the Suitebite shop'}</p>
         </div>
         <button
           onClick={onCancel}
@@ -709,22 +941,6 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
                 required
               />
               {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
-            </div>
-
-            {/* Auto-generated Slug */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                URL Slug
-              </label>
-              <input
-                type="text"
-                value={formData.slug}
-                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent bg-gray-50"
-                placeholder="Auto-generated from product name"
-                readOnly
-              />
-              <p className="text-xs text-gray-500 mt-1">Auto-generated from product name</p>
             </div>
 
             {/* Product Description */}
@@ -762,6 +978,64 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
                 min="1"
               />
               {errors.price_points && <p className="text-red-500 text-sm mt-1">{errors.price_points}</p>}
+            </div>
+
+            {/* Image Upload Section (moved below price) */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Product Images
+              </label>
+              {/* Image Upload Area */}
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-[#0097b2] transition-colors">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
+                <div className="space-y-4">
+                  <PhotoIcon className="mx-auto h-12 w-12 text-gray-400" />
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="text-[#0097b2] hover:text-[#007a8e] font-medium"
+                    >
+                      Click to upload
+                    </button>
+                    <span className="text-gray-500"> or drag and drop</span>
+                  </div>
+                  <p className="text-xs text-gray-500">
+                    PNG, JPG, GIF, WebP up to 10MB each
+                  </p>
+                </div>
+              </div>
+              {/* Image Previews */}
+              {imagePreviews.length > 0 && (
+                <div className="mt-4">
+                  <h4 className="text-sm font-medium text-gray-700 mb-2">Image Previews</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {imagePreviews.map((preview, index) => (
+                      <div key={index} className="relative group">
+                        <img
+                          src={preview}
+                          alt={`Preview ${index + 1}`}
+                          className="w-full h-24 object-cover rounded-lg"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeImage(index)}
+                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <XMarkIcon className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -825,12 +1099,16 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
               )}
             </div>
 
+            {/* ===================== [Variations Section] ===================== */}
+            <div className="mt-8">
+              <div className="border-b border-gray-200 mb-4 pb-2 flex items-center gap-2">
+                <SwatchIcon className="h-5 w-5 text-[#0097b2]" />
+                <h3 className="text-lg font-semibold text-gray-800">[Variations Section]</h3>
+                <span className="ml-2 text-xs text-gray-500">(Optional: for products with multiple types/options)</span>
+              </div>
 
-
-            {/* Variations Section - Integrated */}
-            <div className="space-y-4">
-              {/* Enable Variations Toggle */}
-              <div className="flex items-center space-x-3">
+              {/* Enable Variations Toggle and selection UI (existing logic) */}
+              <div className="flex items-center space-x-3 mb-4">
                 <input
                   type="checkbox"
                   id="hasVariations"
@@ -850,22 +1128,29 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
                 </label>
               </div>
 
-              {/* Variation Configuration */}
+              {/* Dynamic Variation Form */}
               {hasVariations && (
                 <div className="space-y-6 p-4 bg-gray-50 rounded-lg border">
-                  <div className="flex items-center space-x-2 text-sm text-gray-600">
+                  <div className="flex items-center space-x-2 text-sm text-gray-600 mb-2">
                     <SwatchIcon className="h-4 w-4" />
                     <span>Configure product variations (sizes, colors, styles, etc.)</span>
                   </div>
 
+                  {/* Show validation error for variations */}
+                  {errors.variations && (
+                    <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                      <p className="text-red-700 text-sm font-medium">{errors.variations}</p>
+                    </div>
+                  )}
+
                   {/* Variation Types Selection */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-3">
-                      Select variation types for this product:
+                      Select Variation Types:
                     </label>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                       {variationTypes.map(type => (
-                        <label key={type.variation_type_id} className="flex items-center space-x-2">
+                        <div key={type.variation_type_id} className="flex items-center space-x-2">
                           <input
                             type="checkbox"
                             checked={selectedVariationTypes.includes(type.variation_type_id)}
@@ -873,13 +1158,87 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
                             className="h-4 w-4 text-[#0097b2] focus:ring-[#0097b2] border-gray-300 rounded"
                           />
                           <span className="text-sm text-gray-700">{type.type_label}</span>
-                        </label>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteVariationType(type.variation_type_id)}
+                            className="ml-1 text-red-500 hover:text-red-700"
+                            disabled={deletingTypeId === type.variation_type_id}
+                            title="Delete variation type"
+                          >
+                            <TrashIcon className="h-4 w-4" />
+                          </button>
+                        </div>
                       ))}
                     </div>
                   </div>
 
+                  {/* Add New Variation Type Button */}
+                  <button
+                    type="button"
+                    className="mt-3 text-xs bg-[#0097b2] text-white px-3 py-1 rounded hover:bg-[#007a8e] transition-colors"
+                    onClick={() => setShowAddTypeModal(true)}
+                  >
+                    + Add New Variation Type
+                  </button>
+
+                  {/* Add New Variation Type Modal */}
+                  {showAddTypeModal && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+                      <div className="bg-white rounded-lg max-w-md w-full p-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="text-lg font-semibold text-gray-900">Add New Variation Type</h3>
+                          <button
+                            onClick={() => { setShowAddTypeModal(false); setAddTypeError(''); }}
+                            className="text-gray-400 hover:text-gray-600"
+                          >
+                            <XMarkIcon className="h-6 w-6" />
+                          </button>
+                        </div>
+                        <div>
+                          <div className="mb-4">
+                            <label className="block text-xs font-medium text-gray-700 mb-1">
+                              Type Label <span className="text-red-500">*</span>
+                              <span className="ml-1 text-gray-400" title="This is what users will see. E.g. 'Material'">?</span>
+                            </label>
+                            <input
+                              type="text"
+                              value={newTypeData.type_label}
+                              onChange={e => setNewTypeData(d => ({ ...d, type_label: e.target.value }))}
+                              className="w-full px-2 py-1 border rounded text-xs"
+                              placeholder="e.g. Material"
+                              required
+                            />
+                            {/* Show auto-generated type_name as read-only preview */}
+                            <div className="text-xs text-gray-500 mt-1 flex items-center gap-2">
+                              <span>Type Name (auto):</span>
+                              <span className="font-mono bg-gray-100 px-2 py-0.5 rounded">{newTypeData.type_name}</span>
+                            </div>
+                          </div>
+                          <div className="flex gap-2 mt-4">
+                            <button
+                              type="button"
+                              className="flex-1 px-4 py-2 bg-[#0097b2] text-white rounded-lg hover:bg-[#007a8e] transition-colors"
+                              onClick={handleAddNewType}
+                              disabled={addTypeLoading}
+                            >
+                              {addTypeLoading ? 'Adding...' : 'Add Type'}
+                            </button>
+                            <button
+                              type="button"
+                              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                              onClick={() => { setShowAddTypeModal(false); setAddTypeError(''); }}
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                          {addTypeError && <div className="text-xs text-red-500 mt-2 w-full">{addTypeError}</div>}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Options per Variation Type */}
-                  {selectedVariationTypes.map(typeId => {
+                  {selectedVariationTypes.length > 0 && selectedVariationTypes.map(typeId => {
                     const variationType = variationTypes.find(t => t.variation_type_id === typeId);
                     const typeOptions = variationOptions.filter(opt => opt.variation_type_id === typeId);
                     const selectedOptions = getSelectedOptionsForType(typeId);
@@ -888,7 +1247,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
                       <div key={typeId} className="space-y-3">
                         <div className="flex items-center justify-between">
                           <h4 className="text-sm font-medium text-gray-800">
-                            Available {variationType?.type_label} Options:
+                            {variationType?.type_label} Options:
                           </h4>
                           <button
                             type="button"
@@ -901,6 +1260,9 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
                         </div>
                         
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 max-h-32 overflow-y-auto">
+                          {typeOptions.length === 0 && (
+                            <div className="col-span-full text-xs text-gray-400 italic p-2">No options yet. Add the first one!</div>
+                          )}
                           {typeOptions.map(option => (
                             <label key={option.option_id} className="flex items-center space-x-2 p-2 bg-white rounded border hover:bg-gray-50">
                               <input
@@ -918,6 +1280,15 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
                                 )}
                                 <span className="text-sm text-gray-700 truncate">{option.option_label}</span>
                               </div>
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteVariationOption(option.option_id)}
+                                className="ml-1 text-red-500 hover:text-red-700"
+                                disabled={deletingOptionId === option.option_id}
+                                title="Delete option"
+                              >
+                                <TrashIcon className="h-4 w-4" />
+                              </button>
                             </label>
                           ))}
                         </div>
@@ -954,7 +1325,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
                     );
                   })}
 
-                  {/* Summary View */}
+                  {/* Preview Table (optional) */}
                   {selectedVariationTypes.length > 0 && getTotalVariationCombinations() > 0 && (
                     <div className="mt-6 p-4 bg-white border rounded-lg">
                       <h4 className="text-sm font-medium text-gray-800 mb-3">Variation Combinations Preview:</h4>
@@ -1008,68 +1379,8 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
                 </div>
               )}
             </div>
+            {/* ===================== [End Variations Section] ===================== */}
           </div>
-        </div>
-
-        {/* Image Upload Section */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Product Images
-          </label>
-          
-          {/* Image Upload Area */}
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-[#0097b2] transition-colors">
-            <input
-              ref={fileInputRef}
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handleImageUpload}
-              className="hidden"
-            />
-            
-            <div className="space-y-4">
-              <PhotoIcon className="mx-auto h-12 w-12 text-gray-400" />
-              <div>
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="text-[#0097b2] hover:text-[#007a8e] font-medium"
-                >
-                  Click to upload
-                </button>
-                <span className="text-gray-500"> or drag and drop</span>
-              </div>
-              <p className="text-xs text-gray-500">
-                PNG, JPG, GIF, WebP up to 10MB each
-              </p>
-            </div>
-          </div>
-
-          {/* Image Previews */}
-          {imagePreviews.length > 0 && (
-            <div className="mt-4">
-              <h4 className="text-sm font-medium text-gray-700 mb-2">Image Previews</h4>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {imagePreviews.map((preview, index) => (
-                  <div key={index} className="relative group">
-                    <img
-                      src={preview}
-                      alt={`Preview ${index + 1}`}
-                      className="w-full h-24 object-cover rounded-lg"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => removeImage(index)}
-                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <XMarkIcon className="h-3 w-3" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Submit Buttons */}
@@ -1257,6 +1568,72 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
                 className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
               >
                 Delete Category
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Order Impact Warning Modal */}
+      {showOrderWarningModal && orderWarning && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg max-w-lg w-full p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">⚠️ Product Used in Orders</h3>
+              <button
+                onClick={() => {
+                  setShowOrderWarningModal(false);
+                  setPendingSubmit(false);
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <XMarkIcon className="h-6 w-6" />
+              </button>
+            </div>
+            
+            <div className="mb-6">
+              <div className="flex items-start gap-3 mb-4">
+                <ExclamationTriangleIcon className="h-8 w-8 text-amber-500 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-medium text-gray-900 mb-2">
+                    This product has been used in {orderWarning.orderCount} order{orderWarning.orderCount !== 1 ? 's' : ''}.
+                  </p>
+                  <p className="text-xs text-gray-600 mb-3">
+                    Last order: {orderWarning.lastOrderDate ? new Date(orderWarning.lastOrderDate).toLocaleDateString() : 'Unknown'}
+                  </p>
+                  <p className="text-sm text-gray-700">
+                    Changing variations may affect:
+                  </p>
+                  <ul className="text-sm text-gray-600 mt-2 ml-4 list-disc">
+                    <li>Order history and tracking</li>
+                    <li>Customer refund/exchange requests</li>
+                    <li>Inventory management</li>
+                    <li>Analytics and reporting</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowOrderWarningModal(false);
+                  setPendingSubmit(false);
+                }}
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Cancel Changes
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setPendingSubmit(true);
+                  executeSubmit();
+                }}
+                className="flex-1 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors"
+              >
+                Continue Anyway
               </button>
             </div>
           </div>

@@ -70,6 +70,11 @@ export const suitebiteAPI = {
     return response.data;
   },
   
+  checkProductOrderUsage: async (productId) => {
+    const response = await axios.get(`${API_BASE_URL}/products/${productId}/order-usage`, createAuthHeaders());
+    return response.data;
+  },
+  
   // ========== CART ==========
   
   getCart: async () => {
@@ -156,6 +161,18 @@ export const suitebiteAPI = {
   // Delete product variation (Admin only)
   deleteProductVariation: async (variationId) => {
     const response = await axios.delete(`${API_BASE_URL}/admin/variations/products/${variationId}`, createAuthHeaders());
+    return response.data;
+  },
+  
+  // Delete variation type (Admin only)
+  deleteVariationType: async (variationTypeId) => {
+    const response = await axios.delete(`${API_BASE_URL}/admin/variations/types/${variationTypeId}`, createAuthHeaders());
+    return response.data;
+  },
+
+  // Delete variation option (Admin only)
+  deleteVariationOption: async (optionId) => {
+    const response = await axios.delete(`${API_BASE_URL}/admin/variations/options/${optionId}`, createAuthHeaders());
     return response.data;
   },
   

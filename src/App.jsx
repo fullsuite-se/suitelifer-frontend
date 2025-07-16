@@ -43,7 +43,6 @@ import SuitebiteLeaderboard from "./pages/employee/SuitebiteLeaderboard";
 // import AdminPointsUsers from "./pages/admin/AdminPointsUsers";
 // import AdminPointsProducts from "./pages/admin/AdminPointsProducts";
 // import AdminPointsOrders from "./pages/admin/AdminPointsOrders";
-import AdminPointsSystem from "./pages/admin/AdminPointsSystem";
 
 // Super/Admin Pages
 import AdminBlogs from "./pages/admin/AdminBlogs";
@@ -155,8 +154,6 @@ function App() {
                   path="suitebite/new-suitebite"
                   element={<AdminNewsCreate />}
                 />
-                {/* Points Shop Admin Routes - Removed legacy features */}
-                <Route path="suitebite/system" element={<AdminPointsSystem />} />
                 
                 <Route path="events" element={<AdminEvents />} />
                 <Route path="contents" element={<AdminContents />} />
