@@ -42,8 +42,14 @@ export const pointsShopApi = {
     const res = await axios.post(`/api/points/cheer/${cheerId}/comment`, { comment });
     return res.data.data; // Return the data object from the response
   },
-  async getCheerComments(cheerId) {
-    const res = await axios.get(`/api/points/cheer/${cheerId}/comments`);
+  async getCheerComments(cheerId, { limit = 20, offset = 0, all = false } = {}) {
+    let query = `?`;
+    if (all) {
+      query += `all=true`;
+    } else {
+      query += `limit=${limit}&offset=${offset}`;
+    }
+    const res = await axios.get(`/api/points/cheer/${cheerId}/comments${query}`);
     return res.data.data; // Return the data array from the response
   },
 };

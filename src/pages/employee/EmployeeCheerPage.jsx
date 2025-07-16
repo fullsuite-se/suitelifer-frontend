@@ -31,8 +31,9 @@ const CheerPage = () => {
   const [commentingCheer, setCommentingCheer] = useState(null);
   const [commentText, setCommentText] = useState('');
   const [likedCheers, setLikedCheers] = useState(new Set());
-  const [cheerComments, setCheerComments] = useState(new Map()); // Store comments for each cheer
+  const [cheerComments, setCheerComments] = useState(new Map()); // cheerId -> { comments: [], offset, hasMore }
   const [loadingComments, setLoadingComments] = useState(false);
+  const COMMENTS_PAGE_SIZE = 20;
   
   const textareaRef = useRef(null);
   const dropdownRef = useRef(null);
@@ -211,33 +212,29 @@ const CheerPage = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Function to fetch comments for a specific cheer
-  const fetchComments = async (cheerId) => {
-    if (cheerComments.has(cheerId)) {
-      return; // Already loaded
-    }
-    
+  // Function to fetch comments for a specific cheer (with pagination)
+  const fetchComments = async (cheerId, append = false) => {
     setLoadingComments(true);
     try {
-      const comments = await pointsShopApi.getCheerComments(cheerId);
-      console.log('Fetched comments:', comments); // Debug log
-      
-      setCheerComments(prev => {
-        const newComments = new Map(prev);
-        // Ensure comments is always an array
-        const commentsArray = Array.isArray(comments) ? comments : [];
-        newComments.set(cheerId, commentsArray);
-        return newComments;
+      const prev = cheerComments.get(cheerId) || { comments: [], offset: 0, hasMore: true };
+      const offset = append ? prev.offset : 0;
+      const comments = await pointsShopApi.getCheerComments(cheerId, { limit: COMMENTS_PAGE_SIZE, offset });
+      const newComments = Array.isArray(comments) ? comments : [];
+      setCheerComments(prevMap => {
+        const prevData = prevMap.get(cheerId) || { comments: [], offset: 0, hasMore: true };
+        const merged = append
+          ? [...prevData.comments, ...newComments]
+          : newComments;
+        return new Map(prevMap).set(cheerId, {
+          comments: merged,
+          offset: offset + newComments.length,
+          hasMore: newComments.length === COMMENTS_PAGE_SIZE
+        });
       });
     } catch (error) {
       console.error('Error loading comments:', error);
       toast.error('Failed to load comments');
-      // Set empty array on error
-      setCheerComments(prev => {
-        const newComments = new Map(prev);
-        newComments.set(cheerId, []);
-        return newComments;
-      });
+      setCheerComments(prevMap => new Map(prevMap).set(cheerId, { comments: [], offset: 0, hasMore: false }));
     } finally {
       setLoadingComments(false);
     }
@@ -247,9 +244,8 @@ const CheerPage = () => {
   const handleCommentClick = (cheerId) => {
     const isOpening = commentingCheer !== cheerId;
     setCommentingCheer(isOpening ? cheerId : null);
-    
     if (isOpening) {
-      fetchComments(cheerId);
+      fetchComments(cheerId, false);
     }
   };
 
@@ -676,37 +672,50 @@ if (anyLoading) {
                                     </div>
                                   ) : (
                                     (() => {
-                                      const comments = cheerComments.get(cheer.cheer_id);
-                                      console.log(`Comments for cheer ${cheer.cheer_id}:`, comments); // Debug log
-                                      
+                                      const commentData = cheerComments.get(cheer.cheer_id) || { comments: [] };
+                                      const comments = commentData.comments;
                                       if (Array.isArray(comments) && comments.length > 0) {
-                                        return comments.map((comment, index) => (
-                                          <div key={comment._id || `comment-${cheer.cheer_id}-${index}`} className="rounded-lg p-3" style={{ backgroundColor: '#eee3e3' }}>
-                                            <div className="flex items-start space-x-2">
-                                              {comment.fromUser?.avatar ? (
-                                                <img
-                                                  src={comment.fromUser.avatar}
-                                                  alt={comment.fromUser.name || 'User'}
-                                                  className="w-6 h-6 rounded-full flex-shrink-0"
-                                                />
-                                              ) : (
-                                                <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#0097b2' }}>
-                                                  <span className="text-xs font-medium text-white" style={{ fontFamily: 'Avenir, sans-serif' }}>
-                                                    {comment.fromUser?.name ? comment.fromUser.name.charAt(0) : '?'}
-                                                  </span>
+                                        return <>
+                                          {comments.map((comment, index) => (
+                                            <div key={comment._id || `comment-${cheer.cheer_id}-${index}`} className="rounded-lg p-3" style={{ backgroundColor: '#eee3e3' }}>
+                                              <div className="flex items-start space-x-2">
+                                                {comment.fromUser?.avatar ? (
+                                                  <img
+                                                    src={comment.fromUser.avatar}
+                                                    alt={comment.fromUser.name || 'User'}
+                                                    className="w-6 h-6 rounded-full flex-shrink-0"
+                                                  />
+                                                ) : (
+                                                  <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#0097b2' }}>
+                                                    <span className="text-xs font-medium text-white" style={{ fontFamily: 'Avenir, sans-serif' }}>
+                                                      {comment.fromUser?.name ? comment.fromUser.name.charAt(0) : '?'}
+                                                    </span>
+                                                  </div>
+                                                )}
+                                                <div className="flex-1 min-w-0">
+                                                  <div className="flex items-center space-x-2">
+                                                    <span className="font-medium" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                                                      {comment.fromUser?.name || 'Anonymous'}
+                                                    </span>
+                                                    <span className="text-xs" style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>
+                                                      {formatTimeAgo(comment.createdAt)}
+                                                    </span>
+                                                  </div>
+                                                  <p className="text-sm mt-1" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>{comment.comment}</p>
                                                 </div>
-                                              )}
-                                                    {comment.fromUser?.name || 'Anonymous'}
-                                                  </span>
-                                                  <span className="text-xs" style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>
-                                                    {formatTimeAgo(comment.createdAt)}
-                                                  </span>
-                                                </div>
-                                                <p className="text-sm mt-1" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>{comment.comment}</p>
                                               </div>
                                             </div>
-                                          </div>
-                                        ));
+                                          ))}
+                                          {commentData.hasMore && (
+                                            <button
+                                              className="w-full py-2 text-sm text-blue-600 hover:underline"
+                                              onClick={() => fetchComments(cheer.cheer_id, true)}
+                                              disabled={loadingComments}
+                                            >
+                                              {loadingComments ? 'Loading...' : 'Load more comments'}
+                                            </button>
+                                          )}
+                                        </>;
                                       } else {
                                         return (
                                           <p className="text-sm text-center py-2" style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>
