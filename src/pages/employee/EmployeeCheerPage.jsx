@@ -37,6 +37,14 @@ const CheerPage = () => {
   const textareaRef = useRef(null);
   const dropdownRef = useRef(null);
 
+  // Fetch cheer statistics
+  const { data: statsData, isLoading: statsLoading } = useQuery({
+    queryKey: ['cheer-stats'],
+    queryFn: pointsShopApi.getCheerStats,
+    staleTime: 2 * 60 * 1000,
+    enabled: !!user && Object.keys(user).length > 0,
+  });
+
   // Fetch user points
   const { data: pointsData, isLoading: pointsLoading } = useQuery({
     queryKey: ['points'],
@@ -50,6 +58,14 @@ const CheerPage = () => {
     queryKey: ['cheer-feed'],
     queryFn: () => pointsShopApi.getCheerFeed(20),
     staleTime: 1 * 60 * 1000,
+    enabled: !!user && Object.keys(user).length > 0,
+  });
+
+  // Fetch received cheers
+  const { data: receivedCheers, isLoading: receivedLoading } = useQuery({
+    queryKey: ['received-cheers'],
+    queryFn: pointsShopApi.getReceivedCheers,
+    staleTime: 2 * 60 * 1000,
     enabled: !!user && Object.keys(user).length > 0,
   });
 
@@ -343,7 +359,9 @@ if (anyLoading) {
     );
   }
 
+  
   const availableHeartbits = (pointsData?.data?.monthlyCheerLimit || 100) - (pointsData?.data?.monthlyCheerUsed || 0);
+  const stats = statsData?.data || {};
   const feed = Array.isArray(cheerFeed?.data?.cheers) ? cheerFeed.data.cheers : [];
   const leaderboard = leaderboardData?.leaderboard || [];
 
