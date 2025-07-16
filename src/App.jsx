@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // Guest Pages
 import Home from "./pages/guest/Home";
@@ -25,25 +26,27 @@ import EmployeeEvents from "./pages/employee/EmployeeEvents";
 // import EmployeeWorkshops from "./pages/employee/EmployeeWorkshops";
 import EmployeePersonalityTest from "./pages/employee/EmployeePersonalityTest";
 import BlogCreate from "./components/blog/BlogCreate";
+// Employee Pages
 import EmployeeCheerPage from "./pages/employee/EmployeeCheerPage";
 import EmployeePointsDashboard from "./pages/employee/EmployeePointsDashboard";
+import MoodPage from "./pages/employee/MoodPage";
 
-// Points Shop Pages
+// Points Shop Pages (optional - uncomment when needed)
 // import PointsShopDashboard from "./pages/employee/PointsShopDashboard";
 // import CheerAPeerPage from "./pages/employee/CheerAPeerPage";
 // import PointsPage from "./pages/employee/PointsPage";
 // import ShopPage from "./pages/employee/ShopPage";
-import MoodPage from "./pages/employee/MoodPage";
 
-// Points Shop Admin Pages
+// Admin Pages
+import AdminPointsSystem from "./pages/admin/AdminPointsSystem";
 // import AdminPointsDashboard from "./pages/admin/AdminPointsDashboard";
 // import AdminPointsUsers from "./pages/admin/AdminPointsUsers";
 // import AdminPointsProducts from "./pages/admin/AdminPointsProducts";
 // import AdminPointsOrders from "./pages/admin/AdminPointsOrders";
-import AdminPointsSystem from "./pages/admin/AdminPointsSystem";
+
 
 // Super/Admin Pages
-import AdminBlogs from "./pages/admin/AdminBlogs";
+//import AdminBlogs from "./pages/admin/AdminBlogs";
 import AdminNews from "./pages/admin/AdminNews";
 import AdminEvents from "./pages/admin/AdminEvents";
 import AdminContents from "./pages/admin/AdminContents";
@@ -73,9 +76,14 @@ import ScrollToTop from "./components/buttons/ScrollToTop";
 import VerifyAccount from "./pages/auth/VerifyAccount";
 import DevelopersPage from "./pages/guest/Developers";
 
+
+
+
+const queryClient = new QueryClient();
+
 function App() {
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <ScrollToTop />
         <Toaster position="top-center" reverseOrder={false} />
@@ -99,9 +107,9 @@ function App() {
           />
 
           <Route path="/developers" element={<DevelopersPage />} />
-          <Route path="/developer" element={<Navigate to="/developers"/>} />
-          <Route path="/dev" element={<Navigate to="/developers"/>} />
-          <Route path="/d" element={<Navigate to="/developers"/>} />
+          <Route path="/developer" element={<Navigate to="/developers" />} />
+          <Route path="/dev" element={<Navigate to="/developers" />} />
+          <Route path="/d" element={<Navigate to="/developers" />} />
           <Route path="/newsletter" element={<Newsletter />} />
           <Route path="/newsletter/:slug" element={<NewsletterDetails />} />
           <Route path="/contact" element={<Contact />} />
@@ -122,6 +130,8 @@ function App() {
               <Route path="my-blogs" element={<EmployeeMyBlogs />} />
               <Route path="my-blogs/blog/:id/:slug" element={<BlogView />} />
               <Route path="my-blogs/new-blog" element={<BlogCreate />} />
+              <Route path="cheer" element={<CheerPage />} />
+              <Route path="points" element={<PointsDashboard />} />
 
               <Route path="threads" element={<EmployeeThreads />} />
               <Route path="company-events" element={<EmployeeEvents />} />
@@ -166,9 +176,13 @@ function App() {
               </Route>
             </Route>
           </Route>
+
+          {/* UI Demo Routes */}
+          {/* <Route path="/ui-demo/cheer" element={<CheerPage />} />
+          <Route path="/ui-demo/points" element={<PointsDashboard />} /> */}
         </Routes>
       </BrowserRouter>
-    </>
+    </QueryClientProvider>
   );
 }
 

@@ -1,0 +1,49 @@
+// src/api/pointsShopApi.js
+import axios from "../utils/axios";
+
+export const pointsShopApi = {
+  async getPoints() {
+    const res = await axios.get("/api/points/balance");
+    return res.data;
+  },
+  async getPointsHistory(limit = 10) {
+    const res = await axios.get(`/api/points/transactions?limit=${limit}`);
+    return res.data;
+  },
+  async getCheerFeed(limit = 20) {
+    const res = await axios.get(`/api/points/feed?limit=${limit}`);
+    return res.data;
+  },
+  async sendCheer(recipientId, amount, message) {
+    const res = await axios.post("/api/points/cheer", { recipientId, amount, message });
+    return res.data;
+  },
+  searchUsers: async (query) => {
+    const res = await axios.get(`/api/points/search-users?query=${query}`);
+    return res.data.data; // Return the data array from the response
+  },
+  async getCheerStats() {
+    const res = await axios.get("/api/points/stats");
+    return res.data;
+  },
+  async getReceivedCheers() {
+    const res = await axios.get("/api/points/received");
+    return res.data;
+  },
+  async getLeaderboard(period = "weekly") {
+    const res = await axios.get(`/api/points/leaderboard?period=${period}`);
+    return res.data.data; // Return the data object from the response
+  },
+  async toggleCheerLike(cheerId) {
+    const res = await axios.post(`/api/points/cheer/${cheerId}/like`);
+    return res.data;
+  },
+  async addCheerComment(cheerId, comment) {
+    const res = await axios.post(`/api/points/cheer/${cheerId}/comment`, { comment });
+    return res.data.data; // Return the data object from the response
+  },
+  async getCheerComments(cheerId) {
+    const res = await axios.get(`/api/points/cheer/${cheerId}/comments`);
+    return res.data.data; // Return the data array from the response
+  },
+};
