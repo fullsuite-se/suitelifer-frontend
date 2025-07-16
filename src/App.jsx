@@ -130,6 +130,8 @@ function App() {
               <Route path="my-blogs" element={<EmployeeMyBlogs />} />
               <Route path="my-blogs/blog/:id/:slug" element={<BlogView />} />
               <Route path="my-blogs/new-blog" element={<BlogCreate />} />
+              <Route path="cheer" element={<EmployeeCheerPage />} />
+              <Route path="points" element={<EmployeePointsDashboard />} />
 
               <Route path="threads" element={<EmployeeThreads />} />
               <Route path="company-events" element={<EmployeeEvents />} />
