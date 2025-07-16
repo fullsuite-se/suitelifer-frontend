@@ -26,14 +26,24 @@ import EmployeeEvents from "./pages/employee/EmployeeEvents";
 // import EmployeeWorkshops from "./pages/employee/EmployeeWorkshops";
 import EmployeePersonalityTest from "./pages/employee/EmployeePersonalityTest";
 import BlogCreate from "./components/blog/BlogCreate";
-import CheerPage from "./pages/employee/EmployeeCheerPage";
-import PointsDashboard from "./pages/employee/EmployeePointsDashboard";
+// Employee Pages
+import EmployeeCheerPage from "./pages/employee/EmployeeCheerPage";
+import EmployeePointsDashboard from "./pages/employee/EmployeePointsDashboard";
+import MoodPage from "./pages/employee/MoodPage";
 
-// Points Shop Pages
-//import MoodPage from "./pages/employee/MoodPage";
+// Points Shop Pages (optional - uncomment when needed)
+// import PointsShopDashboard from "./pages/employee/PointsShopDashboard";
+// import CheerAPeerPage from "./pages/employee/CheerAPeerPage";
+// import PointsPage from "./pages/employee/PointsPage";
+// import ShopPage from "./pages/employee/ShopPage";
 
-// Points Shop Admin Pages
-//import AdminPointsSystem from "./pages/admin/AdminPointsSystem";
+// Admin Pages
+import AdminPointsSystem from "./pages/admin/AdminPointsSystem";
+// import AdminPointsDashboard from "./pages/admin/AdminPointsDashboard";
+// import AdminPointsUsers from "./pages/admin/AdminPointsUsers";
+// import AdminPointsProducts from "./pages/admin/AdminPointsProducts";
+// import AdminPointsOrders from "./pages/admin/AdminPointsOrders";
+
 
 // Super/Admin Pages
 //import AdminBlogs from "./pages/admin/AdminBlogs";
@@ -130,7 +140,11 @@ function App() {
                 path="personality-test"
                 element={<EmployeePersonalityTest />}
               />
-              <Route />
+
+              {/* Suitebite (Points Shop) Routes for Employees - Removed legacy features */}
+              <Route path="mood" element={<MoodPage />} />
+              <Route path="cheer" element={<EmployeeCheerPage />} />
+              <Route path="points-dashboard" element={<EmployeePointsDashboard />} />
 
               {/* Admin Protected Routes */}
               <Route path="admin-tools" element={<AdminProtectedRoutes />}>
@@ -140,6 +154,9 @@ function App() {
                   path="suitebite/new-suitebite"
                   element={<AdminNewsCreate />}
                 />
+                {/* Points Shop Admin Routes - Removed legacy features */}
+                <Route path="suitebite/system" element={<AdminPointsSystem />} />
+                
                 <Route path="events" element={<AdminEvents />} />
                 <Route path="contents" element={<AdminContents />} />
                 <Route path="courses" element={<AdmimJobCourse />} />

@@ -756,4 +756,3 @@ const CheerPage = () => {
 };
 
 export default CheerPage;
-
