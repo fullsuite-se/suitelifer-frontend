@@ -656,14 +656,15 @@ const CheerPage = () => {
                                         return comments.map((comment, index) => (
                                           <div key={comment._id || `comment-${cheer.cheer_id}-${index}`} className="bg-gray-50 rounded-lg p-3">
                                             <div className="flex items-start space-x-2">
-                                              <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                                <span className="text-xs font-medium text-blue-600">
-                                                  {comment.fromUser?.name ? comment.fromUser.name.charAt(0) : '?'}
-                                                </span>
-                                              </div>
+                                              {/* Avatar image for comment author */}
+                                              <img
+                                                src={comment.fromUser?.avatar || '/images/default-avatar.png'}
+                                                alt={comment.fromUser?.name || 'User'}
+                                                className="w-6 h-6 rounded-full flex-shrink-0"
+                                              />
                                               <div className="flex-1 min-w-0">
                                                 <div className="flex items-center space-x-2">
-                                                  <span className="text-sm font-medium text-gray-900">
+                                                  <span className="font-medium text-gray-900">
                                                     {comment.fromUser?.name || 'Anonymous'}
                                                   </span>
                                                   <span className="text-xs text-gray-500">
