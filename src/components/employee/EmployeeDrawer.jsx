@@ -55,12 +55,10 @@ const regularServices = [
   },
 ];
 
-// Suitebite features for mobile navigation
+// Suitebite features for mobile navigation (only new paths remain)
 const suitebiteFeaturesForMobile = [
-  { feature_name: "Dashboard", path: "suitebite-dashboard", icon: ChartBarIcon },
-  { feature_name: "Cheer A Peer", path: "cheer-a-peer", icon: HeartIcon },
-  { feature_name: "Points", path: "points-history", icon: CurrencyDollarIcon },
-  { feature_name: "Shop", path: "shop", icon: ShoppingBagIcon },
+  { feature_name: "Points Dashboard", path: "points-dashboard", icon: ChartBarIcon },
+  { feature_name: "Cheer a Peer", path: "cheer-a-peer", icon: HeartIcon },
   { feature_name: "Mood", path: "mood", icon: FaceSmileIcon },
 ];
 

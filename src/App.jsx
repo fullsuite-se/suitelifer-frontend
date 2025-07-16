@@ -130,8 +130,6 @@ function App() {
               <Route path="my-blogs" element={<EmployeeMyBlogs />} />
               <Route path="my-blogs/blog/:id/:slug" element={<BlogView />} />
               <Route path="my-blogs/new-blog" element={<BlogCreate />} />
-              <Route path="cheer" element={<CheerPage />} />
-              <Route path="points" element={<PointsDashboard />} />
 
               <Route path="threads" element={<EmployeeThreads />} />
               <Route path="company-events" element={<EmployeeEvents />} />
@@ -143,7 +141,8 @@ function App() {
 
               {/* Suitebite (Points Shop) Routes for Employees - Removed legacy features */}
               <Route path="mood" element={<MoodPage />} />
-              <Route path="cheer" element={<EmployeeCheerPage />} />
+              {/* Remove old points and cheer routes, keep only the new ones */}
+              <Route path="cheer-a-peer" element={<EmployeeCheerPage />} />
               <Route path="points-dashboard" element={<EmployeePointsDashboard />} />
 
               {/* Admin Protected Routes */}
