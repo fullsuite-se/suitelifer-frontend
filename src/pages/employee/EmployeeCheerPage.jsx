@@ -683,14 +683,19 @@ if (anyLoading) {
                                         return comments.map((comment, index) => (
                                           <div key={comment._id || `comment-${cheer.cheer_id}-${index}`} className="rounded-lg p-3" style={{ backgroundColor: '#eee3e3' }}>
                                             <div className="flex items-start space-x-2">
-                                              <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#0097b2' }}>
-                                                <span className="text-xs font-medium text-white" style={{ fontFamily: 'Avenir, sans-serif' }}>
-                                                  {comment.fromUser?.name ? comment.fromUser.name.charAt(0) : '?'}
-                                                </span>
-                                              </div>
-                                              <div className="flex-1 min-w-0">
-                                                <div className="flex items-center space-x-2">
-                                                  <span className="text-sm font-medium" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                                              {comment.fromUser?.avatar ? (
+                                                <img
+                                                  src={comment.fromUser.avatar}
+                                                  alt={comment.fromUser.name || 'User'}
+                                                  className="w-6 h-6 rounded-full flex-shrink-0"
+                                                />
+                                              ) : (
+                                                <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#0097b2' }}>
+                                                  <span className="text-xs font-medium text-white" style={{ fontFamily: 'Avenir, sans-serif' }}>
+                                                    {comment.fromUser?.name ? comment.fromUser.name.charAt(0) : '?'}
+                                                  </span>
+                                                </div>
+                                              )}
                                                     {comment.fromUser?.name || 'Anonymous'}
                                                   </span>
                                                   <span className="text-xs" style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>
