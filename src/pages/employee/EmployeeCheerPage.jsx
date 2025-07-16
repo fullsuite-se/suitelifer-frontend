@@ -24,6 +24,7 @@ const CheerPage = () => {
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false); // Prevent spam submissions
   
   // Feed interaction state
   const [activeTab, setActiveTab] = useState('weekly');
@@ -73,6 +74,7 @@ const CheerPage = () => {
     mutationFn: ({ recipientId, amount, message }) =>
       pointsShopApi.sendCheer(recipientId, amount, message),
     onSuccess: () => {
+      setIsSubmitting(false); // Reset submit lock
       toast.success('Cheer sent successfully! 🎉');
       setCheerText('');
       setSelectedUser(null);
@@ -88,6 +90,7 @@ const CheerPage = () => {
       queryClient.invalidateQueries(['leaderboard']);
     },
     onError: (error) => {
+      setIsSubmitting(false); // Reset submit lock
       const backendMsg = error?.response?.data?.message || error?.message || 'Failed to send cheer';
       toast.error(backendMsg);
       console.error('Cheer mutation error:', error);
@@ -260,20 +263,24 @@ const CheerPage = () => {
 
   const handleCheerSubmit = (e) => {
     e.preventDefault();
+    if (isSubmitting) return; // Prevent double submit
     if (!selectedUser || !selectedUser.user_id || !cheerText.trim()) {
       toast.error('Please select a user and write a message');
       return;
     }
-
+    // Extra safety: check availableHeartbits at submit time
+    if (cheerPoints > availableHeartbits) {
+      toast.error('Not enough heartbits available. Please check your balance.');
+      return;
+    }
+    setIsSubmitting(true); // Lock submit immediately
     const cheerData = {
       recipientId: selectedUser.user_id,
       amount: cheerPoints,
       message: cheerText.trim(),
     };
-
     // Debug: log cheer payload before sending
     console.log('Sending cheer payload:', cheerData, 'Selected user:', selectedUser);
-
     cheerMutation.mutate(cheerData);
   };
 
@@ -325,7 +332,10 @@ const CheerPage = () => {
     );
   }
 
-  if (pointsLoading) {
+const anyLoading = statsLoading || pointsLoading || feedLoading || receivedLoading || leaderboardLoading;
+
+if (anyLoading) {
+
     return (
       <div className="flex items-center justify-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2" style={{ borderColor: '#0097b2' }}></div>
@@ -440,6 +450,8 @@ const CheerPage = () => {
                   <button
                     type="submit"
                     disabled={
+                      anyLoading ||
+                      isSubmitting ||
                       !selectedUser || !selectedUser.user_id ||
                       !cheerText.trim() ||
                       cheerMutation.isLoading ||
