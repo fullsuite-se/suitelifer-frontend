@@ -19,8 +19,9 @@ const CheerPage = () => {
   
   // Form state
   const [cheerText, setCheerText] = useState('');
+  const [messageText, setMessageText] = useState('');
   const [cheerPoints, setCheerPoints] = useState(1);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUsers, setSelectedUsers] = useState([]); // Changed from selectedUser to selectedUsers array
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
@@ -94,7 +95,7 @@ const CheerPage = () => {
       setIsSubmitting(false); // Reset submit lock
       toast.success('Cheer sent successfully! 🎉');
       setCheerText('');
-      setSelectedUser(null);
+      setSelectedUsers([]); // Clear selected users after successful submission
       setCheerPoints(1);
       setShowSuccessMessage(true);
       setTimeout(() => setShowSuccessMessage(false), 3000);
@@ -112,6 +113,12 @@ const CheerPage = () => {
       toast.error(backendMsg);
       console.error('Cheer mutation error:', error);
     },
+  });
+
+  // Bulk cheer mutation for multiple recipients (no callbacks to avoid conflicts)
+  const bulkCheerMutation = useMutation({
+    mutationFn: ({ recipientId, amount, message }) =>
+      pointsShopApi.sendCheer(recipientId, amount, message),
   });
 
   // Heart cheer mutation
@@ -254,11 +261,9 @@ const CheerPage = () => {
     const value = e.target.value;
     setCheerText(value);
 
-    // Check for @ mentions
-    const mentionMatch = value.match(/@(\w*)$/);
-    if (mentionMatch) {
-      const query = mentionMatch[1];
-      setSearchQuery(query);
+    // Simple search - show dropdown when typing
+    if (value.trim().length > 0) {
+      setSearchQuery(value);
       setShowUserDropdown(true);
     } else {
       setShowUserDropdown(false);
@@ -267,33 +272,90 @@ const CheerPage = () => {
   };
 
   const handleUserSelect = (user) => {
-    // Replace only the @mention part, preserving the rest of the message
-    setCheerText((prev) => prev.replace(/@\w*$/, `@${user.name} `));
-    setSelectedUser(user);
+    // Clear the search input and add user to selected list
+    setCheerText('');
+    setSelectedUsers(prev => [...prev, user]); // Add user to selectedUsers
     setShowUserDropdown(false);
   };
 
   const handleCheerSubmit = (e) => {
     e.preventDefault();
     if (isSubmitting) return; // Prevent double submit
-    if (!selectedUser || !selectedUser.user_id || !cheerText.trim()) {
-      toast.error('Please select a user and write a message');
+    if (selectedUsers.length === 0) {
+      toast.error('Please select at least one recipient');
       return;
     }
     // Extra safety: check availableHeartbits at submit time
-    if (cheerPoints > availableHeartbits) {
-      toast.error('Not enough heartbits available. Please check your balance.');
+    // Check if enough heartbits for all recipients
+    const totalHeartbitsNeeded = cheerPoints * selectedUsers.length;
+    if (totalHeartbitsNeeded > availableHeartbits) {
+      toast.error(`Not enough heartbits available. You need ${totalHeartbitsNeeded} heartbits to send ${cheerPoints} to ${selectedUsers.length} recipients, but you only have ${availableHeartbits} remaining.`);
       return;
     }
     setIsSubmitting(true); // Lock submit immediately
-    const cheerData = {
-      recipientId: selectedUser.user_id,
-      amount: cheerPoints,
-      message: cheerText.trim(),
+
+    console.log('=== CHEER SUBMISSION DEBUG ===');
+    console.log('Message text:', messageText);
+    console.log('Selected users:', selectedUsers);
+    console.log('Cheer points per user:', cheerPoints);
+    console.log('Total heartbits needed:', totalHeartbitsNeeded);
+    console.log('Available heartbits:', availableHeartbits);
+
+    // Send cheers sequentially to ensure proper heartbits deduction
+    const sendCheersSequentially = async () => {
+      let successCount = 0;
+      let errorCount = 0;
+      for (const user of selectedUsers) {
+        try {
+          // Use only the messageText as the cheer message (can be empty)
+          const cheerData = {
+            recipientId: user.user_id,
+            amount: cheerPoints,
+            message: messageText.trim(),
+          };
+          console.log('Cheer data:', cheerData);
+          await bulkCheerMutation.mutateAsync(cheerData);
+          successCount++;
+          console.log(`✅ Cheer sent to ${user.name}`);
+        } catch (error) {
+          errorCount++;
+          console.error(`❌ Failed to send cheer to ${user.name}:`, error);
+        }
+      }
+      
+      // Handle final results
+      if (errorCount === 0) {
+        console.log('All cheers sent successfully!');
+        toast.success(`Cheers sent successfully to ${successCount} recipients! 🎉`);
+        setSelectedUsers([]); // Clear selected users after successful submission
+        setCheerText('');
+        setMessageText(''); // Clear message textarea after successful submission
+        setCheerPoints(1);
+        setShowSuccessMessage(true);
+        setTimeout(() => setShowSuccessMessage(false), 3000);
+        // Invalidate all related queries
+        queryClient.invalidateQueries(['points']);
+        queryClient.invalidateQueries(['cheer-feed']);
+        queryClient.invalidateQueries(['received-cheers']);
+        queryClient.invalidateQueries(['cheer-stats']);
+        queryClient.invalidateQueries(['leaderboard']);
+      } else if (successCount > 0) {
+        toast.warning(`Sent ${successCount} cheers, but ${errorCount} failed.`);
+      } else {
+        toast.error('Failed to send any cheers. Please try again.');
+      }
     };
-    // Debug: log cheer payload before sending
-    console.log('Sending cheer payload:', cheerData, 'Selected user:', selectedUser);
-    cheerMutation.mutate(cheerData);
+    
+    sendCheersSequentially()
+      .catch(error => {
+        console.error('Cheer submission failed:', error);
+        const backendMsg = error?.response?.data?.message || error?.message || 'Failed to send cheers';
+        toast.error(backendMsg);
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+        console.log('=== END CHEER SUBMISSION DEBUG ===');
+      });
   };
 
   const formatTimeAgo = (date) => {
@@ -390,28 +452,64 @@ if (anyLoading) {
             {/* Create Cheer Form */}
             <div className="rounded-xl shadow-sm p-6" style={{ backgroundColor: '#ffffff', border: '1px solid #eee3e3' }}>
               <form onSubmit={handleCheerSubmit} className="space-y-4">
+                {/* Selected Users Display */}
+                {selectedUsers.length > 0 && (
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium mb-2" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                      Selected Recipients ({selectedUsers.length}):
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedUsers.map((user, index) => (
+                        <div
+                          key={user.user_id}
+                          className="flex items-center space-x-2 px-3 py-2 rounded-lg"
+                          style={{ backgroundColor: '#eee3e3', border: '1px solid #0097b2' }}
+                        >
+                          <img
+                            src={user.avatar || '/images/default-avatar.png'}
+                            alt={user.name}
+                            className="w-6 h-6 rounded-full"
+                          />
+                          <span className="text-sm font-medium" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                            {user.name}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedUsers(prev => prev.filter((_, i) => i !== index))}
+                            className="text-red-500 hover:text-red-700 transition-colors"
+                            style={{ fontFamily: 'Avenir, sans-serif' }}
+                            aria-label={`Remove ${user.name}`}
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 <div className="relative" ref={dropdownRef}>
-                  <textarea
-                    ref={textareaRef}
+                  <input
+                    type="text"
                     value={cheerText}
                     onChange={handleCheerTextChange}
-                    placeholder="Mention a peer using '@' and spread some positivity! 😊"
-                    className="w-full px-4 py-3 rounded-lg resize-none transition-colors"
+                    placeholder="Search for peers by name..."
+                    className="w-full px-4 rounded-lg transition-colors"
                     style={{ 
-                      border: '1px solid #eee3e3', 
+                      border: '1px solid #eee3e3',
                       backgroundColor: '#ffffff',
                       fontFamily: 'Avenir, sans-serif',
                       color: '#1a0202'
                     }}
                     onFocus={(e) => e.target.style.borderColor = '#0097b2'}
                     onBlur={(e) => e.target.style.borderColor = '#eee3e3'}
-                    rows={4}
                   />
                   
                   {/* User Dropdown for @ mentions */}
                   {showUserDropdown && Array.isArray(searchResults) && searchResults.length > 0 && (
-                    <div className="absolute z-20 w-full mt-1 rounded-lg shadow-lg max-h-48 overflow-y-auto" style={{ backgroundColor: '#ffffff', border: '1px solid #eee3e3' }}>
-                      {searchResults.map((result) => (
+                    <div className="absolute z-20 w-full mt-1 rounded-lg shadow-lg max-h-48flow-y-auto" style={{ backgroundColor: '#ffffff', border: '1px solid #eee3e3' }}>
+                      {searchResults
+                        .filter(result => !selectedUsers.some(selected => selected.user_id === result.user_id))
+                        .map((result) => (
                         <button
                           key={result.user_id}
                           type="button"
@@ -431,13 +529,33 @@ if (anyLoading) {
                             className="w-8 h-8 rounded-full"
                           />
                           <div>
-                            <p className="font-medium" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>{result.name}</p>
+                            <p className="font-medium" style={{ color: '#1a2020', fontFamily: 'Avenir, sans-serif' }}>{result.name}</p>
                             <p className="text-sm" style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>{result.email}</p>
                           </div>
                         </button>
                       ))}
                     </div>
                   )}
+                </div>
+
+                {/* Message Input */}
+                <div>
+                  <textarea
+                    ref={textareaRef}
+                    value={messageText}
+                    onChange={(e) => setMessageText(e.target.value)}
+                    placeholder="Write your message here... 😊"
+                    className="w-full px-4 rounded-lg resize-none transition-colors"
+                    style={{ 
+                      border: '1px solid #eee3e3',
+                      backgroundColor: '#ffffff',
+                      fontFamily: 'Avenir, sans-serif',
+                      color: '#1a0202'
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = '#0097b2'}
+                    onBlur={(e) => e.target.style.borderColor = '#eee3e3'}
+                    rows={3}
+                  />
                 </div>
 
                 <div className="flex items-center justify-between">
@@ -466,9 +584,8 @@ if (anyLoading) {
                     disabled={
                       anyLoading ||
                       isSubmitting ||
-                      !selectedUser || !selectedUser.user_id ||
-                      !cheerText.trim() ||
-                      cheerMutation.isLoading ||
+                      selectedUsers.length === 0 ||
+                      bulkCheerMutation.isLoading ||
                       cheerPoints > availableHeartbits
                     }
                     className="text-white px-6 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-all flex items-center space-x-2 shadow-lg"
@@ -479,7 +596,7 @@ if (anyLoading) {
                     onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = '#007a92')}
                     onMouseLeave={(e) => !e.target.disabled && (e.target.style.backgroundColor = '#0097b2')}
                   >
-                    {cheerMutation.isLoading ? (
+                    {bulkCheerMutation.isLoading ? (
                       <>
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                         <span>Sending...</span>
@@ -505,10 +622,28 @@ if (anyLoading) {
               
               <div className="space-y-4">
                 <div className="text-center">
-                  <div className="text-4xl font-bold mb-2" style={{ color: '#0097b2', fontFamily: 'Avenir, sans-serif', fontWeight: '800' }}>
-                    {availableHeartbits} | {pointsData?.data?.monthlyReceivedHeartbits || 0}
+                  <div className="flex justify-center items-center" style={{ minHeight: 70 }}>
+                    {/* Remaining */}
+                    <div className="flex flex-col items-center" style={{ minWidth: 60 }}>
+                      <div className="text-4xl font-bold" style={{ color: '#0097b2', fontFamily: 'Avenir, sans-serif', fontWeight: '800' }}>
+                        {availableHeartbits}
+                      </div>
+                      <div className="text-lg font-medium" style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>
+                        Remaining
+                      </div>
+                    </div>
+                    {/* Vertical Divider */}
+                    <div style={{ width: 2, height: 56, background: '#0097b2', margin: '0 32px', borderRadius: 1 }} />
+                    {/* Received */}
+                    <div className="flex flex-col items-center" style={{ minWidth: 60 }}>
+                      <div className="text-4xl font-bold" style={{ color: '#0097b2', fontFamily: 'Avenir, sans-serif', fontWeight: '800' }}>
+                        {pointsData?.data?.monthlyReceivedHeartbits || 0}
+                      </div>
+                      <div className="text-lg font-medium" style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>
+                        Received
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-lg font-medium" style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>heartbits remaining | received this month</div>
                 </div>
                 
                 <div className="pt-4 space-y-3" style={{ borderTop: '1px solid #eee3e3' }}>
@@ -683,10 +818,10 @@ if (anyLoading) {
                                                   <img
                                                     src={comment.fromUser.avatar}
                                                     alt={comment.fromUser.name || 'User'}
-                                                    className="w-6 h-6 rounded-full flex-shrink-0"
+                                                    className="w-6 rounded-full flex-shrink-0"
                                                   />
                                                 ) : (
-                                                  <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#0097b2' }}>
+                                                  <div className="w-6 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#0097b2' }}>
                                                     <span className="text-xs font-medium text-white" style={{ fontFamily: 'Avenir, sans-serif' }}>
                                                       {comment.fromUser?.name ? comment.fromUser.name.charAt(0) : '?'}
                                                     </span>
@@ -694,21 +829,21 @@ if (anyLoading) {
                                                 )}
                                                 <div className="flex-1 min-w-0">
                                                   <div className="flex items-center space-x-2">
-                                                    <span className="font-medium" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                                                    <span className="font-medium" style={{ color: '#1a2020', fontFamily: 'Avenir, sans-serif' }}>
                                                       {comment.fromUser?.name || 'Anonymous'}
                                                     </span>
-                                                    <span className="text-xs" style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>
+                                                    <span className="text-xs" style={{ color: '#4a67e', fontFamily: 'Avenir, sans-serif' }}>
                                                       {formatTimeAgo(comment.createdAt)}
                                                     </span>
                                                   </div>
-                                                  <p className="text-sm mt-1" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>{comment.comment}</p>
+                                                  <p className="text-sm mt-1" style={{ color: '#1a2020', fontFamily: 'Avenir, sans-serif' }}>{comment.comment}</p>
                                                 </div>
                                               </div>
                                             </div>
                                           ))}
                                           {commentData.hasMore && (
                                             <button
-                                              className="w-full py-2 text-sm text-blue-600 hover:underline"
+                                              className="w-full py-2 text-sm text-blue-60 hover:underline"
                                               onClick={() => fetchComments(cheer.cheer_id, true)}
                                               disabled={loadingComments}
                                             >
@@ -718,7 +853,7 @@ if (anyLoading) {
                                         </>;
                                       } else {
                                         return (
-                                          <p className="text-sm text-center py-2" style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>
+                                          <p className="text-sm text-center py-2" style={{ color: '#4a67e', fontFamily: 'Avenir, sans-serif' }}>
                                             No comments yet. Be the first to comment!
                                           </p>
                                         );
@@ -734,9 +869,9 @@ if (anyLoading) {
                     ))}
                   </div>
                 ) : (
-                  <div className="p-12 text-center">
+                  <div className="p-12">
                     <HeartIcon className="w-12 h-12 mx-auto mb-4" style={{ color: '#4a6e7e' }} />
-                    <p style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>No cheers yet. Be the first to spread some positivity!</p>
+                    <p style={{ color: '#4a67e', fontFamily: 'Avenir, sans-serif' }}>No cheers yet. Be the first to spread some positivity!</p>
                   </div>
                 )}
               </div>
@@ -750,25 +885,25 @@ if (anyLoading) {
                     key={period}
                     onClick={() => setActiveTab(period)}
                     className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors`}
-                      style={{
-                        backgroundColor: activeTab === period ? '#eee3e3' : 'transparent',
-                        color: activeTab === period ? '#0097b2' : '#4a6e7e',
-                        fontFamily: 'Avenir, sans-serif'
-                      }}
-                      onMouseEnter={(e) => {
-                        if (activeTab !== period) {
-                          e.target.style.color = '#1a0202';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (activeTab !== period) {
-                          e.target.style.color = '#4a6e7e';
-                        }
-                      }}
-                    >
-                      {period === 'alltime' ? 'All Time' : period.charAt(0).toUpperCase() + period.slice(1)}
-                    </button>
-                  ))}
+                    style={{
+                      backgroundColor: activeTab === period ? '#eee3e3' : 'transparent',
+                      color: activeTab === period ? '#0097b2' : '#4a6e7e',
+                      fontFamily: 'Avenir, sans-serif'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (activeTab !== period) {
+                        e.target.style.color = '#1a0202';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (activeTab !== period) {
+                        e.target.style.color = '#4a6e7e';
+                      }
+                    }}
+                  >
+                    {period === 'alltime' ? 'All Time' : period.charAt(0).toUpperCase() + period.slice(1)}
+                  </button>
+                ))}
               </div>
               
               {leaderboardLoading ? (
@@ -782,10 +917,7 @@ if (anyLoading) {
                       <div 
                         className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm"
                         style={{
-                          backgroundColor: index === 0 ? '#bfd1a0' : 
-                                         index === 1 ? '#4a6e7e' :
-                                         index === 2 ? '#ff6b35' :
-                                         '#0097b2',
+                          backgroundColor: index === 0 ? '#bfd1a0' : index === 1 ? '#4a6e7e' : index === 2 ? '#ff6b35' : '#0097b2',
                           color: '#ffffff'
                         }}
                       >

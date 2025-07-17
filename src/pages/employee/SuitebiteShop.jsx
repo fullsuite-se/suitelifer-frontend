@@ -78,7 +78,8 @@ const SuitebiteShop = () => {
 
       if (cartResponse.success) {
         // Map backend cart data to match expected frontend structure
-        const mappedCart = (cartResponse.cartItems || []).map(item => ({
+        const backendCartItems = cartResponse.data?.cartItems || [];
+        const mappedCart = backendCartItems.map(item => ({
           cart_item_id: item.cart_item_id, // Use the correct unique identifier
           product_id: item.product_id,
           product_name: item.product_name || item.name,
@@ -86,6 +87,7 @@ const SuitebiteShop = () => {
           quantity: item.quantity,
           image_url: item.image_url,
           variation_id: item.variation_id,
+          variations: item.variations, // Add support for new variation format
           variation_details: item.variation_details
         }));
         
@@ -137,7 +139,8 @@ const SuitebiteShop = () => {
         // Refresh cart data from server
         const cartResponse = await suitebiteAPI.getCart();
         if (cartResponse.success) {
-          const mappedCart = (cartResponse.cartItems || []).map(item => ({
+          const backendCartItems = cartResponse.data?.cartItems || [];
+          const mappedCart = backendCartItems.map(item => ({
             cart_item_id: item.cart_item_id, // Use the correct unique identifier
             product_id: item.product_id,
             product_name: item.product_name || item.name,
@@ -145,9 +148,18 @@ const SuitebiteShop = () => {
             quantity: item.quantity,
             image_url: item.image_url,
             variation_id: item.variation_id,
+            variations: item.variations, // Add support for new variation format
             variation_details: item.variation_details
           }));
           setCart(mappedCart);
+          
+          // Debug cart items with variations
+          console.log(`🛒 SuitebiteShop - Cart updated: ${mappedCart.length} items`);
+          mappedCart.forEach(item => {
+            if (item.variations?.length > 0) {
+              console.log(`✅ Cart item with variations: ${item.product_name}`, item.variations);
+            }
+          });
         }
         showNotification('success', 'Item added to cart! 🛒');
       } else {
@@ -265,7 +277,8 @@ const SuitebiteShop = () => {
         // Get the cart item that was just added
         const cartResponse = await suitebiteAPI.getCart();
         if (cartResponse.success) {
-          const newCartItem = cartResponse.cartItems.find(item => 
+          const cartItems = cartResponse.data?.cartItems || [];
+          const newCartItem = cartItems.find(item => 
             item.product_id === productId && 
             (!variationId || item.variation_id === variationId)
           );
