@@ -147,7 +147,6 @@ function App() {
               {/* Suitebite Employee Routes */}
               <Route path="suitebite" element={<SuitebiteHome />} />
               <Route path="suitebite/cheer" element={<SuitebiteHome />} />
-              <Route path="suitebite/shop" element={<SuitebiteShop />} />
               <Route path="suitebite/leaderboard" element={<SuitebiteLeaderboard />} />
 
               {/* Points Shop/Mood/Cheer/PointsDashboard Routes */}
@@ -155,6 +154,9 @@ function App() {
               {/* Remove old points and cheer routes, keep only the new ones */}
               <Route path="cheer-a-peer" element={<EmployeeCheerPage />} />
               <Route path="points-dashboard" element={<EmployeePointsDashboard />} />
+
+              {/* SuitebiteShop moved to bottom */}
+              <Route path="suitebite/shop" element={<SuitebiteShop />} />
 
               {/* Admin Protected Routes */}
               <Route path="admin-tools" element={<AdminProtectedRoutes />}>

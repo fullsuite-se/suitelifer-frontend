@@ -12,20 +12,10 @@ import {
 
 /**
  * AdminSuitebite Component
- * 
  * Main admin interface for Suitebite management.
- * Features include:
- * - Analytics dashboard
- * - Cheer posts moderation
- * - User and heartbits management
- * - Product and inventory management
- * - Order management
  */
 const AdminSuitebite = () => {
-  const {
-    adminStats,
-    setAdminStats
-  } = useSuitebiteStore();
+  const { adminStats, setAdminStats } = useSuitebiteStore();
 
   // Local state management
   const [activeTab, setActiveTab] = useState('users'); // Default to users tab
@@ -33,7 +23,7 @@ const AdminSuitebite = () => {
   const [lastRefresh, setLastRefresh] = useState(new Date());
   const [autoRefreshEnabled, setAutoRefreshEnabled] = useState(true);
   const [showRefreshNotification, setShowRefreshNotification] = useState(false);
-  
+
   // Auto-refresh functionality
   const autoRefreshInterval = useRef(null);
   const lastTabChange = useRef(Date.now());
@@ -44,19 +34,17 @@ const AdminSuitebite = () => {
   // Load admin data on component mount
   useEffect(() => {
     loadAdminData();
-    
-    // Set up auto-refresh
     if (autoRefreshEnabled) {
       autoRefreshInterval.current = setInterval(() => {
         loadAdminData(true); // true = silent refresh
       }, AUTO_REFRESH_INTERVAL);
     }
-
     return () => {
       if (autoRefreshInterval.current) {
         clearInterval(autoRefreshInterval.current);
       }
     };
+    // eslint-disable-next-line
   }, [autoRefreshEnabled]);
 
   /**
@@ -67,12 +55,10 @@ const AdminSuitebite = () => {
   const handleTabChange = (tabId) => {
     const timeSinceLastRefresh = Date.now() - lastRefresh.getTime();
     const timeSinceLastTabChange = Date.now() - lastTabChange.current;
-    
     // Refresh if it's been more than 2 minutes since last refresh and more than 30 seconds since last tab change
     if (timeSinceLastRefresh > 2 * 60 * 1000 && timeSinceLastTabChange > 30 * 1000) {
       loadAdminData(true); // silent refresh
     }
-    
     setActiveTab(tabId);
     lastTabChange.current = Date.now();
   };
@@ -84,15 +70,11 @@ const AdminSuitebite = () => {
   const loadAdminData = async (silent = false) => {
     try {
       setLoading(true);
-      
       const statsResponse = await suitebiteAPI.getSystemStats('month');
-
       if (statsResponse.success) {
         setAdminStats(statsResponse.stats);
       }
-
       setLastRefresh(new Date());
-      
       // Show notification for manual refresh
       if (!silent) {
         setShowRefreshNotification(true);
@@ -110,7 +92,6 @@ const AdminSuitebite = () => {
    */
   const toggleAutoRefresh = () => {
     setAutoRefreshEnabled(!autoRefreshEnabled);
-    
     if (autoRefreshEnabled) {
       // Disable auto-refresh
       if (autoRefreshInterval.current) {
@@ -182,14 +163,12 @@ const AdminSuitebite = () => {
                 <UserHeartbitsManagement onRefresh={loadAdminData} />
               </div>
             )}
-
             {/* Products Tab */}
             {activeTab === 'products' && (
               <div className="products-tab">
                 <ProductManagement onRefresh={loadAdminData} />
               </div>
             )}
-
             {/* Orders Tab */}
             {activeTab === 'orders' && (
               <div className="orders-tab">
@@ -204,4 +183,3 @@ const AdminSuitebite = () => {
 };
 
 export default AdminSuitebite;
-

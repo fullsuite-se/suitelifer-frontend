@@ -51,18 +51,14 @@ const regularFeatures = [
     path: "personality-test",
     icon: FaceSmileIcon,
   },
-  {
-    feature_name: "Suitebite",
-    path: "suitebite",
-    icon: HeartIcon,
-  },
 ];
 
-// Suitebite features for employees (only new paths remain)
+// Suitebite features for employees (only Mood and Points Dashboard remain)
 const suitebiteFeaturesForEmployees = [
   { feature_name: "Mood", path: "mood", icon: FaceSmileIcon },
   { feature_name: "Points Dashboard", path: "points-dashboard", icon: ChartBarIcon },
   { feature_name: "Cheer a Peer", path: "cheer-a-peer", icon: HeartIcon },
+  { feature_name: "Shop", path: "suitebite/shop", icon: ShoppingBagIcon },
 ];
 
 const adminFeatures = [
@@ -89,11 +85,6 @@ const superAdminFeatures = [
     path: "super/accounts-management",
     icon: UsersIcon,
   },
-];
-
-const suitebiteSubFeatures = [
-  { feature_name: 'Cheer a Peer', path: 'suitebite/cheer', icon: HeartIcon },
-  { feature_name: 'Shop', path: 'suitebite/shop', icon: ShoppingBagIcon },
 ];
 
 const CMSNavigation = () => {
@@ -258,35 +249,6 @@ const CMSNavigation = () => {
     });
   };
 
-  const displaySuitebiteDropdown = (isCollapse) => (
-    <Disclosure as="div" defaultOpen={true}>
-      <DisclosureButton className="group cursor-pointer flex w-full items-center justify-between">
-        {!isCollapse && (
-          <span className="font-avenir-black text-primary p-3 flex items-center gap-3">
-            <HeartIcon className="size-4" /> Suitebite
-          </span>
-        )}
-        <ChevronDownIcon className="size-5 text-primary group-data-[open]:rotate-180" />
-      </DisclosureButton>
-      <DisclosurePanel className={`${!isCollapse && 'ml-5'} mt-1 flex flex-col`}>
-        {suitebiteSubFeatures.map((service, idx) => (
-          <NavLink
-            key={idx}
-            to={`/app/${service.path}`}
-            className={({ isActive }) =>
-              isActive
-                ? `bg-primary text-white transition-none p-3 rounded-lg flex items-center gap-3 no-underline ${!isCollapse ? 'w-full' : 'w-min'}`
-                : `bg-white text-primary transition-none p-3 rounded-lg flex items-center gap-3 no-underline hover:bg-blue-50 ${!isCollapse ? 'w-full' : 'w-min'}`
-            }
-          >
-            <service.icon className="size-4" />
-            {!isCollapse && <span className="no-underline! truncate font-avenir-black">{service.feature_name}</span>}
-          </NavLink>
-        ))}
-      </DisclosurePanel>
-    </Disclosure>
-  );
-
   if (isLoading) return null;
 
   return (
@@ -328,10 +290,7 @@ const CMSNavigation = () => {
           )}
         </section>        <section className=" flex-1 ">
           <ul className="list-none!">
-            {displayFeatures(regularFeatures.filter(f => f.feature_name !== 'Suitebite'), "/app")}
-            
-            {/* Suitebite Dropdown */}
-            <li>{displaySuitebiteDropdown(isCollapse)}</li>
+            {displayFeatures(regularFeatures, "/app")}
             
             {/* Mood and Points features */}
             {displayFeatures(suitebiteFeaturesForEmployees, "/app")}
