@@ -225,16 +225,28 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
           variations: varRes.variations
         };
         setProductModalData(productData);
-        // Build initial options mapping from variation_details
+        
+        // Build initial options mapping from variations array
         let initialOpts = {};
-        if (item.variation_details) {
+        if (item.variations && Array.isArray(item.variations)) {
+          item.variations.forEach(variation => {
+            if (variation.type_name && variation.option_id) {
+              initialOpts[variation.type_name] = variation.option_id;
+            }
+          });
+        }
+        // Legacy support for variation_details
+        else if (item.variation_details) {
           const details = Array.isArray(item.variation_details)
             ? item.variation_details
             : [item.variation_details];
           details.forEach(opt => {
-            initialOpts[opt.type_name] = opt.option_id;
+            if (opt.type_name && opt.option_id) {
+              initialOpts[opt.type_name] = opt.option_id;
+            }
           });
         }
+        
         setModalInitialOptions(initialOpts);
         setModalInitialQuantity(item.quantity);
         setCartItemToEdit(item);
@@ -244,18 +256,31 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
     }
   };
 
-  // Save edited cart item via updateCartItem
-  const handleSaveCartEdit = async (_productId, quantity, variationId) => {
+  // Save edited cart item via updateCartItem with new variation format
+  const handleSaveCartEdit = async (_productId, quantity, variationId, variations = []) => {
     if (!cartItemToEdit) return;
     try {
-      const variation = productModalData.variations.find(v => v.variation_id === variationId);
-      const variationDetails = variation ? variation.options : null;
       const updateData = { quantity };
-      if (variationId) updateData.variation_id = variationId;
-      if (variationDetails) updateData.variation_details = variationDetails;
+      
+      // If variations are provided (new format), use them
+      if (variations && variations.length > 0) {
+        updateData.variations = variations;
+      }
+      // Legacy support: convert variationId to new format if provided
+      else if (variationId && productModalData.variations) {
+        const variation = productModalData.variations.find(v => v.variation_id === variationId);
+        if (variation && variation.options) {
+          updateData.variations = variation.options.map(option => ({
+            variation_type_id: option.variation_type_id,
+            option_id: option.option_id
+          }));
+        }
+      }
+      
       const res = await suitebiteAPI.updateCartItem(cartItemToEdit.cart_item_id, updateData);
       if (res.success) {
         onUpdateCart();
+        showNotification('success', 'Cart item updated successfully');
       } else {
         showNotification('error', 'Failed to update cart item');
       }
@@ -268,6 +293,17 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
   };
 
   if (!isVisible) return null;
+
+  // Debug cart items with variations
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('🛒 ShoppingCart Debug - Cart Items:', uniqueCart.map(item => ({
+      cart_item_id: item.cart_item_id,
+      product_name: item.product_name,
+      variations: item.variations,
+      variation_details: item.variation_details,
+      hasVariations: (item.variations && Array.isArray(item.variations) && item.variations.length > 0) || item.variation_details
+    })));
+  }
 
   return (
     <>
@@ -350,22 +386,75 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                       <h3 className="text-sm font-medium text-gray-900 truncate">
                         {item.product_name}
                       </h3>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-xs text-gray-500">
-                          Variations: {item.variation_details
-                            ? (Array.isArray(item.variation_details)
-                                ? item.variation_details.map(opt => opt.option_label).join(' + ')
-                                : item.variation_details.option_label)
-                            : 'Standard'}
-                        </span>
-                        {item.variation_details && (
-                          <button
-                            onClick={() => openEditModal(item)}
-                            className="text-blue-600 text-xs hover:underline"
-                          >
-                            Edit
-                          </button>
-                        )}
+                      
+                      {/* Enhanced Variations Display */}
+                      <div className="mt-2">
+                        {(() => {
+                          const hasVariations = (item.variations && Array.isArray(item.variations) && item.variations.length > 0) || item.variation_details;
+                          
+                          // Debug cart item variations
+                          if (process.env.NODE_ENV !== 'production') {
+                            console.log(`🛒 Cart Item Debug: ${item.product_name}`, {
+                              variations: item.variations,
+                              variation_details: item.variation_details,
+                              hasVariations
+                            });
+                          }
+                          
+                          if (hasVariations) {
+                            let variationText = '';
+                            let variationElements = [];
+                            
+                            if (item.variations && Array.isArray(item.variations) && item.variations.length > 0) {
+                              variationElements = item.variations.map((v, index) => (
+                                <span key={index} className="text-xs px-2 py-1 bg-blue-50 text-blue-700 rounded-full border border-blue-200 mr-1">
+                                  {v.option_label || v.option_value || `${v.type_name}: Unknown`}
+                                </span>
+                              ));
+                            } else if (item.variation_details) {
+                              const details = Array.isArray(item.variation_details) ? item.variation_details : [item.variation_details];
+                              variationElements = details.map((opt, index) => (
+                                <span key={index} className="text-xs px-2 py-1 bg-blue-50 text-blue-700 rounded-full border border-blue-200 mr-1">
+                                  {opt.option_label || opt.option_value || 'Unknown'}
+                                </span>
+                              ));
+                            }
+                            
+                            return (
+                              <div className="flex items-center justify-between">
+                                <div className="flex flex-wrap gap-1">
+                                  {variationElements.length > 0 ? variationElements : (
+                                    <span className="text-xs px-2 py-1 bg-yellow-50 text-yellow-700 rounded-full border border-yellow-200">
+                                      Variations not loaded
+                                    </span>
+                                  )}
+                                </div>
+                                <button
+                                  onClick={() => openEditModal(item)}
+                                  className="text-blue-600 text-xs hover:text-blue-800 hover:underline font-medium"
+                                  title="Edit product options"
+                                >
+                                  Edit Options
+                                </button>
+                              </div>
+                            );
+                          } else {
+                            return (
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs px-2 py-1 bg-gray-50 text-gray-600 rounded-full border border-gray-200">
+                                  Standard
+                                </span>
+                                <button
+                                  onClick={() => openEditModal(item)}
+                                  className="text-gray-500 text-xs hover:text-gray-700 hover:underline"
+                                  title="View product details"
+                                >
+                                  View Details
+                                </button>
+                              </div>
+                            );
+                          }
+                        })()}
                       </div>
                       
                       {/* Price and Quantity */}

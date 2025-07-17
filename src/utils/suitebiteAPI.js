@@ -83,7 +83,14 @@ export const suitebiteAPI = {
   },
   
   addToCart: async (cartData) => {
-    const response = await axios.post(`${API_BASE_URL}/cart/add`, cartData, createAuthHeaders());
+    // Support both old and new variation formats
+    const requestData = {
+      product_id: cartData.product_id,
+      quantity: cartData.quantity || 1,
+      variations: cartData.variations || [],
+      variation_id: cartData.variation_id || null // Legacy support
+    };
+    const response = await axios.post(`${API_BASE_URL}/cart/add`, requestData, createAuthHeaders());
     return response.data;
   },
   
@@ -127,8 +134,12 @@ export const suitebiteAPI = {
   },
   
   // Get products with their variations for shop display
-  getProductsWithVariations: async (activeOnly = 'true') => {
-    const response = await axios.get(`${API_BASE_URL}/products/with-variations?active_only=${activeOnly}`, createAuthHeaders());
+  getProductsWithVariations: async (activeOnly = 'true', category = null) => {
+    const params = new URLSearchParams({ active_only: activeOnly });
+    if (category && category !== 'all') {
+      params.append('category', category);
+    }
+    const response = await axios.get(`${API_BASE_URL}/products/with-variations?${params.toString()}`, createAuthHeaders());
     return response.data;
   },
 

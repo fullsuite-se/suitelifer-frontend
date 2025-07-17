@@ -123,14 +123,37 @@ const ProductDetailModal = ({
     if (isAddingToCart) return;
 
     // Ensure variation selection if required
-    if (availableVariations.length > 0 && !selectedVariation) {
-      alert('Please select all product options before adding to cart.');
-      return;
+    if (availableVariations.length > 0 && variationTypes.length > 0) {
+      const allTypesSelected = variationTypes.every(type => selectedOptions[type]);
+      if (!allTypesSelected) {
+        alert('Please select all product options before adding to cart.');
+        return;
+      }
     }
 
     try {
       setIsAddingToCart(true);
-      await onAddToCart(product.product_id, quantity, selectedVariation?.variation_id);
+      
+      // Prepare variation data in the new format
+      const variations = Object.entries(selectedOptions).map(([typeName, optionId]) => {
+        const option = availableVariations
+          .flatMap(v => v.options || [])
+          .find(opt => opt.option_id === optionId && opt.type_name === typeName);
+        
+        return {
+          variation_type_id: option?.variation_type_id,
+          option_id: optionId
+        };
+      }).filter(v => v.variation_type_id && v.option_id);
+
+      // Debug: Log selected variations
+      console.log('🎯 ProductDetailModal - Adding to cart with variations:', {
+        selectedOptions,
+        preparedVariations: variations,
+        product: product.name
+      });
+
+      await onAddToCart(product.product_id, quantity, null, variations);
       onClose(); // Close modal after adding to cart
     } catch (error) {
       console.error('Error adding to cart from modal:', error);
@@ -146,14 +169,30 @@ const ProductDetailModal = ({
     if (isBuying) return;
 
     // Ensure variation selection if required
-    if (availableVariations.length > 0 && !selectedVariation) {
-      alert('Please select all product options before confirming order.');
-      return;
+    if (availableVariations.length > 0 && variationTypes.length > 0) {
+      const allTypesSelected = variationTypes.every(type => selectedOptions[type]);
+      if (!allTypesSelected) {
+        alert('Please select all product options before confirming order.');
+        return;
+      }
     }
 
     try {
       setIsBuying(true);
-      await onBuyNow(product.product_id, quantity, selectedVariation?.variation_id);
+      
+      // Prepare variation data in the new format
+      const variations = Object.entries(selectedOptions).map(([typeName, optionId]) => {
+        const option = availableVariations
+          .flatMap(v => v.options || [])
+          .find(opt => opt.option_id === optionId && opt.type_name === typeName);
+        
+        return {
+          variation_type_id: option?.variation_type_id,
+          option_id: optionId
+        };
+      }).filter(v => v.variation_type_id && v.option_id);
+
+      await onBuyNow(product.product_id, quantity, null, variations);
       onClose(); // Close modal after purchase
     } catch (error) {
       console.error('Error processing buy now from modal:', error);

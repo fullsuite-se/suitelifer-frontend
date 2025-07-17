@@ -194,7 +194,8 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate }) => {
           if (cartResponse.success) {
             // Update cart in Zustand store
             const { setCart } = useSuitebiteStore.getState();
-            const mappedCart = (cartResponse.cartItems || []).map(item => ({
+            const cartItems = cartResponse.data?.cartItems || [];
+            const mappedCart = cartItems.map(item => ({
               cart_item_id: item.cart_item_id,
               product_id: item.product_id,
               product_name: item.product_name || item.name,
@@ -202,6 +203,7 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate }) => {
               quantity: item.quantity,
               image_url: item.image_url,
               variation_id: item.variation_id,
+              variations: item.variations, // Add support for new variation format
               variation_details: item.variation_details
             }));
             setCart(mappedCart);

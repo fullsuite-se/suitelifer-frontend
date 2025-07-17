@@ -49,11 +49,11 @@ const ShopTabContent = () => {
   const [sortBy, setSortBy] = useState('name'); // Product sorting method
   const [priceRange, setPriceRange] = useState({ min: 0, max: 5000 }); // Price filter range
 
-  // Load shop data on component mount
+  // Load shop data on component mount and when category changes
   useEffect(() => {
     loadShopData();
     // eslint-disable-next-line
-  }, []);
+  }, [selectedCategory]);
 
   /**
    * Shows toast notification with specified type and message
@@ -74,7 +74,7 @@ const ShopTabContent = () => {
       setLoading(true);
       
       const [productsResponse, cartResponse, heartbitsResponse] = await Promise.all([
-        suitebiteAPI.getProductsWithVariations(),
+        suitebiteAPI.getProductsWithVariations('true', selectedCategory),
         suitebiteAPI.getCart(),
         suitebiteAPI.getUserHeartbits()
       ]);
@@ -83,10 +83,37 @@ const ShopTabContent = () => {
         setProducts(productsResponse.products);
         // Sync categories from loaded products
         syncCategoriesFromProducts(productsResponse.products);
+        
+        // Log enhanced product data for debugging
+        console.log(`✅ Loaded ${productsResponse.products.length} products with enhanced variation data`);
+        productsResponse.products.forEach(product => {
+          if (product.has_variations) {
+            console.log(`📦 ${product.name}: ${product.variation_count} variations (${product.variation_types.join(', ')})`);
+          }
+        });
       }
 
       if (cartResponse.success) {
-        setCart(cartResponse.cartItems);
+        // Parse cart data correctly from backend response
+        const cartItems = cartResponse.data?.cartItems || [];
+        setCart(cartItems);
+        console.log(`🛒 Loaded ${cartItems.length} cart items from API`);
+        
+        // Debug cart items with variations
+        cartItems.forEach(item => {
+          if (item.variations && item.variations.length > 0) {
+            console.log(`🛒 Cart item with variations: ${item.product_name}`, {
+              variations: item.variations,
+              variation_labels: item.variations.map(v => v.option_label || v.option_value).join(' + ')
+            });
+          } else if (item.variation_details) {
+            console.log(`🛒 Cart item with legacy variations: ${item.product_name}`, {
+              variation_details: item.variation_details
+            });
+          } else {
+            console.log(`🛒 Cart item (standard): ${item.product_name}`);
+          }
+        });
       }
 
       if (heartbitsResponse.success) {
@@ -104,20 +131,49 @@ const ShopTabContent = () => {
    * Adds a product to the shopping cart
    * @param {number} productId - ID of the product to add
    * @param {number} quantity - Quantity to add (default: 1)
+   * @param {number} variationId - Optional variation ID (legacy support)
+   * @param {Array} variations - Array of variation selections
    */
-  const handleAddToCart = async (productId, quantity = 1) => {
+  const handleAddToCart = async (productId, quantity = 1, variationId = null, variations = []) => {
     try {
-      const response = await suitebiteAPI.addToCart({ product_id: productId, quantity });
+      const cartData = { 
+        product_id: productId, 
+        quantity,
+        variations,
+        variation_id: variationId // Legacy support
+      };
+      
+      // Debug: Log what we're sending to the API
+      console.log('🛒 Adding to cart:', {
+        productId,
+        quantity,
+        variations,
+        hasVariations: variations && variations.length > 0
+      });
+      
+      const response = await suitebiteAPI.addToCart(cartData);
       if (response.success) {
         // Refresh cart data after successful addition
         const cartResponse = await suitebiteAPI.getCart();
         if (cartResponse.success) {
-          setCart(cartResponse.cartItems);
+          const cartItems = cartResponse.data?.cartItems || [];
+          setCart(cartItems);
+          console.log(`🛒 Cart refreshed after add: ${cartItems.length} items`);
+          
+          // Debug the newly added item
+          const newItem = cartItems[cartItems.length - 1]; // Assuming newest item is last
+          if (newItem && (newItem.variations?.length > 0 || newItem.variation_details)) {
+            console.log('✅ Added item with variations:', {
+              product_name: newItem.product_name,
+              variations: newItem.variations,
+              variation_details: newItem.variation_details
+            });
+          }
         }
         showNotification('success', 'Item added to cart! 🛒');
       }
     } catch (error) {
-      // Error handling for production - replace console.error with proper logging
+      console.error('Error adding to cart:', error);
       showNotification('error', 'Failed to add item to cart');
     }
   };
@@ -126,18 +182,17 @@ const ShopTabContent = () => {
    * Handles direct purchase (buy now) functionality
    * @param {number} productId - ID of the product to buy
    * @param {number} quantity - Quantity to buy (default: 1)
-   * @param {number} variationId - Optional variation ID
+   * @param {number} variationId - Optional variation ID (legacy support)
+   * @param {Array} variations - Array of variation selections
    */
-  const handleBuyNow = async (productId, quantity = 1, variationId = null) => {
+  const handleBuyNow = async (productId, quantity = 1, variationId = null, variations = []) => {
     try {
       const cartData = { 
         product_id: productId, 
-        quantity: quantity 
+        quantity: quantity,
+        variations,
+        variation_id: variationId // Legacy support
       };
-
-      if (variationId) {
-        cartData.variation_id = variationId;
-      }
 
       const response = await suitebiteAPI.addToCart(cartData);
       
@@ -145,7 +200,8 @@ const ShopTabContent = () => {
         // Get the cart item that was just added
         const cartResponse = await suitebiteAPI.getCart();
         if (cartResponse.success) {
-          const newCartItem = cartResponse.cartItems.find(item => 
+          const cartItems = cartResponse.data?.cartItems || cartResponse.cartItems || [];
+          const newCartItem = cartItems.find(item => 
             item.product_id === productId && 
             (!variationId || item.variation_id === variationId)
           );
