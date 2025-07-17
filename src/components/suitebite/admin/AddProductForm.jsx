@@ -195,10 +195,10 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
 
   const loadInitialData = async () => {
     try {
-      const [typesResponse, optionsResponse, categoriesResponse] = await Promise.all([
+      const [typesResponse, optionsResponse] = await Promise.all([
         suitebiteAPI.getVariationTypes(),
         suitebiteAPI.getVariationOptions(),
-        suitebiteAPI.getAllCategories()
+        refreshCategories() // Use the store's refresh method instead
       ]);
 
       if (typesResponse.success) {
@@ -206,22 +206,6 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
       }
       if (optionsResponse.success) {
         setVariationOptions(optionsResponse.variation_options || []);
-      }
-      if (categoriesResponse.success) {
-        // Sync database categories with local store
-        const dbCategories = categoriesResponse.categories || [];
-        dbCategories.forEach(dbCategory => {
-          // Add category with database ID if it doesn't exist in store
-          if (!getAllCategories().find(cat => cat.name === dbCategory.category_name)) {
-            addCategory({
-              name: dbCategory.category_name,
-              category_id: dbCategory.category_id,
-              color: '#6B7280',
-              bgColor: '#F3F4F6',
-              description: 'Database category'
-            });
-          }
-        });
       }
     } catch (error) {
       console.error('Error loading initial data:', error);
@@ -321,7 +305,8 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
       });
 
       if (response.success) {
-        addCategory(formData.newCategory.trim());
+        // Refresh categories from backend to ensure new category has proper category_id
+        await refreshCategories();
         setFormData(prev => ({ 
           ...prev, 
           category: formData.newCategory.trim(), 
@@ -342,6 +327,16 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
     if (!categoryToDelete) return;
 
     try {
+      // If the category doesn't have a category_id, it's likely a frontend-only category
+      if (!categoryToDelete.category_id) {
+        showNotification('warning', 'This category exists only in the frontend. Please refresh the page to sync with database.');
+        // Remove from frontend store only
+        removeCategory(categoryToDelete.name || categoryToDelete.category_name);
+        setShowDeleteCategoryModal(false);
+        setCategoryToDelete(null);
+        return;
+      }
+
       const response = await suitebiteAPI.deleteCategory(categoryToDelete.category_id);
 
       if (response.success) {
@@ -523,6 +518,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
           name: formData.name.trim(),
           description: formData.description.trim(),
           price_points: parseInt(formData.price_points),
+          category: formData.category.trim(),
           slug: formData.slug,
           is_active: formData.is_active
         };
@@ -600,6 +596,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
           name: formData.name.trim(),
           description: formData.description.trim(),
           price_points: parseInt(formData.price_points),
+          category: formData.category.trim(),
           slug: formData.slug,
           is_active: formData.is_active
         };
