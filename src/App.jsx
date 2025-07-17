@@ -41,7 +41,6 @@ import SuitebiteShop from "./pages/employee/SuitebiteShop";
 import SuitebiteLeaderboard from "./pages/employee/SuitebiteLeaderboard";
 
 // Admin Pages
-import AdminPointsSystem from "./pages/admin/AdminPointsSystem";
 // import AdminPointsDashboard from "./pages/admin/AdminPointsDashboard";
 // import AdminPointsUsers from "./pages/admin/AdminPointsUsers";
 // import AdminPointsProducts from "./pages/admin/AdminPointsProducts";
