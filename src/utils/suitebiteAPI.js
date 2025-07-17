@@ -629,6 +629,26 @@ export const suitebiteAPI = {
   },
 
   /**
+   * Upload a single image to Cloudinary for new products (no productId required)
+   * @param {File} imageFile - Image file to upload
+   * @param {string} folder - Cloudinary folder (e.g. 'products')
+   * @returns {Promise} Response with imageUrl
+   */
+  uploadGenericProductImage: async (imageFile, folder = 'products') => {
+    const formData = new FormData();
+    formData.append('file', imageFile);
+    const response = await axios.post(
+      `${API_BASE_URL}/upload-image/${folder}`,
+      formData,
+      {
+        ...createAuthHeaders(),
+        'Content-Type': 'multipart/form-data'
+      }
+    );
+    return response.data;
+  },
+
+  /**
    * Delete a product image
    * @param {string} productId - Product ID
    * @param {string} publicId - Cloudinary public ID

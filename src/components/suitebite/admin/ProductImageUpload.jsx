@@ -123,36 +123,65 @@ const ProductImageUpload = ({
 
   // Upload files
   const uploadFiles = async () => {
-    if (files.length === 0 || !productId) return;
+    if (files.length === 0) return;
 
     setUploading(true);
     setErrors([]);
 
     try {
-      if (multiple) {
-        // Upload multiple files
-        const fileArray = files.map(f => f.file);
-        const response = await suitebiteAPI.uploadMultipleProductImages(productId, fileArray);
-        
-        if (response.success) {
-          setUploadedImages(response.images);
-          onImageUploaded?.(response.images);
-          setFiles([]);
-          setPreview('');
+      // If productId exists, use product-specific endpoints
+      if (productId) {
+        if (multiple) {
+          // Upload multiple files for existing product
+          const fileArray = files.map(f => f.file);
+          const response = await suitebiteAPI.uploadMultipleProductImages(productId, fileArray);
+          if (response.success) {
+            setUploadedImages(response.images);
+            onImageUploaded?.(response.images);
+            setFiles([]);
+            setPreview('');
+          } else {
+            throw new Error(response.message || 'Upload failed');
+          }
         } else {
-          throw new Error(response.message || 'Upload failed');
+          // Upload single file for existing product
+          const response = await suitebiteAPI.uploadProductImage(productId, files[0].file);
+          if (response.success) {
+            setUploadedImages([response.images]);
+            setPreview(response.images.original);
+            onImageUploaded?.(response.images);
+            setFiles([]);
+          } else {
+            throw new Error(response.message || 'Upload failed');
+          }
         }
       } else {
-        // Upload single file
-        const response = await suitebiteAPI.uploadProductImage(productId, files[0].file);
-        
-        if (response.success) {
-          setUploadedImages([response.images]);
-          setPreview(response.images.original);
-          onImageUploaded?.(response.images);
-          setFiles([]);
+        // No productId: use generic Cloudinary upload endpoint for new products
+        if (multiple) {
+          // Upload all files in parallel
+          const uploadPromises = files.map(f => suitebiteAPI.uploadGenericProductImage(f.file, 'products'));
+          const results = await Promise.all(uploadPromises);
+          const imageUrls = results.map(r => r.imageUrl || r.url || r.secure_url).filter(Boolean);
+          if (imageUrls.length > 0) {
+            setUploadedImages(imageUrls);
+            onImageUploaded?.(imageUrls);
+            setFiles([]);
+            setPreview('');
+          } else {
+            throw new Error('Upload failed');
+          }
         } else {
-          throw new Error(response.message || 'Upload failed');
+          // Single file upload
+          const response = await suitebiteAPI.uploadGenericProductImage(files[0].file, 'products');
+          const imageUrl = response.imageUrl || response.url || response.secure_url;
+          if (imageUrl) {
+            setUploadedImages([imageUrl]);
+            setPreview(imageUrl);
+            onImageUploaded?.([imageUrl]);
+            setFiles([]);
+          } else {
+            throw new Error('Upload failed');
+          }
         }
       }
     } catch (error) {

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import ProductImageUpload from './ProductImageUpload';
 import { suitebiteAPI } from '../../../utils/suitebiteAPI';
 import {
   PlusIcon,
@@ -38,9 +39,8 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
     is_active: true // Always set to true since we removed the UI controls
   });
 
-  // Image upload state
-  const [images, setImages] = useState([]);
-  const [imagePreviews, setImagePreviews] = useState([]);
+  // Image upload state (Cloudinary)
+  const [uploadedImages, setUploadedImages] = useState([]); // Array of Cloudinary URLs
   const [uploadingImages, setUploadingImages] = useState(false);
 
   // Variation state
@@ -75,8 +75,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
   const [pendingSubmit, setPendingSubmit] = useState(false);
 
   // Refs
-  const fileInputRef = useRef(null);
-  const imageUploadRef = useRef(null);
+  // Remove unused file input refs
 
   // Category store
   const { getAllCategories, addCategory, removeCategory, refreshCategories } = useCategoryStore();
@@ -267,30 +266,14 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleImageUpload = (e) => {
-    const files = Array.from(e.target.files);
-    
-    files.forEach(file => {
-      // Validate file
-      const validation = suitebiteAPI.validateImageFile(file);
-      if (!validation.isValid) {
-        showNotification('error', validation.errors[0]);
-        return;
-      }
-
-      // Create preview
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setImagePreviews(prev => [...prev, e.target.result]);
-        setImages(prev => [...prev, file]);
-      };
-      reader.readAsDataURL(file);
-    });
+  // Cloudinary image upload handler
+  const handleImagesUploaded = (images) => {
+    // images: array of { original: url, ... }
+    setUploadedImages(images.map(img => img.original || img));
   };
 
   const removeImage = (index) => {
-    setImages(prev => prev.filter((_, i) => i !== index));
-    setImagePreviews(prev => prev.filter((_, i) => i !== index));
+    setUploadedImages(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleAddCategory = async () => {
@@ -624,21 +607,10 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
         }
       }
 
-      // Upload images (unchanged logic)
-      if (images.length > 0) {
-        setUploadingImages(true);
-        if (images.length === 1) {
-          const imageResponse = await suitebiteAPI.uploadProductImage(productId, images[0]);
-          if (!imageResponse.success) {
-            throw new Error(imageResponse.message || 'Failed to upload product image');
-          }
-        } else {
-          const imageResponse = await suitebiteAPI.uploadMultipleProductImages(productId, images);
-          if (!imageResponse.success) {
-            throw new Error(imageResponse.message || 'Failed to upload product images');
-          }
-        }
-        setUploadingImages(false);
+      // Save Cloudinary image URLs to product (first image as main)
+      if (uploadedImages.length > 0) {
+        // If your backend supports multiple images, send all; else, just the first
+        await suitebiteAPI.updateProduct(productId, { image_url: uploadedImages[0] });
       }
 
       showNotification('success', `Product ${mode === 'edit' ? 'updated' : 'created'} successfully!`);
@@ -977,48 +949,29 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
               {errors.price_points && <p className="text-red-500 text-sm mt-1">{errors.price_points}</p>}
             </div>
 
-            {/* Image Upload Section (moved below price) */}
+            {/* Image Upload Section (Cloudinary) */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Product Images
               </label>
-              {/* Image Upload Area */}
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-[#0097b2] transition-colors">
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="hidden"
-                />
-                <div className="space-y-4">
-                  <PhotoIcon className="mx-auto h-12 w-12 text-gray-400" />
-                  <div>
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      className="text-[#0097b2] hover:text-[#007a8e] font-medium"
-                    >
-                      Click to upload
-                    </button>
-                    <span className="text-gray-500"> or drag and drop</span>
-                  </div>
-                  <p className="text-xs text-gray-500">
-                    PNG, JPG, GIF, WebP up to 10MB each
-                  </p>
-                </div>
-              </div>
+              <ProductImageUpload
+                productId={product?.product_id || null}
+                currentImageUrl={uploadedImages[0] || ''}
+                onImageUploaded={handleImagesUploaded}
+                onError={err => showNotification('error', err?.message || 'Image upload failed')}
+                multiple={true}
+                maxFiles={5}
+              />
               {/* Image Previews */}
-              {imagePreviews.length > 0 && (
+              {uploadedImages.length > 0 && (
                 <div className="mt-4">
-                  <h4 className="text-sm font-medium text-gray-700 mb-2">Image Previews</h4>
+                  <h4 className="text-sm font-medium text-gray-700 mb-2">Uploaded Images</h4>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {imagePreviews.map((preview, index) => (
+                    {uploadedImages.map((url, index) => (
                       <div key={index} className="relative group">
                         <img
-                          src={preview}
-                          alt={`Preview ${index + 1}`}
+                          src={url}
+                          alt={`Uploaded ${index + 1}`}
                           className="w-full h-24 object-cover rounded-lg"
                         />
                         <button
