@@ -46,6 +46,14 @@ const PointsDashboard = () => {
     }
   };
 
+  // Get user avatar utility function
+  const getUserAvatar = (transaction) => {
+    if (transaction.related_user_avatar) {
+      return transaction.related_user_avatar;
+    }
+    return '/images/default-avatar.png'; // Default avatar fallback
+  };
+
   // Fetch user's points data
   const { data: pointsData, isLoading: pointsLoading, error: pointsError } = useQuery({
     queryKey: ['points'],
@@ -282,7 +290,16 @@ const PointsDashboard = () => {
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    {getTransactionIcon(transaction.type)}
+                    {transaction.related_user ? (
+                      <img
+                        src={getUserAvatar(transaction)}
+                        alt={transaction.related_user}
+                        className="w-10 h-10 rounded-full object-cover"
+                        style={{ border: '2px solid #0097b2' }}
+                      />
+                    ) : (
+                      getTransactionIcon(transaction.type)
+                    )}
                     <div>
                       <p className="font-medium" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                         {transaction.description || transaction.type.replace('_', ' ').toUpperCase()}
@@ -291,7 +308,11 @@ const PointsDashboard = () => {
                         {formatDateSafely(transaction.createdAt || transaction.created_at)}
                       </p>
                       {transaction.message && (
-                        <p className="text-sm mt-1" style={{ color: '#0097b2', fontFamily: 'Avenir, sans-serif' }}>{transaction.message}</p>
+                        <div className="mt-1 p-2 rounded-lg" style={{ backgroundColor: '#e6f7ff', border: '1px solid #0097b2' }}>
+                          <p className="text-sm" style={{ color: '#0097b2', fontFamily: 'Avenir, sans-serif' }}>
+                            &ldquo;{transaction.message}&rdquo;
+                          </p>
+                        </div>
                       )}
                     </div>
                   </div>
