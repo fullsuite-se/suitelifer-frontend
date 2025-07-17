@@ -622,10 +622,28 @@ if (anyLoading) {
               
               <div className="space-y-4">
                 <div className="text-center">
-                  <div className="text-4xl font-bold mb-2" style={{ color: '#0097b2', fontFamily: 'Avenir, sans-serif', fontWeight: '800' }}>
-                    {availableHeartbits} | {pointsData?.data?.monthlyReceivedHeartbits || 0}
+                  <div className="flex justify-center items-center" style={{ minHeight: 70 }}>
+                    {/* Remaining */}
+                    <div className="flex flex-col items-center" style={{ minWidth: 60 }}>
+                      <div className="text-4xl font-bold" style={{ color: '#0097b2', fontFamily: 'Avenir, sans-serif', fontWeight: '800' }}>
+                        {availableHeartbits}
+                      </div>
+                      <div className="text-lg font-medium" style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>
+                        Remaining
+                      </div>
+                    </div>
+                    {/* Vertical Divider */}
+                    <div style={{ width: 2, height: 56, background: '#0097b2', margin: '0 32px', borderRadius: 1 }} />
+                    {/* Received */}
+                    <div className="flex flex-col items-center" style={{ minWidth: 60 }}>
+                      <div className="text-4xl font-bold" style={{ color: '#0097b2', fontFamily: 'Avenir, sans-serif', fontWeight: '800' }}>
+                        {pointsData?.data?.monthlyReceivedHeartbits || 0}
+                      </div>
+                      <div className="text-lg font-medium" style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>
+                        Received
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-lg font-medium" style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>heartbits remaining | received this month</div>
                 </div>
                 
                 <div className="pt-4 space-y-3" style={{ borderTop: '1px solid #eee3e3' }}>
