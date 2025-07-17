@@ -27,11 +27,33 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
   const [productModalData, setProductModalData] = useState(null);
   const [modalInitialOptions, setModalInitialOptions] = useState({});
   const [modalInitialQuantity, setModalInitialQuantity] = useState(1);
+  
+  // Inline editing state
+  const [inlineEditingItem, setInlineEditingItem] = useState(null);
+  const [inlineEditData, setInlineEditData] = useState({
+    selectedOptions: {},
+    availableVariations: [],
+    variationTypes: []
+  });
 
   // Update real-time heartbits when prop changes
   useEffect(() => {
     setRealTimeHeartbits(userHeartbits);
   }, [userHeartbits]);
+
+  // Clean up inline editing when cart is closed or cart changes
+  useEffect(() => {
+    if (!isVisible) {
+      cancelInlineEdit();
+    }
+  }, [isVisible]);
+
+  // Cancel inline editing if the item being edited is no longer in the cart
+  useEffect(() => {
+    if (inlineEditingItem && !uniqueCart.find(item => item.cart_item_id === inlineEditingItem)) {
+      cancelInlineEdit();
+    }
+  }, [uniqueCart, inlineEditingItem]);
 
   // Only auto-select all items if cart is non-empty and nothing is selected yet (and not on every cart change)
   useEffect(() => {
@@ -60,13 +82,13 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
     }
   }
 
-  const total = uniqueCart.reduce((sum, item) => sum + (item.points_cost * item.quantity), 0);
+  const total = uniqueCart.reduce((sum, item) => sum + (item.price_points * item.quantity), 0);
   const itemCount = uniqueCart.reduce((sum, item) => sum + item.quantity, 0);
   
   // Calculate selected items totals
   const selectedItemsTotal = uniqueCart.reduce((sum, item) => {
     if (selectedItems.has(item.cart_item_id)) {
-      return sum + (item.points_cost * item.quantity);
+      return sum + (item.price_points * item.quantity);
     }
     return sum;
   }, 0);
@@ -169,6 +191,11 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
     try {
       setItemLoadingState(itemId, 'removing');
       
+      // Cancel inline editing if this item is being edited
+      if (inlineEditingItem === itemId) {
+        cancelInlineEdit();
+      }
+      
       // Remove from selected items optimistically
       const newSelected = new Set(selectedItems);
       newSelected.delete(itemId);
@@ -213,6 +240,135 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
   };
 
   // Open product detail modal to edit a cart item
+  // Inline editing functions
+  const startInlineEdit = async (item) => {
+    try {
+      setItemLoadingState(item.cart_item_id, 'loading');
+      
+      const [prodRes, varRes] = await Promise.all([
+        suitebiteAPI.getProductById(item.product_id),
+        suitebiteAPI.getProductVariations(item.product_id)
+      ]);
+      
+      if (prodRes.success && varRes.success) {
+        // Build current selected options from cart item variations
+        let currentOptions = {};
+        if (item.variations && Array.isArray(item.variations)) {
+          item.variations.forEach(variation => {
+            if (variation.type_name && variation.option_id) {
+              currentOptions[variation.type_name] = variation.option_id;
+            }
+          });
+        }
+        
+        // Extract variation types
+        const types = new Set();
+        varRes.variations.forEach(variation => {
+          variation.options?.forEach(option => {
+            types.add(option.type_name);
+          });
+        });
+        
+        setInlineEditData({
+          selectedOptions: currentOptions,
+          availableVariations: varRes.variations,
+          variationTypes: Array.from(types)
+        });
+        
+        setInlineEditingItem(item.cart_item_id);
+      }
+    } catch (error) {
+      console.error('Error starting inline edit:', error);
+      showNotification('error', 'Failed to load product variations');
+    } finally {
+      setItemLoadingState(item.cart_item_id, null);
+    }
+  };
+
+  const cancelInlineEdit = () => {
+    setInlineEditingItem(null);
+    setInlineEditData({
+      selectedOptions: {},
+      availableVariations: [],
+      variationTypes: []
+    });
+  };
+
+  const saveInlineEdit = async (item) => {
+    try {
+      setItemLoadingState(item.cart_item_id, 'updating');
+      
+      // Convert selected options to variations array format
+      const variationsArray = [];
+      Object.entries(inlineEditData.selectedOptions).forEach(([typeName, optionId]) => {
+        // Find the variation type id from available variations
+        let variationTypeId = null;
+        for (const variation of inlineEditData.availableVariations) {
+          const option = variation.options?.find(opt => 
+            opt.type_name === typeName && opt.option_id === optionId
+          );
+          if (option) {
+            variationTypeId = option.variation_type_id;
+            break;
+          }
+        }
+        
+        if (variationTypeId) {
+          variationsArray.push({
+            variation_type_id: variationTypeId,
+            option_id: optionId
+          });
+        }
+      });
+      
+      const updateData = {
+        quantity: item.quantity,
+        variations: variationsArray
+      };
+      
+      const res = await suitebiteAPI.updateCartItem(item.cart_item_id, updateData);
+      if (res.success) {
+        onUpdateCart();
+        showNotification('success', 'Variations updated successfully');
+        cancelInlineEdit();
+      } else {
+        showNotification('error', 'Failed to update variations');
+      }
+    } catch (error) {
+      console.error('Error saving inline edit:', error);
+      showNotification('error', 'Failed to update variations');
+    } finally {
+      setItemLoadingState(item.cart_item_id, null);
+    }
+  };
+
+  const handleInlineOptionChange = (typeName, optionId) => {
+    setInlineEditData(prev => ({
+      ...prev,
+      selectedOptions: {
+        ...prev.selectedOptions,
+        [typeName]: optionId
+      }
+    }));
+  };
+
+  const getAvailableOptionsForType = (typeName) => {
+    const options = new Set();
+    inlineEditData.availableVariations.forEach(variation => {
+      variation.options?.forEach(option => {
+        if (option.type_name === typeName) {
+          options.add(JSON.stringify({
+            id: option.option_id,
+            value: option.option_value,
+            label: option.option_label
+          }));
+        }
+      });
+    });
+    
+    return Array.from(options).map(optStr => JSON.parse(optStr));
+  };
+
   const openEditModal = async (item) => {
     try {
       const [prodRes, varRes] = await Promise.all([
@@ -387,10 +543,11 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                         {item.product_name}
                       </h3>
                       
-                      {/* Enhanced Variations Display */}
+                      {/* Enhanced Variations Display with Inline Editing */}
                       <div className="mt-2">
                         {(() => {
                           const hasVariations = (item.variations && Array.isArray(item.variations) && item.variations.length > 0) || item.variation_details;
+                          const isEditingThisItem = inlineEditingItem === item.cart_item_id;
                           
                           // Debug cart item variations
                           if (process.env.NODE_ENV !== 'production') {
@@ -401,8 +558,88 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                             });
                           }
                           
+                          if (isEditingThisItem) {
+                            // Inline editing mode
+                            return (
+                              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 space-y-3 animate-pulse-once">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-sm font-medium text-blue-800 flex items-center gap-1">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                    Edit Options
+                                  </span>
+                                  <div className="flex items-center gap-2">
+                                    <button
+                                      onClick={() => saveInlineEdit(item)}
+                                      disabled={itemLoadingStates[item.cart_item_id] === 'updating'}
+                                      className="text-green-600 hover:text-green-800 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 px-2 py-1 rounded hover:bg-green-50 transition-colors"
+                                    >
+                                      {itemLoadingStates[item.cart_item_id] === 'updating' ? (
+                                        <>
+                                          <svg className="w-3 h-3 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                          </svg>
+                                          Saving...
+                                        </>
+                                      ) : (
+                                        <>
+                                          <CheckIcon className="w-3 h-3" />
+                                          Save
+                                        </>
+                                      )}
+                                    </button>
+                                    <button
+                                      onClick={cancelInlineEdit}
+                                      className="text-gray-500 hover:text-gray-700 text-sm px-2 py-1 rounded hover:bg-gray-100 transition-colors"
+                                    >
+                                      Cancel
+                                    </button>
+                                  </div>
+                                </div>
+                                
+                                {/* Variation type selectors */}
+                                <div className="space-y-3">
+                                  {inlineEditData.variationTypes.length > 0 ? (
+                                    inlineEditData.variationTypes.map(typeName => {
+                                      const availableOptions = getAvailableOptionsForType(typeName);
+                                      const selectedOptionId = inlineEditData.selectedOptions[typeName];
+                                      
+                                      return (
+                                        <div key={typeName} className="space-y-2">
+                                          <label className="block text-xs font-medium text-gray-700 capitalize flex items-center gap-1">
+                                            <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
+                                            {typeName}
+                                          </label>
+                                          <div className="flex flex-wrap gap-2">
+                                            {availableOptions.map(option => (
+                                              <button
+                                                key={option.id}
+                                                onClick={() => handleInlineOptionChange(typeName, option.id)}
+                                                className={`text-xs px-3 py-1.5 rounded-full border transition-all duration-200 font-medium ${
+                                                  selectedOptionId === option.id
+                                                    ? 'bg-blue-600 text-white border-blue-600 shadow-sm scale-105'
+                                                    : 'bg-white text-gray-700 border-gray-300 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700'
+                                                }`}
+                                              >
+                                                {option.label || option.value}
+                                              </button>
+                                            ))}
+                                          </div>
+                                        </div>
+                                      );
+                                    })
+                                  ) : (
+                                    <div className="text-center py-4">
+                                      <div className="text-gray-500 text-sm">No variations available for this product</div>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          }
+                          
                           if (hasVariations) {
-                            let variationText = '';
                             let variationElements = [];
                             
                             if (item.variations && Array.isArray(item.variations) && item.variations.length > 0) {
@@ -429,13 +666,23 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                                     </span>
                                   )}
                                 </div>
-                                <button
-                                  onClick={() => openEditModal(item)}
-                                  className="text-blue-600 text-xs hover:text-blue-800 hover:underline font-medium"
-                                  title="Edit product options"
-                                >
-                                  Edit Options
-                                </button>
+                                <div className="flex items-center gap-2">
+                                  <button
+                                    onClick={() => startInlineEdit(item)}
+                                    disabled={itemLoadingStates[item.cart_item_id] === 'loading'}
+                                    className="text-blue-600 text-xs hover:text-blue-800 hover:underline font-medium disabled:opacity-50"
+                                    title="Edit options inline"
+                                  >
+                                    {itemLoadingStates[item.cart_item_id] === 'loading' ? 'Loading...' : 'Edit'}
+                                  </button>
+                                  <button
+                                    onClick={() => openEditModal(item)}
+                                    className="text-gray-500 text-xs hover:text-gray-700 hover:underline"
+                                    title="Edit in modal"
+                                  >
+                                    Modal
+                                  </button>
+                                </div>
                               </div>
                             );
                           } else {
@@ -462,7 +709,7 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                         <div className="flex items-center gap-2">
                           <HeartIcon className="h-4 w-4 text-red-500" />
                           <span className="text-sm font-medium text-[#0097b2]">
-                            {item.points_cost} pts
+                            {item.price_points} pts
                           </span>
                         </div>
                         
@@ -491,7 +738,7 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                       {/* Total for this item */}
                       <div className="flex items-center justify-between mt-2">
                         <span className="text-xs text-gray-500">
-                          Total: {item.points_cost * item.quantity} pts
+                          Total: {item.price_points * item.quantity} pts
                         </span>
                         
                         {/* Remove Button */}
