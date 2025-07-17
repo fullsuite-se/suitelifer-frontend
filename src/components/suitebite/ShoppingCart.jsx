@@ -16,7 +16,7 @@ import ProductDetailModal from './ProductDetailModal';
  * - Improved quantity management
  * - Integrated design for better UX
  */
-const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, onUpdateQuantity, onRemoveItem, isVisible = false }) => {
+const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, onUpdateQuantity, onRemoveItem, onAddToCart, isVisible = false }) => {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [selectedItems, setSelectedItems] = useState(new Set());
@@ -35,6 +35,22 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
     availableVariations: [],
     variationTypes: []
   });
+
+  // Filter out duplicate cart items by cart_item_id - MOVED UP to avoid circular dependency
+  const uniqueCart = [];
+  const seenIds = new Set();
+  for (const item of cart) {
+    if (!seenIds.has(item.cart_item_id)) {
+      uniqueCart.push(item);
+      seenIds.add(item.cart_item_id);
+    } else {
+      // Log duplicate for debugging
+      if (process.env.NODE_ENV !== 'production') {
+        // eslint-disable-next-line no-console
+        console.warn('Duplicate cart_item_id in cart:', item.cart_item_id, item);
+      }
+    }
+  }
 
   // Update real-time heartbits when prop changes
   useEffect(() => {
@@ -66,29 +82,13 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cart.length]);
 
-  // Filter out duplicate cart items by cart_item_id
-  const uniqueCart = [];
-  const seenIds = new Set();
-  for (const item of cart) {
-    if (!seenIds.has(item.cart_item_id)) {
-      uniqueCart.push(item);
-      seenIds.add(item.cart_item_id);
-    } else {
-      // Log duplicate for debugging
-      if (process.env.NODE_ENV !== 'production') {
-        // eslint-disable-next-line no-console
-        console.warn('Duplicate cart_item_id in cart:', item.cart_item_id, item);
-      }
-    }
-  }
-
-  const total = uniqueCart.reduce((sum, item) => sum + (item.price_points * item.quantity), 0);
+  const total = uniqueCart.reduce((sum, item) => sum + ((item.price_points || item.points_cost || item.price) * item.quantity), 0);
   const itemCount = uniqueCart.reduce((sum, item) => sum + item.quantity, 0);
   
   // Calculate selected items totals
   const selectedItemsTotal = uniqueCart.reduce((sum, item) => {
     if (selectedItems.has(item.cart_item_id)) {
-      return sum + (item.price_points * item.quantity);
+      return sum + ((item.price_points || item.points_cost || item.price) * item.quantity);
     }
     return sum;
   }, 0);
@@ -412,10 +412,62 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
     }
   };
 
-  // Save edited cart item via updateCartItem with new variation format
-  const handleSaveCartEdit = async (_productId, quantity, variationId, variations = []) => {
-    if (!cartItemToEdit) return;
+  // New function to open modal for adding products
+  const openAddProductModal = async (productId) => {
     try {
+      const [prodRes, varRes] = await Promise.all([
+        suitebiteAPI.getProductById(productId),
+        suitebiteAPI.getProductVariations(productId)
+      ]);
+      if (prodRes.success && varRes.success) {
+        const productData = {
+          ...prodRes.product,
+          variations: varRes.variations
+        };
+        setProductModalData(productData);
+        setModalInitialOptions({});
+        setModalInitialQuantity(1);
+        setCartItemToEdit(null); // No cart item - this is for adding
+      }
+    } catch (error) {
+      console.error('Error opening add product modal:', error);
+    }
+  };
+
+  // Enhanced function to handle both adding new items and updating existing ones
+  const handleSaveCartEdit = async (productId, quantity, variationId, variations = []) => {
+    try {
+      console.log('🛒 ShoppingCart - handleSaveCartEdit called with:', {
+        productId,
+        quantity,
+        variationId,
+        variations,
+        cartItemToEdit: cartItemToEdit?.cart_item_id,
+        isAddingNew: !cartItemToEdit
+      });
+
+      // Case 1: Adding a new item to cart (no cartItemToEdit)
+      if (!cartItemToEdit) {
+        const cartData = {
+          product_id: productId,
+          quantity,
+          variations,
+          variation_id: variationId // Legacy support
+        };
+        
+        console.log('🆕 Adding new item to cart:', cartData);
+        
+        const response = await suitebiteAPI.addToCart(cartData);
+        if (response.success) {
+          onUpdateCart();
+          showNotification('success', 'Item added to cart! 🛒');
+        } else {
+          showNotification('error', 'Failed to add item to cart');
+        }
+        return;
+      }
+
+      // Case 2: Updating existing cart item
       const updateData = { quantity };
       
       // If variations are provided (new format), use them
@@ -433,6 +485,11 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
         }
       }
       
+      console.log('✏️ Updating existing cart item:', {
+        cartItemId: cartItemToEdit.cart_item_id,
+        updateData
+      });
+      
       const res = await suitebiteAPI.updateCartItem(cartItemToEdit.cart_item_id, updateData);
       if (res.success) {
         onUpdateCart();
@@ -441,8 +498,9 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
         showNotification('error', 'Failed to update cart item');
       }
     } catch (err) {
-      console.error('Error saving cart edit:', err);
-      showNotification('error', 'Failed to update cart item');
+      console.error('Error in handleSaveCartEdit:', err);
+      const action = cartItemToEdit ? 'update' : 'add';
+      showNotification('error', `Failed to ${action} cart item`);
     } finally {
       setCartItemToEdit(null);
     }
@@ -678,9 +736,9 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                                   <button
                                     onClick={() => openEditModal(item)}
                                     className="text-gray-500 text-xs hover:text-gray-700 hover:underline"
-                                    title="Edit in modal"
+                                    title="Edit item details"
                                   >
-                                    Modal
+                                    Details
                                   </button>
                                 </div>
                               </div>
@@ -694,9 +752,9 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                                 <button
                                   onClick={() => openEditModal(item)}
                                   className="text-gray-500 text-xs hover:text-gray-700 hover:underline"
-                                  title="View product details"
+                                  title="View and edit item details"
                                 >
-                                  View Details
+                                  Details
                                 </button>
                               </div>
                             );
@@ -709,7 +767,7 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                         <div className="flex items-center gap-2">
                           <HeartIcon className="h-4 w-4 text-red-500" />
                           <span className="text-sm font-medium text-[#0097b2]">
-                            {item.price_points} pts
+                            {item.price_points || item.points_cost || item.price} pts
                           </span>
                         </div>
                         
@@ -738,7 +796,7 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                       {/* Total for this item */}
                       <div className="flex items-center justify-between mt-2">
                         <span className="text-xs text-gray-500">
-                          Total: {item.price_points * item.quantity} pts
+                          Total: {(item.price_points || item.points_cost || item.price) * item.quantity} pts
                         </span>
                         
                         {/* Remove Button */}
@@ -848,15 +906,19 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
           </div>
         )}
       </div>
-      {cartItemToEdit && productModalData && (
+      {(cartItemToEdit || productModalData) && productModalData && (
         <ProductDetailModal
           product={productModalData}
           isOpen={true}
-          onClose={() => setCartItemToEdit(null)}
+          onClose={() => {
+            setCartItemToEdit(null);
+            setProductModalData(null);
+          }}
           onAddToCart={handleSaveCartEdit}
           userHeartbits={realTimeHeartbits}
           initialQuantity={modalInitialQuantity}
           initialSelectedOptions={modalInitialOptions}
+          mode={cartItemToEdit ? 'edit' : 'add-to-cart'}
         />
       )}
     </>

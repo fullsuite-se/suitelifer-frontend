@@ -135,16 +135,38 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
             .flatMap(v => v.options || [])
             .find(opt => opt.option_id === optionId && opt.type_name === typeName);
           
-          return {
+          console.log(`🔍 ProductCard - Processing variation:`, {
+            typeName,
+            optionId,
+            optionIdType: typeof optionId,
+            foundOption: option,
+            allOptionsForType: availableVariations
+              .flatMap(v => v.options || [])
+              .filter(opt => opt.type_name === typeName)
+              .map(opt => ({ option_id: opt.option_id, type: typeof opt.option_id })),
+            availableVariations: availableVariations.length
+          });
+          
+          const variation = {
             variation_type_id: option?.variation_type_id,
             option_id: optionId
           };
+          
+          console.log(`🔍 ProductCard - Created variation object:`, {
+            variation,
+            hasTypeId: !!variation.variation_type_id,
+            hasOptionId: !!variation.option_id,
+            willBeFiltered: !(variation.variation_type_id && variation.option_id)
+          });
+          
+          return variation;
         }).filter(v => v.variation_type_id && v.option_id);
 
         console.log('🛒 ProductCard - Adding to cart with variations:', {
           selectedOptions,
           preparedVariations: variations,
-          product: product.name
+          product: product.name,
+          filteredCount: variations.length
         });
 
         await onAddToCart(product.product_id, quantity, null, variations);

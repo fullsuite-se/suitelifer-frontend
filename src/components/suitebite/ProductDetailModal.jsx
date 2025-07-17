@@ -140,17 +140,39 @@ const ProductDetailModal = ({
           .flatMap(v => v.options || [])
           .find(opt => opt.option_id === optionId && opt.type_name === typeName);
         
-        return {
+        console.log(`🔍 ProductDetailModal - Processing variation:`, {
+          typeName,
+          optionId,
+          optionIdType: typeof optionId,
+          foundOption: option,
+          allOptionsForType: availableVariations
+            .flatMap(v => v.options || [])
+            .filter(opt => opt.type_name === typeName)
+            .map(opt => ({ option_id: opt.option_id, type: typeof opt.option_id })),
+          availableVariations: availableVariations.length
+        });
+        
+        const variation = {
           variation_type_id: option?.variation_type_id,
           option_id: optionId
         };
+        
+        console.log(`🔍 ProductDetailModal - Created variation object:`, {
+          variation,
+          hasTypeId: !!variation.variation_type_id,
+          hasOptionId: !!variation.option_id,
+          willBeFiltered: !(variation.variation_type_id && variation.option_id)
+        });
+        
+        return variation;
       }).filter(v => v.variation_type_id && v.option_id);
 
       // Debug: Log selected variations
       console.log('🎯 ProductDetailModal - Adding to cart with variations:', {
         selectedOptions,
         preparedVariations: variations,
-        product: product.name
+        product: product.name,
+        filteredCount: variations.length
       });
 
       await onAddToCart(product.product_id, quantity, null, variations);
@@ -218,7 +240,14 @@ const ProductDetailModal = ({
       <div className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         {/* Modal Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-900">Product Details</h2>
+          <div className="flex items-center gap-3">
+            <h2 className="text-2xl font-bold text-gray-900">Product Details</h2>
+            {mode === 'edit' && (
+              <span className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded-full font-medium">
+                Editing Cart Item
+              </span>
+            )}
+          </div>
           <button
             onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200"
@@ -439,7 +468,7 @@ const ProductDetailModal = ({
                     {isAddingToCart ? (
                       <>
                         <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        <span>Adding...</span>
+                        <span>{mode === 'edit' ? 'Updating...' : 'Adding...'}</span>
                       </>
                     ) : !canAfford ? (
                       <>
@@ -449,7 +478,7 @@ const ProductDetailModal = ({
                     ) : (
                       <>
                         <ShoppingCartIcon className="h-5 w-5" />
-                        <span>Add to Cart</span>
+                        <span>{mode === 'edit' ? 'Update Cart Item' : 'Add to Cart'}</span>
                       </>
                     )}
                   </button>

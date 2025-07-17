@@ -135,6 +135,16 @@ const ShopTabContent = () => {
    * @param {Array} variations - Array of variation selections
    */
   const handleAddToCart = async (productId, quantity = 1, variationId = null, variations = []) => {
+    console.log('🚀 ShopTabContent - handleAddToCart called with:', {
+      productId,
+      quantity,
+      variationId,
+      variations,
+      variationsLength: variations?.length,
+      variationsType: typeof variations,
+      actualParams: arguments
+    });
+    
     try {
       const cartData = { 
         product_id: productId, 
@@ -142,6 +152,8 @@ const ShopTabContent = () => {
         variations,
         variation_id: variationId // Legacy support
       };
+      
+      console.log('🚀 ShopTabContent - Created cartData:', cartData);
       
       // Debug: Log what we're sending to the API
       console.log('🛒 Adding to cart:', {
@@ -422,7 +434,9 @@ const ShopTabContent = () => {
             userHeartbits={userHeartbits}
             onCheckout={handleCheckout}
             onUpdateCart={loadShopData}
+            onAddToCart={handleAddToCart}
             onClose={() => setCartVisible(false)}
+            isVisible={cartVisible}
           />
         </div>
       )}
