@@ -57,6 +57,7 @@ const UserHeartbitsManagement = () => {
           first_name: user.userName ? user.userName.split(' ')[0] : '',
           last_name: user.userName ? user.userName.split().slice(1).join(' ') : '',
           user_email: user.email,
+          avatar: user.avatar, // Now available from backend
           heartbits_balance: user.available_points || 0,
           total_heartbits_earned: user.total_earned || 0,
           total_heartbits_spent: user.total_spent || 0,
