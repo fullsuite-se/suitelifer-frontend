@@ -65,7 +65,6 @@ const adminFeatures = [
   { feature_name: "Content", path: "contents", icon: Bars3BottomLeftIcon },
   { feature_name: "Events", path: "events", icon: CalendarIcon },
   { feature_name: "Suitebite", path: "suitebite", icon: HeartIcon },
-  { feature_name: "Suite Settings", path: "suitebite/system", icon: Cog6ToothIcon },
   { feature_name: "Courses", path: "courses", icon: BookOpenIcon },
   {
     feature_name: "Personality Test",

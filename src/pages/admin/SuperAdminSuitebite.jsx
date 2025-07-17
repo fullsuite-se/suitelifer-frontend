@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { suitebiteAPI } from '../../utils/suitebiteAPI';
 import { useSuitebiteStore } from '../../store/stores/suitebiteStore';
 import SuperAdminStatsCards from '../../components/suitebite/superadmin/SuperAdminStatsCards';
-import SystemConfigManagement from '../../components/suitebite/superadmin/SystemConfigManagement';
 import AdminUserManagement from '../../components/suitebite/superadmin/AdminUserManagement';
 import SystemAuditLogs from '../../components/suitebite/superadmin/SystemAuditLogs';
 import AdvancedAnalytics from '../../components/suitebite/superadmin/AdvancedAnalytics';
@@ -58,7 +57,6 @@ const SuperAdminSuitebite = () => {
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: ChartBarIcon },
-    { id: 'config', label: 'System Config', icon: Cog6ToothIcon },
     { id: 'admins', label: 'Admin Users', icon: UserGroupIcon },
     { id: 'analytics', label: 'Analytics', icon: ChartPieIcon },
     { id: 'audit', label: 'Audit Logs', icon: DocumentTextIcon },
@@ -69,8 +67,6 @@ const SuperAdminSuitebite = () => {
     switch (activeTab) {
       case 'overview':
         return <SuperAdminStatsCards />;
-      case 'config':
-        return <SystemConfigManagement />;
       case 'admins':
         return <AdminUserManagement />;
       case 'analytics':
