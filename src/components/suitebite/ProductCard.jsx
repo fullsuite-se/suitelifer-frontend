@@ -114,9 +114,79 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
   const handleAddToCart = async () => {
     if (isAddingToCart || isBuying) return;
 
-    // Always open the detail modal to show product details
-    setIsModalOpen(true);
-    setModalMode('add-to-cart');
+    // For products with variations, check if all required variations are selected
+    if (availableVariations.length > 0) {
+      const allTypesSelected = variationTypes.every(type => selectedOptions[type]);
+      
+      if (!allTypesSelected) {
+        // If not all variations are selected, open the modal
+        setIsModalOpen(true);
+        setModalMode('add-to-cart');
+        return;
+      }
+
+      // If all variations are selected, add directly to cart with variations
+      try {
+        setIsAddingToCart(true);
+        
+        // Prepare variation data in the new format
+        const variations = Object.entries(selectedOptions).map(([typeName, optionId]) => {
+          const option = availableVariations
+            .flatMap(v => v.options || [])
+            .find(opt => opt.option_id === optionId && opt.type_name === typeName);
+          
+          console.log(`🔍 ProductCard - Processing variation:`, {
+            typeName,
+            optionId,
+            optionIdType: typeof optionId,
+            foundOption: option,
+            allOptionsForType: availableVariations
+              .flatMap(v => v.options || [])
+              .filter(opt => opt.type_name === typeName)
+              .map(opt => ({ option_id: opt.option_id, type: typeof opt.option_id })),
+            availableVariations: availableVariations.length
+          });
+          
+          const variation = {
+            variation_type_id: option?.variation_type_id,
+            option_id: optionId
+          };
+          
+          console.log(`🔍 ProductCard - Created variation object:`, {
+            variation,
+            hasTypeId: !!variation.variation_type_id,
+            hasOptionId: !!variation.option_id,
+            willBeFiltered: !(variation.variation_type_id && variation.option_id)
+          });
+          
+          return variation;
+        }).filter(v => v.variation_type_id && v.option_id);
+
+        console.log('🛒 ProductCard - Adding to cart with variations:', {
+          selectedOptions,
+          preparedVariations: variations,
+          product: product.name,
+          filteredCount: variations.length
+        });
+
+        await onAddToCart(product.product_id, quantity, null, variations);
+      } catch (error) {
+        console.error('Error adding to cart:', error);
+      } finally {
+        setIsAddingToCart(false);
+      }
+      return;
+    }
+
+    // For products without variations, add directly to cart
+    try {
+      setIsAddingToCart(true);
+      await onAddToCart(product.product_id, quantity);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+    } finally {
+      setIsAddingToCart(false);
+    }
   };
 
   /**
@@ -132,7 +202,7 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
    */
   const handleViewDetails = () => {
     setIsModalOpen(true);
-    setModalMode('buy-now');
+    setModalMode('view-details');
   };
 
   // Calculate product availability and affordability
@@ -226,7 +296,16 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
             {/* Price */}
             <div className="heartbits-price flex items-center gap-2">
               <div className="flex flex-col">
-                {selectedVariation && selectedVariation.price_adjustment !== 0 ? (
+                {product.price_range && product.price_range.min !== product.price_range.max ? (
+                  // Show price range for products with variations
+                  <div className="flex items-center gap-1">
+                    <span className="text-lg font-bold text-[#0097b2]">{product.price_range.min}</span>
+                    <span className="text-sm text-gray-500">-</span>
+                    <span className="text-lg font-bold text-[#0097b2]">{product.price_range.max}</span>
+                    <HeartIcon className="h-4 w-4 text-red-500 ml-1" />
+                  </div>
+                ) : selectedVariation && selectedVariation.price_adjustment !== 0 ? (
+                  // Show adjusted price for selected variation
                   <>
                     <div className="flex items-center gap-1">
                       <span className="text-lg text-gray-400 line-through">{product.price_points}</span>
@@ -234,7 +313,11 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
                     </div>
                   </>
                 ) : (
+                  // Show base price
                   <span className="text-2xl font-bold text-[#0097b2] flex items-center gap-1">{finalPrice}<HeartIcon className="h-5 w-5 text-red-500 ml-1" /></span>
+                )}
+                {availableVariations.length > 0 && !selectedVariation && (
+                  <span className="text-xs text-gray-500">Options available</span>
                 )}
               </div>
             </div>
@@ -323,6 +406,8 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
         onBuyNow={onBuyNow}
         userHeartbits={userHeartbits}
         mode={modalMode}
+        initialQuantity={quantity}
+        initialSelectedOptions={selectedOptions}
       />
     </>
   );
