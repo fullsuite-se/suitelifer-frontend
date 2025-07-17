@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { suitebiteAPI } from '../../../utils/suitebiteAPI';
+import { pointsShopApi } from '../../../api/pointsShopApi';
 import { formatDate } from '../../../utils/dateHelpers';
 import { 
   MagnifyingGlassIcon, 
@@ -35,7 +36,8 @@ const UserHeartbitsManagement = () => {
 
   useEffect(() => {
     loadUsersWithHeartbits();
-    loadSystemConfiguration();
+    // Set default global limit since points API doesn't have system config
+    setGlobalLimit(1000);
   }, []);
 
   const showNotification = (type, message) => {
@@ -43,26 +45,26 @@ const UserHeartbitsManagement = () => {
     setTimeout(() => setNotification({ show: false, type: '', message: '' }), 5000);
   };
 
-  const loadSystemConfiguration = async () => {
-    try {
-      const response = await suitebiteAPI.getSystemConfiguration();
-      if (response.success && response.config) {
-        const defaultLimit = response.config.default_monthly_limit ? 
-          parseInt(response.config.default_monthly_limit.value) : 1000;
-        setGlobalLimit(defaultLimit);
-      }
-    } catch (error) {
-      console.error('Error loading system configuration:', error);
-    }
-  };
-
   const loadUsersWithHeartbits = async () => {
     try {
       setLoading(true);
-      const response = await suitebiteAPI.getUsersWithHeartbits();
+      const response = await pointsShopApi.getAllUserPoints();
       
       if (response.success) {
-        setUsers(response.users);
+        // Transform the data to match the expected format
+        const transformedUsers = response.data.map(user => ({
+          user_id: user.user_id,
+          first_name: user.userName ? user.userName.split(' ')[0] : '',
+          last_name: user.userName ? user.userName.split().slice(1).join(' ') : '',
+          user_email: user.email,
+          heartbits_balance: user.available_points || 0,
+          total_heartbits_earned: user.total_earned || 0,
+          total_heartbits_spent: user.total_spent || 0,
+          monthly_cheer_limit: user.monthly_cheer_limit || 100,
+          monthly_cheer_used: user.monthly_cheer_used || 0,
+          last_monthly_reset: user.last_monthly_reset
+        }));
+        setUsers(transformedUsers);
       } else {
         showNotification('error', 'Failed to load users data. Please try again.');
       }
@@ -77,7 +79,7 @@ const UserHeartbitsManagement = () => {
   const handleUpdateUserHeartbits = async (userId, updates, reason = '') => {
     try {
       if (updates.balance !== undefined) {
-        const response = await suitebiteAPI.updateUserHeartbits(userId, updates.balance, reason);
+        const response = await pointsShopApi.addPointsToUser(userId, updates.balance, reason);
         if (!response.success) {
           throw new Error('Failed to update balance');
         }
@@ -94,39 +96,20 @@ const UserHeartbitsManagement = () => {
 
   const handleSetGlobalLimit = async (newLimit) => {
     try {
-      const currentMonth = new Date().toISOString().slice(0, 7);
-      const updatePromises = users.map(user => 
-        suitebiteAPI.setMonthlyLimit(user.user_id, parseInt(newLimit), currentMonth)
-      );
-      
-      const results = await Promise.allSettled(updatePromises);
-      const successCount = results.filter(result => result.status === 'fulfilled').length;
-      const failCount = results.length - successCount;
-      
-      if (failCount === 0) {
-        // Also update the system configuration
-        try {
-          await suitebiteAPI.updateSystemConfiguration('default_monthly_limit', newLimit, 'Updated by admin via global limit setting');
-        } catch (configError) {
-          console.error('Error updating system configuration:', configError);
-        }
-        
-        setGlobalLimit(newLimit);
-        loadUsersWithHeartbits();
-        showNotification('success', `Global monthly limit updated to ${newLimit} heartbits for all ${successCount} users!`);
-      } else {
-        showNotification('warning', `Partial success: ${successCount} users updated, ${failCount} failed. Please try again for failed users.`);
-      }
+      // Since points API doesn't have global limit functionality,
+      // we'll just update the local state for display purposes
+      setGlobalLimit(newLimit);
+      showNotification('info', `Global monthly limit display updated to ${newLimit} heartbits. Note: Individual user limits are managed separately.`);
     } catch (error) {
       console.error('Error updating global limit:', error);
-      showNotification('error', 'Failed to update global limit. Please check your connection and try again.');
+      showNotification('error', 'Failed to update global limit display.');
     }
   };
 
   const handleBulkGiveHeartbits = async (amount, reason) => {
     try {
       const updatePromises = selectedUsers.map(userId => 
-        suitebiteAPI.updateUserHeartbits(userId, amount, reason)
+        pointsShopApi.addPointsToUser(userId, amount, reason)
       );
       
       const results = await Promise.allSettled(updatePromises);

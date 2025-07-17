@@ -53,18 +53,18 @@ const regularServices = [
     path: "personality-test",
     icon: UserIcon,
   },
-  {
-    feature_name: "Suitebite",
-    path: "suitebite",
-    icon: HeartIcon,
-  },
 ];
 
-// Suitebite features for mobile navigation (only new paths remain)
+// Suitebite features for mobile navigation (only Mood and Points Dashboard remain)
 const suitebiteFeaturesForMobile = [
-  { feature_name: "Points Dashboard", path: "points-dashboard", icon: ChartBarIcon },
-  { feature_name: "Cheer a Peer", path: "cheer-a-peer", icon: HeartIcon },
   { feature_name: "Mood", path: "mood", icon: FaceSmileIcon },
+  { feature_name: "Points Dashboard", path: "points-dashboard", icon: ChartBarIcon },
+  {
+    feature_name: "Cheer a Peer",
+    path: "cheer-a-peer",
+    icon: HeartIcon,
+  },
+  { feature_name: "Shop", path: "suitebite/shop", icon: ShoppingBagIcon },
 ];
 
 const EmployeeDrawer = ({ onClose }) => {
@@ -116,38 +116,25 @@ const EmployeeDrawer = ({ onClose }) => {
               );
             })}
             
-            {/* Suitebite Dropdown for Mobile */}
-            <Disclosure as="div" defaultOpen={false}>
-              <DisclosureButton className="group cursor-pointer flex w-full items-center justify-between p-3">
-                <div className="flex items-center gap-3">
-                  <NewspaperIcon className="size-4" />
-                  <p className="font-avenir-black text-primary">
-                    Suitebite
-                  </p>
-                </div>
-                <ChevronDownIcon className="size-5 text-primary  group-data-[open]:rotate-180" />
-              </DisclosureButton>
-              <DisclosurePanel className="mt-1 ml-5 flex flex-col">
-                {suitebiteFeaturesForMobile.map((feature, index) => (
-                  <li key={index}>
-                    <NavLink
-                      to={`/app/${feature.path}`}
-                      className={({ isActive }) =>
-                        isActive
-                          ? "bg-primary text-white p-3 transition-none! rounded-lg flex items-center gap-3 no-underline!"
-                          : "bg-white text-primary p-3 transition-none! rounded-lg flex items-center gap-3 no-underline! hover:bg-blue-50"
-                      }
-                      onClick={handleClose}
-                    >
-                      <feature.icon className="size-4" />
-                      <span className="no-underline! font-avenir-black">
-                        {feature.feature_name}
-                      </span>
-                    </NavLink>
-                  </li>
-                ))}
-              </DisclosurePanel>
-            </Disclosure>
+            {/* Mood and Points Dashboard features */}
+            {suitebiteFeaturesForMobile.map((feature, index) => (
+              <li key={index}>
+                <NavLink
+                  to={`/app/${feature.path}`}
+                  className={({ isActive }) =>
+                    isActive
+                      ? "bg-primary text-white p-3 transition-none! rounded-lg flex items-center gap-3 no-underline!"
+                      : "bg-white text-primary p-3 transition-none! rounded-lg flex items-center gap-3 no-underline! hover:bg-blue-50"
+                  }
+                  onClick={handleClose}
+                >
+                  <feature.icon className="size-4" />
+                  <span className="no-underline! font-avenir-black">
+                    {feature.feature_name}
+                  </span>
+                </NavLink>
+              </li>
+            ))}
             
             {/* TODO: Fix */}
             {/* {services.length !== 0 && (
