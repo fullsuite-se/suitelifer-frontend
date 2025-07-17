@@ -58,11 +58,11 @@ const regularFeatures = [
   },
 ];
 
-// Suitebite features for employees (only Mood page remains)
+// Suitebite features for employees (only new paths remain)
 const suitebiteFeaturesForEmployees = [
   { feature_name: "Mood", path: "mood", icon: FaceSmileIcon },
   { feature_name: "Points Dashboard", path: "points-dashboard", icon: ChartBarIcon },
-  { feature_name: "Cheer a Peer", path: "cheer", icon: HeartIcon },
+  { feature_name: "Cheer a Peer", path: "cheer-a-peer", icon: HeartIcon },
 ];
 
 const adminFeatures = [

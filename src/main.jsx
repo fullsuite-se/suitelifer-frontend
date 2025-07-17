@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { HelmetProvider } from "react-helmet-async";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // base folder contains the base styles
 import "./css/base/theme.css";
@@ -32,15 +33,14 @@ const updateSW = registerSW({
   },
 });
 
+const queryClient = new QueryClient();
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    {/* TODO by Hernani: Use the original package of React Helmet when it supports React 19
-      See:
-      (Alternative) https://www.npmjs.com/package/@dr.pogodin/react-helmet
-      (Original) https://www.npmjs.com/package/react-helmet-async
-  */}
     <HelmetProvider>
-      <App />
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
     </HelmetProvider>
   </StrictMode>
 );
