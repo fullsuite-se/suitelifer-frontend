@@ -36,6 +36,10 @@ import MoodPage from "./pages/employee/MoodPage";
 // import CheerAPeerPage from "./pages/employee/CheerAPeerPage";
 // import PointsPage from "./pages/employee/PointsPage";
 // import ShopPage from "./pages/employee/ShopPage";
+import MoodPage from "./pages/employee/MoodPage";
+import SuitebiteHome from "./pages/employee/SuitebiteHome";
+import SuitebiteShop from "./pages/employee/SuitebiteShop";
+import SuitebiteLeaderboard from "./pages/employee/SuitebiteLeaderboard";
 
 // Admin Pages
 import AdminPointsSystem from "./pages/admin/AdminPointsSystem";
@@ -43,7 +47,6 @@ import AdminPointsSystem from "./pages/admin/AdminPointsSystem";
 // import AdminPointsUsers from "./pages/admin/AdminPointsUsers";
 // import AdminPointsProducts from "./pages/admin/AdminPointsProducts";
 // import AdminPointsOrders from "./pages/admin/AdminPointsOrders";
-
 
 // Super/Admin Pages
 //import AdminBlogs from "./pages/admin/AdminBlogs";
@@ -55,6 +58,8 @@ import SuperAdminAccountManagement from "./pages/superadmin/SuperAdminAccountMan
 import AuditLogs from "./pages/admin/AuditLogs";
 import AdmimJobCourse from "./components/admin/AdmimJobCourse";
 import AdminPersonalityTest from "./components/admin/AdminPersonalityTest";
+import AdminSuitebite from "./pages/admin/AdminSuitebite";
+import SuperAdminSuitebite from "./pages/admin/SuperAdminSuitebite";
 
 // Route Management
 import ProtectedRoutes from "./routes/ProtectedRoutes";
@@ -140,8 +145,14 @@ function App() {
                 path="personality-test"
                 element={<EmployeePersonalityTest />}
               />
+              
+              {/* Suitebite Employee Routes */}
+              <Route path="suitebite" element={<SuitebiteHome />} />
+              <Route path="suitebite/cheer" element={<SuitebiteHome />} />
+              <Route path="suitebite/shop" element={<SuitebiteShop />} />
+              <Route path="suitebite/leaderboard" element={<SuitebiteLeaderboard />} />
 
-              {/* Suitebite (Points Shop) Routes for Employees - Removed legacy features */}
+              {/* Points Shop/Mood/Cheer/PointsDashboard Routes */}
               <Route path="mood" element={<MoodPage />} />
               {/* Remove old points and cheer routes, keep only the new ones */}
               <Route path="cheer-a-peer" element={<EmployeeCheerPage />} />
@@ -150,13 +161,11 @@ function App() {
               {/* Admin Protected Routes */}
               <Route path="admin-tools" element={<AdminProtectedRoutes />}>
                 <Route index element={<Navigate to="suitebite" replace />} />
-                <Route path="suitebite" element={<AdminNews />} />
+                <Route path="suitebite" element={<AdminSuitebite />} />
                 <Route
                   path="suitebite/new-suitebite"
                   element={<AdminNewsCreate />}
                 />
-                {/* Points Shop Admin Routes - Removed legacy features */}
-                <Route path="suitebite/system" element={<AdminPointsSystem />} />
                 
                 <Route path="events" element={<AdminEvents />} />
                 <Route path="contents" element={<AdminContents />} />
@@ -172,6 +181,10 @@ function App() {
                   <Route
                     path="accounts-management"
                     element={<SuperAdminAccountManagement />}
+                  />
+                  <Route
+                    path="suitebite"
+                    element={<SuperAdminSuitebite />}
                   />
                 </Route>
               </Route>

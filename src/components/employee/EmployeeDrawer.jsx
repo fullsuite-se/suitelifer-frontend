@@ -53,6 +53,11 @@ const regularServices = [
     path: "personality-test",
     icon: UserIcon,
   },
+  {
+    feature_name: "Suitebite",
+    path: "suitebite",
+    icon: HeartIcon,
+  },
 ];
 
 // Suitebite features for mobile navigation (only new paths remain)

@@ -14,6 +14,8 @@ const AdminProtectedRoutes = () => {
           response?.data?.user?.role === "SUPER ADMIN"
         ) {
           setIsAdmin(true);
+        } else {
+          setIsAdmin(false);
         }
       } catch (error) {
         console.error(error);

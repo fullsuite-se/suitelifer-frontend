@@ -46,6 +46,8 @@ const LoginForm = ({ email, password, setEmail, setPassword }) => {
       });
 
       if (response.data.accessToken) {
+        // Store token in localStorage for Suitebite API compatibility
+        localStorage.setItem('token', response.data.accessToken);
         toast.success("Welcome back! You have successfully logged in.");
         navigate("/app/blogs-feed");
       } else if (response.data.recaptchaError) {
@@ -163,6 +165,15 @@ const Login = () => {
     let effect = null;
     const loadVanta = () => {
       if (!vantaRef.current) {
+        // Suppress THREE.js deprecation warnings for Vanta.js
+        const originalWarn = console.warn;
+        console.warn = (message, ...args) => {
+          if (typeof message === 'string' && message.includes('vertexColors')) {
+            return; // Suppress the vertexColors warning
+          }
+          originalWarn(message, ...args);
+        };
+        
         effect = GLOBE({
           THREE,
           el: "#vanta-bg",
@@ -180,6 +191,9 @@ const Login = () => {
           spacing: 16.0,
           showDots: true,
         });
+        
+        // Restore original console.warn
+        console.warn = originalWarn;
       }
     };
 
