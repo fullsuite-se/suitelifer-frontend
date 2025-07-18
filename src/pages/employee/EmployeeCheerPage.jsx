@@ -835,27 +835,27 @@ const CheerPage = () => {
                            className={`relative p-6 transition-all duration-200 hover:bg-gray-50 ${index !== feed.length - 1 ? 'border-b border-gray-100' : ''}`}
                            style={{ 
                              borderTopLeftRadius: 0,
-                             borderBottomLeftRadius: 0,
+                             borderBottomLeftRadius: '18px',
                              borderTopRightRadius: '18px',
                              borderBottomRightRadius: '18px',
                              background: 'linear-gradient(135deg, #f8fafc 60%, #e0f7fa 100%)',
                              boxShadow: '0 4px 16px 0 rgba(52, 211, 153, 0.10), 0 1.5px 4px 0 rgba(96, 165, 250, 0.10)',
                              border: '1.5px solid #e0e7ef',
+                             overflow: 'hidden'
                            }}>
                         {/* Shiny green accent bar */}
                         <div
                           style={{
-                            width: '6px',
-                            height: 'calc(100% - 20px)',
-                            marginTop: '10px',
-                            marginBottom: '10px',
-                            borderTopRightRadius: '12px',
-                            borderBottomRightRadius: '12px',
-                            background: 'linear-gradient(135deg, #34d399 0%, #60a5fa 100%)',
+                            width: '8px',
+                            height: '80%',
                             position: 'absolute',
-                            left: 0,
-                            top: 0,
-                            bottom: 0,
+                            left: '2px',
+                            top: '10%',
+                            borderTopLeftRadius: 0,
+                            borderBottomLeftRadius: 0,
+                            borderTopRightRadius: '10px',
+                            borderBottomRightRadius: '10px',
+                            background: 'linear-gradient(135deg, #34d399 0%, #60a5fa 100%)',
                           }}
                         />
                         <div className="flex space-x-3" style={{ marginLeft: '10px' }}>
