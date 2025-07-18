@@ -447,10 +447,9 @@ const CheerPage = () => {
             {/* Create Cheer Form - Enhanced */}
             <div className="rounded-2xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl overflow-hidden" 
                  style={{ 
-                   backgroundColor: '#fefcf3', 
-                   border: '2px solid #f3e8b8',
-                   background: 'linear-gradient(135deg, #fefcf3 0%, #fdf9ed 100%)',
-                   boxShadow: '0 10px 25px rgba(173, 166, 97, 0.15)'
+                   background: 'linear-gradient(135deg, #e0f7fa 70%, #b3e0f2 100%)', 
+                   border: '2px solid #b3e0f2',
+                   boxShadow: '0 10px 25px rgba(0, 151, 178, 0.10)'
                  }}>
               <div className="flex items-center space-x-3 mb-5">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" 
@@ -680,10 +679,9 @@ const CheerPage = () => {
             {/* Enhanced Heartbits Widget */}
             <div className="rounded-2xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl max-h-200 overflow-y-auto" 
                  style={{ 
-                   backgroundColor: '#fefcf3', 
-                   border: '2px solid #f3e8b8',
-                   background: 'linear-gradient(135deg, #fefcf3 0%, #fdf9ed 100%)',
-                   boxShadow: '0 10px 25px rgba(173, 166, 97, 0.15)'
+                   background: 'linear-gradient(135deg, #e0f7fa 70%, #b3e0f2 100%)', 
+                   border: '2px solid #b3e0f2',
+                   boxShadow: '0 10px 25px rgba(0, 151, 178, 0.10)'
                  }}>
               <div className="flex items-center justify-center mb-5">
                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg" 
@@ -776,10 +774,9 @@ const CheerPage = () => {
             {/* Enhanced Cheer Feed with Header */}
             <div className="rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl" 
                  style={{ 
-                   backgroundColor: '#fefcf3', 
-                   border: '2px solid #f3e8b8',
-                   background: 'linear-gradient(135deg, #fefcf3 0%, #fdf9ed 100%)',
-                   boxShadow: '0 10px 25px rgba(173, 166, 97, 0.15)'
+                   background: 'linear-gradient(135deg, #e0f7fa 70%, #b3e0f2 100%)', 
+                   border: '2px solid #b3e0f2',
+                   boxShadow: '0 10px 25px rgba(0, 151, 178, 0.10)'
                  }}>
               {/* Feed Header */}
               <div className="px-6 py-3 border-b-2" style={{ borderColor: '#f3e8b8' }}>
@@ -1035,10 +1032,9 @@ const CheerPage = () => {
             {/* Enhanced Leaderboard with Header */}
             <div className="rounded-2xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl" 
                  style={{ 
-                   backgroundColor: '#fefcf3', 
-                   border: '2px solid #f3e8b8',
-                   background: 'linear-gradient(135deg, #fefcf3 0%, #fdf9ed 100%)',
-                   boxShadow: '0 10px 25px rgba(173, 166, 97, 0.15)'
+                   background: 'linear-gradient(135deg, #e0f7fa 70%, #b3e0f2 100%)', 
+                   border: '2px solid #b3e0f2',
+                   boxShadow: '0 10px 25px rgba(0, 151, 178, 0.10)'
                  }}>
               {/* Leaderboard Header with Buttons */}
               <div className="flex items-center justify-between mb-5">
