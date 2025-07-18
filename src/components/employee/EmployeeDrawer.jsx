@@ -64,7 +64,7 @@ const suitebiteFeaturesForMobile = [
     path: "cheer-a-peer",
     icon: HeartIcon,
   },
-  { feature_name: "Shop", path: "suitebite/shop", icon: ShoppingBagIcon },
+  { feature_name: "The Gift Suite", path: "suitebite/shop", icon: ShoppingBagIcon },
 ];
 
 const EmployeeDrawer = ({ onClose }) => {
