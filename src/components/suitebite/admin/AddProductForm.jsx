@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import ProductImageUpload from './ProductImageUpload';
+import ProductImageCarousel from '../admin/ProductImageCarousel';
 import { suitebiteAPI } from '../../../utils/suitebiteAPI';
 import {
   PlusIcon,
@@ -38,10 +40,10 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
     is_active: true // Always set to true since we removed the UI controls
   });
 
-  // Image upload state
-  const [images, setImages] = useState([]);
-  const [imagePreviews, setImagePreviews] = useState([]);
+  // Image upload state (Cloudinary)
+  const [uploadedImages, setUploadedImages] = useState([]); // Array of Cloudinary URLs
   const [uploadingImages, setUploadingImages] = useState(false);
+  const [productImages, setProductImages] = useState([]); // Array of product images from database
 
   // Variation state
   const [variationTypes, setVariationTypes] = useState([]);
@@ -75,8 +77,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
   const [pendingSubmit, setPendingSubmit] = useState(false);
 
   // Refs
-  const fileInputRef = useRef(null);
-  const imageUploadRef = useRef(null);
+  // Remove unused file input refs
 
   // Category store
   const { getAllCategories, addCategory, removeCategory, refreshCategories } = useCategoryStore();
@@ -125,6 +126,8 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
   // Prefill form if editing
   useEffect(() => {
     if (mode === 'edit' && product) {
+      console.log('🔍 AddProductForm - Edit mode detected:', { product_id: product.product_id, name: product.name });
+      
       setFormData({
         name: product.name || '',
         description: product.description || '',
@@ -133,6 +136,27 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
         slug: product.slug || '',
         is_active: true // Always set to true since we removed the UI controls
       });
+
+      // Load product images for editing
+      if (product.product_id) {
+        console.log('🔍 AddProductForm - Loading images for product ID:', product.product_id);
+        
+        suitebiteAPI.getProductImages(product.product_id)
+          .then(res => {
+            console.log('🔍 AddProductForm - API response:', res);
+            if (res.success) {
+              console.log('🔍 AddProductForm - Setting product images:', res.images);
+              setProductImages(res.images || []);
+            } else {
+              console.error('🔍 AddProductForm - API returned error:', res.message);
+            }
+          })
+          .catch(err => {
+            console.error('🔍 AddProductForm - Error loading product images:', err);
+          });
+      } else {
+        console.log('🔍 AddProductForm - No product_id found in product object');
+      }
 
       // Load product variations for editing
       suitebiteAPI.getProductVariations(product.product_id)
@@ -167,23 +191,11 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
               setSelectedVariationsByType(finalVariationsByType);
 
               // Keep backward compatibility with old system
-              const sizeSet = new Set();
-              const colorSet = new Set();
-              const designSet = new Set();
-
-              res.variations.forEach(variation => {
-                (variation.options || []).forEach(opt => {
-                  if (opt.type_name === 'size') sizeSet.add(opt.option_id);
-                  if (opt.type_name === 'color') colorSet.add(opt.option_id);
-                  if (opt.type_name === 'design') designSet.add(opt.option_id);
-                });
-              });
-
-              setSelectedVariations({
-                sizes: Array.from(sizeSet),
-                colors: Array.from(colorSet),
-                designs: Array.from(designSet)
-              });
+              const oldVariations = res.variations.map(v => ({
+                variation_type_id: v.variation_type_id,
+                option_id: v.option_id
+              }));
+              setSelectedVariations(oldVariations);
             }
           }
         })
@@ -267,30 +279,42 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleImageUpload = (e) => {
-    const files = Array.from(e.target.files);
+  // Cloudinary image upload handler
+  const handleImagesUploaded = (images) => {
+    // images: array of { original: url, ... }
+    setUploadedImages(images.map(img => img.original || img));
     
-    files.forEach(file => {
-      // Validate file
-      const validation = suitebiteAPI.validateImageFile(file);
-      if (!validation.isValid) {
-        showNotification('error', validation.errors[0]);
-        return;
-      }
-
-      // Create preview
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setImagePreviews(prev => [...prev, e.target.result]);
-        setImages(prev => [...prev, file]);
-      };
-      reader.readAsDataURL(file);
-    });
+    // In edit mode, refresh the product images to show newly uploaded images
+    if (mode === 'edit' && product?.product_id) {
+      suitebiteAPI.getProductImages(product.product_id)
+        .then(res => {
+          if (res.success) {
+            setProductImages(res.images || []);
+          }
+        })
+        .catch(err => {
+          console.error('Error refreshing product images:', err);
+        });
+    }
   };
 
   const removeImage = (index) => {
-    setImages(prev => prev.filter((_, i) => i !== index));
-    setImagePreviews(prev => prev.filter((_, i) => i !== index));
+    setUploadedImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleImagesChange = () => {
+    // Reload product images when they change
+    if (mode === 'edit' && product?.product_id) {
+      suitebiteAPI.getProductImages(product.product_id)
+        .then(res => {
+          if (res.success) {
+            setProductImages(res.images || []);
+          }
+        })
+        .catch(err => {
+          console.error('Error reloading product images:', err);
+        });
+    }
   };
 
   const handleAddCategory = async () => {
@@ -511,6 +535,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
     try {
       let productId;
       let productResponse;
+      let isNewProduct = false;
       
       if (mode === 'edit' && product) {
         // Update product
@@ -605,6 +630,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
           throw new Error(productResponse.message || 'Failed to create product');
         }
         productId = productResponse.product.product_id;
+        isNewProduct = true;
 
         // Add variations for new product
         if (hasVariations) {
@@ -624,21 +650,33 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
         }
       }
 
-      // Upload images (unchanged logic)
-      if (images.length > 0) {
-        setUploadingImages(true);
-        if (images.length === 1) {
-          const imageResponse = await suitebiteAPI.uploadProductImage(productId, images[0]);
-          if (!imageResponse.success) {
-            throw new Error(imageResponse.message || 'Failed to upload product image');
-          }
-        } else {
-          const imageResponse = await suitebiteAPI.uploadMultipleProductImages(productId, images);
-          if (!imageResponse.success) {
-            throw new Error(imageResponse.message || 'Failed to upload product images');
-          }
+      // --- Unified Image Handling ---
+      // After product is created, add all uploaded images to carousel
+      if (uploadedImages.length > 0 && productId) {
+        // Add all images to carousel
+        for (let i = 0; i < uploadedImages.length; i++) {
+          const imageUrl = uploadedImages[i];
+          const imageData = {
+            image_url: imageUrl,
+            thumbnail_url: imageUrl, // Optionally generate thumbnails if available
+            medium_url: imageUrl,
+            large_url: imageUrl,
+            public_id: '', // If available from upload
+            alt_text: formData.name + (i === 0 ? ' (Primary)' : ''),
+            is_primary: i === 0 // First image is primary
+          };
+          await suitebiteAPI.addProductImage(productId, imageData);
         }
-        setUploadingImages(false);
+        // Optionally update legacy image_url to first image for fallback
+        await suitebiteAPI.updateProduct(productId, { image_url: uploadedImages[0] });
+      }
+
+      // After adding images, fetch carousel images for display
+      if (isNewProduct || mode === 'edit') {
+        const res = await suitebiteAPI.getProductImages(productId);
+        if (res.success) {
+          setProductImages(res.images || []);
+        }
       }
 
       showNotification('success', `Product ${mode === 'edit' ? 'updated' : 'created'} successfully!`);
@@ -891,6 +929,22 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
     }
   };
 
+  // DRY: Extracted image upload section
+  function ProductImageUploadSection({ productId, header, handleImagesUploaded, showNotification }) {
+    return (
+      <div className="mb-4">
+        <h4 className="text-sm font-medium text-gray-700 mb-2">{header}</h4>
+        <ProductImageUpload
+          productId={productId}
+          onImageUploaded={handleImagesUploaded}
+          onError={err => showNotification('error', err?.message || 'Image upload failed')}
+          multiple={true}
+          maxFiles={10}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="add-product-form bg-white rounded-lg shadow-sm p-6">
       {/* Notification Toast */}
@@ -977,61 +1031,31 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
               {errors.price_points && <p className="text-red-500 text-sm mt-1">{errors.price_points}</p>}
             </div>
 
-            {/* Image Upload Section (moved below price) */}
+            {/* Product Images Management */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Product Images
               </label>
-              {/* Image Upload Area */}
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-[#0097b2] transition-colors">
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="hidden"
+              {mode === 'edit' && product?.product_id ? (
+                <>
+                  {/* Current Images Carousel */}
+                  <div className="mb-4">
+                    <h4 className="text-sm font-medium text-gray-700 mb-2">Current Images</h4>
+                    <ProductImageCarousel 
+                      productId={product.product_id}
+                      onImagesChange={handleImagesChange}
+                    />
+                  </div>
+                  {/* Removed Add More Images upload section as requested */}
+                </>
+              ) : (
+                // Only ONE upload section in add mode
+                <ProductImageUploadSection
+                  productId={null}
+                  header="Upload Images"
+                  handleImagesUploaded={handleImagesUploaded}
+                  showNotification={showNotification}
                 />
-                <div className="space-y-4">
-                  <PhotoIcon className="mx-auto h-12 w-12 text-gray-400" />
-                  <div>
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      className="text-[#0097b2] hover:text-[#007a8e] font-medium"
-                    >
-                      Click to upload
-                    </button>
-                    <span className="text-gray-500"> or drag and drop</span>
-                  </div>
-                  <p className="text-xs text-gray-500">
-                    PNG, JPG, GIF, WebP up to 10MB each
-                  </p>
-                </div>
-              </div>
-              {/* Image Previews */}
-              {imagePreviews.length > 0 && (
-                <div className="mt-4">
-                  <h4 className="text-sm font-medium text-gray-700 mb-2">Image Previews</h4>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {imagePreviews.map((preview, index) => (
-                      <div key={index} className="relative group">
-                        <img
-                          src={preview}
-                          alt={`Preview ${index + 1}`}
-                          className="w-full h-24 object-cover rounded-lg"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => removeImage(index)}
-                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          <XMarkIcon className="h-3 w-3" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
               )}
             </div>
           </div>

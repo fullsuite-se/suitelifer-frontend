@@ -3,6 +3,7 @@ import { suitebiteAPI } from '../../utils/suitebiteAPI';
 import { HeartIcon, ShoppingBagIcon, ShoppingCartIcon, EyeIcon } from '@heroicons/react/24/outline';
 import useCategoryStore from '../../store/stores/categoryStore';
 import ProductDetailModal from './ProductDetailModal';
+import ProductImageCarousel from './ProductImageCarousel';
 
 /**
  * ProductCard Component - Enhanced with Product Variations Support
@@ -219,62 +220,46 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
     <>
       <div className="product-card bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100">
         {/* Product Image Section */}
-        <div className="product-image relative h-48 bg-gradient-to-br from-gray-50 to-gray-100">
-          {product.image_url ? (
-            <img
-              src={product.image_url}
-              alt={product.name}
-              className="w-full h-full object-cover"
-              onError={(e) => {
-                e.target.style.display = 'none';
-                e.target.nextSibling.style.display = 'flex';
+        <ProductImageCarousel 
+          images={product.images_json || product.image_url}
+          productName={product.name}
+          className="product-image relative"
+        />
+        
+        {/* Enhanced Color-Coded Category Badge */}
+        {product.category && (
+          <div className="absolute top-3 left-3 z-10">
+            <span 
+              className="category-badge px-3 py-1 rounded-full text-xs font-semibold shadow-sm border border-white border-opacity-20"
+              style={{ 
+                backgroundColor: categoryColor,
+                color: 'white',
+                textShadow: '0 1px 2px rgba(0,0,0,0.1)'
               }}
-            />
-          ) : null}
-          
-          {/* Placeholder when no image is available */}
-          <div className="w-full h-full flex items-center justify-center" style={{ display: product.image_url ? 'none' : 'flex' }}>
-            <div className="text-center">
-              <ShoppingBagIcon className="h-12 w-12 text-gray-300 mx-auto mb-2" />
-              <p className="text-xs text-gray-400">Product Image</p>
-            </div>
-          </div>
-          
-          {/* Enhanced Color-Coded Category Badge */}
-          {product.category && (
-            <div className="absolute top-3 left-3">
-              <span 
-                className="category-badge px-3 py-1 rounded-full text-xs font-semibold shadow-sm border border-white border-opacity-20"
-                style={{ 
-                  backgroundColor: categoryColor,
-                  color: 'white',
-                  textShadow: '0 1px 2px rgba(0,0,0,0.1)'
-                }}
-              >
-                {product.category}
-              </span>
-            </div>
-          )}
-          
-          {/* Variations Available Badge */}
-          {availableVariations.length > 0 && (
-            <div className="absolute bottom-3 left-3">
-              <span className="variations-badge bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-sm">
-                {availableVariations.length} Options
-              </span>
-            </div>
-          )}
-
-          {/* View Details Button */}
-          <div className="absolute top-3 right-3">
-            <button
-              onClick={handleViewDetails}
-              className="view-details-btn bg-white bg-opacity-90 hover:bg-opacity-100 p-2 rounded-full shadow-sm transition-all duration-200"
-              title="View Details"
             >
-              <EyeIcon className="h-4 w-4 text-gray-600" />
-            </button>
+              {product.category}
+            </span>
           </div>
+        )}
+        
+        {/* Variations Available Badge */}
+        {availableVariations.length > 0 && (
+          <div className="absolute bottom-3 left-3 z-10">
+            <span className="variations-badge bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-sm">
+              {availableVariations.length} Options
+            </span>
+          </div>
+        )}
+
+        {/* View Details Button */}
+        <div className="absolute top-3 right-3 z-10">
+          <button
+            onClick={handleViewDetails}
+            className="view-details-btn bg-white bg-opacity-90 hover:bg-opacity-100 p-2 rounded-full shadow-sm transition-all duration-200"
+            title="View Details"
+          >
+            <EyeIcon className="h-4 w-4 text-gray-600" />
+          </button>
         </div>
 
         {/* Product Information Section */}
