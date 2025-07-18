@@ -811,8 +811,25 @@ const CheerPage = () => {
                   <div>
                     {feed.map((cheer, index) => (
                       <div key={cheer.cheer_id} 
-                           className={`p-6 transition-all duration-200 hover:bg-gray-50 ${index !== feed.length - 1 ? 'border-b border-gray-100' : ''}`}>
-                        <div className="flex space-x-3">
+                           className={`relative p-6 transition-all duration-200 hover:bg-gray-50 ${index !== feed.length - 1 ? 'border-b border-gray-100' : ''}`}
+                           style={{ borderRadius: '16px' }}>
+                        {/* Shiny green accent bar */}
+                        <div
+                          style={{
+                            width: '6px',
+                            height: 'calc(100% - 20px)',
+                            marginTop: '10px',
+                            marginBottom: '10px',
+                            borderTopRightRadius: '12px',
+                            borderBottomRightRadius: '12px',
+                            background: 'linear-gradient(135deg, #34d399 0%, #60a5fa 100%)',
+                            position: 'absolute',
+                            left: 0,
+                            top: 0,
+                            bottom: 0,
+                          }}
+                        />
+                        <div className="flex space-x-3" style={{ marginLeft: '10px' }}>
                           <img
                             src={cheer.fromUser?.avatar || '/images/default-avatar.png'}
                             alt={cheer.fromUser?.name}
