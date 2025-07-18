@@ -25,7 +25,7 @@ const ProductImageUpload = ({
   onImageUploaded, 
   onError,
   multiple = false,
-  maxFiles = 5 
+  maxFiles = 10 
 }) => {
   const [dragActive, setDragActive] = useState(false);
   const [files, setFiles] = useState([]);
@@ -377,17 +377,6 @@ const ProductImageUpload = ({
           </button>
         </div>
       )}
-
-      {/* Tips */}
-      <div className="tips text-xs text-gray-500 bg-gray-50 rounded-md p-3">
-        <h4 className="font-medium mb-2">💡 Tips for best results:</h4>
-        <ul className="space-y-1">
-          <li>• Use high-quality images (at least 800x800px)</li>
-          <li>• Square images work best for product displays</li>
-          <li>• Images will be automatically optimized and resized</li>
-          <li>• Multiple sizes (thumbnail, medium, original) are generated</li>
-        </ul>
-      </div>
     </div>
   );
 };

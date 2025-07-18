@@ -582,6 +582,112 @@ export const suitebiteAPI = {
   // ========== PRODUCT IMAGE MANAGEMENT ==========
 
   /**
+   * Get all images for a product
+   * @param {string} productId - Product ID
+   * @returns {Promise} Response with images array
+   */
+  getProductImages: async (productId) => {
+    const response = await axios.get(
+      `${API_BASE_URL}/products/${productId}/images`,
+      createAuthHeaders()
+    );
+    return response.data;
+  },
+
+  /**
+   * Add a new image to a product
+   * @param {string} productId - Product ID
+   * @param {Object} imageData - Image data (image_url, thumbnail_url, etc.)
+   * @returns {Promise} Response with image ID
+   */
+  addProductImage: async (productId, imageData) => {
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/products/${productId}/images`,
+        imageData,
+        createAuthHeaders()
+      );
+      return response.data;
+    } catch (error) {
+      console.error('🔍 API - Add product image error:', error);
+      console.error('🔍 API - Error response:', error.response?.data);
+      console.error('🔍 API - Error status:', error.response?.status);
+      throw error;
+    }
+  },
+
+  /**
+   * Update a product image
+   * @param {string} imageId - Image ID
+   * @param {Object} updateData - Update data
+   * @returns {Promise} Response
+   */
+  updateProductImage: async (imageId, updateData) => {
+    const response = await axios.put(
+      `${API_BASE_URL}/products/images/${imageId}`,
+      updateData,
+      createAuthHeaders()
+    );
+    return response.data;
+  },
+
+  /**
+   * Delete a product image
+   * @param {string} imageId - Image ID
+   * @returns {Promise} Response
+   */
+  deleteProductImage: async (imageId) => {
+    console.log('🔍 API - deleteProductImage called with imageId:', imageId);
+    console.log('🔍 API - API_BASE_URL:', API_BASE_URL);
+    console.log('🔍 API - Full URL:', `${API_BASE_URL}/products/images/${imageId}`);
+    console.log('🔍 API - Environment check - VITE_API_BASE_URL:', import.meta.env.VITE_API_BASE_URL);
+    console.log('🔍 API - Headers:', createAuthHeaders());
+    
+    try {
+      const response = await axios.delete(
+        `${API_BASE_URL}/products/images/${imageId}`,
+        createAuthHeaders()
+      );
+      console.log('🔍 API - Delete response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('🔍 API - Delete error:', error);
+      console.error('🔍 API - Error response:', error.response?.data);
+      console.error('🔍 API - Error status:', error.response?.status);
+      throw error;
+    }
+  },
+
+  /**
+   * Reorder product images
+   * @param {string} productId - Product ID
+   * @param {Array} imageIds - Array of image IDs in new order
+   * @returns {Promise} Response
+   */
+  reorderProductImages: async (productId, imageIds) => {
+    const response = await axios.put(
+      `${API_BASE_URL}/products/${productId}/images/reorder`,
+      { imageIds },
+      createAuthHeaders()
+    );
+    return response.data;
+  },
+
+  /**
+   * Set primary image for a product
+   * @param {string} imageId - Image ID to set as primary
+   * @returns {Promise} Response
+   */
+  setPrimaryImage: async (imageId) => {
+    const response = await axios.put(
+      `${API_BASE_URL}/products/images/${imageId}/primary`,
+      {},
+      createAuthHeaders()
+    );
+    return response.data;
+  },
+
+  /**
    * Upload a single product image
    * @param {string} productId - Product ID
    * @param {File} imageFile - Image file to upload
@@ -603,9 +709,9 @@ export const suitebiteAPI = {
   },
 
   /**
-   * Upload multiple product images
+   * Upload multiple product images (up to 10 files)
    * @param {string} productId - Product ID
-   * @param {FileList|Array} imageFiles - Array of image files
+   * @param {FileList|Array} imageFiles - Array of image files (max 10)
    * @returns {Promise} Response with image URLs
    */
   uploadMultipleProductImages: async (productId, imageFiles) => {
@@ -613,7 +719,11 @@ export const suitebiteAPI = {
     
     // Handle both FileList and Array
     const files = Array.from(imageFiles);
-    files.forEach(file => {
+    
+    // Limit to 10 files
+    const limitedFiles = files.slice(0, 10);
+    
+    limitedFiles.forEach(file => {
       formData.append('images', file);
     });
     
@@ -637,30 +747,36 @@ export const suitebiteAPI = {
   uploadGenericProductImage: async (imageFile, folder = 'products') => {
     const formData = new FormData();
     formData.append('file', imageFile);
-    const response = await axios.post(
-      `${API_BASE_URL}/upload-image/${folder}`,
-      formData,
-      {
-        ...createAuthHeaders(),
-        'Content-Type': 'multipart/form-data'
-      }
-    );
-    return response.data;
+    
+    // Use the correct API endpoint (cloudinary routes are mounted at /api, not /api/suitebite)
+    const uploadUrl = `${config.apiBaseUrl}/api/upload-image/${folder}`;
+    
+    // Get auth headers but override Content-Type for file upload
+    const authHeaders = createAuthHeaders();
+    const uploadHeaders = {
+      ...authHeaders.headers,
+      'Content-Type': 'multipart/form-data'
+    };
+    
+    try {
+      const response = await axios.post(
+        uploadUrl,
+        formData,
+        {
+          headers: uploadHeaders,
+          withCredentials: authHeaders.withCredentials
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error('🔍 API - Upload error:', error);
+      console.error('🔍 API - Error response:', error.response?.data);
+      console.error('🔍 API - Error status:', error.response?.status);
+      throw error;
+    }
   },
 
-  /**
-   * Delete a product image
-   * @param {string} productId - Product ID
-   * @param {string} publicId - Cloudinary public ID
-   * @returns {Promise} Response
-   */
-  deleteProductImage: async (productId, publicId) => {
-    const response = await axios.delete(
-      `${API_BASE_URL}/products/${productId}/images/${publicId}`, 
-      createAuthHeaders()
-    );
-    return response.data;
-  },
+
 
   /**
    * Get optimized image URL
@@ -683,6 +799,7 @@ export const suitebiteAPI = {
    */
   validateImageFile: (file) => {
     const maxSize = 10 * 1024 * 1024; // 10MB
+    const maxFiles = 10; // Maximum 10 files
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
     
     const validation = {
