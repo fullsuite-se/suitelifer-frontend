@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { XMarkIcon, HeartIcon, ShoppingBagIcon, ShoppingCartIcon, EyeIcon } from '@heroicons/react/24/outline';
 import useCategoryStore from '../../store/stores/categoryStore';
+import ProductImageCarousel from './ProductImageCarousel';
 
 /**
  * ProductDetailModal Component - Enhanced Product Detail View
@@ -261,30 +262,16 @@ const ProductDetailModal = ({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Product Image Section */}
             <div className="product-image-section">
-              <div className="relative h-96 bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg overflow-hidden">
-                {product.image_url ? (
-                  <img
-                    src={product.image_url}
-                    alt={product.name}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                      e.target.nextSibling.style.display = 'flex';
-                    }}
-                  />
-                ) : null}
-                
-                {/* Placeholder when no image is available */}
-                <div className="w-full h-full flex items-center justify-center" style={{ display: product.image_url ? 'none' : 'flex' }}>
-                  <div className="text-center">
-                    <ShoppingBagIcon className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                    <p className="text-sm text-gray-400">Product Image</p>
-                  </div>
-                </div>
+              <div className="relative h-96 rounded-lg overflow-hidden">
+                <ProductImageCarousel 
+                  images={product.images || product.images_json || (product.image_url ? [{ image_url: product.image_url, alt_text: product.name }] : [])}
+                  productName={product.name}
+                  className="w-full h-full"
+                />
                 
                 {/* Category Badge */}
                 {product.category && (
-                  <div className="absolute top-4 left-4">
+                  <div className="absolute top-4 left-4 z-10">{/* Increased z-index to show above carousel */}
                     <span 
                       className="category-badge px-3 py-1 rounded-full text-sm font-semibold shadow-sm border border-white border-opacity-20"
                       style={{ 
