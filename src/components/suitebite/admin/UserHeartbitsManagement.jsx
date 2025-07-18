@@ -458,8 +458,8 @@ const UserHeartbitsManagement = () => {
       </div>
 
       {/* Users Table - only this is scrollable */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-        <div className="users-table-container overflow-y-auto" style={{ maxHeight: '80vh' }}>
+      <div className="bg-white rounded-lg border border-gray-150 overflow-hidden"> 
+        <div className="users-table-container overflow-y-auto pb-2" style={{ maxHeight: '80vh' }}>
           <table className="w-full border-collapse">
             <thead className="bg-gray-50 sticky top-0">
               <tr>

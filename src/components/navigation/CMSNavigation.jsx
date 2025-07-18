@@ -58,13 +58,13 @@ const suitebiteFeaturesForEmployees = [
   { feature_name: "Mood", path: "mood", icon: FaceSmileIcon },
   { feature_name: "Points Dashboard", path: "points-dashboard", icon: ChartBarIcon },
   { feature_name: "Cheer a Peer", path: "cheer-a-peer", icon: HeartIcon },
-  { feature_name: "Shop", path: "suitebite/shop", icon: ShoppingBagIcon },
+  { feature_name: "The Gift Suite", path: "suitebite/shop", icon: ShoppingBagIcon },
 ];
 
 const adminFeatures = [
   { feature_name: "Content", path: "contents", icon: Bars3BottomLeftIcon },
   { feature_name: "Events", path: "events", icon: CalendarIcon },
-  { feature_name: "Suitebite", path: "suitebite", icon: HeartIcon },
+  { feature_name: "The Gift Suite", path: "suitebite", icon: HeartIcon },
   { feature_name: "Courses", path: "courses", icon: BookOpenIcon },
   {
     feature_name: "Personality Test",

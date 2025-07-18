@@ -16,7 +16,7 @@ const RootLayout = () => {
 
   return (
     <section
-      className="flex gap-4 h-dvh flex-col lg:flex-row overflow-hidden"
+      className="flex gap-4 flex-col lg:flex-row"
       style={{ maxWidth: "1800px", margin: "0 auto", padding: "0 1em" }}
     >
       <section
@@ -41,7 +41,7 @@ const RootLayout = () => {
 
       <section className="flex-1">
         <CMSTopNavigation />
-        <main className="overflow-y-auto h-dvh">
+        <main className="overflow-y-auto">
           <Outlet />
         </main>
       </section>

@@ -114,7 +114,7 @@ const AdminSuitebite = () => {
   ];
 
   return (
-    <div className="admin-suitebite bg-gray-50 h-screen flex flex-col overflow-hidden">
+    <div className="admin-suitebite bg-gray-50 flex flex-col">
       {/* Fixed Header */}
       <div className="admin-header bg-white border-b border-gray-200 px-6 py-2 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
@@ -146,7 +146,7 @@ const AdminSuitebite = () => {
       </div>
 
       {/* Scrollable Content Area */}
-      <div className="admin-content flex-1 overflow-y-auto">
+      <div className="admin-content pb-8"> {/* Removed flex-1 and overflow-y-auto to prevent outer scroll */}
         <div className="max-w-7xl mx-auto">
           {/* Refresh Notification */}
           {showRefreshNotification && (

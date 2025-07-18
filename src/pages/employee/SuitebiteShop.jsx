@@ -369,7 +369,7 @@ const SuitebiteShop = () => {
   const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <div className="suitebite-shop-container pb-8 min-h-screen h-screen flex flex-col">
+    <div className="suitebite-shop-container pb-8 flex flex-col">
       {/* Navigation Tabs */}
       <div className="tabs mb-6">
         <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
