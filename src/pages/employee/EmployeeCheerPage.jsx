@@ -14,6 +14,9 @@ import {
 import { 
   HeartIcon as HeartIconSolid,
 } from '@heroicons/react/24/solid';
+// Remove import { motion, AnimatePresence } from 'framer-motion';
+// Remove confettiAnimating state and all setConfettiAnimating logic
+// Remove confettiColor function
 
 const CheerPage = () => {
   const user = useStore((state) => state.user);
@@ -41,6 +44,18 @@ const CheerPage = () => {
   
   const textareaRef = useRef(null);
   const dropdownRef = useRef(null);
+
+  // Add state for confetti animation
+  // Remove Framer Motion imports
+  // Remove likeCheerAnimating, likeCommentAnimating, likedCommentIds, handleCheerLike, handleCommentLike
+  // Restore main cheer card like button:
+  // Restore comment like button:
+
+  // Helper for triggering animation
+  // Remove Framer Motion imports
+  // Remove likeCheerAnimating, likeCommentAnimating, likedCommentIds, handleCheerLike, handleCommentLike
+  // Restore main cheer card like button:
+  // Restore comment like button:
 
   // Fetch cheer statistics
   const { data: statsData, isLoading: statsLoading } = useQuery({
@@ -127,10 +142,16 @@ const CheerPage = () => {
   const likeMutation = useMutation({
     mutationFn: (cheerId) => pointsShopApi.toggleCheerLike(cheerId),
     onSuccess: (data, cheerId) => {
+      console.log('likeMutation.onSuccess', { data, cheerId });
       setLikedCheers(prev => {
         const newSet = new Set(prev);
-        if (data.liked) {
+        if (data.liked || data.success) {
           newSet.add(cheerId);
+          // setConfettiAnimating(prev => ({ ...prev, [cheerId]: true })); // Removed
+          // setTimeout(() => { // Removed
+          //   setConfettiAnimating(prev => ({ ...prev, [cheerId]: false })); // Removed
+          // }, 800); // Removed
+          console.log('Confetti triggered for', cheerId);
         } else {
           newSet.delete(cheerId);
         }
@@ -140,7 +161,7 @@ const CheerPage = () => {
       queryClient.invalidateQueries(['cheer-feed']);
     },
     onError: (error) => {
-      console.error('Heart error:', error);
+      console.error('likeMutation.onError', error);
       toast.error('Failed to update heart');
     },
   });
@@ -181,9 +202,9 @@ const CheerPage = () => {
 
   // Initialize hearted cheers state when feed data loads
   useEffect(() => {
-    if (cheerFeed && cheerFeed.cheers) {
+    if (cheerFeed && Array.isArray(cheerFeed.data?.cheers)) {
       const likedCheerIds = new Set();
-      cheerFeed.cheers.forEach(cheer => {
+      cheerFeed.data.cheers.forEach(cheer => {
         if (cheer.userHearted || cheer.userLiked) {
           likedCheerIds.add(cheer.cheer_id);
         }
@@ -780,7 +801,7 @@ const CheerPage = () => {
                    boxShadow: '0 10px 25px rgba(0, 151, 178, 0.10)'
                  }}>
               {/* Feed Header */}
-              <div className="px-6 py-3 border-b-2" style={{ borderColor: '#f3e8b8' }}>
+              <div className="px-6 py-3 border-b-2" style={{ borderColor: '#b3e0f2' }}>
                 <div className="flex items-center space-x-3">
                   <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" 
                        style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)' }}>
@@ -811,8 +832,33 @@ const CheerPage = () => {
                   <div>
                     {feed.map((cheer, index) => (
                       <div key={cheer.cheer_id} 
-                           className={`p-6 transition-all duration-200 hover:bg-gray-50 ${index !== feed.length - 1 ? 'border-b border-gray-100' : ''}`}>
-                        <div className="flex space-x-3">
+                           className={`relative p-6 transition-all duration-200 hover:bg-gray-50 ${index !== feed.length - 1 ? 'border-b border-gray-100' : ''}`}
+                           style={{ 
+                             borderTopLeftRadius: 0,
+                             borderBottomLeftRadius: '18px',
+                             borderTopRightRadius: '18px',
+                             borderBottomRightRadius: '18px',
+                             background: 'linear-gradient(135deg, #f8fafc 60%, #e0f7fa 100%)',
+                             boxShadow: '0 4px 16px 0 rgba(52, 211, 153, 0.10), 0 1.5px 4px 0 rgba(96, 165, 250, 0.10)',
+                             border: '1.5px solid #e0e7ef',
+                             overflow: 'hidden'
+                           }}>
+                        {/* Shiny green accent bar */}
+                        <div
+                          style={{
+                            width: '8px',
+                            height: '80%',
+                            position: 'absolute',
+                            left: '2px',
+                            top: '10%',
+                            borderTopLeftRadius: 0,
+                            borderBottomLeftRadius: 0,
+                            borderTopRightRadius: '10px',
+                            borderBottomRightRadius: '10px',
+                            background: 'linear-gradient(135deg, #34d399 0%, #60a5fa 100%)',
+                          }}
+                        />
+                        <div className="flex space-x-3" style={{ marginLeft: '10px' }}>
                           <img
                             src={cheer.fromUser?.avatar || '/images/default-avatar.png'}
                             alt={cheer.fromUser?.name}
@@ -820,56 +866,61 @@ const CheerPage = () => {
                           />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center space-x-2 mb-2 flex-wrap">
-                              <span className="font-bold text-base" 
-                                    style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                              <span className="font-bold text-base" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                                 {cheer.fromUser?.name}
                               </span>
                               <span className="text-gray-500 text-sm" style={{ fontFamily: 'Avenir, sans-serif' }}>
                                 cheered
                               </span>
-                              <span className="font-bold text-base" 
-                                    style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                              <span className="font-bold text-base" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                                 {cheer.toUser?.name}
                               </span>
-                              <span className="font-bold px-2 py-1 rounded-full text-xs text-white shadow-lg" 
-                                    style={{ 
-                                      background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)',
-                                      fontFamily: 'Avenir, sans-serif' 
-                                    }}>
+                              <span className="font-bold px-2 py-1 rounded-full text-sm text-white shadow-lg" style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)', fontFamily: 'Avenir, sans-serif' }}>
                                 +{cheer.points} pts
                               </span>
                             </div>
                             
                             {cheer.message && (
-                              <p className="mb-3 text-sm leading-relaxed" 
-                                 style={{ color: '#374151', fontFamily: 'Avenir, sans-serif' }}>
+                              <p className="mb-3 text-base leading-relaxed" style={{ color: '#374151', fontFamily: 'Avenir, sans-serif', fontWeight: 500 }}>
                                 {cheer.message}
                               </p>
                             )}
                             
                             <div className="flex items-center space-x-4">
-                              <button
-                                onClick={() => likeMutation.mutate(cheer.cheer_id)}
-                                className="flex items-center space-x-1 transition-all duration-200 hover:scale-110 active:scale-95"
-                                style={{ 
-                                  color: likedCheers.has(cheer.cheer_id) ? '#ef4444' : '#64748b',
-                                  fontFamily: 'Avenir, sans-serif'
-                                }}
-                              >
-                                {likedCheers.has(cheer.cheer_id) ? (
-                                  <HeartIconSolid className="w-4 h-4" />
-                                ) : (
-                                  <HeartIcon className="w-4 h-4" />
-                                )}
-                                <span className="text-xs font-semibold">{cheer.heartCount || cheer.likeCount || 0}</span>
-                              </button>
+                              <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <button
+                                  onClick={() => likeMutation.mutate(cheer.cheer_id)}
+                                  className="flex items-center space-x-1 transition-all duration-200 hover:scale-110 active:scale-95"
+                                  style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    outline: 'none',
+                                    cursor: 'pointer',
+                                    padding: 0,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    position: 'relative',
+                                    zIndex: 2,
+                                    color: likedCheers.has(cheer.cheer_id) ? '#ef4444' : '#64748b',
+                                    fontFamily: 'Avenir, sans-serif',
+                                  }}
+                                >
+                                  {likedCheers.has(cheer.cheer_id) ? (
+                                    <HeartIconSolid className="w-5 h-5" />
+                                  ) : (
+                                    <HeartIcon className="w-6 h-6" />
+                                  )}
+                                </button>
+                                
+                              </div>
+                              <span className="text-xs font-semibold" style={{ marginLeft: 4 }}>{cheer.heartCount || cheer.likeCount || 0}</span>
                               
                               <button
                                 onClick={() => handleCommentClick(cheer.cheer_id)}
                                 className="flex items-center space-x-1 transition-all duration-200 hover:scale-110 active:scale-95"
                                 style={{ color: '#64748b', fontFamily: 'Avenir, sans-serif' }}
                               >
-                                <ChatBubbleLeftEllipsisIcon className="w-4 h-4" />
+                                <ChatBubbleLeftEllipsisIcon className="w-6 h-6" style={{ color: '#22c55e' }} />
                                 <span className="text-xs font-semibold">{cheer.commentCount || 0}</span>
                               </button>
                               
@@ -946,45 +997,75 @@ const CheerPage = () => {
                                       const comments = commentData.comments;
                                       if (Array.isArray(comments) && comments.length > 0) {
                                         return <>
-                                          {comments.map((comment, index) => (
-                                            <div key={comment._id || `comment-${cheer.cheer_id}-${index}`} 
-                                                 className="rounded-lg p-3 transition-all duration-200 hover:bg-white" 
-                                                 style={{ backgroundColor: '#fefcf3' }}>
-                                              <div className="flex items-start space-x-2">
-                                                {comment.fromUser?.avatar ? (
-                                                  <img
-                                                    src={comment.fromUser.avatar}
-                                                    alt={comment.fromUser.name || 'User'}
-                                                    className="w-6 h-6 rounded-full ring-1 ring-gray-200 flex-shrink-0"
-                                                  />
-                                                ) : (
-                                                  <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" 
-                                                       style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)' }}>
-                                                    <span className="text-xs font-bold text-white" 
-                                                          style={{ fontFamily: 'Avenir, sans-serif', fontSize: '8px' }}>
-                                                      {comment.fromUser?.name ? comment.fromUser.name.charAt(0) : '?'}
-                                                    </span>
+                                          {comments.map((comment, index) => {
+                                            const commentKey = comment._id || comment.id || `comment-${cheer.cheer_id}-${index}`;
+                                            return (
+                                              <div key={commentKey} 
+                                                   className="rounded-xl p-3 transition-all duration-200 hover:scale-[1.02]"
+                                                   style={{
+                                                     background: 'linear-gradient(135deg, #f8fafc 60%, #e0f7fa 100%)',
+                                                     boxShadow: '0 4px 16px 0 rgba(52, 211, 153, 0.10), 0 1.5px 4px 0 rgba(96, 165, 250, 0.10)',
+                                                     border: '1.5px solid #e0e7ef',
+                                                     borderRadius: '18px',
+                                                     position: 'relative',
+                                                     zIndex: 1,
+                                                   }}
+                                              >
+                                                <div className="flex items-start space-x-2">
+                                                  {comment.fromUser?.avatar ? (
+                                                    <img
+                                                      src={comment.fromUser.avatar}
+                                                      alt={comment.fromUser.name || 'User'}
+                                                      className="w-6 h-6 rounded-full ring-1 ring-gray-200 flex-shrink-0"
+                                                    />
+                                                  ) : (
+                                                    <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" 
+                                                         style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)' }}>
+                                                      <span className="text-xs font-bold text-white" 
+                                                            style={{ fontFamily: 'Avenir, sans-serif', fontSize: '8px' }}>
+                                                        {comment.fromUser?.name ? comment.fromUser.name.charAt(0) : '?'}
+                                                      </span>
+                                                    </div>
+                                                  )}
+                                                  <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center space-x-1 mb-1">
+                                                      <span className="font-semibold text-xs" 
+                                                            style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                                                        {comment.fromUser?.name || 'Anonymous'}
+                                                      </span>
+                                                      <span className="text-xs" 
+                                                            style={{ color: '#94a3b8', fontFamily: 'Avenir, sans-serif' }}>
+                                                        {formatTimeAgo(comment.createdAt)}
+                                                      </span>
+                                                    </div>
+                                                    <p className="text-xs" 
+                                                       style={{ color: '#374151', fontFamily: 'Avenir, sans-serif' }}>
+                                                      {comment.comment}
+                                                    </p>
                                                   </div>
-                                                )}
-                                                <div className="flex-1 min-w-0">
-                                                  <div className="flex items-center space-x-1 mb-1">
-                                                    <span className="font-semibold text-xs" 
-                                                          style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
-                                                      {comment.fromUser?.name || 'Anonymous'}
-                                                    </span>
-                                                    <span className="text-xs" 
-                                                          style={{ color: '#94a3b8', fontFamily: 'Avenir, sans-serif' }}>
-                                                      {formatTimeAgo(comment.createdAt)}
-                                                    </span>
-                                                  </div>
-                                                  <p className="text-xs" 
-                                                     style={{ color: '#374151', fontFamily: 'Avenir, sans-serif' }}>
-                                                    {comment.comment}
-                                                  </p>
+                                                </div>
+                                                <div style={{ position: 'relative', display: 'inline-block', minWidth: 32, minHeight: 32 }}>
+                                                  <button
+                                                    onClick={() => {/* implement comment like logic if needed */}}
+                                                    className="flex items-center space-x-1 transition-all duration-200 hover:scale-110 active:scale-95"
+                                                    style={{
+                                                      background: 'none',
+                                                      border: 'none',
+                                                      outline: 'none',
+                                                      cursor: 'pointer',
+                                                      padding: 0,
+                                                      display: 'flex',
+                                                      alignItems: 'center',
+                                                      position: 'relative',
+                                                      zIndex: 2,
+                                                    }}
+                                                  >
+                                                    {/* Use HeartIconSolid or HeartIcon based on liked state for comment */}
+                                                  </button>
                                                 </div>
                                               </div>
-                                            </div>
-                                          ))}
+                                            );
+                                          })}
                                           {commentData.hasMore && (
                                             <button
                                               className="w-full py-2 text-xs font-semibold rounded-lg transition-all duration-200 hover:bg-white"
@@ -1168,5 +1249,7 @@ const CheerPage = () => {
     </div>
   );
 };
+
+// confettiColor function removed
 
 export default CheerPage;
