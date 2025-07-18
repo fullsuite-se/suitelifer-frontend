@@ -8,6 +8,8 @@ import {
   ChatBubbleLeftEllipsisIcon,
   TrophyIcon,
   PaperAirplaneIcon,
+  SparklesIcon,
+  FireIcon,
 } from '@heroicons/react/24/outline';
 import { 
   HeartIcon as HeartIconSolid,
@@ -21,19 +23,20 @@ const CheerPage = () => {
   const [cheerText, setCheerText] = useState('');
   const [messageText, setMessageText] = useState('');
   const [cheerPoints, setCheerPoints] = useState(1);
-  const [selectedUsers, setSelectedUsers] = useState([]); // Changed from selectedUser to selectedUsers array
+  const [selectedUsers, setSelectedUsers] = useState([]);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false); // Prevent spam submissions
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   // Feed interaction state
   const [activeTab, setActiveTab] = useState('weekly');
   const [commentingCheer, setCommentingCheer] = useState(null);
   const [commentText, setCommentText] = useState('');
   const [likedCheers, setLikedCheers] = useState(new Set());
-  const [cheerComments, setCheerComments] = useState(new Map()); // cheerId -> { comments: [], offset, hasMore }
+  const [cheerComments, setCheerComments] = useState(new Map());
   const [loadingComments, setLoadingComments] = useState(false);
+  const [showMoreLeaderboard, setShowMoreLeaderboard] = useState(false);
   const COMMENTS_PAGE_SIZE = 20;
   
   const textareaRef = useRef(null);
@@ -92,15 +95,14 @@ const CheerPage = () => {
     mutationFn: ({ recipientId, amount, message }) =>
       pointsShopApi.sendCheer(recipientId, amount, message),
     onSuccess: () => {
-      setIsSubmitting(false); // Reset submit lock
+      setIsSubmitting(false);
       toast.success('Cheer sent successfully! 🎉');
       setCheerText('');
-      setSelectedUsers([]); // Clear selected users after successful submission
+      setSelectedUsers([]);
       setCheerPoints(1);
       setShowSuccessMessage(true);
       setTimeout(() => setShowSuccessMessage(false), 3000);
       
-      // Invalidate all related queries
       queryClient.invalidateQueries(['points']);
       queryClient.invalidateQueries(['cheer-feed']);
       queryClient.invalidateQueries(['received-cheers']);
@@ -108,14 +110,14 @@ const CheerPage = () => {
       queryClient.invalidateQueries(['leaderboard']);
     },
     onError: (error) => {
-      setIsSubmitting(false); // Reset submit lock
+      setIsSubmitting(false);
       const backendMsg = error?.response?.data?.message || error?.message || 'Failed to send cheer';
       toast.error(backendMsg);
       console.error('Cheer mutation error:', error);
     },
   });
 
-  // Bulk cheer mutation for multiple recipients (no callbacks to avoid conflicts)
+  // Bulk cheer mutation for multiple recipients
   const bulkCheerMutation = useMutation({
     mutationFn: ({ recipientId, amount, message }) =>
       pointsShopApi.sendCheer(recipientId, amount, message),
@@ -125,7 +127,6 @@ const CheerPage = () => {
   const likeMutation = useMutation({
     mutationFn: (cheerId) => pointsShopApi.toggleCheerLike(cheerId),
     onSuccess: (data, cheerId) => {
-      // Update hearted state
       setLikedCheers(prev => {
         const newSet = new Set(prev);
         if (data.liked) {
@@ -136,7 +137,6 @@ const CheerPage = () => {
         return newSet;
       });
       
-      // Refresh the cheer feed to get updated counts
       queryClient.invalidateQueries(['cheer-feed']);
     },
     onError: (error) => {
@@ -149,16 +149,13 @@ const CheerPage = () => {
   const commentMutation = useMutation({
     mutationFn: ({ cheerId, comment }) => pointsShopApi.addCheerComment(cheerId, comment),
     onSuccess: (data, variables) => {
-      console.log('Comment added successfully:', data); // Debug log
+      console.log('Comment added successfully:', data);
       setCommentText('');
-      // Add the new comment to local state immediately
       setCheerComments(prev => {
         const newComments = new Map(prev);
         const existing = newComments.get(variables.cheerId);
-        // Ensure existing is always an array
         const existingArray = Array.isArray(existing) ? existing : [];
         
-        // The new comment should match the API response format
         const newComment = {
           _id: data.id || data._id,
           comment: data.comment,
@@ -169,7 +166,7 @@ const CheerPage = () => {
           },
           createdAt: data.created_at || data.createdAt
         };
-        console.log('New comment object:', newComment); // Debug log
+        console.log('New comment object:', newComment);
         newComments.set(variables.cheerId, [newComment, ...existingArray]);
         return newComments;
       });
@@ -262,7 +259,6 @@ const CheerPage = () => {
     const value = e.target.value;
     setCheerText(value);
 
-    // Simple search - show dropdown when typing
     if (value.trim().length > 0) {
       setSearchQuery(value);
       setShowUserDropdown(true);
@@ -273,27 +269,24 @@ const CheerPage = () => {
   };
 
   const handleUserSelect = (user) => {
-    // Clear the search input and add user to selected list
     setCheerText('');
-    setSelectedUsers(prev => [...prev, user]); // Add user to selectedUsers
+    setSelectedUsers(prev => [...prev, user]);
     setShowUserDropdown(false);
   };
 
   const handleCheerSubmit = (e) => {
     e.preventDefault();
-    if (isSubmitting) return; // Prevent double submit
+    if (isSubmitting) return;
     if (selectedUsers.length === 0) {
       toast.error('Please select at least one recipient');
       return;
     }
-    // Extra safety: check availableHeartbits at submit time
-    // Check if enough heartbits for all recipients
     const totalHeartbitsNeeded = cheerPoints * selectedUsers.length;
     if (totalHeartbitsNeeded > availableHeartbits) {
       toast.error(`Not enough heartbits available. You need ${totalHeartbitsNeeded} heartbits to send ${cheerPoints} to ${selectedUsers.length} recipients, but you only have ${availableHeartbits} remaining.`);
       return;
     }
-    setIsSubmitting(true); // Lock submit immediately
+    setIsSubmitting(true);
 
     console.log('=== CHEER SUBMISSION DEBUG ===');
     console.log('Message text:', messageText);
@@ -302,13 +295,11 @@ const CheerPage = () => {
     console.log('Total heartbits needed:', totalHeartbitsNeeded);
     console.log('Available heartbits:', availableHeartbits);
 
-    // Send cheers sequentially to ensure proper heartbits deduction
     const sendCheersSequentially = async () => {
       let successCount = 0;
       let errorCount = 0;
       for (const user of selectedUsers) {
         try {
-          // Use only the messageText as the cheer message (can be empty)
           const cheerData = {
             recipientId: user.user_id,
             amount: cheerPoints,
@@ -324,17 +315,15 @@ const CheerPage = () => {
         }
       }
       
-      // Handle final results
       if (errorCount === 0) {
         console.log('All cheers sent successfully!');
         toast.success(`Cheers sent successfully to ${successCount} recipients! 🎉`);
-        setSelectedUsers([]); // Clear selected users after successful submission
+        setSelectedUsers([]);
         setCheerText('');
-        setMessageText(''); // Clear message textarea after successful submission
+        setMessageText('');
         setCheerPoints(1);
         setShowSuccessMessage(true);
         setTimeout(() => setShowSuccessMessage(false), 3000);
-        // Invalidate all related queries
         queryClient.invalidateQueries(['points']);
         queryClient.invalidateQueries(['cheer-feed']);
         queryClient.invalidateQueries(['received-cheers']);
@@ -407,78 +396,106 @@ const CheerPage = () => {
     );
   }
 
-const anyLoading = statsLoading || pointsLoading || feedLoading || receivedLoading || leaderboardLoading;
+  const anyLoading = statsLoading || pointsLoading || feedLoading || receivedLoading || leaderboardLoading;
 
-if (anyLoading) {
-
+  if (anyLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2" style={{ borderColor: '#0097b2' }}></div>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#ffffff' }}>
+        <div className="text-center">
+          <div className="relative">
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-transparent border-t-4 mx-auto mb-4" 
+                 style={{ borderTopColor: '#0097b2' }}></div>
+            <SparklesIcon className="w-8 h-8 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" 
+                         style={{ color: '#0097b2' }} />
+          </div>
+          <p className="text-lg font-medium" style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>
+            Loading your cheer dashboard...
+          </p>
+        </div>
       </div>
     );
   }
 
-  
   const availableHeartbits = (pointsData?.data?.monthlyCheerLimit || 100) - (pointsData?.data?.monthlyCheerUsed || 0);
   const stats = statsData?.data || {};
   const feed = Array.isArray(cheerFeed?.data?.cheers) ? cheerFeed.data.cheers : [];
   const leaderboard = leaderboardData?.data || [];
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'rgb(255,255,255)' }}>
-      {/* Success Message */}
+    <div className="min-h-screen" style={{ backgroundColor: '#ffffff' }}>
+      {/* Enhanced Success Message */}
       {showSuccessMessage && (
-        <div className="fixed top-4 right-4 z-50 text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-2 animate-pulse" style={{ backgroundColor: '#bfd1a0' }}>
-          <HeartIconSolid className="w-5 h-5" />
-          <span className="font-medium" style={{ fontFamily: 'Avenir, sans-serif' }}>Cheer sent successfully! 🎉</span>
+        <div className="fixed top-4 right-4 z-50 text-white px-6 py-4 rounded-xl shadow-xl flex items-center space-x-3 animate-bounce" 
+             style={{ 
+               background: 'linear-gradient(135deg, #bfd1a0 0%, #0097b2 100%)',
+               backdropFilter: 'blur(10px)'
+             }}>
+          <div className="flex items-center space-x-2">
+            <HeartIconSolid className="w-6 h-6 animate-pulse" />
+            <SparklesIcon className="w-5 h-5 animate-spin" />
+          </div>
+          <span className="font-semibold text-lg" style={{ fontFamily: 'Avenir, sans-serif' }}>
+            Cheer sent successfully! 🎉
+          </span>
         </div>
       )}
       
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        {/* Header */}
-        <div className="mb-6">
-
-          {/* Commented out for now */}
-          {/* <h1 className="text-3xl font-bold flex items-center" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif', fontWeight: '800' }}>
-            <HeartIconSolid className="w-8 h-8 mr-3" style={{ color: '#0097b2' }} />
-            Cheer a Peer
-          </h1> */}
-          
-        </div>
-
+      <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Create Cheer & Heartbits */}
-          <div className="lg:col-span-1 space-y-6">
-            {/* Create Cheer Form */}
-            <div className="rounded-xl shadow-sm p-6" style={{ backgroundColor: '#ffffff', border: '1px solid #eee3e3' }}>
-              <form onSubmit={handleCheerSubmit} className="space-y-4">
-                {/* Selected Users Display */}
+          <div className="lg:col-span-1 space-y-8">
+            {/* Create Cheer Form - Enhanced */}
+            <div className="rounded-2xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl overflow-hidden" 
+                 style={{ 
+                   background: 'linear-gradient(135deg, #e0f7fa 70%, #b3e0f2 100%)', 
+                   border: '2px solid #b3e0f2',
+                   boxShadow: '0 10px 25px rgba(0, 151, 178, 0.10)'
+                 }}>
+              <div className="flex items-center space-x-3 mb-5">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" 
+                     style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)' }}>
+                  <HeartIconSolid className="w-6 h-6 text-white" />
+                </div>
+                <h2 className="text-xl font-bold truncate" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                  Send Heartbits
+                </h2>
+              </div>
+
+              <form onSubmit={handleCheerSubmit} className="space-y-5">
+                {/* Enhanced Selected Users Display */}
                 {selectedUsers.length > 0 && (
                   <div className="mb-4">
-                    <label className="block text-sm font-medium mb-2" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                    <label className="block text-sm font-semibold mb-2" 
+                           style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                       Selected Recipients ({selectedUsers.length}):
                     </label>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
                       {selectedUsers.map((user, index) => (
                         <div
                           key={user.user_id}
-                          className="flex items-center space-x-2 px-3 py-2 rounded-lg"
-                          style={{ backgroundColor: '#eee3e3', border: '1px solid #0097b2' }}
+                          className="flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 flex-shrink-0"
+                          style={{ 
+                            backgroundColor: '#f0f9ff', 
+                            border: '1px solid #0097b2',
+                            boxShadow: '0 2px 4px rgba(0, 151, 178, 0.1)',
+                            minWidth: 'fit-content'
+                          }}
                         >
                           <img
                             src={user.avatar || '/images/default-avatar.png'}
                             alt={user.name}
-                            className="w-6 h-6 rounded-full"
+                            className="w-6 h-6 rounded-full ring-1 ring-white flex-shrink-0"
                           />
-                          <span className="text-sm font-medium" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                          <span className="text-xs font-semibold truncate max-w-20" 
+                                style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                             {user.name}
                           </span>
                           <button
                             type="button"
                             onClick={() => setSelectedUsers(prev => prev.filter((_, i) => i !== index))}
-                            className="text-red-500 hover:text-red-700 transition-colors"
-                            style={{ fontFamily: 'Avenir, sans-serif' }}
+                            className="w-4 h-4 rounded-full flex items-center justify-center text-white hover:scale-110 transition-all duration-200 flex-shrink-0"
+                            style={{ backgroundColor: '#ef4444', fontSize: '10px' }}
                             aria-label={`Remove ${user.name}`}
                           >
                             ×
@@ -488,26 +505,43 @@ if (anyLoading) {
                     </div>
                   </div>
                 )}
+
+                {/* Enhanced Search Input */}
                 <div className="relative" ref={dropdownRef}>
+                  <label className="block text-sm font-semibold mb-2" 
+                         style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                    Search Peers
+                  </label>
                   <input
                     type="text"
                     value={cheerText}
                     onChange={handleCheerTextChange}
-                    placeholder="Search for peers by name..."
-                    className="w-full px-4 rounded-lg transition-colors"
+                    placeholder="Type a name to search..."
+                    className="w-full px-4 py-3 rounded-xl transition-all duration-200 focus:ring-4"
                     style={{ 
-                      border: '1px solid #eee3e3',
+                      border: '2px solid #e2e8f0',
                       backgroundColor: '#ffffff',
                       fontFamily: 'Avenir, sans-serif',
                       color: '#1a0202'
                     }}
-                    onFocus={(e) => e.target.style.borderColor = '#0097b2'}
-                    onBlur={(e) => e.target.style.borderColor = '#eee3e3'}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#0097b2';
+                      e.target.style.boxShadow = '0 0 0 4px rgba(0, 151, 178, 0.1)';
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = '#e2e8f0';
+                      e.target.style.boxShadow = 'none';
+                    }}
                   />
                   
-                  {/* User Dropdown for @ mentions */}
+                  {/* Enhanced User Dropdown */}
                   {showUserDropdown && Array.isArray(searchResults) && searchResults.length > 0 && (
-                    <div className="absolute z-20 w-full mt-1 rounded-lg shadow-lg max-h-48flow-y-auto" style={{ backgroundColor: '#ffffff', border: '1px solid #eee3e3' }}>
+                    <div className="absolute z-20 w-full mt-2 rounded-xl shadow-2xl max-h-64 overflow-y-auto" 
+                         style={{ 
+                           backgroundColor: '#ffffff', 
+                           border: '2px solid #e2e8f0',
+                           boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
+                         }}>
                       {searchResults
                         .filter(result => !selectedUsers.some(selected => selected.user_id === result.user_id))
                         .map((result) => (
@@ -515,23 +549,27 @@ if (anyLoading) {
                           key={result.user_id}
                           type="button"
                           onClick={() => handleUserSelect(result)}
-                          className="w-full px-4 py-3 text-left flex items-center space-x-3 transition-colors"
+                          className="w-full px-5 py-4 text-left flex items-center space-x-4 transition-all duration-200 hover:scale-[1.02]"
                           style={{ 
-                            borderBottom: '1px solid #eee3e3',
+                            borderBottom: '1px solid #f1f5f9',
                             color: '#1a0202',
                             fontFamily: 'Avenir, sans-serif'
                           }}
-                          onMouseEnter={(e) => e.target.style.backgroundColor = '#eee3e3'}
+                          onMouseEnter={(e) => e.target.style.backgroundColor = '#f0f9ff'}
                           onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
                         >
                           <img
                             src={result.avatar || '/images/default-avatar.png'}
                             alt={result.name}
-                            className="w-8 h-8 rounded-full"
+                            className="w-10 h-10 rounded-full ring-2 ring-gray-200"
                           />
                           <div>
-                            <p className="font-medium" style={{ color: '#1a2020', fontFamily: 'Avenir, sans-serif' }}>{result.name}</p>
-                            <p className="text-sm" style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>{result.email}</p>
+                            <p className="font-semibold text-base" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                              {result.name}
+                            </p>
+                            <p className="text-sm" style={{ color: '#64748b', fontFamily: 'Avenir, sans-serif' }}>
+                              {result.email}
+                            </p>
                           </div>
                         </button>
                       ))}
@@ -539,45 +577,72 @@ if (anyLoading) {
                   )}
                 </div>
 
-                {/* Message Input */}
+                {/* Enhanced Message Input */}
                 <div>
+                  <label className="block text-sm font-semibold mb-2" 
+                         style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                    Your Message (Optional)
+                  </label>
                   <textarea
                     ref={textareaRef}
                     value={messageText}
                     onChange={(e) => setMessageText(e.target.value)}
-                    placeholder="Write your message here... 😊"
-                    className="w-full px-4 rounded-lg resize-none transition-colors"
+                    placeholder="Share why they deserve this cheer... 😊"
+                    className="w-full px-3 py-2 rounded-lg resize-none transition-all duration-200 focus:ring-4"
                     style={{ 
-                      border: '1px solid #eee3e3',
+                      border: '2px solid #e2e8f0',
                       backgroundColor: '#ffffff',
                       fontFamily: 'Avenir, sans-serif',
                       color: '#1a0202'
                     }}
-                    onFocus={(e) => e.target.style.borderColor = '#0097b2'}
-                    onBlur={(e) => e.target.style.borderColor = '#eee3e3'}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#0097b2';
+                      e.target.style.boxShadow = '0 0 0 4px rgba(0, 151, 178, 0.1)';
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = '#e2e8f0';
+                      e.target.style.boxShadow = 'none';
+                    }}
                     rows={3}
                   />
                 </div>
 
-                <div className="flex items-center justify-between">
+                {/* Enhanced Controls - Fixed Layout */}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-3">
                   <div className="flex items-center space-x-2">
-                    <label className="text-sm font-medium" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>Heartbits:</label>
+                    <label className="text-sm font-semibold" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                      Heartbits:
+                    </label>
                     <input
                       type="number"
                       min="1"
                       max={Math.min(100, availableHeartbits)}
                       value={cheerPoints}
                       onChange={(e) => setCheerPoints(Math.min(Math.max(1, parseInt(e.target.value) || 1), Math.min(100, availableHeartbits)))}
-                      className="w-20 px-3 py-2 text-center rounded-lg font-semibold transition-colors"
+                      className="w-16 px-2 py-1 text-center rounded-lg font-bold transition-all duration-200 focus:ring-4 text-sm"
                       style={{ 
-                        border: '1px solid #eee3e3',
+                        border: '2px solid #e2e8f0',
                         fontFamily: 'Avenir, sans-serif',
-                        color: '#1a0202'
+                        color: '#1a0202',
+                        backgroundColor: '#f8fafc'
                       }}
-                      onFocus={(e) => e.target.style.borderColor = '#0097b2'}
-                      onBlur={(e) => e.target.style.borderColor = '#eee3e3'}
+                      onFocus={(e) => {
+                        e.target.style.borderColor = '#0097b2';
+                        e.target.style.boxShadow = '0 0 0 4px rgba(0, 151, 178, 0.1)';
+                      }}
+                      onBlur={(e) => {
+                        e.target.style.borderColor = '#e2e8f0';
+                        e.target.style.boxShadow = 'none';
+                      }}
                     />
-                    <span className="text-xs" style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>max {Math.min(100, availableHeartbits)}</span>
+                    <span className="text-xs px-2 py-1 rounded-full" 
+                          style={{ 
+                            color: '#64748b', 
+                            backgroundColor: '#f1f5f9',
+                            fontFamily: 'Avenir, sans-serif' 
+                          }}>
+                      max {Math.min(100, availableHeartbits)}
+                    </span>
                   </div>
                   
                   <button
@@ -589,17 +654,16 @@ if (anyLoading) {
                       bulkCheerMutation.isLoading ||
                       cheerPoints > availableHeartbits
                     }
-                    className="text-white px-6 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-all flex items-center space-x-2 shadow-lg"
+                    className="text-white px-4 py-2 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed font-bold transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 w-full sm:w-auto text-sm"
                     style={{ 
-                      backgroundColor: '#0097b2',
-                      fontFamily: 'Avenir, sans-serif'
+                      background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)',
+                      fontFamily: 'Avenir, sans-serif',
+                      minWidth: '140px'
                     }}
-                    onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = '#007a92')}
-                    onMouseLeave={(e) => !e.target.disabled && (e.target.style.backgroundColor = '#0097b2')}
                   >
                     {bulkCheerMutation.isLoading ? (
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
                         <span>Sending...</span>
                       </>
                     ) : (
@@ -613,54 +677,81 @@ if (anyLoading) {
               </form>
             </div>
 
-            {/* Heartbits Widget */}
-            <div className="rounded-xl shadow-sm p-6" style={{ backgroundColor: '#ffffff', border: '1px solid #eee3e3' }}>
-              <div className="flex items-center justify-center mb-4">
-                <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)' }}>
+            {/* Enhanced Heartbits Widget */}
+            <div className="rounded-2xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl max-h-200 overflow-y-auto" 
+                 style={{ 
+                   background: 'linear-gradient(135deg, #e0f7fa 70%, #b3e0f2 100%)', 
+                   border: '2px solid #b3e0f2',
+                   boxShadow: '0 10px 25px rgba(0, 151, 178, 0.10)'
+                 }}>
+              <div className="flex items-center justify-center mb-5">
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg" 
+                     style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)', marginLeft: '9px' }}>
                   <HeartIconSolid className="w-6 h-6 text-white" />
                 </div>
               </div>
               
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div className="text-center">
                   <div className="flex justify-center items-center" style={{ minHeight: 70 }}>
-                    {/* Remaining */}
-                    <div className="flex flex-col items-center" style={{ minWidth: 60 }}>
-                      <div className="text-4xl font-bold" style={{ color: '#0097b2', fontFamily: 'Avenir, sans-serif', fontWeight: '800' }}>
+                    <div className="flex flex-col items-center" style={{ minWidth: 70 }}>
+                      <div className="text-4xl font-black mb-1" 
+                           style={{ 
+                             color: '#0097b2', 
+                             fontFamily: 'Avenir, sans-serif',
+                             textShadow: '0 2px 4px rgba(0, 151, 178, 0.2)'
+                           }}>
                         {availableHeartbits}
                       </div>
-                      <div className="text-lg font-medium" style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>
+                      <div className="text-base font-semibold" style={{ color: '#64748b', fontFamily: 'Avenir, sans-serif' }}>
                         Remaining
                       </div>
                     </div>
-                    {/* Vertical Divider */}
-                    <div style={{ width: 2, height: 56, background: '#0097b2', margin: '0 32px', borderRadius: 1 }} />
-                    {/* Received */}
-                    <div className="flex flex-col items-center" style={{ minWidth: 60 }}>
-                      <div className="text-4xl font-bold" style={{ color: '#0097b2', fontFamily: 'Avenir, sans-serif', fontWeight: '800' }}>
+                    
+                    <div style={{ 
+                      width: 5, 
+                      height: 55, 
+                      background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)', 
+                      margin: '0 30px', 
+                      borderRadius: 2 
+                    }} />
+                    
+                    <div className="flex flex-col items-center" style={{ minWidth: 70 }}>
+                      <div className="text-4xl font-black mb-1" 
+                           style={{ 
+                             color: '#bfd1a0', 
+                             fontFamily: 'Avenir, sans-serif',
+                             textShadow: '0 2px 4px rgba(191, 209, 160, 0.2)'
+                           }}>
                         {pointsData?.data?.monthlyReceivedHeartbits || 0}
                       </div>
-                      <div className="text-lg font-medium" style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>
+                      <div className="text-base font-semibold" style={{ color: '#64748b', fontFamily: 'Avenir, sans-serif' }}>
                         Received
                       </div>
                     </div>
                   </div>
                 </div>
                 
-                <div className="pt-4 space-y-3" style={{ borderTop: '1px solid #eee3e3' }}>
+                <div className="pt-4 space-y-3" style={{ borderTop: '2px solid #f1f5f9' }}>
                   <div className="flex justify-between items-center">
-                    <span className="text-lg font-bold" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif', fontWeight: '700' }}>
+                    <span className="text-lg font-bold" 
+                          style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                       {pointsData?.data?.monthlyCheerUsed || 0} used
                     </span>
-                    <span className="text-sm px-3 py-1 rounded-full font-medium" style={{ color: '#4a6e7e', backgroundColor: '#eee3e3', fontFamily: 'Avenir, sans-serif' }}>
+                    <span className="text-xs px-3 py-1 rounded-full font-semibold" 
+                          style={{ 
+                            color: '#64748b', 
+                            backgroundColor: '#f1f5f9',
+                            fontFamily: 'Avenir, sans-serif' 
+                          }}>
                       out of {pointsData?.data?.monthlyCheerLimit || 100}
                     </span>
                   </div>
                   
                   <div className="relative">
-                    <div className="w-full rounded-full h-3" style={{ backgroundColor: '#eee3e3' }}>
+                    <div className="w-full rounded-full h-3 shadow-inner" style={{ backgroundColor: '#f1f5f9' }}>
                       <div 
-                        className="h-3 rounded-full transition-all duration-700"
+                        className="h-3 rounded-full transition-all duration-1000 shadow-lg"
                         style={{ 
                           width: `${Math.min(((pointsData?.data?.monthlyCheerUsed || 0) / (pointsData?.data?.monthlyCheerLimit || 100)) * 100, 100)}%`,
                           background: 'linear-gradient(135deg, #0097b2 0%, #bfd1a0 100%)'
@@ -668,7 +759,8 @@ if (anyLoading) {
                       ></div>
                     </div>
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-xs font-bold" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                      <span className="text-xs font-bold text-white mix-blend-difference" 
+                            style={{ fontFamily: 'Avenir, sans-serif' }}>
                         {Math.round(((pointsData?.data?.monthlyCheerUsed || 0) / (pointsData?.data?.monthlyCheerLimit || 100)) * 100)}%
                       </span>
                     </div>
@@ -679,95 +771,136 @@ if (anyLoading) {
           </div>
 
           {/* Right Column - Feed & Leaderboard */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Cheer Feed */}
-            <div className="rounded-xl shadow-sm" style={{ backgroundColor: '#ffffff', border: '1px solid #eee3e3' }}>
-              <div className="max-h-96 overflow-y-auto">
+          <div className="lg:col-span-2 space-y-8">
+            {/* Enhanced Cheer Feed with Header */}
+            <div className="rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl" 
+                 style={{ 
+                   background: 'linear-gradient(135deg, #e0f7fa 70%, #b3e0f2 100%)', 
+                   border: '2px solid #b3e0f2',
+                   boxShadow: '0 10px 25px rgba(0, 151, 178, 0.10)'
+                 }}>
+              {/* Feed Header */}
+              <div className="px-6 py-3 border-b-2" style={{ borderColor: '#f3e8b8' }}>
+                <div className="flex items-center space-x-3">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" 
+                       style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)' }}>
+                    <FireIcon className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold truncate" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                      Recent Cheers
+                    </h2>
+                  </div>
+                </div>
+              </div>
+
+              <div className="max-h-90 overflow-y-auto">
                 {feedLoading ? (
-                  <div className="p-6 text-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto" style={{ borderColor: '#0097b2' }}></div>
+                  <div className="p-8 text-center">
+                    <div className="relative mb-4">
+                      <div className="animate-spin rounded-full h-10 w-10 border-4 border-transparent border-t-4 mx-auto" 
+                           style={{ borderTopColor: '#0097b2' }}></div>
+                      <SparklesIcon className="w-5 h-5 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" 
+                                   style={{ color: '#0097b2' }} />
+                    </div>
+                    <p className="text-base font-medium" style={{ color: '#64748b', fontFamily: 'Avenir, sans-serif' }}>
+                      Loading recent cheers...
+                    </p>
                   </div>
                 ) : feed.length > 0 ? (
-                  <div style={{ borderTop: '1px solid #eee3e3' }}>
-                    {feed.map((cheer) => (
-                      <div key={cheer.cheer_id} className="p-6" style={{ borderBottom: '1px solid #eee3e3' }}>
+                  <div>
+                    {feed.map((cheer, index) => (
+                      <div key={cheer.cheer_id} 
+                           className={`p-6 transition-all duration-200 hover:bg-gray-50 ${index !== feed.length - 1 ? 'border-b border-gray-100' : ''}`}>
                         <div className="flex space-x-3">
                           <img
                             src={cheer.fromUser?.avatar || '/images/default-avatar.png'}
                             alt={cheer.fromUser?.name}
-                            className="w-10 h-10 rounded-full"
+                            className="w-10 h-10 rounded-full ring-2 ring-gray-200 flex-shrink-0"
                           />
-                          <div className="flex-1">
-                            <div className="flex items-center space-x-2 mb-2">
-                              <span className="font-medium" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center space-x-2 mb-2 flex-wrap">
+                              <span className="font-bold text-base" 
+                                    style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                                 {cheer.fromUser?.name}
                               </span>
-                              <span style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>cheered</span>
-                              <span className="font-medium" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                              <span className="text-gray-500 text-sm" style={{ fontFamily: 'Avenir, sans-serif' }}>
+                                cheered
+                              </span>
+                              <span className="font-bold text-base" 
+                                    style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                                 {cheer.toUser?.name}
                               </span>
-                              <span className="font-medium px-2 py-1 rounded-full text-xs text-white" style={{ backgroundColor: '#0097b2', fontFamily: 'Avenir, sans-serif' }}>
+                              <span className="font-bold px-2 py-1 rounded-full text-xs text-white shadow-lg" 
+                                    style={{ 
+                                      background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)',
+                                      fontFamily: 'Avenir, sans-serif' 
+                                    }}>
                                 +{cheer.points} pts
                               </span>
                             </div>
                             
                             {cheer.message && (
-                              <p className="mb-3" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>{cheer.message}</p>
+                              <p className="mb-3 text-sm leading-relaxed" 
+                                 style={{ color: '#374151', fontFamily: 'Avenir, sans-serif' }}>
+                                {cheer.message}
+                              </p>
                             )}
                             
                             <div className="flex items-center space-x-4">
                               <button
                                 onClick={() => likeMutation.mutate(cheer.cheer_id)}
-                                className="flex items-center space-x-1 transition-colors"
+                                className="flex items-center space-x-1 transition-all duration-200 hover:scale-110 active:scale-95"
                                 style={{ 
-                                  color: likedCheers.has(cheer.cheer_id) ? '#0097b2' : '#4a6e7e',
+                                  color: likedCheers.has(cheer.cheer_id) ? '#ef4444' : '#64748b',
                                   fontFamily: 'Avenir, sans-serif'
                                 }}
-                                onMouseEnter={(e) => e.target.style.color = '#0097b2'}
-                                onMouseLeave={(e) => e.target.style.color = likedCheers.has(cheer.cheer_id) ? '#0097b2' : '#4a6e7e'}
                               >
                                 {likedCheers.has(cheer.cheer_id) ? (
                                   <HeartIconSolid className="w-4 h-4" />
                                 ) : (
                                   <HeartIcon className="w-4 h-4" />
                                 )}
-                                <span className="text-sm">{cheer.heartCount || cheer.likeCount || 0}</span>
+                                <span className="text-xs font-semibold">{cheer.heartCount || cheer.likeCount || 0}</span>
                               </button>
                               
                               <button
                                 onClick={() => handleCommentClick(cheer.cheer_id)}
-                                className="flex items-center space-x-1 transition-colors"
-                                style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}
-                                onMouseEnter={(e) => e.target.style.color = '#0097b2'}
-                                onMouseLeave={(e) => e.target.style.color = '#4a6e7e'}
+                                className="flex items-center space-x-1 transition-all duration-200 hover:scale-110 active:scale-95"
+                                style={{ color: '#64748b', fontFamily: 'Avenir, sans-serif' }}
                               >
                                 <ChatBubbleLeftEllipsisIcon className="w-4 h-4" />
-                                <span className="text-sm">{cheer.commentCount || 0}</span>
+                                <span className="text-xs font-semibold">{cheer.commentCount || 0}</span>
                               </button>
                               
-                              <span className="text-xs" style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>{formatTimeAgo(cheer.createdAt)}</span>
+                              <span className="text-xs" 
+                                    style={{ color: '#94a3b8', fontFamily: 'Avenir, sans-serif' }}>
+                                {formatTimeAgo(cheer.createdAt)}
+                              </span>
                             </div>
                             
                             {commentingCheer === cheer.cheer_id && (
-                              <div className="mt-3">
-                                {/* Comment Input */}
+                              <div className="mt-4 p-3 rounded-xl" style={{ backgroundColor: '#faf8ef' }}>
                                 <div className="flex space-x-2 mb-3">
                                   <input
                                     type="text"
                                     value={commentText}
                                     onChange={(e) => setCommentText(e.target.value)}
                                     placeholder="Add a comment..."
-                                    className="flex-1 px-3 py-2 rounded-lg text-sm transition-colors"
+                                    className="flex-1 px-3 py-2 rounded-lg text-sm transition-all duration-200 focus:ring-4"
                                     style={{ 
-                                      border: '1px solid #eee3e3',
+                                      border: '2px solid #e2e8f0',
                                       fontFamily: 'Avenir, sans-serif',
                                       color: '#1a0202'
                                     }}
                                     onFocus={(e) => {
                                       e.target.style.borderColor = '#0097b2';
-                                      e.target.style.outline = 'none';
+                                      e.target.style.boxShadow = '0 0 0 4px rgba(0, 151, 178, 0.1)';
                                     }}
-                                    onBlur={(e) => e.target.style.borderColor = '#eee3e3'}
+                                    onBlur={(e) => {
+                                      e.target.style.borderColor = '#e2e8f0';
+                                      e.target.style.boxShadow = 'none';
+                                    }}
                                     onKeyPress={(e) => {
                                       if (e.key === 'Enter' && commentText.trim()) {
                                         commentMutation.mutate({
@@ -787,24 +920,25 @@ if (anyLoading) {
                                       }
                                     }}
                                     disabled={!commentText.trim() || commentMutation.isLoading}
-                                    className="px-4 py-2 text-white rounded-lg text-sm font-medium disabled:opacity-50 transition-colors"
+                                    className="px-4 py-2 text-white rounded-lg text-xs font-bold disabled:opacity-50 transition-all duration-200 hover:scale-105 active:scale-95"
                                     style={{ 
-                                      backgroundColor: '#0097b2',
+                                      background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)',
                                       fontFamily: 'Avenir, sans-serif'
                                     }}
-                                    onMouseEnter={(e) => !e.target.disabled && (e.target.style.backgroundColor = '#007a92')}
-                                    onMouseLeave={(e) => !e.target.disabled && (e.target.style.backgroundColor = '#0097b2')}
                                   >
                                     {commentMutation.isLoading ? 'Posting...' : 'Post'}
                                   </button>
                                 </div>
 
-                                {/* Comments Display */}
                                 <div className="space-y-2">
                                   {loadingComments ? (
                                     <div className="flex items-center justify-center py-4">
-                                      <div className="animate-spin rounded-full h-4 w-4 border-b-2" style={{ borderColor: '#0097b2' }}></div>
-                                      <span className="ml-2 text-sm" style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>Loading comments...</span>
+                                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-transparent border-t-2" 
+                                           style={{ borderTopColor: '#0097b2' }}></div>
+                                      <span className="ml-2 text-xs font-medium" 
+                                            style={{ color: '#64748b', fontFamily: 'Avenir, sans-serif' }}>
+                                        Loading comments...
+                                      </span>
                                     </div>
                                   ) : (
                                     (() => {
@@ -813,38 +947,48 @@ if (anyLoading) {
                                       if (Array.isArray(comments) && comments.length > 0) {
                                         return <>
                                           {comments.map((comment, index) => (
-                                            <div key={comment._id || `comment-${cheer.cheer_id}-${index}`} className="rounded-lg p-3" style={{ backgroundColor: '#eee3e3' }}>
+                                            <div key={comment._id || `comment-${cheer.cheer_id}-${index}`} 
+                                                 className="rounded-lg p-3 transition-all duration-200 hover:bg-white" 
+                                                 style={{ backgroundColor: '#fefcf3' }}>
                                               <div className="flex items-start space-x-2">
                                                 {comment.fromUser?.avatar ? (
                                                   <img
                                                     src={comment.fromUser.avatar}
                                                     alt={comment.fromUser.name || 'User'}
-                                                    className="w-6 rounded-full flex-shrink-0"
+                                                    className="w-6 h-6 rounded-full ring-1 ring-gray-200 flex-shrink-0"
                                                   />
                                                 ) : (
-                                                  <div className="w-6 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#0097b2' }}>
-                                                    <span className="text-xs font-medium text-white" style={{ fontFamily: 'Avenir, sans-serif' }}>
+                                                  <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" 
+                                                       style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)' }}>
+                                                    <span className="text-xs font-bold text-white" 
+                                                          style={{ fontFamily: 'Avenir, sans-serif', fontSize: '8px' }}>
                                                       {comment.fromUser?.name ? comment.fromUser.name.charAt(0) : '?'}
                                                     </span>
                                                   </div>
                                                 )}
                                                 <div className="flex-1 min-w-0">
-                                                  <div className="flex items-center space-x-2">
-                                                    <span className="font-medium" style={{ color: '#1a2020', fontFamily: 'Avenir, sans-serif' }}>
+                                                  <div className="flex items-center space-x-1 mb-1">
+                                                    <span className="font-semibold text-xs" 
+                                                          style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                                                       {comment.fromUser?.name || 'Anonymous'}
                                                     </span>
-                                                    <span className="text-xs" style={{ color: '#4a67e', fontFamily: 'Avenir, sans-serif' }}>
+                                                    <span className="text-xs" 
+                                                          style={{ color: '#94a3b8', fontFamily: 'Avenir, sans-serif' }}>
                                                       {formatTimeAgo(comment.createdAt)}
                                                     </span>
                                                   </div>
-                                                  <p className="text-sm mt-1" style={{ color: '#1a2020', fontFamily: 'Avenir, sans-serif' }}>{comment.comment}</p>
+                                                  <p className="text-xs" 
+                                                     style={{ color: '#374151', fontFamily: 'Avenir, sans-serif' }}>
+                                                    {comment.comment}
+                                                  </p>
                                                 </div>
                                               </div>
                                             </div>
                                           ))}
                                           {commentData.hasMore && (
                                             <button
-                                              className="w-full py-2 text-sm text-blue-60 hover:underline"
+                                              className="w-full py-2 text-xs font-semibold rounded-lg transition-all duration-200 hover:bg-white"
+                                              style={{ color: '#0097b2', fontFamily: 'Avenir, sans-serif' }}
                                               onClick={() => fetchComments(cheer.cheer_id, true)}
                                               disabled={loadingComments}
                                             >
@@ -854,7 +998,8 @@ if (anyLoading) {
                                         </>;
                                       } else {
                                         return (
-                                          <p className="text-sm text-center py-2" style={{ color: '#4a67e', fontFamily: 'Avenir, sans-serif' }}>
+                                          <p className="text-xs text-center py-4 font-medium" 
+                                             style={{ color: '#94a3b8', fontFamily: 'Avenir, sans-serif' }}>
                                             No comments yet. Be the first to comment!
                                           </p>
                                         );
@@ -870,60 +1015,97 @@ if (anyLoading) {
                     ))}
                   </div>
                 ) : (
-                  <div className="p-12">
-                    <HeartIcon className="w-12 h-12 mx-auto mb-4" style={{ color: '#4a6e7e' }} />
-                    <p style={{ color: '#4a67e', fontFamily: 'Avenir, sans-serif' }}>No cheers yet. Be the first to spread some positivity!</p>
+                  <div className="p-12 text-center">
+                    <div className="mb-4">
+                      <HeartIcon className="w-12 h-12 mx-auto mb-3" style={{ color: '#94a3b8' }} />
+                    </div>
+                    <h3 className="text-lg font-bold mb-2" style={{ color: '#64748b', fontFamily: 'Avenir, sans-serif' }}>
+                      No cheers yet
+                    </h3>
+                    <p className="text-base" style={{ color: '#94a3b8', fontFamily: 'Avenir, sans-serif' }}>
+                      Be the first to spread some positivity! 🌟
+                    </p>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Leaderboard */}
-            <div className="rounded-xl shadow-sm p-6" style={{ backgroundColor: '#ffffff', border: '1px solid #eee3e3' }}>
-              <div className="flex justify-center space-x-2 mb-4">
-                {['weekly', 'monthly', 'alltime'].map((period) => (
-                  <button
-                    key={period}
-                    onClick={() => setActiveTab(period)}
-                    className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors`}
-                    style={{
-                      backgroundColor: activeTab === period ? '#eee3e3' : 'transparent',
-                      color: activeTab === period ? '#0097b2' : '#4a6e7e',
-                      fontFamily: 'Avenir, sans-serif'
-                    }}
-                    onMouseEnter={(e) => {
-                      if (activeTab !== period) {
-                        e.target.style.color = '#1a0202';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (activeTab !== period) {
-                        e.target.style.color = '#4a6e7e';
-                      }
-                    }}
-                  >
-                    {period === 'alltime' ? 'All Time' : period.charAt(0).toUpperCase() + period.slice(1)}
-                  </button>
-                ))}
+            {/* Enhanced Leaderboard with Header */}
+            <div className="rounded-2xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl" 
+                 style={{ 
+                   background: 'linear-gradient(135deg, #e0f7fa 70%, #b3e0f2 100%)', 
+                   border: '2px solid #b3e0f2',
+                   boxShadow: '0 10px 25px rgba(0, 151, 178, 0.10)'
+                 }}>
+              {/* Leaderboard Header with Buttons */}
+              <div className="flex items-center justify-between mb-5">
+                <div className="flex items-center space-x-3">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" 
+                       style={{ background: 'linear-gradient(135deg, #bfd1a0 0%, #0097b2 100%)' }}>
+                    <TrophyIcon className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold truncate" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                      Leaderboard
+                    </h2>
+                  </div>
+                </div>
+
+                <div className="flex space-x-2">
+                  {['weekly', 'monthly', 'alltime'].map((period) => (
+                    <button
+                      key={period}
+                      onClick={() => setActiveTab(period)}
+                      className={`px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200 hover:scale-105 active:scale-95`}
+                      style={{
+                        backgroundColor: activeTab === period ? '#0097b2' : '#f1f5f9',
+                        color: activeTab === period ? '#ffffff' : '#64748b',
+                        fontFamily: 'Avenir, sans-serif',
+                        boxShadow: activeTab === period ? '0 2px 8px rgba(0, 151, 178, 0.3)' : 'none'
+                      }}
+                    >
+                      {period === 'alltime' ? 'All Time' : period.charAt(0).toUpperCase() + period.slice(1)}
+                    </button>
+                  ))}
+                </div>
               </div>
               
               {leaderboardLoading ? (
                 <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto" style={{ borderColor: '#0097b2' }}></div>
+                  <div className="relative mb-4">
+                    <div className="animate-spin rounded-full h-10 w-10 border-4 border-transparent border-t-4 mx-auto" 
+                         style={{ borderTopColor: '#0097b2' }}></div>
+                    <TrophyIcon className="w-5 h-5 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" 
+                               style={{ color: '#0097b2' }} />
+                  </div>
+                  <p className="text-base font-medium" style={{ color: '#64748b', fontFamily: 'Avenir, sans-serif' }}>
+                    Loading leaderboard...
+                  </p>
                 </div>
-              ) : (() => {
-                console.log('Leaderboard rendering - leaderboard:', leaderboard);
-                console.log('Leaderboard rendering - leaderboard.length:', leaderboard.length);
-                return leaderboard.length > 0;
-              })() ? (
-                <div className="space-y-3">
-                  {leaderboard.slice(0, 5).map((entry, index) => (
-                    <div key={entry._id || entry.userId || entry.user_id || index} className="flex items-center space-x-3 p-3 rounded-lg" style={{ backgroundColor: '#eee3e3' }}>
+              ) : leaderboard.length > 0 ? (
+                <div className="space-y-3 max-h-72 overflow-y-auto">
+                  {leaderboard.slice(0, showMoreLeaderboard ? 6 : 3).map((entry, index) => (
+                    <div
+                      key={entry._id || entry.userId || entry.user_id || index}
+                      className="flex items-center space-x-3 p-4 rounded-xl transition-all duration-200 hover:scale-[1.02]"
+                      style={{
+                        backgroundColor: '#faf8ef',
+                        border: '1px solid #f0e68c',
+                      }}
+                    >
                       <div 
-                        className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm"
+                        className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-base shadow-lg flex-shrink-0"
                         style={{
-                          backgroundColor: index === 0 ? '#bfd1a0' : index === 1 ? '#4a6e7e' : index === 2 ? '#ff6b35' : '#0097b2',
-                          color: '#ffffff'
+                          background: index === 0 
+                            ? 'linear-gradient(135deg, #FFD700 0%, #FFF8DC 25%, #FFD700 50%, #B8860B 75%, #FFD700 100%)' // Glistening Gold
+                            : index === 1 
+                            ? 'linear-gradient(135deg, #C0C0C0 0%, #F8F8FF 25%, #C0C0C0 50%, #808080 75%, #C0C0C0 100%)' // Glistening Silver
+                            : index === 2 
+                            ? 'linear-gradient(135deg, #CD7F32 0%, #DEB887 25%, #CD7F32 50%, #8B4513 75%, #CD7F32 100%)' // Glistening Bronze
+                            : 'linear-gradient(135deg, #8B4513 0%, #A0522D 100%)', // Wood/Brown
+                          color: '#ffffff',
+                          textShadow: index <= 2 ? '0 2px 4px rgba(0, 0, 0, 0.5)' : '0 1px 2px rgba(0, 0, 0, 0.3)',
+                          boxShadow: index <= 2 ? '0 2px 8px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3)' : 'none'
                         }}
                       >
                         {index + 1}
@@ -931,19 +1113,52 @@ if (anyLoading) {
                       <img
                         src={entry.avatar || '/images/default-avatar.png'}
                         alt={entry.name || entry.userName}
-                        className="w-8 h-8 rounded-full"
+                        className="w-10 h-10 rounded-xl ring-2 ring-gray-200 flex-shrink-0"
                       />
-                      <div className="flex-1">
-                        <p className="font-medium" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>{entry.name || entry.userName}</p>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-bold text-base truncate" 
+                          style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                          {entry.name || entry.userName}
+                        </p>
                       </div>
-                      <span className="font-bold" style={{ color: '#0097b2', fontFamily: 'Avenir, sans-serif' }}>{entry.totalPoints || entry.total_earned} pts</span>
+                      <span className="font-black text-lg px-3 py-1 rounded-lg flex-shrink-0" 
+                        style={{ 
+                          color: '#0097b2', 
+                          backgroundColor: '#f0f9ff',
+                          fontFamily: 'Avenir, sans-serif' 
+                        }}>
+                        {entry.totalPoints || entry.total_earned} pts
+                      </span>
                     </div>
                   ))}
+                  
+                  {/* Show More/Less Button */}
+                  {leaderboard.length > 3 && (
+                    <div className="flex justify-center pt-3">
+                      <button
+                        onClick={() => setShowMoreLeaderboard(!showMoreLeaderboard)}
+                        className="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 hover:scale-105 active:scale-95"
+                        style={{
+                          backgroundColor: '#f9f6e8',
+                          color: '#0097b2',
+                          fontFamily: 'Avenir, sans-serif',
+                          border: '1px solid #f0e68c'
+                        }}
+                      >
+                        {showMoreLeaderboard ? 'Show Less' : `Show Next ${Math.min(3, leaderboard.length - 3)}`}
+                      </button>
+                    </div>
+                  )}
                 </div>
               ) : (
-                <div className="text-center py-8">
-                  <TrophyIcon className="w-12 h-12 mx-auto mb-4" style={{ color: '#4a6e7e' }} />
-                  <p style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>No leaderboard data available</p>
+                <div className="text-center py-12">
+                  <TrophyIcon className="w-12 h-12 mx-auto mb-4" style={{ color: '#94a3b8' }} />
+                  <h3 className="text-lg font-bold mb-2" style={{ color: '#64748b', fontFamily: 'Avenir, sans-serif' }}>
+                    No leaderboard data available
+                  </h3>
+                  <p className="text-base" style={{ color: '#94a3b8', fontFamily: 'Avenir, sans-serif' }}>
+                    Start sending cheers to see rankings! 🏆
+                  </p>
                 </div>
               )}
             </div>
