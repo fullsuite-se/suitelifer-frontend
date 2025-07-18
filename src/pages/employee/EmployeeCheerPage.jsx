@@ -199,6 +199,7 @@ const CheerPage = () => {
   useEffect(() => {
     console.log('CheerPage - activeTab:', activeTab);
     console.log('CheerPage - leaderboardData:', leaderboardData);
+    console.log('CheerPage - leaderboard (processed):', leaderboardData?.data || []);
   }, [activeTab, leaderboardData]);
 
   // Debug: log searchQuery and searchResults
@@ -421,7 +422,7 @@ if (anyLoading) {
   const availableHeartbits = (pointsData?.data?.monthlyCheerLimit || 100) - (pointsData?.data?.monthlyCheerUsed || 0);
   const stats = statsData?.data || {};
   const feed = Array.isArray(cheerFeed?.data?.cheers) ? cheerFeed.data.cheers : [];
-  const leaderboard = leaderboardData?.leaderboard || [];
+  const leaderboard = leaderboardData?.data || [];
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'rgb(255,255,255)' }}>
@@ -910,7 +911,11 @@ if (anyLoading) {
                 <div className="text-center py-8">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto" style={{ borderColor: '#0097b2' }}></div>
                 </div>
-              ) : leaderboard.length > 0 ? (
+              ) : (() => {
+                console.log('Leaderboard rendering - leaderboard:', leaderboard);
+                console.log('Leaderboard rendering - leaderboard.length:', leaderboard.length);
+                return leaderboard.length > 0;
+              })() ? (
                 <div className="space-y-3">
                   {leaderboard.slice(0, 5).map((entry, index) => (
                     <div key={entry._id || entry.userId || entry.user_id || index} className="flex items-center space-x-3 p-3 rounded-lg" style={{ backgroundColor: '#eee3e3' }}>
