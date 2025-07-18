@@ -32,7 +32,7 @@ export const pointsShopApi = {
   },
   async getLeaderboard(period = "weekly") {
     const res = await axios.get(`/api/points/leaderboard?period=${period}`);
-    return res.data.data; // Return the data object from the response
+    return res.data; // Return the entire response data
   },
   async toggleCheerLike(cheerId) {
     const res = await axios.post(`/api/points/cheer/${cheerId}/like`);

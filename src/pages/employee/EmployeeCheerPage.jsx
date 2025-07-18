@@ -196,6 +196,7 @@ const CheerPage = () => {
   useEffect(() => {
     console.log('CheerPage - activeTab:', activeTab);
     console.log('CheerPage - leaderboardData:', leaderboardData);
+    console.log('CheerPage - leaderboard (processed):', leaderboardData?.data || []);
   }, [activeTab, leaderboardData]);
 
   // Debug: log searchQuery and searchResults
@@ -418,7 +419,7 @@ const CheerPage = () => {
   const availableHeartbits = (pointsData?.data?.monthlyCheerLimit || 100) - (pointsData?.data?.monthlyCheerUsed || 0);
   const stats = statsData?.data || {};
   const feed = Array.isArray(cheerFeed?.data?.cheers) ? cheerFeed.data.cheers : [];
-  const leaderboard = leaderboardData?.leaderboard || [];
+  const leaderboard = leaderboardData?.data || [];
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#ffffff' }}>
@@ -1081,15 +1082,25 @@ const CheerPage = () => {
                     Loading leaderboard...
                   </p>
                 </div>
-              ) : leaderboard.length > 0 ? (
-                <div className="space-y-3 max-h-72 overflow-y-auto">
-                  {leaderboard.slice(0, showMoreLeaderboard ? 6 : 3).map((entry, index) => (
-                    <div key={entry._id || entry.userId || entry.user_id || index} 
-                         className="flex items-center space-x-3 p-4 rounded-xl transition-all duration-200 hover:scale-[1.02]" 
-                         style={{ 
-                           backgroundColor: '#faf8ef',
-                           border: '1px solid #f0e68c'
-                         }}>
+) : leaderboard.length > 0 ? (
+  <div className="space-y-3 max-h-72 overflow-y-auto">
+    {leaderboard.slice(0, showMoreLeaderboard ? 6 : 3).map((entry, index) => (
+      <div
+        key={entry._id || entry.userId || entry.user_id || index}
+        className="flex items-center space-x-3 p-4 rounded-xl transition-all duration-200 hover:scale-[1.02]"
+        style={{
+          backgroundColor: '#faf8ef',
+          border: '1px solid #f0e68c',
+        }}
+      >
+        {/* Entry content here */}
+      </div>
+    ))}
+  </div>
+) : (
+  <p className="text-center text-sm text-gray-500">No leaderboard data available.</p>
+)
+
                       <div 
                         className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-base shadow-lg flex-shrink-0"
                         style={{
