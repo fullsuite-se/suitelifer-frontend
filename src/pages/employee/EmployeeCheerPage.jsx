@@ -1127,7 +1127,7 @@ const CheerPage = () => {
                           backgroundColor: '#f0f9ff',
                           fontFamily: 'Avenir, sans-serif' 
                         }}>
-                        {entry.totalPoints || entry.total_earned} pts
+                        {entry.totalPoints || entry.total_earned} received
                       </span>
                     </div>
                   ))}
