@@ -400,7 +400,7 @@ const CheerPage = () => {
 
   if (anyLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'rgb(253,245,170)' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#ffffff' }}>
         <div className="text-center">
           <div className="relative">
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-transparent border-t-4 mx-auto mb-4" 
@@ -1082,25 +1082,17 @@ const CheerPage = () => {
                     Loading leaderboard...
                   </p>
                 </div>
-) : leaderboard.length > 0 ? (
-  <div className="space-y-3 max-h-72 overflow-y-auto">
-    {leaderboard.slice(0, showMoreLeaderboard ? 6 : 3).map((entry, index) => (
-      <div
-        key={entry._id || entry.userId || entry.user_id || index}
-        className="flex items-center space-x-3 p-4 rounded-xl transition-all duration-200 hover:scale-[1.02]"
-        style={{
-          backgroundColor: '#faf8ef',
-          border: '1px solid #f0e68c',
-        }}
-      >
-        {/* Entry content here */}
-      </div>
-    ))}
-  </div>
-) : (
-  <p className="text-center text-sm text-gray-500">No leaderboard data available.</p>
-)
-
+              ) : leaderboard.length > 0 ? (
+                <div className="space-y-3 max-h-72 overflow-y-auto">
+                  {leaderboard.slice(0, showMoreLeaderboard ? 6 : 3).map((entry, index) => (
+                    <div
+                      key={entry._id || entry.userId || entry.user_id || index}
+                      className="flex items-center space-x-3 p-4 rounded-xl transition-all duration-200 hover:scale-[1.02]"
+                      style={{
+                        backgroundColor: '#faf8ef',
+                        border: '1px solid #f0e68c',
+                      }}
+                    >
                       <div 
                         className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-base shadow-lg flex-shrink-0"
                         style={{
@@ -1125,16 +1117,16 @@ const CheerPage = () => {
                       />
                       <div className="flex-1 min-w-0">
                         <p className="font-bold text-base truncate" 
-                           style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                          style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                           {entry.name || entry.userName}
                         </p>
                       </div>
                       <span className="font-black text-lg px-3 py-1 rounded-lg flex-shrink-0" 
-                            style={{ 
-                              color: '#0097b2', 
-                              backgroundColor: '#f0f9ff',
-                              fontFamily: 'Avenir, sans-serif' 
-                            }}>
+                        style={{ 
+                          color: '#0097b2', 
+                          backgroundColor: '#f0f9ff',
+                          fontFamily: 'Avenir, sans-serif' 
+                        }}>
                         {entry.totalPoints || entry.total_earned} pts
                       </span>
                     </div>
