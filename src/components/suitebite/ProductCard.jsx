@@ -221,7 +221,7 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
       <div className="product-card bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100">
         {/* Product Image Section */}
         <ProductImageCarousel 
-          images={product.images_json || product.image_url}
+          images={product.images || product.images_json || product.image_url}
           productName={product.name}
           className="product-image relative"
         />

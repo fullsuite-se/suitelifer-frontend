@@ -93,36 +93,31 @@ const ProductImageCarousel = ({ productId, onImagesChange }) => {
 
   const handleDeleteImage = async (imageId) => {
     console.log('🔍 ProductImageCarousel - handleDeleteImage called with imageId:', imageId);
+    console.log('🔍 ProductImageCarousel - Current images count before deletion:', images.length);
     
     if (!confirm('Are you sure you want to delete this image?')) return;
 
     // Optimistically remove the image from UI immediately
     const imageToDelete = images.find(img => img.image_id === imageId);
+    console.log('🔍 ProductImageCarousel - Image to delete:', imageToDelete);
+    
     const updatedImages = images.filter(img => img.image_id !== imageId);
+    console.log('🔍 ProductImageCarousel - Updated images count after filter:', updatedImages.length);
     setImages(updatedImages);
 
     try {
       console.log('🔍 ProductImageCarousel - Attempting to delete image ID:', imageId);
-      console.log('🔍 ProductImageCarousel - Current images before deletion:', images);
       console.log('🔍 ProductImageCarousel - About to call suitebiteAPI.deleteProductImage');
-      console.log('🔍 ProductImageCarousel - suitebiteAPI object:', suitebiteAPI);
-      console.log('🔍 ProductImageCarousel - deleteProductImage function exists:', typeof suitebiteAPI.deleteProductImage);
       
-      let response;
-      try {
-        console.log('🔍 ProductImageCarousel - Calling API function...');
-        response = await suitebiteAPI.deleteProductImage(imageId);
-        console.log('🔍 ProductImageCarousel - API call completed successfully');
-        console.log('🔍 ProductImageCarousel - Delete response:', response);
-      } catch (apiError) {
-        console.error('🔍 ProductImageCarousel - API call failed:', apiError);
-        console.error('🔍 ProductImageCarousel - API error details:', apiError.message);
-        throw apiError;
-      }
+      const response = await suitebiteAPI.deleteProductImage(imageId);
+      console.log('🔍 ProductImageCarousel - Delete response:', response);
       
       if (response.success) {
-        console.log('🔍 ProductImageCarousel - Delete successful');
+        console.log('🔍 ProductImageCarousel - Delete successful, reloading images...');
         toast.success('Image deleted successfully!');
+        
+        // Reload images from server to ensure sync
+        await loadImages();
         
         if (onImagesChange) {
           console.log('🔍 ProductImageCarousel - Calling onImagesChange callback');
@@ -134,8 +129,12 @@ const ProductImageCarousel = ({ productId, onImagesChange }) => {
       }
     } catch (error) {
       console.error('🔍 ProductImageCarousel - Error deleting image:', error);
-      console.error('🔍 ProductImageCarousel - Error details:', error.response?.data);
-      console.error('🔍 ProductImageCarousel - Error status:', error.response?.status);
+      console.error('🔍 ProductImageCarousel - Error details:', {
+        message: error.message,
+        status: error.response?.status,
+        data: error.response?.data,
+        url: error.config?.url
+      });
       
       // If deletion failed, restore the image to the UI
       if (imageToDelete) {
@@ -143,7 +142,7 @@ const ProductImageCarousel = ({ productId, onImagesChange }) => {
         setImages(prevImages => [...prevImages, imageToDelete].sort((a, b) => a.sort_order - b.sort_order));
       }
       
-      toast.error('Failed to delete image');
+      toast.error(`Failed to delete image: ${error.message}`);
     }
   };
 

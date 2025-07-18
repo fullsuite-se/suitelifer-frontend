@@ -745,20 +745,30 @@ export const suitebiteAPI = {
    * @returns {Promise} Response with imageUrl
    */
   uploadGenericProductImage: async (imageFile, folder = 'products') => {
+    console.log('🚀 API - uploadGenericProductImage called');
+    console.log('- File name:', imageFile.name);
+    console.log('- File type:', imageFile.type);
+    console.log('- File size:', imageFile.size);
+    console.log('- Folder:', folder);
+    
     const formData = new FormData();
     formData.append('file', imageFile);
     
     // Use the correct API endpoint (cloudinary routes are mounted at /api, not /api/suitebite)
     const uploadUrl = `${config.apiBaseUrl}/api/upload-image/${folder}`;
+    console.log('- Upload URL:', uploadUrl);
     
-    // Get auth headers but override Content-Type for file upload
+    // Get auth headers but DON'T override Content-Type for file upload - let browser set it
     const authHeaders = createAuthHeaders();
     const uploadHeaders = {
-      ...authHeaders.headers,
-      'Content-Type': 'multipart/form-data'
+      ...authHeaders.headers
+      // Don't set Content-Type manually for FormData - browser will set it with boundary
     };
+    delete uploadHeaders['Content-Type']; // Remove if it exists
+    console.log('- Headers:', Object.keys(uploadHeaders));
     
     try {
+      console.log('- Making POST request...');
       const response = await axios.post(
         uploadUrl,
         formData,
@@ -767,6 +777,8 @@ export const suitebiteAPI = {
           withCredentials: authHeaders.withCredentials
         }
       );
+      console.log('- Response status:', response.status);
+      console.log('- Response data:', response.data);
       return response.data;
     } catch (error) {
       console.error('🔍 API - Upload error:', error);

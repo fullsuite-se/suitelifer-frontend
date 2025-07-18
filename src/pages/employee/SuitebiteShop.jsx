@@ -369,9 +369,9 @@ const SuitebiteShop = () => {
   const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <div className="suitebite-shop-container pb-8 flex flex-col">
-      {/* Navigation Tabs */}
-      <div className="tabs mb-6">
+    <div className="suitebite-shop-container h-full flex flex-col p-4">
+      {/* Navigation Tabs - Fixed */}
+      <div className="tabs flex-shrink-0 mb-6">
         <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
           <button
             onClick={() => setActiveTab('products')}
@@ -410,12 +410,12 @@ const SuitebiteShop = () => {
       </div>
 
       {/* Content */}
-      <div className="content flex-1 flex flex-col min-h-0">
+      <div className="content flex-1 flex flex-col min-h-0 overflow-hidden">
         {/* Products Tab */}
         {activeTab === 'products' && (
-          <div className="products-tab pb-8 flex flex-col h-full min-h-0">
-            {/* Filters */}
-            <div className="filters mb-6 bg-white rounded-lg shadow-sm border p-4">
+          <div className="products-tab flex flex-col h-full min-h-0">
+            {/* Filters - Fixed */}
+            <div className="filters flex-shrink-0 mb-6 bg-white rounded-lg shadow-sm border p-4">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
                 {/* Search */}
                 <div>
@@ -502,39 +502,41 @@ const SuitebiteShop = () => {
               </div>
             </div>
 
-            {/* Products Grid - scrollable only */}
-            <div className="products-grid-container flex-1 min-h-0 overflow-y-auto pr-1">
-              {loading ? (
-                <div className="text-center py-12">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0097b2] mx-auto mb-4"></div>
-                  <p className="text-gray-600">Loading products...</p>
-                </div>
-              ) : filteredAndSortedProducts.length === 0 ? (
-                <div className="text-center py-12 bg-white rounded-lg shadow-sm border">
-                  <ShoppingBagIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
-                  <p className="text-gray-600">Try adjusting your search or filters.</p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-8">
-                  {filteredAndSortedProducts.map(product => (
-                    <ProductCard
-                      key={product.product_id}
-                      product={product}
-                      onAddToCart={handleAddToCart}
-                      onBuyNow={handleBuyNow}
-                      userHeartbits={userHeartbits}
-                    />
-                  ))}
-                </div>
-              )}
+            {/* Products Grid - Scrollable only */}
+            <div className="products-grid-container flex-1 min-h-0 overflow-y-auto">
+              <div className="pr-1">
+                {loading ? (
+                  <div className="text-center py-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0097b2] mx-auto mb-4"></div>
+                    <p className="text-gray-600">Loading products...</p>
+                  </div>
+                ) : filteredAndSortedProducts.length === 0 ? (
+                  <div className="text-center py-12 bg-white rounded-lg shadow-sm border">
+                    <ShoppingBagIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
+                    <p className="text-gray-600">Try adjusting your search or filters.</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-8">
+                    {filteredAndSortedProducts.map(product => (
+                      <ProductCard
+                        key={product.product_id}
+                        product={product}
+                        onAddToCart={handleAddToCart}
+                        onBuyNow={handleBuyNow}
+                        userHeartbits={userHeartbits}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}
 
         {/* Cart Tab */}
         {activeTab === 'cart' && (
-          <div className="cart-tab pb-8">
+          <div className="cart-tab h-full overflow-y-auto">
             <ShoppingCart
               cart={cart}
               userHeartbits={userHeartbits}
@@ -550,7 +552,7 @@ const SuitebiteShop = () => {
 
         {/* Order History Tab */}
         {activeTab === 'orders' && (
-          <div className="orders-tab">
+          <div className="orders-tab h-full overflow-y-auto">
             <OrderHistory onCartUpdate={loadShopData} onHeartbitsUpdate={loadShopData} />
           </div>
         )}

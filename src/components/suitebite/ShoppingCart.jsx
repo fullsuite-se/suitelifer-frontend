@@ -583,15 +583,26 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                     {/* Item Image */}
                     <div className="flex-shrink-0">
                       <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
-                        {item.image_url ? (
-                          <img
-                            src={item.image_url}
-                            alt={item.product_name}
-                            className="w-full h-full object-cover rounded-lg"
-                          />
-                        ) : (
-                          <ShoppingBagIcon className="h-8 w-8 text-gray-400" />
-                        )}
+                        {(() => {
+                          // Handle both new images array and legacy image_url
+                          let imageUrl = item.image_url;
+                          
+                          // If we have images array, use the primary or first image
+                          if (item.images && Array.isArray(item.images) && item.images.length > 0) {
+                            const primaryImage = item.images.find(img => img.is_primary) || item.images[0];
+                            imageUrl = primaryImage.thumbnail_url || primaryImage.image_url || primaryImage.url;
+                          }
+                          
+                          return imageUrl ? (
+                            <img
+                              src={imageUrl}
+                              alt={item.product_name}
+                              className="w-full h-full object-cover rounded-lg"
+                            />
+                          ) : (
+                            <ShoppingBagIcon className="h-8 w-8 text-gray-400" />
+                          );
+                        })()}
                       </div>
                     </div>
 
