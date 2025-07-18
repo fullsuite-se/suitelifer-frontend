@@ -1123,8 +1123,8 @@ const CheerPage = () => {
                       </div>
                       <span className="font-black text-lg px-3 py-1 rounded-lg flex-shrink-0" 
                         style={{ 
-                          color: '#0097b2', 
-                          backgroundColor: '#f0f9ff',
+                          color: '#1a0202',
+                          backgroundColor: 'transparent',
                           fontFamily: 'Avenir, sans-serif' 
                         }}>
                         {entry.totalPoints || entry.total_earned} received
