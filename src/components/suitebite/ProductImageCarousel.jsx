@@ -8,14 +8,23 @@ const ProductImageCarousel = ({ images, productName, className = '' }) => {
   // Parse images from different sources
   useEffect(() => {
     let imageList = [];
-    
-    // If images is an array of objects (from sl_product_images)
+    // If images is an array of objects (from sl_product_images or similar)
     if (Array.isArray(images) && images.length > 0) {
-      imageList = images.map(img => ({
-        url: img.image_url,
-        thumbnail: img.thumbnail_url || img.image_url,
-        alt: img.alt_text || productName
-      }));
+      // If array of objects with image_url
+      if (typeof images[0] === 'object' && images[0] !== null && images[0].image_url) {
+        imageList = images.map(img => ({
+          url: img.image_url,
+          thumbnail: img.thumbnail_url || img.image_url,
+          alt: img.alt_text || productName
+        }));
+      } else if (typeof images[0] === 'string') {
+        // If array of strings (URLs)
+        imageList = images.map((url, index) => ({
+          url,
+          thumbnail: url,
+          alt: `${productName} - Image ${index + 1}`
+        }));
+      }
     }
     // If images is a single string (legacy image_url or single URL)
     else if (typeof images === 'string' && images.trim() !== '') {
@@ -24,11 +33,19 @@ const ProductImageCarousel = ({ images, productName, className = '' }) => {
         try {
           const parsedImages = JSON.parse(images);
           if (Array.isArray(parsedImages)) {
-            imageList = parsedImages.map((url, index) => ({
-              url,
-              thumbnail: url,
-              alt: `${productName} - Image ${index + 1}`
-            }));
+            if (typeof parsedImages[0] === 'object' && parsedImages[0] !== null && parsedImages[0].image_url) {
+              imageList = parsedImages.map(img => ({
+                url: img.image_url,
+                thumbnail: img.thumbnail_url || img.image_url,
+                alt: img.alt_text || productName
+              }));
+            } else {
+              imageList = parsedImages.map((url, index) => ({
+                url,
+                thumbnail: url,
+                alt: `${productName} - Image ${index + 1}`
+              }));
+            }
           }
         } catch (error) {
           console.warn('Failed to parse images JSON:', error);
@@ -86,27 +103,24 @@ const ProductImageCarousel = ({ images, productName, className = '' }) => {
   }
 
   return (
-    <div className={`relative h-48 overflow-hidden group ${className}`}>
+    <div className={`relative w-full aspect-square overflow-hidden group ${className}`}>
       {/* Main Image */}
-      <div className="w-full h-full">
-        <img
-          src={imagesArray[currentIndex]?.url}
-          alt={imagesArray[currentIndex]?.alt || productName}
-          className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
-          onError={(e) => {
-            e.target.style.display = 'none';
-            e.target.nextSibling.style.display = 'flex';
-          }}
-        />
-        
-        {/* Fallback for failed images */}
-        <div className="w-full h-full flex items-center justify-center bg-gray-100" style={{ display: 'none' }}>
-          <div className="text-center">
-            <svg className="h-8 w-8 text-gray-300 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            <p className="text-xs text-gray-400">Image Error</p>
-          </div>
+      <img
+        src={imagesArray[currentIndex]?.url}
+        alt={imagesArray[currentIndex]?.alt || productName}
+        className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
+        onError={(e) => {
+          e.target.style.display = 'none';
+          e.target.nextSibling.style.display = 'flex';
+        }}
+      />
+      {/* Fallback for failed images */}
+      <div className="w-full h-full flex items-center justify-center bg-gray-100" style={{ display: 'none' }}>
+        <div className="text-center">
+          <svg className="h-8 w-8 text-gray-300 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <p className="text-xs text-gray-400">Image Error</p>
         </div>
       </div>
 

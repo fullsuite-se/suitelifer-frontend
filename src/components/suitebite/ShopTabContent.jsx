@@ -134,35 +134,9 @@ const ShopTabContent = () => {
    * @param {number} variationId - Optional variation ID (legacy support)
    * @param {Array} variations - Array of variation selections
    */
-  const handleAddToCart = async (productId, quantity = 1, variationId = null, variations = []) => {
-    console.log('🚀 ShopTabContent - handleAddToCart called with:', {
-      productId,
-      quantity,
-      variationId,
-      variations,
-      variationsLength: variations?.length,
-      variationsType: typeof variations,
-      actualParams: arguments
-    });
-    
+  const handleAddToCart = async (cartData) => {
+    console.log('🚀 ShopTabContent - handleAddToCart called with:', cartData);
     try {
-      const cartData = { 
-        product_id: productId, 
-        quantity,
-        variations,
-        variation_id: variationId // Legacy support
-      };
-      
-      console.log('🚀 ShopTabContent - Created cartData:', cartData);
-      
-      // Debug: Log what we're sending to the API
-      console.log('🛒 Adding to cart:', {
-        productId,
-        quantity,
-        variations,
-        hasVariations: variations && variations.length > 0
-      });
-      
       const response = await suitebiteAPI.addToCart(cartData);
       if (response.success) {
         // Refresh cart data after successful addition
@@ -171,7 +145,6 @@ const ShopTabContent = () => {
           const cartItems = cartResponse.data?.cartItems || [];
           setCart(cartItems);
           console.log(`🛒 Cart refreshed after add: ${cartItems.length} items`);
-          
           // Debug the newly added item
           const newItem = cartItems[cartItems.length - 1]; // Assuming newest item is last
           if (newItem && (newItem.variations?.length > 0 || newItem.variation_details)) {

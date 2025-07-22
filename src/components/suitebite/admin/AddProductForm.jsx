@@ -1130,20 +1130,14 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
               {mode === 'edit' && product?.product_id ? (
                 <>
                   {/* Current Images Carousel */}
-                  <div className="mb-4">
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Current Images</h4>
-                    <ProductImageCarousel 
-                      productId={product.product_id}
-                      onImagesChange={refreshProductImages}
-                    />
-                  </div>
+                  
                   
                   <div className="space-y-4">
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Add More Images</h4>
+                    <h4 className="text-sm font-medium text-gray-700 mb-2">Upload Images</h4>
                     <ProductImageUploadNew
                       ref={uploadRef}
                       onImagesChange={handleImagesChange}
-                      maxFiles={10}
+                      maxFiles={15}
                       disabled={uploadingImages}
                       existingImages={productImages}
                     />
@@ -1156,7 +1150,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
                   <ProductImageUploadNew
                     ref={uploadRef}
                     onImagesChange={handleImagesChange}
-                    maxFiles={10}
+                    maxFiles={15}
                     disabled={uploadingImages}
                   />
                 </div>

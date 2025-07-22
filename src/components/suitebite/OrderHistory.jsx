@@ -183,10 +183,15 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate }) => {
 
           // Add variation support if the item has variations
           if (item.variations && item.variations.length > 0) {
-            // For now, we'll add the item without variations since the cart API
-            // might need to be updated to handle variations properly
-            // This is a placeholder for future enhancement
-            console.log('Item has variations:', item.variations);
+            // Build variations array for cart API
+            cartItemData.variations = item.variations.map(variation => ({
+              variation_type_id: variation.variation_type_id,
+              option_id: variation.option_id
+            }));
+            console.log('Reordering item with variations:', {
+              product_name: item.product_name,
+              variations: cartItemData.variations
+            });
           }
 
           const addResponse = await suitebiteAPI.addToCart(cartItemData);
