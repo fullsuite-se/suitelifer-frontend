@@ -29,11 +29,6 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
   const [isBuying, setIsBuying] = useState(false);
   const [quantity, setQuantity] = useState(1);
   
-  // Modal state
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState('buy-now'); // 'buy-now' or 'add-to-cart'
-  const [modalProduct, setModalProduct] = useState(product);
-  
   // Variation selection state
   const [selectedVariation, setSelectedVariation] = useState(null);
   const [selectedOptions, setSelectedOptions] = useState({});
@@ -114,76 +109,38 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
    * Handles adding the product to the shopping cart with selected quantity and variation
    */
   const handleAddToCart = async () => {
-    if (isAddingToCart || isBuying) return;
-
-    // Prepare variations array if any
-    let variations = [];
-    if (availableVariations.length > 0) {
-      variations = Object.entries(selectedOptions).map(([typeName, optionId]) => {
-        const option = availableVariations
-          .flatMap(v => v.options || [])
-          .find(opt => opt.option_id === optionId && opt.type_name === typeName);
-        return {
-          variation_type_id: option?.variation_type_id,
-          option_id: optionId
-        };
-      }).filter(v => v.variation_type_id && v.option_id);
-      // If not all required variations are selected, open modal
-      const allTypesSelected = variationTypes.every(type => selectedOptions[type]);
-      if (!allTypesSelected) {
-        (async () => {
-          try {
-            const res = await suitebiteAPI.getProductById(product.product_id);
-            if (res.success && res.product) {
-              setModalProduct(res.product);
-            } else {
-              setModalProduct(product);
-            }
-          } catch (e) {
-            setModalProduct(product);
-          }
-          setIsModalOpen(true);
-          setModalMode('add-to-cart');
-        })();
-        return;
-      }
-    }
-
-    // Always use a consistent cartData object
-    const cartData = {
-      product_id: product.product_id,
-      quantity,
-      variations,
-      variation_id: selectedVariation?.variation_id || null // legacy support
-    };
-
+    // Always open the modal for add-to-cart
     try {
-      setIsAddingToCart(true);
-      await onAddToCart(cartData);
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-    } finally {
-      setIsAddingToCart(false);
+      const res = await suitebiteAPI.getProductById(product.product_id);
+      if (res.success && res.product) {
+        // setModalProduct(res.product); // This line is removed
+      } else {
+        // setModalProduct(product); // This line is removed
+      }
+    } catch (e) {
+      // setModalProduct(product); // This line is removed
     }
+    // setIsModalOpen(true); // This line is removed
+    // setModalMode('add-to-cart'); // This line is removed
   };
 
   /**
    * Handles direct purchase (buy now) - opens modal for detailed view
    */
   const handleBuyNow = async () => {
-    // Fetch full product details before opening modal
+    // Always open the modal for buy-now
     try {
       const res = await suitebiteAPI.getProductById(product.product_id);
       if (res.success && res.product) {
-        setModalProduct(res.product);
+        // setModalProduct(res.product); // This line is removed
       } else {
-        setModalProduct(product);
+        // setModalProduct(product); // This line is removed
       }
     } catch (e) {
-      setModalProduct(product);
+      // setModalProduct(product); // This line is removed
     }
-    setIsModalOpen(true);
-    setModalMode('buy-now');
+    // setIsModalOpen(true); // This line is removed
+    // setModalMode('buy-now'); // This line is removed
   };
 
   /**
@@ -195,210 +152,124 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
       try {
         const res = await suitebiteAPI.getProductById(product.product_id);
         if (res.success && res.product) {
-          setModalProduct(res.product);
+          // setModalProduct(res.product); // This line is removed
         } else {
-          setModalProduct(product);
+          // setModalProduct(product); // This line is removed
         }
       } catch (e) {
-        setModalProduct(product);
+        // setModalProduct(product); // This line is removed
       }
-      setIsModalOpen(true);
-      setModalMode('view-details');
+      // setIsModalOpen(true); // This line is removed
+      // setModalMode('view-details'); // This line is removed
     })();
   };
 
-  // Calculate product availability and affordability
-  const finalPrice = getFinalPrice();
+  // Remove all price adjustment and is_active logic
+  // Remove selectedVariation, getFinalPrice, and isActive
+  // Always use product.price_points or product.price for price display and calculations
+  // Remove any strikethrough or price adjustment UI
+  // Remove any checks or disables based on isActive
+
+  // Calculate product affordability
+  const finalPrice = product.price_points || product.price || 0;
   const totalCost = finalPrice * quantity;
   const canAfford = userHeartbits >= totalCost;
-  const isActive = product.is_active;
 
   // Get category colors
-  const categoryColor = getCategoryColor(product.category);
-  const categoryBgColor = getCategoryBgColor(product.category);
+  const categoryColor = getCategoryColor(product.category && product.category.toUpperCase());
+  const categoryBgColor = getCategoryBgColor(product.category && product.category.toUpperCase());
 
   return (
-
-    <>
-      <div className="product-card bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100">
-        {/* Product Image Section with overlayed category badge */}
-        <div className="relative">
-          <ProductImageCarousel 
-            images={(() => {
-              // Handle different image formats
-              let imageData = [];
-              if (product.images && Array.isArray(product.images) && product.images.length > 0) {
-                imageData = product.images;
-              } else if (product.product_images && Array.isArray(product.product_images) && product.product_images.length > 0) {
-                imageData = product.product_images;
-              } else if (product.image_url) {
-                imageData = [{ image_url: product.image_url, alt_text: product.name }];
-              }
-              return imageData;
-            })()}
-            productName={product.name}
-            className="product-image"
-          />
-          {product.category && (
-            <span 
-              className="category-badge absolute top-2 left-2 px-3 py-1 rounded-full text-xs font-semibold shadow-sm border border-white border-opacity-20 z-10"
-              style={{ 
-                backgroundColor: categoryColor,
-                color: 'white',
-                textShadow: '0 1px 2px rgba(0,0,0,0.1)'
-              }}
+    <div className="product-card bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100">
+      {/* Product Image Section with overlayed category badge */}
+      <div className="relative">
+        <ProductImageCarousel 
+          images={(() => {
+            let imageData = [];
+            if (product.images && Array.isArray(product.images) && product.images.length > 0) {
+              imageData = product.images;
+            } else if (product.product_images && Array.isArray(product.product_images) && product.product_images.length > 0) {
+              imageData = product.product_images;
+            } else if (product.image_url) {
+              imageData = [{ image_url: product.image_url, alt_text: product.name }];
+            }
+            return imageData;
+          })()}
+          productName={product.name}
+          className="product-image"
+        />
+        {/* Category Badge */}
+        {product.category && (
+          <span
+            className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-semibold shadow-sm`}
+            style={{ backgroundColor: categoryBgColor, color: categoryColor, zIndex: 2 }}
+          >
+            {product.category}
+          </span>
+        )}
+      </div>
+      {/* Product Information Section */}
+      <div className="product-info p-4">
+        <h3 className="product-name text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+          {product.name}
+        </h3>
+        <p className="product-description text-sm text-gray-600 mb-4 line-clamp-2">
+          {product.description || 'Premium quality product curated for your needs.'}
+        </p>
+        <div className="flex items-center justify-between mb-4">
+          <div className="heartbits-price flex items-center gap-2">
+            <div className="flex flex-col">
+              <span className="text-2xl font-bold text-[#0097b2] flex items-center gap-1">{product.price_points || product.price || 0}<HeartIcon className="h-5 w-5 text-red-500 ml-1" /></span>
+            </div>
+          </div>
+          <div className="quantity-selector flex items-center gap-3">
+            <button
+              onClick={() => setQuantity(Math.max(1, quantity - 1))}
+              className="quantity-btn w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center font-semibold hover:bg-gray-300 transition-colors duration-200"
             >
-              {product.category}
+              -
+            </button>
+            <span className="quantity-display text-lg font-semibold text-gray-900 min-w-[2rem] text-center">
+              {quantity}
             </span>
-          )}
+            <button
+              onClick={() => setQuantity(quantity + 1)}
+              className="quantity-btn w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center font-semibold hover:bg-gray-300 transition-colors duration-200"
+            >
+              +
+            </button>
+          </div>
         </div>
-
-        {/* Product Information Section */}
-        <div className="product-info p-4">
-          {/* Product Name */}
-          <h3 className="product-name text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
-            {product.name}
-          </h3>
-          
-          {/* Product Description */}
-          <p className="product-description text-sm text-gray-600 mb-4 line-clamp-2">
-            {product.description || 'Premium quality product curated for your needs.'}
-          </p>
-
-          {/* Variations are selected in the product details modal */}
-          
-          {/* Price and Quantity Row */}
-          <div className="flex items-center justify-between mb-4">
-            {/* Price */}
-            <div className="heartbits-price flex items-center gap-2">
-              <div className="flex flex-col">
-                {product.price_range && product.price_range.min !== product.price_range.max ? (
-                  // Show price range for products with variations
-                  <div className="flex items-center gap-1">
-                    <span className="text-lg font-bold text-[#0097b2]">{product.price_range.min}</span>
-                    <span className="text-sm text-gray-500">-</span>
-                    <span className="text-lg font-bold text-[#0097b2]">{product.price_range.max}</span>
-                    <HeartIcon className="h-4 w-4 text-red-500 ml-1" />
-                  </div>
-                ) : selectedVariation && selectedVariation.price_adjustment !== 0 ? (
-                  // Show adjusted price for selected variation
-                  <>
-                    <div className="flex items-center gap-1">
-                      <span className="text-lg text-gray-400 line-through">{product.price_points}</span>
-                      <span className="text-2xl font-bold text-[#0097b2] flex items-center gap-1">{finalPrice}<HeartIcon className="h-5 w-5 text-red-500 ml-1" /></span>
-                    </div>
-                  </>
-                ) : (
-                  // Show base price
-                  <span className="text-2xl font-bold text-[#0097b2] flex items-center gap-1">{finalPrice}<HeartIcon className="h-5 w-5 text-red-500 ml-1" /></span>
-                )}
-                {availableVariations.length > 0 && !selectedVariation && (
-                  <span className="variations-badge bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-sm mt-1 inline-block">
-                    {availableVariations.length} Options
-                  </span>
-                )}
-              </div>
-            </div>
-            {/* Quantity Selector */}
-            <div className="quantity-selector flex items-center gap-3">
-              <button
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="quantity-btn w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center font-semibold hover:bg-gray-300 transition-colors duration-200"
-              >
-                -
-              </button>
-              <span className="quantity-display text-lg font-semibold text-gray-900 min-w-[2rem] text-center">
-                {quantity}
-              </span>
-              <button
-                onClick={() => setQuantity(quantity + 1)}
-                className="quantity-btn w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center font-semibold hover:bg-gray-300 transition-colors duration-200"
-              >
-                +
-              </button>
-            </div>
+        <div className="total-cost-display bg-gray-50 p-2 rounded-lg mb-2">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-600">Total for {quantity}:</span>
+            <span className="font-semibold text-gray-900 flex items-center gap-1">{(product.price_points || product.price || 0) * quantity}<HeartIcon className="h-4 w-4 text-red-500 ml-1" /></span>
           </div>
-
-
-          {/* Total Cost Display */}
-          <div className="total-cost-display bg-gray-50 p-2 rounded-lg mb-2">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-600">Total for {quantity}:</span>
-              <span className="font-semibold text-gray-900 flex items-center gap-1">{totalCost}<HeartIcon className="h-4 w-4 text-red-500 ml-1" /></span>
-            </div>
-          </div>
-
-
-
-          {/* Action Buttons */}
-          <div className="action-buttons space-y-2">
-            {/* Buy Now Button */}
-            <button
-              onClick={handleBuyNow}
-              disabled={!canAfford || !isActive || isBuying || isAddingToCart}
-              className="buy-now-btn w-full bg-[#0097b2] text-white py-3 px-4 rounded-lg font-semibold hover:bg-[#007a8e] transition-colors duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isBuying ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  <span>Processing...</span>
-                </>
-              ) : !canAfford ? (
-                <>
-                  <HeartIcon className="h-4 w-4" />
-                  <span>Need {totalCost - userHeartbits} more</span>
-                </>
-              ) : (
-                <>
-                  <ShoppingBagIcon className="h-4 w-4" />
-                  <span>Buy Now</span>
-                </>
-              )}
-            </button>
-
-            {/* Add to Cart Button */}
-            <button
-              onClick={handleAddToCart}
-              disabled={!isActive || isAddingToCart || isBuying}
-              className="add-to-cart-btn w-full bg-white text-[#0097b2] py-2 px-4 rounded-lg font-medium border border-[#0097b2] hover:bg-[#0097b2] hover:text-white transition-colors duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isAddingToCart ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-[#0097b2] border-t-transparent rounded-full animate-spin"></div>
-                  <span>Adding...</span>
-                </>
-              ) : (
-                <>
-                  <ShoppingCartIcon className="h-4 w-4" />
-                  <span>Add to Cart</span>
-                </>
-              )}
-            </button>
-          </div>
+        </div>
+        <div className="action-buttons space-y-2">
+          <button
+            onClick={e => {
+              e.stopPropagation();
+              onBuyNow(product, quantity);
+            }}
+            className="buy-now-btn w-full bg-[#0097b2] text-white py-3 px-4 rounded-lg font-semibold hover:bg-[#007a8e] transition-colors duration-200 flex items-center justify-center gap-2"
+          >
+            <ShoppingBagIcon className="h-4 w-4" />
+            <span>Buy Now</span>
+          </button>
+          <button
+            onClick={e => {
+              e.stopPropagation();
+              onAddToCart(product, quantity);
+            }}
+            className="add-to-cart-btn w-full bg-white text-[#0097b2] py-2 px-4 rounded-lg font-medium border border-[#0097b2] hover:bg-[#0097b2] hover:text-white transition-colors duration-200 flex items-center justify-center gap-2"
+          >
+            <ShoppingCartIcon className="h-4 w-4" />
+            <span>Add to Cart</span>
+          </button>
         </div>
       </div>
-
-      {/* Product Detail Modal */}
-      <ProductDetailModal
-        product={modalProduct && modalProduct.images && modalProduct.images.length > 0
-          ? modalProduct
-          : {
-              ...modalProduct,
-              images: modalProduct.image_url
-                ? [{ image_url: modalProduct.image_url, alt_text: modalProduct.name }]
-                : []
-            }
-        }
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onAddToCart={onAddToCart}
-        onBuyNow={onBuyNow}
-        userHeartbits={userHeartbits}
-        mode={modalMode}
-        initialQuantity={quantity}
-        initialSelectedOptions={selectedOptions}
-      />
-    </>
+    </div>
   );
 };
 
