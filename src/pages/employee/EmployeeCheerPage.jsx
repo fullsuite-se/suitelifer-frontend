@@ -14,6 +14,7 @@ import {
 import { 
   HeartIcon as HeartIconSolid,
 } from '@heroicons/react/24/solid';
+import { formatFullDateTime } from '../../utils/dateHelpers';
 // Remove import { motion, AnimatePresence } from 'framer-motion';
 // Remove confettiAnimating state and all setConfettiAnimating logic
 // Remove confettiColor function
@@ -57,8 +58,16 @@ const CheerPage = () => {
   // Restore main cheer card like button:
   // Restore comment like button:
 
+
+  // Add state for date filter
+  const [selectedDate, setSelectedDate] = useState('');
+
+  // Fetch cheer statistics
+  const { data: statsData, isLoading: statsLoading } = useQuery({
+
   // Fetch cheer statistics (removed unused variable)
-  const { isLoading: statsLoading } = useQuery({
+  //const { isLoading: statsLoading } = useQuery({
+
     queryKey: ['cheer-stats'],
     queryFn: pointsShopApi.getCheerStats,
     staleTime: 2 * 60 * 1000,
@@ -73,21 +82,46 @@ const CheerPage = () => {
     enabled: !!user && Object.keys(user).length > 0,
   });
 
-  // Fetch cheer feed
-  const { data: cheerFeed, isLoading: feedLoading } = useQuery({
-    queryKey: ['cheer-feed'],
-    queryFn: () => pointsShopApi.getCheerFeed(20),
+  // Update cheer feed query to use selectedDate
+  const { data: cheerFeed, isLoading: feedLoading, refetch: refetchCheerFeed } = useQuery({
+    queryKey: ['cheer-feed', selectedDate],
+    queryFn: () => {
+      if (selectedDate) {
+        // Get start and end of selected day in ISO format
+        const from = new Date(selectedDate);
+        from.setHours(0, 0, 0, 0);
+        const to = new Date(selectedDate);
+        to.setHours(23, 59, 59, 999);
+        return pointsShopApi.getCheerFeed(20, from.toISOString(), to.toISOString());
+      } else {
+        return pointsShopApi.getCheerFeed(20);
+      }
+    },
     staleTime: 1 * 60 * 1000,
     enabled: !!user && Object.keys(user).length > 0,
   });
 
   // Fetch leaderboard
   const { data: leaderboardData, isLoading: leaderboardLoading } = useQuery({
-    queryKey: ['leaderboard', activeTab],
-    queryFn: () => pointsShopApi.getLeaderboard(activeTab),
+    queryKey: ['leaderboard', activeTab, user?.id],
+    queryFn: () => pointsShopApi.getLeaderboard(activeTab, user?.id),
     staleTime: 2 * 60 * 1000,
     enabled: !!user && Object.keys(user).length > 0,
   });
+
+  // Process leaderboard data
+  const leaderboard = leaderboardData?.data || [];
+  const currentUserLeaderboard = leaderboardData?.currentUser || null;
+
+  // Debug logs
+  useEffect(() => {
+    console.log('Debug Leaderboard:', {
+      currentUserLeaderboard,
+      leaderboard,
+      userId: user?.id,
+      activeTab
+    });
+  }, [currentUserLeaderboard, leaderboard, user?.id, activeTab]);
 
   // User search for @ mentions
   const { data: searchResults = [] } = useQuery({
@@ -222,13 +256,6 @@ const CheerPage = () => {
       setLikedCheers(likedCheerIds);
     }
   }, [cheerFeed]);
-
-  // Debug: log leaderboard data
-  useEffect(() => {
-    console.log('CheerPage - activeTab:', activeTab);
-    console.log('CheerPage - leaderboardData:', leaderboardData);
-    console.log('CheerPage - leaderboard (processed):', leaderboardData?.data || []);
-  }, [activeTab, leaderboardData]);
 
   // Debug: log searchQuery and searchResults
   useEffect(() => {
@@ -446,8 +473,24 @@ const CheerPage = () => {
   }
 
   const availableHeartbits = (pointsData?.data?.monthlyCheerLimit || 100) - (pointsData?.data?.monthlyCheerUsed || 0);
-  const feed = Array.isArray(cheerFeed?.data?.cheers) ? cheerFeed.data.cheers : [];
-  const leaderboard = leaderboardData?.data || [];
+const stats = statsData?.data || {};
+const leaderboard = leaderboardData?.data || [];
+
+const feedRaw = Array.isArray(cheerFeed?.data?.cheers) ? cheerFeed.data.cheers : [];
+let feed = feedRaw;
+
+if (selectedDate) {
+  feed = feedRaw.filter(post => {
+    const postDate = new Date(post.createdAt || post.posted_at);
+    // Compare only the date part in local time
+    const yyyy = postDate.getFullYear();
+    const mm = String(postDate.getMonth() + 1).padStart(2, '0');
+    const dd = String(postDate.getDate()).padStart(2, '0');
+    const postDateStr = `${yyyy}-${mm}-${dd}`;
+    return postDateStr === selectedDate;
+  });
+}
+
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#ffffff' }}>
@@ -830,6 +873,31 @@ const CheerPage = () => {
                 </div>
               </div>
 
+              {/* Date Picker for filtering cheers by date */}
+              <div className="flex items-center justify-end mb-2">
+                <label htmlFor="cheer-date-picker" className="mr-2 text-sm text-gray-700 font-medium">Filter by date:</label>
+                <input
+                  id="cheer-date-picker"
+                  type="date"
+                  className="border rounded px-2 py-1 text-sm"
+                  value={selectedDate}
+                  max={new Date().toISOString().split('T')[0]}
+                  onChange={e => {
+                    setSelectedDate(e.target.value);
+                    // Optionally, refetch immediately
+                    // refetchCheerFeed();
+                  }}
+                />
+                {selectedDate && (
+                  <button
+                    className="ml-2 text-xs text-blue-600 underline"
+                    onClick={() => setSelectedDate('')}
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+
               <div className="max-h-90 overflow-y-auto">
                 {feedLoading ? (
                   <div className="p-8 text-center">
@@ -858,6 +926,10 @@ const CheerPage = () => {
                              border: '1.5px solid #e0e7ef',
                              overflow: 'hidden'
                            }}>
+                        {/* Formatted Date - Top right */}
+                        <div className="absolute top-4 right-6 text-xs text-gray-500 font-medium z-10">
+                          {formatFullDateTime(cheer.createdAt || cheer.posted_at)}
+                        </div>
                         {/* Shiny green accent bar */}
                         <div
                           style={{
@@ -1220,6 +1292,54 @@ const CheerPage = () => {
                 </div>
               </div>
               
+              {/* Current User Position - Always Show */}
+              {user && currentUserLeaderboard && (
+                <div className="mb-4">
+                  <div className="text-sm text-gray-500 mb-2">Your Current Position</div>
+                  <div className="flex items-center space-x-3 p-4 rounded-xl" 
+                       style={{ 
+                         backgroundColor: '#fafafa',
+                         border: '1px solid #e0e7ef'
+                       }}>
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-base shadow-sm flex-shrink-0"
+                         style={{
+                           background: currentUserLeaderboard.rank === 1
+                             ? 'linear-gradient(135deg, #FFD700 0%, #FFF8DC 25%, #FFD700 50%, #B8860B 75%, #FFD700 100%)'
+                             : currentUserLeaderboard.rank === 2
+                             ? 'linear-gradient(135deg, #C0C0C0 0%, #F8F8FF 25%, #C0C0C0 50%, #808080 75%, #C0C0C0 100%)'
+                             : currentUserLeaderboard.rank === 3
+                             ? 'linear-gradient(135deg, #CD7F32 0%, #DEB887 25%, #CD7F32 50%, #8B4513 75%, #CD7F32 100%)'
+                             : '#f1f5f9',
+                           color: currentUserLeaderboard.rank <= 3 ? '#ffffff' : '#0097b2',
+                           textShadow: currentUserLeaderboard.rank <= 3 ? '0 2px 4px rgba(0, 0, 0, 0.5)' : 'none'
+                         }}>
+                      {currentUserLeaderboard.rank}
+                    </div>
+                    <img
+                      src={currentUserLeaderboard.info?.avatar || '/images/default-avatar.png'}
+                      alt={currentUserLeaderboard.info?.name}
+                      className="w-10 h-10 rounded-xl ring-1 ring-gray-200 flex-shrink-0"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-base truncate">
+                        {currentUserLeaderboard.info?.name || user.first_name + ' ' + user.last_name}
+                      </p>
+                    </div>
+                    <span className="font-bold text-base">
+                      {currentUserLeaderboard.info?.totalPoints || currentUserLeaderboard.totalPoints || 0} received
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {/* Separator */}
+              <div className="h-1 bg-gradient-to-r from-transparent via-gray-300 to-transparent my-6" 
+                   style={{ 
+                     height: '2px',
+                     background: 'linear-gradient(to right, transparent, #e2e8f0 20%, #e2e8f0 80%, transparent)'
+                   }}></div>
+
+              {/* Main Leaderboard */}
               {leaderboardLoading ? (
                 <div className="text-center py-8">
                   <div className="relative mb-4">
@@ -1234,91 +1354,93 @@ const CheerPage = () => {
                 </div>
               ) : leaderboard.length > 0 ? (
                 <div className="space-y-3 max-h-72 overflow-y-auto">
-                  {leaderboard.slice(0, showMoreLeaderboard ? 6 : 3).map((entry, index) => (
-                    <div
-                      key={entry._id || entry.userId || entry.user_id || index}
-                      className="flex items-center space-x-3 p-4 rounded-xl transition-all duration-200 hover:scale-[1.02]"
-                      style={{
-                        backgroundColor: '#faf8ef',
-                        border: '1px solid #f0e68c',
-                      }}
-                    >
-                      <div 
-                        className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-base shadow-lg flex-shrink-0"
+                  {/* Show complete leaderboard without filtering */}
+                  {leaderboard
+                    .slice(0, showMoreLeaderboard ? 6 : 3)
+                    .map((entry) => (
+                      <div
+                        key={entry._id || entry.userId || entry.user_id}
+                        className="flex items-center space-x-3 p-4 rounded-xl transition-all duration-200 hover:scale-[1.02]"
                         style={{
-                          background: index === 0 
-                            ? 'linear-gradient(135deg, #FFD700 0%, #FFF8DC 25%, #FFD700 50%, #B8860B 75%, #FFD700 100%)' // Glistening Gold
-                            : index === 1 
-                            ? 'linear-gradient(135deg, #C0C0C0 0%, #F8F8FF 25%, #C0C0C0 50%, #808080 75%, #C0C0C0 100%)' // Glistening Silver
-                            : index === 2 
-                            ? 'linear-gradient(135deg, #CD7F32 0%, #DEB887 25%, #CD7F32 50%, #8B4513 75%, #CD7F32 100%)' // Glistening Bronze
-                            : 'linear-gradient(135deg, #8B4513 0%, #A0522D 100%)', // Wood/Brown
-                          color: '#ffffff',
-                          textShadow: index <= 2 ? '0 2px 4px rgba(0, 0, 0, 0.5)' : '0 1px 2px rgba(0, 0, 0, 0.3)',
-                          boxShadow: index <= 2 ? '0 2px 8px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3)' : 'none'
+                          backgroundColor: '#faf8ef',
+                          border: '1px solid #f0e68c',
                         }}
                       >
-                        {index + 1}
+                        <div 
+                          className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-base shadow-lg flex-shrink-0"
+                          style={{
+                            background: entry.rank === 1
+                              ? 'linear-gradient(135deg, #FFD700 0%, #FFF8DC 25%, #FFD700 50%, #B8860B 75%, #FFD700 100%)'
+                              : entry.rank === 2
+                              ? 'linear-gradient(135deg, #C0C0C0 0%, #F8F8FF 25%, #C0C0C0 50%, #808080 75%, #C0C0C0 100%)'
+                              : entry.rank === 3
+                              ? 'linear-gradient(135deg, #CD7F32 0%, #DEB887 25%, #CD7F32 50%, #8B4513 75%, #CD7F32 100%)'
+                              : 'linear-gradient(135deg, #8B4513 0%, #A0522D 100%)',
+                            color: '#ffffff',
+                            textShadow: entry.rank <= 3 ? '0 2px 4px rgba(0, 0, 0, 0.5)' : '0 1px 2px rgba(0, 0, 0, 0.3)',
+                            boxShadow: entry.rank <= 3 ? '0 2px 8px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3)' : 'none'
+                          }}
+                        >
+                          {entry.rank}
+                        </div>
+                        <img
+                          src={entry.avatar || '/images/default-avatar.png'}
+                          alt={entry.name || entry.userName}
+                          className="w-10 h-10 rounded-xl ring-2 ring-gray-200 flex-shrink-0"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="font-bold text-base truncate" 
+                            style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                            {entry.name || entry.userName}
+                          </p>
+                        </div>
+                        <span className="font-black text-lg px-3 py-1 rounded-lg flex-shrink-0" 
+                          style={{ 
+                            color: '#1a0202',
+                            backgroundColor: 'transparent',
+                            fontFamily: 'Avenir, sans-serif' 
+                          }}>
+                          {entry.totalPoints || entry.total_earned} received
+                        </span>
                       </div>
-                      <img
-                        src={entry.avatar || '/images/default-avatar.png'}
-                        alt={entry.name || entry.userName}
-                        className="w-10 h-10 rounded-xl ring-2 ring-gray-200 flex-shrink-0"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <p className="font-bold text-base truncate" 
-                          style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
-                          {entry.name || entry.userName}
-                        </p>
+                    ))}
+                    
+                    {/* Show More/Less Button */}
+                    {leaderboard.length > 3 && (
+                      <div className="flex justify-center pt-3">
+                        <button
+                          onClick={() => setShowMoreLeaderboard(!showMoreLeaderboard)}
+                          className="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 hover:scale-105 active:scale-95"
+                          style={{
+                            backgroundColor: '#f9f6e8',
+                            color: '#0097b2',
+                            fontFamily: 'Avenir, sans-serif',
+                            border: '1px solid #f0e68c'
+                          }}
+                        >
+                          {showMoreLeaderboard ? 'Show Less' : `Show Next ${Math.min(3, leaderboard.length - 3)}`}
+                        </button>
                       </div>
-                      <span className="font-black text-lg px-3 py-1 rounded-lg flex-shrink-0" 
-                        style={{ 
-                          color: '#1a0202',
-                          backgroundColor: 'transparent',
-                          fontFamily: 'Avenir, sans-serif' 
-                        }}>
-                        {entry.totalPoints || entry.total_earned} received
-                      </span>
-                    </div>
-                  ))}
-                  
-                  {/* Show More/Less Button */}
-                  {leaderboard.length > 3 && (
-                    <div className="flex justify-center pt-3">
-                      <button
-                        onClick={() => setShowMoreLeaderboard(!showMoreLeaderboard)}
-                        className="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 hover:scale-105 active:scale-95"
-                        style={{
-                          backgroundColor: '#f9f6e8',
-                          color: '#0097b2',
-                          fontFamily: 'Avenir, sans-serif',
-                          border: '1px solid #f0e68c'
-                        }}
-                      >
-                        {showMoreLeaderboard ? 'Show Less' : `Show Next ${Math.min(3, leaderboard.length - 3)}`}
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="text-center py-12">
-                  <TrophyIcon className="w-12 h-12 mx-auto mb-4" style={{ color: '#94a3b8' }} />
-                  <h3 className="text-lg font-bold mb-2" style={{ color: '#64748b', fontFamily: 'Avenir, sans-serif' }}>
-                    No leaderboard data available
-                  </h3>
-                  <p className="text-base" style={{ color: '#94a3b8', fontFamily: 'Avenir, sans-serif' }}>
-                    Start sending cheers to see rankings! 🏆
-                  </p>
-                </div>
-              )}
+                    )}
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <TrophyIcon className="w-12 h-12 mx-auto mb-4" style={{ color: '#94a3b8' }} />
+                    <h3 className="text-lg font-bold mb-2" style={{ color: '#64748b', fontFamily: 'Avenir, sans-serif' }}>
+                      No leaderboard data available
+                    </h3>
+                    <p className="text-base" style={{ color: '#94a3b8', fontFamily: 'Avenir, sans-serif' }}>
+                      Start sending cheers to see rankings! 🏆
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    
   );
-};
-
-// confettiColor function removed
+}
 
 export default CheerPage;

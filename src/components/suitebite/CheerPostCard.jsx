@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { suitebiteAPI } from '../../utils/suitebiteAPI';
 import { HeartIcon, ChatBubbleLeftIcon, ClockIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
-import { formatTimeAgo } from '../../utils/dateHelpers';
+import { formatTimeAgo, formatFullDateTime } from '../../utils/dateHelpers';
 
 /**
  * CheerPostCard Component
@@ -241,7 +241,12 @@ const CheerPostCard = ({ post, onInteraction }) => {
               </div>
             </div>
           </div>
-          
+          {/* Formatted Date - Top right */}
+          <div className="flex flex-col items-end ml-2 min-w-[160px]">
+            <span className="text-xs text-gray-500 font-medium">
+              {formatFullDateTime(post.createdAt || post.posted_at)}
+            </span>
+          </div>
           {/* Heartbits Earned Badge - Show total for group cheers */}
           <div className="heartbits-badge flex items-center gap-2">
             {post.additional_recipients && post.additional_recipients.length > 0 ? (
