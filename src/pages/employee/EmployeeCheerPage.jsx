@@ -165,6 +165,51 @@ const CheerPage = () => {
     },
   });
 
+  // Add state for editing comments
+  const [editingComment, setEditingComment] = useState(null); // {cheerId, commentId}
+  const [editCommentText, setEditCommentText] = useState('');
+
+  // Edit comment mutation
+  const editCommentMutation = useMutation({
+    mutationFn: ({ cheerId, commentId, comment }) => pointsShopApi.updateCheerComment(cheerId, commentId, comment),
+    onSuccess: (_, variables) => {
+      setCheerComments(prev => {
+        const newMap = new Map(prev);
+        const data = newMap.get(variables.cheerId);
+        if (data && Array.isArray(data.comments)) {
+          data.comments = data.comments.map(c =>
+            c._id === variables.commentId ? { ...c, comment: variables.comment } : c
+          );
+        }
+        return newMap;
+      });
+      setEditingComment(null);
+      setEditCommentText('');
+      toast.success('Comment updated!');
+    },
+    onError: () => toast.error('Failed to update comment'),
+  });
+
+  // Delete comment mutation
+  const deleteCommentMutation = useMutation({
+    mutationFn: ({ cheerId, commentId }) => pointsShopApi.deleteCheerComment(cheerId, commentId),
+    onSuccess: (_, variables) => {
+      setCheerComments(prev => {
+        const newMap = new Map(prev);
+        const data = newMap.get(variables.cheerId);
+        if (data && Array.isArray(data.comments)) {
+          data.comments = data.comments.filter(c => c._id !== variables.commentId);
+        }
+        return newMap;
+      });
+      toast.success('Comment deleted!');
+    },
+    onError: () => toast.error('Failed to delete comment'),
+  });
+
+  // Add state for delete confirmation
+  const [confirmingDelete, setConfirmingDelete] = useState(null); // {cheerId, commentId}
+
   // Initialize hearted cheers state when feed data loads
   useEffect(() => {
     if (cheerFeed && Array.isArray(cheerFeed.data?.cheers)) {
@@ -1008,12 +1053,85 @@ const CheerPage = () => {
                                                         {formatTimeAgo(comment.createdAt)}
                                                       </span>
                                                     </div>
-                                                    <p className="text-base" 
-                                                       style={{ color: '#374151', fontFamily: 'Avenir, sans-serif' }}>
-                                                      {comment.comment}
-                                                    </p>
+                                                    {editingComment && editingComment.cheerId === cheer.cheer_id && editingComment.commentId === comment._id ? (
+                                                      <div className="flex items-center space-x-2">
+                                                        <input
+                                                          type="text"
+                                                          value={editCommentText}
+                                                          onChange={e => setEditCommentText(e.target.value)}
+                                                          className="flex-1 px-2 py-1 rounded border"
+                                                          style={{ fontFamily: 'Avenir, sans-serif', color: '#1a0202' }}
+                                                          disabled={editCommentMutation.isLoading}
+                                                        />
+                                                        <button
+                                                          className="text-xs px-2 py-1 rounded bg-green-500 text-white font-bold"
+                                                          style={{ fontFamily: 'Avenir, sans-serif' }}
+                                                          disabled={editCommentMutation.isLoading || !editCommentText.trim()}
+                                                          onClick={() => editCommentMutation.mutate({ cheerId: cheer.cheer_id, commentId: comment._id, comment: editCommentText.trim() })}
+                                                        >
+                                                          Save
+                                                        </button>
+                                                        <button
+                                                          className="text-xs px-2 py-1 rounded bg-gray-300 text-gray-700 font-bold"
+                                                          style={{ fontFamily: 'Avenir, sans-serif' }}
+                                                          disabled={editCommentMutation.isLoading}
+                                                          onClick={() => { setEditingComment(null); setEditCommentText(''); }}
+                                                        >
+                                                          Cancel
+                                                        </button>
+                                                      </div>
+                                                    ) : (
+                                                      <p className="text-base" style={{ color: '#374151', fontFamily: 'Avenir, sans-serif' }}>{comment.comment}</p>
+                                                    )}
                                                   </div>
                                                 </div>
+                                                {comment.fromUser?._id === user.id && !editingComment && (
+                                                  <div className="flex space-x-1 mt-1">
+                                                    {confirmingDelete && confirmingDelete.cheerId === cheer.cheer_id && confirmingDelete.commentId === comment._id ? (
+                                                      <div className="flex items-center space-x-2">
+                                                        <span className="text-xs font-semibold" style={{ color: '#ef4444', fontFamily: 'Avenir, sans-serif' }}>Are you sure?</span>
+                                                        <button
+                                                          className="text-xs px-2 py-1 rounded bg-red-500 text-white font-bold hover:bg-red-600"
+                                                          style={{ fontFamily: 'Avenir, sans-serif' }}
+                                                          onClick={() => {
+                                                            deleteCommentMutation.mutate({ cheerId: cheer.cheer_id, commentId: comment._id });
+                                                            setConfirmingDelete(null);
+                                                          }}
+                                                          disabled={editCommentMutation.isLoading || deleteCommentMutation.isLoading}
+                                                        >
+                                                          Yes
+                                                        </button>
+                                                        <button
+                                                          className="text-xs px-2 py-1 rounded bg-gray-300 text-gray-700 font-bold"
+                                                          style={{ fontFamily: 'Avenir, sans-serif' }}
+                                                          onClick={() => setConfirmingDelete(null)}
+                                                          disabled={editCommentMutation.isLoading || deleteCommentMutation.isLoading}
+                                                        >
+                                                          No
+                                                        </button>
+                                                      </div>
+                                                    ) : (
+                                                      <>
+                                                        <button
+                                                          className="text-xs px-2 py-1 rounded bg-yellow-400 text-white font-bold hover:bg-yellow-500"
+                                                          style={{ fontFamily: 'Avenir, sans-serif' }}
+                                                          onClick={() => { setEditingComment({ cheerId: cheer.cheer_id, commentId: comment._id }); setEditCommentText(comment.comment); }}
+                                                          disabled={editCommentMutation.isLoading || deleteCommentMutation.isLoading}
+                                                        >
+                                                          Edit
+                                                        </button>
+                                                        <button
+                                                          className="text-xs px-2 py-1 rounded bg-red-500 text-white font-bold hover:bg-red-600"
+                                                          style={{ fontFamily: 'Avenir, sans-serif' }}
+                                                          onClick={() => setConfirmingDelete({ cheerId: cheer.cheer_id, commentId: comment._id })}
+                                                          disabled={editCommentMutation.isLoading || deleteCommentMutation.isLoading}
+                                                        >
+                                                          Delete
+                                                        </button>
+                                                      </>
+                                                    )}
+                                                  </div>
+                                                )}
                                               </div>
                                             );
                                           })}
