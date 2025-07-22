@@ -40,9 +40,23 @@ const SuitebiteShop = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortOption, setSortOption] = useState('name-asc');
   const [priceRange, setPriceRange] = useState({ min: 0, max: 5000 });
+  const [variationOptions, setVariationOptions] = useState([]);
+  const [variationTypes, setVariationTypes] = useState([]);
 
   useEffect(() => {
     loadShopData();
+    // Fetch variation options and types on mount
+    const fetchVariationData = async () => {
+      try {
+        const optionsRes = await suitebiteAPI.getVariationOptions();
+        if (optionsRes.success) setVariationOptions(optionsRes.options);
+        const typesRes = await suitebiteAPI.getVariationTypes();
+        if (typesRes.success) setVariationTypes(typesRes.types);
+      } catch (e) {
+        console.warn('Could not load variation options/types:', e.message);
+      }
+    };
+    fetchVariationData();
   }, []);
 
   const showNotification = (type, message) => {
@@ -70,6 +84,8 @@ const SuitebiteShop = () => {
           category: product.category || product.category_name,
           is_active: product.is_active,
           image_url: product.image_url,
+          images: Array.isArray(product.images) ? product.images : [],
+          product_images: Array.isArray(product.product_images) ? product.product_images : [],
           variations: Array.isArray(product.variations) ? product.variations : []
         }));
         
@@ -142,85 +158,25 @@ const SuitebiteShop = () => {
     }
   };
 
-  // Enhanced: Open modal and fetch full product details for Add to Cart
+  // Fix: Remove the logic that opens the modal if isModalOpen is true
   const handleAddToCart = async (productId, quantity = 1, variationId = null, variations = []) => {
-    console.log('🛒 SuitebiteShop - handleAddToCart called with:', {
-      productId,
-      quantity,
-      variationId,
-      variations,
-      productIdType: typeof productId,
-      quantityType: typeof quantity,
-      hasVariations: variations && variations.length > 0,
-      modalIsOpen: isModalOpen
-    });
-    
-    // If modal is already open, this is a call from within the modal - actually add to cart
-    if (isModalOpen) {
-      try {
-        const cartData = { product_id: productId, quantity };
-        if (variationId) cartData.variation_id = variationId;
-        if (variations && variations.length > 0) {
-          cartData.variations = variations;
-          console.log('🔧 Sending variations to cart:', variations);
-        }
-        
-        const response = await suitebiteAPI.addToCart(cartData);
-        if (response.success) {
-          await loadShopData();
-          showNotification('success', 'Item added to cart! 🛒');
-          return; // Don't open another modal
-        } else {
-          showNotification('error', response.message || 'Failed to add item to cart');
-          return;
-        }
-      } catch (error) {
-        console.error('Error adding to cart from modal:', error);
-        showNotification('error', 'Failed to add item to cart');
-        return;
-      }
-    }
-    
-    // If no modal is open, this is an initial call - open modal for selection
     try {
-      // Fetch full product details including all images
-      const res = await suitebiteAPI.getProductById(productId);
-      let product = res.success && res.product ? res.product : products.find(p => p.product_id === productId);
-      
-      if (product) {
-        // Always provide images array - ensure we get all product images
-        product = {
-          ...product,
-          images: Array.isArray(product.images) && product.images.length > 0
-            ? product.images
-            : product.image_url
-              ? [{ image_url: product.image_url, alt_text: product.name }]
-              : []
-        };
-        
-        console.log('🖼️ Product images for modal:', product.images);
-        
-        setModalProduct(product);
-        setIsModalOpen(true);
-        setModalMode('add-to-cart');
-        setModalInitialQuantity(quantity);
-        
-        // Handle initial selected options from variations array
-        const initialOptions = {};
-        if (variations && variations.length > 0) {
-          variations.forEach(variation => {
-            if (variation.type_name && variation.option_id) {
-              initialOptions[variation.type_name] = variation.option_id;
-            }
-          });
-        }
-        setModalInitialSelectedOptions(initialOptions);
+      const cartData = { product_id: productId, quantity };
+      if (variationId) cartData.variation_id = variationId;
+      if (variations && variations.length > 0) {
+        cartData.variations = variations;
+      }
+      const response = await suitebiteAPI.addToCart(cartData);
+      if (response.success) {
+        setIsModalOpen(false); // Always close modal after add
+        await loadShopData();
+        showNotification('success', 'Item added to cart! 🛒');
       } else {
-        showNotification('error', 'Product not found');
+        showNotification('error', response.message || 'Failed to add item to cart');
       }
     } catch (error) {
-      console.error('Error fetching product for modal:', error);
-      showNotification('error', 'Failed to load product details');
+      console.error('Error adding to cart:', error);
+      showNotification('error', 'Failed to add item to cart');
     }
   };
 
@@ -573,18 +529,33 @@ const SuitebiteShop = () => {
                     {filteredAndSortedProducts.map(product => {
                       const productWithImages = {
                         ...product,
-                        images: Array.isArray(product.images) && product.images.length > 0
-                          ? product.images
-                          : product.image_url
-                            ? [{ image_url: product.image_url, alt_text: product.name }]
-                            : []
+                        images: Array.isArray(product.product_images) && product.product_images.length > 0
+                          ? product.product_images
+                          : Array.isArray(product.images) && product.images.length > 0
+                            ? product.images
+                            : product.image_url
+                              ? [{ image_url: product.image_url, alt_text: product.name }]
+                              : [],
+                        product_images: Array.isArray(product.product_images) ? product.product_images : []
                       };
                       return (
                         <ProductCard
                           key={product.product_id}
                           product={productWithImages}
-                          onAddToCart={(productId, quantity, variationId, variations) => handleAddToCart(product.product_id, quantity, variationId, variations)}
-                          onBuyNow={(productId, quantity, variationId, variations) => handleBuyNow(product.product_id, quantity, variationId, variations)}
+                          onAddToCart={() => {
+                            setModalProduct(productWithImages);
+                            setIsModalOpen(true);
+                            setModalMode('add-to-cart');
+                            setModalInitialQuantity(1);
+                            setModalInitialSelectedOptions({});
+                          }}
+                          onBuyNow={() => {
+                            setModalProduct(productWithImages);
+                            setIsModalOpen(true);
+                            setModalMode('buy-now');
+                            setModalInitialQuantity(1);
+                            setModalInitialSelectedOptions({});
+                          }}
                           userHeartbits={userHeartbits}
                         />
                       );
@@ -595,68 +566,20 @@ const SuitebiteShop = () => {
           product={modalProduct}
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          onAddToCart={async (productId, quantity, variationId, variations) => {
-            // Actually add to cart, then close modal and refresh cart
-            try {
-              console.log('🛒 Adding to cart from modal:', {
-                productId,
-                quantity,
-                variationId,
-                variations,
-                variationsLength: variations?.length
-              });
-              
-              const cartData = { product_id: productId, quantity };
-              if (variationId) cartData.variation_id = variationId;
-              if (variations && variations.length > 0) {
-                cartData.variations = variations;
-                console.log('🔧 Sending variations to cart:', variations);
-              }
-              
-              const response = await suitebiteAPI.addToCart(cartData);
-              if (response.success) {
-                setIsModalOpen(false);
-                await loadShopData();
-                showNotification('success', 'Item added to cart! 🛒');
-              } else {
-                showNotification('error', response.message || 'Failed to add item to cart');
-              }
-            } catch (error) {
-              console.error('Error adding to cart from modal:', error);
-              showNotification('error', 'Failed to add item to cart');
-            }
-          }}
+          onAddToCart={handleAddToCart}
           onBuyNow={async (productId, quantity, variationId, variations) => {
             // Add to cart, then checkout immediately
             try {
-              console.log('🛒 Buy now from modal:', {
-                productId,
-                quantity,
-                variationId,
-                variations,
-                variationsLength: variations?.length
-              });
-              
               const cartData = { product_id: productId, quantity };
               if (variationId) cartData.variation_id = variationId;
               if (variations && variations.length > 0) {
                 cartData.variations = variations;
-                console.log('🔧 Sending variations for buy now:', variations);
               }
-              
               const response = await suitebiteAPI.addToCart(cartData);
               if (response.success) {
-                // Get the cart item that was just added
-                const cartResponse = await suitebiteAPI.getCart();
-                if (cartResponse.success) {
-                  const cartItems = cartResponse.data?.cartItems || [];
-                  const newCartItem = cartItems.find(item => item.product_id === productId && (!variationId || item.variation_id === variationId));
-                  if (newCartItem) {
-                    await handleCheckout([newCartItem]);
-                  }
-                }
                 setIsModalOpen(false);
                 await loadShopData();
+                // Optionally, trigger checkout here
               } else {
                 showNotification('error', response.message || 'Failed to buy now');
               }
@@ -691,6 +614,8 @@ const SuitebiteShop = () => {
               onRemoveItem={handleRemoveItem}
               onAddToCart={handleAddToCart}
               isVisible={true}
+              variationOptions={variationOptions}
+              variationTypes={variationTypes}
             />
           </div>
         )}

@@ -36,8 +36,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
     price_points: '',
     category: '',
     newCategory: '',
-    slug: '',
-    is_active: true // Always set to true since we removed the UI controls
+    slug: '' // Removed is_active
   });
 
   // Image upload state (New system)
@@ -135,8 +134,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
         description: product.description || '',
         price_points: product.price || product.price_points || '',
         category: product.category || '',
-        slug: product.slug || '',
-        is_active: true // Always set to true since we removed the UI controls
+        slug: product.slug || '' // Removed is_active
       });
 
       // Load product images for editing
@@ -506,8 +504,8 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
     // Return array of { options: [option_id, ...], variation_sku }
     return allCombinations.map(combination => ({
       options: combination.map(opt => opt.option_id),
-      variation_sku: combination.map(opt => opt.option_value.toUpperCase()).join('-'),
-      price_adjustment: 0
+      variation_sku: combination.map(opt => opt.option_value.toUpperCase()).join('-')
+      // Removed price_adjustment
     }));
   };
 
@@ -564,8 +562,8 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
           description: formData.description.trim(),
           price_points: parseInt(formData.price_points),
           category: formData.category.trim(),
-          slug: formData.slug,
-          is_active: formData.is_active
+          slug: formData.slug
+          // Removed is_active
         };
         productResponse = await suitebiteAPI.updateProduct(product.product_id, updateData);
         if (!productResponse.success) {
@@ -578,17 +576,21 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
           // Get current variations to compare
           const existingVariationsRes = await suitebiteAPI.getProductVariations(productId);
           const existingVariations = existingVariationsRes.success ? existingVariationsRes.variations : [];
-          
+
           // Generate new variations
           const newVariations = generateVariations();
-          
+
+          // Helper to get a unique key for a variation based on its option IDs
+          const optionsKey = (variation) =>
+            (variation.options || [])
+              .map(opt => opt.option_id)
+              .sort()
+              .join('-');
+
           // Remove only variations that are no longer needed
           const variationsToRemove = existingVariations.filter(existing => {
-            return !newVariations.some(newVar => 
-              existing.size_id === newVar.size_id &&
-              existing.color_id === newVar.color_id &&
-              existing.design_id === newVar.design_id
-            );
+            const existingKey = optionsKey(existing);
+            return !newVariations.some(newVar => optionsKey(newVar) === existingKey);
           });
 
           // Remove unused variations
@@ -602,11 +604,8 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
 
           // Add only new variations
           const variationsToAdd = newVariations.filter(newVar => {
-            return !existingVariations.some(existing =>
-              existing.size_id === newVar.size_id &&
-              existing.color_id === newVar.color_id &&
-              existing.design_id === newVar.design_id
-            );
+            const newKey = optionsKey(newVar);
+            return !existingVariations.some(existing => optionsKey(existing) === newKey);
           });
 
           // Add new variations
@@ -615,8 +614,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
               await suitebiteAPI.addProductVariation({
                 product_id: productId,
                 options: variation.options,
-                variation_sku: variation.variation_sku,
-                price_adjustment: variation.price_adjustment
+                variation_sku: variation.variation_sku
               });
             } catch (variationError) {
               console.warn('Failed to create variation:', variationError);
@@ -642,8 +640,8 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
           description: formData.description.trim(),
           price_points: parseInt(formData.price_points),
           category: formData.category.trim(),
-          slug: formData.slug,
-          is_active: formData.is_active
+          slug: formData.slug
+          // Removed is_active
         };
         productResponse = await suitebiteAPI.addProduct(productData);
         if (!productResponse.success) {
@@ -660,8 +658,8 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
               await suitebiteAPI.addProductVariation({
                 product_id: productId,
                 options: variation.options,
-                variation_sku: variation.variation_sku,
-                price_adjustment: variation.price_adjustment
+                variation_sku: variation.variation_sku
+                // Removed price_adjustment
               });
             } catch (variationError) {
               console.warn('Failed to create variation:', variationError);
@@ -936,7 +934,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
       return false;
     } catch (error) {
       console.warn('Could not check order impact (endpoint not implemented):', error.message);
-      // Return false to allow the operation to continue when the endpoint doesn't exist
+      // Allow update to proceed even if check fails
       return false;
     }
   };
