@@ -32,6 +32,7 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState('buy-now'); // 'buy-now' or 'add-to-cart'
+  const [modalProduct, setModalProduct] = useState(product);
   
   // Variation selection state
   const [selectedVariation, setSelectedVariation] = useState(null);
@@ -115,74 +116,50 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
   const handleAddToCart = async () => {
     if (isAddingToCart || isBuying) return;
 
-    // For products with variations, check if all required variations are selected
+    // Prepare variations array if any
+    let variations = [];
     if (availableVariations.length > 0) {
+      variations = Object.entries(selectedOptions).map(([typeName, optionId]) => {
+        const option = availableVariations
+          .flatMap(v => v.options || [])
+          .find(opt => opt.option_id === optionId && opt.type_name === typeName);
+        return {
+          variation_type_id: option?.variation_type_id,
+          option_id: optionId
+        };
+      }).filter(v => v.variation_type_id && v.option_id);
+      // If not all required variations are selected, open modal
       const allTypesSelected = variationTypes.every(type => selectedOptions[type]);
-      
       if (!allTypesSelected) {
-        // If not all variations are selected, open the modal
-        setIsModalOpen(true);
-        setModalMode('add-to-cart');
+        (async () => {
+          try {
+            const res = await suitebiteAPI.getProductById(product.product_id);
+            if (res.success && res.product) {
+              setModalProduct(res.product);
+            } else {
+              setModalProduct(product);
+            }
+          } catch (e) {
+            setModalProduct(product);
+          }
+          setIsModalOpen(true);
+          setModalMode('add-to-cart');
+        })();
         return;
       }
-
-      // If all variations are selected, add directly to cart with variations
-      try {
-        setIsAddingToCart(true);
-        
-        // Prepare variation data in the new format
-        const variations = Object.entries(selectedOptions).map(([typeName, optionId]) => {
-          const option = availableVariations
-            .flatMap(v => v.options || [])
-            .find(opt => opt.option_id === optionId && opt.type_name === typeName);
-          
-          console.log(`🔍 ProductCard - Processing variation:`, {
-            typeName,
-            optionId,
-            optionIdType: typeof optionId,
-            foundOption: option,
-            allOptionsForType: availableVariations
-              .flatMap(v => v.options || [])
-              .filter(opt => opt.type_name === typeName)
-              .map(opt => ({ option_id: opt.option_id, type: typeof opt.option_id })),
-            availableVariations: availableVariations.length
-          });
-          
-          const variation = {
-            variation_type_id: option?.variation_type_id,
-            option_id: optionId
-          };
-          
-          console.log(`🔍 ProductCard - Created variation object:`, {
-            variation,
-            hasTypeId: !!variation.variation_type_id,
-            hasOptionId: !!variation.option_id,
-            willBeFiltered: !(variation.variation_type_id && variation.option_id)
-          });
-          
-          return variation;
-        }).filter(v => v.variation_type_id && v.option_id);
-
-        console.log('🛒 ProductCard - Adding to cart with variations:', {
-          selectedOptions,
-          preparedVariations: variations,
-          product: product.name,
-          filteredCount: variations.length
-        });
-
-        await onAddToCart(product.product_id, quantity, null, variations);
-      } catch (error) {
-        console.error('Error adding to cart:', error);
-      } finally {
-        setIsAddingToCart(false);
-      }
-      return;
     }
 
-    // For products without variations, add directly to cart
+    // Always use a consistent cartData object
+    const cartData = {
+      product_id: product.product_id,
+      quantity,
+      variations,
+      variation_id: selectedVariation?.variation_id || null // legacy support
+    };
+
     try {
       setIsAddingToCart(true);
-      await onAddToCart(product.product_id, quantity);
+      await onAddToCart(cartData);
     } catch (error) {
       console.error('Error adding to cart:', error);
     } finally {
@@ -194,6 +171,17 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
    * Handles direct purchase (buy now) - opens modal for detailed view
    */
   const handleBuyNow = async () => {
+    // Fetch full product details before opening modal
+    try {
+      const res = await suitebiteAPI.getProductById(product.product_id);
+      if (res.success && res.product) {
+        setModalProduct(res.product);
+      } else {
+        setModalProduct(product);
+      }
+    } catch (e) {
+      setModalProduct(product);
+    }
     setIsModalOpen(true);
     setModalMode('buy-now');
   };
@@ -202,8 +190,21 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
    * Handles view details - opens modal for detailed view
    */
   const handleViewDetails = () => {
-    setIsModalOpen(true);
-    setModalMode('view-details');
+    // Fetch full product details before opening modal
+    (async () => {
+      try {
+        const res = await suitebiteAPI.getProductById(product.product_id);
+        if (res.success && res.product) {
+          setModalProduct(res.product);
+        } else {
+          setModalProduct(product);
+        }
+      } catch (e) {
+        setModalProduct(product);
+      }
+      setIsModalOpen(true);
+      setModalMode('view-details');
+    })();
   };
 
   // Calculate product availability and affordability
@@ -217,20 +218,30 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
   const categoryBgColor = getCategoryBgColor(product.category);
 
   return (
+
     <>
       <div className="product-card bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100">
-        {/* Product Image Section */}
-        <ProductImageCarousel 
-          images={product.images || product.images_json || product.image_url}
-          productName={product.name}
-          className="product-image relative"
-        />
-        
-        {/* Enhanced Color-Coded Category Badge */}
-        {product.category && (
-          <div className="absolute top-3 left-3 z-10">
+        {/* Product Image Section with overlayed category badge */}
+        <div className="relative">
+          <ProductImageCarousel 
+            images={(() => {
+              // Handle different image formats
+              let imageData = [];
+              if (product.images && Array.isArray(product.images) && product.images.length > 0) {
+                imageData = product.images;
+              } else if (product.product_images && Array.isArray(product.product_images) && product.product_images.length > 0) {
+                imageData = product.product_images;
+              } else if (product.image_url) {
+                imageData = [{ image_url: product.image_url, alt_text: product.name }];
+              }
+              return imageData;
+            })()}
+            productName={product.name}
+            className="product-image"
+          />
+          {product.category && (
             <span 
-              className="category-badge px-3 py-1 rounded-full text-xs font-semibold shadow-sm border border-white border-opacity-20"
+              className="category-badge absolute top-2 left-2 px-3 py-1 rounded-full text-xs font-semibold shadow-sm border border-white border-opacity-20 z-10"
               style={{ 
                 backgroundColor: categoryColor,
                 color: 'white',
@@ -239,27 +250,7 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
             >
               {product.category}
             </span>
-          </div>
-        )}
-        
-        {/* Variations Available Badge */}
-        {availableVariations.length > 0 && (
-          <div className="absolute bottom-3 left-3 z-10">
-            <span className="variations-badge bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-sm">
-              {availableVariations.length} Options
-            </span>
-          </div>
-        )}
-
-        {/* View Details Button */}
-        <div className="absolute top-3 right-3 z-10">
-          <button
-            onClick={handleViewDetails}
-            className="view-details-btn bg-white bg-opacity-90 hover:bg-opacity-100 p-2 rounded-full shadow-sm transition-all duration-200"
-            title="View Details"
-          >
-            <EyeIcon className="h-4 w-4 text-gray-600" />
-          </button>
+          )}
         </div>
 
         {/* Product Information Section */}
@@ -302,7 +293,9 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
                   <span className="text-2xl font-bold text-[#0097b2] flex items-center gap-1">{finalPrice}<HeartIcon className="h-5 w-5 text-red-500 ml-1" /></span>
                 )}
                 {availableVariations.length > 0 && !selectedVariation && (
-                  <span className="text-xs text-gray-500">Options available</span>
+                  <span className="variations-badge bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-sm mt-1 inline-block">
+                    {availableVariations.length} Options
+                  </span>
                 )}
               </div>
             </div>
@@ -326,13 +319,16 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
             </div>
           </div>
 
+
           {/* Total Cost Display */}
-          <div className="total-cost-display bg-gray-50 p-2 rounded-lg">
+          <div className="total-cost-display bg-gray-50 p-2 rounded-lg mb-2">
             <div className="flex items-center justify-between text-sm">
               <span className="text-gray-600">Total for {quantity}:</span>
               <span className="font-semibold text-gray-900 flex items-center gap-1">{totalCost}<HeartIcon className="h-4 w-4 text-red-500 ml-1" /></span>
             </div>
           </div>
+
+
 
           {/* Action Buttons */}
           <div className="action-buttons space-y-2">
@@ -384,7 +380,15 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
 
       {/* Product Detail Modal */}
       <ProductDetailModal
-        product={product}
+        product={modalProduct && modalProduct.images && modalProduct.images.length > 0
+          ? modalProduct
+          : {
+              ...modalProduct,
+              images: modalProduct.image_url
+                ? [{ image_url: modalProduct.image_url, alt_text: modalProduct.name }]
+                : []
+            }
+        }
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onAddToCart={onAddToCart}

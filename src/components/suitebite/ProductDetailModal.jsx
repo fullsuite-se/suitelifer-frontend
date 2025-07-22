@@ -66,6 +66,28 @@ const ProductDetailModal = ({
     }
   }, [product]);
 
+  // Update quantity when initialQuantity prop changes (but not when quantity changes locally)
+  useEffect(() => {
+    setQuantity(initialQuantity || 1);
+  }, [initialQuantity]);
+
+  // Update selected options when initialSelectedOptions prop changes
+  useEffect(() => {
+    if (initialSelectedOptions) {
+      setSelectedOptions(initialSelectedOptions);
+    }
+  }, [initialSelectedOptions]);
+
+  // Reset states when modal opens/closes
+  useEffect(() => {
+    if (isOpen) {
+      setQuantity(initialQuantity || 1);
+      setSelectedOptions(initialSelectedOptions || {});
+      setIsAddingToCart(false);
+      setIsBuying(false);
+    }
+  }, [isOpen, initialQuantity, initialSelectedOptions, mode]);
+
   // Update selected variation when options change
   useEffect(() => {
     if (availableVariations.length > 0 && Object.keys(selectedOptions).length > 0) {
@@ -173,7 +195,9 @@ const ProductDetailModal = ({
         selectedOptions,
         preparedVariations: variations,
         product: product.name,
-        filteredCount: variations.length
+        filteredCount: variations.length,
+        quantity: quantity,
+        productId: product.product_id
       });
 
       await onAddToCart(product.product_id, quantity, null, variations);
@@ -263,11 +287,22 @@ const ProductDetailModal = ({
             {/* Product Image Section */}
             <div className="product-image-section">
               <div className="relative h-96 rounded-lg overflow-hidden">
-                <ProductImageCarousel 
-                  images={product.images || product.images_json || (product.image_url ? [{ image_url: product.image_url, alt_text: product.name }] : [])}
-                  productName={product.name}
-                  className="w-full h-full"
-                />
+                {(() => {
+                  // Always prefer the full images array from backend
+                  const imagesToPass = Array.isArray(product.images) && product.images.length > 0
+                    ? product.images
+                    : product.image_url
+                      ? [{ image_url: product.image_url, alt_text: product.name }]
+                      : [];
+                  console.log('[ProductDetailModal] Images for carousel:', imagesToPass);
+                  return (
+                    <ProductImageCarousel 
+                      images={imagesToPass}
+                      productName={product.name}
+                      className="w-full h-full"
+                    />
+                  );
+                })()}
                 
                 {/* Category Badge */}
                 {product.category && (
@@ -388,7 +423,11 @@ const ProductDetailModal = ({
                 </label>
                 <div className="flex items-center gap-4">
                   <button
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    onClick={() => {
+                      const newQuantity = Math.max(1, quantity - 1);
+                      console.log('🔢 Decreasing quantity from', quantity, 'to', newQuantity);
+                      setQuantity(newQuantity);
+                    }}
                     className="quantity-btn w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center font-semibold hover:bg-gray-300 transition-colors duration-200"
                   >
                     -
@@ -397,7 +436,11 @@ const ProductDetailModal = ({
                     {quantity}
                   </span>
                   <button
-                    onClick={() => setQuantity(quantity + 1)}
+                    onClick={() => {
+                      const newQuantity = quantity + 1;
+                      console.log('🔢 Increasing quantity from', quantity, 'to', newQuantity);
+                      setQuantity(newQuantity);
+                    }}
                     className="quantity-btn w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center font-semibold hover:bg-gray-300 transition-colors duration-200"
                   >
                     +
