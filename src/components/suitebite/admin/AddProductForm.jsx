@@ -1300,7 +1300,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
 
                   {/* Add New Variation Type Modal */}
                   {showAddTypeModal && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+                    <div className="fixed inset-0 bg-black/40 backdrop-blurz-50 flex items-center justify-center p-4">
                       <div className="bg-white rounded-lg max-w-md w-full p-6">
                         <div className="flex items-center justify-between mb-4">
                           <h3 className="text-lg font-semibold text-gray-900">Add New Variation Type</h3>
@@ -1523,7 +1523,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
 
       {/* Add Category Modal */}
       {showCategoryModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg max-w-md w-full p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Add New Category</h3>
             
@@ -1567,7 +1567,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
 
       {/* Add Option Modal */}
       {showAddOptionModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/40  z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg max-w-md w-full p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-gray-900">
@@ -1639,7 +1639,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
 
       {/* Delete Category Confirmation Modal */}
       {showDeleteCategoryModal && categoryToDelete && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg max-w-md w-full p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-gray-900">Delete Category</h3>
@@ -1693,7 +1693,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
 
       {/* Order Impact Warning Modal */}
       {showOrderWarningModal && orderWarning && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/40  z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg max-w-lg w-full p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-gray-900">⚠️ Product Used in Orders</h3>

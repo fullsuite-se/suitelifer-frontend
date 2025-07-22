@@ -678,7 +678,7 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate }) => {
 // Order Details Modal Component
 const OrderDetailsModal = ({ order, onClose }) => {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
         {/* Modal Header */}
         <div className="bg-[#0097b2] text-white p-6">
@@ -722,48 +722,57 @@ const OrderDetailsModal = ({ order, onClose }) => {
           {/* Order Timeline */}
           <div className="mb-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-3">Order Timeline</h3>
-            <div className="space-y-3">
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                <div>
-                  <p className="text-sm font-medium text-gray-900">Order Placed</p>
-                  <p className="text-xs text-gray-500">{formatDate(order.ordered_at)}</p>
+            <div className="flex items-center justify-between gap-4 relative px-2">
+              {/* Horizontal line */}
+              <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gray-200 z-0" style={{transform: 'translateY(-50%)'}}></div>
+              {/* Timeline steps */}
+              <div className="flex flex-1 items-center justify-between z-10">
+                {/* Placed */}
+                <div className="flex flex-col items-center min-w-[80px]">
+                  <div className="w-5 h-5 bg-green-500 rounded-full border-2 border-white shadow flex items-center justify-center">
+                    <CheckIcon className="h-3 w-3 text-white" />
+                  </div>
+                  <span className="text-xs font-medium text-gray-900 mt-2">Placed</span>
+                  <span className="text-[10px] text-gray-500">{formatDate(order.ordered_at)}</span>
                 </div>
+                {/* Approved */}
+                {order.processed_at && (
+                  <div className="flex flex-col items-center min-w-[80px]">
+                    <div className="w-5 h-5 bg-blue-500 rounded-full border-2 border-white shadow flex items-center justify-center">
+                      <CheckIcon className="h-3 w-3 text-white" />
+                    </div>
+                    <span className="text-xs font-medium text-gray-900 mt-2">Approved</span>
+                    <span className="text-[10px] text-gray-500">{formatDate(order.processed_at)}</span>
+                  </div>
+                )}
+                {/* Completed */}
+                {order.completed_at && (
+                  <div className="flex flex-col items-center min-w-[80px]">
+                    <div className="w-5 h-5 bg-green-500 rounded-full border-2 border-white shadow flex items-center justify-center">
+                      <CheckIcon className="h-3 w-3 text-white" />
+                    </div>
+                    <span className="text-xs font-medium text-gray-900 mt-2">Completed</span>
+                    <span className="text-[10px] text-gray-500">{formatDate(order.completed_at)}</span>
+                  </div>
+                )}
+                {/* Cancelled */}
+                {order.status === 'cancelled' && (
+                  <div className="flex flex-col items-center min-w-[80px]">
+                    <div className="w-5 h-5 bg-red-500 rounded-full border-2 border-white shadow flex items-center justify-center">
+                      <XMarkIcon className="h-3 w-3 text-white" />
+                    </div>
+                    <span className="text-xs font-medium text-gray-900 mt-2">Cancelled</span>
+                    <span className="text-[10px] text-gray-500">Order was cancelled</span>
+                  </div>
+                )}
               </div>
-              {order.processed_at && (
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">Order Approved</p>
-                    <p className="text-xs text-gray-500">{formatDate(order.processed_at)}</p>
-                  </div>
-                </div>
-              )}
-              {order.completed_at && (
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">Order Completed</p>
-                    <p className="text-xs text-gray-500">{formatDate(order.completed_at)}</p>
-                  </div>
-                </div>
-              )}
-              {order.status === 'cancelled' && (
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">Order Cancelled</p>
-                    <p className="text-xs text-gray-500">Order was cancelled</p>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
 
           {/* Order Items */}
           <div className="mb-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-3">Order Items</h3>
-            <div className="space-y-3">
+            <div className="space-y-3 max-h-64 overflow-y-auto pr-2">
               {order.orderItems && order.orderItems.map((item, index) => (
                 <OrderItemCard 
                   key={`${item.order_item_id}-${index}`} 

@@ -23,6 +23,8 @@ import {
   ArrowDownTrayIcon,
   TrashIcon
 } from '@heroicons/react/24/outline';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 /**
  * OrderManagement Component - Admin Order Management
@@ -51,6 +53,9 @@ const OrderManagement = () => {
   const [cancellingOrders, setCancellingOrders] = useState(new Set());
   const [deletingOrders, setDeletingOrders] = useState(new Set());
   const [notification, setNotification] = useState({ show: false, type: '', message: '' });
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [exportStatus, setExportStatus] = useState('pending');
+  const [exportFormat, setExportFormat] = useState('csv');
 
   useEffect(() => {
     loadOrders();
@@ -358,8 +363,191 @@ const OrderManagement = () => {
     return order.status === 'processing';
   };
 
+  function getOrderItemsSummary(order) {
+    if (!order.orderItems || order.orderItems.length === 0) return '';
+    return order.orderItems.map(item => {
+      let summary = `${item.quantity}x ${item.product_name}`;
+      if (item.variations && item.variations.length > 0) {
+        const varText = item.variations.map(v => {
+          const type = v.type_label || v.type_name || '';
+          const val = v.option_label || v.option_value || '';
+          return `${type}: ${val}`;
+        }).join(', ');
+        summary += `\n   - ${varText}`;
+      }
+      return summary;
+    }).join('\n');
+  }
+
+  function exportOrdersToCSV(orders) {
+    const headers = ['Order ID', 'Customer Name', 'Date', 'Total Points', 'Items'];
+    const rows = orders.map(order => [
+      order.order_id,
+      `${order.first_name || ''} ${order.last_name || ''}`.trim(),
+      order.ordered_at,
+      order.total_points,
+      getOrderItemsSummary(order)
+    ]);
+    let csvContent = '';
+    csvContent += headers.join(',') + '\n';
+    rows.forEach(row => {
+      csvContent += row.map(field => `"${String(field).replace(/"/g, '""')}"`).join(',') + '\n';
+    });
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'orders_export.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  function exportOrdersToPDF(orders) {
+    const doc = new jsPDF();
+    const tableColumn = ['Order ID', 'Customer Name', 'Date', 'Total Points', 'Items'];
+    const tableRows = orders.map(order => [
+      order.order_id,
+      `${order.first_name || ''} ${order.last_name || ''}`.trim(),
+      order.ordered_at,
+      order.total_points,
+      getOrderItemsSummary(order)
+    ]);
+    doc.text('Orders Export', 14, 16);
+    autoTable(doc, { head: [tableColumn], body: tableRows, startY: 22, styles: { cellWidth: 'wrap', fontSize: 10 }, bodyStyles: { valign: 'top' }, columnStyles: { 4: { cellWidth: 60 } } });
+    doc.save('orders_export.pdf');
+  }
+
+  // Export handler (stub)
+  const handleExportOrders = () => {
+    // Filter orders by status
+    const filteredOrders = orders.filter(o =>
+      exportStatus === 'all' ? true : o.status === exportStatus
+    );
+    if (exportFormat === 'csv') {
+      exportOrdersToCSV(filteredOrders);
+    } else {
+      exportOrdersToPDF(filteredOrders);
+    }
+    setShowExportModal(false);
+  };
+
   return (
     <div className="order-management-container">
+      {/* Filters Row with Export Button Aligned to Filters */}
+      <div className="flex flex-wrap md:flex-nowrap items-end gap-2 mb-6 bg-white rounded-lg shadow-sm border p-4">
+        {/* Filters */}
+        <div className="flex flex-wrap gap-2 flex-1 min-w-0">
+          {/* Search */}
+          <div className="min-w-[180px] flex-1">
+            <label className="block text-xs font-medium text-gray-700 mb-1">Search</label>
+            <div className="relative">
+              <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Order ID, customer..."
+                className="w-full pl-9 pr-2 py-1.5 border border-gray-300 rounded focus:ring-1 focus:ring-[#0097b2] focus:border-transparent text-sm"
+              />
+            </div>
+          </div>
+          {/* Status Filter */}
+          <div className="min-w-[120px]">
+            <label className="block text-xs font-medium text-gray-700 mb-1">Status</label>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="w-full px-2 py-1.5 border border-gray-300 rounded focus:ring-1 focus:ring-[#0097b2] focus:border-transparent text-sm"
+            >
+              <option value="all">All</option>
+              <option value="pending">Pending</option>
+              <option value="processing">Processing</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+          {/* Sort By */}
+          <div className="min-w-[120px]">
+            <label className="block text-xs font-medium text-gray-700 mb-1">Sort By</label>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="w-full px-2 py-1.5 border border-gray-300 rounded focus:ring-1 focus:ring-[#0097b2] focus:border-transparent text-sm"
+            >
+              <option value="ordered_at">Order Date</option>
+              <option value="total_points">Total Points</option>
+              <option value="status">Status</option>
+              <option value="customer">Customer</option>
+            </select>
+          </div>
+          {/* Sort Order */}
+          <div className="min-w-[120px]">
+            <label className="block text-xs font-medium text-gray-700 mb-1">Order</label>
+            <select
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
+              className="w-full px-2 py-1.5 border border-gray-300 rounded focus:ring-1 focus:ring-[#0097b2] focus:border-transparent text-sm"
+            >
+              <option value="desc">Newest</option>
+              <option value="asc">Oldest</option>
+            </select>
+          </div>
+        </div>
+        {/* Export Button aligned with filters */}
+        <div className="flex-shrink-0 self-stretch flex items-end">
+          <button
+            className="h-full px-4 py-2 bg-[#0097b2] text-white rounded-lg hover:bg-[#007a8e] font-semibold shadow text-sm"
+            onClick={() => setShowExportModal(true)}
+          >
+            Print/Export Orders
+          </button>
+        </div>
+      </div>
+      {/* Export Modal */}
+      {showExportModal && (
+        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg max-w-sm w-full shadow-2xl p-6">
+            <h3 className="text-lg font-semibold mb-4">Export Orders</h3>
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">Order Status</label>
+              <select
+                className="w-full border rounded px-3 py-2"
+                value={exportStatus}
+                onChange={e => setExportStatus(e.target.value)}
+              >
+                <option value="pending">Pending</option>
+                <option value="processing">Processing</option>
+              </select>
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">Export Format</label>
+              <select
+                className="w-full border rounded px-3 py-2"
+                value={exportFormat}
+                onChange={e => setExportFormat(e.target.value)}
+              >
+                <option value="csv">CSV</option>
+                <option value="pdf">PDF</option>
+              </select>
+            </div>
+            <div className="flex justify-end gap-2">
+              <button
+                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                onClick={() => setShowExportModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-[#0097b2] text-white rounded-lg hover:bg-[#007a8e] font-semibold"
+                onClick={handleExportOrders}
+              >
+                Export
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Analytics Section */}
       <div className="analytics mb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -417,70 +605,6 @@ const OrderManagement = () => {
                 <XCircleIcon className="h-6 w-6 text-red-600" />
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Filters */}
-      <div className="filters mb-6 bg-white rounded-lg shadow-sm border p-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Search */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Search Orders</label>
-            <div className="relative">
-              <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search by order ID, customer..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
-              />
-            </div>
-          </div>
-
-          {/* Status Filter */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
-            >
-              <option value="all">All Status</option>
-              <option value="pending">Pending</option>
-              <option value="processing">Processing</option>
-              <option value="completed">Completed</option>
-              <option value="cancelled">Cancelled</option>
-            </select>
-          </div>
-
-          {/* Sort By */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
-            >
-              <option value="ordered_at">Order Date</option>
-              <option value="total_points">Total Points</option>
-              <option value="status">Status</option>
-              <option value="customer">Customer</option>
-            </select>
-          </div>
-
-          {/* Sort Order */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Sort Order</label>
-            <select
-              value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
-            >
-              <option value="desc">Newest First</option>
-              <option value="asc">Oldest First</option>
-            </select>
           </div>
         </div>
       </div>
@@ -703,7 +827,7 @@ const OrderManagement = () => {
 // Order Details Modal Component
 const OrderDetailsModal = ({ order, onClose }) => {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
         {/* Modal Header */}
         <div className="bg-[#0097b2] text-white p-6">
@@ -730,7 +854,7 @@ const OrderDetailsModal = ({ order, onClose }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm font-medium text-gray-700">Name</p>
-                  <p className="text-sm text-gray-900">{order.user_first_name} {order.user_last_name}</p>
+                  <p className="text-sm text-gray-900">{order.first_name} {order.last_name}</p>
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-700">Email</p>
@@ -764,41 +888,50 @@ const OrderDetailsModal = ({ order, onClose }) => {
           {/* Order Timeline */}
           <div className="mb-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-3">Order Timeline</h3>
-            <div className="space-y-3">
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                <div>
-                  <p className="text-sm font-medium text-gray-900">Order Placed</p>
-                  <p className="text-xs text-gray-500">{formatDate(order.ordered_at)}</p>
+            <div className="flex items-center justify-between gap-4 relative px-2">
+              {/* Horizontal line */}
+              <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gray-200 z-0" style={{transform: 'translateY(-50%)'}}></div>
+              {/* Timeline steps */}
+              <div className="flex flex-1 items-center justify-between z-10">
+                {/* Placed */}
+                <div className="flex flex-col items-center min-w-[80px]">
+                  <div className="w-5 h-5 bg-green-500 rounded-full border-2 border-white shadow flex items-center justify-center">
+                    <CheckIcon className="h-3 w-3 text-white" />
+                  </div>
+                  <span className="text-xs font-medium text-gray-900 mt-2">Placed</span>
+                  <span className="text-[10px] text-gray-500">{formatDate(order.ordered_at)}</span>
                 </div>
+                {/* Approved */}
+                {order.processed_at && (
+                  <div className="flex flex-col items-center min-w-[80px]">
+                    <div className="w-5 h-5 bg-blue-500 rounded-full border-2 border-white shadow flex items-center justify-center">
+                      <CheckIcon className="h-3 w-3 text-white" />
+                    </div>
+                    <span className="text-xs font-medium text-gray-900 mt-2">Approved</span>
+                    <span className="text-[10px] text-gray-500">{formatDate(order.processed_at)}</span>
+                  </div>
+                )}
+                {/* Completed */}
+                {order.completed_at && (
+                  <div className="flex flex-col items-center min-w-[80px]">
+                    <div className="w-5 h-5 bg-green-500 rounded-full border-2 border-white shadow flex items-center justify-center">
+                      <CheckIcon className="h-3 w-3 text-white" />
+                    </div>
+                    <span className="text-xs font-medium text-gray-900 mt-2">Completed</span>
+                    <span className="text-[10px] text-gray-500">{formatDate(order.completed_at)}</span>
+                  </div>
+                )}
+                {/* Cancelled */}
+                {order.status === 'cancelled' && (
+                  <div className="flex flex-col items-center min-w-[80px]">
+                    <div className="w-5 h-5 bg-red-500 rounded-full border-2 border-white shadow flex items-center justify-center">
+                      <XMarkIcon className="h-3 w-3 text-white" />
+                    </div>
+                    <span className="text-xs font-medium text-gray-900 mt-2">Cancelled</span>
+                    <span className="text-[10px] text-gray-500">Order was cancelled</span>
+                  </div>
+                )}
               </div>
-              {order.processed_at && (
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">Order Approved</p>
-                    <p className="text-xs text-gray-500">{formatDate(order.processed_at)}</p>
-                  </div>
-                </div>
-              )}
-              {order.completed_at && (
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">Order Completed</p>
-                    <p className="text-xs text-gray-500">{formatDate(order.completed_at)}</p>
-                  </div>
-                </div>
-              )}
-              {order.status === 'cancelled' && (
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">Order Cancelled</p>
-                    <p className="text-xs text-gray-500">Order was cancelled</p>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
 
