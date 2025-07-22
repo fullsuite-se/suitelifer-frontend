@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useStore } from "../../store/authStore";
 import { ModalLogout } from "../modals/ModalLogout";
@@ -10,7 +10,6 @@ import {
   Bars3BottomLeftIcon,
   ArrowRightCircleIcon,
   Square2StackIcon,
-  WrenchScrewdriverIcon,
   ClipboardIcon,
   ArrowPathRoundedSquareIcon,
   ChevronDownIcon,
@@ -21,13 +20,9 @@ import {
   TableCellsIcon,
   ChartBarIcon,
   HeartIcon,
-  CurrencyDollarIcon,
   ShoppingBagIcon,
-  CubeIcon,
-  ClockIcon,
-  Cog6ToothIcon,
-  PlusIcon,
 } from "@heroicons/react/20/solid";
+import TeamPlayerIcon from '../../assets/icons/TeamPlayerIcon.jsx';
 import {
   Disclosure,
   DisclosureButton,
@@ -49,7 +44,7 @@ const regularFeatures = [
   {
     feature_name: "Personality Test",
     path: "personality-test",
-    icon: FaceSmileIcon,
+    icon: (props) => <TeamPlayerIcon className={props.className} color="currentColor" />,
   },
 ];
 
