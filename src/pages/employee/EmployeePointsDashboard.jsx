@@ -326,7 +326,8 @@ const PointsDashboard = () => {
                       }}
                     >
                       {transaction.type === 'purchase' || transaction.type === 'given' || transaction.type === 'admin_deduct' ? '-' : '+'}
-                      {transaction.amount} pts
+                      {transaction.amount}
+                      {transaction.type === 'received' || transaction.type === 'given' ? ' bits' : ' pts'}
                     </p>
                     {transaction.related_user && (
                       <p className="text-sm" style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>

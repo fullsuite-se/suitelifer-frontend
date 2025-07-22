@@ -962,8 +962,9 @@ if (selectedDate) {
                               <span className="font-bold text-base" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                                 {cheer.toUser?.name}
                               </span>
-                              <span className="font-bold px-2 py-1 rounded-full text-sm text-white shadow-lg" style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)', fontFamily: 'Avenir, sans-serif' }}>
-                                +{cheer.points} pts
+                              <span className="font-bold px-2 py-1 rounded-full text-sm text-white shadow-lg flex items-center" style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)', fontFamily: 'Avenir, sans-serif' }}>
+                                +{cheer.points}
+                                <HeartIconSolid className="w-4 h-4" style={{ color: '#ef4444', display: 'inline', marginLeft: '2px', marginRight: '0px' }} />bits
                               </span>
                             </div>
                             
