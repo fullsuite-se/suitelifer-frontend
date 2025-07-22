@@ -9,7 +9,7 @@ import {
   GiftIcon,
   ChartBarIcon,
   PlusIcon,
-  ArrowTrendingUpIcon,
+  TrophyIcon,
 } from '@heroicons/react/24/outline';
 import { 
   StarIcon as StarIconSolid,
@@ -177,21 +177,6 @@ const PointsDashboard = () => {
     }
   };
 
-  const getTransactionColor = (type) => {
-    switch (type) {
-      case 'purchase':
-      case 'given':
-      case 'admin_deduct':
-        return '#1a0202';
-      case 'received':
-      case 'admin_grant':
-      case 'admin_added':
-        return '#0097b2';
-      default:
-        return '#4a6e7e';
-    }
-  };
-
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'rgb(255,255,255)' }}>
       <div className="max-w-6xl mx-auto p-6 space-y-6 pb-20">
@@ -206,15 +191,12 @@ const PointsDashboard = () => {
           
           <button
           onClick={() => navigate('/app/cheer')}
-          className="flex items-center gap-2 text-white px-4 py-2 rounded-lg transition-colors"
-          style={{ 
-            backgroundColor: '#0097b2', 
+          className="flex items-center gap-2 text-white px-4 py-2 rounded-xl font-bold transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
+          style={{
+            background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)',
             fontFamily: 'Avenir, sans-serif',
-            border: 'none',
-            cursor: 'pointer'
+            minWidth: '140px'
           }}
-          onMouseEnter={(e) => e.target.style.backgroundColor = '#007a92'}
-          onMouseLeave={(e) => e.target.style.backgroundColor = '#0097b2'}
         >
           <HeartIconSolid className="w-5 h-5" />
           Send Heartbits
@@ -224,59 +206,60 @@ const PointsDashboard = () => {
       {/* Points Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Current Balance */}
-        <div className="rounded-xl p-6 text-white" style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)' }}>
+        <div className="rounded-xl p-6 text-white transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95" style={{ background: 'linear-gradient(135deg, #7c3aed 0%, #38bdf8 100%)', borderRadius: '18px' }}>
           <div className="flex items-center justify-between">
             <div>
               <p className="text-white text-sm font-medium opacity-90" style={{ fontFamily: 'Avenir, sans-serif' }}>Current Balance</p>
               <p className="text-3xl font-bold" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: '800' }}>{pointsData?.data?.currentBalance || 0}</p>
               <p className="text-white text-xs opacity-80" style={{ fontFamily: 'Avenir, sans-serif' }}>Points</p>
             </div>
-            <StarIconSolid className="w-12 h-12 text-white opacity-80" />
+            {/* Star icon for balance, yellow fill */}
+            <StarIconSolid className="w-12 h-12" style={{ color: '#FFD700' }} />
           </div>
         </div>
 
         {/* Heartbits Remaining */}
-        <div className="rounded-xl p-6 text-white" style={{ background: 'linear-gradient(135deg, #bfd1a0 0%, #4a6e7e 100%)' }}>
+        <div className="rounded-xl p-6 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95" style={{ background: 'linear-gradient(135deg, #34d399 0%, #a7f3d0 100%)', color: '#065f46', borderRadius: '18px' }}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-white text-sm font-medium opacity-90" style={{ fontFamily: 'Avenir, sans-serif' }}>Heartbits Remaining</p>
-              <p className="text-3xl font-bold" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: '800' }}>
+              <p className="text-sm font-medium opacity-90" style={{ color: '#065f46', fontFamily: 'Avenir, sans-serif' }}>Heartbits Remaining</p>
+              <p className="text-3xl font-bold" style={{ color: '#065f46', fontFamily: 'Avenir, sans-serif', fontWeight: '800' }}>
                 {(pointsData?.data?.monthlyCheerLimit || 100) - (pointsData?.data?.monthlyCheerUsed || 0)}
               </p>
-              <p className="text-white text-xs opacity-80" style={{ fontFamily: 'Avenir, sans-serif' }}>This Month</p>
+              <p className="text-xs opacity-80" style={{ color: '#065f46', fontFamily: 'Avenir, sans-serif' }}>This Month</p>
             </div>
-            <HeartIconSolid className="w-12 h-12 text-white opacity-80" />
+            <HeartIconSolid className="w-12 h-12" style={{ color: '#ef4444' }} />
           </div>
         </div>
 
         {/* Total Earned */}
-        <div className="rounded-xl p-6 text-white" style={{ background: 'linear-gradient(135deg, #4a6e7e 0%, #0097b2 100%)' }}>
+        <div className="rounded-xl p-6 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95" style={{ background: 'linear-gradient(135deg, #FFD700 0%, #FFF8DC 100%)', color: '#b8860b', borderRadius: '18px' }}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-white text-sm font-medium opacity-90" style={{ fontFamily: 'Avenir, sans-serif' }}>Total Earned</p>
-              <p className="text-3xl font-bold" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: '800' }}>{pointsData?.data?.totalEarned || 0}</p>
-              <p className="text-white text-xs opacity-80" style={{ fontFamily: 'Avenir, sans-serif' }}>All Time</p>
+              <p className="text-sm font-medium opacity-90" style={{ color: '#b8860b', fontFamily: 'Avenir, sans-serif' }}>Total Earned</p>
+              <p className="text-3xl font-bold" style={{ color: '#b8860b', fontFamily: 'Avenir, sans-serif', fontWeight: '800' }}>{pointsData?.data?.totalEarned || 0}</p>
+              <p className="text-xs opacity-80" style={{ color: '#b8860b', fontFamily: 'Avenir, sans-serif' }}>All Time</p>
             </div>
-            <ArrowTrendingUpIcon className="w-12 h-12 text-white opacity-80" />
+            <TrophyIcon className="w-12 h-12" style={{ color: '#b8860b', fill: '#b8860b' }} />
           </div>
         </div>
 
         {/* Total Spent */}
-        <div className="rounded-xl p-6 text-white" style={{ background: 'linear-gradient(135deg, #1a0202 0%, #4a6e7e 100%)' }}>
+        <div className="rounded-xl p-6 text-white transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95" style={{ background: 'linear-gradient(135deg, #ef4444 0%, #fca5a5 100%)', borderRadius: '18px' }}>
           <div className="flex items-center justify-between">
             <div>
               <p className="text-white text-sm font-medium opacity-90" style={{ fontFamily: 'Avenir, sans-serif' }}>Total Spent</p>
               <p className="text-3xl font-bold" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: '800' }}>{pointsData?.data?.totalSpent || 0}</p>
               <p className="text-white text-xs opacity-80" style={{ fontFamily: 'Avenir, sans-serif' }}>Points</p>
             </div>
-            <GiftIcon className="w-12 h-12 text-white opacity-80" />
+            <GiftIcon className="w-12 h-12" style={{ color: '#38bdf8' }} />
           </div>
         </div>
       </div>
 
       {/* Recent Activity */}
-      <div className="rounded-xl shadow-sm" style={{ backgroundColor: '#ffffff', border: '1px solid #eee3e3' }}>
-        <div style={{ borderColor: '#eee3e3', maxHeight: '500px', overflowY: 'auto' }} className="divide-y">{/* divide-gray-200 replaced with inline style */}
+      <div className="rounded-xl shadow-sm" style={{ background: 'linear-gradient(135deg, #e0f7fa 70%, #b3e0f2 100%)', border: '2px solid #b3e0f2' }}>
+        <div style={{ borderColor: '#b3e0f2', maxHeight: '600px', overflowY: 'auto' }} className="divide-y">{/* divide-gray-200 replaced with inline style */}
           {historyLoading ? (
             <div className="p-6 text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto" style={{ borderColor: '#0097b2' }}></div>
@@ -285,16 +268,31 @@ const PointsDashboard = () => {
             historyData.data.map((transaction, index) => (
               <div 
                 key={index} 
-                className="p-4"
-                style={{ backgroundColor: 'white' }}
+                className="relative p-4"
+                style={{ background: 'linear-gradient(135deg, #f8fafc 60%, #e0f7fa 100%)', borderRadius: '18px', overflow: 'hidden', border: '1.5px solid #e0e7ef' }}
               >
-                <div className="flex items-center justify-between">
+                {/* Shiny green accent bar */}
+                <div
+                  style={{
+                    width: '8px',
+                    height: '80%',
+                    position: 'absolute',
+                    left: '2px',
+                    top: '10%',
+                    borderTopLeftRadius: 0,
+                    borderBottomLeftRadius: 0,
+                    borderTopRightRadius: '10px',
+                    borderBottomRightRadius: '10px',
+                    background: 'linear-gradient(135deg, #34d399 0%, #60a5fa 100%)',
+                  }}
+                />
+                <div className="flex items-center justify-between" style={{ marginLeft: '10px' }}>
                   <div className="flex items-center gap-3">
                     {transaction.related_user ? (
                       <img
                         src={getUserAvatar(transaction)}
                         alt={transaction.related_user}
-                        className="w-10 h-10 rounded-full object-cover"
+                        className="w-14 h-14 rounded-full object-cover"
                         style={{ border: '2px solid #0097b2' }}
                       />
                     ) : (
@@ -317,7 +315,16 @@ const PointsDashboard = () => {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold" style={{ color: getTransactionColor(transaction.type), fontFamily: 'Avenir, sans-serif' }}>
+                    <p
+                      className="font-semibold"
+                      style={{
+                        color:
+                          transaction.type === 'purchase' || transaction.type === 'given' || transaction.type === 'admin_deduct'
+                            ? '#ef4444' // shiny red for deducted
+                            : '#22c55e', // shiny green for added
+                        fontFamily: 'Avenir, sans-serif',
+                      }}
+                    >
                       {transaction.type === 'purchase' || transaction.type === 'given' || transaction.type === 'admin_deduct' ? '-' : '+'}
                       {transaction.amount} pts
                     </p>
@@ -344,7 +351,7 @@ const PointsDashboard = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4">
             <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              <HeartIconSolid className="w-6 h-6 text-pink-500" />
+              <HeartIconSolid className="w-6 h-6" style={{ color: '#0097b2' }} />
               Send Heartbits
             </h3>
             <form onSubmit={handleSendCheer} className="space-y-4">
@@ -355,7 +362,7 @@ const PointsDashboard = () => {
                 <select
                   value={selectedUser}
                   onChange={(e) => setSelectedUser(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-4 focus:ring-[#0097b2] focus:border-transparent"
                   required
                 >
                   <option value="">Choose a user...</option>
@@ -377,7 +384,7 @@ const PointsDashboard = () => {
                   max={pointsData?.data?.currentBalance || 0}
                   value={cheerAmount}
                   onChange={(e) => setCheerAmount(parseInt(e.target.value))}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-4 focus:ring-[#0097b2] focus:border-transparent"
                   required
                 />
               </div>
@@ -390,7 +397,7 @@ const PointsDashboard = () => {
                   value={cheerMessage}
                   onChange={(e) => setCheerMessage(e.target.value)}
                   placeholder="Add a nice message..."
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 h-24 resize-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 h-24 resize-none focus:ring-4 focus:ring-[#0097b2] focus:border-transparent"
                 />
               </div>
               
@@ -405,7 +412,13 @@ const PointsDashboard = () => {
                 <button
                   type="submit"
                   disabled={cheerMutation.isPending}
-                  className="flex-1 bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
+                  className="flex-1 text-white px-4 py-2 rounded-xl font-bold transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
+                  style={{
+                    background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)',
+                    fontFamily: 'Avenir, sans-serif',
+                    minWidth: '140px',
+                    opacity: cheerMutation.isPending ? 0.5 : 1
+                  }}
                 >
                   {cheerMutation.isPending ? 'Sending...' : 'Send Heartbits'}
                 </button>
