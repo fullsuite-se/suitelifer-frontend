@@ -16,7 +16,7 @@ import ProductDetailModal from './ProductDetailModal';
  * - Improved quantity management
  * - Integrated design for better UX
  */
-const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, onUpdateQuantity, onRemoveItem, onAddToCart, isVisible = false }) => {
+const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, onUpdateQuantity, onRemoveItem, onAddToCart, isVisible = false, variationOptions = [], variationTypes = [] }) => {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [selectedItems, setSelectedItems] = useState(new Set());
@@ -369,71 +369,6 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
     return Array.from(options).map(optStr => JSON.parse(optStr));
   };
 
-  const openEditModal = async (item) => {
-    try {
-      const [prodRes, varRes] = await Promise.all([
-        suitebiteAPI.getProductById(item.product_id),
-        suitebiteAPI.getProductVariations(item.product_id)
-      ]);
-      if (prodRes.success && varRes.success) {
-        const productData = {
-          ...prodRes.product,
-          variations: varRes.variations
-        };
-        setProductModalData(productData);
-        
-        // Build initial options mapping from variations array
-        let initialOpts = {};
-        if (item.variations && Array.isArray(item.variations)) {
-          item.variations.forEach(variation => {
-            if (variation.type_name && variation.option_id) {
-              initialOpts[variation.type_name] = variation.option_id;
-            }
-          });
-        }
-        // Legacy support for variation_details
-        else if (item.variation_details) {
-          const details = Array.isArray(item.variation_details)
-            ? item.variation_details
-            : [item.variation_details];
-          details.forEach(opt => {
-            if (opt.type_name && opt.option_id) {
-              initialOpts[opt.type_name] = opt.option_id;
-            }
-          });
-        }
-        
-        setModalInitialOptions(initialOpts);
-        setModalInitialQuantity(item.quantity);
-        setCartItemToEdit(item);
-      }
-    } catch (error) {
-      console.error('Error opening edit modal:', error);
-    }
-  };
-
-  // New function to open modal for adding products
-  const openAddProductModal = async (productId) => {
-    try {
-      const [prodRes, varRes] = await Promise.all([
-        suitebiteAPI.getProductById(productId),
-        suitebiteAPI.getProductVariations(productId)
-      ]);
-      if (prodRes.success && varRes.success) {
-        const productData = {
-          ...prodRes.product,
-          variations: varRes.variations
-        };
-        setProductModalData(productData);
-        setModalInitialOptions({});
-        setModalInitialQuantity(1);
-        setCartItemToEdit(null); // No cart item - this is for adding
-      }
-    } catch (error) {
-      console.error('Error opening add product modal:', error);
-    }
-  };
-
   // Enhanced function to handle both adding new items and updating existing ones
   const handleSaveCartEdit = async (productId, quantity, variationId, variations = []) => {
     try {
@@ -443,20 +378,36 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
         variationId,
         variations,
         cartItemToEdit: cartItemToEdit?.cart_item_id,
-        isAddingNew: !cartItemToEdit
+        isAddingNew: !cartItemToEdit,
+        hasExternalOnAddToCart: !!onAddToCart
       });
 
       // Case 1: Adding a new item to cart (no cartItemToEdit)
       if (!cartItemToEdit) {
+        // If we have an external onAddToCart function, use it instead of internal logic
+        if (onAddToCart) {
+          console.log('🔄 Using external onAddToCart function');
+          await onAddToCart({
+            product_id: productId,
+            quantity,
+            variation_id: variationId,
+            variations
+          });
+          // Clear modal states after external function handles the addition
+          setCartItemToEdit(null);
+          setProductModalData(null);
+          setModalInitialOptions({});
+          setModalInitialQuantity(1);
+          return;
+        }
+        // Fallback to internal logic if no external function
         const cartData = {
           product_id: productId,
           quantity,
           variations,
           variation_id: variationId // Legacy support
         };
-        
-        console.log('🆕 Adding new item to cart:', cartData);
-        
+        console.log('🆕 Adding new item to cart (internal):', cartData);
         const response = await suitebiteAPI.addToCart(cartData);
         if (response.success) {
           onUpdateCart();
@@ -502,8 +453,32 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
       const action = cartItemToEdit ? 'update' : 'add';
       showNotification('error', `Failed to ${action} cart item`);
     } finally {
+      // Always clear modal states when the function completes
       setCartItemToEdit(null);
+      setProductModalData(null);
+      setModalInitialOptions({});
+      setModalInitialQuantity(1);
     }
+  };
+
+  // Helper to format labels
+  const formatLabel = (label) => {
+    if (typeof label !== 'string') return String(label ?? '');
+    return label
+      .replace(/_/g, ' ')
+      .replace(/\w\S*/g, w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+  };
+
+  // Helper to get label by id, with fallback
+  const getOptionLabel = (optionId, fallbackLabel) => {
+    const found = variationOptions.find(opt => opt.option_id === optionId);
+    if (found && found.option_label) return formatLabel(found.option_label);
+    if (fallbackLabel) return formatLabel(fallbackLabel);
+    return formatLabel(optionId);
+  };
+  const getTypeLabel = (typeId) => {
+    const found = variationTypes.find(type => type.type_id === typeId);
+    return found ? formatLabel(found.type_label) : formatLabel(typeId);
   };
 
   if (!isVisible) return null;
@@ -570,28 +545,48 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
 
               {/* Cart Items */}
               {uniqueCart.map((item) => (
-                <div key={item.cart_item_id} className="cart-item bg-white border border-gray-200 rounded-lg p-4">
-                  <div className="flex items-start gap-3">
+                <div key={item.cart_item_id} className="cart-item bg-white border border-gray-200 rounded-lg p-4 w-full overflow-hidden">
+                  <div className="flex items-start gap-3 w-full">
                     {/* Item Selection */}
                     <input
                       type="checkbox"
                       checked={selectedItems.has(item.cart_item_id)}
                       onChange={() => handleItemSelect(item.cart_item_id)}
-                      className="mt-1 rounded border-gray-300 text-[#0097b2] focus:ring-[#0097b2]"
+                      className="mt-1 rounded border-gray-300 text-[#0097b2] focus:ring-[#0097b2] flex-shrink-0"
                     />
                     
                     {/* Item Image */}
                     <div className="flex-shrink-0">
-                      <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
-                        {item.image_url ? (
-                          <img
-                            src={item.image_url}
-                            alt={item.product_name}
-                            className="w-full h-full object-cover rounded-lg"
-                          />
-                        ) : (
-                          <ShoppingBagIcon className="h-8 w-8 text-gray-400" />
-                        )}
+                      <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
+                        {(() => {
+                          // Handle both new images array and legacy image_url with priority order
+                          let imageUrl = null;
+                          
+                          // Priority 1: Check for images array from backend
+                          if (item.product_images && Array.isArray(item.product_images) && item.product_images.length > 0) {
+                            const primaryImage = item.product_images.find(img => img.is_primary) || item.product_images[0];
+                            imageUrl = primaryImage.thumbnail_url || primaryImage.image_url;
+                          }
+                          // Priority 2: Check for images array (frontend format)
+                          else if (item.images && Array.isArray(item.images) && item.images.length > 0) {
+                            const primaryImage = item.images.find(img => img.is_primary) || item.images[0];
+                            imageUrl = primaryImage.thumbnail_url || primaryImage.image_url || primaryImage.url;
+                          }
+                          // Priority 3: Fallback to legacy image_url
+                          else if (item.image_url) {
+                            imageUrl = item.image_url;
+                          }
+                          
+                          return imageUrl ? (
+                            <img
+                              src={imageUrl}
+                              alt={item.product_name}
+                              className="w-full h-full object-cover rounded-lg"
+                            />
+                          ) : (
+                            <ShoppingBagIcon className="h-8 w-8 text-gray-400" />
+                          );
+                        })()}
                       </div>
                     </div>
 
@@ -667,7 +662,7 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                                         <div key={typeName} className="space-y-2">
                                           <label className="block text-xs font-medium text-gray-700 capitalize flex items-center gap-1">
                                             <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
-                                            {typeName}
+                                            {getTypeLabel(typeName)}
                                           </label>
                                           <div className="flex flex-wrap gap-2">
                                             {availableOptions.map(option => (
@@ -680,7 +675,7 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                                                     : 'bg-white text-gray-700 border-gray-300 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700'
                                                 }`}
                                               >
-                                                {option.label || option.value}
+                                                {getOptionLabel(option.id, option.value)}
                                               </button>
                                             ))}
                                           </div>
@@ -701,22 +696,33 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                             let variationElements = [];
                             
                             if (item.variations && Array.isArray(item.variations) && item.variations.length > 0) {
-                              variationElements = item.variations.map((v, index) => (
-                                <span key={index} className="text-xs px-2 py-1 bg-blue-50 text-blue-700 rounded-full border border-blue-200 mr-1">
-                                  {v.option_label || v.option_value || `${v.type_name}: Unknown`}
-                                </span>
-                              ));
+                              // Group variations by type for better display
+                              const variationsByType = item.variations.reduce((acc, variation) => {
+                                const typeName = variation.type_name || 'option';
+                                if (!acc[typeName]) acc[typeName] = [];
+                                acc[typeName].push(variation);
+                                return acc;
+                              }, {});
+                              
+                              variationElements = Object.entries(variationsByType).map(([typeName, variations]) => {
+                                const variationText = variations.map(v => getOptionLabel(v.option_id, v.option_label || v.option_value)).join(', ');
+                                return (
+                                  <span key={typeName} className="inline-block text-xs px-2 py-1 bg-blue-50 text-blue-700 rounded-full border border-blue-200 mr-1 mb-1 max-w-full truncate">
+                                    {getTypeLabel(typeName)}: {variationText}
+                                  </span>
+                                );
+                              });
                             } else if (item.variation_details) {
                               const details = Array.isArray(item.variation_details) ? item.variation_details : [item.variation_details];
                               variationElements = details.map((opt, index) => (
-                                <span key={index} className="text-xs px-2 py-1 bg-blue-50 text-blue-700 rounded-full border border-blue-200 mr-1">
-                                  {opt.option_label || opt.option_value || 'Unknown'}
+                                <span key={index} className="inline-block text-xs px-2 py-1 bg-blue-50 text-blue-700 rounded-full border border-blue-200 mr-1 mb-1 max-w-full truncate">
+                                  {getOptionLabel(opt.option_id, opt.option_label || opt.option_value)}
                                 </span>
                               ));
                             }
                             
                             return (
-                              <div className="flex items-center justify-between">
+                              <div className="space-y-2">
                                 <div className="flex flex-wrap gap-1">
                                   {variationElements.length > 0 ? variationElements : (
                                     <span className="text-xs px-2 py-1 bg-yellow-50 text-yellow-700 rounded-full border border-yellow-200">
@@ -724,38 +730,26 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                                     </span>
                                   )}
                                 </div>
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center justify-end gap-2">
                                   <button
                                     onClick={() => startInlineEdit(item)}
                                     disabled={itemLoadingStates[item.cart_item_id] === 'loading'}
-                                    className="text-blue-600 text-xs hover:text-blue-800 hover:underline font-medium disabled:opacity-50"
+                                    className="text-blue-600 text-xs hover:text-blue-800 hover:underline font-medium disabled:opacity-50 whitespace-nowrap"
                                     title="Edit options inline"
                                   >
                                     {itemLoadingStates[item.cart_item_id] === 'loading' ? 'Loading...' : 'Edit'}
-                                  </button>
-                                  <button
-                                    onClick={() => openEditModal(item)}
-                                    className="text-gray-500 text-xs hover:text-gray-700 hover:underline"
-                                    title="Edit item details"
-                                  >
-                                    Details
                                   </button>
                                 </div>
                               </div>
                             );
                           } else {
                             return (
-                              <div className="flex items-center justify-between">
-                                <span className="text-xs px-2 py-1 bg-gray-50 text-gray-600 rounded-full border border-gray-200">
-                                  Standard
-                                </span>
-                                <button
-                                  onClick={() => openEditModal(item)}
-                                  className="text-gray-500 text-xs hover:text-gray-700 hover:underline"
-                                  title="View and edit item details"
-                                >
-                                  Details
-                                </button>
+                              <div className="space-y-2">
+                                <div className="flex flex-wrap gap-1">
+                                  <span className="text-xs px-2 py-1 bg-gray-50 text-gray-600 rounded-full border border-gray-200">
+                                    Standard
+                                  </span>
+                                </div>
                               </div>
                             );
                           }
@@ -906,7 +900,8 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
           </div>
         )}
       </div>
-      {(cartItemToEdit || productModalData) && productModalData && (
+      {/* Modal should only render when we don't have an external onAddToCart handler */}
+      {!onAddToCart && (cartItemToEdit || productModalData) && productModalData && (
         <ProductDetailModal
           product={productModalData}
           isOpen={true}

@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import ProductImageUpload from './ProductImageUpload';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import ProductImageUploadNew from './ProductImageUploadNew';
 import ProductImageCarousel from '../admin/ProductImageCarousel';
 import { suitebiteAPI } from '../../../utils/suitebiteAPI';
 import {
@@ -36,14 +36,15 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
     price_points: '',
     category: '',
     newCategory: '',
-    slug: '',
-    is_active: true // Always set to true since we removed the UI controls
+    slug: '' // Removed is_active
   });
 
-  // Image upload state (Cloudinary)
-  const [uploadedImages, setUploadedImages] = useState([]); // Array of Cloudinary URLs
+  // Image upload state (New system)
+  const [selectedImages, setSelectedImages] = useState([]); // Selected files for preview
   const [uploadingImages, setUploadingImages] = useState(false);
   const [productImages, setProductImages] = useState([]); // Array of product images from database
+  const [originalProductImages, setOriginalProductImages] = useState([]); // Track original images for deletion
+  const uploadRef = useRef(null); // Reference to upload function
 
   // Variation state
   const [variationTypes, setVariationTypes] = useState([]);
@@ -133,8 +134,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
         description: product.description || '',
         price_points: product.price || product.price_points || '',
         category: product.category || '',
-        slug: product.slug || '',
-        is_active: true // Always set to true since we removed the UI controls
+        slug: product.slug || '' // Removed is_active
       });
 
       // Load product images for editing
@@ -147,6 +147,8 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
             if (res.success) {
               console.log('🔍 AddProductForm - Setting product images:', res.images);
               setProductImages(res.images || []);
+              // Track original images for deletion comparison
+              setOriginalProductImages(res.images || []);
             } else {
               console.error('🔍 AddProductForm - API returned error:', res.message);
             }
@@ -279,43 +281,59 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
     return Object.keys(newErrors).length === 0;
   };
 
-  // Cloudinary image upload handler
-  const handleImagesUploaded = (images) => {
-    // images: array of { original: url, ... }
-    setUploadedImages(images.map(img => img.original || img));
+  // Image selection handler (new system)
+  const handleImagesChange = useCallback((imageData) => {
+    console.log('📸 Images changed in AddProductForm:', imageData);
+    setSelectedImages(imageData);
+  }, []);
+
+  // Function to refresh product images after changes
+  const refreshProductImages = useCallback(async () => {
+    if (mode === 'edit' && product?.product_id) {
+      try {
+        console.log('🔄 Refreshing product images...');
+        const res = await suitebiteAPI.getProductImages(product.product_id);
+        if (res.success) {
+          console.log('🔄 Updated product images:', res.images?.length || 0);
+          setProductImages(res.images || []);
+          // Update original images to reflect current state after deletions
+          setOriginalProductImages(res.images || []);
+          
+          // Also update the selected images to remove any deleted existing images
+          setSelectedImages(prev => {
+            const existingImageUrls = (res.images || []).map(img => img.image_url);
+            return prev.filter(img => {
+              if (img.isExisting) {
+                // Keep only existing images that still exist in the database
+                return existingImageUrls.includes(img.url);
+              }
+              // Keep all new files that haven't been uploaded yet
+              return true;
+            });
+          });
+        }
+      } catch (err) {
+        console.error('Error refreshing product images:', err);
+      }
+    }
+  }, [mode, product?.product_id]);
+
+  // Upload images to Cloudinary and get URLs
+  const uploadSelectedImages = async () => {
+    if (!uploadRef.current) return { success: true, imageUrls: [] };
     
-    // In edit mode, refresh the product images to show newly uploaded images
-    if (mode === 'edit' && product?.product_id) {
-      suitebiteAPI.getProductImages(product.product_id)
-        .then(res => {
-          if (res.success) {
-            setProductImages(res.images || []);
-          }
-        })
-        .catch(err => {
-          console.error('Error refreshing product images:', err);
-        });
+    setUploadingImages(true);
+    try {
+      const result = await uploadRef.current();
+      setUploadingImages(false);
+      return result;
+    } catch (error) {
+      setUploadingImages(false);
+      console.error('Error uploading images:', error);
+      return { success: false, error: error.message };
     }
   };
 
-  const removeImage = (index) => {
-    setUploadedImages(prev => prev.filter((_, i) => i !== index));
-  };
-
-  const handleImagesChange = () => {
-    // Reload product images when they change
-    if (mode === 'edit' && product?.product_id) {
-      suitebiteAPI.getProductImages(product.product_id)
-        .then(res => {
-          if (res.success) {
-            setProductImages(res.images || []);
-          }
-        })
-        .catch(err => {
-          console.error('Error reloading product images:', err);
-        });
-    }
-  };
 
   const handleAddCategory = async () => {
     if (!formData.newCategory.trim()) {
@@ -486,8 +504,8 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
     // Return array of { options: [option_id, ...], variation_sku }
     return allCombinations.map(combination => ({
       options: combination.map(opt => opt.option_id),
-      variation_sku: combination.map(opt => opt.option_value.toUpperCase()).join('-'),
-      price_adjustment: 0
+      variation_sku: combination.map(opt => opt.option_value.toUpperCase()).join('-')
+      // Removed price_adjustment
     }));
   };
 
@@ -544,8 +562,8 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
           description: formData.description.trim(),
           price_points: parseInt(formData.price_points),
           category: formData.category.trim(),
-          slug: formData.slug,
-          is_active: formData.is_active
+          slug: formData.slug
+          // Removed is_active
         };
         productResponse = await suitebiteAPI.updateProduct(product.product_id, updateData);
         if (!productResponse.success) {
@@ -558,17 +576,21 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
           // Get current variations to compare
           const existingVariationsRes = await suitebiteAPI.getProductVariations(productId);
           const existingVariations = existingVariationsRes.success ? existingVariationsRes.variations : [];
-          
+
           // Generate new variations
           const newVariations = generateVariations();
-          
+
+          // Helper to get a unique key for a variation based on its option IDs
+          const optionsKey = (variation) =>
+            (variation.options || [])
+              .map(opt => opt.option_id)
+              .sort()
+              .join('-');
+
           // Remove only variations that are no longer needed
           const variationsToRemove = existingVariations.filter(existing => {
-            return !newVariations.some(newVar => 
-              existing.size_id === newVar.size_id &&
-              existing.color_id === newVar.color_id &&
-              existing.design_id === newVar.design_id
-            );
+            const existingKey = optionsKey(existing);
+            return !newVariations.some(newVar => optionsKey(newVar) === existingKey);
           });
 
           // Remove unused variations
@@ -582,11 +604,8 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
 
           // Add only new variations
           const variationsToAdd = newVariations.filter(newVar => {
-            return !existingVariations.some(existing =>
-              existing.size_id === newVar.size_id &&
-              existing.color_id === newVar.color_id &&
-              existing.design_id === newVar.design_id
-            );
+            const newKey = optionsKey(newVar);
+            return !existingVariations.some(existing => optionsKey(existing) === newKey);
           });
 
           // Add new variations
@@ -595,8 +614,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
               await suitebiteAPI.addProductVariation({
                 product_id: productId,
                 options: variation.options,
-                variation_sku: variation.variation_sku,
-                price_adjustment: variation.price_adjustment
+                variation_sku: variation.variation_sku
               });
             } catch (variationError) {
               console.warn('Failed to create variation:', variationError);
@@ -622,8 +640,8 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
           description: formData.description.trim(),
           price_points: parseInt(formData.price_points),
           category: formData.category.trim(),
-          slug: formData.slug,
-          is_active: formData.is_active
+          slug: formData.slug
+          // Removed is_active
         };
         productResponse = await suitebiteAPI.addProduct(productData);
         if (!productResponse.success) {
@@ -640,8 +658,8 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
               await suitebiteAPI.addProductVariation({
                 product_id: productId,
                 options: variation.options,
-                variation_sku: variation.variation_sku,
-                price_adjustment: variation.price_adjustment
+                variation_sku: variation.variation_sku
+                // Removed price_adjustment
               });
             } catch (variationError) {
               console.warn('Failed to create variation:', variationError);
@@ -650,25 +668,110 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
         }
       }
 
-      // --- Unified Image Handling ---
-      // After product is created, add all uploaded images to carousel
-      if (uploadedImages.length > 0 && productId) {
-        // Add all images to carousel
-        for (let i = 0; i < uploadedImages.length; i++) {
-          const imageUrl = uploadedImages[i];
-          const imageData = {
-            image_url: imageUrl,
-            thumbnail_url: imageUrl, // Optionally generate thumbnails if available
-            medium_url: imageUrl,
-            large_url: imageUrl,
-            public_id: '', // If available from upload
-            alt_text: formData.name + (i === 0 ? ' (Primary)' : ''),
-            is_primary: i === 0 // First image is primary
-          };
-          await suitebiteAPI.addProductImage(productId, imageData);
+      // --- Handle Image Deletions for Edit Mode ---
+      if (mode === 'edit' && product?.product_id) {
+        console.log('🗑️ Checking for image deletions...');
+        console.log('- Original images:', originalProductImages.map(img => ({ id: img.image_id, url: img.image_url })));
+        console.log('- Selected images:', selectedImages.map(img => ({ isExisting: img.isExisting, image_id: img.image_id, url: img.url })));
+        console.log('- Currently selected existing images:', selectedImages.filter(img => img.isExisting).length);
+        
+        // Get IDs of currently selected existing images
+        const currentlySelectedImageIds = selectedImages
+          .filter(img => img.isExisting && img.image_id)
+          .map(img => img.image_id);
+        
+        console.log('- Currently selected image IDs:', currentlySelectedImageIds);
+        
+        // Find images that were originally loaded but are no longer selected (deleted)
+        const imagesToDelete = originalProductImages.filter(originalImg => 
+          !currentlySelectedImageIds.includes(originalImg.image_id)
+        );
+        
+        console.log('- Images to delete:', imagesToDelete.length, imagesToDelete.map(img => ({ id: img.image_id, url: img.image_url })));
+        
+        // Delete images that were removed from preview
+        for (const imageToDelete of imagesToDelete) {
+          try {
+            console.log(`🗑️ Deleting image ${imageToDelete.image_id}...`);
+            const deleteResult = await suitebiteAPI.deleteProductImage(imageToDelete.image_id);
+            console.log(`🗑️ Delete result for image ${imageToDelete.image_id}:`, deleteResult);
+            
+            if (!deleteResult.success) {
+              console.warn(`Failed to delete image ${imageToDelete.image_id}:`, deleteResult.message);
+            }
+          } catch (error) {
+            console.error(`Error deleting image ${imageToDelete.image_id}:`, error);
+          }
         }
-        // Optionally update legacy image_url to first image for fallback
-        await suitebiteAPI.updateProduct(productId, { image_url: uploadedImages[0] });
+        
+        if (imagesToDelete.length > 0) {
+          // Refresh the product images state after deletions
+          console.log('🔄 Refreshing product images after deletions...');
+          await refreshProductImages();
+        }
+      }
+
+      // --- New Image Upload System ---
+      // Upload selected images to Cloudinary first
+      console.log('🚀 Starting image upload process...');
+      console.log('- Selected images count:', selectedImages.length);
+      console.log('- Selected images data:', selectedImages);
+      
+      if (selectedImages.length > 0 && productId) {
+        // Filter for only new files that need to be uploaded
+        const newFilesToUpload = selectedImages.filter(img => img.file && !img.isExisting);
+        console.log('- New files to upload:', newFilesToUpload);
+        
+        if (newFilesToUpload.length > 0) {
+          console.log('- Calling uploadSelectedImages...');
+          const uploadResult = await uploadSelectedImages();
+          console.log('- Upload result:', uploadResult);
+          
+          if (uploadResult.success && uploadResult.imageUrls.length > 0) {
+            console.log('- Successfully got image URLs:', uploadResult.imageUrls);
+            console.log('- Public IDs:', uploadResult.publicIds);
+            console.log('- Upload results details:', uploadResult.uploadResults);
+            
+            // Add all uploaded images to carousel
+            for (let i = 0; i < uploadResult.imageUrls.length; i++) {
+              const imageUrl = uploadResult.imageUrls[i];
+              const publicId = uploadResult.publicIds?.[i] || '';
+              const uploadDetail = uploadResult.uploadResults?.[i] || {};
+              
+              const imageData = {
+                image_url: imageUrl,
+                thumbnail_url: uploadDetail.thumbnailUrl || imageUrl,
+                medium_url: uploadDetail.mediumUrl || imageUrl,
+                large_url: uploadDetail.largeUrl || imageUrl,
+                public_id: publicId,
+                alt_text: formData.name + (i === 0 ? ' (Primary)' : ''),
+                sort_order: i,
+                is_primary: i === 0, // First image is primary
+                is_active: true
+              };
+              console.log(`- Adding image ${i + 1} to database:`, imageData);
+              const addResult = await suitebiteAPI.addProductImage(productId, imageData);
+              console.log(`- Add image ${i + 1} result:`, addResult);
+            }
+            // Optionally update legacy image_url to first image for fallback
+            await suitebiteAPI.updateProduct(productId, { image_url: uploadResult.imageUrls[0] });
+            
+            // Clear only the new selected images after successful upload, preserve existing ones
+            const newFilesToClear = selectedImages.filter(img => img.file && !img.isExisting);
+            console.log('- Clearing new uploaded files:', newFilesToClear.length);
+            console.log('- Keeping existing images:', selectedImages.filter(img => img.isExisting).length);
+            
+            // Keep only existing images in the selected images
+            setSelectedImages(prev => prev.filter(img => img.isExisting));
+          } else if (uploadResult.error) {
+            console.error('❌ Upload failed:', uploadResult.error);
+            throw new Error('Failed to upload images: ' + uploadResult.error);
+          }
+        } else {
+          console.log('- No new files to upload (only existing images)');
+        }
+      } else {
+        console.log('- No images to upload or no product ID');
       }
 
       // After adding images, fetch carousel images for display
@@ -830,7 +933,8 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
       }
       return false;
     } catch (error) {
-      console.warn('Could not check order impact:', error);
+      console.warn('Could not check order impact (endpoint not implemented):', error.message);
+      // Allow update to proceed even if check fails
       return false;
     }
   };
@@ -930,21 +1034,6 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
   };
 
   // DRY: Extracted image upload section
-  function ProductImageUploadSection({ productId, header, handleImagesUploaded, showNotification }) {
-    return (
-      <div className="mb-4">
-        <h4 className="text-sm font-medium text-gray-700 mb-2">{header}</h4>
-        <ProductImageUpload
-          productId={productId}
-          onImageUploaded={handleImagesUploaded}
-          onError={err => showNotification('error', err?.message || 'Image upload failed')}
-          multiple={true}
-          maxFiles={10}
-        />
-      </div>
-    );
-  }
-
   return (
     <div className="add-product-form bg-white rounded-lg shadow-sm p-6">
       {/* Notification Toast */}
@@ -1039,23 +1128,30 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
               {mode === 'edit' && product?.product_id ? (
                 <>
                   {/* Current Images Carousel */}
-                  <div className="mb-4">
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Current Images</h4>
-                    <ProductImageCarousel 
-                      productId={product.product_id}
+                  
+                  
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-medium text-gray-700 mb-2">Upload Images</h4>
+                    <ProductImageUploadNew
+                      ref={uploadRef}
                       onImagesChange={handleImagesChange}
+                      maxFiles={15}
+                      disabled={uploadingImages}
+                      existingImages={productImages}
                     />
                   </div>
-                  {/* Removed Add More Images upload section as requested */}
                 </>
               ) : (
-                // Only ONE upload section in add mode
-                <ProductImageUploadSection
-                  productId={null}
-                  header="Upload Images"
-                  handleImagesUploaded={handleImagesUploaded}
-                  showNotification={showNotification}
-                />
+                // Upload section for add mode
+                <div className="space-y-4">
+                  <h4 className="text-sm font-medium text-gray-700 mb-2">Upload Images</h4>
+                  <ProductImageUploadNew
+                    ref={uploadRef}
+                    onImagesChange={handleImagesChange}
+                    maxFiles={15}
+                    disabled={uploadingImages}
+                  />
+                </div>
               )}
             </div>
           </div>

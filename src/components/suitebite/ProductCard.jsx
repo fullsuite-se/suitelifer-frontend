@@ -29,10 +29,6 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
   const [isBuying, setIsBuying] = useState(false);
   const [quantity, setQuantity] = useState(1);
   
-  // Modal state
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState('buy-now'); // 'buy-now' or 'add-to-cart'
-  
   // Variation selection state
   const [selectedVariation, setSelectedVariation] = useState(null);
   const [selectedOptions, setSelectedOptions] = useState({});
@@ -113,288 +109,167 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
    * Handles adding the product to the shopping cart with selected quantity and variation
    */
   const handleAddToCart = async () => {
-    if (isAddingToCart || isBuying) return;
-
-    // For products with variations, check if all required variations are selected
-    if (availableVariations.length > 0) {
-      const allTypesSelected = variationTypes.every(type => selectedOptions[type]);
-      
-      if (!allTypesSelected) {
-        // If not all variations are selected, open the modal
-        setIsModalOpen(true);
-        setModalMode('add-to-cart');
-        return;
-      }
-
-      // If all variations are selected, add directly to cart with variations
-      try {
-        setIsAddingToCart(true);
-        
-        // Prepare variation data in the new format
-        const variations = Object.entries(selectedOptions).map(([typeName, optionId]) => {
-          const option = availableVariations
-            .flatMap(v => v.options || [])
-            .find(opt => opt.option_id === optionId && opt.type_name === typeName);
-          
-          console.log(`🔍 ProductCard - Processing variation:`, {
-            typeName,
-            optionId,
-            optionIdType: typeof optionId,
-            foundOption: option,
-            allOptionsForType: availableVariations
-              .flatMap(v => v.options || [])
-              .filter(opt => opt.type_name === typeName)
-              .map(opt => ({ option_id: opt.option_id, type: typeof opt.option_id })),
-            availableVariations: availableVariations.length
-          });
-          
-          const variation = {
-            variation_type_id: option?.variation_type_id,
-            option_id: optionId
-          };
-          
-          console.log(`🔍 ProductCard - Created variation object:`, {
-            variation,
-            hasTypeId: !!variation.variation_type_id,
-            hasOptionId: !!variation.option_id,
-            willBeFiltered: !(variation.variation_type_id && variation.option_id)
-          });
-          
-          return variation;
-        }).filter(v => v.variation_type_id && v.option_id);
-
-        console.log('🛒 ProductCard - Adding to cart with variations:', {
-          selectedOptions,
-          preparedVariations: variations,
-          product: product.name,
-          filteredCount: variations.length
-        });
-
-        await onAddToCart(product.product_id, quantity, null, variations);
-      } catch (error) {
-        console.error('Error adding to cart:', error);
-      } finally {
-        setIsAddingToCart(false);
-      }
-      return;
-    }
-
-    // For products without variations, add directly to cart
+    // Always open the modal for add-to-cart
     try {
-      setIsAddingToCart(true);
-      await onAddToCart(product.product_id, quantity);
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-    } finally {
-      setIsAddingToCart(false);
+      const res = await suitebiteAPI.getProductById(product.product_id);
+      if (res.success && res.product) {
+        // setModalProduct(res.product); // This line is removed
+      } else {
+        // setModalProduct(product); // This line is removed
+      }
+    } catch (e) {
+      // setModalProduct(product); // This line is removed
     }
+    // setIsModalOpen(true); // This line is removed
+    // setModalMode('add-to-cart'); // This line is removed
   };
 
   /**
    * Handles direct purchase (buy now) - opens modal for detailed view
    */
   const handleBuyNow = async () => {
-    setIsModalOpen(true);
-    setModalMode('buy-now');
+    // Always open the modal for buy-now
+    try {
+      const res = await suitebiteAPI.getProductById(product.product_id);
+      if (res.success && res.product) {
+        // setModalProduct(res.product); // This line is removed
+      } else {
+        // setModalProduct(product); // This line is removed
+      }
+    } catch (e) {
+      // setModalProduct(product); // This line is removed
+    }
+    // setIsModalOpen(true); // This line is removed
+    // setModalMode('buy-now'); // This line is removed
   };
 
   /**
    * Handles view details - opens modal for detailed view
    */
   const handleViewDetails = () => {
-    setIsModalOpen(true);
-    setModalMode('view-details');
+    // Fetch full product details before opening modal
+    (async () => {
+      try {
+        const res = await suitebiteAPI.getProductById(product.product_id);
+        if (res.success && res.product) {
+          // setModalProduct(res.product); // This line is removed
+        } else {
+          // setModalProduct(product); // This line is removed
+        }
+      } catch (e) {
+        // setModalProduct(product); // This line is removed
+      }
+      // setIsModalOpen(true); // This line is removed
+      // setModalMode('view-details'); // This line is removed
+    })();
   };
 
-  // Calculate product availability and affordability
-  const finalPrice = getFinalPrice();
+  // Remove all price adjustment and is_active logic
+  // Remove selectedVariation, getFinalPrice, and isActive
+  // Always use product.price_points or product.price for price display and calculations
+  // Remove any strikethrough or price adjustment UI
+  // Remove any checks or disables based on isActive
+
+  // Calculate product affordability
+  const finalPrice = product.price_points || product.price || 0;
   const totalCost = finalPrice * quantity;
   const canAfford = userHeartbits >= totalCost;
-  const isActive = product.is_active;
 
   // Get category colors
-  const categoryColor = getCategoryColor(product.category);
-  const categoryBgColor = getCategoryBgColor(product.category);
+  const categoryColor = getCategoryColor(product.category && product.category.toUpperCase());
+  const categoryBgColor = getCategoryBgColor(product.category && product.category.toUpperCase());
 
   return (
-    <>
-      <div className="product-card bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100">
-        {/* Product Image Section */}
+    <div className="product-card bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100">
+      {/* Product Image Section with overlayed category badge */}
+      <div className="relative">
         <ProductImageCarousel 
-          images={product.images_json || product.image_url}
+          images={(() => {
+            let imageData = [];
+            if (product.images && Array.isArray(product.images) && product.images.length > 0) {
+              imageData = product.images;
+            } else if (product.product_images && Array.isArray(product.product_images) && product.product_images.length > 0) {
+              imageData = product.product_images;
+            } else if (product.image_url) {
+              imageData = [{ image_url: product.image_url, alt_text: product.name }];
+            }
+            return imageData;
+          })()}
           productName={product.name}
-          className="product-image relative"
+          className="product-image"
         />
-        
-        {/* Enhanced Color-Coded Category Badge */}
+        {/* Category Badge */}
         {product.category && (
-          <div className="absolute top-3 left-3 z-10">
-            <span 
-              className="category-badge px-3 py-1 rounded-full text-xs font-semibold shadow-sm border border-white border-opacity-20"
-              style={{ 
-                backgroundColor: categoryColor,
-                color: 'white',
-                textShadow: '0 1px 2px rgba(0,0,0,0.1)'
-              }}
-            >
-              {product.category}
-            </span>
-          </div>
-        )}
-        
-        {/* Variations Available Badge */}
-        {availableVariations.length > 0 && (
-          <div className="absolute bottom-3 left-3 z-10">
-            <span className="variations-badge bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-sm">
-              {availableVariations.length} Options
-            </span>
-          </div>
-        )}
-
-        {/* View Details Button */}
-        <div className="absolute top-3 right-3 z-10">
-          <button
-            onClick={handleViewDetails}
-            className="view-details-btn bg-white bg-opacity-90 hover:bg-opacity-100 p-2 rounded-full shadow-sm transition-all duration-200"
-            title="View Details"
+          <span
+            className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-semibold shadow-sm`}
+            style={{ backgroundColor: categoryBgColor, color: categoryColor, zIndex: 2 }}
           >
-            <EyeIcon className="h-4 w-4 text-gray-600" />
+            {product.category}
+          </span>
+        )}
+      </div>
+      {/* Product Information Section */}
+      <div className="product-info p-4">
+        <h3 className="product-name text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+          {product.name}
+        </h3>
+        <p className="product-description text-sm text-gray-600 mb-4 line-clamp-2">
+          {product.description || 'Premium quality product curated for your needs.'}
+        </p>
+        <div className="flex items-center justify-between mb-4">
+          <div className="heartbits-price flex items-center gap-2">
+            <div className="flex flex-col">
+              <span className="text-2xl font-bold text-[#0097b2] flex items-center gap-1">{product.price_points || product.price || 0}<HeartIcon className="h-5 w-5 text-red-500 ml-1" /></span>
+            </div>
+          </div>
+          <div className="quantity-selector flex items-center gap-3">
+            <button
+              onClick={() => setQuantity(Math.max(1, quantity - 1))}
+              className="quantity-btn w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center font-semibold hover:bg-gray-300 transition-colors duration-200"
+            >
+              -
+            </button>
+            <span className="quantity-display text-lg font-semibold text-gray-900 min-w-[2rem] text-center">
+              {quantity}
+            </span>
+            <button
+              onClick={() => setQuantity(quantity + 1)}
+              className="quantity-btn w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center font-semibold hover:bg-gray-300 transition-colors duration-200"
+            >
+              +
+            </button>
+          </div>
+        </div>
+        <div className="total-cost-display bg-gray-50 p-2 rounded-lg mb-2">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-600">Total for {quantity}:</span>
+            <span className="font-semibold text-gray-900 flex items-center gap-1">{(product.price_points || product.price || 0) * quantity}<HeartIcon className="h-4 w-4 text-red-500 ml-1" /></span>
+          </div>
+        </div>
+        <div className="action-buttons space-y-2">
+          <button
+            onClick={e => {
+              e.stopPropagation();
+              onBuyNow(product, quantity);
+            }}
+            className="buy-now-btn w-full bg-[#0097b2] text-white py-3 px-4 rounded-lg font-semibold hover:bg-[#007a8e] transition-colors duration-200 flex items-center justify-center gap-2"
+          >
+            <ShoppingBagIcon className="h-4 w-4" />
+            <span>Buy Now</span>
+          </button>
+          <button
+            onClick={e => {
+              e.stopPropagation();
+              onAddToCart(product, quantity);
+            }}
+            className="add-to-cart-btn w-full bg-white text-[#0097b2] py-2 px-4 rounded-lg font-medium border border-[#0097b2] hover:bg-[#0097b2] hover:text-white transition-colors duration-200 flex items-center justify-center gap-2"
+          >
+            <ShoppingCartIcon className="h-4 w-4" />
+            <span>Add to Cart</span>
           </button>
         </div>
-
-        {/* Product Information Section */}
-        <div className="product-info p-4">
-          {/* Product Name */}
-          <h3 className="product-name text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
-            {product.name}
-          </h3>
-          
-          {/* Product Description */}
-          <p className="product-description text-sm text-gray-600 mb-4 line-clamp-2">
-            {product.description || 'Premium quality product curated for your needs.'}
-          </p>
-
-          {/* Variations are selected in the product details modal */}
-          
-          {/* Price and Quantity Row */}
-          <div className="flex items-center justify-between mb-4">
-            {/* Price */}
-            <div className="heartbits-price flex items-center gap-2">
-              <div className="flex flex-col">
-                {product.price_range && product.price_range.min !== product.price_range.max ? (
-                  // Show price range for products with variations
-                  <div className="flex items-center gap-1">
-                    <span className="text-lg font-bold text-[#0097b2]">{product.price_range.min}</span>
-                    <span className="text-sm text-gray-500">-</span>
-                    <span className="text-lg font-bold text-[#0097b2]">{product.price_range.max}</span>
-                    <HeartIcon className="h-4 w-4 text-red-500 ml-1" />
-                  </div>
-                ) : selectedVariation && selectedVariation.price_adjustment !== 0 ? (
-                  // Show adjusted price for selected variation
-                  <>
-                    <div className="flex items-center gap-1">
-                      <span className="text-lg text-gray-400 line-through">{product.price_points}</span>
-                      <span className="text-2xl font-bold text-[#0097b2] flex items-center gap-1">{finalPrice}<HeartIcon className="h-5 w-5 text-red-500 ml-1" /></span>
-                    </div>
-                  </>
-                ) : (
-                  // Show base price
-                  <span className="text-2xl font-bold text-[#0097b2] flex items-center gap-1">{finalPrice}<HeartIcon className="h-5 w-5 text-red-500 ml-1" /></span>
-                )}
-                {availableVariations.length > 0 && !selectedVariation && (
-                  <span className="text-xs text-gray-500">Options available</span>
-                )}
-              </div>
-            </div>
-            {/* Quantity Selector */}
-            <div className="quantity-selector flex items-center gap-3">
-              <button
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="quantity-btn w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center font-semibold hover:bg-gray-300 transition-colors duration-200"
-              >
-                -
-              </button>
-              <span className="quantity-display text-lg font-semibold text-gray-900 min-w-[2rem] text-center">
-                {quantity}
-              </span>
-              <button
-                onClick={() => setQuantity(quantity + 1)}
-                className="quantity-btn w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center font-semibold hover:bg-gray-300 transition-colors duration-200"
-              >
-                +
-              </button>
-            </div>
-          </div>
-
-          {/* Total Cost Display */}
-          <div className="total-cost-display bg-gray-50 p-2 rounded-lg">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-600">Total for {quantity}:</span>
-              <span className="font-semibold text-gray-900 flex items-center gap-1">{totalCost}<HeartIcon className="h-4 w-4 text-red-500 ml-1" /></span>
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="action-buttons space-y-2">
-            {/* Buy Now Button */}
-            <button
-              onClick={handleBuyNow}
-              disabled={!canAfford || !isActive || isBuying || isAddingToCart}
-              className="buy-now-btn w-full bg-[#0097b2] text-white py-3 px-4 rounded-lg font-semibold hover:bg-[#007a8e] transition-colors duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isBuying ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  <span>Processing...</span>
-                </>
-              ) : !canAfford ? (
-                <>
-                  <HeartIcon className="h-4 w-4" />
-                  <span>Need {totalCost - userHeartbits} more</span>
-                </>
-              ) : (
-                <>
-                  <ShoppingBagIcon className="h-4 w-4" />
-                  <span>Buy Now</span>
-                </>
-              )}
-            </button>
-
-            {/* Add to Cart Button */}
-            <button
-              onClick={handleAddToCart}
-              disabled={!isActive || isAddingToCart || isBuying}
-              className="add-to-cart-btn w-full bg-white text-[#0097b2] py-2 px-4 rounded-lg font-medium border border-[#0097b2] hover:bg-[#0097b2] hover:text-white transition-colors duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isAddingToCart ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-[#0097b2] border-t-transparent rounded-full animate-spin"></div>
-                  <span>Adding...</span>
-                </>
-              ) : (
-                <>
-                  <ShoppingCartIcon className="h-4 w-4" />
-                  <span>Add to Cart</span>
-                </>
-              )}
-            </button>
-          </div>
-        </div>
       </div>
-
-      {/* Product Detail Modal */}
-      <ProductDetailModal
-        product={product}
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onAddToCart={onAddToCart}
-        onBuyNow={onBuyNow}
-        userHeartbits={userHeartbits}
-        mode={modalMode}
-        initialQuantity={quantity}
-        initialSelectedOptions={selectedOptions}
-      />
-    </>
+    </div>
   );
 };
 

@@ -4,12 +4,19 @@ import { useSuitebiteStore } from '../../store/stores/suitebiteStore';
 import useCategoryStore from '../../store/stores/categoryStore';
 import { suitebiteAPI } from '../../utils/suitebiteAPI';
 import ProductCard from '../../components/suitebite/ProductCard';
+import ProductDetailModal from '../../components/suitebite/ProductDetailModal';
 import ShoppingCart from '../../components/suitebite/ShoppingCart';
 import OrderHistory from '../../components/suitebite/OrderHistory';
 
 import { MagnifyingGlassIcon, FunnelIcon, ShoppingBagIcon, ShoppingCartIcon, ClipboardDocumentListIcon } from '@heroicons/react/24/outline';
 
 const SuitebiteShop = () => {
+  // Modal state for product details, add to cart, buy now
+  const [modalProduct, setModalProduct] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState('view-details'); // 'add-to-cart' | 'buy-now' | 'view-details'
+  const [modalInitialQuantity, setModalInitialQuantity] = useState(1);
+  const [modalInitialSelectedOptions, setModalInitialSelectedOptions] = useState({});
   const navigate = useNavigate();
   const {
     products,
@@ -33,9 +40,23 @@ const SuitebiteShop = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortOption, setSortOption] = useState('name-asc');
   const [priceRange, setPriceRange] = useState({ min: 0, max: 5000 });
+  const [variationOptions, setVariationOptions] = useState([]);
+  const [variationTypes, setVariationTypes] = useState([]);
 
   useEffect(() => {
     loadShopData();
+    // Fetch variation options and types on mount
+    const fetchVariationData = async () => {
+      try {
+        const optionsRes = await suitebiteAPI.getVariationOptions();
+        if (optionsRes.success) setVariationOptions(optionsRes.options);
+        const typesRes = await suitebiteAPI.getVariationTypes();
+        if (typesRes.success) setVariationTypes(typesRes.types);
+      } catch (e) {
+        console.warn('Could not load variation options/types:', e.message);
+      }
+    };
+    fetchVariationData();
   }, []);
 
   const showNotification = (type, message) => {
@@ -63,6 +84,8 @@ const SuitebiteShop = () => {
           category: product.category || product.category_name,
           is_active: product.is_active,
           image_url: product.image_url,
+          images: Array.isArray(product.images) ? product.images : [],
+          product_images: Array.isArray(product.product_images) ? product.product_images : [],
           variations: Array.isArray(product.variations) ? product.variations : []
         }));
         
@@ -79,17 +102,31 @@ const SuitebiteShop = () => {
       if (cartResponse.success) {
         // Map backend cart data to match expected frontend structure
         const backendCartItems = cartResponse.data?.cartItems || [];
-        const mappedCart = backendCartItems.map(item => ({
-          cart_item_id: item.cart_item_id, // Use the correct unique identifier
-          product_id: item.product_id,
-          product_name: item.product_name || item.name,
-          points_cost: item.price_points || item.points_cost || item.price,
-          quantity: item.quantity,
-          image_url: item.image_url,
-          variation_id: item.variation_id,
-          variations: item.variations, // Add support for new variation format
-          variation_details: item.variation_details
-        }));
+        console.log('🛒 Raw cart items from backend:', backendCartItems);
+        
+        const mappedCart = backendCartItems.map(item => {
+          console.log('🔍 Processing cart item:', {
+            cart_item_id: item.cart_item_id,
+            product_name: item.product_name,
+            variations: item.variations,
+            variation_details: item.variation_details,
+            hasVariations: item.variations && Array.isArray(item.variations) && item.variations.length > 0
+          });
+          
+          return {
+            cart_item_id: item.cart_item_id, // Use the correct unique identifier
+            product_id: item.product_id,
+            product_name: item.product_name || item.name,
+            points_cost: item.price_points || item.points_cost || item.price,
+            quantity: item.quantity,
+            image_url: item.image_url,
+            images: item.images, // Include images array for cart items
+            product_images: item.product_images, // Include product_images from backend
+            variation_id: item.variation_id,
+            variations: item.variations, // Add support for new variation format
+            variation_details: item.variation_details
+          };
+        });
         
         setCart(mappedCart);
         console.log(`🛒 Loaded ${mappedCart.length} cart items`); // Debug log
@@ -121,59 +158,25 @@ const SuitebiteShop = () => {
     }
   };
 
-  const handleAddToCart = async (productId, quantity = 1, variationId = null) => {
+  // Fix: Remove the logic that opens the modal if isModalOpen is true
+  const handleAddToCart = async (productId, quantity = 1, variationId = null, variations = []) => {
     try {
-      const cartData = { 
-        product_id: productId, 
-        quantity: quantity 
-      };
-
-      // Add variation_id if provided
-      if (variationId) {
-        cartData.variation_id = variationId;
+      const cartData = { product_id: productId, quantity };
+      if (variationId) cartData.variation_id = variationId;
+      if (variations && variations.length > 0) {
+        cartData.variations = variations;
       }
-
       const response = await suitebiteAPI.addToCart(cartData);
-      
       if (response.success) {
-        // Refresh cart data from server
-        const cartResponse = await suitebiteAPI.getCart();
-        if (cartResponse.success) {
-          const backendCartItems = cartResponse.data?.cartItems || [];
-          const mappedCart = backendCartItems.map(item => ({
-            cart_item_id: item.cart_item_id, // Use the correct unique identifier
-            product_id: item.product_id,
-            product_name: item.product_name || item.name,
-            points_cost: item.price_points || item.points_cost || item.price,
-            quantity: item.quantity,
-            image_url: item.image_url,
-            variation_id: item.variation_id,
-            variations: item.variations, // Add support for new variation format
-            variation_details: item.variation_details
-          }));
-          setCart(mappedCart);
-          
-          // Debug cart items with variations
-          console.log(`🛒 SuitebiteShop - Cart updated: ${mappedCart.length} items`);
-          mappedCart.forEach(item => {
-            if (item.variations?.length > 0) {
-              console.log(`✅ Cart item with variations: ${item.product_name}`, item.variations);
-            }
-          });
-        }
+        setIsModalOpen(false); // Always close modal after add
+        await loadShopData();
         showNotification('success', 'Item added to cart! 🛒');
       } else {
         showNotification('error', response.message || 'Failed to add item to cart');
       }
     } catch (error) {
       console.error('Error adding to cart:', error);
-      
-      // Check if it's a specific error about insufficient stock or funds
-      if (error.response && error.response.data && error.response.data.message) {
-        showNotification('error', error.response.data.message);
-      } else {
-        showNotification('error', 'Failed to add item to cart');
-      }
+      showNotification('error', 'Failed to add item to cart');
     }
   };
 
@@ -260,51 +263,56 @@ const SuitebiteShop = () => {
     }
   };
 
-  const handleBuyNow = async (productId, quantity, variationId = null) => {
+  // Enhanced: Open modal and fetch full product details for Buy Now
+  const handleBuyNow = async (productId, quantity = 1, variationId = null, variations = []) => {
+    console.log('💳 SuitebiteShop - handleBuyNow called with:', {
+      productId,
+      quantity,
+      variationId,
+      variations,
+      productIdType: typeof productId,
+      quantityType: typeof quantity
+    });
+    
     try {
-      const cartData = { 
-        product_id: productId, 
-        quantity: quantity 
-      };
-
-      if (variationId) {
-        cartData.variation_id = variationId;
-      }
-
-      const response = await suitebiteAPI.addToCart(cartData);
+      // Fetch full product details including all images
+      const res = await suitebiteAPI.getProductById(productId);
+      let product = res.success && res.product ? res.product : products.find(p => p.product_id === productId);
       
-      if (response.success) {
-        // Get the cart item that was just added
-        const cartResponse = await suitebiteAPI.getCart();
-        if (cartResponse.success) {
-          const cartItems = cartResponse.data?.cartItems || [];
-          const newCartItem = cartItems.find(item => 
-            item.product_id === productId && 
-            (!variationId || item.variation_id === variationId)
-          );
-          
-          if (newCartItem) {
-            const mappedItem = {
-              cart_item_id: newCartItem.cart_item_id, // Use the correct unique identifier
-              product_id: newCartItem.product_id,
-              product_name: newCartItem.product_name || newCartItem.name,
-              price_points: newCartItem.price_points || newCartItem.points_cost || newCartItem.price, // Use price_points for backend
-              quantity: newCartItem.quantity,
-              image_url: newCartItem.image_url,
-              variation_id: newCartItem.variation_id,
-              variation_details: newCartItem.variation_details
-            };
-            
-            // Checkout immediately
-            await handleCheckout([mappedItem]);
-          }
+      if (product) {
+        // Always provide images array - ensure we get all product images
+        product = {
+          ...product,
+          images: Array.isArray(product.images) && product.images.length > 0
+            ? product.images
+            : product.image_url
+              ? [{ image_url: product.image_url, alt_text: product.name }]
+              : []
+        };
+        
+        console.log('🖼️ Product images for modal:', product.images);
+        
+        setModalProduct(product);
+        setIsModalOpen(true);
+        setModalMode('buy-now');
+        setModalInitialQuantity(quantity);
+        
+        // Handle initial selected options from variations array
+        const initialOptions = {};
+        if (variations && variations.length > 0) {
+          variations.forEach(variation => {
+            if (variation.type_name && variation.option_id) {
+              initialOptions[variation.type_name] = variation.option_id;
+            }
+          });
         }
+        setModalInitialSelectedOptions(initialOptions);
       } else {
-        showNotification('error', response.message || 'Failed to add item to cart');
+        showNotification('error', 'Product not found');
       }
     } catch (error) {
-      console.error('Error with buy now:', error);
-      showNotification('error', 'Buy now failed. Please try again.');
+      console.error('Error fetching product for modal:', error);
+      showNotification('error', 'Failed to load product details');
     }
   };
 
@@ -369,9 +377,9 @@ const SuitebiteShop = () => {
   const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <div className="suitebite-shop-container pb-8 flex flex-col">
-      {/* Navigation Tabs */}
-      <div className="tabs mb-6">
+    <div className="suitebite-shop-container h-full flex flex-col p-4">
+      {/* Navigation Tabs - Fixed */}
+      <div className="tabs flex-shrink-0 mb-6">
         <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
           <button
             onClick={() => setActiveTab('products')}
@@ -410,12 +418,12 @@ const SuitebiteShop = () => {
       </div>
 
       {/* Content */}
-      <div className="content flex-1 flex flex-col min-h-0">
+      <div className="content flex-1 flex flex-col min-h-0 overflow-hidden">
         {/* Products Tab */}
         {activeTab === 'products' && (
-          <div className="products-tab pb-8 flex flex-col h-full min-h-0">
-            {/* Filters */}
-            <div className="filters mb-6 bg-white rounded-lg shadow-sm border p-4">
+          <div className="products-tab flex flex-col h-full min-h-0">
+            {/* Filters - Fixed */}
+            <div className="filters flex-shrink-0 mb-6 bg-white rounded-lg shadow-sm border p-4">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
                 {/* Search */}
                 <div>
@@ -502,39 +510,100 @@ const SuitebiteShop = () => {
               </div>
             </div>
 
-            {/* Products Grid - scrollable only */}
-            <div className="products-grid-container flex-1 min-h-0 overflow-y-auto pr-1">
-              {loading ? (
-                <div className="text-center py-12">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0097b2] mx-auto mb-4"></div>
-                  <p className="text-gray-600">Loading products...</p>
-                </div>
-              ) : filteredAndSortedProducts.length === 0 ? (
-                <div className="text-center py-12 bg-white rounded-lg shadow-sm border">
-                  <ShoppingBagIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
-                  <p className="text-gray-600">Try adjusting your search or filters.</p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-8">
-                  {filteredAndSortedProducts.map(product => (
-                    <ProductCard
-                      key={product.product_id}
-                      product={product}
-                      onAddToCart={handleAddToCart}
-                      onBuyNow={handleBuyNow}
-                      userHeartbits={userHeartbits}
-                    />
-                  ))}
-                </div>
-              )}
+            {/* Products Grid - Scrollable only */}
+            <div className="products-grid-container flex-1 min-h-0 overflow-y-auto">
+              <div className="pr-1">
+                {loading ? (
+                  <div className="text-center py-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0097b2] mx-auto mb-4"></div>
+                    <p className="text-gray-600">Loading products...</p>
+                  </div>
+                ) : filteredAndSortedProducts.length === 0 ? (
+                  <div className="text-center py-12 bg-white rounded-lg shadow-sm border">
+                    <ShoppingBagIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
+                    <p className="text-gray-600">Try adjusting your search or filters.</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-8">
+                    {filteredAndSortedProducts.map(product => {
+                      const productWithImages = {
+                        ...product,
+                        images: Array.isArray(product.product_images) && product.product_images.length > 0
+                          ? product.product_images
+                          : Array.isArray(product.images) && product.images.length > 0
+                            ? product.images
+                            : product.image_url
+                              ? [{ image_url: product.image_url, alt_text: product.name }]
+                              : [],
+                        product_images: Array.isArray(product.product_images) ? product.product_images : []
+                      };
+                      return (
+                        <ProductCard
+                          key={product.product_id}
+                          product={productWithImages}
+                          onAddToCart={() => {
+                            setModalProduct(productWithImages);
+                            setIsModalOpen(true);
+                            setModalMode('add-to-cart');
+                            setModalInitialQuantity(1);
+                            setModalInitialSelectedOptions({});
+                          }}
+                          onBuyNow={() => {
+                            setModalProduct(productWithImages);
+                            setIsModalOpen(true);
+                            setModalMode('buy-now');
+                            setModalInitialQuantity(1);
+                            setModalInitialSelectedOptions({});
+                          }}
+                          userHeartbits={userHeartbits}
+                        />
+                      );
+                    })}
+      {/* Product Detail Modal for Add to Cart / Buy Now */}
+      {isModalOpen && modalProduct && (
+        <ProductDetailModal
+          product={modalProduct}
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onAddToCart={handleAddToCart}
+          onBuyNow={async (productId, quantity, variationId, variations) => {
+            // Add to cart, then checkout immediately
+            try {
+              const cartData = { product_id: productId, quantity };
+              if (variationId) cartData.variation_id = variationId;
+              if (variations && variations.length > 0) {
+                cartData.variations = variations;
+              }
+              const response = await suitebiteAPI.addToCart(cartData);
+              if (response.success) {
+                setIsModalOpen(false);
+                await loadShopData();
+                // Optionally, trigger checkout here
+              } else {
+                showNotification('error', response.message || 'Failed to buy now');
+              }
+            } catch (error) {
+              console.error('Error with buy now from modal:', error);
+              showNotification('error', 'Buy now failed. Please try again.');
+            }
+          }}
+          userHeartbits={userHeartbits}
+          mode={modalMode}
+          initialQuantity={modalInitialQuantity}
+          initialSelectedOptions={modalInitialSelectedOptions}
+        />
+      )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}
 
         {/* Cart Tab */}
         {activeTab === 'cart' && (
-          <div className="cart-tab pb-8">
+          <div className="cart-tab h-full overflow-y-auto">
             <ShoppingCart
               cart={cart}
               userHeartbits={userHeartbits}
@@ -543,14 +612,17 @@ const SuitebiteShop = () => {
               onUpdateCart={loadShopData}
               onUpdateQuantity={handleUpdateQuantity}
               onRemoveItem={handleRemoveItem}
+              onAddToCart={handleAddToCart}
               isVisible={true}
+              variationOptions={variationOptions}
+              variationTypes={variationTypes}
             />
           </div>
         )}
 
         {/* Order History Tab */}
         {activeTab === 'orders' && (
-          <div className="orders-tab">
+          <div className="orders-tab h-full overflow-y-auto">
             <OrderHistory onCartUpdate={loadShopData} onHeartbitsUpdate={loadShopData} />
           </div>
         )}

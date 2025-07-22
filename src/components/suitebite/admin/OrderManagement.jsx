@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { suitebiteAPI } from '../../../utils/suitebiteAPI';
 import { formatTimeAgo, formatDate } from '../../../utils/dateHelpers';
 import { downloadReceiptPDF } from '../../../utils/pdfReceipt';
+import OrderItemCard from '../OrderItemCard';
 import { 
   ClockIcon, 
   CheckCircleIcon, 
@@ -71,7 +72,7 @@ const OrderManagement = () => {
       
       const response = await suitebiteAPI.getAllOrders(filters);
       if (response.success) {
-        const mappedOrders = (response.orders || []).map(order => ({
+        const mappedOrders = (response.orders || []).map(order => ({  // Changed back to response.orders
           order_id: order.order_id,
           user_id: order.user_id,
           first_name: order.first_name,
@@ -83,7 +84,8 @@ const OrderManagement = () => {
           completed_at: order.completed_at,
           total_points: order.total_points,
           notes: order.notes,
-          item_count: order.item_count
+          item_count: order.item_count || order.orderItems?.length || 0,
+          orderItems: order.orderItems || []  // Include order items with variations
         }));
         setOrders(mappedOrders);
       } else {
@@ -103,7 +105,7 @@ const OrderManagement = () => {
       const response = await suitebiteAPI.getOrderById(orderId);
       
       if (response.success) {
-        setSelectedOrder(response.order);
+        setSelectedOrder(response.data); // API returns data not order
         setShowOrderDetails(true);
       } else {
         showNotification('error', 'Failed to load order details');
@@ -521,7 +523,7 @@ const OrderManagement = () => {
                       </p>
                       
                       {/* Customer Info */}
-                      <div className="flex items-center gap-4 text-sm text-gray-500 mb-2">
+                      <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
                         <div className="flex items-center gap-1">
                           <UserIcon className="h-4 w-4" />
                           <span>{order.first_name} {order.last_name}</span>
@@ -539,6 +541,33 @@ const OrderManagement = () => {
                           <span>{order.item_count} item{order.item_count !== 1 ? 's' : ''}</span>
                         </div>
                       </div>
+
+                      {/* Order Items Preview */}
+                      {order.orderItems && order.orderItems.length > 0 && (
+                        <div className="mb-3">
+                          <div className="text-xs text-gray-500 mb-2">Items:</div>
+                          <div className="space-y-1">
+                            {order.orderItems.slice(0, 2).map((item, index) => (
+                              <div key={index} className="flex items-center gap-2 text-sm">
+                                <div className="w-4 h-4 bg-gray-200 rounded-sm flex-shrink-0"></div>
+                                <span className="text-gray-700 truncate">
+                                  {item.quantity}x {item.product_name}
+                                  {item.variations && item.variations.length > 0 && (
+                                    <span className="text-gray-500 text-xs ml-1">
+                                      ({item.variations.map(v => v.option_label).join(', ')})
+                                    </span>
+                                  )}
+                                </span>
+                              </div>
+                            ))}
+                            {order.orderItems.length > 2 && (
+                              <div className="text-xs text-gray-500">
+                                +{order.orderItems.length - 2} more item{order.orderItems.length - 2 !== 1 ? 's' : ''}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                     {/* Actions */}
@@ -777,26 +806,19 @@ const OrderDetailsModal = ({ order, onClose }) => {
           <div className="mb-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-3">Order Items</h3>
             <div className="space-y-3">
-              {order.items && order.items.map((item, index) => (
-                <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                  <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
-                    <ShoppingBagIcon className="h-6 w-6 text-gray-400" />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="text-sm font-medium text-gray-900">{item.product_name}</h4>
-                    <p className="text-xs text-gray-500">Quantity: {item.quantity}</p>
-                    {item.variation_details && (
-                      <p className="text-xs text-gray-500">Variations: {Array.isArray(item.variation_details)
-                        ? item.variation_details.map(opt => opt.option_label).join(' + ')
-                        : item.variation_details.option_label}</p>
-                    )}
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-medium text-[#0097b2]">{item.points_cost} pts</p>
-                    <p className="text-xs text-gray-500">Total: {item.points_cost * item.quantity} pts</p>
-                  </div>
-                </div>
+              {order.orderItems && order.orderItems.map((item, index) => (
+                <OrderItemCard 
+                  key={`${item.order_item_id}-${index}`} 
+                  item={item} 
+                  showImages={true}
+                />
               ))}
+              {(!order.orderItems || order.orderItems.length === 0) && (
+                <div className="text-center py-8 text-gray-500">
+                  <ShoppingBagIcon className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                  <p>No items found in this order</p>
+                </div>
+              )}
             </div>
           </div>
 
