@@ -30,8 +30,14 @@ export const pointsShopApi = {
     const res = await axios.get("/api/points/received");
     return res.data;
   },
-  async getLeaderboard(period = "weekly") {
-    const res = await axios.get(`/api/points/leaderboard?period=${period}`);
+  async getLeaderboard(period = "weekly", userId = null) {
+    console.log('Calling getLeaderboard with:', { period, userId });
+    let url = `/api/points/leaderboard-with-period?period=${period}`;
+    if (userId) {
+      url += `&user_id=${userId}`;
+    }
+    const res = await axios.get(url);
+    console.log('Leaderboard response:', res.data);
     return res.data; // Return the entire response data
   },
   async toggleCheerLike(cheerId) {
