@@ -58,11 +58,16 @@ const CheerPage = () => {
   // Restore main cheer card like button:
   // Restore comment like button:
 
+
   // Add state for date filter
   const [selectedDate, setSelectedDate] = useState('');
 
   // Fetch cheer statistics
   const { data: statsData, isLoading: statsLoading } = useQuery({
+
+  // Fetch cheer statistics (removed unused variable)
+  //const { isLoading: statsLoading } = useQuery({
+
     queryKey: ['cheer-stats'],
     queryFn: pointsShopApi.getCheerStats,
     staleTime: 2 * 60 * 1000,
@@ -96,14 +101,6 @@ const CheerPage = () => {
     enabled: !!user && Object.keys(user).length > 0,
   });
 
-  // Fetch received cheers
-  const { data: receivedCheers, isLoading: receivedLoading } = useQuery({
-    queryKey: ['received-cheers'],
-    queryFn: pointsShopApi.getReceivedCheers,
-    staleTime: 2 * 60 * 1000,
-    enabled: !!user && Object.keys(user).length > 0,
-  });
-
   // Fetch leaderboard
   const { data: leaderboardData, isLoading: leaderboardLoading } = useQuery({
     queryKey: ['leaderboard', activeTab, user?.id],
@@ -132,33 +129,6 @@ const CheerPage = () => {
     queryFn: () => pointsShopApi.searchUsers(searchQuery),
     enabled: searchQuery.length >= 1 && (!!user && Object.keys(user).length > 0),
     staleTime: 30 * 1000,
-  });
-
-  // Send cheer mutation
-  const cheerMutation = useMutation({
-    mutationFn: ({ recipientId, amount, message }) =>
-      pointsShopApi.sendCheer(recipientId, amount, message),
-    onSuccess: () => {
-      setIsSubmitting(false);
-      toast.success('Cheer sent successfully! 🎉');
-      setCheerText('');
-      setSelectedUsers([]);
-      setCheerPoints(1);
-      setShowSuccessMessage(true);
-      setTimeout(() => setShowSuccessMessage(false), 3000);
-      
-      queryClient.invalidateQueries(['points']);
-      queryClient.invalidateQueries(['cheer-feed']);
-      queryClient.invalidateQueries(['received-cheers']);
-      queryClient.invalidateQueries(['cheer-stats']);
-      queryClient.invalidateQueries(['leaderboard']);
-    },
-    onError: (error) => {
-      setIsSubmitting(false);
-      const backendMsg = error?.response?.data?.message || error?.message || 'Failed to send cheer';
-      toast.error(backendMsg);
-      console.error('Cheer mutation error:', error);
-    },
   });
 
   // Bulk cheer mutation for multiple recipients
@@ -228,6 +198,51 @@ const CheerPage = () => {
       toast.error('Failed to add comment');
     },
   });
+
+  // Add state for editing comments
+  const [editingComment, setEditingComment] = useState(null); // {cheerId, commentId}
+  const [editCommentText, setEditCommentText] = useState('');
+
+  // Edit comment mutation
+  const editCommentMutation = useMutation({
+    mutationFn: ({ cheerId, commentId, comment }) => pointsShopApi.updateCheerComment(cheerId, commentId, comment),
+    onSuccess: (_, variables) => {
+      setCheerComments(prev => {
+        const newMap = new Map(prev);
+        const data = newMap.get(variables.cheerId);
+        if (data && Array.isArray(data.comments)) {
+          data.comments = data.comments.map(c =>
+            c._id === variables.commentId ? { ...c, comment: variables.comment } : c
+          );
+        }
+        return newMap;
+      });
+      setEditingComment(null);
+      setEditCommentText('');
+      toast.success('Comment updated!');
+    },
+    onError: () => toast.error('Failed to update comment'),
+  });
+
+  // Delete comment mutation
+  const deleteCommentMutation = useMutation({
+    mutationFn: ({ cheerId, commentId }) => pointsShopApi.deleteCheerComment(cheerId, commentId),
+    onSuccess: (_, variables) => {
+      setCheerComments(prev => {
+        const newMap = new Map(prev);
+        const data = newMap.get(variables.cheerId);
+        if (data && Array.isArray(data.comments)) {
+          data.comments = data.comments.filter(c => c._id !== variables.commentId);
+        }
+        return newMap;
+      });
+      toast.success('Comment deleted!');
+    },
+    onError: () => toast.error('Failed to delete comment'),
+  });
+
+  // Add state for delete confirmation
+  const [confirmingDelete, setConfirmingDelete] = useState(null); // {cheerId, commentId}
 
   // Initialize hearted cheers state when feed data loads
   useEffect(() => {
@@ -369,8 +384,6 @@ const CheerPage = () => {
         setTimeout(() => setShowSuccessMessage(false), 3000);
         queryClient.invalidateQueries(['points']);
         queryClient.invalidateQueries(['cheer-feed']);
-        queryClient.invalidateQueries(['received-cheers']);
-        queryClient.invalidateQueries(['cheer-stats']);
         queryClient.invalidateQueries(['leaderboard']);
       } else if (successCount > 0) {
         toast.warning(`Sent ${successCount} cheers, but ${errorCount} failed.`);
@@ -439,7 +452,7 @@ const CheerPage = () => {
     );
   }
 
-  const anyLoading = statsLoading || pointsLoading || feedLoading || receivedLoading || leaderboardLoading;
+  const anyLoading = statsLoading || pointsLoading || feedLoading || leaderboardLoading;
 
   if (anyLoading) {
     return (
@@ -460,20 +473,24 @@ const CheerPage = () => {
   }
 
   const availableHeartbits = (pointsData?.data?.monthlyCheerLimit || 100) - (pointsData?.data?.monthlyCheerUsed || 0);
-  const stats = statsData?.data || {};
-  const feedRaw = Array.isArray(cheerFeed?.data?.cheers) ? cheerFeed.data.cheers : [];
-  let feed = feedRaw;
-  if (selectedDate) {
-    feed = feedRaw.filter(post => {
-      const postDate = new Date(post.createdAt || post.posted_at);
-      // Compare only the date part in local time
-      const yyyy = postDate.getFullYear();
-      const mm = String(postDate.getMonth() + 1).padStart(2, '0');
-      const dd = String(postDate.getDate()).padStart(2, '0');
-      const postDateStr = `${yyyy}-${mm}-${dd}`;
-      return postDateStr === selectedDate;
-    });
-  }
+const stats = statsData?.data || {};
+const leaderboard = leaderboardData?.data || [];
+
+const feedRaw = Array.isArray(cheerFeed?.data?.cheers) ? cheerFeed.data.cheers : [];
+let feed = feedRaw;
+
+if (selectedDate) {
+  feed = feedRaw.filter(post => {
+    const postDate = new Date(post.createdAt || post.posted_at);
+    // Compare only the date part in local time
+    const yyyy = postDate.getFullYear();
+    const mm = String(postDate.getMonth() + 1).padStart(2, '0');
+    const dd = String(postDate.getDate()).padStart(2, '0');
+    const postDateStr = `${yyyy}-${mm}-${dd}`;
+    return postDateStr === selectedDate;
+  });
+}
+
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#ffffff' }}>
@@ -662,41 +679,47 @@ const CheerPage = () => {
                 </div>
 
                 {/* Enhanced Controls - Fixed Layout */}
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-3">
-                  <div className="flex items-center space-x-2">
+                <div className="flex flex-row items-center gap-x-3 pt-3">
+                  <div className="flex items-center space-x-2 flex-shrink-0 w-full sm:w-auto">
                     <label className="text-sm font-semibold" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                       Heartbits:
                     </label>
-                    <input
-                      type="number"
-                      min="1"
-                      max={Math.min(100, availableHeartbits)}
-                      value={cheerPoints}
-                      onChange={(e) => setCheerPoints(Math.min(Math.max(1, parseInt(e.target.value) || 1), Math.min(100, availableHeartbits)))}
-                      className="w-16 px-2 py-1 text-center rounded-lg font-bold transition-all duration-200 focus:ring-4 text-sm"
-                      style={{ 
-                        border: '2px solid #e2e8f0',
-                        fontFamily: 'Avenir, sans-serif',
-                        color: '#1a0202',
-                        backgroundColor: '#f8fafc'
-                      }}
-                      onFocus={(e) => {
-                        e.target.style.borderColor = '#0097b2';
-                        e.target.style.boxShadow = '0 0 0 4px rgba(0, 151, 178, 0.1)';
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = '#e2e8f0';
-                        e.target.style.boxShadow = 'none';
-                      }}
-                    />
-                    <span className="text-xs px-2 py-1 rounded-full" 
-                          style={{ 
-                            color: '#64748b', 
-                            backgroundColor: '#f1f5f9',
-                            fontFamily: 'Avenir, sans-serif' 
-                          }}>
-                      max {Math.min(100, availableHeartbits)}
-                    </span>
+                    <div className="flex flex-col items-center">
+                      <input
+                        type="number"
+                        min="1"
+                        max={Math.min(100, availableHeartbits)}
+                        value={cheerPoints}
+                        onChange={(e) => setCheerPoints(Math.min(Math.max(1, parseInt(e.target.value) || 1), Math.min(100, availableHeartbits)))}
+                        className="w-16 px-2 py-2 text-center rounded-lg font-bold transition-all duration-200 focus:ring-4 text-sm h-10"
+                        style={{ 
+                          border: '2px solid #e2e8f0',
+                          fontFamily: 'Avenir, sans-serif',
+                          color: '#1a0202',
+                          backgroundColor: '#f8fafc'
+                        }}
+                        onFocus={(e) => {
+                          e.target.style.borderColor = '#0097b2';
+                          e.target.style.boxShadow = '0 0 0 4px rgba(0, 151, 178, 0.1)';
+                        }}
+                        onBlur={(e) => {
+                          e.target.style.borderColor = '#e2e8f0';
+                          e.target.style.boxShadow = 'none';
+                        }}
+                      />
+                      <span className="text-[0.7rem] font-bold mt-1 text-center"
+                            style={{
+                              color: '#1a0202',
+                              background: 'none',
+                              fontFamily: 'Avenir, sans-serif',
+                              letterSpacing: '1px',
+                              fontWeight: 700,
+                              boxShadow: 'none',
+                              padding: 0
+                            }}>
+                        <span style={{fontWeight: 900}}>MAX</span> <span style={{fontWeight: 900}}>{Math.min(100, availableHeartbits)}</span>
+                      </span>
+                    </div>
                   </div>
                   
                   <button
@@ -708,11 +731,13 @@ const CheerPage = () => {
                       bulkCheerMutation.isLoading ||
                       cheerPoints > availableHeartbits
                     }
-                    className="text-white px-4 py-2 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed font-bold transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 w-full sm:w-auto text-sm"
+                    className="text-white px-3 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed font-bold transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 w-auto text-xs h-10 ml-2"
                     style={{ 
                       background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)',
                       fontFamily: 'Avenir, sans-serif',
-                      minWidth: '140px'
+                      height: '40px',
+                      fontSize: '0.85rem',
+                      padding: '0 12px'
                     }}
                   >
                     {bulkCheerMutation.isLoading ? (
@@ -1062,26 +1087,26 @@ const CheerPage = () => {
                                           {comments.map((comment, index) => {
                                             const commentKey = comment._id || comment.id || `comment-${cheer.cheer_id}-${index}`;
                                             return (
-                                              <div key={commentKey} 
-                                                   className="rounded-xl p-3 transition-all duration-200 hover:scale-[1.02]"
-                                                   style={{
-                                                     background: 'linear-gradient(135deg, #f8fafc 60%, #e0f7fa 100%)',
-                                                     boxShadow: '0 4px 16px 0 rgba(52, 211, 153, 0.10), 0 1.5px 4px 0 rgba(96, 165, 250, 0.10)',
-                                                     border: '1.5px solid #e0e7ef',
-                                                     borderRadius: '18px',
-                                                     position: 'relative',
-                                                     zIndex: 1,
-                                                   }}
+                                              <div key={commentKey}
+                                                className="relative rounded-xl px-2 pt-1 pb-px transition-all duration-200 hover:scale-[1.02]"
+                                                style={{
+                                                  background: 'linear-gradient(135deg, #f8fafc 60%, #e0f7fa 100%)',
+                                                  boxShadow: '0 4px 16px 0 rgba(52, 211, 153, 0.10), 0 1.5px 4px 0 rgba(96, 165, 250, 0.10)',
+                                                  border: '1.5px solid #e0e7ef',
+                                                  borderRadius: '18px',
+                                                  position: 'relative',
+                                                  zIndex: 1,
+                                                }}
                                               >
                                                 <div className="flex items-start space-x-2">
                                                   {comment.fromUser?.avatar ? (
                                                     <img
                                                       src={comment.fromUser.avatar}
                                                       alt={comment.fromUser.name || 'User'}
-                                                      className="w-6 h-6 rounded-full ring-1 ring-gray-200 flex-shrink-0"
+                                                      className="w-10 h-10 rounded-full ring-1 ring-gray-200 flex-shrink-0"
                                                     />
                                                   ) : (
-                                                    <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" 
+                                                    <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" 
                                                          style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)' }}>
                                                       <span className="text-xs font-bold text-white" 
                                                             style={{ fontFamily: 'Avenir, sans-serif', fontSize: '8px' }}>
@@ -1091,7 +1116,7 @@ const CheerPage = () => {
                                                   )}
                                                   <div className="flex-1 min-w-0">
                                                     <div className="flex items-center space-x-1 mb-1">
-                                                      <span className="font-semibold text-xs" 
+                                                      <span className="font-semibold text-sm" 
                                                             style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                                                         {comment.fromUser?.name || 'Anonymous'}
                                                       </span>
@@ -1100,31 +1125,85 @@ const CheerPage = () => {
                                                         {formatTimeAgo(comment.createdAt)}
                                                       </span>
                                                     </div>
-                                                    <p className="text-xs" 
-                                                       style={{ color: '#374151', fontFamily: 'Avenir, sans-serif' }}>
-                                                      {comment.comment}
-                                                    </p>
+                                                    {editingComment && editingComment.cheerId === cheer.cheer_id && editingComment.commentId === comment._id ? (
+                                                      <div className="flex items-center space-x-2">
+                                                        <input
+                                                          type="text"
+                                                          value={editCommentText}
+                                                          onChange={e => setEditCommentText(e.target.value)}
+                                                          className="flex-1 px-2 py-1 rounded border"
+                                                          style={{ fontFamily: 'Avenir, sans-serif', color: '#1a0202' }}
+                                                          disabled={editCommentMutation.isLoading}
+                                                        />
+                                                        <button
+                                                          className="text-xs px-2 py-1 rounded bg-green-500 text-white font-bold"
+                                                          style={{ fontFamily: 'Avenir, sans-serif' }}
+                                                          disabled={editCommentMutation.isLoading || !editCommentText.trim()}
+                                                          onClick={() => editCommentMutation.mutate({ cheerId: cheer.cheer_id, commentId: comment._id, comment: editCommentText.trim() })}
+                                                        >
+                                                          Save
+                                                        </button>
+                                                        <button
+                                                          className="text-xs px-2 py-1 rounded bg-gray-300 text-gray-700 font-bold"
+                                                          style={{ fontFamily: 'Avenir, sans-serif' }}
+                                                          disabled={editCommentMutation.isLoading}
+                                                          onClick={() => { setEditingComment(null); setEditCommentText(''); }}
+                                                        >
+                                                          Cancel
+                                                        </button>
+                                                      </div>
+                                                    ) : (
+                                                      <p className="text-base" style={{ color: '#374151', fontFamily: 'Avenir, sans-serif' }}>{comment.comment}</p>
+                                                    )}
                                                   </div>
                                                 </div>
-                                                <div style={{ position: 'relative', display: 'inline-block', minWidth: 32, minHeight: 32 }}>
-                                                  <button
-                                                    onClick={() => {/* implement comment like logic if needed */}}
-                                                    className="flex items-center space-x-1 transition-all duration-200 hover:scale-110 active:scale-95"
-                                                    style={{
-                                                      background: 'none',
-                                                      border: 'none',
-                                                      outline: 'none',
-                                                      cursor: 'pointer',
-                                                      padding: 0,
-                                                      display: 'flex',
-                                                      alignItems: 'center',
-                                                      position: 'relative',
-                                                      zIndex: 2,
-                                                    }}
-                                                  >
-                                                    {/* Use HeartIconSolid or HeartIcon based on liked state for comment */}
-                                                  </button>
-                                                </div>
+                                                {comment.fromUser?._id === user.id && !editingComment && (
+                                                  <div className="flex space-x-1 mt-1">
+                                                    {confirmingDelete && confirmingDelete.cheerId === cheer.cheer_id && confirmingDelete.commentId === comment._id ? (
+                                                      <div className="flex items-center space-x-2">
+                                                        <span className="text-xs font-semibold" style={{ color: '#ef4444', fontFamily: 'Avenir, sans-serif' }}>Are you sure?</span>
+                                                        <button
+                                                          className="text-xs px-2 py-1 rounded bg-red-500 text-white font-bold hover:bg-red-600"
+                                                          style={{ fontFamily: 'Avenir, sans-serif' }}
+                                                          onClick={() => {
+                                                            deleteCommentMutation.mutate({ cheerId: cheer.cheer_id, commentId: comment._id });
+                                                            setConfirmingDelete(null);
+                                                          }}
+                                                          disabled={editCommentMutation.isLoading || deleteCommentMutation.isLoading}
+                                                        >
+                                                          Yes
+                                                        </button>
+                                                        <button
+                                                          className="text-xs px-2 py-1 rounded bg-gray-300 text-gray-700 font-bold"
+                                                          style={{ fontFamily: 'Avenir, sans-serif' }}
+                                                          onClick={() => setConfirmingDelete(null)}
+                                                          disabled={editCommentMutation.isLoading || deleteCommentMutation.isLoading}
+                                                        >
+                                                          No
+                                                        </button>
+                                                      </div>
+                                                    ) : (
+                                                      <>
+                                                        <button
+                                                          className="text-xs px-2 py-1 rounded bg-yellow-400 text-white font-bold hover:bg-yellow-500"
+                                                          style={{ fontFamily: 'Avenir, sans-serif' }}
+                                                          onClick={() => { setEditingComment({ cheerId: cheer.cheer_id, commentId: comment._id }); setEditCommentText(comment.comment); }}
+                                                          disabled={editCommentMutation.isLoading || deleteCommentMutation.isLoading}
+                                                        >
+                                                          Edit
+                                                        </button>
+                                                        <button
+                                                          className="text-xs px-2 py-1 rounded bg-red-500 text-white font-bold hover:bg-red-600"
+                                                          style={{ fontFamily: 'Avenir, sans-serif' }}
+                                                          onClick={() => setConfirmingDelete({ cheerId: cheer.cheer_id, commentId: comment._id })}
+                                                          disabled={editCommentMutation.isLoading || deleteCommentMutation.isLoading}
+                                                        >
+                                                          Delete
+                                                        </button>
+                                                      </>
+                                                    )}
+                                                  </div>
+                                                )}
                                               </div>
                                             );
                                           })}

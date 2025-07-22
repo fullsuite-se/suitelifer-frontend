@@ -58,6 +58,14 @@ export const pointsShopApi = {
     const res = await axios.get(`/api/points/cheer/${cheerId}/comments${query}`);
     return res.data.data; // Return the data array from the response
   },
+  async updateCheerComment(cheerId, commentId, comment) {
+    const res = await axios.put(`/api/points/cheer/${cheerId}/comment/${commentId}`, { comment });
+    return res.data;
+  },
+  async deleteCheerComment(cheerId, commentId) {
+    const res = await axios.delete(`/api/points/cheer/${cheerId}/comment/${commentId}`);
+    return res.data;
+  },
   
   // Admin functions for managing user points
   async getAllUserPoints() {
