@@ -473,23 +473,22 @@ const CheerPage = () => {
   }
 
   const availableHeartbits = (pointsData?.data?.monthlyCheerLimit || 100) - (pointsData?.data?.monthlyCheerUsed || 0);
-const stats = statsData?.data || {};
-const leaderboard = leaderboardData?.data || [];
+  const stats = statsData?.data || {};
 
-const feedRaw = Array.isArray(cheerFeed?.data?.cheers) ? cheerFeed.data.cheers : [];
-let feed = feedRaw;
+  const feedRaw = Array.isArray(cheerFeed?.data?.cheers) ? cheerFeed.data.cheers : [];
+  let feed = feedRaw;
 
-if (selectedDate) {
-  feed = feedRaw.filter(post => {
-    const postDate = new Date(post.createdAt || post.posted_at);
-    // Compare only the date part in local time
-    const yyyy = postDate.getFullYear();
-    const mm = String(postDate.getMonth() + 1).padStart(2, '0');
-    const dd = String(postDate.getDate()).padStart(2, '0');
-    const postDateStr = `${yyyy}-${mm}-${dd}`;
-    return postDateStr === selectedDate;
-  });
-}
+  if (selectedDate) {
+    feed = feedRaw.filter(post => {
+      const postDate = new Date(post.createdAt || post.posted_at);
+      // Compare only the date part in local time
+      const yyyy = postDate.getFullYear();
+      const mm = String(postDate.getMonth() + 1).padStart(2, '0');
+      const dd = String(postDate.getDate()).padStart(2, '0');
+      const postDateStr = `${yyyy}-${mm}-${dd}`;
+      return postDateStr === selectedDate;
+    });
+  }
 
 
   return (
@@ -1296,10 +1295,11 @@ if (selectedDate) {
               {user && currentUserLeaderboard && (
                 <div className="mb-4">
                   <div className="text-sm text-gray-500 mb-2">Your Current Position</div>
-                  <div className="flex items-center space-x-3 p-4 rounded-xl" 
+                  <div className="flex items-center space-x-3 p-4 rounded-xl transition-all duration-200 hover:scale-[1.02]" 
                        style={{ 
                          backgroundColor: '#fafafa',
-                         border: '1px solid #e0e7ef'
+                         border: '1px solid #e0e7ef',
+                         boxShadow: '0 4px 16px 0 rgba(52, 211, 153, 0.10), 0 1.5px 4px 0 rgba(96, 165, 250, 0.10)'
                        }}>
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-base shadow-sm flex-shrink-0"
                          style={{
@@ -1353,7 +1353,7 @@ if (selectedDate) {
                   </p>
                 </div>
               ) : leaderboard.length > 0 ? (
-                <div className="space-y-3 max-h-72 overflow-y-auto">
+                <div className="space-y-3 max-h-72 overflow-y-auto overflow-x-hidden">
                   {/* Show complete leaderboard without filtering */}
                   {leaderboard
                     .slice(0, showMoreLeaderboard ? 6 : 3)
