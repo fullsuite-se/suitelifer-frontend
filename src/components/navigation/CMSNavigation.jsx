@@ -55,7 +55,7 @@ const regularFeatures = [
 
 // Suitebite features for employees (only Mood and Points Dashboard remain)
 const suitebiteFeaturesForEmployees = [
-  { feature_name: "Mood", path: "mood", icon: FaceSmileIcon },
+  { feature_name: "The Suite Vibe", path: "mood", icon: FaceSmileIcon },
   { feature_name: "Points Dashboard", path: "points-dashboard", icon: ChartBarIcon },
   { feature_name: "Cheer a Peer", path: "cheer-a-peer", icon: HeartIcon },
   { feature_name: "The Gift Suite", path: "suitebite/shop", icon: ShoppingBagIcon },
