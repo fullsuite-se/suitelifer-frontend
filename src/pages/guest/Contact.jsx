@@ -44,19 +44,21 @@ const Contact = () => {
       if (!fullName || !email || !subject || !message) {
         toast.error("Please fill in all fields.");
         return;
-      }
-      const receiver_email = "allen.alvaro@getfullsuite.com";
-      // const receiver_email =
-      //   selected.toLowerCase() === "full-time"
-      //     ? contactDetails.careersEmail
-      //     : contactDetails.internshipEmail;
+      } 
+      const loweredCaseSelected = selected?.trim().toLowerCase();
+      // const receiver_email = "allen.alvaro@getfullsuite.com";
+      const receiver_email =
+        loweredCaseSelected === "full-time"
+          ? contactDetails.careersEmail
+          : contactDetails.internshipEmail;
+         
       const response = await api.post("/api/send-inquiry-email", {
         fullName,
         receiver_email,
         sender_email: email,
         subject,
         message,
-        type: selected,
+        type: loweredCaseSelected,
       });
 
       if (response?.data?.isSuccess) {
