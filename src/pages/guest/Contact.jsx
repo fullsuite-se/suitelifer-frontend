@@ -45,17 +45,18 @@ const Contact = () => {
         toast.error("Please fill in all fields.");
         return;
       }
-      // const receiver_email = "allen.alvaro@fullsuite.ph";
-      const receiver_email =
-        selected.toLowerCase() === "full-time"
-          ? contactDetails.careersEmail
-          : contactDetails.internshipEmail;
+      const receiver_email = "allen.alvaro@getfullsuite.com";
+      // const receiver_email =
+      //   selected.toLowerCase() === "full-time"
+      //     ? contactDetails.careersEmail
+      //     : contactDetails.internshipEmail;
       const response = await api.post("/api/send-inquiry-email", {
         fullName,
         receiver_email,
         sender_email: email,
         subject,
         message,
+        type: selected,
       });
 
       if (response?.data?.isSuccess) {

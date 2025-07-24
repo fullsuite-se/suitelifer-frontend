@@ -46,8 +46,8 @@ const Podcast = () => {
         toast.error("Please fill in all fields.");
         return;
       }
-      // const receiver_email = "allen.alvaro@fullsuite.ph";
-      const receiver_email = contactDetails.websiteEmail;
+      const receiver_email = "allen.alvaro@getfullsuite.com";
+      // const receiver_email = contactDetails.websiteEmail;
       const response = await api.post("/api/send-inquiry-email", {
         fullName,
         receiver_email,
