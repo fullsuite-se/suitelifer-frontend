@@ -172,43 +172,24 @@ const ShopTabContent = () => {
    */
   const handleBuyNow = async (productId, quantity = 1, variationId = null, variations = []) => {
     try {
-      const cartData = { 
-        product_id: productId, 
-        quantity: quantity,
-        variations,
-        variation_id: variationId // Legacy support
+      // Prepare order data for direct checkout
+      const orderData = {
+        items: [{
+          product_id: productId,
+          quantity: quantity,
+          ...(variationId && { variation_id: variationId }),
+          ...(variations && variations.length > 0 && { variations: variations })
+        }]
       };
 
-      const response = await suitebiteAPI.addToCart(cartData);
+      // Create order directly without adding to cart
+      const response = await suitebiteAPI.checkout(orderData);
       
       if (response.success) {
-        // Get the cart item that was just added
-        const cartResponse = await suitebiteAPI.getCart();
-        if (cartResponse.success) {
-          const cartItems = cartResponse.data?.cartItems || cartResponse.cartItems || [];
-          const newCartItem = cartItems.find(item => 
-            item.product_id === productId && 
-            (!variationId || item.variation_id === variationId)
-          );
-          
-          if (newCartItem) {
-            const mappedItem = {
-              cart_item_id: newCartItem.cart_item_id,
-              product_id: newCartItem.product_id,
-              product_name: newCartItem.product_name || newCartItem.name,
-              price_points: newCartItem.price_points || newCartItem.points_cost || newCartItem.price,
-              quantity: newCartItem.quantity,
-              image_url: newCartItem.image_url,
-              variation_id: newCartItem.variation_id,
-              variation_details: newCartItem.variation_details
-            };
-            
-            // Checkout immediately
-            await handleCheckout([mappedItem]);
-          }
-        }
+        showNotification('success', 'Order placed successfully! 🎉');
+        await loadShopData(); // Refresh data to update heartbits and order history
       } else {
-        showNotification('error', response.message || 'Failed to add item to cart');
+        showNotification('error', response.message || 'Failed to place order');
       }
     } catch (error) {
       console.error('Error with buy now:', error);

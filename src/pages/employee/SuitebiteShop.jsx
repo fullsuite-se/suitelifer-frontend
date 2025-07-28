@@ -158,6 +158,53 @@ const SuitebiteShop = () => {
     }
   };
 
+  // Optimized functions for updating specific data (for performance)
+  const updateCartAndHeartbits = async () => {
+    try {
+      const [cartResponse, heartbitsResponse] = await Promise.all([
+        suitebiteAPI.getCart(),
+        suitebiteAPI.getUserHeartbits()
+      ]);
+
+      if (cartResponse.success) {
+        const backendCartItems = cartResponse.data?.cartItems || [];
+        const mappedCart = backendCartItems.map(item => ({
+          cart_item_id: item.cart_item_id,
+          product_id: item.product_id,
+          product_name: item.product_name || item.name,
+          points_cost: item.price_points || item.points_cost || item.price,
+          quantity: item.quantity,
+          image_url: item.image_url,
+          images: item.images,
+          product_images: item.product_images,
+          variation_id: item.variation_id,
+          variations: item.variations,
+          variation_details: item.variation_details
+        }));
+        setCart(mappedCart);
+      }
+
+      if (heartbitsResponse.success) {
+        const heartbits = heartbitsResponse.heartbits_balance || heartbitsResponse.balance || 0;
+        setUserHeartbits(heartbits);
+      }
+    } catch (error) {
+      console.error('Error updating cart and heartbits:', error);
+    }
+  };
+
+  const updateHeartbitsOnly = async () => {
+    try {
+      const heartbitsResponse = await suitebiteAPI.getUserHeartbits();
+      if (heartbitsResponse.success) {
+        const heartbits = heartbitsResponse.heartbits_balance || heartbitsResponse.balance || 0;
+        setUserHeartbits(heartbits);
+      }
+    } catch (error) {
+      console.error('Error updating heartbits:', error);
+    }
+  };
+
   // Fix: Remove the logic that opens the modal if isModalOpen is true
   const handleAddToCart = async (productId, quantity = 1, variationId = null, variations = []) => {
     try {
@@ -169,7 +216,7 @@ const SuitebiteShop = () => {
       const response = await suitebiteAPI.addToCart(cartData);
       if (response.success) {
         setIsModalOpen(false); // Always close modal after add
-        await loadShopData();
+        await updateCartAndHeartbits(); // Only update cart and heartbits, not products
         showNotification('success', 'Item added to cart! 🛒');
       } else {
         showNotification('error', response.message || 'Failed to add item to cart');
@@ -236,12 +283,8 @@ const SuitebiteShop = () => {
         // Clear cart after successful checkout
         setCart([]);
         
-        // Refresh heartbits balance after successful checkout
-        const heartbitsResponse = await suitebiteAPI.getUserHeartbits();
-        if (heartbitsResponse.success) {
-          const heartbits = heartbitsResponse.heartbits_balance || heartbitsResponse.balance || 0;
-          setUserHeartbits(heartbits);
-        }
+        // Update heartbits balance after successful checkout
+        await updateHeartbitsOnly();
         
         showNotification('success', 'Order placed successfully! Awaiting admin approval. 🎉');
         
@@ -568,23 +611,30 @@ const SuitebiteShop = () => {
           onClose={() => setIsModalOpen(false)}
           onAddToCart={handleAddToCart}
           onBuyNow={async (productId, quantity, variationId, variations) => {
-            // Add to cart, then checkout immediately
+            // Buy Now: Create order directly without adding to cart
             try {
-              const cartData = { product_id: productId, quantity };
-              if (variationId) cartData.variation_id = variationId;
-              if (variations && variations.length > 0) {
-                cartData.variations = variations;
-              }
-              const response = await suitebiteAPI.addToCart(cartData);
+              // Prepare order data
+              const orderData = {
+                items: [{
+                  product_id: productId,
+                  quantity: quantity,
+                  ...(variationId && { variation_id: variationId }),
+                  ...(variations && variations.length > 0 && { variations: variations })
+                }]
+              };
+
+              // Create order directly
+              const response = await suitebiteAPI.checkout(orderData);
+              
               if (response.success) {
+                showNotification('success', 'Order placed successfully!');
                 setIsModalOpen(false);
-                await loadShopData();
-                // Optionally, trigger checkout here
+                await updateHeartbitsOnly(); // Only update heartbits after order
               } else {
-                showNotification('error', response.message || 'Failed to buy now');
+                showNotification('error', response.message || 'Failed to place order');
               }
             } catch (error) {
-              console.error('Error with buy now from modal:', error);
+              console.error('Error with buy now:', error);
               showNotification('error', 'Buy now failed. Please try again.');
             }
           }}
