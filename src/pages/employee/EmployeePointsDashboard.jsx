@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { pointsShopApi } from '../../api/pointsShopApi';
 import { useStore } from '../../store/authStore';
@@ -18,7 +17,6 @@ import {
 
 const PointsDashboard = () => {
   const user = useStore((state) => state.user);
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [cheerModalOpen, setCheerModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState('');
@@ -182,77 +180,59 @@ const PointsDashboard = () => {
       <div className="max-w-6xl mx-auto p-6 space-y-6 pb-20">
         {/* Header */}
         <div className="flex items-center justify-between">
-
-          {/* Commented out for now */}
-          {/* <h1 className="text-3xl font-bold flex items-center gap-2" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif', fontWeight: '800' }}>
-            <StarIcon className="w-8 h-8" style={{ color: '#0097b2' }} />
-            Points Dashboard
-          </h1> */}
-          
-          <button
-          onClick={() => navigate('/app/cheer')}
-          className="flex items-center gap-2 text-white px-4 py-2 rounded-xl font-bold transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
-          style={{
-            background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)',
-            fontFamily: 'Avenir, sans-serif',
-            minWidth: '140px'
-          }}
-        >
-          <HeartIconSolid className="w-5 h-5" />
-          Send Heartbits
-        </button>
-      </div>
+          {/* Header content can be added here if needed in the future */}
+        </div>
 
       {/* Points Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Current Balance */}
-        <div className="rounded-xl p-6 text-white transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95" style={{ background: 'linear-gradient(135deg, #7c3aed 0%, #38bdf8 100%)', borderRadius: '18px' }}>
+        <div className="rounded-xl p-6 text-white transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95" style={{ background: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)', borderRadius: '18px' }}>
           <div className="flex items-center justify-between">
             <div>
               <p className="text-white text-sm font-medium opacity-90" style={{ fontFamily: 'Avenir, sans-serif' }}>Current Balance</p>
               <p className="text-3xl font-bold" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: '800' }}>{pointsData?.data?.currentBalance || 0}</p>
               <p className="text-white text-xs opacity-80" style={{ fontFamily: 'Avenir, sans-serif' }}>Points</p>
             </div>
-            {/* Star icon for balance, yellow fill */}
-            <StarIconSolid className="w-12 h-12" style={{ color: '#FFD700' }} />
+            {/* Star icon for balance, white fill */}
+            <StarIconSolid className="w-12 h-12" style={{ color: '#ffffff' }} />
           </div>
         </div>
 
         {/* Heartbits Remaining */}
-        <div className="rounded-xl p-6 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95" style={{ background: 'linear-gradient(135deg, #34d399 0%, #a7f3d0 100%)', color: '#065f46', borderRadius: '18px' }}>
+        <div className="rounded-xl p-6 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95" style={{ background: 'linear-gradient(135deg, #059669 0%, #10b981 100%)', color: '#ffffff', borderRadius: '18px' }}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium opacity-90" style={{ color: '#065f46', fontFamily: 'Avenir, sans-serif' }}>Heartbits Remaining</p>
-              <p className="text-3xl font-bold" style={{ color: '#065f46', fontFamily: 'Avenir, sans-serif', fontWeight: '800' }}>
+              <p className="text-white text-sm font-medium opacity-90" style={{ fontFamily: 'Avenir, sans-serif' }}>Heartbits Remaining</p>
+              <p className="text-3xl font-bold" style={{ color: '#ffffff', fontFamily: 'Avenir, sans-serif', fontWeight: '800' }}>
                 {(pointsData?.data?.monthlyCheerLimit || 100) - (pointsData?.data?.monthlyCheerUsed || 0)}
               </p>
-              <p className="text-xs opacity-80" style={{ color: '#065f46', fontFamily: 'Avenir, sans-serif' }}>This Month</p>
+              <p className="text-white text-xs opacity-80" style={{ fontFamily: 'Avenir, sans-serif' }}>This Month</p>
             </div>
-            <HeartIconSolid className="w-12 h-12" style={{ color: '#ef4444' }} />
+            <HeartIconSolid className="w-12 h-12" style={{ color: '#ffffff' }} />
           </div>
         </div>
 
         {/* Total Earned */}
-        <div className="rounded-xl p-6 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95" style={{ background: 'linear-gradient(135deg, #FFD700 0%, #FFF8DC 100%)', color: '#b8860b', borderRadius: '18px' }}>
+        <div className="rounded-xl p-6 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95" style={{ background: 'linear-gradient(135deg, #92400e 0%, #f59e0b 100%)', color: '#ffffff', borderRadius: '18px' }}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium opacity-90" style={{ color: '#b8860b', fontFamily: 'Avenir, sans-serif' }}>Total Earned</p>
-              <p className="text-3xl font-bold" style={{ color: '#b8860b', fontFamily: 'Avenir, sans-serif', fontWeight: '800' }}>{pointsData?.data?.totalEarned || 0}</p>
-              <p className="text-xs opacity-80" style={{ color: '#b8860b', fontFamily: 'Avenir, sans-serif' }}>All Time</p>
+              <p className="text-white text-sm font-medium opacity-90" style={{ fontFamily: 'Avenir, sans-serif' }}>Total Earned</p>
+              <p className="text-3xl font-bold" style={{ color: '#ffffff', fontFamily: 'Avenir, sans-serif', fontWeight: '800' }}>{pointsData?.data?.totalEarned || 0}</p>
+              <p className="text-white text-xs opacity-80" style={{ fontFamily: 'Avenir, sans-serif' }}>All Time</p>
             </div>
-            <TrophyIcon className="w-12 h-12" style={{ color: '#b8860b', fill: '#b8860b' }} />
+            <TrophyIcon className="w-12 h-12" style={{ color: '#ffffff' }} />
           </div>
         </div>
 
         {/* Total Spent */}
-        <div className="rounded-xl p-6 text-white transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95" style={{ background: 'linear-gradient(135deg, #ef4444 0%, #fca5a5 100%)', borderRadius: '18px' }}>
+        <div className="rounded-xl p-6 text-white transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95" style={{ background: 'linear-gradient(135deg, #dc2626 0%, #ef4444 100%)', borderRadius: '18px' }}>
           <div className="flex items-center justify-between">
             <div>
               <p className="text-white text-sm font-medium opacity-90" style={{ fontFamily: 'Avenir, sans-serif' }}>Total Spent</p>
               <p className="text-3xl font-bold" style={{ fontFamily: 'Avenir, sans-serif', fontWeight: '800' }}>{pointsData?.data?.totalSpent || 0}</p>
               <p className="text-white text-xs opacity-80" style={{ fontFamily: 'Avenir, sans-serif' }}>Points</p>
             </div>
-            <GiftIcon className="w-12 h-12" style={{ color: '#38bdf8' }} />
+            <GiftIcon className="w-12 h-12" style={{ color: '#ffffff' }} />
           </div>
         </div>
       </div>
