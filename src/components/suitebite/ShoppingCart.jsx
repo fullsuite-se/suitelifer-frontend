@@ -36,6 +36,9 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
     variationTypes: []
   });
 
+  // Clear cart confirmation modal state
+  const [showClearCartConfirm, setShowClearCartConfirm] = useState(false);
+
   // Filter out duplicate cart items by cart_item_id - MOVED UP to avoid circular dependency
   const uniqueCart = [];
   const seenIds = new Set();
@@ -218,9 +221,11 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
     }
   };
 
-  const handleClearCart = async () => {
-    if (!window.confirm('Are you sure you want to clear your entire cart?')) return;
-    
+  const handleClearCart = () => {
+    setShowClearCartConfirm(true);
+  };
+
+  const confirmClearCart = async () => {
     try {
       setIsUpdating(true);
       const response = await suitebiteAPI.clearCart();
@@ -236,6 +241,7 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
       showNotification('error', 'Failed to clear cart');
     } finally {
       setIsUpdating(false);
+      setShowClearCartConfirm(false);
     }
   };
 
@@ -916,7 +922,54 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
           mode={cartItemToEdit ? 'edit' : 'add-to-cart'}
         />
       )}
+
+      {/* Clear Cart Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showClearCartConfirm}
+        onClose={() => setShowClearCartConfirm(false)}
+        onConfirm={confirmClearCart}
+        title="Clear Cart"
+        message="Are you sure you want to clear your entire cart? This action cannot be undone."
+        confirmText="Clear Cart"
+        cancelText="Cancel"
+        confirmColor="red"
+      />
     </>
+  );
+};
+
+// ConfirmationModal Component
+const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, confirmText, cancelText, confirmColor = "red" }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/40 backdrop-blur z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
+      <div className="bg-white rounded-xl max-w-md w-full p-6 shadow-xl">
+        <div className="text-center">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
+          <p className="text-gray-600 mb-6">{message}</p>
+          
+          <div className="flex gap-3 justify-center">
+            <button
+              onClick={onClose}
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              {cancelText}
+            </button>
+            <button
+              onClick={onConfirm}
+              className={`px-4 py-2 text-white rounded-lg transition-colors ${
+                confirmColor === "red" 
+                  ? "bg-red-600 hover:bg-red-700" 
+                  : "bg-blue-600 hover:bg-blue-700"
+              }`}
+            >
+              {confirmText}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

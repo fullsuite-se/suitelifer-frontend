@@ -23,11 +23,11 @@ import EmployeeMyBlogs from "./pages/employee/EmployeeMyBlogs";
 import BlogView from "./components/blog/BlogView";
 import EmployeeThreads from "./pages/employee/EmployeeThreads";
 import EmployeeEvents from "./pages/employee/EmployeeEvents";
-// import EmployeeWorkshops from "./pages/employee/EmployeeWorkshops";
+import EmployeeWorkshops from "./pages/employee/EmployeeWorkshops";
 import EmployeePersonalityTest from "./pages/employee/EmployeePersonalityTest";
 import BlogCreate from "./components/blog/BlogCreate";
 // Employee Pages
-import EmployeeCheerPage from "./pages/employee/EmployeeCheerPage";
+import EmployeeCheerAPeer from "./pages/employee/EmployeeCheerAPeer";
 import EmployeePointsDashboard from "./pages/employee/EmployeePointsDashboard";
 import MoodPage from "./pages/employee/MoodPage";
 
@@ -48,7 +48,7 @@ import SuitebiteLeaderboard from "./pages/employee/SuitebiteLeaderboard";
 
 // Super/Admin Pages
 //import AdminBlogs from "./pages/admin/AdminBlogs";
-import AdminNews from "./pages/admin/AdminNews";
+
 import AdminEvents from "./pages/admin/AdminEvents";
 import AdminContents from "./pages/admin/AdminContents";
 import AdminNewsCreate from "./pages/admin/AdminNewsCreate";
@@ -133,12 +133,12 @@ function App() {
               <Route path="my-blogs" element={<EmployeeMyBlogs />} />
               <Route path="my-blogs/blog/:id/:slug" element={<BlogView />} />
               <Route path="my-blogs/new-blog" element={<BlogCreate />} />
-              <Route path="cheer" element={<EmployeeCheerPage />} />
+              <Route path="cheer" element={<EmployeeCheerAPeer />} />
               <Route path="points" element={<EmployeePointsDashboard />} />
 
               <Route path="threads" element={<EmployeeThreads />} />
               <Route path="company-events" element={<EmployeeEvents />} />
-              {/* <Route path="courses" element={<EmployeeWorkshops />} /> */}
+              <Route path="courses" element={<EmployeeWorkshops />} />
               <Route
                 path="personality-test"
                 element={<EmployeePersonalityTest />}
@@ -152,7 +152,7 @@ function App() {
               {/* Points Shop/Mood/Cheer/PointsDashboard Routes */}
               <Route path="mood" element={<MoodPage />} />
               {/* Remove old points and cheer routes, keep only the new ones */}
-              <Route path="cheer-a-peer" element={<EmployeeCheerPage />} />
+              <Route path="cheer-a-peer" element={<EmployeeCheerAPeer />} />
               <Route path="points-dashboard" element={<EmployeePointsDashboard />} />
 
               {/* SuitebiteShop moved to bottom */}

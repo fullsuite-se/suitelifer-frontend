@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { pointsShopApi } from '../../api/pointsShopApi';
+import { pointsSystemApi } from '../../api/pointsSystemApi';
 import { useStore } from '../../store/authStore';
 import { toast } from 'react-hot-toast';
 import {
@@ -55,7 +55,7 @@ const PointsDashboard = () => {
   // Fetch user's points data
   const { data: pointsData, isLoading: pointsLoading, error: pointsError } = useQuery({
     queryKey: ['points'],
-    queryFn: pointsShopApi.getPoints,
+    queryFn: pointsSystemApi.getPoints,
     staleTime: 1 * 60 * 1000, // 1 minute
     enabled: !!user?.id, // Only fetch when user is loaded
   });
@@ -73,7 +73,7 @@ const PointsDashboard = () => {
     queryKey: ['points-history'],
     queryFn: () => {
       console.log('Fetching points history...');
-      return pointsShopApi.getPointsHistory(10);
+      return pointsSystemApi.getPointsHistory(10);
     },
     staleTime: 2 * 60 * 1000, // 2 minutes
     enabled: !!user?.id, // Only fetch when user is loaded
@@ -85,7 +85,7 @@ const PointsDashboard = () => {
   // Fetch users for cheer functionality with search
   const { data: usersData } = useQuery({
     queryKey: ['users-search', ''],
-    queryFn: () => pointsShopApi.searchUsers(''),
+    queryFn: () => pointsSystemApi.searchUsers(''),
     enabled: false, // Only fetch when needed
     staleTime: 30 * 1000, // 30 seconds
   });
@@ -93,7 +93,7 @@ const PointsDashboard = () => {
   // Send cheer mutation
   const cheerMutation = useMutation({
     mutationFn: ({ recipientId, amount, message }) =>
-      pointsShopApi.sendCheer(recipientId, amount, message),
+      pointsSystemApi.sendCheer(recipientId, amount, message),
     onSuccess: () => {
       toast.success('Cheer sent successfully! 🎉');
       setCheerModalOpen(false);
