@@ -43,6 +43,9 @@ const CheerPage = () => {
   const [showMoreLeaderboard, setShowMoreLeaderboard] = useState(false);
   const COMMENTS_PAGE_SIZE = 20;
   
+  // Simplified state for cheer feed
+  const [allCheers, setAllCheers] = useState([]);
+  
   const textareaRef = useRef(null);
   const dropdownRef = useRef(null);
 
@@ -61,6 +64,11 @@ const CheerPage = () => {
 
   // Add state for date filter
   const [selectedDate, setSelectedDate] = useState('');
+  
+  // Reset cheers when date changes
+  useEffect(() => {
+    setAllCheers([]);
+  }, [selectedDate]);
 
   // Fetch cheer statistics
   const { isLoading: statsLoading } = useQuery({
@@ -82,23 +90,30 @@ const CheerPage = () => {
     enabled: !!user && Object.keys(user).length > 0,
   });
 
-  // Update cheer feed query to use selectedDate
-  const { data: cheerFeed, isLoading: feedLoading } = useQuery({
+  // Simplified cheer feed query - load all recent posts first
+  const { data: cheerFeed, isLoading: feedLoading, refetch: refetchCheerFeed } = useQuery({
     queryKey: ['cheer-feed', selectedDate],
-    queryFn: () => {
+    queryFn: async () => {
       if (selectedDate) {
         // Get start and end of selected day in ISO format
         const from = new Date(selectedDate);
         from.setHours(0, 0, 0, 0);
         const to = new Date(selectedDate);
         to.setHours(23, 59, 59, 999);
-        return pointsSystemApi.getCheerFeed(20, from.toISOString(), to.toISOString());
+        return pointsSystemApi.getCheerFeed(20, from.toISOString(), to.toISOString(), 0);
       } else {
-        return pointsSystemApi.getCheerFeed(20);
+        return pointsSystemApi.getCheerFeed(20, null, null, 0);
       }
     },
     staleTime: 1 * 60 * 1000,
     enabled: !!user && Object.keys(user).length > 0,
+    onSuccess: (data) => {
+      const cheers = data?.data?.cheers || data?.cheers || [];
+      setAllCheers(cheers);
+    },
+    onError: (error) => {
+      console.error('Cheer feed error:', error);
+    }
   });
 
   // Fetch leaderboard
@@ -158,6 +173,8 @@ const CheerPage = () => {
       });
       
       queryClient.invalidateQueries(['cheer-feed']);
+      // Refresh the current page to get updated like status
+      refetchCheerFeed();
     },
     onError: (error) => {
       console.error('likeMutation.onError', error);
@@ -191,6 +208,8 @@ const CheerPage = () => {
         return newComments;
       });
       queryClient.invalidateQueries(['cheer-feed']);
+      // Refresh the current page to get updated comment count
+      refetchCheerFeed();
       toast.success('Comment added!');
     },
     onError: (error) => {
@@ -246,16 +265,16 @@ const CheerPage = () => {
 
   // Initialize hearted cheers state when feed data loads
   useEffect(() => {
-    if (cheerFeed && Array.isArray(cheerFeed.data?.cheers)) {
+    if (allCheers && Array.isArray(allCheers)) {
       const likedCheerIds = new Set();
-      cheerFeed.data.cheers.forEach(cheer => {
+      allCheers.forEach(cheer => {
         if (cheer.userHearted || cheer.userLiked) {
           likedCheerIds.add(cheer.cheer_id);
         }
       });
       setLikedCheers(likedCheerIds);
     }
-  }, [cheerFeed]);
+  }, [allCheers]);
 
   // Debug: log searchQuery and searchResults
   useEffect(() => {
@@ -274,6 +293,8 @@ const CheerPage = () => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+
 
   // Function to fetch comments for a specific cheer (with pagination)
   const fetchComments = async (cheerId, append = false) => {
@@ -385,6 +406,8 @@ const CheerPage = () => {
         queryClient.invalidateQueries(['points']);
         queryClient.invalidateQueries(['cheer-feed']);
         queryClient.invalidateQueries(['leaderboard']);
+        // Reset and reload feed
+        setAllCheers([]);
       } else if (successCount > 0) {
         toast.warning(`Sent ${successCount} cheers, but ${errorCount} failed.`);
       } else {
@@ -474,20 +497,12 @@ const CheerPage = () => {
 
   const availableHeartbits = (pointsData?.data?.monthlyCheerLimit || 100) - (pointsData?.data?.monthlyCheerUsed || 0);
 
-  const feedRaw = Array.isArray(cheerFeed?.data?.cheers) ? cheerFeed.data.cheers : [];
-  let feed = feedRaw;
+  // Use the accumulated cheers from pagination, with fallback to original data
+  const feed = allCheers.length > 0 ? allCheers : (cheerFeed?.data?.cheers || cheerFeed?.cheers || []);
+  
 
-  if (selectedDate) {
-    feed = feedRaw.filter(post => {
-      const postDate = new Date(post.createdAt || post.posted_at);
-      // Compare only the date part in local time
-      const yyyy = postDate.getFullYear();
-      const mm = String(postDate.getMonth() + 1).padStart(2, '0');
-      const dd = String(postDate.getDate()).padStart(2, '0');
-      const postDateStr = `${yyyy}-${mm}-${dd}`;
-      return postDateStr === selectedDate;
-    });
-  }
+
+
 
 
   return (
@@ -865,11 +880,12 @@ const CheerPage = () => {
                          style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)' }}>
                       <FireIcon className="w-6 h-6 text-white" />
                     </div>
-                    <div>
-                      <h2 className="text-xl font-bold truncate" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
-                        Recent Cheers
-                      </h2>
-                    </div>
+                                      <div>
+                    <h2 className="text-xl font-bold truncate" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                      Recent Cheers
+                    </h2>
+
+                  </div>
                   </div>
 
                   {/* Right side - Enhanced Date Filter */}
