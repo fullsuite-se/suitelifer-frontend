@@ -23,7 +23,7 @@ import EmployeeMyBlogs from "./pages/employee/EmployeeMyBlogs";
 import BlogView from "./components/blog/BlogView";
 import EmployeeThreads from "./pages/employee/EmployeeThreads";
 import EmployeeEvents from "./pages/employee/EmployeeEvents";
-// import EmployeeWorkshops from "./pages/employee/EmployeeWorkshops";
+import EmployeeWorkshops from "./pages/employee/EmployeeWorkshops";
 import EmployeePersonalityTest from "./pages/employee/EmployeePersonalityTest";
 import BlogCreate from "./components/blog/BlogCreate";
 // Employee Pages
@@ -48,7 +48,7 @@ import SuitebiteLeaderboard from "./pages/employee/SuitebiteLeaderboard";
 
 // Super/Admin Pages
 //import AdminBlogs from "./pages/admin/AdminBlogs";
-import AdminNews from "./pages/admin/AdminNews";
+
 import AdminEvents from "./pages/admin/AdminEvents";
 import AdminContents from "./pages/admin/AdminContents";
 import AdminNewsCreate from "./pages/admin/AdminNewsCreate";
@@ -138,7 +138,7 @@ function App() {
 
               <Route path="threads" element={<EmployeeThreads />} />
               <Route path="company-events" element={<EmployeeEvents />} />
-              {/* <Route path="courses" element={<EmployeeWorkshops />} /> */}
+              <Route path="courses" element={<EmployeeWorkshops />} />
               <Route
                 path="personality-test"
                 element={<EmployeePersonalityTest />}
