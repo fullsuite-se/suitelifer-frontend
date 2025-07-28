@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import { useRef } from "react";
 import { Outlet } from "react-router-dom";
 import EmployeeAside from "../../components/employee/EmployeeAside";
 import logoFull from "../../assets/logos/logo-fs-full.svg";
@@ -41,7 +41,7 @@ const RootLayout = () => {
 
       <section className="flex-1 h-screen flex flex-col">
         <CMSTopNavigation />
-        <main className="flex-1 min-h-0 overflow-hidden">
+        <main className="flex-1 min-h-0 overflow-y-auto">
           <Outlet />
         </main>
       </section>

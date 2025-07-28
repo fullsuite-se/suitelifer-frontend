@@ -10,8 +10,15 @@ export const pointsShopApi = {
     const res = await axios.get(`/api/points/transactions?limit=${limit}`);
     return res.data;
   },
-  async getCheerFeed(limit = 20) {
-    const res = await axios.get(`/api/points/feed?limit=${limit}`);
+  async getCheerFeed(limit = 20, from = null, to = null) {
+    let url = `/api/points/feed?limit=${limit}`;
+    if (from) {
+      url += `&from=${encodeURIComponent(from)}`;
+    }
+    if (to) {
+      url += `&to=${encodeURIComponent(to)}`;
+    }
+    const res = await axios.get(url);
     return res.data;
   },
   async sendCheer(recipientId, amount, message) {
