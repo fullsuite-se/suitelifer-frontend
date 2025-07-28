@@ -1158,10 +1158,6 @@ const OrderDetailsModal = ({ order, onClose }) => {
           </div>
 
           {/* Order Items */}
-<<<<<<< HEAD
-          <div className="mb-4">
-            <h3 className="text-sm font-semibold text-gray-900 mb-2">Order Items</h3>
-            <div className="space-y-2">
           <div className="mb-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-3">Order Items</h3>
             <div className="space-y-3 max-h-64 overflow-y-auto pr-2">
