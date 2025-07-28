@@ -52,6 +52,11 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate }) => {
   const [cancellingOrders, setCancellingOrders] = useState(new Set());
   const [deletingOrders, setDeletingOrders] = useState(new Set());
   const [notification, setNotification] = useState({ show: false, type: '', message: '' });
+  
+  // Confirmation modals state
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [pendingAction, setPendingAction] = useState({ type: '', orderId: null });
 
   useEffect(() => {
     loadOrderHistory();
@@ -110,11 +115,14 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate }) => {
     }
   };
 
-  const handleCancelOrder = async (orderId) => {
-    if (!window.confirm('Are you sure you want to cancel this order? This action cannot be undone.')) {
-      return;
-    }
+  const handleCancelOrder = (orderId) => {
+    setPendingAction({ type: 'cancel', orderId });
+    setShowCancelConfirm(true);
+  };
 
+  const confirmCancelOrder = async () => {
+    const { orderId } = pendingAction;
+    
     try {
       setCancellingOrders(prev => new Set(prev).add(orderId));
       
@@ -154,6 +162,8 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate }) => {
         newSet.delete(orderId);
         return newSet;
       });
+      setShowCancelConfirm(false);
+      setPendingAction({ type: '', orderId: null });
     }
   };
 
@@ -261,11 +271,14 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate }) => {
     }
   };
 
-  const handleDeleteOrder = async (orderId) => {
-    if (!window.confirm('Are you sure you want to delete this order? This action cannot be undone.')) {
-      return;
-    }
+  const handleDeleteOrder = (orderId) => {
+    setPendingAction({ type: 'delete', orderId });
+    setShowDeleteConfirm(true);
+  };
 
+  const confirmDeleteOrder = async () => {
+    const { orderId } = pendingAction;
+    
     try {
       setDeletingOrders(prev => new Set(prev).add(orderId));
       
@@ -286,6 +299,8 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate }) => {
         newSet.delete(orderId);
         return newSet;
       });
+      setShowDeleteConfirm(false);
+      setPendingAction({ type: '', orderId: null });
     }
   };
 
@@ -412,6 +427,10 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate }) => {
 
   const canReorder = (order) => {
     return order.status === 'completed';
+  };
+
+  const canDeleteOrder = (order) => {
+    return order.status === 'cancelled' || order.status === 'completed';
   };
 
   return (
@@ -607,18 +626,20 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate }) => {
                         </button>
                       )}
 
-                      <button
-                        onClick={() => handleDeleteOrder(order.order_id)}
-                        disabled={deletingOrders.has(order.order_id)}
-                        className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Delete order"
-                      >
-                        {deletingOrders.has(order.order_id) ? (
-                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-red-600"></div>
-                        ) : (
-                          <TrashIcon className="h-5 w-5" />
-                        )}
-                      </button>
+                      {canDeleteOrder(order) && (
+                        <button
+                          onClick={() => handleDeleteOrder(order.order_id)}
+                          disabled={deletingOrders.has(order.order_id)}
+                          className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
+                          title="Delete order"
+                        >
+                          {deletingOrders.has(order.order_id) ? (
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-red-600"></div>
+                          ) : (
+                            <TrashIcon className="h-5 w-5" />
+                          )}
+                        </button>
+                      )}
                     </div>
                   </div>
 
@@ -650,6 +671,30 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate }) => {
         </div>
       </div>
 
+      {/* Cancel Order Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showCancelConfirm}
+        onClose={() => setShowCancelConfirm(false)}
+        onConfirm={confirmCancelOrder}
+        title="Cancel Order"
+        message="Are you sure you want to cancel this order? This action cannot be undone."
+        confirmText="Cancel Order"
+        cancelText="Keep Order"
+        confirmColor="blue"
+      />
+
+      {/* Delete Order Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showDeleteConfirm}
+        onClose={() => setShowDeleteConfirm(false)}
+        onConfirm={confirmDeleteOrder}
+        title="Delete Order"
+        message="Are you sure you want to delete this order? This action cannot be undone."
+        confirmText="Delete Order"
+        cancelText="Keep Order"
+        confirmColor="red"
+      />
+
       {/* Order Details Modal */}
       {showOrderDetails && selectedOrder && (
         <OrderDetailsModal
@@ -678,7 +723,7 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate }) => {
 // Order Details Modal Component
 const OrderDetailsModal = ({ order, onClose }) => {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
         {/* Modal Header */}
         <div className="bg-[#0097b2] text-white p-6">
@@ -722,48 +767,57 @@ const OrderDetailsModal = ({ order, onClose }) => {
           {/* Order Timeline */}
           <div className="mb-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-3">Order Timeline</h3>
-            <div className="space-y-3">
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                <div>
-                  <p className="text-sm font-medium text-gray-900">Order Placed</p>
-                  <p className="text-xs text-gray-500">{formatDate(order.ordered_at)}</p>
+            <div className="flex items-center justify-between gap-4 relative px-2">
+              {/* Horizontal line */}
+              <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gray-200 z-0" style={{transform: 'translateY(-50%)'}}></div>
+              {/* Timeline steps */}
+              <div className="flex flex-1 items-center justify-between z-10">
+                {/* Placed */}
+                <div className="flex flex-col items-center min-w-[80px]">
+                  <div className="w-5 h-5 bg-green-500 rounded-full border-2 border-white shadow flex items-center justify-center">
+                    <CheckIcon className="h-3 w-3 text-white" />
+                  </div>
+                  <span className="text-xs font-medium text-gray-900 mt-2">Placed</span>
+                  <span className="text-[10px] text-gray-500">{formatDate(order.ordered_at)}</span>
                 </div>
+                {/* Approved */}
+                {order.processed_at && (
+                  <div className="flex flex-col items-center min-w-[80px]">
+                    <div className="w-5 h-5 bg-blue-500 rounded-full border-2 border-white shadow flex items-center justify-center">
+                      <CheckIcon className="h-3 w-3 text-white" />
+                    </div>
+                    <span className="text-xs font-medium text-gray-900 mt-2">Approved</span>
+                    <span className="text-[10px] text-gray-500">{formatDate(order.processed_at)}</span>
+                  </div>
+                )}
+                {/* Completed */}
+                {order.completed_at && (
+                  <div className="flex flex-col items-center min-w-[80px]">
+                    <div className="w-5 h-5 bg-green-500 rounded-full border-2 border-white shadow flex items-center justify-center">
+                      <CheckIcon className="h-3 w-3 text-white" />
+                    </div>
+                    <span className="text-xs font-medium text-gray-900 mt-2">Completed</span>
+                    <span className="text-[10px] text-gray-500">{formatDate(order.completed_at)}</span>
+                  </div>
+                )}
+                {/* Cancelled */}
+                {order.status === 'cancelled' && (
+                  <div className="flex flex-col items-center min-w-[80px]">
+                    <div className="w-5 h-5 bg-red-500 rounded-full border-2 border-white shadow flex items-center justify-center">
+                      <XMarkIcon className="h-3 w-3 text-white" />
+                    </div>
+                    <span className="text-xs font-medium text-gray-900 mt-2">Cancelled</span>
+                    <span className="text-[10px] text-gray-500">Order was cancelled</span>
+                  </div>
+                )}
               </div>
-              {order.processed_at && (
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">Order Approved</p>
-                    <p className="text-xs text-gray-500">{formatDate(order.processed_at)}</p>
-                  </div>
-                </div>
-              )}
-              {order.completed_at && (
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">Order Completed</p>
-                    <p className="text-xs text-gray-500">{formatDate(order.completed_at)}</p>
-                  </div>
-                </div>
-              )}
-              {order.status === 'cancelled' && (
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">Order Cancelled</p>
-                    <p className="text-xs text-gray-500">Order was cancelled</p>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
 
           {/* Order Items */}
           <div className="mb-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-3">Order Items</h3>
-            <div className="space-y-3">
+            <div className="space-y-3 max-h-64 overflow-y-auto pr-2">
               {order.orderItems && order.orderItems.map((item, index) => (
                 <OrderItemCard 
                   key={`${item.order_item_id}-${index}`} 
@@ -825,6 +879,43 @@ const OrderDetailsModal = ({ order, onClose }) => {
               Close
             </button>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Confirmation Modal Component
+const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, confirmText, cancelText, confirmColor = "red" }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg max-w-md w-full shadow-xl">
+        {/* Modal Header */}
+        <div className="p-6 border-b border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+          <p className="text-sm text-gray-600 mt-2">{message}</p>
+        </div>
+        
+        {/* Modal Footer */}
+        <div className="p-6 flex gap-3 justify-end">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium"
+          >
+            {cancelText || 'Cancel'}
+          </button>
+          <button
+            onClick={onConfirm}
+            className={`px-4 py-2 text-white rounded-lg transition-colors text-sm font-medium ${
+              confirmColor === 'red' 
+                ? 'bg-red-600 hover:bg-red-700' 
+                : 'bg-blue-600 hover:bg-blue-700'
+            }`}
+          >
+            {confirmText || 'Confirm'}
+          </button>
         </div>
       </div>
     </div>

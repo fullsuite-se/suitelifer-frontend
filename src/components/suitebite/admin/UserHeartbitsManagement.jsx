@@ -36,9 +36,25 @@ const UserHeartbitsManagement = () => {
 
   useEffect(() => {
     loadUsersWithHeartbits();
-    // Set default global limit since points API doesn't have system config
-    setGlobalLimit(1000);
+    loadGlobalLimit();
   }, []);
+
+  const loadGlobalLimit = async () => {
+    try {
+      const response = await suitebiteAPI.getSystemConfiguration();
+      if (response.success && response.config) {
+        const globalLimit = response.config.global_monthly_limit?.value || 1000;
+        setGlobalLimit(globalLimit);
+      } else {
+        // Fallback to default if no config found
+        setGlobalLimit(1000);
+      }
+    } catch (error) {
+      console.error('Error loading global limit:', error);
+      // Fallback to default
+      setGlobalLimit(1000);
+    }
+  };
 
   const showNotification = (type, message) => {
     setNotification({ show: true, type, message });
@@ -97,13 +113,22 @@ const UserHeartbitsManagement = () => {
 
   const handleSetGlobalLimit = async (newLimit) => {
     try {
-      // Since points API doesn't have global limit functionality,
-      // we'll just update the local state for display purposes
-      setGlobalLimit(newLimit);
-      showNotification('info', `Global monthly limit display updated to ${newLimit} heartbits. Note: Individual user limits are managed separately.`);
+      // Save global limit to system configuration
+      const response = await suitebiteAPI.updateSystemConfiguration(
+        'global_monthly_limit',
+        newLimit,
+        'Global monthly heartbits limit for all users'
+      );
+      
+      if (response.success) {
+        setGlobalLimit(newLimit);
+        showNotification('success', `Global monthly limit updated to ${newLimit} heartbits successfully!`);
+      } else {
+        throw new Error(response.message || 'Failed to update global limit');
+      }
     } catch (error) {
       console.error('Error updating global limit:', error);
-      showNotification('error', 'Failed to update global limit display.');
+      showNotification('error', 'Failed to update global limit. Please try again.');
     }
   };
 
@@ -202,7 +227,7 @@ const UserHeartbitsManagement = () => {
     const hasChanges = heartbitsToGive > 0 && reason.trim();
 
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 ">
         <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
           {/* Header */}
           <div className="bg-gradient-to-r from-[#0097b2] to-[#007a8e] text-white px-6 py-4 rounded-t-2xl">
@@ -563,7 +588,7 @@ const UserHeartbitsManagement = () => {
 
       {/* Global Limit Modal */}
       {showGlobalLimitModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Set Global Monthly Limit</h3>
             <div className="mb-4">
@@ -602,7 +627,7 @@ const UserHeartbitsManagement = () => {
 
       {/* Bulk Update Modal */}
       {showBulkUpdateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Give Heartbits to Selected Users</h3>
             <div className="mb-4">
