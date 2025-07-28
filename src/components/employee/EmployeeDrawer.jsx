@@ -1,42 +1,24 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import logoFull from "../../assets/logos/logo-fs-full.svg";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import { NavLink } from "react-router-dom";
 import {
   ChartBarIcon,
-  ChatBubbleBottomCenterTextIcon,
   NewspaperIcon,
   CalendarIcon,
-  Bars3BottomLeftIcon,
   ArrowRightCircleIcon,
-  BriefcaseIcon,
   Square2StackIcon,
   WrenchScrewdriverIcon,
   ClipboardIcon,
   UserIcon,
   ArrowPathRoundedSquareIcon,
-  ChevronDownIcon,
   HeartIcon,
-  CurrencyDollarIcon,
   ShoppingBagIcon,
   FaceSmileIcon,
 } from "@heroicons/react/20/solid";
-import {
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-} from "@headlessui/react";
-import { useStore } from "../../store/authStore";
 import { ModalLogout } from "../modals/ModalLogout";
 
-const iconMap = {
-  dashboard: { default: ChartBarIcon },
-  joblistings: { default: BriefcaseIcon },
-  blogs: { default: ChatBubbleBottomCenterTextIcon },
-  news: { default: NewspaperIcon },
-  events: { default: CalendarIcon },
-  contents: { default: Bars3BottomLeftIcon },
-};
+
 
 const regularServices = [
   { feature_name: "Blogs Feed", path: "blogs-feed", icon: NewspaperIcon },
@@ -47,7 +29,7 @@ const regularServices = [
     icon: ArrowPathRoundedSquareIcon,
   },
   { feature_name: "Events", path: "company-events", icon: CalendarIcon },
-  { feature_name: "Workshops", path: "workshops", icon: WrenchScrewdriverIcon },
+  { feature_name: "Courses", path: "courses", icon: WrenchScrewdriverIcon },
   {
     feature_name: "Personality Test",
     path: "personality-test",
