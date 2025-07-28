@@ -19,41 +19,44 @@ import { formatTimeAgo, formatFullDateTime } from '../../utils/dateHelpers';
  * @param {Function} onInteraction - Callback when user interacts (like/comment)
  */
 const CheerPostCard = ({ post, onInteraction }) => {
-  // Local state for like functionality
-  const [liked, setLiked] = useState(post.is_liked || false); // Current like status
-  const [likesCount, setLikesCount] = useState(post.likes_count || 0); // Total likes count
-  const [isLiking, setIsLiking] = useState(false); // Like action loading state
+  // Like state
+  const [liked, setLiked] = useState(post.is_liked || false);
+  const [likesCount, setLikesCount] = useState(post.likes_count || 0);
+  const [isLiking, setIsLiking] = useState(false);
 
-  // Local state for comment functionality
-  const [showComments, setShowComments] = useState(false); // Show/hide comments section
-  const [comments, setComments] = useState([]); // Comments array
-  const [commentsLoaded, setCommentsLoaded] = useState(false); // Whether comments have been loaded
-  const [newComment, setNewComment] = useState(''); // New comment input
-  const [isAddingComment, setIsAddingComment] = useState(false); // Adding comment loading state
-  const [commentsCount, setCommentsCount] = useState(post.comments_count || 0); // Total comments count
+  // Comment state
+  const [showComments, setShowComments] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [commentsLoaded, setCommentsLoaded] = useState(false);
+  const [newComment, setNewComment] = useState('');
+  const [isAddingComment, setIsAddingComment] = useState(false);
+  const [commentsCount, setCommentsCount] = useState(post.comments_count || 0);
 
-  /**
-   * Handles like/unlike functionality for the cheer post
-   * Toggles like status and updates count via API
-   */
+  // Defensive sender logic from sl_cheers
+  const getInitials = (firstName, lastName) => {
+    if (!firstName && !lastName) return '';
+    return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`.toUpperCase();
+  };
+
+  // If admin grant, show Admin, else show sender from sl_cheers
+  const isAdminGrant = post.is_admin_grant || (!post.cheerer_first_name && !post.cheerer_last_name);
+  const senderName = isAdminGrant
+    ? 'Admin'
+    : [post.cheerer_first_name, post.cheerer_last_name].filter(Boolean).join(' ').trim() || 'Unknown';
+  const senderInitials = isAdminGrant
+    ? 'A'
+    : getInitials(post.cheerer_first_name, post.cheerer_last_name) || 'U';
+
+  // Like handler
   const handleLike = async () => {
-    if (isLiking) return; // Prevent multiple rapid clicks
-
+    if (isLiking) return;
     try {
       setIsLiking(true);
-      const response = await suitebiteAPI.toggleCheerLike({
-        cheer_post_id: post.cheer_post_id
-      });
-      
+      const response = await suitebiteAPI.toggleCheerLike({ cheer_post_id: post.cheer_post_id });
       if (response.success) {
-        // Update local state based on API response
         setLiked(!liked);
         setLikesCount(liked ? likesCount - 1 : likesCount + 1);
-        
-        // Notify parent component of interaction
-        if (onInteraction) {
-          onInteraction('like', response.action);
-        }
+        if (onInteraction) onInteraction('like', response.action);
       }
     } catch (error) {
       console.error('Error toggling like:', error);
@@ -62,12 +65,9 @@ const CheerPostCard = ({ post, onInteraction }) => {
     }
   };
 
-  /**
-   * Loads comments for the cheer post
-   */
+  // Load comments
   const loadComments = async () => {
     if (commentsLoaded) return;
-
     try {
       const response = await suitebiteAPI.getCheerPost(post.cheer_post_id);
       if (response.success && response.post.comments) {
@@ -79,23 +79,16 @@ const CheerPostCard = ({ post, onInteraction }) => {
     }
   };
 
-  /**
-   * Handles showing/hiding comments section
-   */
+  // Toggle comments
   const handleToggleComments = async () => {
-    if (!showComments && !commentsLoaded) {
-      await loadComments();
-    }
+    if (!showComments && !commentsLoaded) await loadComments();
     setShowComments(!showComments);
   };
 
-  /**
-   * Handles adding a new comment
-   */
+  // Add comment
   const handleAddComment = async (e) => {
     e.preventDefault();
     if (!newComment.trim() || isAddingComment) return;
-
     try {
       setIsAddingComment(true);
       const response = await suitebiteAPI.addCheerComment({
@@ -103,22 +96,12 @@ const CheerPostCard = ({ post, onInteraction }) => {
         cheer_comment: newComment.trim(),
         additional_heartbits: 0
       });
-
       if (response.success) {
-        // Reload comments to get the new one
         setCommentsLoaded(false);
         await loadComments();
-        
-        // Update comments count
         setCommentsCount(prev => prev + 1);
-        
-        // Clear input
         setNewComment('');
-        
-        // Notify parent component of interaction
-        if (onInteraction) {
-          onInteraction('comment', 'added');
-        }
+        if (onInteraction) onInteraction('comment', 'added');
       }
     } catch (error) {
       console.error('Error adding comment:', error);
@@ -127,47 +110,20 @@ const CheerPostCard = ({ post, onInteraction }) => {
     }
   };
 
-  /**
-   * Generates user initials from first and last name
-   * Used as fallback when profile picture is not available
-   */
-  const getInitials = (firstName, lastName) => {
-    return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`.toUpperCase();
-  };
-
-  /**
-   * Parses hashtags into an array format
-   * Handles string, array, or null/undefined input
-   */
+  // Parse hashtags
   const parseHashtags = (hashtags) => {
     if (!hashtags) return [];
-    
-    // If already an array, return as-is
-    if (Array.isArray(hashtags)) {
-      return hashtags.filter(tag => tag && tag.trim());
-    }
-    
-    // If string, parse it
+    if (Array.isArray(hashtags)) return hashtags.filter(tag => tag && tag.trim());
     if (typeof hashtags === 'string') {
       if (hashtags.trim() === '') return [];
-      
-      // Handle comma-separated hashtags
-      if (hashtags.includes(',')) {
-        return hashtags.split(',').map(tag => tag.trim()).filter(tag => tag);
-      }
-      
-      // Handle space-separated hashtags (remove # symbols if present)
-      return hashtags.split(/\s+/)
-        .map(tag => tag.replace(/^#/, '').trim())
-        .filter(tag => tag);
+      if (hashtags.includes(',')) return hashtags.split(',').map(tag => tag.trim()).filter(tag => tag);
+      return hashtags.split(/\s+/).map(tag => tag.replace(/^#/, '').trim()).filter(tag => tag);
     }
-    
     return [];
   };
-
-  // Parse hashtags safely
   const parsedHashtags = parseHashtags(post.hashtags);
 
+  // Card UI
   return (
     <div className="cheer-post-card bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden border border-gray-100">
       {/* Post Header - Shows sender, recipient(s), and heartbits earned */}
@@ -176,7 +132,7 @@ const CheerPostCard = ({ post, onInteraction }) => {
           <div className="flex items-center gap-3">
             {/* User Avatar */}
             <div className="user-avatar bg-[#0097b2] text-white rounded-full w-10 h-10 flex items-center justify-center font-semibold text-sm">
-              {getInitials(post.cheerer_first_name, post.cheerer_last_name)}
+              {senderInitials}
             </div>
             
             {/* User Information */}
@@ -184,12 +140,12 @@ const CheerPostCard = ({ post, onInteraction }) => {
               <div className="flex items-center gap-2">
                 {/* Sender name */}
                 <h4 className="font-medium text-[#1a0202] text-sm">
-                  {post.cheerer_first_name} {post.cheerer_last_name}
+                  {senderName}
                 </h4>
                 <span className="text-xs text-[#4a6e7e]">→</span>
                 
                 {/* Recipients - Handle both single and group cheers */}
-                {post.additional_recipients && post.additional_recipients.length > 0 ? (
+                {Array.isArray(post.additional_recipients) && post.additional_recipients.length > 0 ? (
                   /* Group cheer with multiple recipients */
                   <div className="flex items-center gap-2 flex-wrap">
                     {/* Main recipient */}
@@ -201,7 +157,6 @@ const CheerPostCard = ({ post, onInteraction }) => {
                         {post.peer_first_name} {post.peer_last_name}
                       </span>
                     </div>
-                    
                     {/* Additional recipients */}
                     {post.additional_recipients.map((recipient, index) => (
                       <div key={recipient.peer_id || index} className="flex items-center gap-1">
@@ -213,7 +168,6 @@ const CheerPostCard = ({ post, onInteraction }) => {
                         </span>
                       </div>
                     ))}
-                    
                     {/* Group indicator */}
                     <div className="bg-gradient-to-r from-[#0097b2]/10 to-[#0097b2]/20 text-[#0097b2] px-3 py-1 rounded-full text-xs font-medium border border-[#0097b2]/20">
                       <span className="flex items-center gap-1">

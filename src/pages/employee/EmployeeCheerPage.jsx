@@ -510,7 +510,7 @@ const CheerPage = () => {
         </div>
       )}
       
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 py-8 h-[calc(100vh-40px)] overflow-y-scroll scrollbar-thin scrollbar-thumb-[#0097b2] scrollbar-track-[#e0f7fa]">
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Create Cheer & Heartbits */}
@@ -897,7 +897,7 @@ const CheerPage = () => {
                 )}
               </div>
 
-              <div className="max-h-90 overflow-y-auto">
+              <div className="max-h-[500px] overflow-y-scroll scrollbar-thin scrollbar-thumb-[#0097b2] scrollbar-track-[#e0f7fa]">
                 {feedLoading ? (
                   <div className="p-8 text-center">
                     <div className="relative mb-4">
@@ -1253,7 +1253,7 @@ const CheerPage = () => {
             </div>
 
             {/* Enhanced Leaderboard with Header */}
-            <div className="rounded-2xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl" 
+            <div className="rounded-2xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl mb-8" 
                  style={{ 
                    background: 'linear-gradient(135deg, #e0f7fa 70%, #b3e0f2 100%)', 
                    border: '2px solid #b3e0f2',
@@ -1395,13 +1395,14 @@ const CheerPage = () => {
                             {entry.name || entry.userName}
                           </p>
                         </div>
-                        <span className="font-black text-lg px-3 py-1 rounded-lg flex-shrink-0" 
+                        <span className="font-black text-lg px-3 py-1 rounded-lg flex-shrink-0 flex items-center gap-1" 
                           style={{ 
                             color: '#1a0202',
                             backgroundColor: 'transparent',
                             fontFamily: 'Avenir, sans-serif' 
                           }}>
-                          {entry.totalPoints || entry.total_earned} received
+                          {entry.totalPoints || entry.total_earned}
+                          <HeartIconSolid className="w-4 h-4" style={{ color: '#ef4444', display: 'inline', marginLeft: '2px', marginRight: '0px' }} /> received
                         </span>
                       </div>
                     ))}

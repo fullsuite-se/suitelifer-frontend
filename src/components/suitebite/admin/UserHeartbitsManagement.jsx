@@ -63,7 +63,8 @@ const UserHeartbitsManagement = () => {
           total_heartbits_spent: user.total_spent || 0,
           monthly_cheer_limit: user.monthly_cheer_limit || 100,
           monthly_cheer_used: user.monthly_cheer_used || 0,
-          last_monthly_reset: user.last_monthly_reset
+          last_monthly_reset: user.last_monthly_reset,
+          user_type: user.user_type ? user.user_type.toLowerCase() : 'employee', // Use actual role from DB, fallback to 'employee'
         }));
         setUsers(transformedUsers);
       } else {
@@ -79,13 +80,15 @@ const UserHeartbitsManagement = () => {
 
   const handleUpdateUserHeartbits = async (userId, updates, reason = '') => {
     try {
+      // Format reason to match peer cheer style: 'Received X points from cheer'
+      const amount = updates.balance || 0;
+      const adminReason = `Received ${amount} points from cheer`;
       if (updates.balance !== undefined) {
-        const response = await pointsShopApi.addPointsToUser(userId, updates.balance, reason);
+        const response = await pointsShopApi.addPointsToUser(userId, updates.balance, adminReason);
         if (!response.success) {
           throw new Error('Failed to update balance');
         }
       }
-      
       loadUsersWithHeartbits();
       setSelectedUser(null);
       showNotification('success', `Successfully gave ${updates.balance} heartbits to user!`);
@@ -202,7 +205,7 @@ const UserHeartbitsManagement = () => {
     const hasChanges = heartbitsToGive > 0 && reason.trim();
 
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+      <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 40%, #f093fb 80%, #f5576c 100%)', opacity: 0.95 }}>
         <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
           {/* Header */}
           <div className="bg-gradient-to-r from-[#0097b2] to-[#007a8e] text-white px-6 py-4 rounded-t-2xl">
@@ -334,7 +337,7 @@ const UserHeartbitsManagement = () => {
   };
 
   return (
-    <div className="user-heartbits-management bg-white rounded-lg shadow-sm pb-0 px-6 pt-6">
+    <div className="user-heartbits-management rounded-lg shadow-sm pb-6 px-6 pt-2">
       {/* Notification */}
       {notification.show && (
         <div className={`fixed top-20 right-4 z-50 p-4 rounded-lg shadow-lg text-sm font-medium max-w-sm ${
@@ -351,7 +354,7 @@ const UserHeartbitsManagement = () => {
       )}
 
       {/* Concise Search and Filter Controls */}
-      <div className="bg-gray-50 rounded-lg border border-gray-200 p-1 mt-2 mb-2">
+      <div className="bg-white rounded-lg border border-gray-200 p-1 mt-0 mb-0">
         <div className="flex flex-wrap items-center gap-1">
           {/* Search Section */}
           <div className="relative">
@@ -432,7 +435,7 @@ const UserHeartbitsManagement = () => {
       </div>
 
       {/* Results Summary & Bulk Actions */}
-      <div className="mt-4 pt-4 border-t border-gray-200">
+      <div className="mt-1 pt-1 border-t border-gray-200">
         <div className="flex items-center justify-between text-sm text-gray-600">
           {selectedUsers.length > 0 && (
             <span className="text-[#0097b2] font-medium">
@@ -445,111 +448,82 @@ const UserHeartbitsManagement = () => {
         <div className="flex flex-wrap items-center gap-3 mt-3">
           
           {selectedUsers.length > 0 && (
-            <button 
-              onClick={() => setShowBulkUpdateModal(true)}
-              className="px-3 py-1 bg-[#0097b2] text-white rounded-lg hover:bg-[#007a8e] text-sm font-medium transition-all duration-200 flex items-center gap-2"
-            >
-              <HeartIcon className="w-4 h-4" />
-              Give to Selected ({selectedUsers.length})
-            </button>
+            <div className="flex-1 flex justify-end">
+              <button 
+                onClick={() => setShowBulkUpdateModal(true)}
+                className="px-6 py-3 bg-[#0097b2] text-white rounded-xl shadow-lg hover:bg-[#007a8e] text-base font-bold transition-all duration-200 flex items-center gap-3"
+                style={{ minWidth: '220px' }}
+              >
+                <HeartIcon className="w-6 h-6" />
+                Give to Selected ({selectedUsers.length})
+              </button>
+            </div>
           )}
           
         </div>
       </div>
 
       {/* Users Table - only this is scrollable */}
-      <div className="bg-white rounded-lg border border-gray-150 overflow-hidden"> 
-        <div className="users-table-container overflow-y-auto pb-2" style={{ maxHeight: '80vh' }}>
-          <table className="w-full border-collapse">
-            <thead className="bg-gray-50 sticky top-0">
-              <tr>
-                <th className="text-left p-2 border-b font-medium text-gray-700 bg-gray-50">
-                  <input
-                    type="checkbox"
-                    checked={selectedUsers.length === filteredUsers.length && filteredUsers.length > 0}
-                    onChange={selectAllUsers}
-                    className="w-4 h-4 text-[#0097b2] border-gray-300 rounded focus:ring-[#0097b2]"
+      <div className="bg-white rounded-lg border border-gray-150 overflow-hidden">
+        <div className="users-table-container grid grid-cols-3 gap-6 p-6" style={{ maxHeight: '58vh', overflowY: 'auto', background: 'linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 40%, #f093fb 80%, #f5576c 100%)', borderRadius: '1rem' }}>
+          {sortedUsers.length === 0 ? (
+            <div className="col-span-3 text-center text-gray-500 py-12">
+              <UserGroupIcon className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+              <p className="text-lg font-medium text-gray-900 mb-2">No users found</p>
+              <p className="text-sm">
+                {searchTerm
+                  ? 'Try adjusting your search criteria.'
+                  : 'No users are currently registered in the system.'}
+              </p>
+            </div>
+          ) : (
+            sortedUsers.map(user => {
+              const isSelected = selectedUsers.includes(user.user_id);
+              return (
+                <div
+                key={user.user_id}
+                className={`relative bg-white rounded-xl shadow-md flex flex-col items-center p-5 transition-all duration-200 border border-gray-100 cursor-pointer ${isSelected ? 'ring-2 ring-purple-500' : ''}`}
+                style={{ minHeight: '120px' }}
+                onClick={() => toggleUserSelection(user.user_id)}
+                >
+                  {/* Checkbox circle */}
+                  <div className="absolute top-4 right-4">
+                    <span className={`w-8 h-8 flex items-center justify-center rounded-full border-2 border-purple-400 bg-white ${isSelected ? 'bg-gradient-to-br from-purple-500 to-pink-400 border-purple-500' : ''}`}
+                      style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.08)', transition: 'background 0.2s' }}
+                    >
+                      {isSelected && (
+                        <svg className="w-6 h-6 text-white drop-shadow-lg" fill="none" stroke="currentColor" strokeWidth="4" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                      )}
+                    </span>
+                  </div>
+                  {/* Avatar */}
+                  <img
+                    src={user.avatar || '/default-avatar.png'}
+                    alt={`${user.first_name || ''} ${user.last_name || ''}`.trim()}
+                    className="w-12 h-12 rounded-full object-cover mb-3"
                   />
-                </th>
-                <th className="text-left p-2 border-b font-medium text-gray-700 bg-gray-50">User</th>
-                <th className="text-left p-2 border-b font-medium text-gray-700 bg-gray-50">Role</th>
-                <th className="text-left p-2 border-b font-medium text-gray-700 bg-gray-50">Heartbits</th>
-                <th className="text-left p-2 border-b font-medium text-gray-700 bg-gray-50">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sortedUsers.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="p-12 text-center text-gray-500">
-                    <UserGroupIcon className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                    <p className="text-lg font-medium text-gray-900 mb-2">No users found</p>
-                    <p className="text-sm">
-                      {searchTerm
-                        ? 'Try adjusting your search criteria.' 
-                        : 'No users are currently registered in the system.'}
-                    </p>
-                  </td>
-                </tr>
-              ) : (
-                sortedUsers.map(user => (
-                  <tr
-                    key={user.user_id}
-                    className={user.user_email === currentUser.email ? 'superadmin-current-user-row' : ''}
-                  >
-                    <td className="p-2 border-b">
-                      <input
-                        type="checkbox"
-                        checked={selectedUsers.includes(user.user_id)}
-                        onChange={() => toggleUserSelection(user.user_id)}
-                        className="w-4 h-4 text-[#0097b2] border-gray-300 rounded focus:ring-[#0097b2]"
-                      />
-                    </td>
-                    <td className="p-2 border-b">
-                      <div className="flex items-center">
-                        <img 
-                          src={user.avatar || '/default-avatar.png'} 
-                          alt={`${user.first_name || ''} ${user.last_name || ''}`.trim()}
-                          className="w-10 h-10 rounded-full border-2 border-gray-200 object-cover" 
-                        />
-                        <div className="ml-4 flex items-center gap-2">
-                          <div className="font-medium text-gray-900">{`${user.first_name || ''} ${user.last_name || ''}`.trim()}</div>
-                          {user.user_email === currentUser.email && (
-                            <span className="badge bg-blue-200 text-blue-800 px-2 py-1 rounded">You</span>
-                          )}
-                          <div className="text-sm text-gray-500">{user.user_email}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="p-2 border-b">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        user.user_type === 'SUPER_ADMIN' ? 'bg-purple-100 text-purple-800' :
-                        user.user_type === 'ADMIN' ? 'bg-blue-100 text-blue-800' :
-                        'bg-gray-100 text-gray-800'
-                      }`}>
-                        {user.user_type || 'EMPLOYEE'}
-                      </span>
-                    </td>
-                    <td className="p-2 border-b">
-                      <div className="flex items-center gap-2">
-                        <HeartIcon className="h-5 w-5 text-red-500" />
-                        <span className="font-medium text-[#0097b2]">{user.heartbits_balance || 0}</span>
-                      </div>
-                    </td>
-                    <td className="p-2 border-b">
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => setSelectedUser(user)}
-                          className="p-1 text-blue-600 hover:text-blue-800 transition-colors"
-                        >
-                          <PencilIcon className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                  {/* Name & Role */}
+                  <div className="text-center">
+                    <div className="font-semibold text-gray-900 text-base">{`${user.first_name || ''} ${user.last_name || ''}`.trim()}</div>
+                    <div className="text-sm text-gray-500">{user.user_type ? user.user_type.charAt(0).toUpperCase() + user.user_type.slice(1) : 'Employee'}</div>
+                  </div>
+                  {/* Heartbits */}
+                  <div className="mt-2 flex items-center gap-1 text-sm">
+                    <HeartIcon className="h-4 w-4 text-pink-400" />
+                    <span className="font-medium text-[#0097b2]">{user.heartbits_balance || 0}</span>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+        {/* Summary Box */}
+        <div className="w-full text-center py-4 text-lg font-medium text-gray-700">
+          {selectedUsers.length > 0 ? (
+            <>You have selected <span className="text-purple-600">{selectedUsers.length}</span> to be given heartbits</>
+          ) : (
+            <>Select users to send Heartbits</>
+          )}
         </div>
       </div>
 
@@ -563,7 +537,7 @@ const UserHeartbitsManagement = () => {
 
       {/* Global Limit Modal */}
       {showGlobalLimitModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+      <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 40%, #f093fb 80%, #f5576c 100%)', opacity: 0.95 }}>
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Set Global Monthly Limit</h3>
             <div className="mb-4">
@@ -602,7 +576,7 @@ const UserHeartbitsManagement = () => {
 
       {/* Bulk Update Modal */}
       {showBulkUpdateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+      <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 40%, #f093fb 80%, #f5576c 100%)', opacity: 0.95 }}>
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Give Heartbits to Selected Users</h3>
             <div className="mb-4">

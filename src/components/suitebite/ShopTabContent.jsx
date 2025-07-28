@@ -49,6 +49,42 @@ const ShopTabContent = () => {
   const [sortBy, setSortBy] = useState('name'); // Product sorting method
   const [priceRange, setPriceRange] = useState({ min: 0, max: 5000 }); // Price filter range
 
+  // Admin grant state
+  const [adminGrantUserId, setAdminGrantUserId] = useState('');
+  const [adminGrantMessage, setAdminGrantMessage] = useState('');
+  const [adminGrantPoints, setAdminGrantPoints] = useState(1);
+  const [adminGrantLoading, setAdminGrantLoading] = useState(false);
+
+  // Detect if current user is admin (assume user type is available in localStorage for demo)
+  const isAdmin = localStorage.getItem('user_type') === 'admin';
+
+  // Admin grant handler
+  const handleAdminGrant = async (e) => {
+    e.preventDefault();
+    if (!adminGrantUserId || !adminGrantMessage || adminGrantPoints <= 0) return;
+    setAdminGrantLoading(true);
+    try {
+      const response = await suitebiteAPI.createCheerPost({
+        peer_id: adminGrantUserId,
+        post_body: adminGrantMessage,
+        heartbits_given: adminGrantPoints,
+        as_admin: true
+      });
+      if (response.success) {
+        showNotification('success', 'Heartbits/message sent as Admin!');
+        setAdminGrantUserId('');
+        setAdminGrantMessage('');
+        setAdminGrantPoints(1);
+        loadShopData();
+      } else {
+        showNotification('error', response.message || 'Failed to send as Admin');
+      }
+    } catch (err) {
+      showNotification('error', 'Error sending as Admin');
+    } finally {
+      setAdminGrantLoading(false);
+    }
+  };
   // Load shop data on component mount and when category changes
   useEffect(() => {
     loadShopData();
@@ -365,6 +401,44 @@ const ShopTabContent = () => {
 
   return (
     <div className="suitebite-shop-tab bg-gray-50">
+      {/* Admin heartbits/message grant UI */}
+      {isAdmin && (
+        <div className="admin-grant-box bg-[#f7f7f7] border border-[#0097b2] rounded-xl p-4 mb-6">
+          <h3 className="font-bold text-[#0097b2] mb-2">Grant Heartbits/Message as Admin</h3>
+          <form onSubmit={handleAdminGrant} className="flex flex-col gap-2">
+            <input
+              type="text"
+              placeholder="Recipient User ID"
+              value={adminGrantUserId}
+              onChange={e => setAdminGrantUserId(e.target.value)}
+              className="border px-3 py-2 rounded"
+              required
+            />
+            <textarea
+              placeholder="Message to recipient"
+              value={adminGrantMessage}
+              onChange={e => setAdminGrantMessage(e.target.value)}
+              className="border px-3 py-2 rounded"
+              required
+            />
+            <input
+              type="number"
+              min={1}
+              value={adminGrantPoints}
+              onChange={e => setAdminGrantPoints(Number(e.target.value))}
+              className="border px-3 py-2 rounded"
+              required
+            />
+            <button
+              type="submit"
+              disabled={adminGrantLoading}
+              className="bg-[#0097b2] text-white px-4 py-2 rounded font-bold hover:bg-[#007a8e]"
+            >
+              {adminGrantLoading ? 'Sending...' : 'Send as Admin'}
+            </button>
+          </form>
+        </div>
+      )}
       {/* Toast Notification System */}
       {notification.show && (
         <div className={`notification-toast fixed top-20 right-4 z-50 p-4 rounded-lg shadow-lg text-sm font-medium max-w-sm ${
