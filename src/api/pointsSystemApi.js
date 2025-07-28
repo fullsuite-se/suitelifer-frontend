@@ -1,7 +1,7 @@
-// src/api/pointsShopApi.js
+// src/api/pointsSystemApi.js
 import axios from "../utils/axios";
 
-export const pointsShopApi = {
+export const pointsSystemApi = {
   async getPoints() {
     const res = await axios.get("/api/points/balance");
     return res.data;
@@ -10,8 +10,8 @@ export const pointsShopApi = {
     const res = await axios.get(`/api/points/transactions?limit=${limit}`);
     return res.data;
   },
-  async getCheerFeed(limit = 20, from = null, to = null) {
-    let url = `/api/points/feed?limit=${limit}`;
+  async getCheerFeed(limit = 20, from = null, to = null, offset = 0) {
+    let url = `/api/points/feed?limit=${limit}&page=${Math.floor(offset / limit) + 1}`;
     if (from) {
       url += `&from=${encodeURIComponent(from)}`;
     }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { suitebiteAPI } from '../../../utils/suitebiteAPI';
-import { pointsShopApi } from '../../../api/pointsShopApi';
+import { pointsSystemApi } from '../../../api/pointsSystemApi';
 import { formatDate } from '../../../utils/dateHelpers';
 import { 
   MagnifyingGlassIcon, 
@@ -64,7 +64,7 @@ const UserHeartbitsManagement = () => {
   const loadUsersWithHeartbits = async () => {
     try {
       setLoading(true);
-      const response = await pointsShopApi.getAllUserPoints();
+      const response = await pointsSystemApi.getAllUserPoints();
       
       if (response.success) {
         // Transform the data to match the expected format
@@ -96,7 +96,7 @@ const UserHeartbitsManagement = () => {
   const handleUpdateUserHeartbits = async (userId, updates, reason = '') => {
     try {
       if (updates.balance !== undefined) {
-        const response = await pointsShopApi.addPointsToUser(userId, updates.balance, reason);
+        const response = await pointsSystemApi.addPointsToUser(userId, updates.balance, reason);
         if (!response.success) {
           throw new Error('Failed to update balance');
         }
@@ -135,7 +135,7 @@ const UserHeartbitsManagement = () => {
   const handleBulkGiveHeartbits = async (amount, reason) => {
     try {
       const updatePromises = selectedUsers.map(userId => 
-        pointsShopApi.addPointsToUser(userId, amount, reason)
+        pointsSystemApi.addPointsToUser(userId, amount, reason)
       );
       
       const results = await Promise.allSettled(updatePromises);

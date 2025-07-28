@@ -27,7 +27,7 @@ import EmployeeWorkshops from "./pages/employee/EmployeeWorkshops";
 import EmployeePersonalityTest from "./pages/employee/EmployeePersonalityTest";
 import BlogCreate from "./components/blog/BlogCreate";
 // Employee Pages
-import EmployeeCheerPage from "./pages/employee/EmployeeCheerPage";
+import EmployeeCheerAPeer from "./pages/employee/EmployeeCheerAPeer";
 import EmployeePointsDashboard from "./pages/employee/EmployeePointsDashboard";
 import MoodPage from "./pages/employee/MoodPage";
 
@@ -133,7 +133,7 @@ function App() {
               <Route path="my-blogs" element={<EmployeeMyBlogs />} />
               <Route path="my-blogs/blog/:id/:slug" element={<BlogView />} />
               <Route path="my-blogs/new-blog" element={<BlogCreate />} />
-              <Route path="cheer" element={<EmployeeCheerPage />} />
+              <Route path="cheer" element={<EmployeeCheerAPeer />} />
               <Route path="points" element={<EmployeePointsDashboard />} />
 
               <Route path="threads" element={<EmployeeThreads />} />
@@ -152,7 +152,7 @@ function App() {
               {/* Points Shop/Mood/Cheer/PointsDashboard Routes */}
               <Route path="mood" element={<MoodPage />} />
               {/* Remove old points and cheer routes, keep only the new ones */}
-              <Route path="cheer-a-peer" element={<EmployeeCheerPage />} />
+              <Route path="cheer-a-peer" element={<EmployeeCheerAPeer />} />
               <Route path="points-dashboard" element={<EmployeePointsDashboard />} />
 
               {/* SuitebiteShop moved to bottom */}
