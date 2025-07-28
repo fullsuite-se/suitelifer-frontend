@@ -123,6 +123,10 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate }) => {
   const confirmCancelOrder = async () => {
     const { orderId } = pendingAction;
     
+    // Close modal immediately for better UX
+    setShowCancelConfirm(false);
+    setPendingAction({ type: '', orderId: null });
+    
     try {
       setCancellingOrders(prev => new Set(prev).add(orderId));
       
@@ -162,8 +166,6 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate }) => {
         newSet.delete(orderId);
         return newSet;
       });
-      setShowCancelConfirm(false);
-      setPendingAction({ type: '', orderId: null });
     }
   };
 
@@ -279,6 +281,10 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate }) => {
   const confirmDeleteOrder = async () => {
     const { orderId } = pendingAction;
     
+    // Close modal immediately for better UX
+    setShowDeleteConfirm(false);
+    setPendingAction({ type: '', orderId: null });
+    
     try {
       setDeletingOrders(prev => new Set(prev).add(orderId));
       
@@ -299,8 +305,6 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate }) => {
         newSet.delete(orderId);
         return newSet;
       });
-      setShowDeleteConfirm(false);
-      setPendingAction({ type: '', orderId: null });
     }
   };
 
