@@ -336,6 +336,20 @@ const UserHeartbitsManagement = () => {
     );
   };
 
+  // Helper to map user_type to display label
+  const getRoleLabel = (type) => {
+    if (!type) return 'Employee';
+    switch (type.toLowerCase()) {
+      case 'super_admin':
+      case 'superadmin':
+        return 'Super Admin';
+      case 'admin':
+        return 'Admin';
+      default:
+        return 'Employee';
+    }
+  };
+
   return (
     <div className="user-heartbits-management rounded-lg shadow-sm pb-6 px-6 pt-2">
       {/* Notification */}
@@ -505,7 +519,7 @@ const UserHeartbitsManagement = () => {
                   {/* Name & Role */}
                   <div className="text-center">
                     <div className="font-semibold text-gray-900 text-base">{`${user.first_name || ''} ${user.last_name || ''}`.trim()}</div>
-                    <div className="text-sm text-gray-500">{user.user_type ? user.user_type.charAt(0).toUpperCase() + user.user_type.slice(1) : 'Employee'}</div>
+                    <div className="text-sm text-gray-500">{getRoleLabel(user.user_type)}</div>
                   </div>
                   {/* Heartbits */}
                   <div className="mt-2 flex items-center gap-1 text-sm">

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { pointsShopApi } from '../../api/pointsShopApi';
+import { pointsSystemApi } from '../../api/pointsSystemApi';
 import { useStore } from '../../store/authStore';
 import { toast } from 'react-hot-toast';
 import {
@@ -43,33 +43,28 @@ const CheerPage = () => {
   const [showMoreLeaderboard, setShowMoreLeaderboard] = useState(false);
   const COMMENTS_PAGE_SIZE = 20;
   
+  // Simplified state for cheer feed
+  const [allCheers, setAllCheers] = useState([]);
+  
   const textareaRef = useRef(null);
   const dropdownRef = useRef(null);
 
-  // Add state for confetti animation
-  // Remove Framer Motion imports
-  // Remove likeCheerAnimating, likeCommentAnimating, likedCommentIds, handleCheerLike, handleCommentLike
-  // Restore main cheer card like button:
-  // Restore comment like button:
-
-  // Helper for triggering animation
-  // Remove Framer Motion imports
-  // Remove likeCheerAnimating, likeCommentAnimating, likedCommentIds, handleCheerLike, handleCommentLike
-  // Restore main cheer card like button:
-  // Restore comment like button:
-
-
   // Add state for date filter
   const [selectedDate, setSelectedDate] = useState('');
+  
+  // Reset cheers when date changes
+  useEffect(() => {
+    setAllCheers([]);
+  }, [selectedDate]);
 
   // Fetch cheer statistics
-  const { data: statsData, isLoading: statsLoading } = useQuery({
+  const { isLoading: statsLoading } = useQuery({
 
   // Fetch cheer statistics (removed unused variable)
   //const { isLoading: statsLoading } = useQuery({
 
     queryKey: ['cheer-stats'],
-    queryFn: pointsShopApi.getCheerStats,
+    queryFn: pointsSystemApi.getCheerStats,
     staleTime: 2 * 60 * 1000,
     enabled: !!user && Object.keys(user).length > 0,
   });
@@ -77,34 +72,41 @@ const CheerPage = () => {
   // Fetch user points
   const { data: pointsData, isLoading: pointsLoading } = useQuery({
     queryKey: ['points'],
-    queryFn: pointsShopApi.getPoints,
+    queryFn: pointsSystemApi.getPoints,
     staleTime: 1 * 60 * 1000,
     enabled: !!user && Object.keys(user).length > 0,
   });
 
-  // Update cheer feed query to use selectedDate
+  // Simplified cheer feed query - load all recent posts first
   const { data: cheerFeed, isLoading: feedLoading, refetch: refetchCheerFeed } = useQuery({
     queryKey: ['cheer-feed', selectedDate],
-    queryFn: () => {
+    queryFn: async () => {
       if (selectedDate) {
         // Get start and end of selected day in ISO format
         const from = new Date(selectedDate);
         from.setHours(0, 0, 0, 0);
         const to = new Date(selectedDate);
         to.setHours(23, 59, 59, 999);
-        return pointsShopApi.getCheerFeed(20, from.toISOString(), to.toISOString());
+        return pointsSystemApi.getCheerFeed(20, from.toISOString(), to.toISOString(), 0);
       } else {
-        return pointsShopApi.getCheerFeed(20);
+        return pointsSystemApi.getCheerFeed(20, null, null, 0);
       }
     },
     staleTime: 1 * 60 * 1000,
     enabled: !!user && Object.keys(user).length > 0,
+    onSuccess: (data) => {
+      const cheers = data?.data?.cheers || data?.cheers || [];
+      setAllCheers(cheers);
+    },
+    onError: (error) => {
+      console.error('Cheer feed error:', error);
+    }
   });
 
   // Fetch leaderboard
   const { data: leaderboardData, isLoading: leaderboardLoading } = useQuery({
     queryKey: ['leaderboard', activeTab, user?.id],
-    queryFn: () => pointsShopApi.getLeaderboard(activeTab, user?.id),
+    queryFn: () => pointsSystemApi.getLeaderboard(activeTab, user?.id),
     staleTime: 2 * 60 * 1000,
     enabled: !!user && Object.keys(user).length > 0,
   });
@@ -126,7 +128,7 @@ const CheerPage = () => {
   // User search for @ mentions
   const { data: searchResults = [] } = useQuery({
     queryKey: ['user-search', searchQuery],
-    queryFn: () => pointsShopApi.searchUsers(searchQuery),
+    queryFn: () => pointsSystemApi.searchUsers(searchQuery),
     enabled: searchQuery.length >= 1 && (!!user && Object.keys(user).length > 0),
     staleTime: 30 * 1000,
   });
@@ -134,12 +136,12 @@ const CheerPage = () => {
   // Bulk cheer mutation for multiple recipients
   const bulkCheerMutation = useMutation({
     mutationFn: ({ recipientId, amount, message }) =>
-      pointsShopApi.sendCheer(recipientId, amount, message),
+      pointsSystemApi.sendCheer(recipientId, amount, message),
   });
 
   // Heart cheer mutation
   const likeMutation = useMutation({
-    mutationFn: (cheerId) => pointsShopApi.toggleCheerLike(cheerId),
+    mutationFn: (cheerId) => pointsSystemApi.toggleCheerLike(cheerId),
     onSuccess: (data, cheerId) => {
       console.log('likeMutation.onSuccess', { data, cheerId });
       setLikedCheers(prev => {
@@ -158,6 +160,8 @@ const CheerPage = () => {
       });
       
       queryClient.invalidateQueries(['cheer-feed']);
+      // Refresh the current page to get updated like status
+      refetchCheerFeed();
     },
     onError: (error) => {
       console.error('likeMutation.onError', error);
@@ -167,7 +171,7 @@ const CheerPage = () => {
 
   // Comment mutation
   const commentMutation = useMutation({
-    mutationFn: ({ cheerId, comment }) => pointsShopApi.addCheerComment(cheerId, comment),
+    mutationFn: ({ cheerId, comment }) => pointsSystemApi.addCheerComment(cheerId, comment),
     onSuccess: (data, variables) => {
       console.log('Comment added successfully:', data);
       setCommentText('');
@@ -191,6 +195,8 @@ const CheerPage = () => {
         return newComments;
       });
       queryClient.invalidateQueries(['cheer-feed']);
+      // Refresh the current page to get updated comment count
+      refetchCheerFeed();
       toast.success('Comment added!');
     },
     onError: (error) => {
@@ -205,7 +211,7 @@ const CheerPage = () => {
 
   // Edit comment mutation
   const editCommentMutation = useMutation({
-    mutationFn: ({ cheerId, commentId, comment }) => pointsShopApi.updateCheerComment(cheerId, commentId, comment),
+    mutationFn: ({ cheerId, commentId, comment }) => pointsSystemApi.updateCheerComment(cheerId, commentId, comment),
     onSuccess: (_, variables) => {
       setCheerComments(prev => {
         const newMap = new Map(prev);
@@ -226,7 +232,7 @@ const CheerPage = () => {
 
   // Delete comment mutation
   const deleteCommentMutation = useMutation({
-    mutationFn: ({ cheerId, commentId }) => pointsShopApi.deleteCheerComment(cheerId, commentId),
+    mutationFn: ({ cheerId, commentId }) => pointsSystemApi.deleteCheerComment(cheerId, commentId),
     onSuccess: (_, variables) => {
       setCheerComments(prev => {
         const newMap = new Map(prev);
@@ -246,16 +252,16 @@ const CheerPage = () => {
 
   // Initialize hearted cheers state when feed data loads
   useEffect(() => {
-    if (cheerFeed && Array.isArray(cheerFeed.data?.cheers)) {
+    if (allCheers && Array.isArray(allCheers)) {
       const likedCheerIds = new Set();
-      cheerFeed.data.cheers.forEach(cheer => {
+      allCheers.forEach(cheer => {
         if (cheer.userHearted || cheer.userLiked) {
           likedCheerIds.add(cheer.cheer_id);
         }
       });
       setLikedCheers(likedCheerIds);
     }
-  }, [cheerFeed]);
+  }, [allCheers]);
 
   // Debug: log searchQuery and searchResults
   useEffect(() => {
@@ -275,13 +281,15 @@ const CheerPage = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+
+
   // Function to fetch comments for a specific cheer (with pagination)
   const fetchComments = async (cheerId, append = false) => {
     setLoadingComments(true);
     try {
       const prev = cheerComments.get(cheerId) || { comments: [], offset: 0, hasMore: true };
       const offset = append ? prev.offset : 0;
-      const comments = await pointsShopApi.getCheerComments(cheerId, { limit: COMMENTS_PAGE_SIZE, offset });
+      const comments = await pointsSystemApi.getCheerComments(cheerId, { limit: COMMENTS_PAGE_SIZE, offset });
       const newComments = Array.isArray(comments) ? comments : [];
       setCheerComments(prevMap => {
         const prevData = prevMap.get(cheerId) || { comments: [], offset: 0, hasMore: true };
@@ -385,6 +393,8 @@ const CheerPage = () => {
         queryClient.invalidateQueries(['points']);
         queryClient.invalidateQueries(['cheer-feed']);
         queryClient.invalidateQueries(['leaderboard']);
+        // Reset and reload feed
+        setAllCheers([]);
       } else if (successCount > 0) {
         toast.warning(`Sent ${successCount} cheers, but ${errorCount} failed.`);
       } else {
@@ -473,26 +483,17 @@ const CheerPage = () => {
   }
 
   const availableHeartbits = (pointsData?.data?.monthlyCheerLimit || 100) - (pointsData?.data?.monthlyCheerUsed || 0);
-  const stats = statsData?.data || {};
 
-  const feedRaw = Array.isArray(cheerFeed?.data?.cheers) ? cheerFeed.data.cheers : [];
-  let feed = feedRaw;
+  // Use the accumulated cheers from pagination, with fallback to original data
+  const feed = allCheers.length > 0 ? allCheers : (cheerFeed?.data?.cheers || cheerFeed?.cheers || []);
+  
 
-  if (selectedDate) {
-    feed = feedRaw.filter(post => {
-      const postDate = new Date(post.createdAt || post.posted_at);
-      // Compare only the date part in local time
-      const yyyy = postDate.getFullYear();
-      const mm = String(postDate.getMonth() + 1).padStart(2, '0');
-      const dd = String(postDate.getDate()).padStart(2, '0');
-      const postDateStr = `${yyyy}-${mm}-${dd}`;
-      return postDateStr === selectedDate;
-    });
-  }
+
+
 
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#ffffff' }}>
+    <div className="w-full" style={{ backgroundColor: '#ffffff' }}>
       {/* Enhanced Success Message */}
       {showSuccessMessage && (
         <div className="fixed top-4 right-4 z-50 text-white px-6 py-4 rounded-xl shadow-xl flex items-center space-x-3 animate-bounce" 
@@ -510,7 +511,7 @@ const CheerPage = () => {
         </div>
       )}
       
-      <div className="max-w-7xl mx-auto px-4 py-8 h-[calc(100vh-40px)] overflow-y-scroll scrollbar-thin scrollbar-thumb-[#0097b2] scrollbar-track-[#e0f7fa]">
+      <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Create Cheer & Heartbits */}
@@ -857,47 +858,130 @@ const CheerPage = () => {
                    border: '2px solid #b3e0f2',
                    boxShadow: '0 10px 25px rgba(0, 151, 178, 0.10)'
                  }}>
-              {/* Feed Header */}
-              <div className="px-6 py-3 border-b-2" style={{ borderColor: '#b3e0f2' }}>
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" 
-                       style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)' }}>
-                    <FireIcon className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
+              {/* Enhanced Feed Header with Date Filter */}
+              <div className="px-6 py-4 border-b-2" style={{ borderColor: '#b3e0f2' }}>
+                <div className="flex items-center justify-between">
+                  {/* Left side - Title and Icon */}
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" 
+                         style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)' }}>
+                      <FireIcon className="w-6 h-6 text-white" />
+                    </div>
+                                      <div>
                     <h2 className="text-xl font-bold truncate" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                       Recent Cheers
                     </h2>
+
+                  </div>
+                  </div>
+
+                  {/* Right side - Enhanced Date Filter */}
+                  <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-2">
+                      <label htmlFor="cheer-date-picker" 
+                             className="text-sm font-semibold" 
+                             style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                        Filter:
+                      </label>
+                      <div className="relative">
+                        <div className="flex items-center">
+                          <div className="relative">
+                            <input
+                              id="cheer-date-picker"
+                              type="date"
+                              className="px-4 py-2.5 rounded-xl text-sm transition-all duration-300 focus:ring-4 focus:outline-none appearance-none"
+                              style={{ 
+                                border: '2px solid #e2e8f0',
+                                backgroundColor: '#ffffff',
+                                fontFamily: 'Avenir, sans-serif',
+                                color: '#1a0202',
+                                minWidth: '160px',
+                                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
+                                cursor: 'pointer'
+                              }}
+                              value={selectedDate}
+                              max={new Date().toISOString().split('T')[0]}
+                              onChange={e => {
+                                setSelectedDate(e.target.value);
+                              }}
+                              onFocus={(e) => {
+                                e.target.style.borderColor = '#0097b2';
+                                e.target.style.boxShadow = '0 0 0 4px rgba(0, 151, 178, 0.1), 0 4px 8px rgba(0, 151, 178, 0.15)';
+                                e.target.style.transform = 'translateY(-1px)';
+                              }}
+                              onBlur={(e) => {
+                                e.target.style.borderColor = '#e2e8f0';
+                                e.target.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.05)';
+                                e.target.style.transform = 'translateY(0)';
+                              }}
+                              onMouseEnter={(e) => {
+                                if (document.activeElement !== e.target) {
+                                  e.target.style.borderColor = '#0097b2';
+                                  e.target.style.boxShadow = '0 4px 8px rgba(0, 151, 178, 0.1)';
+                                }
+                              }}
+                              onMouseLeave={(e) => {
+                                if (document.activeElement !== e.target) {
+                                  e.target.style.borderColor = '#e2e8f0';
+                                  e.target.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.05)';
+                                }
+                              }}
+                            />
+
+                          </div>
+                          
+                          {selectedDate && (
+                            <button
+                              className="ml-2 w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 shadow-lg"
+                              style={{ 
+                                background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                                color: '#ffffff',
+                                fontFamily: 'Avenir, sans-serif',
+                                fontWeight: 'bold',
+                                fontSize: '14px',
+                                boxShadow: '0 4px 8px rgba(239, 68, 68, 0.3)'
+                              }}
+                              onClick={() => setSelectedDate('')}
+                              aria-label="Clear date filter"
+                              title="Clear filter"
+                              onMouseEnter={(e) => {
+                                e.target.style.boxShadow = '0 6px 12px rgba(239, 68, 68, 0.4)';
+                                e.target.style.transform = 'translateY(-1px)';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.target.style.boxShadow = '0 4px 8px rgba(239, 68, 68, 0.3)';
+                                e.target.style.transform = 'translateY(0)';
+                              }}
+                            >
+                              ×
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Filter Status Indicator */}
+                    {selectedDate && (
+                      <div className="flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-semibold"
+                           style={{ 
+                             backgroundColor: '#f0f9ff',
+                             color: '#0097b2',
+                             border: '1px solid #0097b2',
+                             fontFamily: 'Avenir, sans-serif'
+                           }}>
+                        <span>📅</span>
+                        <span>{new Date(selectedDate).toLocaleDateString('en-US', { 
+                          month: 'short', 
+                          day: 'numeric',
+                          year: 'numeric'
+                        })}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
 
-              {/* Date Picker for filtering cheers by date */}
-              <div className="flex items-center justify-end mb-2">
-                <label htmlFor="cheer-date-picker" className="mr-2 text-sm text-gray-700 font-medium">Filter by date:</label>
-                <input
-                  id="cheer-date-picker"
-                  type="date"
-                  className="border rounded px-2 py-1 text-sm"
-                  value={selectedDate}
-                  max={new Date().toISOString().split('T')[0]}
-                  onChange={e => {
-                    setSelectedDate(e.target.value);
-                    // Optionally, refetch immediately
-                    // refetchCheerFeed();
-                  }}
-                />
-                {selectedDate && (
-                  <button
-                    className="ml-2 text-xs text-blue-600 underline"
-                    onClick={() => setSelectedDate('')}
-                  >
-                    Clear
-                  </button>
-                )}
-              </div>
-
-              <div className="max-h-[500px] overflow-y-scroll scrollbar-thin scrollbar-thumb-[#0097b2] scrollbar-track-[#e0f7fa]">
+              <div className="max-h-90 overflow-y-auto">
                 {feedLoading ? (
                   <div className="p-8 text-center">
                     <div className="relative mb-4">
@@ -1165,19 +1249,19 @@ const CheerPage = () => {
                                                         <button
                                                           className="text-xs px-2 py-1 rounded bg-red-500 text-white font-bold hover:bg-red-600"
                                                           style={{ fontFamily: 'Avenir, sans-serif' }}
+                                                          disabled={editCommentMutation.isLoading || deleteCommentMutation.isLoading}
                                                           onClick={() => {
                                                             deleteCommentMutation.mutate({ cheerId: cheer.cheer_id, commentId: comment._id });
                                                             setConfirmingDelete(null);
                                                           }}
-                                                          disabled={editCommentMutation.isLoading || deleteCommentMutation.isLoading}
                                                         >
                                                           Yes
                                                         </button>
                                                         <button
                                                           className="text-xs px-2 py-1 rounded bg-gray-300 text-gray-700 font-bold"
                                                           style={{ fontFamily: 'Avenir, sans-serif' }}
-                                                          onClick={() => setConfirmingDelete(null)}
                                                           disabled={editCommentMutation.isLoading || deleteCommentMutation.isLoading}
+                                                          onClick={() => setConfirmingDelete(null)}
                                                         >
                                                           No
                                                         </button>
@@ -1253,7 +1337,7 @@ const CheerPage = () => {
             </div>
 
             {/* Enhanced Leaderboard with Header */}
-            <div className="rounded-2xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl mb-8" 
+            <div className="rounded-2xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl" 
                  style={{ 
                    background: 'linear-gradient(135deg, #e0f7fa 70%, #b3e0f2 100%)', 
                    border: '2px solid #b3e0f2',
@@ -1341,107 +1425,111 @@ const CheerPage = () => {
                    }}></div>
 
               {/* Main Leaderboard */}
-              {leaderboardLoading ? (
-                <div className="text-center py-8">
-                  <div className="relative mb-4">
-                    <div className="animate-spin rounded-full h-10 w-10 border-4 border-transparent border-t-4 mx-auto" 
-                         style={{ borderTopColor: '#0097b2' }}></div>
-                    <TrophyIcon className="w-5 h-5 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" 
-                               style={{ color: '#0097b2' }} />
-                  </div>
-                  <p className="text-base font-medium" style={{ color: '#64748b', fontFamily: 'Avenir, sans-serif' }}>
-                    Loading leaderboard...
-                  </p>
-                </div>
-              ) : leaderboard.length > 0 ? (
-                <div className="space-y-3 max-h-72 overflow-y-auto overflow-x-hidden">
-                  {/* Show complete leaderboard without filtering */}
-                  {leaderboard
-                    .slice(0, showMoreLeaderboard ? 6 : 3)
-                    .map((entry) => (
-                      <div
-                        key={entry._id || entry.userId || entry.user_id}
-                        className="flex items-center space-x-3 p-4 rounded-xl transition-all duration-200 hover:scale-[1.02]"
-                        style={{
-                          backgroundColor: '#faf8ef',
-                          border: '1px solid #f0e68c',
-                        }}
-                      >
-                        <div 
-                          className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-base shadow-lg flex-shrink-0"
-                          style={{
-                            background: entry.rank === 1
-                              ? 'linear-gradient(135deg, #FFD700 0%, #FFF8DC 25%, #FFD700 50%, #B8860B 75%, #FFD700 100%)'
-                              : entry.rank === 2
-                              ? 'linear-gradient(135deg, #C0C0C0 0%, #F8F8FF 25%, #C0C0C0 50%, #808080 75%, #C0C0C0 100%)'
-                              : entry.rank === 3
-                              ? 'linear-gradient(135deg, #CD7F32 0%, #DEB887 25%, #CD7F32 50%, #8B4513 75%, #CD7F32 100%)'
-                              : 'linear-gradient(135deg, #8B4513 0%, #A0522D 100%)',
-                            color: '#ffffff',
-                            textShadow: entry.rank <= 3 ? '0 2px 4px rgba(0, 0, 0, 0.5)' : '0 1px 2px rgba(0, 0, 0, 0.3)',
-                            boxShadow: entry.rank <= 3 ? '0 2px 8px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3)' : 'none'
-                          }}
-                        >
-                          {entry.rank}
-                        </div>
-                        <img
-                          src={entry.avatar || '/images/default-avatar.png'}
-                          alt={entry.name || entry.userName}
-                          className="w-10 h-10 rounded-xl ring-2 ring-gray-200 flex-shrink-0"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <p className="font-bold text-base truncate" 
-                            style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
-                            {entry.name || entry.userName}
-                          </p>
-                        </div>
-                        <span className="font-black text-lg px-3 py-1 rounded-lg flex-shrink-0 flex items-center gap-1" 
-                          style={{ 
-                            color: '#1a0202',
-                            backgroundColor: 'transparent',
-                            fontFamily: 'Avenir, sans-serif' 
-                          }}>
-                          {entry.totalPoints || entry.total_earned}
-                          <HeartIconSolid className="w-4 h-4" style={{ color: '#ef4444', display: 'inline', marginLeft: '2px', marginRight: '0px' }} /> received
-                        </span>
-                      </div>
-                    ))}
-                    
-                    {/* Show More/Less Button */}
-                    {leaderboard.length > 3 && (
-                      <div className="flex justify-center pt-3">
-                        <button
-                          onClick={() => setShowMoreLeaderboard(!showMoreLeaderboard)}
-                          className="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 hover:scale-105 active:scale-95"
-                          style={{
-                            backgroundColor: '#f9f6e8',
-                            color: '#0097b2',
-                            fontFamily: 'Avenir, sans-serif',
-                            border: '1px solid #f0e68c'
-                          }}
-                        >
-                          {showMoreLeaderboard ? 'Show Less' : `Show Next ${Math.min(3, leaderboard.length - 3)}`}
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="text-center py-12">
-                    <TrophyIcon className="w-12 h-12 mx-auto mb-4" style={{ color: '#94a3b8' }} />
-                    <h3 className="text-lg font-bold mb-2" style={{ color: '#64748b', fontFamily: 'Avenir, sans-serif' }}>
-                      No leaderboard data available
-                    </h3>
-                    <p className="text-base" style={{ color: '#94a3b8', fontFamily: 'Avenir, sans-serif' }}>
-                      Start sending cheers to see rankings! 🏆
+              <>
+                {leaderboardLoading ? (
+                  <div className="text-center py-8">
+                    <div className="relative mb-4">
+                      <div className="animate-spin rounded-full h-10 w-10 border-4 border-transparent border-t-4 mx-auto" 
+                           style={{ borderTopColor: '#0097b2' }}></div>
+                      <TrophyIcon className="w-5 h-5 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" 
+                                 style={{ color: '#0097b2' }} />
+                    </div>
+                    <p className="text-base font-medium" style={{ color: '#64748b', fontFamily: 'Avenir, sans-serif' }}>
+                      Loading leaderboard...
                     </p>
                   </div>
-                )}
-              </div>
+                ) : leaderboard.length > 0 ? (
+                  <div className="space-y-3 max-h-96 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 pr-2" 
+                       style={{ 
+                         scrollbarWidth: 'thin',
+                         scrollbarColor: '#d1d5db #f3f4f6'
+                       }}>
+                    {/* Show complete leaderboard without filtering */}
+                    {leaderboard
+                      .slice(0, showMoreLeaderboard ? 6 : 3)
+                      .map((entry) => (
+                        <div
+                          key={entry._id || entry.userId || entry.user_id}
+                          className="flex items-center space-x-3 p-4 rounded-xl transition-all duration-200 hover:scale-[1.02]"
+                          style={{
+                            backgroundColor: '#faf8ef',
+                            border: '1px solid #f0e68c',
+                          }}
+                        >
+                          <div 
+                            className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-base shadow-lg flex-shrink-0"
+                            style={{
+                              background: entry.rank === 1
+                                ? 'linear-gradient(135deg, #FFD700 0%, #FFF8DC 25%, #FFD700 50%, #B8860B 75%, #FFD700 100%)'
+                                : entry.rank === 2
+                                ? 'linear-gradient(135deg, #C0C0C0 0%, #F8F8FF 25%, #C0C0C0 50%, #808080 75%, #C0C0C0 100%)'
+                                : entry.rank === 3
+                                ? 'linear-gradient(135deg, #CD7F32 0%, #DEB887 25%, #CD7F32 50%, #8B4513 75%, #CD7F32 100%)'
+                                : 'linear-gradient(135deg, #8B4513 0%, #A0522D 100%)',
+                              color: '#ffffff',
+                              textShadow: entry.rank <= 3 ? '0 2px 4px rgba(0, 0, 0, 0.5)' : '0 1px 2px rgba(0, 0, 0, 0.3)',
+                              boxShadow: entry.rank <= 3 ? '0 2px 8px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3)' : 'none'
+                            }}
+                          >
+                            {entry.rank}
+                          </div>
+                          <img
+                            src={entry.avatar || '/images/default-avatar.png'}
+                            alt={entry.name || entry.userName}
+                            className="w-10 h-10 rounded-xl ring-2 ring-gray-200 flex-shrink-0"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <p className="font-bold text-base truncate" 
+                              style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                              {entry.name || entry.userName}
+                            </p>
+                          </div>
+                          <span className="font-black text-lg px-3 py-1 rounded-lg flex-shrink-0" 
+                            style={{ 
+                              color: '#1a0202',
+                              backgroundColor: 'transparent',
+                              fontFamily: 'Avenir, sans-serif' 
+                            }}>
+                            {entry.totalPoints || entry.total_earned} received
+                          </span>
+                        </div>
+                      ))}
+                      
+                      {/* Show More/Less Button */}
+                      {leaderboard.length > 3 && (
+                        <div className="flex justify-center pt-3">
+                          <button
+                            onClick={() => setShowMoreLeaderboard(!showMoreLeaderboard)}
+                            className="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 hover:scale-105 active:scale-95"
+                            style={{
+                              backgroundColor: '#f9f6e8',
+                              color: '#0097b2',
+                              fontFamily: 'Avenir, sans-serif',
+                              border: '1px solid #f0e68c'
+                            }}
+                          >
+                            {showMoreLeaderboard ? 'Show Less' : `Show Next ${Math.min(3, leaderboard.length - 3)}`}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="text-center py-12">
+                      <TrophyIcon className="w-12 h-12 mx-auto mb-4" style={{ color: '#94a3b8' }} />
+                      <h3 className="text-lg font-bold mb-2" style={{ color: '#64748b', fontFamily: 'Avenir, sans-serif' }}>
+                        No leaderboard data available
+                      </h3>
+                      <p className="text-base" style={{ color: '#94a3b8', fontFamily: 'Avenir, sans-serif' }}>
+                        Start sending cheers to see rankings! 🏆
+                      </p>
+                    </div>
+                  )}
+              </>
             </div>
           </div>
         </div>
       </div>
-    
+    </div>
   );
 }
 
