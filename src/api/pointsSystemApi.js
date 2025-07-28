@@ -1,7 +1,7 @@
-// src/api/pointsShopApi.js
+// src/api/pointsSystemApi.js
 import axios from "../utils/axios";
 
-export const pointsShopApi = {
+export const pointsSystemApi = {
   async getPoints() {
     const res = await axios.get("/api/points/balance");
     return res.data;

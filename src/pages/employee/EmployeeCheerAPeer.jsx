@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { pointsShopApi } from '../../api/pointsShopApi';
+import { pointsSystemApi } from '../../api/pointsSystemApi';
 import { useStore } from '../../store/authStore';
 import { toast } from 'react-hot-toast';
 import {
@@ -69,7 +69,7 @@ const CheerPage = () => {
   //const { isLoading: statsLoading } = useQuery({
 
     queryKey: ['cheer-stats'],
-    queryFn: pointsShopApi.getCheerStats,
+    queryFn: pointsSystemApi.getCheerStats,
     staleTime: 2 * 60 * 1000,
     enabled: !!user && Object.keys(user).length > 0,
   });
@@ -77,7 +77,7 @@ const CheerPage = () => {
   // Fetch user points
   const { data: pointsData, isLoading: pointsLoading } = useQuery({
     queryKey: ['points'],
-    queryFn: pointsShopApi.getPoints,
+    queryFn: pointsSystemApi.getPoints,
     staleTime: 1 * 60 * 1000,
     enabled: !!user && Object.keys(user).length > 0,
   });
@@ -92,9 +92,9 @@ const CheerPage = () => {
         from.setHours(0, 0, 0, 0);
         const to = new Date(selectedDate);
         to.setHours(23, 59, 59, 999);
-        return pointsShopApi.getCheerFeed(20, from.toISOString(), to.toISOString());
+        return pointsSystemApi.getCheerFeed(20, from.toISOString(), to.toISOString());
       } else {
-        return pointsShopApi.getCheerFeed(20);
+        return pointsSystemApi.getCheerFeed(20);
       }
     },
     staleTime: 1 * 60 * 1000,
@@ -104,7 +104,7 @@ const CheerPage = () => {
   // Fetch leaderboard
   const { data: leaderboardData, isLoading: leaderboardLoading } = useQuery({
     queryKey: ['leaderboard', activeTab, user?.id],
-    queryFn: () => pointsShopApi.getLeaderboard(activeTab, user?.id),
+    queryFn: () => pointsSystemApi.getLeaderboard(activeTab, user?.id),
     staleTime: 2 * 60 * 1000,
     enabled: !!user && Object.keys(user).length > 0,
   });
@@ -126,7 +126,7 @@ const CheerPage = () => {
   // User search for @ mentions
   const { data: searchResults = [] } = useQuery({
     queryKey: ['user-search', searchQuery],
-    queryFn: () => pointsShopApi.searchUsers(searchQuery),
+    queryFn: () => pointsSystemApi.searchUsers(searchQuery),
     enabled: searchQuery.length >= 1 && (!!user && Object.keys(user).length > 0),
     staleTime: 30 * 1000,
   });
@@ -134,12 +134,12 @@ const CheerPage = () => {
   // Bulk cheer mutation for multiple recipients
   const bulkCheerMutation = useMutation({
     mutationFn: ({ recipientId, amount, message }) =>
-      pointsShopApi.sendCheer(recipientId, amount, message),
+      pointsSystemApi.sendCheer(recipientId, amount, message),
   });
 
   // Heart cheer mutation
   const likeMutation = useMutation({
-    mutationFn: (cheerId) => pointsShopApi.toggleCheerLike(cheerId),
+    mutationFn: (cheerId) => pointsSystemApi.toggleCheerLike(cheerId),
     onSuccess: (data, cheerId) => {
       console.log('likeMutation.onSuccess', { data, cheerId });
       setLikedCheers(prev => {
@@ -167,7 +167,7 @@ const CheerPage = () => {
 
   // Comment mutation
   const commentMutation = useMutation({
-    mutationFn: ({ cheerId, comment }) => pointsShopApi.addCheerComment(cheerId, comment),
+    mutationFn: ({ cheerId, comment }) => pointsSystemApi.addCheerComment(cheerId, comment),
     onSuccess: (data, variables) => {
       console.log('Comment added successfully:', data);
       setCommentText('');
@@ -205,7 +205,7 @@ const CheerPage = () => {
 
   // Edit comment mutation
   const editCommentMutation = useMutation({
-    mutationFn: ({ cheerId, commentId, comment }) => pointsShopApi.updateCheerComment(cheerId, commentId, comment),
+    mutationFn: ({ cheerId, commentId, comment }) => pointsSystemApi.updateCheerComment(cheerId, commentId, comment),
     onSuccess: (_, variables) => {
       setCheerComments(prev => {
         const newMap = new Map(prev);
@@ -226,7 +226,7 @@ const CheerPage = () => {
 
   // Delete comment mutation
   const deleteCommentMutation = useMutation({
-    mutationFn: ({ cheerId, commentId }) => pointsShopApi.deleteCheerComment(cheerId, commentId),
+    mutationFn: ({ cheerId, commentId }) => pointsSystemApi.deleteCheerComment(cheerId, commentId),
     onSuccess: (_, variables) => {
       setCheerComments(prev => {
         const newMap = new Map(prev);
@@ -281,7 +281,7 @@ const CheerPage = () => {
     try {
       const prev = cheerComments.get(cheerId) || { comments: [], offset: 0, hasMore: true };
       const offset = append ? prev.offset : 0;
-      const comments = await pointsShopApi.getCheerComments(cheerId, { limit: COMMENTS_PAGE_SIZE, offset });
+      const comments = await pointsSystemApi.getCheerComments(cheerId, { limit: COMMENTS_PAGE_SIZE, offset });
       const newComments = Array.isArray(comments) ? comments : [];
       setCheerComments(prevMap => {
         const prevData = prevMap.get(cheerId) || { comments: [], offset: 0, hasMore: true };
