@@ -63,7 +63,7 @@ const CheerPage = () => {
   const [selectedDate, setSelectedDate] = useState('');
 
   // Fetch cheer statistics
-  const { data: statsData, isLoading: statsLoading } = useQuery({
+  const { isLoading: statsLoading } = useQuery({
 
   // Fetch cheer statistics (removed unused variable)
   //const { isLoading: statsLoading } = useQuery({
@@ -83,7 +83,7 @@ const CheerPage = () => {
   });
 
   // Update cheer feed query to use selectedDate
-  const { data: cheerFeed, isLoading: feedLoading, refetch: refetchCheerFeed } = useQuery({
+  const { data: cheerFeed, isLoading: feedLoading } = useQuery({
     queryKey: ['cheer-feed', selectedDate],
     queryFn: () => {
       if (selectedDate) {
@@ -473,7 +473,6 @@ const CheerPage = () => {
   }
 
   const availableHeartbits = (pointsData?.data?.monthlyCheerLimit || 100) - (pointsData?.data?.monthlyCheerUsed || 0);
-  const stats = statsData?.data || {};
 
   const feedRaw = Array.isArray(cheerFeed?.data?.cheers) ? cheerFeed.data.cheers : [];
   let feed = feedRaw;
