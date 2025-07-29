@@ -110,16 +110,16 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
    */
   const handleAddToCart = async () => {
     // Always open the modal for add-to-cart
-    try {
-      const res = await suitebiteAPI.getProductById(product.product_id);
-      if (res.success && res.product) {
+          try {
+            const res = await suitebiteAPI.getProductById(product.product_id);
+            if (res.success && res.product) {
         // setModalProduct(res.product); // This line is removed
-      } else {
+            } else {
         // setModalProduct(product); // This line is removed
-      }
-    } catch (e) {
+            }
+          } catch (e) {
       // setModalProduct(product); // This line is removed
-    }
+          }
     // setIsModalOpen(true); // This line is removed
     // setModalMode('add-to-cart'); // This line is removed
   };
@@ -180,96 +180,96 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
   const categoryBgColor = getCategoryBgColor(product.category && product.category.toUpperCase());
 
   return (
-    <div className="product-card bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100">
-      {/* Product Image Section with overlayed category badge */}
-      <div className="relative">
-        <ProductImageCarousel 
-          images={(() => {
-            let imageData = [];
-            if (product.images && Array.isArray(product.images) && product.images.length > 0) {
-              imageData = product.images;
-            } else if (product.product_images && Array.isArray(product.product_images) && product.product_images.length > 0) {
-              imageData = product.product_images;
-            } else if (product.image_url) {
-              imageData = [{ image_url: product.image_url, alt_text: product.name }];
-            }
-            return imageData;
-          })()}
-          productName={product.name}
-          className="product-image"
-        />
+      <div className="product-card bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100">
+        {/* Product Image Section with overlayed category badge */}
+        <div className="relative">
+          <ProductImageCarousel 
+            images={(() => {
+              let imageData = [];
+              if (product.images && Array.isArray(product.images) && product.images.length > 0) {
+                imageData = product.images;
+              } else if (product.product_images && Array.isArray(product.product_images) && product.product_images.length > 0) {
+                imageData = product.product_images;
+              } else if (product.image_url) {
+                imageData = [{ image_url: product.image_url, alt_text: product.name }];
+              }
+              return imageData;
+            })()}
+            productName={product.name}
+            className="product-image"
+          />
         {/* Category Badge */}
-        {product.category && (
-          <span
+          {product.category && (
+            <span 
             className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-semibold shadow-sm`}
             style={{ backgroundColor: categoryBgColor, color: categoryColor, zIndex: 2 }}
-          >
-            {product.category}
-          </span>
-        )}
-      </div>
-      {/* Product Information Section */}
-      <div className="product-info p-4">
-        <h3 className="product-name text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
-          {product.name}
-        </h3>
-        <p className="product-description text-sm text-gray-600 mb-4 line-clamp-2">
-          {product.description || 'Premium quality product curated for your needs.'}
-        </p>
-        <div className="flex items-center justify-between mb-4">
-          <div className="heartbits-price flex items-center gap-2">
-            <div className="flex flex-col">
+            >
+              {product.category}
+            </span>
+          )}
+        </div>
+        {/* Product Information Section */}
+        <div className="product-info p-4">
+          <h3 className="product-name text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+            {product.name}
+          </h3>
+          <p className="product-description text-sm text-gray-600 mb-4 line-clamp-2">
+            {product.description || 'Premium quality product curated for your needs.'}
+          </p>
+          <div className="flex items-center justify-between mb-4">
+            <div className="heartbits-price flex items-center gap-2">
+              <div className="flex flex-col">
               <span className="text-2xl font-bold text-[#0097b2] flex items-center gap-1">{product.price_points || product.price || 0}<HeartIcon className="h-5 w-5 text-red-500 ml-1" /></span>
             </div>
           </div>
-          <div className="quantity-selector flex items-center gap-3">
-            <button
-              onClick={() => setQuantity(Math.max(1, quantity - 1))}
-              className="quantity-btn w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center font-semibold hover:bg-gray-300 transition-colors duration-200"
-            >
-              -
-            </button>
-            <span className="quantity-display text-lg font-semibold text-gray-900 min-w-[2rem] text-center">
-              {quantity}
-            </span>
-            <button
-              onClick={() => setQuantity(quantity + 1)}
-              className="quantity-btn w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center font-semibold hover:bg-gray-300 transition-colors duration-200"
-            >
-              +
-            </button>
+            <div className="quantity-selector flex items-center gap-3">
+              <button
+                onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                className="quantity-btn w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center font-semibold hover:bg-gray-300 transition-colors duration-200"
+              >
+                -
+              </button>
+              <span className="quantity-display text-lg font-semibold text-gray-900 min-w-[2rem] text-center">
+                {quantity}
+              </span>
+              <button
+                onClick={() => setQuantity(quantity + 1)}
+                className="quantity-btn w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center font-semibold hover:bg-gray-300 transition-colors duration-200"
+              >
+                +
+              </button>
+            </div>
           </div>
-        </div>
-        <div className="total-cost-display bg-gray-50 p-2 rounded-lg mb-2">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-600">Total for {quantity}:</span>
+          <div className="total-cost-display bg-gray-50 p-2 rounded-lg mb-2">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-600">Total for {quantity}:</span>
             <span className="font-semibold text-gray-900 flex items-center gap-1">{(product.price_points || product.price || 0) * quantity}<HeartIcon className="h-4 w-4 text-red-500 ml-1" /></span>
           </div>
         </div>
-        <div className="action-buttons space-y-2">
-          <button
+          <div className="action-buttons space-y-2">
+            <button
             onClick={e => {
               e.stopPropagation();
               onBuyNow(product, quantity);
             }}
             className="buy-now-btn w-full bg-[#0097b2] text-white py-3 px-4 rounded-lg font-semibold hover:bg-[#007a8e] transition-colors duration-200 flex items-center justify-center gap-2"
-          >
-            <ShoppingBagIcon className="h-4 w-4" />
-            <span>Buy Now</span>
-          </button>
-          <button
+            >
+                  <ShoppingBagIcon className="h-4 w-4" />
+                  <span>Buy Now</span>
+            </button>
+            <button
             onClick={e => {
               e.stopPropagation();
               onAddToCart(product, quantity);
             }}
             className="add-to-cart-btn w-full bg-white text-[#0097b2] py-2 px-4 rounded-lg font-medium border border-[#0097b2] hover:bg-[#0097b2] hover:text-white transition-colors duration-200 flex items-center justify-center gap-2"
-          >
-            <ShoppingCartIcon className="h-4 w-4" />
-            <span>Add to Cart</span>
-          </button>
+            >
+                  <ShoppingCartIcon className="h-4 w-4" />
+                  <span>Add to Cart</span>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
   );
 };
 
