@@ -91,10 +91,6 @@ export const suitebiteAPI = {
       variation_id: cartData.variation_id || null // Legacy support
     };
     
-    // Debug: Log what we're actually sending to the backend
-    console.log('🚀 API - Sending to backend:', requestData);
-    console.log('🚀 API - Original cartData:', cartData);
-    
     const response = await axios.post(`${API_BASE_URL}/cart/add`, requestData, createAuthHeaders());
     return response.data;
   },

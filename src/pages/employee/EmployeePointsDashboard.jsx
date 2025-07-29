@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { pointsSystemApi } from '../../api/pointsSystemApi';
 import { useStore } from '../../store/authStore';
@@ -56,7 +56,7 @@ const PointsDashboard = () => {
   const { data: pointsData, isLoading: pointsLoading, error: pointsError } = useQuery({
     queryKey: ['points'],
     queryFn: pointsSystemApi.getPoints,
-    staleTime: 1 * 60 * 1000, // 1 minute
+    staleTime: 10 * 1000, // 10 seconds (reduced from 1 minute)
     enabled: !!user?.id, // Only fetch when user is loaded
   });
 
@@ -67,6 +67,22 @@ const PointsDashboard = () => {
     pointsLoading,
     pointsError: pointsError?.message
   });
+
+  // Listen for storage events to refresh points data when orders are cancelled
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === 'points-updated' && e.newValue === 'true') {
+        // Invalidate points cache when orders are cancelled
+        queryClient.invalidateQueries(['points']);
+        queryClient.invalidateQueries(['points-history']);
+        // Clear the flag
+        localStorage.removeItem('points-updated');
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [queryClient]);
 
   // Fetch points history
   const { data: historyData, isLoading: historyLoading } = useQuery({

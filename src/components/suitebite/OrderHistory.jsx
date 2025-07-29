@@ -37,7 +37,7 @@ import {
  * - Order cancellation for pending orders
  * - Improved order details modal
  */
-const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate }) => {
+const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate, onPointsUpdate }) => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingOrderDetails, setLoadingOrderDetails] = useState(false);
@@ -141,12 +141,20 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate }) => {
             // Update heartbits in Zustand store
             const { setUserHeartbits } = useSuitebiteStore.getState();
             setUserHeartbits(heartbits);
-            console.log('💖 Heartbits updated after order cancellation:', heartbits);
             
             // Call onHeartbitsUpdate if provided to trigger parent component refresh
             if (onHeartbitsUpdate) {
               onHeartbitsUpdate();
             }
+            
+            // Call onPointsUpdate if provided to invalidate points dashboard cache
+            if (onPointsUpdate) {
+              onPointsUpdate();
+            }
+            
+            // Trigger storage event to notify points dashboard
+            localStorage.setItem('points-updated', 'true');
+            localStorage.removeItem('points-updated');
           }
         } catch (error) {
           console.error('Error refreshing heartbits after order cancellation:', error);
@@ -200,10 +208,6 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate }) => {
               variation_type_id: variation.variation_type_id,
               option_id: variation.option_id
             }));
-            console.log('Reordering item with variations:', {
-              product_name: item.product_name,
-              variations: cartItemData.variations
-            });
           }
 
           const addResponse = await suitebiteAPI.addToCart(cartItemData);
@@ -238,7 +242,6 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate }) => {
               variation_details: item.variation_details
             }));
             setCart(mappedCart);
-            console.log('🛒 Cart updated after reorder:', mappedCart.length, 'items');
             
             // Call onCartUpdate if provided to trigger parent component refresh
             if (onCartUpdate) {
@@ -291,6 +294,33 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate }) => {
       const response = await suitebiteAPI.deleteOrder(orderId, 'Deleted by user');
       
       if (response.success) {
+        // Refresh heartbits balance after successful deletion
+        try {
+          const heartbitsResponse = await suitebiteAPI.getUserHeartbits();
+          if (heartbitsResponse.success) {
+            const heartbits = heartbitsResponse.heartbits_balance || heartbitsResponse.balance || 0;
+            // Update heartbits in Zustand store
+            const { setUserHeartbits } = useSuitebiteStore.getState();
+            setUserHeartbits(heartbits);
+            
+            // Call onHeartbitsUpdate if provided to trigger parent component refresh
+            if (onHeartbitsUpdate) {
+              onHeartbitsUpdate();
+            }
+            
+            // Call onPointsUpdate if provided to invalidate points dashboard cache
+            if (onPointsUpdate) {
+              onPointsUpdate();
+            }
+            
+            // Trigger storage event to notify points dashboard
+            localStorage.setItem('points-updated', 'true');
+            localStorage.removeItem('points-updated');
+          }
+        } catch (error) {
+          console.error('Error refreshing heartbits after order deletion:', error);
+        }
+        
         showNotification('success', 'Order deleted successfully!');
         await loadOrderHistory(); // Refresh the list
       } else {

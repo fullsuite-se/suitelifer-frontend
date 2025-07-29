@@ -68,13 +68,31 @@ const OrderManagement = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [pendingAction, setPendingAction] = useState({ type: '', orderId: null });
 
+  // Cache state
+  const [lastLoadTime, setLastLoadTime] = useState(0);
+  const [lastFilters, setLastFilters] = useState({});
+
   useEffect(() => {
-    loadOrders();
-  }, []);
+    // Only load orders if we don't have any or if filters have changed
+    const currentFilters = { statusFilter, dateRange };
+    const filtersChanged = JSON.stringify(currentFilters) !== JSON.stringify(lastFilters);
+    const shouldLoadData = orders.length === 0 || filtersChanged || (Date.now() - lastLoadTime) > 2 * 60 * 1000; // 2 minute cache
+    
+    if (shouldLoadData) {
+      loadOrders();
+      setLastFilters(currentFilters);
+    }
+  }, [statusFilter, dateRange]);
 
   const showNotification = (type, message) => {
     setNotification({ show: true, type, message });
     setTimeout(() => setNotification({ show: false, type: '', message: '' }), 4000);
+  };
+
+  // Function to refresh orders (e.g., after status changes)
+  const refreshOrders = async () => {
+    setLastLoadTime(0); // Reset cache
+    await loadOrders();
   };
 
   const loadOrders = async () => {
@@ -98,16 +116,17 @@ const OrderManagement = () => {
           ordered_at: order.ordered_at,
           processed_at: order.processed_at,
           completed_at: order.completed_at,
+          cancelled_at: order.cancelled_at,
           total_points: order.total_points,
           notes: order.notes,
-          item_count: order.item_count || order.orderItems?.length || 0,
-          orderItems: order.orderItems || []  // Include order items with variations
+          orderItems: order.orderItems || []
         }));
+        
         setOrders(mappedOrders);
-        // Clear selections when orders are reloaded
-        setSelectedOrders(new Set());
+        setLastLoadTime(Date.now()); // Update cache time
       } else {
-        setOrders([]);
+        showNotification('error', 'Failed to load orders');
+        console.error('❌ Orders response failed:', response);
       }
     } catch (error) {
       console.error('Error loading orders:', error);
@@ -194,7 +213,7 @@ const OrderManagement = () => {
         if (errorCount > 0) {
           showNotification('error', `Failed to delete ${errorCount} order(s)`);
         }
-        await loadOrders(); // Refresh the list
+        await refreshOrders(); // Use optimized refresh
       } else {
         showNotification('error', 'Failed to delete any orders');
       }
@@ -234,7 +253,7 @@ const OrderManagement = () => {
       
       if (response.success) {
         showNotification('success', 'Order approved successfully!');
-        await loadOrders(); // Refresh the list
+        await refreshOrders(); // Use optimized refresh
       } else {
         showNotification('error', response.message || 'Failed to approve order');
       }
@@ -258,7 +277,7 @@ const OrderManagement = () => {
       
       if (response.success) {
         showNotification('success', 'Order completed successfully!');
-        await loadOrders(); // Refresh the list
+        await refreshOrders(); // Use optimized refresh
       } else {
         showNotification('error', response.message || 'Failed to complete order');
       }
@@ -298,7 +317,7 @@ const OrderManagement = () => {
       
       if (response.success) {
         showNotification('success', 'Order cancelled successfully!');
-        await loadOrders(); // Refresh the list
+        await refreshOrders(); // Use optimized refresh
       } else {
         showNotification('error', response.message || 'Failed to cancel order');
       }
@@ -328,7 +347,7 @@ const OrderManagement = () => {
       
       if (response.success) {
         showNotification('success', 'Order deleted successfully!');
-        await loadOrders(); // Refresh the list
+        await refreshOrders(); // Use optimized refresh
       } else {
         showNotification('error', response.message || 'Failed to delete order');
       }

@@ -489,17 +489,6 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
 
   if (!isVisible) return null;
 
-  // Debug cart items with variations
-  if (process.env.NODE_ENV !== 'production') {
-    console.log('🛒 ShoppingCart Debug - Cart Items:', uniqueCart.map(item => ({
-      cart_item_id: item.cart_item_id,
-      product_name: item.product_name,
-      variations: item.variations,
-      variation_details: item.variation_details,
-      hasVariations: (item.variations && Array.isArray(item.variations) && item.variations.length > 0) || item.variation_details
-    })));
-  }
-
   return (
     <>
       <div className="shopping-cart-container bg-white rounded-lg shadow-sm border p-4 mb-6 pb-8">
@@ -607,15 +596,6 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                         {(() => {
                           const hasVariations = (item.variations && Array.isArray(item.variations) && item.variations.length > 0) || item.variation_details;
                           const isEditingThisItem = inlineEditingItem === item.cart_item_id;
-                          
-                          // Debug cart item variations
-                          if (process.env.NODE_ENV !== 'production') {
-                            console.log(`🛒 Cart Item Debug: ${item.product_name}`, {
-                              variations: item.variations,
-                              variation_details: item.variation_details,
-                              hasVariations
-                            });
-                          }
                           
                           if (isEditingThisItem) {
                             // Inline editing mode
