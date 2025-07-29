@@ -127,7 +127,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
   // Prefill form if editing
   useEffect(() => {
     if (mode === 'edit' && product) {
-      console.log('🔍 AddProductForm - Edit mode detected:', { product_id: product.product_id, name: product.name });
+
       
       setFormData({
         name: product.name || '',
@@ -139,13 +139,13 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
 
       // Load product images for editing
       if (product.product_id) {
-        console.log('🔍 AddProductForm - Loading images for product ID:', product.product_id);
+
         
         suitebiteAPI.getProductImages(product.product_id)
           .then(res => {
-            console.log('🔍 AddProductForm - API response:', res);
+
             if (res.success) {
-              console.log('🔍 AddProductForm - Setting product images:', res.images);
+
               setProductImages(res.images || []);
               // Track original images for deletion comparison
               setOriginalProductImages(res.images || []);
@@ -157,7 +157,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
             console.error('🔍 AddProductForm - Error loading product images:', err);
           });
       } else {
-        console.log('🔍 AddProductForm - No product_id found in product object');
+
       }
 
       // Load product variations for editing
@@ -283,7 +283,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
 
   // Image selection handler (new system)
   const handleImagesChange = useCallback((imageData) => {
-    console.log('📸 Images changed in AddProductForm:', imageData);
+
     setSelectedImages(imageData);
   }, []);
 
@@ -291,10 +291,10 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
   const refreshProductImages = useCallback(async () => {
     if (mode === 'edit' && product?.product_id) {
       try {
-        console.log('🔄 Refreshing product images...');
+
         const res = await suitebiteAPI.getProductImages(product.product_id);
         if (res.success) {
-          console.log('🔄 Updated product images:', res.images?.length || 0);
+
           setProductImages(res.images || []);
           // Update original images to reflect current state after deletions
           setOriginalProductImages(res.images || []);

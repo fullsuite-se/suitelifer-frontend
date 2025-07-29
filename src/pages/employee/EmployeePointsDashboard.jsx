@@ -60,13 +60,7 @@ const PointsDashboard = () => {
     enabled: !!user?.id, // Only fetch when user is loaded
   });
 
-  // Debug logging
-  console.log('PointsDashboard Debug:', {
-    user: user?.id ? 'Loaded' : 'Not loaded',
-    pointsData,
-    pointsLoading,
-    pointsError: pointsError?.message
-  });
+
 
   // Listen for storage events to refresh points data when orders are cancelled
   useEffect(() => {
@@ -87,15 +81,9 @@ const PointsDashboard = () => {
   // Fetch points history
   const { data: historyData, isLoading: historyLoading } = useQuery({
     queryKey: ['points-history'],
-    queryFn: () => {
-      console.log('Fetching points history...');
-      return pointsSystemApi.getPointsHistory(10);
-    },
+    queryFn: () => pointsSystemApi.getPointsHistory(10),
     staleTime: 2 * 60 * 1000, // 2 minutes
     enabled: !!user?.id, // Only fetch when user is loaded
-    onSuccess: (data) => {
-      console.log('Points history received:', data);
-    },
   });
 
   // Fetch users for cheer functionality with search

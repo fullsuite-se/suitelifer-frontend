@@ -58,13 +58,27 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate, onPointsUpdate }) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [pendingAction, setPendingAction] = useState({ type: '', orderId: null });
 
+  // Cache state
+  const [lastLoadTime, setLastLoadTime] = useState(0);
+
   useEffect(() => {
-    loadOrderHistory();
+    // Only load data if we don't have orders or if it's been more than 2 minutes
+    const shouldLoadData = orders.length === 0 || (Date.now() - lastLoadTime) > 2 * 60 * 1000;
+    
+    if (shouldLoadData) {
+      loadOrderHistory();
+    }
   }, []);
 
   const showNotification = (type, message) => {
     setNotification({ show: true, type, message });
     setTimeout(() => setNotification({ show: false, type: '', message: '' }), 4000);
+  };
+
+  // Function to refresh order history when needed (e.g., after order actions)
+  const refreshOrderHistory = async () => {
+    setLastLoadTime(0); // Reset cache
+    await loadOrderHistory();
   };
 
   const loadOrderHistory = async () => {
@@ -85,6 +99,7 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate, onPointsUpdate }) => {
           orderItems: order.orderItems || []  // Include order items with variations
         }));
         setOrders(mappedOrders);
+        setLastLoadTime(Date.now()); // Update last load time
       } else {
         setOrders([]);
       }
@@ -161,7 +176,7 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate, onPointsUpdate }) => {
         }
         
         showNotification('success', 'Order cancelled successfully');
-        await loadOrderHistory(); // Refresh the list
+        await refreshOrderHistory(); // Refresh the list
       } else {
         showNotification('error', response.message || 'Failed to cancel order');
       }
@@ -322,7 +337,7 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate, onPointsUpdate }) => {
         }
         
         showNotification('success', 'Order deleted successfully!');
-        await loadOrderHistory(); // Refresh the list
+        await refreshOrderHistory(); // Refresh the list
       } else {
         showNotification('error', response.message || 'Failed to delete order');
       }

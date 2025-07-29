@@ -141,13 +141,13 @@ const DigitalReceipt = ({ order, onClose, onPrint }) => {
                   <div className="flex flex-col items-center min-w-[80px]">
                     <div className="w-4 h-4 bg-blue-500 rounded-full border-2 border-white shadow flex items-center justify-center">
                       <div className="w-2 h-2 bg-white rounded-full"></div>
-                    </div>
+              </div>
                     <span className="text-xs font-medium text-gray-900 mt-1">Approved</span>
                     <span className="text-[10px] text-gray-500">{formatDate(order.processed_at)}</span>
-                  </div>
-                )}
+                </div>
+              )}
                 {/* Completed */}
-                {order.completed_at && (
+              {order.completed_at && (
                   <div className="flex flex-col items-center min-w-[80px]">
                     <div className="w-4 h-4 bg-green-500 rounded-full border-2 border-white shadow flex items-center justify-center">
                       <div className="w-2 h-2 bg-white rounded-full"></div>
@@ -156,7 +156,7 @@ const DigitalReceipt = ({ order, onClose, onPrint }) => {
                     <span className="text-[10px] text-gray-500">{formatDate(order.completed_at)}</span>
                   </div>
                 )}
-              </div>
+                </div>
             </div>
           </div>
           
@@ -182,21 +182,21 @@ const DigitalReceipt = ({ order, onClose, onPrint }) => {
                   <div key={index} className="item bg-gray-50 rounded-lg p-3">
                     <div className="flex items-center gap-3">
                       <div className="item-image w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
-                        {item.image_url ? (
-                          <img
-                            src={item.image_url}
-                            alt={item.product_name}
-                            className="w-full h-full object-cover rounded-lg"
-                          />
-                        ) : (
+                      {item.image_url ? (
+                        <img
+                          src={item.image_url}
+                          alt={item.product_name}
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      ) : (
                           <span className="text-lg">📦</span>
-                        )}
-                      </div>
-                      
-                      <div className="item-details flex-1">
+                      )}
+                    </div>
+                    
+                    <div className="item-details flex-1">
                         <div className="item-name font-semibold text-gray-900 text-sm">
-                          {item.product_name}
-                        </div>
+                        {item.product_name}
+                      </div>
                         <div className="item-meta text-xs text-gray-600 mt-1">
                           {item.quantity} × ❤️ {item.price_points} heartbits
                         </div>
@@ -232,14 +232,14 @@ const DigitalReceipt = ({ order, onClose, onPrint }) => {
                                 </div>
                               ))}
                             </div>
-                          </div>
-                        )}
-                      </div>
-                      
-                      <div className="item-total text-right">
-                        <div className="text-sm font-bold text-[#0097b2]">
-                          ❤️ {item.price_points * item.quantity}
                         </div>
+                      )}
+                    </div>
+                    
+                    <div className="item-total text-right">
+                        <div className="text-sm font-bold text-[#0097b2]">
+                        ❤️ {item.price_points * item.quantity}
+                      </div>
                       </div>
                     </div>
                   </div>
