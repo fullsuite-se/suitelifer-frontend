@@ -31,6 +31,7 @@ const SuitebiteShop = () => {
 
   const [activeTab, setActiveTab] = useState('products');
   const [loading, setLoading] = useState(false);
+  const [lastLoadTime, setLastLoadTime] = useState(0);
   // Remove showCart, use activeTab === 'cart' instead
 
   const [notification, setNotification] = useState({ show: false, type: '', message: '' });
@@ -44,7 +45,13 @@ const SuitebiteShop = () => {
   const [variationTypes, setVariationTypes] = useState([]);
 
   useEffect(() => {
-    loadShopData();
+    // Only load data if we don't have products or if it's been more than 5 minutes
+    const shouldLoadData = products.length === 0 || (Date.now() - lastLoadTime) > 5 * 60 * 1000;
+    
+    if (shouldLoadData) {
+      loadShopData();
+    }
+    
     // Fetch variation options and types on mount
     const fetchVariationData = async () => {
       try {
@@ -92,8 +99,6 @@ const SuitebiteShop = () => {
         setProducts(mappedProducts);
         // Sync categories from loaded products
         syncCategoriesFromProducts(mappedProducts);
-        
-        console.log(`✅ Loaded ${mappedProducts.length} active products`); // Debug log
       } else {
         showNotification('error', 'Failed to load products');
         console.error('❌ Products response failed:', productsResponse);
@@ -102,17 +107,8 @@ const SuitebiteShop = () => {
       if (cartResponse.success) {
         // Map backend cart data to match expected frontend structure
         const backendCartItems = cartResponse.data?.cartItems || [];
-        console.log('🛒 Raw cart items from backend:', backendCartItems);
         
         const mappedCart = backendCartItems.map(item => {
-          console.log('🔍 Processing cart item:', {
-            cart_item_id: item.cart_item_id,
-            product_name: item.product_name,
-            variations: item.variations,
-            variation_details: item.variation_details,
-            hasVariations: item.variations && Array.isArray(item.variations) && item.variations.length > 0
-          });
-          
           return {
             cart_item_id: item.cart_item_id, // Use the correct unique identifier
             product_id: item.product_id,
@@ -129,7 +125,6 @@ const SuitebiteShop = () => {
         });
         
         setCart(mappedCart);
-        console.log(`🛒 Loaded ${mappedCart.length} cart items`); // Debug log
       } else {
         console.warn('⚠️ Cart response failed:', cartResponse);
         // Set empty cart on failure
@@ -139,7 +134,6 @@ const SuitebiteShop = () => {
       if (heartbitsResponse.success) {
         const heartbits = heartbitsResponse.heartbits_balance || heartbitsResponse.balance || 0;
         setUserHeartbits(heartbits);
-        console.log(`💖 User heartbits: ${heartbits}`); // Debug log
       } else {
         console.error('❌ Heartbits response failed:', heartbitsResponse);
         showNotification('error', 'Failed to load heartbits balance');
@@ -155,6 +149,7 @@ const SuitebiteShop = () => {
       setUserHeartbits(0);
     } finally {
       setLoading(false);
+      setLastLoadTime(Date.now()); // Update last load time
     }
   };
 
@@ -193,6 +188,12 @@ const SuitebiteShop = () => {
     }
   };
 
+  // Add a function to refresh data when needed (e.g., after cart operations)
+  const refreshShopData = async () => {
+    setLastLoadTime(0); // Reset cache
+    await loadShopData();
+  };
+
   const updateHeartbitsOnly = async () => {
     try {
       const heartbitsResponse = await suitebiteAPI.getUserHeartbits();
@@ -208,16 +209,18 @@ const SuitebiteShop = () => {
   // Fix: Remove the logic that opens the modal if isModalOpen is true
   const handleAddToCart = async (productId, quantity = 1, variationId = null, variations = []) => {
     try {
-      const cartData = { product_id: productId, quantity };
-      if (variationId) cartData.variation_id = variationId;
-      if (variations && variations.length > 0) {
-        cartData.variations = variations;
-      }
+      const cartData = {
+        product_id: productId,
+        quantity: quantity,
+        ...(variationId && { variation_id: variationId }),
+        ...(variations && variations.length > 0 && { variations: variations })
+      };
+
       const response = await suitebiteAPI.addToCart(cartData);
+      
       if (response.success) {
-        setIsModalOpen(false); // Always close modal after add
-        await updateCartAndHeartbits(); // Only update cart and heartbits, not products
         showNotification('success', 'Item added to cart! 🛒');
+        await updateCartAndHeartbits(); // Only update cart and heartbits, not products
       } else {
         showNotification('error', response.message || 'Failed to add item to cart');
       }

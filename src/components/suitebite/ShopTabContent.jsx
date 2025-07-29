@@ -119,37 +119,12 @@ const ShopTabContent = () => {
         setProducts(productsResponse.products);
         // Sync categories from loaded products
         syncCategoriesFromProducts(productsResponse.products);
-        
-        // Log enhanced product data for debugging
-        console.log(`✅ Loaded ${productsResponse.products.length} products with enhanced variation data`);
-        productsResponse.products.forEach(product => {
-          if (product.has_variations) {
-            console.log(`📦 ${product.name}: ${product.variation_count} variations (${product.variation_types.join(', ')})`);
-          }
-        });
       }
 
       if (cartResponse.success) {
         // Parse cart data correctly from backend response
         const cartItems = cartResponse.data?.cartItems || [];
         setCart(cartItems);
-        console.log(`🛒 Loaded ${cartItems.length} cart items from API`);
-        
-        // Debug cart items with variations
-        cartItems.forEach(item => {
-          if (item.variations && item.variations.length > 0) {
-            console.log(`🛒 Cart item with variations: ${item.product_name}`, {
-              variations: item.variations,
-              variation_labels: item.variations.map(v => v.option_label || v.option_value).join(' + ')
-            });
-          } else if (item.variation_details) {
-            console.log(`🛒 Cart item with legacy variations: ${item.product_name}`, {
-              variation_details: item.variation_details
-            });
-          } else {
-            console.log(`🛒 Cart item (standard): ${item.product_name}`);
-          }
-        });
       }
 
       if (heartbitsResponse.success) {
@@ -171,7 +146,6 @@ const ShopTabContent = () => {
    * @param {Array} variations - Array of variation selections
    */
   const handleAddToCart = async (cartData) => {
-    console.log('🚀 ShopTabContent - handleAddToCart called with:', cartData);
     try {
       const response = await suitebiteAPI.addToCart(cartData);
       if (response.success) {
@@ -180,16 +154,6 @@ const ShopTabContent = () => {
         if (cartResponse.success) {
           const cartItems = cartResponse.data?.cartItems || [];
           setCart(cartItems);
-          console.log(`🛒 Cart refreshed after add: ${cartItems.length} items`);
-          // Debug the newly added item
-          const newItem = cartItems[cartItems.length - 1]; // Assuming newest item is last
-          if (newItem && (newItem.variations?.length > 0 || newItem.variation_details)) {
-            console.log('✅ Added item with variations:', {
-              product_name: newItem.product_name,
-              variations: newItem.variations,
-              variation_details: newItem.variation_details
-            });
-          }
         }
         showNotification('success', 'Item added to cart! 🛒');
       }

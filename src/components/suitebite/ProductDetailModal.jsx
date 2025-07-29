@@ -209,42 +209,13 @@ const ProductDetailModal = ({
           .flatMap(v => v.options || [])
           .find(opt => opt.option_id === optionId && opt.type_name === typeName);
         
-        console.log(`🔍 ProductDetailModal - Processing variation:`, {
-          typeName,
-          optionId,
-          optionIdType: typeof optionId,
-          foundOption: option,
-          allOptionsForType: availableVariations
-            .flatMap(v => v.options || [])
-            .filter(opt => opt.type_name === typeName)
-            .map(opt => ({ option_id: opt.option_id, type: typeof opt.option_id })),
-          availableVariations: availableVariations.length
-        });
-        
         const variation = {
           variation_type_id: option?.variation_type_id,
           option_id: optionId
         };
         
-        console.log(`🔍 ProductDetailModal - Created variation object:`, {
-          variation,
-          hasTypeId: !!variation.variation_type_id,
-          hasOptionId: !!variation.option_id,
-          willBeFiltered: !(variation.variation_type_id && variation.option_id)
-        });
-        
         return variation;
       }).filter(v => v.variation_type_id && v.option_id);
-
-      // Debug: Log selected variations
-      console.log('🎯 ProductDetailModal - Adding to cart with variations:', {
-        selectedOptions,
-        preparedVariations: variations,
-        product: product.name,
-        filteredCount: variations.length,
-        quantity: quantity,
-        productId: product.product_id
-      });
 
       await onAddToCart(product.product_id, quantity, null, variations);
       onClose(); // Close modal after adding to cart
@@ -360,7 +331,6 @@ const ProductDetailModal = ({
                         : product.image_url
                           ? [{ image_url: product.image_url, alt_text: product.name }]
                           : [];
-                  console.log('[ProductDetailModal] Images for carousel:', imagesToPass);
                   return (
                     <ProductImageCarousel 
                       images={imagesToPass}

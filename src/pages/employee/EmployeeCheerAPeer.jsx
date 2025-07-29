@@ -130,12 +130,7 @@ const CheerPage = () => {
 
   // Debug logs
   useEffect(() => {
-    console.log('Debug Leaderboard:', {
-      currentUserLeaderboard,
-      leaderboard,
-      userId: user?.id,
-      activeTab
-    });
+    // Debug logging removed for cleaner console
   }, [currentUserLeaderboard, leaderboard, user?.id, activeTab]);
 
   // User search for @ mentions
@@ -278,8 +273,7 @@ const CheerPage = () => {
 
   // Debug: log searchQuery and searchResults
   useEffect(() => {
-    console.log('CheerPage - searchQuery:', searchQuery);
-    console.log('CheerPage - searchResults:', searchResults);
+    // Debug logging removed for cleaner console
   }, [searchQuery, searchResults]);
 
   // Close dropdown when clicking outside
@@ -384,10 +378,8 @@ const CheerPage = () => {
             amount: cheerPoints,
             message: messageText.trim(),
           };
-          console.log('Cheer data:', cheerData);
           await bulkCheerMutation.mutateAsync(cheerData);
           successCount++;
-          console.log(`✅ Cheer sent to ${user.name}`);
         } catch (error) {
           errorCount++;
           console.error(`❌ Failed to send cheer to ${user.name}:`, error);
@@ -395,7 +387,6 @@ const CheerPage = () => {
       }
       
       if (errorCount === 0) {
-        console.log('All cheers sent successfully!');
         toast.success(`Cheers sent successfully to ${successCount} recipients! 🎉`);
         setSelectedUsers([]);
         setCheerText('');
@@ -423,7 +414,6 @@ const CheerPage = () => {
       })
       .finally(() => {
         setIsSubmitting(false);
-        console.log('=== END CHEER SUBMISSION DEBUG ===');
       });
   };
 
@@ -452,7 +442,7 @@ const CheerPage = () => {
   };
 
   // Debug user authentication
-  console.log('CheerPage - Current user:', user);
+  // Debug logging removed for cleaner console
 
   // Show authentication debug info if user object is empty or undefined
   if (!user || Object.keys(user).length === 0) {
