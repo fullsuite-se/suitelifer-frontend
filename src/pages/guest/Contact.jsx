@@ -35,7 +35,7 @@ const Contact = () => {
     setSubject("");
     setMessage("");
   };
-//
+  //
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -44,14 +44,14 @@ const Contact = () => {
       if (!fullName || !email || !subject || !message) {
         toast.error("Please fill in all fields.");
         return;
-      } 
+      }
       const loweredCaseSelected = selected?.trim().toLowerCase();
       // const receiver_email = "allen.alvaro@getfullsuite.com";
       const receiver_email =
         loweredCaseSelected === "full-time"
           ? contactDetails.careersEmail
           : contactDetails.internshipEmail;
-         
+
       const response = await api.post("/api/send-inquiry-email", {
         fullName,
         receiver_email,
@@ -196,7 +196,7 @@ const Contact = () => {
                       alt="Email"
                       className="w-5 h-5 mb-1 filter invert"
                     />
-                    <div className="flex flex-col xl:flex-row">
+                    <div className="flex flex-col xl:flex-row items-start">
                       <div className="">
                         <a
                           href={`mailto:${contactDetails.careersEmail}`}
@@ -205,9 +205,7 @@ const Contact = () => {
                           {contactDetails.careersEmail}
                         </a>
                       </div>
-                      <div className="">
-                        <span className="hidden xl:block">&nbsp;|&nbsp;</span>
-                      </div>
+                      <div className="hidden px-3 xl:block">|</div>
                       <div className="">
                         <a
                           href={`mailto:${contactDetails.internshipEmail}`}
