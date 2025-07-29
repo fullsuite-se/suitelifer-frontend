@@ -280,11 +280,8 @@ const SuitebiteShop = () => {
       });
       
       if (response.success) {
-        // Clear cart after successful checkout
-        setCart([]);
-        
-        // Update heartbits balance after successful checkout
-        await updateHeartbitsOnly();
+        // Refresh cart from backend instead of clearing it
+        await updateCartAndHeartbits();
         
         showNotification('success', 'Order placed successfully! Awaiting admin approval. 🎉');
         
