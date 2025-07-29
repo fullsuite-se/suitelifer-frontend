@@ -81,10 +81,10 @@ const Footer = () => {
               Interested in availing our services? Check this out!{" "}
               <Link
                 target="_blank"
-                to="https://fullsuite.ph"
+                to="https://getfullsuite.com"
                 className="font-avenir-black text-white hover:text-secondary"
               >
-                fullsuite.ph
+                getfullsuite.com
               </Link>
             </p>
             <br />
