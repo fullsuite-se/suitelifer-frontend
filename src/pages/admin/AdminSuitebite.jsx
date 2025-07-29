@@ -148,12 +148,12 @@ const AdminSuitebite = () => {
       {/* Scrollable Content Area */}
       <div className="admin-content pb-6">
         <div className="max-w-7xl mx-auto">
-          {/* Refresh Notification */}
-          {showRefreshNotification && (
+          {/* Refresh Notification - Hidden but function kept */}
+          {/* {showRefreshNotification && (
             <div className="refresh-notification bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg mb-0">
               ✅ Data refreshed successfully
             </div>
-          )}
+          )} */}
 
           {/* Tab Content */}
           <div className="admin-tab-content mt-0"> {/* No top margin for tab content */}
