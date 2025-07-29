@@ -49,19 +49,6 @@ const CheerPage = () => {
   const textareaRef = useRef(null);
   const dropdownRef = useRef(null);
 
-  // Add state for confetti animation
-  // Remove Framer Motion imports
-  // Remove likeCheerAnimating, likeCommentAnimating, likedCommentIds, handleCheerLike, handleCommentLike
-  // Restore main cheer card like button:
-  // Restore comment like button:
-
-  // Helper for triggering animation
-  // Remove Framer Motion imports
-  // Remove likeCheerAnimating, likeCommentAnimating, likedCommentIds, handleCheerLike, handleCommentLike
-  // Restore main cheer card like button:
-  // Restore comment like button:
-
-
   // Add state for date filter
   const [selectedDate, setSelectedDate] = useState('');
   
@@ -95,11 +82,24 @@ const CheerPage = () => {
     queryKey: ['cheer-feed', selectedDate],
     queryFn: async () => {
       if (selectedDate) {
-        // Get start and end of selected day in ISO format
-        const from = new Date(selectedDate);
-        from.setHours(0, 0, 0, 0);
-        const to = new Date(selectedDate);
-        to.setHours(23, 59, 59, 999);
+        // Create date boundaries in UTC to avoid timezone issues
+        // Parse the selected date and create UTC boundaries for that day
+        const [year, month, day] = selectedDate.split('-').map(Number);
+        
+        // Start of day in UTC (00:00:00.000)
+        const from = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
+        
+        // End of day in UTC (23:59:59.999)
+        const to = new Date(Date.UTC(year, month - 1, day, 23, 59, 59, 999));
+        
+        console.log('Date filtering:', {
+          selectedDate,
+          from: from.toISOString(),
+          to: to.toISOString(),
+          fromLocal: from.toLocaleString(),
+          toLocal: to.toLocaleString()
+        });
+        
         return pointsSystemApi.getCheerFeed(20, from.toISOString(), to.toISOString(), 0);
       } else {
         return pointsSystemApi.getCheerFeed(20, null, null, 0);
@@ -1262,19 +1262,19 @@ const CheerPage = () => {
                                                         <button
                                                           className="text-xs px-2 py-1 rounded bg-red-500 text-white font-bold hover:bg-red-600"
                                                           style={{ fontFamily: 'Avenir, sans-serif' }}
+                                                          disabled={editCommentMutation.isLoading || deleteCommentMutation.isLoading}
                                                           onClick={() => {
                                                             deleteCommentMutation.mutate({ cheerId: cheer.cheer_id, commentId: comment._id });
                                                             setConfirmingDelete(null);
                                                           }}
-                                                          disabled={editCommentMutation.isLoading || deleteCommentMutation.isLoading}
                                                         >
                                                           Yes
                                                         </button>
                                                         <button
                                                           className="text-xs px-2 py-1 rounded bg-gray-300 text-gray-700 font-bold"
                                                           style={{ fontFamily: 'Avenir, sans-serif' }}
-                                                          onClick={() => setConfirmingDelete(null)}
                                                           disabled={editCommentMutation.isLoading || deleteCommentMutation.isLoading}
+                                                          onClick={() => setConfirmingDelete(null)}
                                                         >
                                                           No
                                                         </button>

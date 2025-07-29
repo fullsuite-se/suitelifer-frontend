@@ -114,12 +114,12 @@ const AdminSuitebite = () => {
   ];
 
   return (
-    <div className="admin-suitebite bg-gray-50 flex flex-col">
+    <div className="admin-suitebite bg-gray-50 flex flex-col min-h-screen py-4">
       {/* Fixed Header */}
-      <div className="admin-header bg-white border-b border-gray-200 px-6 py-2 flex-shrink-0">
+      <div className="admin-header bg-white border-b border-gray-200 px-6 py-1 flex-shrink-0"> {/* Reduce header padding */}
         <div className="max-w-7xl mx-auto">
           {/* Navigation Tabs */}
-          <div className="admin-nav-tabs bg-gray-50 rounded-lg p-1">
+          <div className="admin-nav-tabs bg-gray-50 rounded-lg p-1"> {/* No margin */}
             <div className="flex items-center justify-between">
               <div className="flex space-x-1">
                 {tabs.map(tab => {
@@ -127,7 +127,7 @@ const AdminSuitebite = () => {
                   return (
                     <button
                       key={tab.id}
-                      className={`nav-tab flex items-center px-4 py-3 text-sm font-medium rounded-md transition-all duration-200 ${
+                      className={`nav-tab flex items-center px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
                         activeTab === tab.id 
                           ? 'bg-[#0097b2] text-white shadow-sm' 
                           : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
@@ -146,32 +146,32 @@ const AdminSuitebite = () => {
       </div>
 
       {/* Scrollable Content Area */}
-      <div className="admin-content pb-8"> {/* Removed flex-1 and overflow-y-auto to prevent outer scroll */}
+      <div className="admin-content pb-6">
         <div className="max-w-7xl mx-auto">
           {/* Refresh Notification */}
           {showRefreshNotification && (
-            <div className="refresh-notification bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg mb-6">
+            <div className="refresh-notification bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg mb-0">
               ✅ Data refreshed successfully
             </div>
           )}
 
           {/* Tab Content */}
-          <div className="admin-tab-content">
+          <div className="admin-tab-content mt-0"> {/* No top margin for tab content */}
             {/* Users & Heartbits Tab */}
             {activeTab === 'users' && (
-              <div className="users-tab">
+              <div className="users-tab mt-0 mb-6">
                 <UserHeartbitsManagement onRefresh={loadAdminData} />
               </div>
             )}
             {/* Products Tab */}
             {activeTab === 'products' && (
-              <div className="products-tab">
+              <div className="products-tab mt-0"> {/* Remove extra top margin */}
                 <ProductManagement onRefresh={loadAdminData} />
               </div>
             )}
             {/* Orders Tab */}
             {activeTab === 'orders' && (
-              <div className="orders-tab">
+              <div className="orders-tab mt-0"> {/* Remove extra top margin */}
                 <OrderManagement onRefresh={loadAdminData} />
               </div>
             )}

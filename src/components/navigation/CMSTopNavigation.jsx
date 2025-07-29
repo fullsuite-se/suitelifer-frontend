@@ -13,7 +13,7 @@ const CMSTopNavigation = () => {
       return "My Blog";
     } else if (path.includes("blogs-feed")) {
       return "Blogs Feed";
-    } else if (path.includes("suitebite") && path.includes("shop")) {
+    } else if (path.includes("suitebite")) {
       return "The Gift Suite";
     } else if (path.includes("mood") || path.includes("moods")) {
       return "The Suite Vibe";

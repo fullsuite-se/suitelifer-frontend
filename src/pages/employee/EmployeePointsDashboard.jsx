@@ -245,79 +245,110 @@ const PointsDashboard = () => {
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto" style={{ borderColor: '#0097b2' }}></div>
             </div>
           ) : Array.isArray(historyData?.data) && historyData.data.length > 0 ? (
-            historyData.data.map((transaction, index) => (
-              <div 
-                key={index} 
-                className="relative p-4"
-                style={{ background: 'linear-gradient(135deg, #f8fafc 60%, #e0f7fa 100%)', borderRadius: '18px', overflow: 'hidden', border: '1.5px solid #e0e7ef' }}
-              >
-                {/* Shiny green accent bar */}
-                <div
-                  style={{
-                    width: '8px',
-                    height: '80%',
-                    position: 'absolute',
-                    left: '2px',
-                    top: '10%',
-                    borderTopLeftRadius: 0,
-                    borderBottomLeftRadius: 0,
-                    borderTopRightRadius: '10px',
-                    borderBottomRightRadius: '10px',
-                    background: 'linear-gradient(135deg, #34d399 0%, #60a5fa 100%)',
-                  }}
-                />
-                <div className="flex items-center justify-between" style={{ marginLeft: '10px' }}>
-                  <div className="flex items-center gap-3">
-                    {transaction.related_user ? (
-                      <img
-                        src={getUserAvatar(transaction)}
-                        alt={transaction.related_user}
-                        className="w-14 h-14 rounded-full object-cover"
-                        style={{ border: '2px solid #0097b2' }}
-                      />
-                    ) : (
-                      getTransactionIcon(transaction.type)
-                    )}
-                    <div>
-                      <p className="font-medium" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
-                        {transaction.description || transaction.type.replace('_', ' ').toUpperCase()}
-                      </p>
-                      <p className="text-sm" style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>
-                        {formatDateSafely(transaction.createdAt || transaction.created_at)}
-                      </p>
-                      {transaction.message && (
-                        <div className="mt-1 p-2 rounded-lg" style={{ backgroundColor: '#e6f7ff', border: '1px solid #0097b2' }}>
-                          <p className="text-sm" style={{ color: '#0097b2', fontFamily: 'Avenir, sans-serif' }}>
-                            &ldquo;{transaction.message}&rdquo;
-                          </p>
-                        </div>
+            historyData.data.map((transaction, index) => {
+              // Patch: Always show sender as 'Admin' for admin grants
+              const isAdminGrant = transaction.type === 'admin_grant' || transaction.is_admin_grant;
+              const senderLabel = isAdminGrant ? 'Admin' : (transaction.related_user || 'Unknown');
+              return (
+                <div 
+                  key={index} 
+                  className="relative p-4"
+                  style={{ background: 'linear-gradient(135deg, #f8fafc 60%, #e0f7fa 100%)', borderRadius: '18px', overflow: 'hidden', border: '1.5px solid #e0e7ef' }}
+                >
+                  {/* Shiny green accent bar */}
+                  <div
+                    style={{
+                      width: '8px',
+                      height: '80%',
+                      position: 'absolute',
+                      left: '2px',
+                      top: '10%',
+                      borderTopLeftRadius: 0,
+                      borderBottomLeftRadius: 0,
+                      borderTopRightRadius: '10px',
+                      borderBottomRightRadius: '10px',
+                      background: 'linear-gradient(135deg, #34d399 0%, #60a5fa 100%)',
+                    }}
+                  />
+                  <div className="flex items-center justify-between" style={{ marginLeft: '10px' }}>
+                    <div className="flex items-center gap-3">
+                      {isAdminGrant ? (
+                        <HeartIconSolid className="w-8 h-8" style={{ color: '#ef4444' }} />
+                      ) : transaction.related_user ? (
+                        <img
+                          src={getUserAvatar(transaction)}
+                          alt={transaction.related_user}
+                          className="w-14 h-14 rounded-full object-cover"
+                          style={{ border: '2px solid #0097b2' }}
+                        />
+                      ) : (
+                        <span style={{fontSize:'2rem',color:'#0097b2',fontWeight:900}}>+</span>
                       )}
+                      <div>
+                        <p className="font-medium" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                          {transaction.description || transaction.type.replace('_', ' ').toUpperCase()}
+                        </p>
+                        <p className="text-sm" style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>
+                          {formatDateSafely(transaction.createdAt || transaction.created_at)}
+                        </p>
+                        {/* Show message for admin grants, and for received/given cheers if message exists */}
+                        {(isAdminGrant || ((['received','given'].includes(transaction.type)) && transaction.message)) && (
+                          <div className="mt-1 p-2 rounded-lg" style={{ backgroundColor: '#e6f7ff', border: '1px solid #0097b2' }}>
+                            <p className="text-sm" style={{ color: '#0097b2', fontFamily: 'Avenir, sans-serif' }}>
+                              &ldquo;{transaction.message || ''}&rdquo;
+                            </p>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  <div className="text-right">
-                    <p
-                      className="font-semibold"
-                      style={{
-                        color:
-                          transaction.type === 'purchase' || transaction.type === 'given' || transaction.type === 'admin_deduct'
-                            ? '#ef4444' // shiny red for deducted
-                            : '#22c55e', // shiny green for added
-                        fontFamily: 'Avenir, sans-serif',
-                      }}
-                    >
-                      {transaction.type === 'purchase' || transaction.type === 'given' || transaction.type === 'admin_deduct' ? '-' : '+'}
-                      {transaction.amount}
-                      {transaction.type === 'received' || transaction.type === 'given' ? ' bits' : ' pts'}
-                    </p>
-                    {transaction.related_user && (
-                      <p className="text-sm" style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>
-                        {transaction.type === 'given' ? 'to' : 'from'} {transaction.related_user}
-                      </p>
+                    {isAdminGrant && (
+                      <div className="text-right">
+                        <p
+                          className="font-semibold"
+                          style={{
+                            color:
+                              transaction.type === 'purchase' || transaction.type === 'given' || transaction.type === 'admin_deduct'
+                                ? '#ef4444'
+                                : '#22c55e',
+                            fontFamily: 'Avenir, sans-serif',
+                          }}
+                        >
+                          {transaction.type === 'purchase' || transaction.type === 'given' || transaction.type === 'admin_deduct' ? '-' : ''}
+                          {transaction.amount}
+                          {transaction.type === 'received' || transaction.type === 'given' ? ' bits' : ' pts'}
+                        </p>
+                        <p className="text-xs mt-1" style={{ color: '#dc2626', fontFamily: 'Avenir, sans-serif', fontWeight: 'bold' }}>
+                          from Admin
+                        </p>
+                      </div>
+                    )}
+                    {!isAdminGrant && (
+                      <div className="text-right">
+                        <p
+                          className="font-semibold"
+                          style={{
+                            color:
+                              transaction.type === 'purchase' || transaction.type === 'given' || transaction.type === 'admin_deduct'
+                                ? '#ef4444'
+                                : '#22c55e',
+                            fontFamily: 'Avenir, sans-serif',
+                          }}
+                        >
+                          {transaction.type === 'purchase' || transaction.type === 'given' || transaction.type === 'admin_deduct' ? '-' : '+'}
+                          {transaction.amount}
+                          {transaction.type === 'received' || transaction.type === 'given' ? ' bits' : ' pts'}
+                        </p>
+                        {transaction.related_user && (
+                          <p className="text-sm" style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>
+                            {transaction.type === 'given' ? 'to' : 'from'} {senderLabel}
+                          </p>
+                        )}
+                      </div>
                     )}
                   </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           ) : (
             <div className="p-8 text-center" style={{ color: '#4a6e7e' }}>
               <ChartBarIcon className="w-12 h-12 mx-auto mb-3" style={{ color: '#eee3e3' }} />

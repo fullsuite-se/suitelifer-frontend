@@ -69,7 +69,8 @@ const LeaderboardCard = ({ user, rank, type, isPodium }) => {
           {/* User Details */}
           <div className="user-details flex-1">
             <div className="user-name font-semibold text-[#1a0202] text-sm">
-              {user.first_name} {user.last_name}
+              {/* Patch: If user is admin grant, show 'Admin' */}
+              {user.is_admin_grant ? 'Admin' : `${user.first_name} ${user.last_name}`}
             </div>
             <div className="user-stats text-xs text-[#4a6e7e]">
               {getTypeIcon(type)} {getTypeLabel(type)}: {getTypeValue(type, user)} heartbits
