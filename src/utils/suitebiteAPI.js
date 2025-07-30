@@ -231,7 +231,7 @@ export const suitebiteAPI = {
     return response.data;
   },
 
-  deleteOrder: async (orderId, reason) => {
+  deleteOrder: async (orderId, reason, isFromUserPanel = true) => {
     // Get user role from JWT token to determine correct endpoint
     const token = localStorage.getItem('token');
     let userRole = 'USER';
@@ -245,8 +245,9 @@ export const suitebiteAPI = {
       }
     }
     
-    // Use admin endpoint for admins, user endpoint for regular users
-    const endpoint = ['ADMIN', 'SUPER_ADMIN', 'SUPER ADMIN'].includes(userRole) 
+    // Use admin endpoint ONLY for admin panel calls (hard delete)
+    // Use user endpoint for user panel calls (soft delete) regardless of user role
+    const endpoint = (!isFromUserPanel && ['ADMIN', 'SUPER_ADMIN', 'SUPER ADMIN'].includes(userRole)) 
       ? `/admin/orders/${orderId}`
       : `/orders/${orderId}`;
     
@@ -254,6 +255,7 @@ export const suitebiteAPI = {
       ...createAuthHeaders(),
       data: { reason }
     });
+    
     return response.data;
   },
   

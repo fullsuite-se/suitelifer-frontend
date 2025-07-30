@@ -1,67 +1,39 @@
-import { useState } from 'react';
-import { suitebiteAPI } from '../../utils/suitebiteAPI';
+import React, { useState } from 'react';
 import { formatDate } from '../../utils/dateHelpers';
 
-const DigitalReceipt = ({ order, onClose, onPrint }) => {
+const DigitalReceipt = ({ order, onClose }) => {
   const [isPrinting, setIsPrinting] = useState(false);
+  const items = order.orderItems || order.items || [];
 
-  const handlePrint = async () => {
-    if (isPrinting) return;
-
-    try {
-      setIsPrinting(true);
-      // Simulate print functionality
+  const handlePrint = () => {
+    setIsPrinting(true);
+    setTimeout(() => {
       window.print();
-      if (onPrint) {
-        await onPrint();
-      }
-    } catch (error) {
-      // Error handling for production - replace console.error with proper logging
-    } finally {
       setIsPrinting(false);
-    }
-  };
-
-  const formatDateTime = (dateString) => {
-    return new Date(dateString).toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
-    });
+    }, 100);
   };
 
   const getStatusBadge = (status) => {
-    const baseClasses = "inline-flex items-center px-2 py-1 rounded-full text-xs font-medium";
-    
-    switch (status) {
-      case 'pending':
-        return `${baseClasses} bg-yellow-100 text-yellow-800`;
-      case 'processing':
-        return `${baseClasses} bg-blue-100 text-blue-800`;
-      case 'completed':
-        return `${baseClasses} bg-green-100 text-green-800`;
-      case 'cancelled':
-        return `${baseClasses} bg-red-100 text-red-800`;
-      default:
-        return `${baseClasses} bg-gray-100 text-gray-800`;
-    }
+    const statusClasses = {
+      pending: 'bg-yellow-100 text-yellow-800',
+      processing: 'bg-blue-100 text-blue-800',
+      completed: 'bg-green-100 text-green-800',
+      cancelled: 'bg-red-100 text-red-800'
+    };
+    return `inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${statusClasses[status] || 'bg-gray-100 text-gray-800'}`;
   };
 
-  // Helper function to format variation labels
-  const formatLabel = (label) => {
-    if (typeof label !== 'string') return String(label ?? '');
-    return label
-      .replace(/_/g, ' ')
-      .replace(/\w\S*/g, w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+  const formatDateTime = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
   };
 
-  // Helper function to get variation summary for an item
-  const getVariationSummary = (variations) => {
+  const renderVariations = (variations) => {
     if (!variations || variations.length === 0) return null;
-    
+
     // Group variations by type
     const groupedVariations = variations.reduce((acc, variation) => {
       const typeName = variation.type_label || variation.type_name || 'Unknown';
@@ -72,216 +44,152 @@ const DigitalReceipt = ({ order, onClose, onPrint }) => {
       return acc;
     }, {});
 
-    return groupedVariations;
+    return Object.entries(groupedVariations).map(([typeName, variations]) => (
+      <div key={typeName} className="flex items-start gap-2 text-sm text-gray-600">
+        <span className="font-medium capitalize whitespace-nowrap">{typeName}:</span>
+        <div className="flex flex-wrap gap-1 flex-1">
+          {variations.map((variation, index) => (
+            <div key={index} className="flex items-center gap-1">
+              {variation.hex_color && (
+                <div
+                  className="w-4 h-4 rounded-full border border-gray-300 flex-shrink-0"
+                  style={{ backgroundColor: variation.hex_color }}
+                />
+              )}
+              <span className="break-words">{variation.option_label || variation.option_value}</span>
+              {index < variations.length - 1 && <span>,</span>}
+            </div>
+          ))}
+        </div>
+      </div>
+    ));
   };
-
-  // Use orderItems if available, otherwise fall back to items
-  const items = order.orderItems || order.items || [];
 
   return (
     <div className="digital-receipt-modal fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="modal-content bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="modal-header bg-[#0097b2] text-white p-4 rounded-t-lg">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div>
-                <h3 className="text-lg font-semibold">Order #{order.order_id}</h3>
-                <p className="text-sm opacity-90">{order.first_name || order.user_first_name} {order.last_name || order.user_last_name} • {order.user_email}</p>
-              </div>
-            </div>
-            <button
-              onClick={onClose}
-              className="close-btn p-2 hover:bg-white hover:bg-opacity-20 rounded-lg transition-colors duration-200"
-            >
-              ✕
-            </button>
-          </div>
+      <div className="modal-content bg-white rounded-xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+        {/* Centered Title */}
+        <div className="p-4 text-center border-b border-gray-200">
+          <h3 className="text-xl font-bold text-gray-900">The Gift Suite</h3>
         </div>
-        
-        <div className="modal-body p-4">
-          {/* Receipt Details */}
-          <div className="receipt-details mb-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+
+        {/* Compact Order Info */}
+        <div className="p-3 space-y-2">
+          {/* Customer, Status & Date Row */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
               <div>
-                <span className="text-xs font-medium text-gray-600">Order Date:</span>
-                <div className="text-gray-900">{formatDateTime(order.ordered_at)}</div>
+                <p className="text-sm text-gray-600">Customer</p>
+                <p className="font-semibold text-gray-900 text-base">
+                  {order.first_name || order.user_first_name} {order.last_name || order.user_last_name}
+                </p>
               </div>
               <div>
-                <span className="text-xs font-medium text-gray-600">Payment:</span>
-                <div className="text-gray-900">❤️ Heartbits</div>
+                <p className="text-sm text-gray-600">Status</p>
+                <span className={getStatusBadge(order.status)}>
+                  {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                </span>
               </div>
               <div>
-                <span className="text-xs font-medium text-gray-600">Items:</span>
-                <div className="text-gray-900">{items.length} item{items.length !== 1 ? 's' : ''}</div>
-              </div>
-              <div>
-                <span className="text-xs font-medium text-gray-600">Total:</span>
-                <div className="text-gray-900 font-semibold">❤️ {order.total_points}</div>
+                <p className="text-sm text-gray-600">Date</p>
+                <p className="font-medium text-gray-900 text-base">{formatDateTime(order.ordered_at)}</p>
               </div>
             </div>
           </div>
-          
-          {/* Order Timeline */}
-          <div className="order-timeline mb-4 bg-gray-50 rounded-lg p-3">
-            <div className="flex items-center justify-between gap-4 relative px-2">
-              {/* Horizontal line */}
-              <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gray-200 z-0" style={{transform: 'translateY(-50%)'}}></div>
-              {/* Timeline steps */}
-              <div className="flex flex-1 items-center justify-between z-10">
-                {/* Placed */}
-                <div className="flex flex-col items-center min-w-[80px]">
-                  <div className="w-4 h-4 bg-green-500 rounded-full border-2 border-white shadow flex items-center justify-center">
-                    <div className="w-2 h-2 bg-white rounded-full"></div>
-                  </div>
-                  <span className="text-xs font-medium text-gray-900 mt-1">Placed</span>
-                  <span className="text-[10px] text-gray-500">{formatDate(order.ordered_at)}</span>
-                </div>
-                {/* Approved */}
-                {order.processed_at && (
-                  <div className="flex flex-col items-center min-w-[80px]">
-                    <div className="w-4 h-4 bg-blue-500 rounded-full border-2 border-white shadow flex items-center justify-center">
-                      <div className="w-2 h-2 bg-white rounded-full"></div>
-              </div>
-                    <span className="text-xs font-medium text-gray-900 mt-1">Approved</span>
-                    <span className="text-[10px] text-gray-500">{formatDate(order.processed_at)}</span>
-                </div>
-              )}
-                {/* Completed */}
-              {order.completed_at && (
-                  <div className="flex flex-col items-center min-w-[80px]">
-                    <div className="w-4 h-4 bg-green-500 rounded-full border-2 border-white shadow flex items-center justify-center">
-                      <div className="w-2 h-2 bg-white rounded-full"></div>
-                    </div>
-                    <span className="text-xs font-medium text-gray-900 mt-1">Completed</span>
-                    <span className="text-[10px] text-gray-500">{formatDate(order.completed_at)}</span>
-                  </div>
-                )}
-                </div>
-            </div>
-          </div>
-          
-          {/* Receipt Items */}
-          <div className="receipt-items mb-4">
-            <div className="flex items-center gap-3 mb-2">
-              <h4 className="text-sm font-semibold text-gray-900">Items Purchased</h4>
-              <span className={`inline-flex items-center px-2 py-1 rounded-full text-sm font-medium ${
-                order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
-                order.status === 'completed' ? 'bg-green-100 text-green-800' :
-                order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                'bg-gray-100 text-gray-800'
-              }`}>
-                {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-              </span>
-            </div>
-            <div className="items-list space-y-2">
-              {items.map((item, index) => {
-                const variationSummary = getVariationSummary(item.variations);
-                
-                return (
-                  <div key={index} className="item bg-gray-50 rounded-lg p-3">
-                    <div className="flex items-center gap-3">
-                      <div className="item-image w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
-                      {item.image_url ? (
-                        <img
-                          src={item.image_url}
-                          alt={item.product_name}
-                          className="w-full h-full object-cover rounded-lg"
-                        />
-                      ) : (
-                          <span className="text-lg">📦</span>
-                      )}
-                    </div>
-                    
-                    <div className="item-details flex-1">
-                        <div className="item-name font-semibold text-gray-900 text-sm">
-                        {item.product_name}
-                      </div>
-                        <div className="item-meta text-xs text-gray-600 mt-1">
-                          {item.quantity} × ❤️ {item.price_points} heartbits
+
+          {/* Horizontal Line */}
+          <div className="border-t border-gray-200"></div>
+
+          {/* Items Section */}
+          <div>
+            <h4 className="text-base font-semibold text-gray-900 mb-2">Items</h4>
+            <div className="space-y-1">
+              {items.map((item, index) => (
+                <div key={index} className="relative">
+                  <div className={`rounded-lg p-3 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white border border-gray-100'}`}>
+                    {/* Item Header */}
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1 min-w-0">
+                        <h5 className="font-medium text-gray-900 text-base break-words">{item.product_name}</h5>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-sm text-gray-500">Qty: {item.quantity}</span>
+                          <span className="text-sm text-gray-500">•</span>
+                          <span className="text-sm text-gray-500">{item.price_points} pts each</span>
                         </div>
-                        
-                        {/* Variations Display */}
-                        {variationSummary && (
-                          <div className="item-variations mt-1">
-                            <div className="flex flex-wrap gap-1">
-                              {Object.entries(variationSummary).map(([typeName, variations]) => (
-                                <div key={typeName} className="flex items-center gap-1">
-                                  <span className="text-xs text-gray-600 capitalize">
-                                    {formatLabel(typeName)}:
-                                  </span>
-                                  <div className="flex flex-wrap gap-1">
-                                    {variations.map((variation, varIndex) => (
-                                      <div
-                                        key={`${variation.option_id}-${varIndex}`}
-                                        className="inline-flex items-center gap-1 px-1 py-0.5 bg-white rounded text-xs border border-gray-200"
-                                      >
-                                        {variation.hex_color && (
-                                          <div
-                                            className="w-2 h-2 rounded-full border border-gray-300 flex-shrink-0"
-                                            style={{ backgroundColor: variation.hex_color }}
-                                            title={`Color: ${variation.option_label}`}
-                                          />
-                                        )}
-                                        <span className="text-gray-900">
-                                          {variation.option_label || variation.option_value}
-                                        </span>
-                                      </div>
-                                    ))}
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                        </div>
-                      )}
-                    </div>
-                    
-                    <div className="item-total text-right">
-                        <div className="text-sm font-bold text-[#0097b2]">
-                        ❤️ {item.price_points * item.quantity}
                       </div>
+                      <div className="text-right ml-3 flex-shrink-0">
+                        <p className="font-semibold text-gray-900 text-base">
+                          {item.quantity * item.price_points} pts
+                        </p>
                       </div>
                     </div>
+
+                    {/* Dynamic Variations - Now contained within the background */}
+                    {item.variations && item.variations.length > 0 && (
+                      <div className="mt-2 pt-2 border-t border-gray-200 space-y-1">
+                        {renderVariations(item.variations)}
+                      </div>
+                    )}
                   </div>
-                );
-              })}
+                  {/* Horizontal line between items */}
+                  {index < items.length - 1 && (
+                    <div className="border-t border-gray-200 my-1"></div>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
-          
-          {/* Notes Section */}
+
+          {/* Horizontal Line */}
+          <div className="border-t border-gray-200"></div>
+
+          {/* Summary */}
+          <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-3">
+            <div className="flex justify-between items-center">
+              <span className="text-base font-medium text-gray-700">Total Points Used</span>
+              <span className="font-bold text-[#0097b2] text-xl">{order.total_points} heartbits</span>
+            </div>
+          </div>
+
+          {/* Notes */}
           {order.notes && (
-            <div className="notes-section mb-4 p-2 bg-yellow-50 border border-yellow-200 rounded-lg">
-              <div className="flex items-center gap-1 mb-1">
-                <span className="text-xs font-medium text-yellow-800">Notes:</span>
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+              <div className="flex items-start gap-2">
+                <span className="text-yellow-600 text-base">📝</span>
+                <div>
+                  <p className="text-sm font-medium text-yellow-800 mb-1">Notes</p>
+                  <p className="text-sm text-yellow-700">{order.notes}</p>
+                </div>
               </div>
-              <p className="text-xs text-yellow-700">{order.notes}</p>
             </div>
           )}
         </div>
-        
-        {/* Receipt Actions */}
-        <div className="modal-footer bg-gray-50 p-3 rounded-b-lg">
-          <div className="flex gap-2">
+
+        {/* Modern Footer */}
+        <div className="bg-gray-50 p-4 rounded-b-xl">
+          <div className="flex gap-3">
             <button
               onClick={handlePrint}
               disabled={isPrinting}
-              className="print-btn flex-1 bg-[#0097b2] text-white py-2 px-3 rounded-lg font-semibold hover:bg-[#007a8e] transition-colors duration-200 flex items-center justify-center gap-2 disabled:opacity-50 text-sm"
+              className="flex-1 bg-[#0097b2] text-white py-3 px-4 rounded-lg font-semibold hover:bg-[#007a8e] transition-colors flex items-center justify-center gap-2 disabled:opacity-50 text-base"
             >
               {isPrinting ? (
                 <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                   Printing...
                 </>
               ) : (
                 <>
-                  🖨️ Print Receipt
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                  </svg>
+                  Print Receipt
                 </>
               )}
             </button>
-            
             <button
               onClick={onClose}
-              className="close-btn flex-1 bg-gray-200 text-gray-700 py-2 px-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors duration-200 text-sm"
+              className="flex-1 bg-gray-200 text-gray-700 py-3 px-4 rounded-lg font-semibold hover:bg-gray-300 transition-colors text-base"
             >
               Close
             </button>

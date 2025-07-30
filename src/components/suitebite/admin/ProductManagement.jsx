@@ -102,89 +102,68 @@ const ProductManagement = () => {
 
   const loadVariationData = async () => {
     try {
-      const [typesResponse, optionsResponse] = await Promise.all([
-        suitebiteAPI.getVariationTypes(),
-        suitebiteAPI.getVariationOptions()
-      ]);
-
-      if (typesResponse.success) {
-        setVariationTypes(typesResponse.variation_types || []);
-      }
-      if (optionsResponse.success) {
-        setVariationOptions(optionsResponse.variation_options || []);
+      const response = await suitebiteAPI.getVariationTypes();
+      if (response.success) {
+        setVariationTypes(response.variationTypes || []);
       }
     } catch (error) {
-      console.error('Error loading variation data:', error);
+      console.error('Error loading variation types:', error);
     }
   };
 
   const showNotification = (type, message) => {
     setNotification({ show: true, type, message });
-    setTimeout(() => setNotification({ show: false, type: '', message: '' }), 5000);
+    setTimeout(() => setNotification({ show: false, type: '', message: '' }), 4000);
   };
 
   const handleAddProduct = () => {
     setModalMode('add');
+    setSelectedProduct(null);
     setShowModal(true);
   };
 
   const handleEditProduct = (product) => {
     setModalMode('edit');
     setSelectedProduct(product);
-    setFormData({
-      name: product.name || '',
-      description: product.description || '',
-      price_points: product.price || product.price_points || '', // Handle both price and price_points
-      category: product.category || '',
-      image_url: product.image_url || ''
-    });
-    setSelectedVariations([]);
-    setImageFile(null);
-    setImagePreview(product.image_url || '');
     setShowModal(true);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    if (!formData.name || !formData.price_points || !formData.category) {
+      showNotification('error', 'Please fill in all required fields');
+      return;
+    }
+
     try {
-      setLoading(true);
-      
-      let submitData = { ...formData };
-      
-      // Handle image upload if file is selected
-      if (imageFile) {
-        // This would typically upload to Cloudinary or similar service
-        // For now, we'll use a placeholder
-        submitData.image_url = imagePreview;
-      }
-      
+      const productData = {
+        name: formData.name,
+        description: formData.description,
+        price_points: parseInt(formData.price_points),
+        category: formData.category,
+        image_url: imagePreview || formData.image_url
+      };
+
       let response;
       if (modalMode === 'add') {
-        response = await suitebiteAPI.addProduct(submitData);
-        
-        // If variations are selected, add them to the product
-        if (response.success && selectedVariations.length > 0) {
-          for (const variation of selectedVariations) {
-            try {
-              await suitebiteAPI.addProductVariation({
-                product_id: response.product.product_id,
-                variation_option_ids: variation.optionIds,
-                price_adjustment: variation.priceAdjustment || 0,
-                sku_suffix: variation.skuSuffix || ''
-              });
-            } catch (variationError) {
-              console.warn('Failed to add variation:', variationError);
-            }
-          }
-        }
+        response = await suitebiteAPI.createProduct(productData);
       } else {
-        response = await suitebiteAPI.updateProduct(selectedProduct.product_id, submitData);
+        response = await suitebiteAPI.updateProduct(selectedProduct.product_id, productData);
       }
-      
+
       if (response.success) {
-        showNotification('success', `Product ${modalMode === 'add' ? 'added' : 'updated'} successfully`);
+        showNotification('success', `Product ${modalMode === 'add' ? 'created' : 'updated'} successfully!`);
         setShowModal(false);
+        setFormData({
+          name: '',
+          description: '',
+          price_points: '',
+          category: '',
+          image_url: ''
+        });
+        setImageFile(null);
+        setImagePreview('');
         await loadProducts();
       } else {
         showNotification('error', response.message || 'Failed to save product');
@@ -192,21 +171,21 @@ const ProductManagement = () => {
     } catch (error) {
       console.error('Error saving product:', error);
       showNotification('error', 'Failed to save product');
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleDeleteProduct = async (productId) => {
-    if (!window.confirm('Are you sure you want to delete this product?')) return;
-    
+    if (!window.confirm('Are you sure you want to delete this product?')) {
+      return;
+    }
+
     try {
       const response = await suitebiteAPI.deleteProduct(productId);
       if (response.success) {
-        showNotification('success', 'Product deleted successfully');
+        showNotification('success', 'Product deleted successfully!');
         await loadProducts();
       } else {
-        showNotification('error', 'Failed to delete product');
+        showNotification('error', response.message || 'Failed to delete product');
       }
     } catch (error) {
       console.error('Error deleting product:', error);
@@ -225,21 +204,15 @@ const ProductManagement = () => {
   };
 
   const handleAddCategory = async () => {
-    const newCategory = prompt('Enter new category name:');
-    if (newCategory && newCategory.trim()) {
+    const categoryName = prompt('Enter new category name:');
+    if (categoryName && categoryName.trim()) {
       try {
-        const response = await suitebiteAPI.addCategory({
-          category_name: newCategory.trim(),
-          category_description: `${newCategory.trim()} products`,
-          is_active: true
-        });
-        
+        const response = await addCategory(categoryName.trim());
         if (response.success) {
-          addCategory(newCategory.trim());
-          showNotification('success', `Category "${newCategory}" added successfully`);
+          showNotification('success', 'Category added successfully!');
           await loadProducts(); // Refresh to sync categories
         } else {
-          showNotification('error', 'Failed to add category');
+          showNotification('error', response.message || 'Failed to add category');
         }
       } catch (error) {
         console.error('Error adding category:', error);
@@ -248,11 +221,11 @@ const ProductManagement = () => {
     }
   };
 
-  // Get all categories for filter dropdown
+  // Get categories for filtering
   const categories = getCategoriesForFilter();
   const allCategories = getAllCategories();
 
-  // Filter and sort products - Fixed to handle price correctly
+  // Filter and sort products
   const filteredProducts = products
     .filter(product => {
       const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -264,10 +237,12 @@ const ProductManagement = () => {
       let aValue = a[sortBy];
       let bValue = b[sortBy];
       
-      // Handle price field correctly
-      if (sortBy === 'price_points' || sortBy === 'price') {
-        aValue = Number(a.price || a.price_points) || 0;
-        bValue = Number(b.price || b.price_points) || 0;
+      if (sortBy === 'price_points') {
+        aValue = parseInt(aValue) || 0;
+        bValue = parseInt(bValue) || 0;
+      } else {
+        aValue = String(aValue || '').toLowerCase();
+        bValue = String(bValue || '').toLowerCase();
       }
       
       if (sortOrder === 'asc') {
@@ -277,54 +252,51 @@ const ProductManagement = () => {
       }
     });
 
-  /**
-   * Renders a color-coded category badge
-   * @param {string} categoryName - Category name
-   * @returns {JSX.Element} Colored category badge
-   */
   const renderCategoryBadge = (categoryName) => {
-    if (!categoryName) return <span className="text-gray-400">No category</span>;
+    if (!categoryName) return null;
     
-    const categoryColor = getCategoryColor(categoryName);
-    const categoryBgColor = getCategoryBgColor(categoryName);
+    const color = getCategoryColor(categoryName);
+    const bgColor = getCategoryBgColor(categoryName);
     
     return (
       <span 
-        className={`px-2 py-1 rounded-full text-xs font-medium ${categoryBgColor} ${categoryColor}`}
+        className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+        style={{ 
+          backgroundColor: bgColor, 
+          color: color 
+        }}
       >
         {categoryName}
       </span>
     );
   };
 
-  /**
-   * Renders category option for dropdown with color indicator
-   * @param {string} category - Category name
-   * @returns {JSX.Element} Category option element
-   */
   const renderCategoryOption = (category) => {
-    const isAllOption = category === 'all';
+    if (category === 'all') {
+      return (
+        <option key="all" value="all" className="text-base">
+          All Categories
+        </option>
+      );
+    }
     
     return (
-      <option key={category} value={category}>
-        {isAllOption ? 'All Categories' : category}
+      <option key={category} value={category} className="text-base">
+        {category}
       </option>
     );
   };
 
-  /**
-   * Renders category selection for product form
-   */
   const renderCategoryFormSelection = () => {
     return (
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-base font-medium text-gray-700 mb-2">
           Category
         </label>
         <select
           value={formData.category}
           onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent text-base"
         >
           <option value="">Select a category</option>
           {allCategories.map(categoryObj => (
@@ -349,7 +321,7 @@ const ProductManagement = () => {
     <div className="product-management-container bg-white rounded-lg shadow-sm">
       {/* Toast Notification */}
       {notification.show && (
-        <div className={`notification-toast fixed top-20 right-4 z-50 p-4 rounded-lg shadow-lg text-sm font-medium max-w-sm ${
+        <div className={`notification-toast fixed top-20 right-4 z-50 p-4 rounded-lg shadow-lg text-base font-medium max-w-sm ${
           notification.type === 'success' 
             ? 'bg-green-50 text-green-800 border border-green-200' 
             : notification.type === 'error'
@@ -372,7 +344,7 @@ const ProductManagement = () => {
                 placeholder="Search products..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent text-base"
               />
             </div>
           </div>
@@ -382,7 +354,7 @@ const ProductManagement = () => {
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent text-base"
             >
               {categories.map(renderCategoryOption)}
             </select>
@@ -393,7 +365,7 @@ const ProductManagement = () => {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent text-base"
             >
               <option key="name" value="name">Sort by Name</option>
               <option key="price_points" value="price_points">Sort by Price</option>
@@ -406,7 +378,7 @@ const ProductManagement = () => {
             <select
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent text-base"
             >
               <option key="asc" value="asc">Ascending</option>
               <option key="desc" value="desc">Descending</option>
@@ -417,7 +389,7 @@ const ProductManagement = () => {
           <div className="flex justify-end md:col-span-1">
             <button
               onClick={handleAddProduct}
-              className="bg-[#0097b2] text-white px-4 py-2 rounded-lg hover:bg-[#007a8e] transition-colors duration-200 flex items-center gap-2 w-full md:w-auto"
+              className="bg-[#0097b2] text-white px-4 py-2 rounded-lg hover:bg-[#007a8e] transition-colors duration-200 flex items-center gap-2 w-full md:w-auto text-base"
             >
               <PlusIcon className="h-5 w-5" />
               Add Product
@@ -431,18 +403,18 @@ const ProductManagement = () => {
         {loading ? (
           <div className="text-center py-8">
             <div className="spinner mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading products...</p>
+            <p className="text-gray-600 text-base">Loading products...</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-gray-50">
-                  <th className="text-left p-2 border-b font-medium text-gray-700">Image</th>
-                  <th className="text-left p-2 border-b font-medium text-gray-700">Name</th>
-                  <th className="text-left p-2 border-b font-medium text-gray-700">Category</th>
-                  <th className="text-left p-2 border-b font-medium text-gray-700">Price</th>
-                  <th className="text-left p-2 border-b font-medium text-gray-700">Actions</th>
+                  <th className="text-left p-2 border-b font-medium text-gray-700 text-base">Image</th>
+                  <th className="text-left p-2 border-b font-medium text-gray-700 text-base">Name</th>
+                  <th className="text-left p-2 border-b font-medium text-gray-700 text-base">Category</th>
+                  <th className="text-left p-2 border-b font-medium text-gray-700 text-base">Price</th>
+                  <th className="text-left p-2 border-b font-medium text-gray-700 text-base">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -463,7 +435,7 @@ const ProductManagement = () => {
                     </td>
                     <td className="p-2 border-b">
                       <div>
-                        <p className="font-medium text-gray-900">{product.name}</p>
+                        <p className="font-medium text-gray-900 text-base">{product.name}</p>
                         <p className="text-sm text-gray-500 truncate max-w-xs">
                           {product.description}
                         </p>
@@ -473,7 +445,7 @@ const ProductManagement = () => {
                       {renderCategoryBadge(product.category)}
                     </td>
                     <td className="p-2 border-b">
-                      <span className="font-medium text-[#0097b2]">
+                      <span className="font-medium text-[#0097b2] text-base">
                         {product.price || product.price_points || 0} pts
                       </span>
                     </td>
