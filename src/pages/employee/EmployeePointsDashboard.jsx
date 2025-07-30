@@ -190,7 +190,11 @@ const PointsDashboard = () => {
       {/* Points Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Current Balance */}
-        <div className="rounded-xl p-6 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95" style={{ background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)', borderRadius: '18px' }}>
+        <div className="rounded-xl p-6 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95" 
+             style={{ 
+               background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)', 
+               borderRadius: '18px'
+             }}>
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium" style={{ color: '#1e40af', fontFamily: 'Avenir, sans-serif' }}>Current Balance</p>
@@ -203,7 +207,11 @@ const PointsDashboard = () => {
         </div>
 
         {/* Heartbits Remaining */}
-        <div className="rounded-xl p-6 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95" style={{ background: 'linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)', borderRadius: '18px' }}>
+        <div className="rounded-xl p-6 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95" 
+             style={{ 
+               background: 'linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)', 
+               borderRadius: '18px'
+             }}>
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium" style={{ color: '#059669', fontFamily: 'Avenir, sans-serif' }}>Heartbits Remaining</p>
@@ -217,7 +225,11 @@ const PointsDashboard = () => {
         </div>
 
         {/* Total Earned */}
-        <div className="rounded-xl p-6 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95" style={{ background: 'linear-gradient(135deg, #fed7aa 0%, #fdba74 100%)', borderRadius: '18px' }}>
+        <div className="rounded-xl p-6 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95" 
+             style={{ 
+               background: 'linear-gradient(135deg, #fed7aa 0%, #fdba74 100%)', 
+               borderRadius: '18px'
+             }}>
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium" style={{ color: '#92400e', fontFamily: 'Avenir, sans-serif' }}>Total Earned</p>
@@ -229,7 +241,11 @@ const PointsDashboard = () => {
         </div>
 
         {/* Total Spent */}
-        <div className="rounded-xl p-6 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95" style={{ background: 'linear-gradient(135deg, #fecaca 0%, #fca5a5 100%)', borderRadius: '18px' }}>
+        <div className="rounded-xl p-6 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95" 
+             style={{ 
+               background: 'linear-gradient(135deg, #fecaca 0%, #fca5a5 100%)', 
+               borderRadius: '18px'
+             }}>
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium" style={{ color: '#dc2626', fontFamily: 'Avenir, sans-serif' }}>Total Spent</p>
