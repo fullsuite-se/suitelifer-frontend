@@ -90,6 +90,12 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
   const [addTypeLoading, setAddTypeLoading] = useState(false);
   const [addOptionError, setAddOptionError] = useState('');
   const [addOptionLoading, setAddOptionLoading] = useState(false);
+  
+  // Variation delete confirmation modals
+  const [showDeleteVariationTypeModal, setShowDeleteVariationTypeModal] = useState(false);
+  const [showDeleteVariationOptionModal, setShowDeleteVariationOptionModal] = useState(false);
+  const [variationTypeToDelete, setVariationTypeToDelete] = useState(null);
+  const [variationOptionToDelete, setVariationOptionToDelete] = useState(null);
 
   // Auto-generate type_name from type_label
   useEffect(() => {
@@ -670,31 +676,20 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
 
       // --- Handle Image Deletions for Edit Mode ---
       if (mode === 'edit' && product?.product_id) {
-        console.log('🗑️ Checking for image deletions...');
-        console.log('- Original images:', originalProductImages.map(img => ({ id: img.image_id, url: img.image_url })));
-        console.log('- Selected images:', selectedImages.map(img => ({ isExisting: img.isExisting, image_id: img.image_id, url: img.url })));
-        console.log('- Currently selected existing images:', selectedImages.filter(img => img.isExisting).length);
-        
         // Get IDs of currently selected existing images
         const currentlySelectedImageIds = selectedImages
           .filter(img => img.isExisting && img.image_id)
           .map(img => img.image_id);
-        
-        console.log('- Currently selected image IDs:', currentlySelectedImageIds);
         
         // Find images that were originally loaded but are no longer selected (deleted)
         const imagesToDelete = originalProductImages.filter(originalImg => 
           !currentlySelectedImageIds.includes(originalImg.image_id)
         );
         
-        console.log('- Images to delete:', imagesToDelete.length, imagesToDelete.map(img => ({ id: img.image_id, url: img.image_url })));
-        
         // Delete images that were removed from preview
         for (const imageToDelete of imagesToDelete) {
           try {
-            console.log(`🗑️ Deleting image ${imageToDelete.image_id}...`);
             const deleteResult = await suitebiteAPI.deleteProductImage(imageToDelete.image_id);
-            console.log(`🗑️ Delete result for image ${imageToDelete.image_id}:`, deleteResult);
             
             if (!deleteResult.success) {
               console.warn(`Failed to delete image ${imageToDelete.image_id}:`, deleteResult.message);
@@ -706,32 +701,20 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
         
         if (imagesToDelete.length > 0) {
           // Refresh the product images state after deletions
-          console.log('🔄 Refreshing product images after deletions...');
           await refreshProductImages();
         }
       }
 
       // --- New Image Upload System ---
       // Upload selected images to Cloudinary first
-      console.log('🚀 Starting image upload process...');
-      console.log('- Selected images count:', selectedImages.length);
-      console.log('- Selected images data:', selectedImages);
-      
       if (selectedImages.length > 0 && productId) {
         // Filter for only new files that need to be uploaded
         const newFilesToUpload = selectedImages.filter(img => img.file && !img.isExisting);
-        console.log('- New files to upload:', newFilesToUpload);
         
         if (newFilesToUpload.length > 0) {
-          console.log('- Calling uploadSelectedImages...');
           const uploadResult = await uploadSelectedImages();
-          console.log('- Upload result:', uploadResult);
           
           if (uploadResult.success && uploadResult.imageUrls.length > 0) {
-            console.log('- Successfully got image URLs:', uploadResult.imageUrls);
-            console.log('- Public IDs:', uploadResult.publicIds);
-            console.log('- Upload results details:', uploadResult.uploadResults);
-            
             // Add all uploaded images to carousel
             for (let i = 0; i < uploadResult.imageUrls.length; i++) {
               const imageUrl = uploadResult.imageUrls[i];
@@ -749,17 +732,10 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
                 is_primary: i === 0, // First image is primary
                 is_active: true
               };
-              console.log(`- Adding image ${i + 1} to database:`, imageData);
               const addResult = await suitebiteAPI.addProductImage(productId, imageData);
-              console.log(`- Add image ${i + 1} result:`, addResult);
             }
             // Optionally update legacy image_url to first image for fallback
             await suitebiteAPI.updateProduct(productId, { image_url: uploadResult.imageUrls[0] });
-            
-            // Clear only the new selected images after successful upload, preserve existing ones
-            const newFilesToClear = selectedImages.filter(img => img.file && !img.isExisting);
-            console.log('- Clearing new uploaded files:', newFilesToClear.length);
-            console.log('- Keeping existing images:', selectedImages.filter(img => img.isExisting).length);
             
             // Keep only existing images in the selected images
             setSelectedImages(prev => prev.filter(img => img.isExisting));
@@ -767,11 +743,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
             console.error('❌ Upload failed:', uploadResult.error);
             throw new Error('Failed to upload images: ' + uploadResult.error);
           }
-        } else {
-          console.log('- No new files to upload (only existing images)');
         }
-      } else {
-        console.log('- No images to upload or no product ID');
       }
 
       // After adding images, fetch carousel images for display
@@ -834,12 +806,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
     }
     setAddOptionLoading(true);
     
-    console.log('Adding new variation option:', {
-      variation_type_id: newOptionData.typeId,
-      option_value: newOptionData.value.trim(),
-      option_label: newOptionData.value.trim(),
-      hex_color: newOptionData.typeName === 'color' ? newOptionData.hexColor : undefined
-    });
+
     
     try {
       const res = await suitebiteAPI.addVariationOption({
@@ -849,7 +816,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
         hex_color: newOptionData.typeName === 'color' ? newOptionData.hexColor : undefined
       });
       
-      console.log('Add variation option response:', res);
+
       if (res.success && res.option_id) {
         // Add the new option to variationOptions state
         setVariationOptions(prev => [
@@ -956,10 +923,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
     
     setAddTypeLoading(true);
     
-    console.log('Adding new variation type:', {
-      type_name: newTypeData.type_name.trim(),
-      type_label: newTypeData.type_label.trim(),
-    });
+
     
     try {
       const res = await suitebiteAPI.addVariationType({
@@ -967,7 +931,7 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
         type_label: newTypeData.type_label.trim(),
       });
       
-      console.log('Add variation type response:', res);
+
       
       if (res.success && res.variation_type_id) {
         setVariationTypes(prev => [
@@ -998,10 +962,16 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
   const [deletingOptionId, setDeletingOptionId] = useState(null);
 
   const handleDeleteVariationType = async (variationTypeId) => {
-    if (!window.confirm('Are you sure you want to delete this variation type and all its options?')) return;
-    setDeletingTypeId(variationTypeId);
+    setVariationTypeToDelete(variationTypeId);
+    setShowDeleteVariationTypeModal(true);
+  };
+
+  const confirmDeleteVariationType = async () => {
+    if (!variationTypeToDelete) return;
+    
+    setDeletingTypeId(variationTypeToDelete);
     try {
-      const res = await suitebiteAPI.deleteVariationType(variationTypeId);
+      const res = await suitebiteAPI.deleteVariationType(variationTypeToDelete);
       if (res.success) {
         showNotification('success', 'Variation type deleted successfully');
         await loadInitialData();
@@ -1012,14 +982,22 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
       showNotification('error', 'Failed to delete variation type');
     } finally {
       setDeletingTypeId(null);
+      setShowDeleteVariationTypeModal(false);
+      setVariationTypeToDelete(null);
     }
   };
 
   const handleDeleteVariationOption = async (optionId) => {
-    if (!window.confirm('Are you sure you want to delete this variation option?')) return;
-    setDeletingOptionId(optionId);
+    setVariationOptionToDelete(optionId);
+    setShowDeleteVariationOptionModal(true);
+  };
+
+  const confirmDeleteVariationOption = async () => {
+    if (!variationOptionToDelete) return;
+    
+    setDeletingOptionId(variationOptionToDelete);
     try {
-      const res = await suitebiteAPI.deleteVariationOption(optionId);
+      const res = await suitebiteAPI.deleteVariationOption(variationOptionToDelete);
       if (res.success) {
         showNotification('success', 'Variation option deleted successfully');
         await loadInitialData();
@@ -1030,6 +1008,8 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
       showNotification('error', 'Failed to delete variation option');
     } finally {
       setDeletingOptionId(null);
+      setShowDeleteVariationOptionModal(false);
+      setVariationOptionToDelete(null);
     }
   };
 
@@ -1751,6 +1731,116 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
                 className="flex-1 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors"
               >
                 Continue Anyway
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Variation Type Confirmation Modal */}
+      {showDeleteVariationTypeModal && variationTypeToDelete && (
+        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg max-w-md w-full p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Delete Variation Type</h3>
+              <button
+                onClick={() => {
+                  setShowDeleteVariationTypeModal(false);
+                  setVariationTypeToDelete(null);
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <XMarkIcon className="h-6 w-6" />
+              </button>
+            </div>
+            
+            <div className="mb-6">
+              <div className="flex items-start gap-3">
+                <ExclamationTriangleIcon className="h-8 w-8 text-red-500 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-medium text-gray-900 mb-2">
+                    Are you sure you want to delete this variation type?
+                  </p>
+                  <p className="text-xs text-gray-600">
+                    This will also delete all associated variation options. This action cannot be undone.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowDeleteVariationTypeModal(false);
+                  setVariationTypeToDelete(null);
+                }}
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={confirmDeleteVariationType}
+                disabled={deletingTypeId === variationTypeToDelete}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
+              >
+                {deletingTypeId === variationTypeToDelete ? 'Deleting...' : 'Delete Type'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Variation Option Confirmation Modal */}
+      {showDeleteVariationOptionModal && variationOptionToDelete && (
+        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg max-w-md w-full p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Delete Variation Option</h3>
+              <button
+                onClick={() => {
+                  setShowDeleteVariationOptionModal(false);
+                  setVariationOptionToDelete(null);
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <XMarkIcon className="h-6 w-6" />
+              </button>
+            </div>
+            
+            <div className="mb-6">
+              <div className="flex items-start gap-3">
+                <ExclamationTriangleIcon className="h-8 w-8 text-red-500 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-medium text-gray-900 mb-2">
+                    Are you sure you want to delete this variation option?
+                  </p>
+                  <p className="text-xs text-gray-600">
+                    This action cannot be undone.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowDeleteVariationOptionModal(false);
+                  setVariationOptionToDelete(null);
+                }}
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={confirmDeleteVariationOption}
+                disabled={deletingOptionId === variationOptionToDelete}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
+              >
+                {deletingOptionId === variationOptionToDelete ? 'Deleting...' : 'Delete Option'}
               </button>
             </div>
           </div>

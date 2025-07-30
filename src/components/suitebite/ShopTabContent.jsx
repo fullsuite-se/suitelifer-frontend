@@ -435,10 +435,10 @@ const ShopTabContent = () => {
 
 
       {/* Main Content Area */}
-      <div className="shop-content">
+      <div className="shop-content flex-1 flex flex-col">
         {/* Products Tab - Main shopping interface */}
         {activeTab === 'products' && (
-          <div className="products-section">
+          <div className="products-section flex-1">
             {/* Search and Filter Controls */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
               {/* Search Input */}
@@ -519,7 +519,7 @@ const ShopTabContent = () => {
 
         {/* Orders Tab - Order history interface */}
         {activeTab === 'orders' && (
-          <div className="orders-section mb-0">
+          <div className="orders-section h-full flex flex-col">
             <OrderHistory onCartUpdate={loadShopData} onHeartbitsUpdate={loadShopData} />
           </div>
         )}

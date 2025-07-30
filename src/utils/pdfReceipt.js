@@ -15,10 +15,10 @@ const formatLabel = (label) => {
 /**
  * Helper function to get variation summary for an item
  * @param {Array} variations - Array of variation objects
- * @returns {string} - Formatted variation summary
+ * @returns {Object} - Grouped variations by type
  */
 const getVariationSummary = (variations) => {
-  if (!variations || variations.length === 0) return '';
+  if (!variations || variations.length === 0) return null;
   
   // Group variations by type
   const groupedVariations = variations.reduce((acc, variation) => {
@@ -30,13 +30,7 @@ const getVariationSummary = (variations) => {
     return acc;
   }, {});
 
-  // Format each variation group
-  const variationTexts = Object.entries(groupedVariations).map(([typeName, variations]) => {
-    const optionLabels = variations.map(v => v.option_label || v.option_value || 'Unknown');
-    return `${formatLabel(typeName)}: ${optionLabels.join(', ')}`;
-  });
-
-  return variationTexts.join(' | ');
+  return groupedVariations;
 };
 
 /**
@@ -50,156 +44,237 @@ export const generateReceiptPDF = (order) => {
   // Set font
   doc.setFont('helvetica');
   
-  // Compact layout
-  const startY = 30;
-  const lineHeight = 7;
+  // Centered Title
+  const startY = 20;
   
-  // Order Number
-  doc.setFontSize(16);
+  // Title
+  doc.setFontSize(18);
+  doc.setFont(undefined, 'bold');
   doc.setTextColor(0, 0, 0);
-  doc.text(`Order #${order.order_id}`, 20, startY);
+  doc.text('The Gift Suite', 105, startY + 8, { align: 'center' });
   
-  // Customer Name (below order number)
-  if (order.first_name || order.last_name) {
-    doc.setFontSize(12);
-    doc.setTextColor(0, 0, 0);
-    doc.text(`${order.first_name || ''} ${order.last_name || ''}`, 20, startY + lineHeight);
-  }
+  // Horizontal line under title
+  doc.setDrawColor(200, 200, 200);
+  doc.line(20, startY + 12, 190, startY + 12);
   
-  // Status (below customer name)
+  // Customer, Status & Date Row
+  const infoY = startY + 25;
   doc.setFontSize(12);
   doc.setTextColor(0, 0, 0);
-  const statusY = startY + (lineHeight * 2);
-  doc.text(`Status: ${order.status.charAt(0).toUpperCase() + order.status.slice(1)}`, 20, statusY);
   
-  // Order Items Section Header
-  const itemsY = statusY + 15;
-  doc.setFontSize(16);
-  doc.setTextColor(0, 151, 178); // Brand color
-  doc.text('Order Items', 20, itemsY);
+  // Customer
+  doc.text('Customer', 20, infoY);
+  doc.setFont(undefined, 'bold');
+  doc.setFontSize(14);
+  doc.text(`${order.first_name || ''} ${order.last_name || ''}`, 20, infoY + 8);
   
-  // Add a line separator
+  // Status
+  doc.setFont(undefined, 'normal');
+  doc.setFontSize(12);
+  doc.text('Status', 80, infoY);
+  doc.setFont(undefined, 'bold');
+  doc.text(order.status.charAt(0).toUpperCase() + order.status.slice(1), 80, infoY + 8);
+  
+  // Date
+  doc.setFont(undefined, 'normal');
+  doc.text('Date', 140, infoY);
+  doc.setFont(undefined, 'bold');
+  const orderDate = new Date(order.ordered_at).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+  doc.text(orderDate, 140, infoY + 8);
+  
+  // Horizontal Line
   doc.setDrawColor(200, 200, 200);
-  doc.line(20, itemsY + 3, 190, itemsY + 3);
+  doc.line(20, infoY + 15, 190, infoY + 15);
   
-  let yPosition = itemsY + 15;
+  // Items Section
+  const itemsY = infoY + 20;
+  doc.setFontSize(14);
+  doc.setFont(undefined, 'bold');
+  doc.setTextColor(0, 0, 0);
+  doc.text('Items', 20, itemsY);
   
   // Use orderItems if available, otherwise fall back to items
   const items = order.orderItems || order.items || [];
   
+  let currentY = itemsY + 8;
+  
   if (items.length > 0) {
     items.forEach((item, index) => {
-      if (yPosition > 250) {
+      if (currentY > 250) {
         doc.addPage();
-        yPosition = 20;
+        currentY = 20;
       }
       
-      // Compact item container
-      doc.setFillColor(248, 250, 252); // Light blue-gray background
-      doc.rect(15, yPosition - 3, 180, 25, 'F');
+      // Calculate item height based on content
+      let itemHeight = 22; // Base height
       
-      // Product name and quantity on same line
-      doc.setFontSize(11);
+      // Add height for variations if they exist
+      if (item.variations && item.variations.length > 0) {
+        const variationSummary = getVariationSummary(item.variations);
+        const variationCount = Object.keys(variationSummary).length;
+        itemHeight += variationCount * 6; // 6 points per variation line
+      }
+      
+      // Dynamic item container background
+      if (index % 2 === 0) {
+        // Even items: light gray background
+        doc.setFillColor(248, 250, 252);
+        doc.rect(15, currentY - 4, 180, itemHeight, 'F');
+      } else {
+        // Odd items: white background with border
+        doc.setFillColor(255, 255, 255);
+        doc.rect(15, currentY - 4, 180, itemHeight, 'F');
+        doc.setDrawColor(240, 240, 240);
+        doc.rect(15, currentY - 4, 180, itemHeight, 'S');
+      }
+      
+      // Item header
+      doc.setFontSize(13);
+      doc.setFont(undefined, 'bold');
       doc.setTextColor(0, 0, 0);
-      doc.text(item.product_name || 'Product', 20, yPosition);
       
-      // Quantity and price (right aligned)
-      const quantityText = `${item.quantity}x ${item.price_points} pts`;
-      const quantityWidth = doc.getTextWidth(quantityText);
-      doc.text(quantityText, 190 - quantityWidth, yPosition);
-      
-      // Category (if available) and subtotal on second line
-      if (item.product_category) {
-        doc.setFontSize(9);
-        doc.setTextColor(100, 100, 100);
-        doc.text(item.product_category, 20, yPosition + 8);
+      // Handle long product names
+      const productName = item.product_name || 'Product';
+      const maxWidth = 120; // Leave space for price
+      if (doc.getTextWidth(productName) > maxWidth) {
+        const lines = doc.splitTextToSize(productName, maxWidth);
+        lines.forEach((line, lineIndex) => {
+          doc.text(line, 20, currentY + (lineIndex * 4));
+        });
+        currentY += lines.length * 4;
+      } else {
+        doc.text(productName, 20, currentY);
       }
       
-      doc.setFontSize(9);
+      // Quantity and price info
+      doc.setFontSize(11);
+      doc.setFont(undefined, 'normal');
       doc.setTextColor(100, 100, 100);
-      const totalText = `Total: ${item.quantity * item.price_points} pts`;
-      const totalWidth = doc.getTextWidth(totalText);
-      doc.text(totalText, 190 - totalWidth, yPosition + 8);
+      doc.text(`Qty: ${item.quantity} • ${item.price_points} pts each`, 20, currentY + 6);
       
-              // Compact variations display
-        if (item.variations && item.variations.length > 0) {
-          // Group variations by type
-          const groupedVariations = item.variations.reduce((acc, variation) => {
-            const typeName = variation.type_name || 'Unknown';
-            if (!acc[typeName]) {
-              acc[typeName] = [];
-            }
-            acc[typeName].push(variation);
-            return acc;
-          }, {});
-          
-          let variationY = yPosition + 12;
-          
-          Object.entries(groupedVariations).forEach(([typeName, variations]) => {
-            if (variationY > 250) {
-              doc.addPage();
-              variationY = 20;
-            }
-            
-            // Variation type and options on same line
-            doc.setFontSize(8);
-            doc.setTextColor(80, 80, 80);
-            const typeLabel = variations[0]?.type_label || formatLabel(typeName);
-            const optionLabels = variations.map(v => v.option_label || v.option_value || 'Unknown');
-            const optionsText = optionLabels.join(', ');
-            doc.text(`${typeLabel}: ${optionsText}`, 20, variationY);
-            
-            variationY += 6;
-          });
-          
-          yPosition = variationY + 3;
-        } else {
-          yPosition += 15;
-        }
+      // Item total (right aligned)
+      doc.setFont(undefined, 'bold');
+      doc.setTextColor(0, 0, 0);
+      const itemTotal = `${item.quantity * item.price_points} pts`;
+      const itemTotalWidth = doc.getTextWidth(itemTotal);
+      doc.text(itemTotal, 190 - itemTotalWidth, currentY);
+      
+      // Dynamic Variations - Now properly contained within background
+      if (item.variations && item.variations.length > 0) {
+        const variationSummary = getVariationSummary(item.variations);
+        let variationY = currentY + 12;
         
-        // Add minimal spacing between items
-        yPosition += 5;
+        Object.entries(variationSummary).forEach(([typeName, variations]) => {
+          if (variationY > 250) {
+            doc.addPage();
+            variationY = 20;
+          }
+          
+          doc.setFontSize(10);
+          doc.setFont(undefined, 'normal');
+          doc.setTextColor(100, 100, 100);
+          
+          const typeLabel = formatLabel(typeName);
+          const optionLabels = variations.map(v => v.option_label || v.option_value || 'Unknown');
+          const optionsText = optionLabels.join(', ');
+          
+          // Handle long variation text
+          const maxVarWidth = 150;
+          if (doc.getTextWidth(`${typeLabel}: ${optionsText}`) > maxVarWidth) {
+            const fullText = `${typeLabel}: ${optionsText}`;
+            const lines = doc.splitTextToSize(fullText, maxVarWidth);
+            lines.forEach((line, lineIndex) => {
+              doc.text(line, 20, variationY + (lineIndex * 3));
+            });
+            variationY += lines.length * 3;
+          } else {
+            doc.text(`${typeLabel}: ${optionsText}`, 20, variationY);
+            variationY += 4;
+          }
+        });
+        
+        currentY = variationY + 2;
+      } else {
+        currentY += 16;
+      }
+      
+      // Horizontal line between items
+      if (index < items.length - 1) {
+        doc.setDrawColor(200, 200, 200);
+        doc.line(20, currentY, 190, currentY);
+        currentY += 3;
+      }
+      
+      // Spacing between items
+      currentY += 3;
     });
   } else {
-    // Enhanced no items message
+    // No items message
     doc.setFontSize(12);
     doc.setTextColor(150, 150, 150);
-    doc.text('No items found in this order', 20, yPosition);
-    yPosition += 20;
+    doc.text('No items found in this order', 20, currentY);
+    currentY += 16;
   }
   
-  // Total
-  if (yPosition > 250) {
+  // Horizontal Line
+  if (currentY > 250) {
     doc.addPage();
-    yPosition = 20;
+    currentY = 20;
+  }
+  doc.setDrawColor(200, 200, 200);
+  doc.line(20, currentY, 190, currentY);
+  currentY += 6;
+  
+  // Summary
+  if (currentY > 250) {
+    doc.addPage();
+    currentY = 20;
   }
   
-  doc.setFontSize(14);
+  // Summary background
+  doc.setFillColor(248, 250, 252);
+  doc.rect(15, currentY - 4, 180, 16, 'F');
+  
+  doc.setFontSize(13);
+  doc.setFont(undefined, 'bold');
   doc.setTextColor(0, 0, 0);
-  doc.text('Total:', 20, yPosition);
+  doc.text('Total Points Used', 20, currentY);
   
-  doc.setFontSize(16);
   doc.setTextColor(0, 151, 178);
-  doc.text(`${order.total_points} heartbits`, 20, yPosition + 10);
+  doc.setFontSize(16);
+  const totalText = `${order.total_points} heartbits`;
+  const totalWidth = doc.getTextWidth(totalText);
+  doc.text(totalText, 190 - totalWidth, currentY);
   
-  // Notes
+  // Notes Section
   if (order.notes) {
-    if (yPosition + 30 > 250) {
+    const notesY = currentY + 20;
+    if (notesY > 250) {
       doc.addPage();
-      yPosition = 20;
+      currentY = 20;
     }
     
-    doc.setFontSize(12);
-    doc.setTextColor(0, 0, 0);
-    doc.text('Notes:', 20, yPosition + 25);
+    // Notes background
+    doc.setFillColor(254, 249, 195);
+    doc.rect(15, notesY - 4, 180, 20, 'F');
     
-    doc.setFontSize(10);
-    doc.setTextColor(100, 100, 100);
+    doc.setFontSize(12);
+    doc.setFont(undefined, 'bold');
+    doc.setTextColor(146, 64, 14);
+    doc.text('📝 Notes', 20, notesY);
+    
+    doc.setFontSize(11);
+    doc.setFont(undefined, 'normal');
+    doc.setTextColor(120, 53, 15);
     // Split long notes into multiple lines if needed
     const maxWidth = 170;
     const lines = doc.splitTextToSize(order.notes, maxWidth);
     lines.forEach((line, index) => {
-      doc.text(line, 20, yPosition + 35 + (index * 5));
+      doc.text(line, 20, notesY + 5 + (index * 3));
     });
   }
   
@@ -207,10 +282,10 @@ export const generateReceiptPDF = (order) => {
   const pageCount = doc.getNumberOfPages();
   for (let i = 1; i <= pageCount; i++) {
     doc.setPage(i);
-    doc.setFontSize(8);
+    doc.setFontSize(10);
     doc.setTextColor(150, 150, 150);
     doc.text(`Page ${i} of ${pageCount}`, 20, 280);
-    doc.text('Thank you for your purchase!', 20, 285);
+    doc.text('Generated on ' + new Date().toLocaleDateString(), 20, 285);
   }
   
   return doc;

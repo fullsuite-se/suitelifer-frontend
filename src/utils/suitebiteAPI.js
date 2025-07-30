@@ -231,7 +231,7 @@ export const suitebiteAPI = {
     return response.data;
   },
 
-  deleteOrder: async (orderId, reason) => {
+  deleteOrder: async (orderId, reason, isFromUserPanel = true) => {
     // Get user role from JWT token to determine correct endpoint
     const token = localStorage.getItem('token');
     let userRole = 'USER';
@@ -245,8 +245,9 @@ export const suitebiteAPI = {
       }
     }
     
-    // Use admin endpoint for admins, user endpoint for regular users
-    const endpoint = ['ADMIN', 'SUPER_ADMIN', 'SUPER ADMIN'].includes(userRole) 
+    // Use admin endpoint ONLY for admin panel calls (hard delete)
+    // Use user endpoint for user panel calls (soft delete) regardless of user role
+    const endpoint = (!isFromUserPanel && ['ADMIN', 'SUPER_ADMIN', 'SUPER ADMIN'].includes(userRole)) 
       ? `/admin/orders/${orderId}`
       : `/orders/${orderId}`;
     
@@ -254,6 +255,7 @@ export const suitebiteAPI = {
       ...createAuthHeaders(),
       data: { reason }
     });
+    
     return response.data;
   },
   
@@ -651,18 +653,14 @@ export const suitebiteAPI = {
    * @returns {Promise} Response
    */
   deleteProductImage: async (imageId) => {
-    console.log('🔍 API - deleteProductImage called with imageId:', imageId);
-    console.log('🔍 API - API_BASE_URL:', API_BASE_URL);
-    console.log('🔍 API - Full URL:', `${API_BASE_URL}/products/images/${imageId}`);
-    console.log('🔍 API - Environment check - VITE_API_BASE_URL:', import.meta.env.VITE_API_BASE_URL);
-    console.log('🔍 API - Headers:', createAuthHeaders());
+
     
     try {
       const response = await axios.delete(
         `${API_BASE_URL}/products/images/${imageId}`,
         createAuthHeaders()
       );
-      console.log('🔍 API - Delete response:', response.data);
+
       return response.data;
     } catch (error) {
       console.error('🔍 API - Delete error:', error);

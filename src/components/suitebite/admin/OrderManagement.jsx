@@ -196,7 +196,7 @@ const OrderManagement = () => {
 
       for (const orderId of selectedOrderList) {
         try {
-          const response = await suitebiteAPI.deleteOrder(orderId, 'Bulk deleted by admin');
+          const response = await suitebiteAPI.deleteOrder(orderId, 'Bulk deleted by admin', false); // isFromUserPanel = false for admin panel
           if (response.success) {
             successCount++;
           } else {
@@ -343,7 +343,7 @@ const OrderManagement = () => {
     try {
       setDeletingOrders(prev => new Set(prev).add(orderId));
       
-      const response = await suitebiteAPI.deleteOrder(orderId, 'Deleted by admin');
+      const response = await suitebiteAPI.deleteOrder(orderId, 'Deleted by admin', false); // isFromUserPanel = false for admin panel
       
       if (response.success) {
         showNotification('success', 'Order deleted successfully!');
@@ -489,31 +489,60 @@ const OrderManagement = () => {
   function getOrderItemsSummary(order) {
     if (!order.orderItems || order.orderItems.length === 0) return '';
     return order.orderItems.map(item => {
-      let summary = `${item.quantity}x ${item.product_name}`;
+      // Compact format for PDF - shorter text
+      // Use original product name even if product has been deleted
+      let summary = `${item.quantity}x ${item.product_name || 'Product Deleted'}`;
       if (item.variations && item.variations.length > 0) {
         const varText = item.variations.map(v => {
           const type = v.type_label || v.type_name || '';
           const val = v.option_label || v.option_value || '';
-          return `${type}: ${val}`;
-        }).join(', ');
-        summary += `\n   - ${varText}`;
+          return `${type}:${val}`; // Remove space to save characters
+        }).join(',');
+        summary += ` (${varText})`; // More compact format
       }
       return summary;
-    }).join('\n');
+    }).join('; '); // Use semicolon instead of newline for more compact layout
   }
 
   function exportOrdersToCSV(orders) {
-    const headers = ['Order ID', 'Customer Name', 'Date', 'Total Points', 'Items'];
+    // Get status header for CSV metadata
+    let statusHeader = '';
+    switch (exportStatus) {
+      case 'pending':
+        statusHeader = 'PENDING ORDERS';
+        break;
+      case 'processing':
+        statusHeader = 'PROCESSING ORDERS';
+        break;
+      case 'completed':
+        statusHeader = 'COMPLETED ORDERS';
+        break;
+      default:
+        statusHeader = 'ALL ORDERS';
+    }
+
+    // Create CSV content with metadata
+    const metadata = [
+      ['The Gift Suite'],
+      [statusHeader],
+      [`Exported on: ${new Date().toLocaleDateString()}`],
+      [`Total Orders: ${orders.length}`],
+      [], // Empty line for spacing
+      ['Order ID', 'Customer Name', 'Date', 'Total Points', 'Items', 'Status']
+    ];
+
     const rows = orders.map(order => [
-      order.order_id,
+      order.order_id.toString(),
       `${order.first_name || ''} ${order.last_name || ''}`.trim(),
-      order.ordered_at,
-      order.total_points,
-      getOrderItemsSummary(order)
+      formatDate(order.ordered_at, { month: 'short', day: 'numeric', year: 'numeric' }), // Full date format
+      order.total_points.toString(),
+      getOrderItemsSummary(order).replace(/\*\*/g, '').replace(/\*/g, ''), // Remove formatting for CSV
+      order.status.toUpperCase() // Add status column
     ]);
     
-    const csvContent = [headers, ...rows]
-      .map(row => row.map(cell => `"${cell}"`).join(','))
+    // Combine metadata and data
+    const csvContent = [...metadata, ...rows]
+      .map(row => row.map(cell => `"${cell || ''}"`).join(','))
       .join('\n');
     
     const blob = new Blob([csvContent], { type: 'text/csv' });
@@ -527,26 +556,158 @@ const OrderManagement = () => {
     URL.revokeObjectURL(url);
   }
 
+  // Helper function to clean and wrap text for PDF export
+  function cleanTextForPDF(text) {
+    if (!text) return '';
+    
+    // Remove any formatting tags and return clean text
+    let cleanText = text.replace(/\*\*(.*?)\*\*/g, '$1')  // Remove bold markers
+                        .replace(/\*(.*?)\*/g, '$1')        // Remove italic markers
+                        .replace(/\[BOLD\](.*?)\[\/BOLD\]/g, '$1')  // Remove [BOLD] tags
+                        .replace(/\[ITALIC\](.*?)\[\/ITALIC\]/g, '$1'); // Remove [ITALIC] tags
+    
+    // Split long text into shorter lines for better PDF formatting
+    const maxLineLength = 35; // Reduced from 50 to 35 for better wrapping
+    const lines = cleanText.split('\n');
+    const wrappedLines = lines.map(line => {
+      if (line.length <= maxLineLength) return line;
+      
+      // Break long lines at word boundaries
+      const words = line.split(' ');
+      const wrapped = [];
+      let currentLine = '';
+      
+      words.forEach(word => {
+        // If a single word is longer than maxLineLength, break it
+        if (word.length > maxLineLength) {
+          if (currentLine) wrapped.push(currentLine);
+          // Break long words at reasonable points
+          for (let i = 0; i < word.length; i += maxLineLength) {
+            wrapped.push(word.substring(i, i + maxLineLength));
+          }
+          currentLine = '';
+        } else if ((currentLine + word).length <= maxLineLength) {
+          currentLine += (currentLine ? ' ' : '') + word;
+        } else {
+          if (currentLine) wrapped.push(currentLine);
+          currentLine = word;
+        }
+      });
+      
+      if (currentLine) wrapped.push(currentLine);
+      return wrapped.join('\n');
+    });
+    
+    return wrappedLines.join('\n');
+  }
+
   function exportOrdersToPDF(orders) {
     const doc = new jsPDF();
+    
+    // Set minimum font size
+    doc.setFontSize(12);
+    
+    // Title: "The Gift Suite" - centered and bold
+    doc.setFontSize(16);
+    doc.setFont(undefined, 'bold');
+    doc.setTextColor(0, 0, 0);
+    doc.text('The Gift Suite', 105, 20, { align: 'center' });
+    
+    // Add status header based on export filter
+    doc.setFontSize(12);
+    doc.setFont(undefined, 'normal');
+    let statusHeader = '';
+    switch (exportStatus) {
+      case 'pending':
+        statusHeader = 'PENDING ORDERS';
+        break;
+      case 'processing':
+        statusHeader = 'PROCESSING ORDERS';
+        break;
+      case 'completed':
+        statusHeader = 'COMPLETED ORDERS';
+        break;
+      default:
+        statusHeader = 'ALL ORDERS';
+    }
+    doc.setTextColor(100, 100, 100);
+    doc.text(statusHeader, 105, 30, { align: 'center' });
+    
+    // Table configuration
     const tableColumn = ['Order ID', 'Customer Name', 'Date', 'Total Points', 'Items'];
     const tableRows = orders.map(order => [
-      order.order_id,
+      order.order_id.toString(),
       `${order.first_name || ''} ${order.last_name || ''}`.trim(),
-      order.ordered_at,
-      order.total_points,
-      getOrderItemsSummary(order)
+      formatDate(order.ordered_at, { month: 'short', day: 'numeric', year: 'numeric' }), // Full date format
+      order.total_points.toString(),
+      cleanTextForPDF(getOrderItemsSummary(order))
     ]);
     
-    doc.text('Orders Export', 14, 16);
+    // Enhanced table styling with better text handling
     autoTable(doc, { 
       head: [tableColumn], 
       body: tableRows, 
-      startY: 22, 
-      styles: { cellWidth: 'wrap', fontSize: 10 }, 
-      bodyStyles: { valign: 'top' }, 
-      columnStyles: { 4: { cellWidth: 60 } } 
+      startY: 40,
+      styles: { 
+        fontSize: 9, // Further reduced font size for better fit
+        cellPadding: 2, // Reduced padding
+        lineColor: [200, 200, 200], // Light gray lines
+        lineWidth: 0.1, // Thin lines
+        overflow: 'linebreak',
+        cellWidth: 'auto'
+      },
+      headStyles: {
+        fillColor: [0, 151, 178], // Company blue color
+        textColor: [255, 255, 255],
+        fontStyle: 'bold',
+        fontSize: 9, // Reduced font size
+        lineColor: [200, 200, 200], // Light gray lines in header
+        lineWidth: 0.1
+      },
+      bodyStyles: { 
+        valign: 'top',
+        fontSize: 9, // Reduced font size
+        textColor: [0, 0, 0],
+        overflow: 'linebreak',
+        lineColor: [200, 200, 200], // Light gray lines in body
+        lineWidth: 0.1
+      },
+      alternateRowStyles: {
+        fillColor: [245, 245, 245],
+        lineColor: [200, 200, 200], // Light gray lines in alternate rows
+        lineWidth: 0.1
+      },
+      columnStyles: { 
+        0: { cellWidth: 18, lineColor: [200, 200, 200], lineWidth: 0.1 }, // Order ID - reduced width
+        1: { cellWidth: 30, lineColor: [200, 200, 200], lineWidth: 0.1 }, // Customer Name - reduced width
+        2: { cellWidth: 22, lineColor: [200, 200, 200], lineWidth: 0.1 }, // Date - reduced width
+        3: { cellWidth: 18, lineColor: [200, 200, 200], lineWidth: 0.1 }, // Total Points - reduced width
+        4: { cellWidth: 'auto', overflow: 'linebreak', cellPadding: 1, lineColor: [200, 200, 200], lineWidth: 0.1 }  // Items - more space, reduced padding
+      },
+      margin: { top: 40, right: 5, bottom: 20, left: 14 }, // Reduced right margin to extend table
+      tableWidth: 'auto',
+      didDrawPage: function (data) {
+        // Ensure content stays within page bounds
+        const pageWidth = doc.internal.pageSize.width;
+        
+        // Check if table is too wide and adjust if needed
+        if (data.table.width > pageWidth - 19) { // 19 = left (14) + right (5) margins
+          doc.setFontSize(8); // Further reduce font size if needed
+        }
+      }
+      // Removed didDrawCell function that was truncating text
     });
+    
+    // Add footer with export info
+    const pageCount = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.setFontSize(10);
+      doc.setTextColor(100, 100, 100);
+      doc.text(`Page ${i} of ${pageCount}`, 105, doc.internal.pageSize.height - 10, { align: 'center' });
+      doc.text(`Exported on ${new Date().toLocaleDateString()}`, 14, doc.internal.pageSize.height - 10);
+    }
+    
     doc.save(`orders_export_${exportStatus}_${new Date().toISOString().split('T')[0]}.pdf`);
   }
 
@@ -554,6 +715,7 @@ const OrderManagement = () => {
     const ordersToExport = filteredAndSortedOrders.filter(order => {
       if (exportStatus === 'pending') return order.status === 'pending';
       if (exportStatus === 'processing') return order.status === 'processing';
+      if (exportStatus === 'completed') return order.status === 'completed';
       return true; // 'all' case
     });
 
@@ -594,7 +756,7 @@ const OrderManagement = () => {
         <div className="bg-white rounded-lg shadow-sm border p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total Orders</p>
+              <p className="text-base font-medium text-gray-600">Total Orders</p>
               <p className="text-2xl font-bold text-gray-900">{orders.length}</p>
             </div>
             <div className="p-2 bg-gray-100 rounded-lg">
@@ -605,7 +767,7 @@ const OrderManagement = () => {
         <div className="bg-white rounded-lg shadow-sm border p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Pending</p>
+              <p className="text-base font-medium text-gray-600">Pending</p>
               <p className="text-2xl font-bold text-yellow-600">{orders.filter(o => o.status === 'pending').length}</p>
             </div>
             <div className="p-2 bg-yellow-100 rounded-lg">
@@ -616,7 +778,7 @@ const OrderManagement = () => {
         <div className="bg-white rounded-lg shadow-sm border p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Processing</p>
+              <p className="text-base font-medium text-gray-600">Processing</p>
               <p className="text-2xl font-bold text-blue-600">{orders.filter(o => o.status === 'processing').length}</p>
             </div>
             <div className="p-2 bg-blue-100 rounded-lg">
@@ -627,7 +789,7 @@ const OrderManagement = () => {
         <div className="bg-white rounded-lg shadow-sm border p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Completed</p>
+              <p className="text-base font-medium text-gray-600">Completed</p>
               <p className="text-2xl font-bold text-green-600">{orders.filter(o => o.status === 'completed').length}</p>
             </div>
             <div className="p-2 bg-green-100 rounded-lg">
@@ -638,7 +800,7 @@ const OrderManagement = () => {
         <div className="bg-white rounded-lg shadow-sm border p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Cancelled</p>
+              <p className="text-base font-medium text-gray-600">Cancelled</p>
               <p className="text-2xl font-bold text-red-600">{orders.filter(o => o.status === 'cancelled').length}</p>
             </div>
             <div className="p-2 bg-red-100 rounded-lg">
@@ -654,7 +816,7 @@ const OrderManagement = () => {
         <div className="flex flex-wrap gap-2 flex-1 min-w-0">
           {/* Search */}
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-xs font-medium text-gray-700 mb-1">Search</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
             <div className="relative">
               <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <input
@@ -662,18 +824,18 @@ const OrderManagement = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search orders..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
               />
             </div>
           </div>
 
           {/* Status Filter */}
           <div className="min-w-[150px]">
-            <label className="block text-xs font-medium text-gray-700 mb-1">Status</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
             >
               <option value="all">All Status</option>
               <option value="pending">Pending</option>
@@ -685,11 +847,11 @@ const OrderManagement = () => {
 
           {/* Sort By */}
           <div className="min-w-[120px]">
-            <label className="block text-xs font-medium text-gray-700 mb-1">Sort By</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
             >
               <option value="ordered_at">Date</option>
               <option value="order_id">Order ID</option>
@@ -701,11 +863,11 @@ const OrderManagement = () => {
 
           {/* Sort Order */}
           <div className="min-w-[100px]">
-            <label className="block text-xs font-medium text-gray-700 mb-1">Order</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Order</label>
             <select
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
             >
               <option value="desc">Newest</option>
               <option value="asc">Oldest</option>
@@ -716,7 +878,7 @@ const OrderManagement = () => {
           <div className="flex items-end">
             <button
               onClick={resetFilters}
-              className="px-3 py-2 text-gray-600 hover:text-gray-800 text-sm font-medium"
+              className="px-3 py-2 text-gray-600 hover:text-gray-800 text-base font-medium"
             >
               Reset
             </button>
@@ -726,7 +888,7 @@ const OrderManagement = () => {
         {/* Export Button aligned with filters */}
         <div className="flex-shrink-0 self-stretch flex items-end">
           <button
-            className="h-full px-4 py-2 bg-[#0097b2] text-white rounded-lg hover:bg-[#007a8e] font-semibold shadow text-sm"
+            className="h-full px-4 py-2 bg-[#0097b2] text-white rounded-lg hover:bg-[#007a8e] font-semibold shadow text-base"
             onClick={() => setShowExportModal(true)}
           >
             Print/Export Orders
@@ -740,13 +902,13 @@ const OrderManagement = () => {
           {loading ? (
             <div className="text-center py-12">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0097b2] mx-auto mb-4"></div>
-              <p className="text-gray-600">Loading orders...</p>
+              <p className="text-base text-gray-600">Loading orders...</p>
             </div>
           ) : filteredAndSortedOrders.length === 0 ? (
             <div className="text-center py-12 bg-white rounded-lg shadow-sm border">
               <ShoppingBagIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">No orders found</h3>
-              <p className="text-gray-600">No orders match your current filters.</p>
+              <p className="text-base text-gray-600">No orders match your current filters.</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -761,7 +923,7 @@ const OrderManagement = () => {
                         onChange={handleSelectAll}
                         className="h-4 w-4 text-[#0097b2] border-gray-300 rounded focus:ring-[#0097b2]"
                       />
-                      <span className="text-sm font-medium text-gray-700">
+                      <span className="text-base font-medium text-gray-700">
                         Select all deletable orders ({deletableOrders.length} available)
                       </span>
                     </div>
@@ -769,7 +931,7 @@ const OrderManagement = () => {
                       <button
                         onClick={handleBulkDelete}
                         disabled={bulkDeleting}
-                        className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 flex items-center gap-2 text-sm"
+                        className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 flex items-center gap-2 text-base"
                       >
                         {bulkDeleting ? (
                           <>
@@ -810,17 +972,17 @@ const OrderManagement = () => {
                             {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                           </span>
                         </div>
-                        <span className="text-sm text-gray-500">
+                        <span className="text-base text-gray-500">
                           Order #{order.order_id}
                         </span>
                       </div>
                       
-                      <p className="text-sm text-gray-600 mb-2">
+                      <p className="text-base text-gray-600 mb-2">
                         {getStatusDescription(order.status)}
                       </p>
                       
                       {/* Customer Info */}
-                      <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
+                      <div className="flex items-center gap-4 text-base text-gray-500 mb-3">
                         <div className="flex items-center gap-1">
                           <UserIcon className="h-4 w-4" />
                           <span>{order.first_name} {order.last_name}</span>
@@ -842,10 +1004,10 @@ const OrderManagement = () => {
                       {/* Order Items Preview */}
                       {order.orderItems && order.orderItems.length > 0 && (
                         <div className="mb-3">
-                          <div className="text-xs text-gray-500 mb-2">Items:</div>
+                          <div className="text-sm text-gray-500 mb-2">Items:</div>
                           <div className="space-y-1">
                             {order.orderItems.slice(0, 2).map((item, index) => (
-                              <div key={index} className="flex items-center gap-2 text-sm">
+                              <div key={index} className="flex items-center gap-2 text-base">
                                 <div className="w-4 h-4 bg-gray-200 rounded-sm flex-shrink-0"></div>
                                 <span className="text-gray-700 truncate">
                                   {item.quantity}x {item.product_name}
@@ -858,7 +1020,7 @@ const OrderManagement = () => {
                               </div>
                             ))}
                             {order.orderItems.length > 2 && (
-                              <div className="text-xs text-gray-500">
+                              <div className="text-sm text-gray-500">
                                 +{order.orderItems.length - 2} more items
                               </div>
                             )}
@@ -942,7 +1104,7 @@ const OrderManagement = () => {
 
                   {/* Status Timeline */}
                   <div className="mt-4 pt-4 border-t border-gray-200">
-                    <div className="flex items-center gap-4 text-xs text-gray-500">
+                    <div className="flex items-center gap-4 text-sm text-gray-500">
                       <div className="flex items-center gap-1">
                         <CheckIcon className="h-3 w-3 text-green-500" />
                         <span>Ordered {formatTimeAgo(order.ordered_at)}</span>
@@ -982,24 +1144,25 @@ const OrderManagement = () => {
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Status Filter</label>
+                <label className="block text-base font-medium text-gray-700 mb-2">Status Filter</label>
                 <select
                   value={exportStatus}
                   onChange={(e) => setExportStatus(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
                 >
                   <option value="all">All Orders</option>
                   <option value="pending">Pending Only</option>
                   <option value="processing">Processing Only</option>
+                  <option value="completed">Completed Only</option>
                 </select>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Export Format</label>
+                <label className="block text-base font-medium text-gray-700 mb-2">Export Format</label>
                 <select
                   value={exportFormat}
                   onChange={(e) => setExportFormat(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
                 >
                   <option value="csv">CSV</option>
                   <option value="pdf">PDF</option>
@@ -1010,13 +1173,13 @@ const OrderManagement = () => {
             <div className="flex gap-3 mt-6">
               <button
                 onClick={handleExportOrders}
-                className="flex-1 bg-[#0097b2] text-white py-2 px-4 rounded-lg hover:bg-[#007a8e] font-semibold"
+                className="flex-1 bg-[#0097b2] text-white py-2 px-4 rounded-lg hover:bg-[#007a8e] font-semibold text-base"
               >
                 Export
               </button>
               <button
                 onClick={() => setShowExportModal(false)}
-                className="flex-1 bg-gray-200 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-300 font-semibold"
+                className="flex-1 bg-gray-200 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-300 font-semibold text-base"
               >
                 Cancel
               </button>
@@ -1036,7 +1199,7 @@ const OrderManagement = () => {
               <h3 className="text-lg font-semibold text-gray-900">Confirm Delete</h3>
             </div>
             
-            <p className="text-gray-600 mb-4">
+            <p className="text-base text-gray-600 mb-4">
               Are you sure you want to delete {selectedOrders.size} selected order(s)? This action cannot be undone.
             </p>
             
@@ -1044,14 +1207,14 @@ const OrderManagement = () => {
               <button
                 onClick={confirmBulkDelete}
                 disabled={bulkDeleting}
-                className="flex-1 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 disabled:opacity-50 font-semibold"
+                className="flex-1 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 disabled:opacity-50 font-semibold text-base"
               >
                 {bulkDeleting ? 'Deleting...' : 'Delete Orders'}
               </button>
               <button
                 onClick={() => setShowBulkDeleteConfirm(false)}
                 disabled={bulkDeleting}
-                className="flex-1 bg-gray-200 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-300 disabled:opacity-50 font-semibold"
+                className="flex-1 bg-gray-200 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-300 disabled:opacity-50 font-semibold text-base"
               >
                 Cancel
               </button>

@@ -46,20 +46,20 @@ const OrderItemCard = ({ item, showImages = true }) => {
         <div className="flex-1 min-w-0">
           <div className="flex justify-between items-start mb-2">
             <div>
-              <h4 className="text-sm font-medium text-gray-900 truncate">
+              <h4 className="text-base font-medium text-gray-900 truncate">
                 {item.product_name}
               </h4>
               {item.product_category && (
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-sm text-gray-500 mt-1">
                   Category: {item.product_category}
                 </p>
               )}
             </div>
             <div className="text-right flex-shrink-0 ml-4">
-              <p className="text-sm font-medium text-gray-900">
+              <p className="text-base font-medium text-gray-900">
                 {item.quantity}x {item.price_points} pts
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-sm text-gray-500">
                 Total: {item.quantity * item.price_points} pts
               </p>
             </div>
@@ -70,19 +70,19 @@ const OrderItemCard = ({ item, showImages = true }) => {
             <div className="mt-3">
               <div className="flex items-center gap-1 mb-2">
                 <SwatchIcon className="h-4 w-4 text-gray-400" />
-                <span className="text-xs font-medium text-gray-600">Variations:</span>
+                <span className="text-sm font-medium text-gray-600">Variations:</span>
               </div>
               <div className="space-y-2">
                 {Object.entries(groupedVariations).map(([typeName, variations]) => (
                   <div key={typeName} className="flex items-center gap-2">
-                    <span className="text-xs text-gray-500 capitalize min-w-[60px]">
+                    <span className="text-sm text-gray-500 capitalize min-w-[60px]">
                       {variations[0]?.type_label || typeName}:
                     </span>
                     <div className="flex flex-wrap gap-2">
                       {variations.map((variation, index) => (
                         <div
                           key={`${variation.option_id}-${index}`}
-                          className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 rounded text-xs"
+                          className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 rounded text-sm"
                         >
                           {variation.hex_color && (
                             <div
