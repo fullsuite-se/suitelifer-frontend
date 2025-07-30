@@ -6,8 +6,6 @@ const CheerPostsManagement = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState('all'); // all, reported, flagged, hidden
-  const [selectedPost, setSelectedPost] = useState(null);
-  const [moderationAction, setModerationAction] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('date'); // date, heartbits, author
   const [sortOrder, setSortOrder] = useState('desc');
@@ -31,14 +29,37 @@ const CheerPostsManagement = () => {
     }
   };
 
-  const handleModeratePost = async (postId, action, reason = '') => {
+  const handleModeratePost = async (postId, action) => {
     try {
-      const response = await suitebiteAPI.moderateCheerPost(postId, action, reason);
+      // Find the post to get its date
+      const post = posts.find(p => p.cheer_post_id === postId);
+      if (!post) {
+        console.error('Post not found');
+        return;
+      }
+
+      // Generate default message with post date
+      const postDate = new Date(post.posted_at).toLocaleDateString();
+      let defaultReason = '';
+      
+      switch (action) {
+        case 'hide':
+          defaultReason = `Your cheer post (${postDate}) is hidden due to inappropriate content.`;
+          break;
+        case 'unhide':
+          defaultReason = `Your cheer post (${postDate}) has been restored.`;
+          break;
+        case 'delete':
+          defaultReason = `Your cheer post (${postDate}) is deleted due to violation of community guidelines.`;
+          break;
+        default:
+          defaultReason = `Your cheer post (${postDate}) has been moderated.`;
+      }
+
+      const response = await suitebiteAPI.moderateCheerPost(postId, action, defaultReason);
       
       if (response.success) {
         loadCheerPosts();
-        setSelectedPost(null);
-        setModerationAction('');
       }
     } catch (error) {
       console.error('Error moderating post:', error);
@@ -46,16 +67,25 @@ const CheerPostsManagement = () => {
   };
 
   const handleDeletePost = async (postId) => {
-    if (window.confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
-      try {
-        const response = await suitebiteAPI.deleteCheerPost(postId);
-        
-        if (response.success) {
-          loadCheerPosts();
-        }
-      } catch (error) {
-        console.error('Error deleting post:', error);
+    try {
+      // Find the post to get its date
+      const post = posts.find(p => p.cheer_post_id === postId);
+      if (!post) {
+        console.error('Post not found');
+        return;
       }
+
+      // Generate default message with post date
+      const postDate = new Date(post.posted_at).toLocaleDateString();
+      const defaultReason = `Your cheer post (${postDate}) is deleted due to violation of community guidelines.`;
+
+      const response = await suitebiteAPI.moderateCheerPost(postId, 'delete', defaultReason);
+      
+      if (response.success) {
+        loadCheerPosts();
+      }
+    } catch (error) {
+      console.error('Error deleting post:', error);
     }
   };
 
@@ -100,93 +130,8 @@ const CheerPostsManagement = () => {
   });
 
   const getStatusBadge = (post) => {
-    if (post.is_hidden) return { text: 'Hidden', class: 'bg-gray-100 text-gray-800' };
-    if (post.is_flagged) return { text: 'Flagged', class: 'bg-yellow-100 text-yellow-800' };
-    if (post.is_reported) return { text: 'Reported', class: 'bg-red-100 text-red-800' };
+    if (post.is_hidden) return { text: 'Hidden', class: 'bg-yellow-100 text-yellow-800' };
     return { text: 'Active', class: 'bg-green-100 text-green-800' };
-  };
-
-  const ModerationModal = ({ post, onClose }) => {
-    const [reason, setReason] = useState('');
-
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      if (moderationAction && reason) {
-        handleModeratePost(post.post_id, moderationAction, reason);
-      }
-    };
-
-    return (
-      <div className="modal-overlay">
-        <div className="moderation-modal">
-          <div className="modal-header">
-            <h4>Moderate Post</h4>
-            <button className="close-btn" onClick={onClose}>×</button>
-          </div>
-          
-          <div className="modal-content">
-            <div className="post-details">
-              <h5>Post Content:</h5>
-              <p className="post-content">{post.post_body}</p>
-              
-              <div className="post-meta">
-                <span><strong>Author:</strong> {post.cheerer_first_name} {post.cheerer_last_name}</span>
-                <span><strong>Recipient:</strong> {(post.peer_first_name && post.peer_last_name) ? `${post.peer_first_name} ${post.peer_last_name}` : 'Team'}</span>
-                <span><strong>Heartbits:</strong> ❤️ {post.heartbits_given}</span>
-                <span><strong>Date:</strong> {formatDate(post.posted_at)}</span>
-              </div>
-            </div>
-            
-            <div className="moderation-actions">
-              <h5>Moderation Action:</h5>
-              <select 
-                value={moderationAction}
-                onChange={(e) => setModerationAction(e.target.value)}
-                className="action-select"
-              >
-                <option value="">Select Action</option>
-                <option value="approve">Approve Post</option>
-                <option value="flag">Flag for Review</option>
-                <option value="hide">Hide Post</option>
-                <option value="warn">Warn User</option>
-              </select>
-              
-              {moderationAction && (
-                <div className="reason-input">
-                  <label>Reason for action:</label>
-                  <textarea 
-                    value={reason}
-                    onChange={(e) => setReason(e.target.value)}
-                    placeholder="Enter reason for moderation action"
-                    className="reason-textarea"
-                    rows="3"
-                    required
-                  />
-                </div>
-              )}
-            </div>
-            
-            <div className="modal-actions">
-              <button 
-                type="button"
-                className="btn-cancel"
-                onClick={onClose}
-              >
-                Cancel
-              </button>
-              <button 
-                type="button"
-                className="btn-confirm"
-                onClick={handleSubmit}
-                disabled={!moderationAction || !reason}
-              >
-                Apply Action
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
   };
 
   return (
@@ -209,7 +154,7 @@ const CheerPostsManagement = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <span className="text-3xl font-bold text-gray-900">{posts.filter(p => !p.is_hidden && !p.is_flagged && !p.is_reported).length}</span>
+          <span className="text-3xl font-bold text-gray-900">{posts.filter(p => !p.is_hidden).length}</span>
           <span className="text-sm text-gray-500 font-medium">Active Posts</span>
         </div>
         
@@ -219,8 +164,8 @@ const CheerPostsManagement = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
             </svg>
           </div>
-          <span className="text-3xl font-bold text-gray-900">{posts.filter(p => p.is_flagged || p.is_reported).length}</span>
-          <span className="text-sm text-gray-500 font-medium">Flagged/Reported</span>
+          <span className="text-3xl font-bold text-gray-900">{posts.filter(p => p.is_hidden).length}</span>
+          <span className="text-sm text-gray-500 font-medium">Hidden Posts</span>
         </div>
         
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col items-center">
@@ -277,16 +222,14 @@ const CheerPostsManagement = () => {
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
               <label className="text-sm font-medium text-gray-700">Filter:</label>
-              <select
-                value={filter}
+              <select 
+                value={filter} 
                 onChange={(e) => setFilter(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent text-sm"
               >
                 <option value="all">All Posts</option>
-                <option value="flagged">Flagged</option>
-                <option value="reported">Reported</option>
-                <option value="hidden">Hidden</option>
-                <option value="active">Active Only</option>
+                <option value="active">Active Posts</option>
+                <option value="hidden">Hidden Posts</option>
               </select>
             </div>
             
@@ -344,14 +287,6 @@ const CheerPostsManagement = () => {
             </div>
           )}
         </div>
-      )}
-
-      {/* Moderation Modal */}
-      {selectedPost && (
-        <ModerationModal 
-          post={selectedPost} 
-          onClose={() => setSelectedPost(null)} 
-        />
       )}
     </div>
   );
@@ -468,37 +403,26 @@ const PostCard = ({ post, onModerate, onDelete }) => {
             
             {/* Action Buttons */}
             <div className="action-buttons flex flex-col gap-2">
-              <button 
-                className="px-3 py-1 rounded-lg bg-green-100 text-green-700 hover:bg-green-200 text-xs font-semibold transition-colors duration-200" 
-                title="Approve" 
-                onClick={() => onModerate(post.cheer_post_id, 'approve')}
-              >
-                Approve
-              </button>
-              <button 
-                className="px-3 py-1 rounded-lg bg-yellow-100 text-yellow-700 hover:bg-yellow-200 text-xs font-semibold transition-colors duration-200" 
-                title="Flag for Review" 
-                onClick={() => onModerate(post.cheer_post_id, 'flag')}
-              >
-                Flag
-              </button>
+              {post.is_hidden ? (
+                <button 
+                  className="px-3 py-1 rounded-lg bg-green-100 text-green-700 hover:bg-green-200 text-xs font-semibold transition-colors duration-200" 
+                  title="Unhide Post" 
+                  onClick={() => onModerate(post.cheer_post_id, 'unhide')}
+                >
+                  Unhide
+                </button>
+              ) : (
+                <button 
+                  className="px-3 py-1 rounded-lg bg-yellow-100 text-yellow-700 hover:bg-yellow-200 text-xs font-semibold transition-colors duration-200" 
+                  title="Hide Post" 
+                  onClick={() => onModerate(post.cheer_post_id, 'hide')}
+                >
+                  Hide
+                </button>
+              )}
               <button 
                 className="px-3 py-1 rounded-lg bg-red-100 text-red-700 hover:bg-red-200 text-xs font-semibold transition-colors duration-200" 
-                title="Hide Post" 
-                onClick={() => onModerate(post.cheer_post_id, 'hide')}
-              >
-                Hide
-              </button>
-              <button 
-                className="px-3 py-1 rounded-lg bg-blue-100 text-blue-700 hover:bg-blue-200 text-xs font-semibold transition-colors duration-200" 
-                title="Warn User" 
-                onClick={() => onModerate(post.cheer_post_id, 'warn')}
-              >
-                Warn
-              </button>
-              <button 
-                className="px-3 py-1 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 text-xs font-semibold transition-colors duration-200" 
-                title="Delete" 
+                title="Delete Post" 
                 onClick={() => onDelete(post.cheer_post_id)}
               >
                 Delete

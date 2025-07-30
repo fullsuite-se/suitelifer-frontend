@@ -4,10 +4,12 @@ import { useSuitebiteStore } from '../../store/stores/suitebiteStore';
 import UserHeartbitsManagement from '../../components/suitebite/admin/UserHeartbitsManagement';
 import ProductManagement from '../../components/suitebite/admin/ProductManagement';
 import OrderManagement from '../../components/suitebite/admin/OrderManagement';
+import CheerPostsManagement from '../../components/suitebite/admin/CheerPostsManagement';
 import {
   UsersIcon,
   ShoppingBagIcon,
   ClipboardDocumentListIcon,
+  ChatBubbleLeftRightIcon,
 } from '@heroicons/react/24/outline';
 
 /**
@@ -110,7 +112,8 @@ const AdminSuitebite = () => {
   const tabs = [
     { id: 'users', label: 'Users & Heartbits', icon: UsersIcon },
     { id: 'products', label: 'Products', icon: ShoppingBagIcon },
-    { id: 'orders', label: 'Orders', icon: ClipboardDocumentListIcon }
+    { id: 'orders', label: 'Orders', icon: ClipboardDocumentListIcon },
+    { id: 'cheer-posts', label: 'Cheer Posts', icon: ChatBubbleLeftRightIcon },
   ];
 
   return (
@@ -173,6 +176,12 @@ const AdminSuitebite = () => {
             {activeTab === 'orders' && (
               <div className="orders-tab mt-0"> {/* Remove extra top margin */}
                 <OrderManagement onRefresh={loadAdminData} />
+              </div>
+            )}
+            {/* Cheer Posts Tab */}
+            {activeTab === 'cheer-posts' && (
+              <div className="cheer-posts-tab mt-0"> {/* Remove extra top margin */}
+                <CheerPostsManagement onRefresh={loadAdminData} />
               </div>
             )}
           </div>

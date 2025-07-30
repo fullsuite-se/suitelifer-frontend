@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { pointsSystemApi } from '../../api/pointsSystemApi';
 import { useStore } from '../../store/authStore';
@@ -9,6 +9,7 @@ import {
   ChartBarIcon,
   PlusIcon,
   TrophyIcon,
+  ExclamationTriangleIcon,
 } from '@heroicons/react/24/outline';
 import { 
   StarIcon as StarIconSolid,
@@ -22,6 +23,7 @@ const PointsDashboard = () => {
   const [selectedUser, setSelectedUser] = useState('');
   const [cheerAmount, setCheerAmount] = useState(10);
   const [cheerMessage, setCheerMessage] = useState('');
+  const [moderationNotification, setModerationNotification] = useState(null);
 
   // Safe date formatting function
   const formatDateSafely = (dateValue) => {
@@ -52,6 +54,54 @@ const PointsDashboard = () => {
     return '/images/default-avatar.png'; // Default avatar fallback
   };
 
+  // Check for moderation notifications in transaction history
+  const checkForModerationNotifications = useCallback((transactions) => {
+    if (!transactions || !Array.isArray(transactions)) {
+      return;
+    }
+    
+    const moderationTransactions = transactions.filter(t => {
+      const isModeration = t.type === 'moderation';
+      const hasModerationMessage = t.type === 'notification' && t.message?.includes('moderated');
+      return isModeration || hasModerationMessage;
+    });
+    
+    if (moderationTransactions.length > 0) {
+      const latestModeration = moderationTransactions[0]; // Most recent first
+      
+      // Get the transaction ID from the correct field
+      const transactionId = latestModeration.transactionId || latestModeration.transaction_id;
+      
+      // Check if this notification has been dismissed in the database
+      let metadata = latestModeration.metadata;
+      if (typeof metadata === 'string') {
+        try {
+          metadata = JSON.parse(metadata);
+        } catch (e) {
+          metadata = {};
+        }
+      }
+      
+      const isDismissed = metadata?.dismissed === true;
+      
+      if (isDismissed) {
+        return; // Skip if already dismissed
+      }
+      
+      const action = metadata?.action || 'moderated';
+      const actionText = action === 'hidden' ? 'hidden' : action === 'deleted' ? 'deleted' : action === 'unhidden' ? 'restored' : 'moderated';
+      
+      setModerationNotification({
+        type: 'moderation',
+        message: latestModeration.message || `Your cheer post has been ${actionText} by our moderation team.`,
+        reason: metadata?.reason || 'No reason provided',
+        date: latestModeration.created_at,
+        action: action,
+        transactionId: transactionId
+      });
+    }
+  }, []);
+
   // Fetch user's points data
   const { data: pointsData, isLoading: pointsLoading, error: pointsError } = useQuery({
     queryKey: ['points'],
@@ -59,8 +109,6 @@ const PointsDashboard = () => {
     staleTime: 10 * 1000, // 10 seconds (reduced from 1 minute)
     enabled: !!user?.id, // Only fetch when user is loaded
   });
-
-
 
   // Listen for storage events to refresh points data when orders are cancelled
   useEffect(() => {
@@ -81,10 +129,17 @@ const PointsDashboard = () => {
   // Fetch points history
   const { data: historyData, isLoading: historyLoading } = useQuery({
     queryKey: ['points-history'],
-    queryFn: () => pointsSystemApi.getPointsHistory(10),
+    queryFn: () => pointsSystemApi.getPointsHistory(20),
     staleTime: 2 * 60 * 1000, // 2 minutes
     enabled: !!user?.id, // Only fetch when user is loaded
   });
+
+  // Check for moderation notifications when history data changes
+  useEffect(() => {
+    if (historyData?.data) {
+      checkForModerationNotifications(historyData.data);
+    }
+  }, [historyData, checkForModerationNotifications]);
 
   // Fetch users for cheer functionality with search
   const { data: usersData } = useQuery({
@@ -115,8 +170,11 @@ const PointsDashboard = () => {
 
   if (!user?.id) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>Loading user data...</div>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0097b2] mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading user data...</p>
+        </div>
       </div>
     );
   }
@@ -180,15 +238,99 @@ const PointsDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'rgb(255,255,255)' }}>
-      <div className="max-w-6xl mx-auto p-6 space-y-6 pb-20">
+    <div className="min-h-screen bg-gray-50 py-8">
+      {/* Moderation Notification Banner */}
+      {moderationNotification && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4 animate-in slide-in-from-top-2 duration-300">
+          <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-l-4 border-amber-400 rounded-lg p-4 shadow-lg transform transition-all duration-300 hover:shadow-xl">
+            <div className="flex items-start">
+              <div className="flex-shrink-0">
+                {moderationNotification.action === 'hidden' ? (
+                  <ExclamationTriangleIcon className="h-5 w-5 text-amber-500 animate-pulse" />
+                ) : moderationNotification.action === 'deleted' ? (
+                  <ExclamationTriangleIcon className="h-5 w-5 text-red-500 animate-pulse" />
+                ) : (
+                  <ExclamationTriangleIcon className="h-5 w-5 text-green-500 animate-pulse" />
+                )}
+              </div>
+              <div className="ml-3 flex-1">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-base font-semibold text-gray-900">
+                    {moderationNotification.action === 'hidden' ? 'Post Hidden' : 
+                     moderationNotification.action === 'deleted' ? 'Post Deleted' : 
+                     moderationNotification.action === 'unhidden' ? 'Post Restored' : 
+                     'Post Moderated'}
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={() => setModerationNotification(null)}
+                    className="text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                  >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                <div className="mt-1">
+                  <p className="text-sm text-gray-700 font-medium">
+                    {moderationNotification.message}
+                  </p>
+                  {moderationNotification.reason && (
+                    <div className="mt-2 p-2 bg-white rounded-md border border-gray-200">
+                      <p className="text-xs text-gray-600">
+                        <span className="font-semibold text-gray-800">Reason:</span> {moderationNotification.reason}
+                      </p>
+                    </div>
+                  )}
+                  {moderationNotification.date && (
+                    <p className="mt-1 text-xs text-gray-500">
+                      <span className="font-medium">Date:</span> {formatDateSafely(moderationNotification.date)}
+                    </p>
+                  )}
+                </div>
+                <div className="mt-2 flex items-center justify-between">
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      
+                      if (moderationNotification?.transactionId) {
+                        try {
+                          // Mark as dismissed in the database
+                          await pointsSystemApi.dismissModerationNotification(moderationNotification.transactionId);
+                          
+                          // Hide the notification immediately
+                          setModerationNotification(null);
+                          
+                          // Refresh the transaction history to get updated data
+                          queryClient.invalidateQueries(['points-history']);
+                        } catch (error) {
+                          // Still hide the notification even if API call fails
+                          setModerationNotification(null);
+                        }
+                      } else {
+                        setModerationNotification(null);
+                      }
+                    }}
+                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-amber-700 bg-amber-100 hover:bg-amber-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-colors duration-200"
+                  >
+                    Got it
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex items-center justify-between">
           {/* Header content can be added here if needed in the future */}
         </div>
 
       {/* Points Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {/* Current Balance */}
         <div className="rounded-xl p-6 text-white transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95" style={{ background: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)', borderRadius: '18px' }}>
           <div className="flex items-center justify-between">
@@ -249,10 +391,24 @@ const PointsDashboard = () => {
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto" style={{ borderColor: '#0097b2' }}></div>
             </div>
           ) : Array.isArray(historyData?.data) && historyData.data.length > 0 ? (
-            historyData.data.map((transaction, index) => {
+            historyData.data
+              .filter(transaction => transaction.type !== 'moderation') // Filter out moderation transactions
+              .map((transaction, index) => {
               // Patch: Always show sender as 'Admin' for admin grants
               const isAdminGrant = transaction.type === 'admin_grant' || transaction.is_admin_grant;
               const senderLabel = isAdminGrant ? 'Admin' : (transaction.related_user || 'Unknown');
+              
+              // Only modify received transactions to show "Heartbits" instead of "points"
+              let displayDescription = transaction.description;
+              if (transaction.type === 'received' && transaction.description && transaction.description.includes('points')) {
+                displayDescription = transaction.description.replace('points', 'Heartbits');
+              }
+              
+              // For received transactions, show the actual sender name instead of "Admin"
+              if (transaction.type === 'received' && transaction.description && transaction.description.includes('from Admin')) {
+                displayDescription = displayDescription.replace('from Admin', `from ${transaction.related_user || 'Unknown'}`);
+              }
+              
               return (
                 <div 
                   key={index} 
@@ -290,7 +446,7 @@ const PointsDashboard = () => {
                       )}
                       <div>
                         <p className="font-medium" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
-                          {transaction.description || transaction.type.replace('_', ' ').toUpperCase()}
+                          {displayDescription || transaction.type.replace('_', ' ').toUpperCase()}
                         </p>
                         <p className="text-sm" style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>
                           {formatDateSafely(transaction.createdAt || transaction.created_at)}

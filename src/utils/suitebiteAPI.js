@@ -372,8 +372,9 @@ export const suitebiteAPI = {
   },
   
   // Admin Management
-  getCheerPostsAdmin: async (page = 1, limit = 20, search = '', dateFrom = '', dateTo = '') => {
+  getCheerPostsAdmin: async (filter = 'all', page = 1, limit = 20, search = '', dateFrom = '', dateTo = '') => {
     const params = new URLSearchParams({
+      filter: filter.toString(),
       page: page.toString(),
       limit: limit.toString(),
       ...(search && { search }),

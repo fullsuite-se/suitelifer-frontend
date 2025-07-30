@@ -72,6 +72,11 @@ export const pointsSystemApi = {
     return res.data;
   },
   
+  async dismissModerationNotification(transactionId) {
+    const res = await axios.post(`/api/points/moderation/${transactionId}/dismiss`);
+    return res.data;
+  },
+  
   // Admin functions for managing user points
   async getAllUserPoints() {
     const res = await axios.get("/api/points/admin/users");
