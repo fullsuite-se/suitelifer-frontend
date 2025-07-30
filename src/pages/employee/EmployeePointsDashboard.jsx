@@ -297,8 +297,8 @@ const PointsDashboard = () => {
                         </p>
                         {/* Show message for admin grants, and for received/given cheers if message exists */}
                         {(isAdminGrant || ((['received','given'].includes(transaction.type)) && transaction.message)) && (
-                          <div className="mt-1 p-2 rounded-lg" style={{ backgroundColor: '#e6f7ff', border: '1px solid #0097b2' }}>
-                            <p className="text-sm" style={{ color: '#0097b2', fontFamily: 'Avenir, sans-serif' }}>
+                          <div className="mt-1 px-2 py-1 rounded-md inline-block" style={{ backgroundColor: '#eff6ff', border: '1px solid #3b82f6' }}>
+                            <p className="text-sm" style={{ color: '#1e40af', fontFamily: 'Avenir, sans-serif' }}>
                               &ldquo;{transaction.message || ''}&rdquo;
                             </p>
                           </div>
