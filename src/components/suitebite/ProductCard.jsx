@@ -250,12 +250,13 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
             <button
             onClick={e => {
               e.stopPropagation();
-              onBuyNow(product, quantity);
+              onBuyNow(product.product_id, quantity);
             }}
-            className="buy-now-btn w-full bg-[#0097b2] text-white py-3 px-4 rounded-lg font-semibold hover:bg-[#007a8e] transition-colors duration-200 flex items-center justify-center gap-2"
+            disabled={!canAfford}
+            className="buy-now-btn w-full bg-[#0097b2] text-white py-3 px-4 rounded-lg font-semibold hover:bg-[#007a8e] transition-colors duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
                   <ShoppingBagIcon className="h-4 w-4" />
-                  <span>Buy Now</span>
+                  <span>{!canAfford ? `Need ${totalCost - userHeartbits} more heartbits` : 'Buy Now'}</span>
             </button>
             <button
             onClick={e => {

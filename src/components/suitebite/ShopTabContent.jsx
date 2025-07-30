@@ -5,6 +5,7 @@ import { suitebiteAPI } from '../../utils/suitebiteAPI';
 import ProductCard from './ProductCard';
 import ShoppingCart from './ShoppingCart';
 import OrderHistory from './OrderHistory';
+import ProductDetailModal from './ProductDetailModal';
 
 import { MagnifyingGlassIcon, ShoppingBagIcon, ShoppingCartIcon, ClipboardDocumentListIcon } from '@heroicons/react/24/outline';
 
@@ -54,6 +55,13 @@ const ShopTabContent = () => {
   const [adminGrantMessage, setAdminGrantMessage] = useState('');
   const [adminGrantPoints, setAdminGrantPoints] = useState(1);
   const [adminGrantLoading, setAdminGrantLoading] = useState(false);
+
+  // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalProduct, setModalProduct] = useState(null);
+  const [modalMode, setModalMode] = useState('buy-now');
+  const [modalInitialQuantity, setModalInitialQuantity] = useState(1);
+  const [modalInitialSelectedOptions, setModalInitialSelectedOptions] = useState({});
 
   // Detect if current user is admin (assume user type is available in localStorage for demo)
   const isAdmin = localStorage.getItem('user_type') === 'admin';
@@ -145,55 +153,46 @@ const ShopTabContent = () => {
    * @param {number} variationId - Optional variation ID (legacy support)
    * @param {Array} variations - Array of variation selections
    */
-  const handleAddToCart = async (cartData) => {
+  const handleAddToCart = async (productId, quantity = 1) => {
     try {
-      const response = await suitebiteAPI.addToCart(cartData);
-      if (response.success) {
-        // Refresh cart data after successful addition
-        const cartResponse = await suitebiteAPI.getCart();
-        if (cartResponse.success) {
-          const cartItems = cartResponse.data?.cartItems || [];
-          setCart(cartItems);
-        }
-        showNotification('success', 'Item added to cart! 🛒');
+      // Get full product details for the modal
+      const response = await suitebiteAPI.getProductById(productId);
+      if (response.success && response.product) {
+        setModalProduct(response.product);
+        setModalInitialQuantity(quantity);
+        setModalInitialSelectedOptions({});
+        setModalMode('add-to-cart');
+        setIsModalOpen(true);
+      } else {
+        showNotification('error', 'Product not found');
       }
     } catch (error) {
-      console.error('Error adding to cart:', error);
-      showNotification('error', 'Failed to add item to cart');
+      console.error('Error opening add to cart modal:', error);
+      showNotification('error', 'Failed to open product details');
     }
   };
 
   /**
-   * Handles direct purchase (buy now) functionality
+   * Handles opening the product detail modal for buy now
    * @param {number} productId - ID of the product to buy
    * @param {number} quantity - Quantity to buy (default: 1)
-   * @param {number} variationId - Optional variation ID (legacy support)
-   * @param {Array} variations - Array of variation selections
    */
-  const handleBuyNow = async (productId, quantity = 1, variationId = null, variations = []) => {
+  const handleBuyNow = async (productId, quantity = 1) => {
     try {
-      // Prepare order data for direct checkout
-      const orderData = {
-        items: [{
-          product_id: productId,
-          quantity: quantity,
-          ...(variationId && { variation_id: variationId }),
-          ...(variations && variations.length > 0 && { variations: variations })
-        }]
-      };
-
-      // Create order directly without adding to cart
-      const response = await suitebiteAPI.checkout(orderData);
-      
-      if (response.success) {
-        showNotification('success', 'Order placed successfully! 🎉');
-        await loadShopData(); // Refresh data to update heartbits and order history
+      // Get full product details for the modal
+      const response = await suitebiteAPI.getProductById(productId);
+      if (response.success && response.product) {
+        setModalProduct(response.product);
+        setModalInitialQuantity(quantity);
+        setModalInitialSelectedOptions({});
+        setModalMode('buy-now');
+        setIsModalOpen(true);
       } else {
-        showNotification('error', response.message || 'Failed to place order');
+        showNotification('error', 'Product not found');
       }
     } catch (error) {
-      console.error('Error with buy now:', error);
-      showNotification('error', 'Buy now failed. Please try again.');
+      console.error('Error opening buy now modal:', error);
+      showNotification('error', 'Failed to open product details');
     }
   };
 
@@ -556,6 +555,48 @@ const ShopTabContent = () => {
           </button>
         </div>
       </div>
+
+      {/* Product Detail Modal for Add to Cart / Buy Now */}
+      {isModalOpen && modalProduct && (
+        <ProductDetailModal
+          product={modalProduct}
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onAddToCart={handleAddToCart}
+          onBuyNow={async (productId, quantity, variationId, variations) => {
+            // Buy Now: Create order directly without adding to cart
+            try {
+              // Prepare order data
+              const orderData = {
+                items: [{
+                  product_id: productId,
+                  quantity: quantity,
+                  ...(variationId && { variation_id: variationId }),
+                  ...(variations && variations.length > 0 && { variations: variations })
+                }]
+              };
+
+              // Create order directly
+              const response = await suitebiteAPI.checkout(orderData);
+              
+              if (response.success) {
+                showNotification('success', 'Order placed successfully!');
+                setIsModalOpen(false);
+                await loadShopData(); // Refresh data to update heartbits and order history
+              } else {
+                showNotification('error', response.message || 'Failed to place order');
+              }
+            } catch (error) {
+              console.error('Error with buy now:', error);
+              showNotification('error', 'Buy now failed. Please try again.');
+            }
+          }}
+          userHeartbits={userHeartbits}
+          mode={modalMode}
+          initialQuantity={modalInitialQuantity}
+          initialSelectedOptions={modalInitialSelectedOptions}
+        />
+      )}
     </div>
   );
 };

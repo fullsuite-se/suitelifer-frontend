@@ -232,7 +232,25 @@ export const suitebiteAPI = {
   },
 
   deleteOrder: async (orderId, reason) => {
-    const response = await axios.delete(`${API_BASE_URL}/admin/orders/${orderId}`, {
+    // Get user role from JWT token to determine correct endpoint
+    const token = localStorage.getItem('token');
+    let userRole = 'USER';
+    
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        userRole = payload.role || 'USER';
+      } catch (error) {
+        console.warn('Could not decode token for role determination:', error);
+      }
+    }
+    
+    // Use admin endpoint for admins, user endpoint for regular users
+    const endpoint = ['ADMIN', 'SUPER_ADMIN', 'SUPER ADMIN'].includes(userRole) 
+      ? `/admin/orders/${orderId}`
+      : `/orders/${orderId}`;
+    
+    const response = await axios.delete(`${API_BASE_URL}${endpoint}`, {
       ...createAuthHeaders(),
       data: { reason }
     });

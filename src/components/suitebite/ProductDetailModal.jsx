@@ -513,18 +513,13 @@ const ProductDetailModal = ({
                   /* Add to Cart Button for Add to Cart mode */
                   <button
                     onClick={handleAddToCartFromModal}
-                    disabled={!canAfford || isBuying || isAddingToCart}
+                    disabled={isBuying || isAddingToCart}
                     className="add-to-cart-btn w-full bg-[#0097b2] text-white py-4 px-6 rounded-lg font-semibold hover:bg-[#007a8e] transition-colors duration-200 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed text-lg"
                   >
                     {isAddingToCart ? (
                       <>
                         <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                         <span>{mode === 'edit' ? 'Updating...' : 'Adding...'}</span>
-                      </>
-                    ) : !canAfford ? (
-                      <>
-                        <HeartIcon className="h-5 w-5" />
-                        <span>Need {totalCost - userHeartbits} more heartbits</span>
                       </>
                     ) : (
                       <>
