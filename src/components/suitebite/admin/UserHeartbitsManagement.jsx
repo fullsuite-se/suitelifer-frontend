@@ -364,19 +364,22 @@ const UserHeartbitsManagement = () => {
   // Helper to map user_type to display label
   const getRoleLabel = (type) => {
     if (!type) return 'Employee';
-    switch (type.toLowerCase()) {
-      case 'super_admin':
-      case 'superadmin':
+    switch (type.toUpperCase()) {
+      case 'SUPER ADMIN':
+      case 'SUPER_ADMIN':
+      case 'SUPERADMIN':
         return 'Super Admin';
-      case 'admin':
+      case 'ADMIN':
         return 'Admin';
+      case 'EMPLOYEE':
+        return 'Employee';
       default:
         return 'Employee';
     }
   };
 
   return (
-    <div className="user-heartbits-management rounded-lg shadow-sm pb-6 px-6 pt-2">
+    <div className="user-heartbits-management rounded-lg shadow-sm pb-32 px-6 pt-2">
       {/* Notification */}
       {notification.show && (
         <div className={`fixed top-20 right-4 z-50 p-4 rounded-lg shadow-lg text-sm font-medium max-w-sm ${
@@ -504,9 +507,9 @@ const UserHeartbitsManagement = () => {
 
       {/* Users Table - only this is scrollable */}
       <div className="bg-white rounded-lg border border-gray-150 overflow-hidden">
-        <div className="users-table-container grid grid-cols-3 gap-6 p-6" style={{ maxHeight: '58vh', overflowY: 'auto', background: 'linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 40%, #f093fb 80%, #f5576c 100%)', borderRadius: '1rem' }}>
+        <div className="users-table-container grid grid-cols-4 gap-3 p-4" style={{ height: 'calc(100vh - 200px)', overflowY: 'auto', background: 'linear-gradient(135deg, #B3D9FF 0%, #80BFFF 50%, #5B9BD5 100%)', borderRadius: '1rem' }}>
           {sortedUsers.length === 0 ? (
-            <div className="col-span-3 text-center text-gray-500 py-12">
+            <div className="col-span-4 text-center text-gray-500 py-12">
               <UserGroupIcon className="mx-auto h-12 w-12 text-gray-400 mb-4" />
               <p className="text-lg font-medium text-gray-900 mb-2">No users found</p>
               <p className="text-sm">
@@ -521,17 +524,17 @@ const UserHeartbitsManagement = () => {
               return (
                 <div
                 key={user.user_id}
-                className={`relative bg-white rounded-xl shadow-md flex flex-col items-center p-5 transition-all duration-200 border border-gray-100 cursor-pointer ${isSelected ? 'ring-2 ring-purple-500' : ''}`}
-                style={{ minHeight: '120px' }}
+                className={`relative bg-white rounded-xl shadow-lg flex items-center p-4 transition-all duration-200 border-2 border-gray-200 hover:border-purple-300 cursor-pointer ${isSelected ? 'ring-2 ring-purple-500 border-purple-400 bg-purple-50' : 'hover:shadow-xl'}`}
+                style={{ minHeight: '120px', width: '100%' }}
                 onClick={() => toggleUserSelection(user.user_id)}
                 >
                   {/* Checkbox circle */}
-                  <div className="absolute top-4 right-4">
-                    <span className={`w-8 h-8 flex items-center justify-center rounded-full border-2 border-purple-400 bg-white ${isSelected ? 'bg-gradient-to-br from-purple-500 to-pink-400 border-purple-500' : ''}`}
+                  <div className="absolute top-3 right-3">
+                    <span className={`w-6 h-6 flex items-center justify-center rounded-full border-2 border-purple-400 bg-white ${isSelected ? 'bg-gradient-to-br from-purple-500 to-pink-400 border-purple-500' : ''}`}
                       style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.08)', transition: 'background 0.2s' }}
                     >
                       {isSelected && (
-                        <svg className="w-6 h-6 text-white drop-shadow-lg" fill="none" stroke="currentColor" strokeWidth="4" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                        <svg className="w-4 h-4 text-white drop-shadow-lg" fill="none" stroke="currentColor" strokeWidth="4" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                       )}
                     </span>
                   </div>
@@ -539,17 +542,16 @@ const UserHeartbitsManagement = () => {
                   <img
                     src={user.avatar || '/default-avatar.png'}
                     alt={`${user.first_name || ''} ${user.last_name || ''}`.trim()}
-                    className="w-12 h-12 rounded-full object-cover mb-3"
+                    className="w-16 h-16 rounded-full object-cover mr-4"
                   />
-                  {/* Name & Role */}
-                  <div className="text-center">
-                    <div className="font-semibold text-gray-900 text-base">{`${user.first_name || ''} ${user.last_name || ''}`.trim()}</div>
-                    <div className="text-sm text-gray-500">{getRoleLabel(user.user_type)}</div>
-                  </div>
-                  {/* Heartbits */}
-                  <div className="mt-2 flex items-center gap-1 text-sm">
-                    <HeartIcon className="h-4 w-4 text-pink-400" />
-                    <span className="font-medium text-[#0097b2]">{user.heartbits_balance || 0}</span>
+                  {/* Name, Role & Heartbits */}
+                  <div className="flex-1">
+                    <div className="font-bold text-gray-900 text-lg mb-1">{`${user.first_name || ''} ${user.last_name || ''}`.trim()}</div>
+                    <div className="text-sm text-gray-600 mb-2">{getRoleLabel(user.user_type)}</div>
+                    <div className="flex items-center gap-2">
+                      <HeartIcon className="h-5 w-5 text-pink-400" />
+                      <span className="font-semibold text-[#0097b2] text-lg">{user.heartbits_balance || 0}</span>
+                    </div>
                   </div>
                 </div>
               );
