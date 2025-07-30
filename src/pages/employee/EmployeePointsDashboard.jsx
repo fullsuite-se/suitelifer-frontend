@@ -273,7 +273,15 @@ const PointsDashboard = () => {
                 <div 
                   key={index} 
                   className="relative p-4"
-                  style={{ background: 'linear-gradient(135deg, #f8fafc 60%, #e0f7fa 100%)', borderRadius: '18px', overflow: 'hidden', border: '1.5px solid #e0e7ef' }}
+                  style={{ 
+                    background: 'linear-gradient(135deg, #f8fafc 60%, #e0f7fa 100%)', 
+                    borderTopLeftRadius: '0px',
+                    borderTopRightRadius: '18px',
+                    borderBottomLeftRadius: '18px',
+                    borderBottomRightRadius: '18px',
+                    overflow: 'hidden', 
+                    border: '1.5px solid #e0e7ef' 
+                  }}
                 >
                   {/* Shiny green accent bar */}
                   <div
@@ -313,7 +321,14 @@ const PointsDashboard = () => {
                         </p>
                         {/* Show message for admin grants, and for received/given cheers if message exists */}
                         {(isAdminGrant || ((['received','given'].includes(transaction.type)) && transaction.message)) && (
-                          <div className="mt-1 px-2 py-1 rounded-md inline-block" style={{ backgroundColor: '#eff6ff', border: '1px solid #3b82f6' }}>
+                          <div className="mt-1 px-2 py-1 inline-block" style={{ 
+                            backgroundColor: '#eff6ff', 
+                            border: '1px solid #3b82f6',
+                            borderTopLeftRadius: '0px',
+                            borderTopRightRadius: '6px',
+                            borderBottomLeftRadius: '6px',
+                            borderBottomRightRadius: '6px'
+                          }}>
                             <p className="text-sm" style={{ color: '#1e40af', fontFamily: 'Avenir, sans-serif' }}>
                               &ldquo;{transaction.message || ''}&rdquo;
                             </p>
