@@ -317,7 +317,7 @@ const PointsDashboard = () => {
                             fontFamily: 'Avenir, sans-serif',
                           }}
                         >
-                          {transaction.type === 'purchase' || transaction.type === 'given' || transaction.type === 'admin_deduct' ? '-' : ''}
+                          {transaction.type === 'purchase' || transaction.type === 'given' || transaction.type === 'admin_deduct' ? '-' : '+'}
                           {transaction.amount}
                           {transaction.type === 'received' || transaction.type === 'given' ? ' bits' : ' pts'}
                         </p>
