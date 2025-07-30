@@ -840,11 +840,14 @@ const CheerPage = () => {
                    border: '2px solid #b3e0f2',
                    boxShadow: '0 10px 25px rgba(0, 151, 178, 0.10)'
                  }}>
-              <div className="flex items-center justify-center mb-5">
+              <div className="flex items-center justify-start mb-5">
                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg" 
-                     style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)', marginLeft: '9px' }}>
+                     style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)' }}>
                   <HeartIconSolid className="w-6 h-6 text-white" />
                 </div>
+                <span className="ml-3 text-xl font-bold" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                  Heartbits
+                </span>
               </div>
               
               <div className="space-y-5">
