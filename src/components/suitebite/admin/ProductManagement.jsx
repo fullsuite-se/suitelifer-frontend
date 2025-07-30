@@ -76,6 +76,9 @@ const ProductManagement = () => {
   const [variationOptions, setVariationOptions] = useState([]);
   const [selectedVariations, setSelectedVariations] = useState([]);
   const [showVariationsModal, setShowVariationsModal] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [pendingDeleteProduct, setPendingDeleteProduct] = useState(null);
+  const [deletingProduct, setDeletingProduct] = useState(false);
 
   useEffect(() => {
     loadProducts();
@@ -175,14 +178,20 @@ const ProductManagement = () => {
   };
 
   const handleDeleteProduct = async (productId) => {
-    if (!window.confirm('Are you sure you want to delete this product?')) {
-      return;
-    }
+    setPendingDeleteProduct(productId);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!pendingDeleteProduct) return;
 
     try {
-      const response = await suitebiteAPI.deleteProduct(productId);
+      setDeletingProduct(true);
+      const response = await suitebiteAPI.deleteProduct(pendingDeleteProduct);
       if (response.success) {
         showNotification('success', 'Product deleted successfully!');
+        setShowDeleteConfirm(false);
+        setPendingDeleteProduct(null);
         await loadProducts();
       } else {
         showNotification('error', response.message || 'Failed to delete product');
@@ -190,7 +199,15 @@ const ProductManagement = () => {
     } catch (error) {
       console.error('Error deleting product:', error);
       showNotification('error', 'Failed to delete product');
+    } finally {
+      setDeletingProduct(false);
     }
+  };
+
+  const closeDeleteModal = () => {
+    setShowDeleteConfirm(false);
+    setPendingDeleteProduct(null);
+    setDeletingProduct(false);
   };
 
   const handleImageUpload = (e) => {
@@ -487,6 +504,42 @@ const ProductManagement = () => {
               product={modalMode === 'edit' ? selectedProduct : null}
               mode={modalMode}
             />
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto p-6">
+            <ExclamationTriangleIcon className="h-12 w-12 text-red-500 mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Confirm Deletion</h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Are you sure you want to delete this product? This action cannot be undone.
+            </p>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={closeDeleteModal}
+                disabled={deletingProduct}
+                className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors duration-200 text-base disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                disabled={deletingProduct}
+                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors duration-200 text-base disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                {deletingProduct ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    Deleting...
+                  </>
+                ) : (
+                  'Delete'
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}

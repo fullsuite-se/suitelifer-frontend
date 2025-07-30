@@ -653,18 +653,14 @@ export const suitebiteAPI = {
    * @returns {Promise} Response
    */
   deleteProductImage: async (imageId) => {
-    console.log('🔍 API - deleteProductImage called with imageId:', imageId);
-    console.log('🔍 API - API_BASE_URL:', API_BASE_URL);
-    console.log('🔍 API - Full URL:', `${API_BASE_URL}/products/images/${imageId}`);
-    console.log('🔍 API - Environment check - VITE_API_BASE_URL:', import.meta.env.VITE_API_BASE_URL);
-    console.log('🔍 API - Headers:', createAuthHeaders());
+
     
     try {
       const response = await axios.delete(
         `${API_BASE_URL}/products/images/${imageId}`,
         createAuthHeaders()
       );
-      console.log('🔍 API - Delete response:', response.data);
+
       return response.data;
     } catch (error) {
       console.error('🔍 API - Delete error:', error);
