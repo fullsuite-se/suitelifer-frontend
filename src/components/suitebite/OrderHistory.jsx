@@ -371,7 +371,7 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate, onPointsUpdate }) => {
   };
 
   const getStatusBadge = (status) => {
-    const baseClasses = "inline-flex items-center px-2 py-1 rounded-full text-xs font-medium";
+    const baseClasses = "inline-flex items-center px-2 py-1 rounded-full text-sm font-medium";
     
     switch (status) {
       case 'pending':
@@ -483,13 +483,13 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate, onPointsUpdate }) => {
   };
 
   return (
-    <div className="order-history-container">
+    <div className="order-history-container h-full flex flex-col">
       {/* Filters */}
-      <div className="filters mb-6 bg-white rounded-lg shadow-sm border p-2">
+      <div className="filters mb-4 bg-white rounded-lg shadow-sm border p-2">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
           {/* Search */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Search Orders</label>
+            <label className="block text-base font-medium text-gray-700 mb-1">Search Orders</label>
             <div className="relative">
               <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <input
@@ -504,7 +504,7 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate, onPointsUpdate }) => {
 
           {/* Status Filter */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+            <label className="block text-base font-medium text-gray-700 mb-1">Status</label>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
@@ -521,7 +521,7 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate, onPointsUpdate }) => {
           {/* Sort By, Sort Order, Reset */}
           <div className="flex gap-2 items-end justify-end">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
+              <label className="block text-base font-medium text-gray-700 mb-1">Sort By</label>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
@@ -533,7 +533,7 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate, onPointsUpdate }) => {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Sort Order</label>
+              <label className="block text-base font-medium text-gray-700 mb-1">Sort Order</label>
               <select
                 value={sortOrder}
                 onChange={(e) => setSortOrder(e.target.value)}
@@ -555,7 +555,7 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate, onPointsUpdate }) => {
       </div>
 
       {/* Orders List */}
-      <div className="orders-list-container max-h-[60vh] overflow-y-auto rounded-lg border bg-white flex-1">
+      <div className="orders-list-container flex-1 overflow-y-auto rounded-lg border bg-white">
         <div className="orders-list">
           {loading ? (
             <div className="text-center py-12">
@@ -565,8 +565,8 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate, onPointsUpdate }) => {
           ) : filteredAndSortedOrders.length === 0 ? (
             <div className="text-center py-12 bg-white rounded-lg shadow-sm border">
               <ShoppingBagIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No orders found</h3>
-              <p className="text-gray-600">Start shopping to see your order history here.</p>
+              <h3 className="text-xl font-medium text-gray-900 mb-2">No orders found</h3>
+              <p className="text-base text-gray-600">Start shopping to see your order history here.</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -587,11 +587,11 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate, onPointsUpdate }) => {
                         </span>
                       </div>
                       
-                      <p className="text-sm text-gray-600 mb-2">
+                      <p className="text-base text-gray-600 mb-2">
                         {getStatusDescription(order.status)}
                       </p>
                       
-                      <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
+                      <div className="flex items-center gap-4 text-base text-gray-500 mb-3">
                         <div className="flex items-center gap-1">
                           <CalendarDaysIcon className="h-4 w-4" />
                           <span>{formatDate(order.ordered_at)}</span>
@@ -609,15 +609,15 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate, onPointsUpdate }) => {
                       {/* Order Items Preview */}
                       {order.orderItems && order.orderItems.length > 0 && (
                         <div className="mb-3">
-                          <div className="text-xs text-gray-500 mb-2">Items:</div>
+                          <div className="text-sm text-gray-500 mb-2">Items:</div>
                           <div className="space-y-1">
                             {order.orderItems.slice(0, 2).map((item, index) => (
-                              <div key={index} className="flex items-center gap-2 text-sm">
+                              <div key={index} className="flex items-center gap-2 text-base">
                                 <div className="w-4 h-4 bg-gray-200 rounded-sm flex-shrink-0"></div>
                                 <span className="text-gray-700 truncate">
                                   {item.quantity}x {item.product_name}
                                   {item.variations && item.variations.length > 0 && (
-                                    <span className="text-gray-500 text-xs ml-1">
+                                    <span className="text-gray-500 text-sm ml-1">
                                       ({item.variations.map(v => v.option_label).join(', ')})
                                     </span>
                                   )}
@@ -625,7 +625,7 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate, onPointsUpdate }) => {
                               </div>
                             ))}
                             {order.orderItems.length > 2 && (
-                              <div className="text-xs text-gray-500">
+                              <div className="text-sm text-gray-500">
                                 +{order.orderItems.length - 2} more item{order.orderItems.length - 2 !== 1 ? 's' : ''}
                               </div>
                             )}
@@ -694,7 +694,7 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate, onPointsUpdate }) => {
 
                   {/* Status Timeline */}
                   <div className="mt-4 pt-4 border-t border-gray-200">
-                    <div className="flex items-center gap-4 text-xs text-gray-500">
+                    <div className="flex items-center gap-4 text-sm text-gray-500">
                       <div className="flex items-center gap-1">
                         <CheckIcon className="h-3 w-3 text-green-500" />
                         <span>Ordered {formatTimeAgo(order.ordered_at)}</span>
@@ -779,7 +779,7 @@ const OrderDetailsModal = ({ order, onClose }) => {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-semibold">Order Details</h2>
-              <p className="text-sm opacity-90">Order #{order.order_id}</p>
+              <p className="text-base opacity-90">Order #{order.order_id}</p>
             </div>
             <button
               onClick={onClose}
@@ -795,7 +795,7 @@ const OrderDetailsModal = ({ order, onClose }) => {
           {/* Order Status */}
           <div className="mb-6">
             <div className="flex items-center gap-3 mb-2">
-              <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+              <div className={`inline-flex items-center px-3 py-1 rounded-full text-base font-medium ${
                 order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
                 order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
                 order.status === 'completed' ? 'bg-green-100 text-green-800' :
@@ -805,7 +805,7 @@ const OrderDetailsModal = ({ order, onClose }) => {
                 {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
               </div>
             </div>
-            <p className="text-sm text-gray-600">
+            <p className="text-base text-gray-600">
               {order.status === 'pending' && 'Your order is awaiting admin approval. You can cancel it anytime.'}
               {order.status === 'processing' && 'Your order has been approved and is being processed.'}
               {order.status === 'completed' && 'Your order has been completed successfully!'}
@@ -815,7 +815,7 @@ const OrderDetailsModal = ({ order, onClose }) => {
 
           {/* Order Timeline */}
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">Order Timeline</h3>
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">Order Timeline</h3>
             <div className="flex items-center justify-between gap-4 relative px-2">
               {/* Horizontal line */}
               <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gray-200 z-0" style={{transform: 'translateY(-50%)'}}></div>
@@ -826,7 +826,7 @@ const OrderDetailsModal = ({ order, onClose }) => {
                   <div className="w-5 h-5 bg-green-500 rounded-full border-2 border-white shadow flex items-center justify-center">
                     <CheckIcon className="h-3 w-3 text-white" />
                   </div>
-                  <span className="text-xs font-medium text-gray-900 mt-2">Placed</span>
+                  <span className="text-sm font-medium text-gray-900 mt-2">Placed</span>
                   <span className="text-[10px] text-gray-500">{formatDate(order.ordered_at)}</span>
                 </div>
                 {/* Approved */}
@@ -835,7 +835,7 @@ const OrderDetailsModal = ({ order, onClose }) => {
                     <div className="w-5 h-5 bg-blue-500 rounded-full border-2 border-white shadow flex items-center justify-center">
                       <CheckIcon className="h-3 w-3 text-white" />
                     </div>
-                    <span className="text-xs font-medium text-gray-900 mt-2">Approved</span>
+                    <span className="text-sm font-medium text-gray-900 mt-2">Approved</span>
                     <span className="text-[10px] text-gray-500">{formatDate(order.processed_at)}</span>
                   </div>
                 )}
@@ -845,7 +845,7 @@ const OrderDetailsModal = ({ order, onClose }) => {
                     <div className="w-5 h-5 bg-green-500 rounded-full border-2 border-white shadow flex items-center justify-center">
                       <CheckIcon className="h-3 w-3 text-white" />
                     </div>
-                    <span className="text-xs font-medium text-gray-900 mt-2">Completed</span>
+                    <span className="text-sm font-medium text-gray-900 mt-2">Completed</span>
                     <span className="text-[10px] text-gray-500">{formatDate(order.completed_at)}</span>
                   </div>
                 )}
@@ -855,7 +855,7 @@ const OrderDetailsModal = ({ order, onClose }) => {
                     <div className="w-5 h-5 bg-red-500 rounded-full border-2 border-white shadow flex items-center justify-center">
                       <XMarkIcon className="h-3 w-3 text-white" />
                     </div>
-                    <span className="text-xs font-medium text-gray-900 mt-2">Cancelled</span>
+                    <span className="text-sm font-medium text-gray-900 mt-2">Cancelled</span>
                     <span className="text-[10px] text-gray-500">Order was cancelled</span>
                   </div>
                 )}
@@ -865,7 +865,7 @@ const OrderDetailsModal = ({ order, onClose }) => {
 
           {/* Order Items */}
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">Order Items</h3>
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">Order Items</h3>
             <div className="space-y-3 max-h-64 overflow-y-auto pr-2">
               {order.orderItems && order.orderItems.map((item, index) => (
                 <OrderItemCard 
@@ -886,10 +886,10 @@ const OrderDetailsModal = ({ order, onClose }) => {
           {/* Order Summary */}
           <div className="border-t border-gray-200 pt-4">
             <div className="flex items-center justify-between">
-              <span className="text-lg font-semibold text-gray-900">Total</span>
+              <span className="text-xl font-semibold text-gray-900">Total</span>
               <div className="flex items-center gap-2">
                 <HeartIcon className="h-5 w-5 text-red-500" />
-                <span className="text-lg font-bold text-[#0097b2]">{order.total_points} heartbits</span>
+                <span className="text-xl font-bold text-[#0097b2]">{order.total_points} heartbits</span>
               </div>
             </div>
           </div>
@@ -899,9 +899,9 @@ const OrderDetailsModal = ({ order, onClose }) => {
             <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
               <div className="flex items-center gap-2 mb-1">
                 <ExclamationTriangleIcon className="h-4 w-4 text-yellow-600" />
-                <span className="text-sm font-medium text-yellow-800">Notes</span>
+                <span className="text-base font-medium text-yellow-800">Notes</span>
               </div>
-              <p className="text-sm text-yellow-700">{order.notes}</p>
+              <p className="text-base text-yellow-700">{order.notes}</p>
             </div>
           )}
         </div>
@@ -943,21 +943,21 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, confirm
       <div className="bg-white rounded-lg max-w-md w-full shadow-xl">
         {/* Modal Header */}
         <div className="p-6 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-          <p className="text-sm text-gray-600 mt-2">{message}</p>
+          <h3 className="text-xl font-semibold text-gray-900">{title}</h3>
+          <p className="text-base text-gray-600 mt-2">{message}</p>
         </div>
         
         {/* Modal Footer */}
         <div className="p-6 flex gap-3 justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium"
+            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-base font-medium"
           >
             {cancelText || 'Cancel'}
           </button>
           <button
             onClick={onConfirm}
-            className={`px-4 py-2 text-white rounded-lg transition-colors text-sm font-medium ${
+            className={`px-4 py-2 text-white rounded-lg transition-colors text-base font-medium ${
               confirmColor === 'red' 
                 ? 'bg-red-600 hover:bg-red-700' 
                 : 'bg-blue-600 hover:bg-blue-700'

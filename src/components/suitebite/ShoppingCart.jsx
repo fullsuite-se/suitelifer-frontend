@@ -497,7 +497,7 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
         <div className="flex items-center gap-3">
           <ShoppingBagIcon className="h-6 w-6 text-[#0097b2]" />
           <span className="font-bold text-xl text-gray-900">Shopping Cart</span>
-          <span className="ml-2 text-sm font-medium text-gray-500">({itemCount} items)</span>
+          <span className="ml-2 text-base font-medium text-gray-500">({itemCount} items)</span>
         </div>
         <button
           onClick={onClose}
@@ -512,8 +512,8 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
           {uniqueCart.length === 0 ? (
             <div className="text-center py-8">
               <ShoppingBagIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Your cart is empty</h3>
-              <p className="text-gray-600">Add some items to get started!</p>
+              <h3 className="text-xl font-medium text-gray-900 mb-2">Your cart is empty</h3>
+              <p className="text-base text-gray-600">Add some items to get started!</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -526,13 +526,13 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                     onChange={handleSelectAll}
                     className="rounded border-gray-300 text-[#0097b2] focus:ring-[#0097b2]"
                   />
-                  <span className="text-sm font-medium text-gray-700">
+                  <span className="text-base font-medium text-gray-700">
                     Select All ({uniqueCart.length})
                   </span>
                 </div>
                 <button
                   onClick={handleClearAll}
-                  className="text-sm text-gray-500 hover:text-gray-700"
+                  className="text-base text-gray-500 hover:text-gray-700"
                 >
                   Clear All
                 </button>
@@ -587,7 +587,7 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
 
                     {/* Item Details */}
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-sm font-medium text-gray-900 truncate">
+                      <h3 className="text-base font-medium text-gray-900 truncate">
                         {item.product_name}
                       </h3>
                       
@@ -602,7 +602,7 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                             return (
                               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 space-y-3 animate-pulse-once">
                                 <div className="flex items-center justify-between">
-                                  <span className="text-sm font-medium text-blue-800 flex items-center gap-1">
+                                  <span className="text-base font-medium text-blue-800 flex items-center gap-1">
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                     </svg>
@@ -612,7 +612,7 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                                     <button
                                       onClick={() => saveInlineEdit(item)}
                                       disabled={itemLoadingStates[item.cart_item_id] === 'updating'}
-                                      className="text-green-600 hover:text-green-800 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 px-2 py-1 rounded hover:bg-green-50 transition-colors"
+                                      className="text-green-600 hover:text-green-800 text-base font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 px-2 py-1 rounded hover:bg-green-50 transition-colors"
                                     >
                                       {itemLoadingStates[item.cart_item_id] === 'updating' ? (
                                         <>
@@ -630,7 +630,7 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                                     </button>
                                     <button
                                       onClick={cancelInlineEdit}
-                                      className="text-gray-500 hover:text-gray-700 text-sm px-2 py-1 rounded hover:bg-gray-100 transition-colors"
+                                      className="text-gray-500 hover:text-gray-700 text-base px-2 py-1 rounded hover:bg-gray-100 transition-colors"
                                     >
                                       Cancel
                                     </button>
@@ -646,7 +646,7 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                                       
                                       return (
                                         <div key={typeName} className="space-y-2">
-                                          <label className="block text-xs font-medium text-gray-700 capitalize flex items-center gap-1">
+                                          <label className="block text-sm font-medium text-gray-700 capitalize flex items-center gap-1">
                                             <span className="w-2 h-2 bg-blue-400 rounded-full"></span>
                                             {getTypeLabel(typeName)}
                                           </label>
@@ -655,7 +655,7 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                                               <button
                                                 key={option.id}
                                                 onClick={() => handleInlineOptionChange(typeName, option.id)}
-                                                className={`text-xs px-3 py-1.5 rounded-full border transition-all duration-200 font-medium ${
+                                                className={`text-sm px-3 py-1.5 rounded-full border transition-all duration-200 font-medium ${
                                                   selectedOptionId === option.id
                                                     ? 'bg-blue-600 text-white border-blue-600 shadow-sm scale-105'
                                                     : 'bg-white text-gray-700 border-gray-300 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700'
@@ -670,7 +670,7 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                                     })
                                   ) : (
                                     <div className="text-center py-4">
-                                      <div className="text-gray-500 text-sm">No variations available for this product</div>
+                                      <div className="text-gray-500 text-base">No variations available for this product</div>
                                     </div>
                                   )}
                                 </div>
@@ -693,7 +693,7 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                               variationElements = Object.entries(variationsByType).map(([typeName, variations]) => {
                                 const variationText = variations.map(v => getOptionLabel(v.option_id, v.option_label || v.option_value)).join(', ');
                                 return (
-                                  <span key={typeName} className="inline-block text-xs px-2 py-1 bg-blue-50 text-blue-700 rounded-full border border-blue-200 mr-1 mb-1 max-w-full truncate">
+                                  <span key={typeName} className="inline-block text-sm px-2 py-1 bg-blue-50 text-blue-700 rounded-full border border-blue-200 mr-1 mb-1 max-w-full truncate">
                                     {getTypeLabel(typeName)}: {variationText}
                                   </span>
                                 );
@@ -701,7 +701,7 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                             } else if (item.variation_details) {
                               const details = Array.isArray(item.variation_details) ? item.variation_details : [item.variation_details];
                               variationElements = details.map((opt, index) => (
-                                <span key={index} className="inline-block text-xs px-2 py-1 bg-blue-50 text-blue-700 rounded-full border border-blue-200 mr-1 mb-1 max-w-full truncate">
+                                <span key={index} className="inline-block text-sm px-2 py-1 bg-blue-50 text-blue-700 rounded-full border border-blue-200 mr-1 mb-1 max-w-full truncate">
                                   {getOptionLabel(opt.option_id, opt.option_label || opt.option_value)}
                                 </span>
                               ));
@@ -711,7 +711,7 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                               <div className="space-y-2">
                                 <div className="flex flex-wrap gap-1">
                                   {variationElements.length > 0 ? variationElements : (
-                                    <span className="text-xs px-2 py-1 bg-yellow-50 text-yellow-700 rounded-full border border-yellow-200">
+                                    <span className="text-sm px-2 py-1 bg-yellow-50 text-yellow-700 rounded-full border border-yellow-200">
                                       Variations not loaded
                                     </span>
                                   )}
@@ -720,7 +720,7 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                                   <button
                                     onClick={() => startInlineEdit(item)}
                                     disabled={itemLoadingStates[item.cart_item_id] === 'loading'}
-                                    className="text-blue-600 text-xs hover:text-blue-800 hover:underline font-medium disabled:opacity-50 whitespace-nowrap"
+                                    className="text-blue-600 text-sm hover:text-blue-800 hover:underline font-medium disabled:opacity-50 whitespace-nowrap"
                                     title="Edit options inline"
                                   >
                                     {itemLoadingStates[item.cart_item_id] === 'loading' ? 'Loading...' : 'Edit'}
@@ -732,7 +732,7 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                             return (
                               <div className="space-y-2">
                                 <div className="flex flex-wrap gap-1">
-                                  <span className="text-xs px-2 py-1 bg-gray-50 text-gray-600 rounded-full border border-gray-200">
+                                  <span className="text-sm px-2 py-1 bg-gray-50 text-gray-600 rounded-full border border-gray-200">
                                     Standard
                                   </span>
                                 </div>
@@ -746,8 +746,8 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                       <div className="flex items-center justify-between mt-2">
                         <div className="flex items-center gap-2">
                           <HeartIcon className="h-4 w-4 text-red-500" />
-                          <span className="text-sm font-medium text-[#0097b2]">
-                            {item.price_points || item.points_cost || item.price} pts
+                          <span className="text-base font-medium text-[#0097b2]">
+                            {(item.price_points || item.points_cost || item.price) * item.quantity} heartbits
                           </span>
                         </div>
                         
@@ -756,17 +756,17 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                           <button
                             onClick={() => handleUpdateQuantity(item.cart_item_id, item.quantity - 1)}
                             disabled={itemLoadingStates[item.cart_item_id] === 'updating'}
-                            className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center text-sm font-semibold hover:bg-gray-300 transition-colors disabled:opacity-50"
+                            className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center text-base font-semibold hover:bg-gray-300 transition-colors disabled:opacity-50"
                           >
                             -
                           </button>
-                          <span className="text-sm font-medium min-w-[2rem] text-center">
+                          <span className="text-base font-medium min-w-[2rem] text-center">
                             {item.quantity}
                           </span>
                           <button
                             onClick={() => handleUpdateQuantity(item.cart_item_id, item.quantity + 1)}
                             disabled={itemLoadingStates[item.cart_item_id] === 'updating'}
-                            className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center text-sm font-semibold hover:bg-gray-300 transition-colors disabled:opacity-50"
+                            className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center text-base font-semibold hover:bg-gray-300 transition-colors disabled:opacity-50"
                           >
                             +
                           </button>
@@ -775,8 +775,8 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
 
                       {/* Total for this item */}
                       <div className="flex items-center justify-between mt-2">
-                        <span className="text-xs text-gray-500">
-                          Total: {(item.price_points || item.points_cost || item.price) * item.quantity} pts
+                        <span className="text-sm text-gray-500">
+                          Subtotal: {(item.price_points || item.points_cost || item.price) * item.quantity} heartbits
                         </span>
                         
                         {/* Remove Button */}
@@ -794,9 +794,9 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
 
                   {/* Loading State */}
                   {itemLoadingStates[item.cart_item_id] && (
-                    <div className="mt-2 flex items-center gap-2 text-xs text-gray-500">
+                    <div className="mt-2 flex items-center gap-2 text-sm text-gray-500">
                       <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-[#0097b2]"></div>
-                      {itemLoadingStates[item.cart_item_id] === 'updating' ? 'Updating...' : 'Removing...'}
+                      {itemLoadingStates[item.cart_item_id] === 'updating' ? 'Updating...' : 'Updated'}
                     </div>
                   )}
                 </div>
@@ -812,12 +812,12 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <CheckIcon className="h-4 w-4 text-green-500" />
-                <span className="text-sm font-medium text-gray-700">
+                <span className="text-base font-medium text-gray-700">
                   {selectedItemsCount} item{selectedItemsCount !== 1 ? 's' : ''} selected
                 </span>
               </div>
-              <span className="text-sm text-gray-500">
-                Total: {selectedItemsTotal} pts
+              <span className="text-base text-gray-500">
+                Total: {selectedItemsTotal} heartbits
               </span>
             </div>
 
@@ -825,10 +825,10 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
             <div className="flex items-center justify-between mb-4 p-3 bg-gray-50 rounded-lg">
               <div className="flex items-center gap-2">
                 <HeartIcon className="h-4 w-4 text-red-500" />
-                <span className="text-sm font-medium text-gray-700">Your Balance:</span>
+                <span className="text-base font-medium text-gray-700">Your Balance:</span>
               </div>
-              <span className={`text-sm font-semibold ${realTimeHeartbits >= selectedItemsTotal ? 'text-green-600' : 'text-red-600'}`}>
-                {realTimeHeartbits} pts
+              <span className={`text-base font-semibold ${realTimeHeartbits >= selectedItemsTotal ? 'text-green-600' : 'text-red-600'}`}>
+                {realTimeHeartbits} heartbits
               </span>
             </div>
 
@@ -836,9 +836,9 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
             {realTimeHeartbits < selectedItemsTotal && (
               <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
                 <div className="flex items-center gap-2 text-red-700">
-                  <span className="text-sm font-medium">Insufficient Balance</span>
+                  <span className="text-base font-medium">Insufficient Balance</span>
                 </div>
-                <p className="text-xs text-red-600 mt-1">
+                <p className="text-sm text-red-600 mt-1">
                   You need {selectedItemsTotal - realTimeHeartbits} more heartbits to complete this purchase.
                 </p>
               </div>
@@ -926,7 +926,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, confirm
     <div className="fixed inset-0 bg-black/40 backdrop-blur z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
       <div className="bg-white rounded-xl max-w-md w-full p-6 shadow-xl">
         <div className="text-center">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">{title}</h3>
           <p className="text-gray-600 mb-6">{message}</p>
           
           <div className="flex gap-3 justify-center">
