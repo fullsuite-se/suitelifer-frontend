@@ -507,7 +507,7 @@ const UserHeartbitsManagement = () => {
 
       {/* Users Table - only this is scrollable */}
       <div className="bg-white rounded-lg border border-gray-150 overflow-hidden">
-        <div className="users-table-container grid grid-cols-4 gap-3 p-4" style={{ height: 'calc(100vh - 200px)', overflowY: 'auto', background: 'linear-gradient(135deg, #B3D9FF 0%, #80BFFF 50%, #5B9BD5 100%)', borderRadius: '1rem' }}>
+        <div className="users-table-container grid grid-cols-4 gap-3 p-4" style={{ overflowY: 'auto', background: 'linear-gradient(135deg, #B3D9FF 0%, #80BFFF 50%, #5B9BD5 100%)', borderRadius: '1rem' }}>
           {sortedUsers.length === 0 ? (
             <div className="col-span-4 text-center text-gray-500 py-12">
               <UserGroupIcon className="mx-auto h-12 w-12 text-gray-400 mb-4" />
@@ -525,7 +525,7 @@ const UserHeartbitsManagement = () => {
                 <div
                 key={user.user_id}
                 className={`relative bg-white rounded-xl shadow-lg flex items-center p-4 transition-all duration-200 border-2 border-gray-200 hover:border-purple-300 cursor-pointer ${isSelected ? 'ring-2 ring-purple-500 border-purple-400 bg-purple-50' : 'hover:shadow-xl'}`}
-                style={{ minHeight: '120px', width: '100%' }}
+                style={{ minHeight: '120px' }}
                 onClick={() => toggleUserSelection(user.user_id)}
                 >
                   {/* Checkbox circle */}
