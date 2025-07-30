@@ -151,15 +151,42 @@ const CheerPage = () => {
   const likeMutation = useMutation({
     mutationFn: (cheerId) => pointsSystemApi.toggleCheerLike(cheerId),
     onSuccess: (data, cheerId) => {
-      console.log('likeMutation.onSuccess', { data, cheerId });
+      console.log('likeMutation.onSuccess', { data, cheerId, liked: data.liked, success: data.success });
+      
+      // Extract the actual like status from the response
+      const likeStatus = data.liked !== undefined ? data.liked : (data.data && data.data.liked);
+      
+      // Fallback: if likeStatus is undefined, check if it was previously liked
+      const wasPreviouslyLiked = likedCheers.has(cheerId);
+      const finalLikeStatus = likeStatus !== undefined ? likeStatus : !wasPreviouslyLiked;
+      
+      console.log('Like status debug:', { 
+        cheerId, 
+        likeStatus, 
+        wasPreviouslyLiked, 
+        finalLikeStatus,
+        responseData: data 
+      });
+      
+      // Update localStorage based on server response
+      const currentLikes = JSON.parse(localStorage.getItem('likedCheers') || '[]');
+      if (finalLikeStatus === true) {
+        if (!currentLikes.includes(cheerId)) {
+          currentLikes.push(cheerId);
+        }
+      } else {
+        const index = currentLikes.indexOf(cheerId);
+        if (index > -1) {
+          currentLikes.splice(index, 1);
+        }
+      }
+      localStorage.setItem('likedCheers', JSON.stringify(currentLikes));
+      
+      // Update state based on server response, not localStorage
       setLikedCheers(prev => {
         const newSet = new Set(prev);
-        if (data.liked || data.success) {
+        if (finalLikeStatus === true) {
           newSet.add(cheerId);
-          // setConfettiAnimating(prev => ({ ...prev, [cheerId]: true })); // Removed
-          // setTimeout(() => { // Removed
-          //   setConfettiAnimating(prev => ({ ...prev, [cheerId]: false })); // Removed
-          // }, 800); // Removed
           console.log('Confetti triggered for', cheerId);
         } else {
           newSet.delete(cheerId);
@@ -258,16 +285,63 @@ const CheerPage = () => {
   // Add state for delete confirmation
   const [confirmingDelete, setConfirmingDelete] = useState(null); // {cheerId, commentId}
 
+  // Load persisted likes from localStorage on component mount
+  useEffect(() => {
+    const persistedLikes = JSON.parse(localStorage.getItem('likedCheers') || '[]');
+    if (persistedLikes.length > 0) {
+      setLikedCheers(new Set(persistedLikes));
+    }
+    
+    // Cleanup function to clear likes when component unmounts
+    return () => {
+      // Optionally clear old likes after a certain time period
+      const lastCleared = localStorage.getItem('likedCheersLastCleared');
+      const now = Date.now();
+      const oneDay = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+      
+      if (!lastCleared || (now - parseInt(lastCleared)) > oneDay) {
+        localStorage.removeItem('likedCheers');
+        localStorage.setItem('likedCheersLastCleared', now.toString());
+      }
+    };
+  }, []);
+
   // Initialize hearted cheers state when feed data loads
   useEffect(() => {
     if (allCheers && Array.isArray(allCheers)) {
       const likedCheerIds = new Set();
+      const serverLikedCheerIds = new Set();
+      
       allCheers.forEach(cheer => {
-        if (cheer.userHearted || cheer.userLiked) {
+        // Check for both userLiked and userHearted fields, handling both boolean and numeric values
+        const isLiked = cheer.userLiked === true || cheer.userLiked === 1 || cheer.userLiked === '1';
+        const isHearted = cheer.userHearted === true || cheer.userHearted === 1 || cheer.userHearted === '1';
+        
+        if (isLiked || isHearted) {
           likedCheerIds.add(cheer.cheer_id);
+          serverLikedCheerIds.add(cheer.cheer_id);
         }
       });
+      
+      // Only add persisted likes for cheers that don't have server data
+      const persistedLikes = JSON.parse(localStorage.getItem('likedCheers') || '[]');
+      persistedLikes.forEach(cheerId => {
+        // Only add if server doesn't have data for this cheer
+        if (!serverLikedCheerIds.has(cheerId)) {
+          likedCheerIds.add(cheerId);
+        }
+      });
+      
       setLikedCheers(likedCheerIds);
+      
+      // Clean up localStorage to remove stale data for cheers that have server data
+      if (serverLikedCheerIds.size > 0) {
+        const currentPersistedLikes = JSON.parse(localStorage.getItem('likedCheers') || '[]');
+        const cleanedPersistedLikes = currentPersistedLikes.filter(cheerId => 
+          !serverLikedCheerIds.has(cheerId)
+        );
+        localStorage.setItem('likedCheers', JSON.stringify(cleanedPersistedLikes));
+      }
     }
   }, [allCheers]);
 
@@ -635,7 +709,7 @@ const CheerPage = () => {
                           <img
                             src={result.avatar || '/images/default-avatar.png'}
                             alt={result.name}
-                            className="w-10 h-10 rounded-full ring-2 ring-gray-200"
+                            className="w-12 h-12 rounded-full ring-2 ring-gray-200"
                           />
                           <div>
                             <p className="font-semibold text-base" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
@@ -1035,7 +1109,7 @@ const CheerPage = () => {
                           <img
                             src={cheer.fromUser?.avatar || '/images/default-avatar.png'}
                             alt={cheer.fromUser?.name}
-                            className="w-10 h-10 rounded-full ring-2 ring-gray-200 flex-shrink-0"
+                            className="w-12 h-12 rounded-full ring-2 ring-gray-200 flex-shrink-0"
                           />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center space-x-2 mb-2 flex-wrap">
@@ -1061,33 +1135,35 @@ const CheerPage = () => {
                             )}
                             
                             <div className="flex items-center space-x-4">
-                              <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <button
-                                  onClick={() => likeMutation.mutate(cheer.cheer_id)}
-                                  className="flex items-center space-x-1 transition-all duration-200 hover:scale-110 active:scale-95"
-                                  style={{
-                                    background: 'none',
-                                    border: 'none',
-                                    outline: 'none',
-                                    cursor: 'pointer',
-                                    padding: 0,
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    position: 'relative',
-                                    zIndex: 2,
-                                    color: likedCheers.has(cheer.cheer_id) ? '#ef4444' : '#64748b',
-                                    fontFamily: 'Avenir, sans-serif',
-                                  }}
-                                >
-                                  {likedCheers.has(cheer.cheer_id) ? (
-                                    <HeartIconSolid className="w-5 h-5" />
-                                  ) : (
-                                    <HeartIcon className="w-6 h-6" />
-                                  )}
-                                </button>
-                                
-                              </div>
-                              <span className="text-xs font-semibold" style={{ marginLeft: 4 }}>{cheer.heartCount || cheer.likeCount || 0}</span>
+                              <button
+                                onClick={() => likeMutation.mutate(cheer.cheer_id)}
+                                className="flex items-center space-x-1 transition-all duration-200 hover:scale-110 active:scale-95"
+                                style={{
+                                  background: 'none',
+                                  border: 'none',
+                                  outline: 'none',
+                                  cursor: likeMutation.isLoading ? 'not-allowed' : 'pointer',
+                                  padding: 0,
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  position: 'relative',
+                                  zIndex: 2,
+                                  color: likedCheers.has(cheer.cheer_id) ? '#ef4444' : '#64748b',
+                                  fontFamily: 'Avenir, sans-serif',
+                                  opacity: likeMutation.isLoading ? 0.6 : 1,
+                                }}
+                                disabled={likeMutation.isLoading}
+                              >
+                                {likeMutation.isLoading ? (
+                                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-transparent border-t-2" 
+                                       style={{ borderTopColor: likedCheers.has(cheer.cheer_id) ? '#ef4444' : '#64748b' }}></div>
+                                ) : likedCheers.has(cheer.cheer_id) ? (
+                                  <HeartIconSolid className="w-5 h-5" />
+                                ) : (
+                                  <HeartIcon className="w-6 h-6" />
+                                )}
+                                <span className="text-xs font-semibold">{cheer.heartCount || cheer.likeCount || 0}</span>
+                              </button>
                               
                               <button
                                 onClick={() => handleCommentClick(cheer.cheer_id)}
@@ -1190,13 +1266,13 @@ const CheerPage = () => {
                                                     <img
                                                       src={comment.fromUser.avatar}
                                                       alt={comment.fromUser.name || 'User'}
-                                                      className="w-10 h-10 rounded-full ring-1 ring-gray-200 flex-shrink-0"
+                                                      className="w-12 h-12 rounded-full ring-1 ring-gray-200 flex-shrink-0"
                                                     />
                                                   ) : (
-                                                    <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" 
+                                                    <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0" 
                                                          style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)' }}>
-                                                      <span className="text-xs font-bold text-white" 
-                                                            style={{ fontFamily: 'Avenir, sans-serif', fontSize: '8px' }}>
+                                                      <span className="text-sm font-bold text-white" 
+                                                            style={{ fontFamily: 'Avenir, sans-serif' }}>
                                                         {comment.fromUser?.name ? comment.fromUser.name.charAt(0) : '?'}
                                                       </span>
                                                     </div>
@@ -1389,7 +1465,7 @@ const CheerPage = () => {
                          border: '1px solid #e0e7ef',
                          boxShadow: '0 4px 16px 0 rgba(52, 211, 153, 0.10), 0 1.5px 4px 0 rgba(96, 165, 250, 0.10)'
                        }}>
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-base shadow-sm flex-shrink-0"
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center font-bold text-base shadow-sm flex-shrink-0"
                          style={{
                            background: currentUserLeaderboard.rank === 1
                              ? 'linear-gradient(135deg, #FFD700 0%, #FFF8DC 25%, #FFD700 50%, #B8860B 75%, #FFD700 100%)'
@@ -1406,7 +1482,7 @@ const CheerPage = () => {
                     <img
                       src={currentUserLeaderboard.info?.avatar || '/images/default-avatar.png'}
                       alt={currentUserLeaderboard.info?.name}
-                      className="w-10 h-10 rounded-xl ring-1 ring-gray-200 flex-shrink-0"
+                      className="w-12 h-12 rounded-xl ring-1 ring-gray-200 flex-shrink-0"
                     />
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-base truncate">
@@ -1460,7 +1536,7 @@ const CheerPage = () => {
                           }}
                         >
                           <div 
-                            className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-base shadow-lg flex-shrink-0"
+                            className="w-12 h-12 rounded-xl flex items-center justify-center font-bold text-base shadow-lg flex-shrink-0"
                             style={{
                               background: entry.rank === 1
                                 ? 'linear-gradient(135deg, #FFD700 0%, #FFF8DC 25%, #FFD700 50%, #B8860B 75%, #FFD700 100%)'
@@ -1479,7 +1555,7 @@ const CheerPage = () => {
                           <img
                             src={entry.avatar || '/images/default-avatar.png'}
                             alt={entry.name || entry.userName}
-                            className="w-10 h-10 rounded-xl ring-2 ring-gray-200 flex-shrink-0"
+                            className="w-12 h-12 rounded-xl ring-2 ring-gray-200 flex-shrink-0"
                           />
                           <div className="flex-1 min-w-0">
                             <p className="font-bold text-base truncate" 
