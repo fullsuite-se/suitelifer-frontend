@@ -180,16 +180,7 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
   const categoryBgColor = getCategoryBgColor(product.category && product.category.toUpperCase());
 
   return (
-      <div className="product-card bg-white rounded-xl shadow-sm transition-all duration-300 overflow-hidden border border-gray-100 hover:scale-105"
-           style={{ 
-             boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
-           }}
-           onMouseEnter={(e) => {
-             e.target.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)';
-           }}
-           onMouseLeave={(e) => {
-             e.target.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)';
-           }}>
+      <div className="product-card bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:scale-105">
         {/* Product Image Section with overlayed category badge */}
         <div className="relative">
           <ProductImageCarousel 
