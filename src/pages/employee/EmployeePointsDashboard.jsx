@@ -460,11 +460,11 @@ const PointsDashboard = () => {
                 return true; // keep all other types
               })
               .map((transaction, index) => {
-              // Check if this is an admin grant transaction
-              const isAdminGrant = transaction.type === 'admin_grant' || transaction.type === 'admin_added';
+              // Check if this is an admin transaction (grant or deduct)
+              const isAdminTransaction = transaction.type === 'admin_grant' || transaction.type === 'admin_added' || transaction.type === 'admin_deduct';
 
               
-              const senderLabel = isAdminGrant ? 'Admin' : (transaction.related_user || 'Unknown');
+              const senderLabel = isAdminTransaction ? 'Admin' : (transaction.related_user || 'Unknown');
               
               // Handle transaction descriptions
               let displayDescription = transaction.description;
@@ -489,9 +489,13 @@ const PointsDashboard = () => {
                 displayDescription = `Received ${transaction.amount} heartbits`;
               }
               
-              // For admin grants, ensure proper description
-              if (isAdminGrant && !displayDescription) {
-                displayDescription = `Received ${transaction.amount} heartbits from Admin`;
+              // For admin transactions, ensure proper description
+              if (isAdminTransaction && !displayDescription) {
+                if (transaction.type === 'admin_deduct') {
+                  displayDescription = `Deducted ${Math.abs(transaction.amount)} heartbits by Admin`;
+                } else {
+                  displayDescription = `Received ${transaction.amount} heartbits from Admin`;
+                }
               }
               
               return (
@@ -525,8 +529,20 @@ const PointsDashboard = () => {
                   />
                   <div className="flex items-center justify-between" style={{ marginLeft: '10px' }}>
                     <div className="flex items-center gap-3">
-                      {isAdminGrant ? (
-                        <HeartIconSolid className="w-8 h-8" style={{ color: '#ef4444' }} />
+                      {isAdminTransaction ? (
+                        <div
+                          className="w-14 h-14 rounded-full flex items-center justify-center"
+                          style={{ 
+                            border: '2px solid #0097b2',
+                            backgroundColor: '#000000',
+                            color: '#ffffff',
+                            fontSize: '16px',
+                            fontWeight: 'bold',
+                            fontFamily: 'Arial, sans-serif'
+                          }}
+                        >
+                          fs.
+                        </div>
                       ) : transaction.related_user ? (
                         <img
                           src={getUserAvatar(transaction)}
@@ -544,8 +560,8 @@ const PointsDashboard = () => {
                         <p className="text-sm" style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>
                           {formatDateSafely(transaction.createdAt || transaction.created_at)}
                         </p>
-                        {/* Show message for admin grants, and for received/given cheers if message exists */}
-                        {(isAdminGrant || ((['received','given'].includes(transaction.type)) && transaction.message)) && (
+                        {/* Show message for admin transactions, and for received/given cheers if message exists */}
+                        {(isAdminTransaction || ((['received','given'].includes(transaction.type)) && transaction.message)) && (
                           <div className="mt-1 px-2 py-1 inline-block" style={{ 
                             backgroundColor: '#eff6ff', 
                             border: '1px solid #3b82f6',
@@ -561,7 +577,7 @@ const PointsDashboard = () => {
                         )}
                       </div>
                     </div>
-                    {isAdminGrant && (
+                    {isAdminTransaction && (
                       <div className="text-right">
                         <p
                           className="font-semibold"
@@ -582,7 +598,7 @@ const PointsDashboard = () => {
                         </p>
                       </div>
                     )}
-                    {!isAdminGrant && (
+                    {!isAdminTransaction && (
                       <div className="text-right">
                         <p
                           className="font-semibold"
