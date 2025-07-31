@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { pointsSystemApi } from '../../api/pointsSystemApi';
 import { useStore } from '../../store/authStore';
@@ -9,6 +9,7 @@ import {
   ChartBarIcon,
   PlusIcon,
   TrophyIcon,
+  ExclamationTriangleIcon,
 } from '@heroicons/react/24/outline';
 import { 
   StarIcon as StarIconSolid,
@@ -22,6 +23,7 @@ const PointsDashboard = () => {
   const [selectedUser, setSelectedUser] = useState('');
   const [cheerAmount, setCheerAmount] = useState(10);
   const [cheerMessage, setCheerMessage] = useState('');
+  const [moderationNotification, setModerationNotification] = useState(null);
 
   // Safe date formatting function
   const formatDateSafely = (dateValue) => {
@@ -52,6 +54,54 @@ const PointsDashboard = () => {
     return '/images/default-avatar.png'; // Default avatar fallback
   };
 
+  // Check for moderation notifications in transaction history
+  const checkForModerationNotifications = useCallback((transactions) => {
+    if (!transactions || !Array.isArray(transactions)) {
+      return;
+    }
+    
+    const moderationTransactions = transactions.filter(t => {
+      const isModeration = t.type === 'moderation';
+      const hasModerationMessage = t.type === 'notification' && t.message?.includes('moderated');
+      return isModeration || hasModerationMessage;
+    });
+    
+    if (moderationTransactions.length > 0) {
+      const latestModeration = moderationTransactions[0]; // Most recent first
+      
+      // Get the transaction ID from the correct field
+      const transactionId = latestModeration.transactionId || latestModeration.transaction_id;
+      
+      // Check if this notification has been dismissed in the database
+      let metadata = latestModeration.metadata;
+      if (typeof metadata === 'string') {
+        try {
+          metadata = JSON.parse(metadata);
+        } catch (e) {
+          metadata = {};
+        }
+      }
+      
+      const isDismissed = metadata?.dismissed === true;
+      
+      if (isDismissed) {
+        return; // Skip if already dismissed
+      }
+      
+      const action = metadata?.action || 'moderated';
+      const actionText = action === 'hidden' ? 'hidden' : action === 'deleted' ? 'deleted' : action === 'unhidden' ? 'restored' : 'moderated';
+      
+      setModerationNotification({
+        type: 'moderation',
+        message: latestModeration.message || `Your cheer post has been ${actionText} by our moderation team.`,
+        reason: metadata?.reason || 'No reason provided',
+        date: latestModeration.created_at,
+        action: action,
+        transactionId: transactionId
+      });
+    }
+  }, []);
+
   // Fetch user's points data
   const { data: pointsData, isLoading: pointsLoading, error: pointsError } = useQuery({
     queryKey: ['points'],
@@ -59,8 +109,6 @@ const PointsDashboard = () => {
     staleTime: 10 * 1000, // 10 seconds (reduced from 1 minute)
     enabled: !!user?.id, // Only fetch when user is loaded
   });
-
-
 
   // Listen for storage events to refresh points data when orders are cancelled
   useEffect(() => {
@@ -81,10 +129,19 @@ const PointsDashboard = () => {
   // Fetch points history
   const { data: historyData, isLoading: historyLoading } = useQuery({
     queryKey: ['points-history'],
-    queryFn: () => pointsSystemApi.getPointsHistory(10),
+    queryFn: () => pointsSystemApi.getPointsHistory(50), // Increased limit to show up to 50 transactions
     staleTime: 2 * 60 * 1000, // 2 minutes
     enabled: !!user?.id, // Only fetch when user is loaded
   });
+
+
+
+  // Check for moderation notifications when history data changes
+  useEffect(() => {
+    if (historyData?.data) {
+      checkForModerationNotifications(historyData.data);
+    }
+  }, [historyData, checkForModerationNotifications]);
 
   // Fetch users for cheer functionality with search
   const { data: usersData } = useQuery({
@@ -115,8 +172,11 @@ const PointsDashboard = () => {
 
   if (!user?.id) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>Loading user data...</div>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0097b2] mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading user data...</p>
+        </div>
       </div>
     );
   }
@@ -180,15 +240,140 @@ const PointsDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'rgb(255,255,255)' }}>
-      <div className="max-w-6xl mx-auto p-6 space-y-6 pb-20">
+    <div className="min-h-screen bg-gray-50 py-8">
+      {/* Moderation Notification Banner */}
+      {moderationNotification && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-3">
+          <div className={`relative overflow-hidden rounded-lg shadow-md transform transition-all duration-200 ease-out animate-in slide-in-from-top-1 ${
+            moderationNotification.action === 'hidden' ? 'bg-gradient-to-r from-amber-50 to-orange-50 border-l-3 border-amber-400' :
+            moderationNotification.action === 'deleted' ? 'bg-gradient-to-r from-red-50 to-rose-50 border-l-3 border-red-500' :
+            'bg-gradient-to-r from-green-50 to-teal-50 border-l-3 border-green-500'
+          }`}>
+            <div className="relative p-2">
+              <div className="flex items-start gap-2">
+                {/* Content area */}
+                <div className="flex-1 min-w-0">
+                  {/* Header with X button in upper right */}
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      {/* Icon beside title */}
+                      <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${
+                        moderationNotification.action === 'hidden' ? 'bg-amber-100 text-amber-600' :
+                        moderationNotification.action === 'deleted' ? 'bg-red-100 text-red-600' :
+                        'bg-green-100 text-green-600'
+                      }`}>
+                        {moderationNotification.action === 'hidden' ? (
+                          <ExclamationTriangleIcon className="h-4 w-4 animate-pulse" />
+                        ) : moderationNotification.action === 'deleted' ? (
+                          <ExclamationTriangleIcon className="h-4 w-4 animate-pulse" />
+                        ) : (
+                          <ExclamationTriangleIcon className="h-4 w-4 animate-pulse" />
+                        )}
+                      </div>
+                      <h3 className={`text-sm font-bold truncate ${
+                        moderationNotification.action === 'hidden' ? 'text-amber-800' :
+                        moderationNotification.action === 'deleted' ? 'text-red-800' :
+                        'text-green-800'
+                      }`}>
+                        {moderationNotification.action === 'hidden' ? 'Hidden Post' : 
+                         moderationNotification.action === 'deleted' ? 'Deleted Post' : 
+                         moderationNotification.action === 'unhidden' ? 'Restored Post' : 
+                         'Moderated Post'}
+                      </h3>
+                    </div>
+                    
+                    {/* Close button in upper right */}
+                    <button
+                      type="button"
+                      onClick={() => setModerationNotification(null)}
+                      className={`p-1 rounded-full transition-all duration-200 hover:scale-110 ${
+                        moderationNotification.action === 'hidden' ? 'text-amber-500 hover:bg-amber-100' :
+                        moderationNotification.action === 'deleted' ? 'text-red-500 hover:bg-red-100' :
+                        'text-green-500 hover:bg-green-100'
+                      }`}
+                    >
+                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  
+                  {/* Message and reason with Got it button in bottom right */}
+                  <div className="ml-4">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1 min-w-0">
+                        <p className={`text-sm ${
+                          moderationNotification.action === 'hidden' ? 'text-amber-700' :
+                          moderationNotification.action === 'deleted' ? 'text-red-700' :
+                          'text-green-700'
+                        }`}>
+                          {moderationNotification.message}
+                        </p>
+                        
+                        {/* Reason */}
+                        {moderationNotification.reason && (
+                          <div className="flex items-center gap-1 mt-1">
+                            <div className={`w-1 h-1 rounded-full ${
+                              moderationNotification.action === 'hidden' ? 'bg-amber-500' :
+                              moderationNotification.action === 'deleted' ? 'bg-red-500' :
+                              'bg-green-500'
+                            }`}></div>
+                            <p className={`text-sm ${
+                              moderationNotification.action === 'hidden' ? 'text-amber-600' :
+                              moderationNotification.action === 'deleted' ? 'text-red-600' :
+                              'text-green-600'
+                            }`}>
+                              {moderationNotification.reason}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Action button in bottom right */}
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          if (moderationNotification?.transactionId) {
+                            try {
+                              await pointsSystemApi.dismissModerationNotification(moderationNotification.transactionId);
+                              setModerationNotification(null);
+                              queryClient.invalidateQueries(['points-history']);
+                            } catch (error) {
+                              setModerationNotification(null);
+                            }
+                          } else {
+                            setModerationNotification(null);
+                          }
+                        }}
+                        className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-md font-medium text-sm transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex-shrink-0 self-end ${
+                          moderationNotification.action === 'hidden' ? 'bg-amber-500 text-white hover:bg-amber-600 focus:ring-amber-500' :
+                          moderationNotification.action === 'deleted' ? 'bg-red-500 text-white hover:bg-red-600 focus:ring-red-500' :
+                          'bg-green-500 text-white hover:bg-green-600 focus:ring-green-500'
+                        } focus:outline-none focus:ring-2 focus:ring-offset-2`}
+                      >
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Got it
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex items-center justify-between">
           {/* Header content can be added here if needed in the future */}
         </div>
 
       {/* Points Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {/* Current Balance */}
         <div className="rounded-xl p-6 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95" 
              style={{ 
@@ -265,10 +450,48 @@ const PointsDashboard = () => {
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto" style={{ borderColor: '#0097b2' }}></div>
             </div>
           ) : Array.isArray(historyData?.data) && historyData.data.length > 0 ? (
-            historyData.data.map((transaction, index) => {
-              // Patch: Always show sender as 'Admin' for admin grants
-              const isAdminGrant = transaction.type === 'admin_grant' || transaction.is_admin_grant;
+            historyData.data
+              .filter(transaction => {
+                if (transaction.type === 'moderation') return false;
+                if (transaction.type === 'given') return transaction.fromUserId === user.id;
+                if (transaction.type === 'received') return transaction.toUserId === user.id;
+                return true; // keep all other types
+              })
+              .map((transaction, index) => {
+              // Check if this is an admin grant transaction
+              const isAdminGrant = transaction.type === 'admin_grant' || transaction.type === 'admin_added';
+
+              
               const senderLabel = isAdminGrant ? 'Admin' : (transaction.related_user || 'Unknown');
+              
+              // Handle transaction descriptions
+              let displayDescription = transaction.description;
+              
+              // For received transactions, show "Heartbits" instead of "points"
+              if (transaction.type === 'received' && transaction.description && transaction.description.includes('points')) {
+                displayDescription = transaction.description.replace('points', 'Heartbits');
+              }
+              
+              // For received transactions, show the actual sender name instead of "Admin"
+              if (transaction.type === 'received' && transaction.description && transaction.description.includes('from Admin')) {
+                displayDescription = displayDescription.replace('from Admin', `from ${transaction.related_user || 'Unknown'}`);
+              }
+              
+              // For given transactions, ensure proper description
+              if (transaction.type === 'given' && !displayDescription) {
+                displayDescription = `Cheered ${transaction.amount} heartbits`;
+              }
+              
+              // For received transactions, ensure proper description
+              if (transaction.type === 'received' && !displayDescription) {
+                displayDescription = `Received ${transaction.amount} heartbits`;
+              }
+              
+              // For admin grants, ensure proper description
+              if (isAdminGrant && !displayDescription) {
+                displayDescription = `Received ${transaction.amount} points from Admin`;
+              }
+              
               return (
                 <div 
                   key={index} 
@@ -314,7 +537,7 @@ const PointsDashboard = () => {
                       )}
                       <div>
                         <p className="font-medium" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
-                          {transaction.description || transaction.type.replace('_', ' ').toUpperCase()}
+                          {displayDescription || transaction.type.replace('_', ' ').toUpperCase()}
                         </p>
                         <p className="text-sm" style={{ color: '#4a6e7e', fontFamily: 'Avenir, sans-serif' }}>
                           {formatDateSafely(transaction.createdAt || transaction.created_at)}

@@ -230,7 +230,7 @@ const CheerAnalytics = () => {
                 </div>
                 
                 <div className="divide-y divide-gray-200">
-                  {(leaderboard.topReceivers || []).slice(0, 10).map((user, index) => {
+                  {(leaderboard.topReceivers || []).slice(0, 20).map((user, index) => {
                     const maxCheers = Math.max(leaderboard.topReceivers[0]?.cheers_received || 1, 1);
                     const progressWidth = Math.min(((user.cheers_received || 0) / maxCheers) * 100, 100);
                     
@@ -289,7 +289,7 @@ const CheerAnalytics = () => {
                 </div>
                 
                 <div className="divide-y divide-gray-200">
-                  {(leaderboard.topGivers || []).slice(0, 10).map((user, index) => {
+                  {(leaderboard.topGivers || []).slice(0, 20).map((user, index) => {
                     const maxCheers = Math.max(leaderboard.topGivers[0]?.cheers_given || 1, 1);
                     const progressWidth = Math.min(((user.cheers_given || 0) / maxCheers) * 100, 100);
                     
