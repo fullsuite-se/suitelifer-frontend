@@ -30,6 +30,22 @@ const SuitebiteHome = () => {
     // Removed all automatic refresh functionality to prevent interruptions while typing
   }, []);
 
+  // Auto-refresh cheer feed every 30 seconds to show updated posts after moderation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Only refresh the cheer feed, not all data to avoid interrupting user interactions
+      suitebiteAPI.getCheerFeed().then(response => {
+        if (response.success) {
+          setCheerFeed(response.posts || []);
+        }
+      }).catch(error => {
+        console.error('Error auto-refreshing cheer feed:', error);
+      });
+    }, 30000); // 30 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
   // Map frontend periods to backend expected values
   const mapPeriodToBackend = (period) => {
     const periodMap = {
@@ -298,6 +314,20 @@ const SuitebiteHome = () => {
               
               {/* Scrollable Feed Content */}
               <div className="p-4 max-h-[500px] overflow-y-auto pb-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-800">Recent Cheers</h3>
+                  <button
+                    onClick={loadSuitebiteData}
+                    className="flex items-center gap-2 px-3 py-1 text-sm text-[#0097b2] hover:text-[#007a8e] transition-colors duration-200"
+                    title="Refresh feed"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Refresh
+                  </button>
+                </div>
+                
                 {loading ? (
                   <div className="text-center py-8">
                     <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
@@ -378,7 +408,7 @@ const SuitebiteHome = () => {
                   </div>
                 ) : (
                   <div className="space-y-2">
-                    {leaderboardData[leaderboardPeriod]?.slice(0, 10).map((user, index) => (
+                    {leaderboardData[leaderboardPeriod]?.slice(0, 20).map((user, index) => (
                       <div 
                         key={index}
                         className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-200 hover:shadow-sm ${

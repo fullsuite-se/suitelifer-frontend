@@ -38,7 +38,7 @@ export const pointsSystemApi = {
     return res.data;
   },
   async getLeaderboard(period = "weekly", userId = null) {
-    let url = `/api/points/leaderboard-with-period?period=${period}`;
+    let url = `/api/points/leaderboard-with-period?period=${period}&limit=20`;
     if (userId) {
       url += `&user_id=${userId}`;
     }
@@ -69,6 +69,11 @@ export const pointsSystemApi = {
   },
   async deleteCheerComment(cheerId, commentId) {
     const res = await axios.delete(`/api/points/cheer/${cheerId}/comment/${commentId}`);
+    return res.data;
+  },
+  
+  async dismissModerationNotification(transactionId) {
+    const res = await axios.post(`/api/points/moderation/${transactionId}/dismiss`);
     return res.data;
   },
   

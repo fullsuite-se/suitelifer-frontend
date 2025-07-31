@@ -263,7 +263,7 @@ export const suitebiteAPI = {
   
   getLeaderboard: async (type = 'received', period = 'all') => {
     const timestamp = Date.now();
-    const response = await axios.get(`${API_BASE_URL}/leaderboard?type=${type}&period=${period}&_t=${timestamp}`, createAuthHeaders());
+    const response = await axios.get(`${API_BASE_URL}/leaderboard?type=${type}&period=${period}&limit=20&_t=${timestamp}`, createAuthHeaders());
     return response.data;
   },
   
@@ -374,13 +374,15 @@ export const suitebiteAPI = {
   },
   
   // Admin Management
-  getCheerPostsAdmin: async (page = 1, limit = 20, search = '', dateFrom = '', dateTo = '') => {
+  getCheerPostsAdmin: async (filter = 'all', page = 1, limit = 20, search = '', dateFrom = '', dateTo = '') => {
+    // Ensure parameters are properly converted to strings
     const params = new URLSearchParams({
-      page: page.toString(),
-      limit: limit.toString(),
-      ...(search && { search }),
-      ...(dateFrom && { date_from: dateFrom }),
-      ...(dateTo && { date_to: dateTo })
+      filter: String(filter || 'all'),
+      page: String(page || 1),
+      limit: String(limit || 20),
+      ...(search && { search: String(search) }),
+      ...(dateFrom && { date_from: String(dateFrom) }),
+      ...(dateTo && { date_to: String(dateTo) })
     });
     const response = await axios.get(`${API_BASE_URL}/admin/cheers?${params}`, createAuthHeaders());
     return response.data;
