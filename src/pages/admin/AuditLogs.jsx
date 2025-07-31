@@ -6,6 +6,7 @@ import {
   PlusCircleIcon,
   HeartIcon,
 } from "@heroicons/react/24/outline";
+import { HeartIcon as HeartIconSolid } from "@heroicons/react/24/solid";
 import dayjs from "dayjs";
 import Skeleton from "react-loading-skeleton";
 import Empty from "../../assets/images/empty.svg";
@@ -162,27 +163,38 @@ const AuditLogs = () => {
       {logs.map((log) => (
         <div
           key={log.logId}
-          className="p-5 flex items-center gap-4 border border-gray-200 rounded-lg"
+          className="p-5 flex items-center gap-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200"
         >
-          <div>
+          <div className="flex-shrink-0">
             {log.action === "CREATE" && (
-              <HeartIcon className="size-5 text-red-500" />
+              <HeartIcon className="size-6 text-red-500" />
             )}
             {log.action === "UPDATE" && (
-              <PencilSquareIcon className="size-5 text-blue-600" />
+              log.description.includes("heartbits") ? (
+                <HeartIconSolid className="size-6 text-blue-600" />
+              ) : (
+                <PencilSquareIcon className="size-6 text-blue-600" />
+              )
             )}
             {log.action === "DELETE" && (
-              <ArchiveBoxXMarkIcon className="size-5 text-red-600" />
+              <ArchiveBoxXMarkIcon className="size-6 text-red-600" />
             )}
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col flex-1 min-w-0">
             <p
-              className="font-avenir-black"
+              className="font-avenir-black text-gray-900 leading-relaxed"
               dangerouslySetInnerHTML={{ __html: log.description }}
             ></p>
-            <p className="text-gray-500 text-xss">
-              {dayjs(log.date).format("MMMM D, YYYY h:mm A")}
-            </p>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="text-gray-400 text-xs">•</span>
+              <p className="text-gray-500 text-xs font-medium">
+                {dayjs(log.date).format("MMMM D, YYYY h:mm A")}
+              </p>
+              <span className="text-gray-400 text-xs">•</span>
+              <span className="text-xs font-medium px-2 py-1 rounded-full bg-gray-100 text-gray-600">
+                {log.action}
+              </span>
+            </div>
           </div>
         </div>
       ))}
