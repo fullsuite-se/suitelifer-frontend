@@ -25,6 +25,8 @@ const PointsDashboard = () => {
   const [cheerAmount, setCheerAmount] = useState(10);
   const [cheerMessage, setCheerMessage] = useState('');
   const [moderationNotification, setModerationNotification] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(20);
 
   // Safe date formatting function
   const formatDateSafely = (dateValue) => {
@@ -127,10 +129,13 @@ const PointsDashboard = () => {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, [queryClient]);
 
-  // Fetch points history
+  // Fetch points history with pagination
   const { data: historyData, isLoading: historyLoading } = useQuery({
-    queryKey: ['points-history'],
-    queryFn: () => pointsSystemApi.getPointsHistory(50), // Increased limit to show up to 50 transactions
+    queryKey: ['points-history', currentPage, itemsPerPage],
+    queryFn: () => {
+      const offset = (currentPage - 1) * itemsPerPage;
+      return pointsSystemApi.getPointsHistory(itemsPerPage, offset);
+    },
     staleTime: 2 * 60 * 1000, // 2 minutes
     enabled: !!user?.id, // Only fetch when user is loaded
   });
@@ -143,6 +148,10 @@ const PointsDashboard = () => {
       checkForModerationNotifications(historyData.data);
     }
   }, [historyData, checkForModerationNotifications]);
+
+  // Get total count from pagination data
+  const totalItems = historyData?.pagination?.total || 0;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   // Fetch users for cheer functionality with search
   const { data: usersData } = useQuery({
@@ -238,6 +247,34 @@ const PointsDashboard = () => {
       default:
         return <StarIcon className="w-5 h-5" style={{ color: '#0097b2' }} />;
     }
+  };
+
+  // Filter transactions (excluding moderation notifications)
+  const filteredTransactions = historyData?.data?.filter(transaction => {
+    if (transaction.type === 'moderation') return false;
+    if (transaction.type === 'given') return transaction.fromUserId === user.id;
+    if (transaction.type === 'received') return transaction.toUserId === user.id;
+    if (transaction.type === 'admin_grant') return transaction.toUserId === user.id;
+    if (transaction.type === 'admin_deduct') return transaction.toUserId === user.id;
+    return true; // keep all other types
+  }) || [];
+
+  // Calculate display indices
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const endIndex = Math.min(currentPage * itemsPerPage, totalItems);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    // Scroll to top of transactions section
+    const transactionsSection = document.querySelector('.transactions-section');
+    if (transactionsSection) {
+      transactionsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1); // Reset to first page when changing items per page
   };
 
   return (
@@ -444,23 +481,16 @@ const PointsDashboard = () => {
       </div>
 
       {/* Recent Activity */}
-      <div className="rounded-xl shadow-sm" style={{ background: 'linear-gradient(135deg, #e0f7fa 70%, #b3e0f2 100%)', border: '2px solid #b3e0f2' }}>
+      <div className="rounded-xl shadow-sm transactions-section" style={{ background: 'linear-gradient(135deg, #e0f7fa 70%, #b3e0f2 100%)', border: '2px solid #b3e0f2' }}>
+
+
         <div style={{ borderColor: '#b3e0f2', maxHeight: '600px', overflowY: 'auto' }} className="divide-y">{/* divide-gray-200 replaced with inline style */}
           {historyLoading ? (
             <div className="p-6 text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto" style={{ borderColor: '#0097b2' }}></div>
             </div>
-          ) : Array.isArray(historyData?.data) && historyData.data.length > 0 ? (
-            historyData.data
-              .filter(transaction => {
-                if (transaction.type === 'moderation') return false;
-                if (transaction.type === 'given') return transaction.fromUserId === user.id;
-                if (transaction.type === 'received') return transaction.toUserId === user.id;
-                if (transaction.type === 'admin_grant') return transaction.toUserId === user.id;
-                if (transaction.type === 'admin_deduct') return transaction.toUserId === user.id;
-                return true; // keep all other types
-              })
-              .map((transaction, index) => {
+          ) : filteredTransactions.length > 0 ? (
+            filteredTransactions.map((transaction, index) => {
               // Check if this is an admin transaction (grant or deduct)
               const isAdminTransaction = transaction.type === 'admin_grant' || transaction.type === 'admin_added' || transaction.type === 'admin_deduct';
 
@@ -626,6 +656,115 @@ const PointsDashboard = () => {
             </div>
           )}
         </div>
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="px-6 py-4 border-t-2" style={{ borderColor: '#b3e0f2' }}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div className="text-sm" style={{ color: '#64748b', fontFamily: 'Avenir, sans-serif' }}>
+                  Page {currentPage} of {totalPages}
+                </div>
+                
+                {/* Items per page selector */}
+                <div className="flex items-center space-x-2">
+                  <label className="text-sm font-semibold" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                    Show:
+                  </label>
+                  <select
+                    value={itemsPerPage}
+                    onChange={(e) => handleItemsPerPageChange(parseInt(e.target.value))}
+                    className="px-3 py-1 rounded-lg text-sm border-2 transition-all duration-200 focus:ring-4"
+                    style={{ 
+                      border: '2px solid #e2e8f0',
+                      backgroundColor: '#ffffff',
+                      fontFamily: 'Avenir, sans-serif',
+                      color: '#1a0202'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#0097b2';
+                      e.target.style.boxShadow = '0 0 0 4px rgba(0, 151, 178, 0.1)';
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = '#e2e8f0';
+                      e.target.style.boxShadow = 'none';
+                    }}
+                  >
+                    <option value={10}>10</option>
+                    <option value={20}>20</option>
+                    <option value={50}>50</option>
+                    <option value={100}>100</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                {/* Previous button */}
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
+                  style={{
+                    backgroundColor: currentPage === 1 ? '#f1f5f9' : '#0097b2',
+                    color: currentPage === 1 ? '#64748b' : '#ffffff',
+                    fontFamily: 'Avenir, sans-serif',
+                    border: currentPage === 1 ? '1px solid #e2e8f0' : 'none'
+                  }}
+                >
+                  Previous
+                </button>
+                
+                {/* Page numbers */}
+                <div className="flex items-center space-x-1">
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    let pageNum;
+                    if (totalPages <= 5) {
+                      pageNum = i + 1;
+                    } else if (currentPage <= 3) {
+                      pageNum = i + 1;
+                    } else if (currentPage >= totalPages - 2) {
+                      pageNum = totalPages - 4 + i;
+                    } else {
+                      pageNum = currentPage - 2 + i;
+                    }
+                    
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => handlePageChange(pageNum)}
+                        className={`w-8 h-8 rounded-lg text-sm font-semibold transition-all duration-200 hover:scale-105 active:scale-95 ${
+                          currentPage === pageNum ? 'text-white' : 'text-gray-700'
+                        }`}
+                        style={{
+                          backgroundColor: currentPage === pageNum ? '#0097b2' : '#f1f5f9',
+                          fontFamily: 'Avenir, sans-serif',
+                          border: currentPage === pageNum ? 'none' : '1px solid #e2e8f0'
+                        }}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+                </div>
+                
+                {/* Next button */}
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
+                  style={{
+                    backgroundColor: currentPage === totalPages ? '#f1f5f9' : '#0097b2',
+                    color: currentPage === totalPages ? '#64748b' : '#ffffff',
+                    fontFamily: 'Avenir, sans-serif',
+                    border: currentPage === totalPages ? '1px solid #e2e8f0' : 'none'
+                  }}
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Send Heartbits Modal */}
