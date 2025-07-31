@@ -15,6 +15,7 @@ import {
   StarIcon as StarIconSolid,
   HeartIcon as HeartIconSolid,
 } from '@heroicons/react/24/solid';
+import logoFs from '../../assets/logos/logo-fs.svg';
 
 const PointsDashboard = () => {
   const user = useStore((state) => state.user);
@@ -530,19 +531,12 @@ const PointsDashboard = () => {
                   <div className="flex items-center justify-between" style={{ marginLeft: '10px' }}>
                     <div className="flex items-center gap-3">
                       {isAdminTransaction ? (
-                        <div
-                          className="w-14 h-14 rounded-full flex items-center justify-center"
-                          style={{ 
-                            border: '2px solid #0097b2',
-                            backgroundColor: '#000000',
-                            color: '#ffffff',
-                            fontSize: '16px',
-                            fontWeight: 'bold',
-                            fontFamily: 'Arial, sans-serif'
-                          }}
-                        >
-                          fs.
-                        </div>
+                        <img
+                          src={logoFs}
+                          alt="Admin"
+                          className="w-14 h-14 rounded-full object-cover"
+                          style={{ border: '2px solid #0097b2' }}
+                        />
                       ) : transaction.related_user ? (
                         <img
                           src={getUserAvatar(transaction)}
