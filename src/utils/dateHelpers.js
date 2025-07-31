@@ -1,6 +1,17 @@
 export const formatTimeAgo = (dateString) => {
+  // Handle null, undefined, or invalid date strings
+  if (!dateString || dateString === 'null' || dateString === 'undefined') {
+    return 'Unknown time';
+  }
+
   const now = new Date();
   const date = new Date(dateString);
+  
+  // Check if the date is valid
+  if (isNaN(date.getTime())) {
+    return 'Invalid date';
+  }
+
   const diffInSeconds = Math.floor((now - date) / 1000);
 
   if (diffInSeconds < 60) {

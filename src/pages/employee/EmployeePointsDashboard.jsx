@@ -129,10 +129,12 @@ const PointsDashboard = () => {
   // Fetch points history
   const { data: historyData, isLoading: historyLoading } = useQuery({
     queryKey: ['points-history'],
-    queryFn: () => pointsSystemApi.getPointsHistory(20),
+    queryFn: () => pointsSystemApi.getPointsHistory(50), // Increased limit to show up to 50 transactions
     staleTime: 2 * 60 * 1000, // 2 minutes
     enabled: !!user?.id, // Only fetch when user is loaded
   });
+
+
 
   // Check for moderation notifications when history data changes
   useEffect(() => {
@@ -241,80 +243,121 @@ const PointsDashboard = () => {
     <div className="min-h-screen bg-gray-50 py-8">
       {/* Moderation Notification Banner */}
       {moderationNotification && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4 animate-in slide-in-from-top-2 duration-300">
-          <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-l-4 border-amber-400 rounded-lg p-4 shadow-lg transform transition-all duration-300 hover:shadow-xl">
-            <div className="flex items-start">
-              <div className="flex-shrink-0">
-                {moderationNotification.action === 'hidden' ? (
-                  <ExclamationTriangleIcon className="h-5 w-5 text-amber-500 animate-pulse" />
-                ) : moderationNotification.action === 'deleted' ? (
-                  <ExclamationTriangleIcon className="h-5 w-5 text-red-500 animate-pulse" />
-                ) : (
-                  <ExclamationTriangleIcon className="h-5 w-5 text-green-500 animate-pulse" />
-                )}
-              </div>
-              <div className="ml-3 flex-1">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-base font-semibold text-gray-900">
-                    {moderationNotification.action === 'hidden' ? 'Post Hidden' : 
-                     moderationNotification.action === 'deleted' ? 'Post Deleted' : 
-                     moderationNotification.action === 'unhidden' ? 'Post Restored' : 
-                     'Post Moderated'}
-                  </h3>
-                  <button
-                    type="button"
-                    onClick={() => setModerationNotification(null)}
-                    className="text-gray-400 hover:text-gray-600 transition-colors duration-200"
-                  >
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-                <div className="mt-1">
-                  <p className="text-sm text-gray-700 font-medium">
-                    {moderationNotification.message}
-                  </p>
-                  {moderationNotification.reason && (
-                    <div className="mt-2 p-2 bg-white rounded-md border border-gray-200">
-                      <p className="text-xs text-gray-600">
-                        <span className="font-semibold text-gray-800">Reason:</span> {moderationNotification.reason}
-                      </p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-3">
+          <div className={`relative overflow-hidden rounded-lg shadow-md transform transition-all duration-200 ease-out animate-in slide-in-from-top-1 ${
+            moderationNotification.action === 'hidden' ? 'bg-gradient-to-r from-amber-50 to-orange-50 border-l-3 border-amber-400' :
+            moderationNotification.action === 'deleted' ? 'bg-gradient-to-r from-red-50 to-rose-50 border-l-3 border-red-500' :
+            'bg-gradient-to-r from-green-50 to-teal-50 border-l-3 border-green-500'
+          }`}>
+            <div className="relative p-2">
+              <div className="flex items-start gap-2">
+                {/* Content area */}
+                <div className="flex-1 min-w-0">
+                  {/* Header with X button in upper right */}
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      {/* Icon beside title */}
+                      <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${
+                        moderationNotification.action === 'hidden' ? 'bg-amber-100 text-amber-600' :
+                        moderationNotification.action === 'deleted' ? 'bg-red-100 text-red-600' :
+                        'bg-green-100 text-green-600'
+                      }`}>
+                        {moderationNotification.action === 'hidden' ? (
+                          <ExclamationTriangleIcon className="h-4 w-4 animate-pulse" />
+                        ) : moderationNotification.action === 'deleted' ? (
+                          <ExclamationTriangleIcon className="h-4 w-4 animate-pulse" />
+                        ) : (
+                          <ExclamationTriangleIcon className="h-4 w-4 animate-pulse" />
+                        )}
+                      </div>
+                      <h3 className={`text-sm font-bold truncate ${
+                        moderationNotification.action === 'hidden' ? 'text-amber-800' :
+                        moderationNotification.action === 'deleted' ? 'text-red-800' :
+                        'text-green-800'
+                      }`}>
+                        {moderationNotification.action === 'hidden' ? 'Hidden Post' : 
+                         moderationNotification.action === 'deleted' ? 'Deleted Post' : 
+                         moderationNotification.action === 'unhidden' ? 'Restored Post' : 
+                         'Moderated Post'}
+                      </h3>
                     </div>
-                  )}
-                  {moderationNotification.date && (
-                    <p className="mt-1 text-xs text-gray-500">
-                      <span className="font-medium">Date:</span> {formatDateSafely(moderationNotification.date)}
-                    </p>
-                  )}
-                </div>
-                <div className="mt-2 flex items-center justify-between">
-                  <button
-                    type="button"
-                    onClick={async () => {
+                    
+                    {/* Close button in upper right */}
+                    <button
+                      type="button"
+                      onClick={() => setModerationNotification(null)}
+                      className={`p-1 rounded-full transition-all duration-200 hover:scale-110 ${
+                        moderationNotification.action === 'hidden' ? 'text-amber-500 hover:bg-amber-100' :
+                        moderationNotification.action === 'deleted' ? 'text-red-500 hover:bg-red-100' :
+                        'text-green-500 hover:bg-green-100'
+                      }`}
+                    >
+                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  
+                  {/* Message and reason with Got it button in bottom right */}
+                  <div className="ml-4">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1 min-w-0">
+                        <p className={`text-sm ${
+                          moderationNotification.action === 'hidden' ? 'text-amber-700' :
+                          moderationNotification.action === 'deleted' ? 'text-red-700' :
+                          'text-green-700'
+                        }`}>
+                          {moderationNotification.message}
+                        </p>
+                        
+                        {/* Reason */}
+                        {moderationNotification.reason && (
+                          <div className="flex items-center gap-1 mt-1">
+                            <div className={`w-1 h-1 rounded-full ${
+                              moderationNotification.action === 'hidden' ? 'bg-amber-500' :
+                              moderationNotification.action === 'deleted' ? 'bg-red-500' :
+                              'bg-green-500'
+                            }`}></div>
+                            <p className={`text-sm ${
+                              moderationNotification.action === 'hidden' ? 'text-amber-600' :
+                              moderationNotification.action === 'deleted' ? 'text-red-600' :
+                              'text-green-600'
+                            }`}>
+                              {moderationNotification.reason}
+                            </p>
+                          </div>
+                        )}
+                      </div>
                       
-                      if (moderationNotification?.transactionId) {
-                        try {
-                          // Mark as dismissed in the database
-                          await pointsSystemApi.dismissModerationNotification(moderationNotification.transactionId);
-                          
-                          // Hide the notification immediately
-                          setModerationNotification(null);
-                          
-                          // Refresh the transaction history to get updated data
-                          queryClient.invalidateQueries(['points-history']);
-                        } catch (error) {
-                          // Still hide the notification even if API call fails
-                          setModerationNotification(null);
-                        }
-                      } else {
-                        setModerationNotification(null);
-                      }
-                    }}
-                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-amber-700 bg-amber-100 hover:bg-amber-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-colors duration-200"
-                  >
-                    Got it
-                  </button>
+                      {/* Action button in bottom right */}
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          if (moderationNotification?.transactionId) {
+                            try {
+                              await pointsSystemApi.dismissModerationNotification(moderationNotification.transactionId);
+                              setModerationNotification(null);
+                              queryClient.invalidateQueries(['points-history']);
+                            } catch (error) {
+                              setModerationNotification(null);
+                            }
+                          } else {
+                            setModerationNotification(null);
+                          }
+                        }}
+                        className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-md font-medium text-sm transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-sm hover:shadow-md flex-shrink-0 self-end ${
+                          moderationNotification.action === 'hidden' ? 'bg-amber-500 text-white hover:bg-amber-600 focus:ring-amber-500' :
+                          moderationNotification.action === 'deleted' ? 'bg-red-500 text-white hover:bg-red-600 focus:ring-red-500' :
+                          'bg-green-500 text-white hover:bg-green-600 focus:ring-green-500'
+                        } focus:outline-none focus:ring-2 focus:ring-offset-2`}
+                      >
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Got it
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -392,14 +435,23 @@ const PointsDashboard = () => {
             </div>
           ) : Array.isArray(historyData?.data) && historyData.data.length > 0 ? (
             historyData.data
-              .filter(transaction => transaction.type !== 'moderation') // Filter out moderation transactions
+              .filter(transaction => {
+                if (transaction.type === 'moderation') return false;
+                if (transaction.type === 'given') return transaction.fromUserId === user.id;
+                if (transaction.type === 'received') return transaction.toUserId === user.id;
+                return true; // keep all other types
+              })
               .map((transaction, index) => {
-              // Patch: Always show sender as 'Admin' for admin grants
-              const isAdminGrant = transaction.type === 'admin_grant' || transaction.is_admin_grant;
+              // Check if this is an admin grant transaction
+              const isAdminGrant = transaction.type === 'admin_grant' || transaction.type === 'admin_added';
+
+              
               const senderLabel = isAdminGrant ? 'Admin' : (transaction.related_user || 'Unknown');
               
-              // Only modify received transactions to show "Heartbits" instead of "points"
+              // Handle transaction descriptions
               let displayDescription = transaction.description;
+              
+              // For received transactions, show "Heartbits" instead of "points"
               if (transaction.type === 'received' && transaction.description && transaction.description.includes('points')) {
                 displayDescription = transaction.description.replace('points', 'Heartbits');
               }
@@ -407,6 +459,21 @@ const PointsDashboard = () => {
               // For received transactions, show the actual sender name instead of "Admin"
               if (transaction.type === 'received' && transaction.description && transaction.description.includes('from Admin')) {
                 displayDescription = displayDescription.replace('from Admin', `from ${transaction.related_user || 'Unknown'}`);
+              }
+              
+              // For given transactions, ensure proper description
+              if (transaction.type === 'given' && !displayDescription) {
+                displayDescription = `Cheered ${transaction.amount} heartbits`;
+              }
+              
+              // For received transactions, ensure proper description
+              if (transaction.type === 'received' && !displayDescription) {
+                displayDescription = `Received ${transaction.amount} heartbits`;
+              }
+              
+              // For admin grants, ensure proper description
+              if (isAdminGrant && !displayDescription) {
+                displayDescription = `Received ${transaction.amount} points from Admin`;
               }
               
               return (

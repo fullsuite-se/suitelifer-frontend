@@ -408,7 +408,7 @@ const SuitebiteHome = () => {
                   </div>
                 ) : (
                   <div className="space-y-2">
-                    {leaderboardData[leaderboardPeriod]?.slice(0, 10).map((user, index) => (
+                    {leaderboardData[leaderboardPeriod]?.slice(0, 20).map((user, index) => (
                       <div 
                         key={index}
                         className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-200 hover:shadow-sm ${

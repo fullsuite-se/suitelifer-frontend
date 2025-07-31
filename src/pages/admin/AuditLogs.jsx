@@ -4,6 +4,7 @@ import {
   ArchiveBoxXMarkIcon,
   PencilSquareIcon,
   PlusCircleIcon,
+  HeartIcon,
 } from "@heroicons/react/24/outline";
 import dayjs from "dayjs";
 import Skeleton from "react-loading-skeleton";
@@ -165,7 +166,7 @@ const AuditLogs = () => {
         >
           <div>
             {log.action === "CREATE" && (
-              <PlusCircleIcon className="size-5 text-green-600" />
+              <HeartIcon className="size-5 text-red-500" />
             )}
             {log.action === "UPDATE" && (
               <PencilSquareIcon className="size-5 text-blue-600" />

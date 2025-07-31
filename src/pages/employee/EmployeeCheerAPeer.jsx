@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { pointsSystemApi } from '../../api/pointsSystemApi';
@@ -30,7 +31,7 @@ const CheerPage = () => {
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   // Feed interaction state
@@ -92,14 +93,6 @@ const CheerPage = () => {
         // End of day in UTC (23:59:59.999)
         const to = new Date(Date.UTC(year, month - 1, day, 23, 59, 59, 999));
         
-        console.log('Date filtering:', {
-          selectedDate,
-          from: from.toISOString(),
-          to: to.toISOString(),
-          fromLocal: from.toLocaleString(),
-          toLocal: to.toLocaleString()
-        });
-        
         return pointsSystemApi.getCheerFeed(20, from.toISOString(), to.toISOString(), 0);
       } else {
         return pointsSystemApi.getCheerFeed(20, null, null, 0);
@@ -128,10 +121,7 @@ const CheerPage = () => {
   const leaderboard = leaderboardData?.data || [];
   const currentUserLeaderboard = leaderboardData?.currentUser || null;
 
-  // Debug logs
-  useEffect(() => {
-    // Debug logging removed for cleaner console
-  }, [currentUserLeaderboard, leaderboard, user?.id, activeTab]);
+
 
   // User search for @ mentions
   const { data: searchResults = [] } = useQuery({
@@ -143,30 +133,21 @@ const CheerPage = () => {
 
   // Bulk cheer mutation for multiple recipients
   const bulkCheerMutation = useMutation({
-    mutationFn: ({ recipientId, amount, message }) =>
-      pointsSystemApi.sendCheer(recipientId, amount, message),
+    mutationFn: ({ recipientId, amount, message }) => {
+      return pointsSystemApi.sendCheer(recipientId, amount, message);
+    },
   });
 
   // Heart cheer mutation
   const likeMutation = useMutation({
     mutationFn: (cheerId) => pointsSystemApi.toggleCheerLike(cheerId),
     onSuccess: (data, cheerId) => {
-      console.log('likeMutation.onSuccess', { data, cheerId, liked: data.liked, success: data.success });
-      
       // Extract the actual like status from the response
       const likeStatus = data.liked !== undefined ? data.liked : (data.data && data.data.liked);
       
       // Fallback: if likeStatus is undefined, check if it was previously liked
       const wasPreviouslyLiked = likedCheers.has(cheerId);
       const finalLikeStatus = likeStatus !== undefined ? likeStatus : !wasPreviouslyLiked;
-      
-      console.log('Like status debug:', { 
-        cheerId, 
-        likeStatus, 
-        wasPreviouslyLiked, 
-        finalLikeStatus,
-        responseData: data 
-      });
       
       // Update localStorage based on server response
       const currentLikes = JSON.parse(localStorage.getItem('likedCheers') || '[]');
@@ -187,7 +168,6 @@ const CheerPage = () => {
         const newSet = new Set(prev);
         if (finalLikeStatus === true) {
           newSet.add(cheerId);
-          console.log('Confetti triggered for', cheerId);
         } else {
           newSet.delete(cheerId);
         }
@@ -208,7 +188,6 @@ const CheerPage = () => {
   const commentMutation = useMutation({
     mutationFn: ({ cheerId, comment }) => pointsSystemApi.addCheerComment(cheerId, comment),
     onSuccess: (data, variables) => {
-      console.log('Comment added successfully:', data);
       setCommentText('');
       setCheerComments(prev => {
         const newComments = new Map(prev);
@@ -225,7 +204,6 @@ const CheerPage = () => {
           },
           createdAt: data.created_at || data.createdAt
         };
-        console.log('New comment object:', newComment);
         newComments.set(variables.cheerId, [newComment, ...existingArray]);
         return newComments;
       });
@@ -345,10 +323,7 @@ const CheerPage = () => {
     }
   }, [allCheers]);
 
-  // Debug: log searchQuery and searchResults
-  useEffect(() => {
-    // Debug logging removed for cleaner console
-  }, [searchQuery, searchResults]);
+
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -435,12 +410,7 @@ const CheerPage = () => {
     }
     setIsSubmitting(true);
 
-    console.log('=== CHEER SUBMISSION DEBUG ===');
-    console.log('Message text:', messageText);
-    console.log('Selected users:', selectedUsers);
-    console.log('Cheer points per user:', cheerPoints);
-    console.log('Total heartbits needed:', totalHeartbitsNeeded);
-    console.log('Available heartbits:', availableHeartbits);
+
 
     const sendCheersSequentially = async () => {
       let successCount = 0;
@@ -466,8 +436,6 @@ const CheerPage = () => {
         setCheerText('');
         setMessageText('');
         setCheerPoints(1);
-        setShowSuccessMessage(true);
-        setTimeout(() => setShowSuccessMessage(false), 3000);
         queryClient.invalidateQueries(['points']);
         queryClient.invalidateQueries(['cheer-feed']);
         queryClient.invalidateQueries(['leaderboard']);
@@ -515,8 +483,7 @@ const CheerPage = () => {
     }
   };
 
-  // Debug user authentication
-  // Debug logging removed for cleaner console
+
 
   // Show authentication debug info if user object is empty or undefined
   if (!user || Object.keys(user).length === 0) {
@@ -571,22 +538,6 @@ const CheerPage = () => {
 
   return (
     <div className="w-full" style={{ backgroundColor: '#ffffff' }}>
-      {/* Enhanced Success Message */}
-      {showSuccessMessage && (
-        <div className="fixed top-4 right-4 z-50 text-white px-6 py-4 rounded-xl shadow-xl flex items-center space-x-3 animate-bounce" 
-             style={{ 
-               background: 'linear-gradient(135deg, #bfd1a0 0%, #0097b2 100%)',
-               backdropFilter: 'blur(10px)'
-             }}>
-          <div className="flex items-center space-x-2">
-            <HeartIconSolid className="w-6 h-6 animate-pulse" />
-            <SparklesIcon className="w-5 h-5 animate-spin" />
-          </div>
-          <span className="font-semibold text-lg" style={{ fontFamily: 'Avenir, sans-serif' }}>
-            Cheer sent successfully! 🎉
-          </span>
-        </div>
-      )}
       
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Main Content Grid */}
@@ -1525,7 +1476,7 @@ const CheerPage = () => {
                        }}>
                     {/* Show complete leaderboard without filtering */}
                     {leaderboard
-                      .slice(0, showMoreLeaderboard ? 6 : 3)
+                      .slice(0, showMoreLeaderboard ? 10 : 3)
                       .map((entry) => (
                         <div
                           key={entry._id || entry.userId || entry.user_id}

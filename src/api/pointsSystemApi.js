@@ -38,7 +38,7 @@ export const pointsSystemApi = {
     return res.data;
   },
   async getLeaderboard(period = "weekly", userId = null) {
-    let url = `/api/points/leaderboard-with-period?period=${period}`;
+    let url = `/api/points/leaderboard-with-period?period=${period}&limit=20`;
     if (userId) {
       url += `&user_id=${userId}`;
     }
