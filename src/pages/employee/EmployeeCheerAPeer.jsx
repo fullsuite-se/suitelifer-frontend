@@ -1590,7 +1590,7 @@ const CheerPage = () => {
                               border: '1px solid #f0e68c'
                             }}
                           >
-                            {showMoreLeaderboard ? 'Show Less' : `Show Next ${Math.min(3, leaderboard.length - 3)}`}
+                            {showMoreLeaderboard ? 'Show Less' : 'Show More'}
                           </button>
                         </div>
                       )}
