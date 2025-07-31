@@ -1,1 +1,25 @@
-if(!self.define){let s,e={};const i=(i,n)=>(i=new URL(i+".js",n).href,e[i]||new Promise((e=>{if("document"in self){const s=document.createElement("script");s.src=i,s.onload=e,document.head.appendChild(s)}else s=i,importScripts(i),e()})).then((()=>{let s=e[i];if(!s)throw new Error(`Module ${i} didn’t register its module`);return s})));self.define=(n,r)=>{const l=s||("document"in self?document.currentScript.src:"")||location.href;if(e[l])return;let o={};const t=s=>i(s,l),u={module:{uri:l},exports:o,require:t};e[l]=Promise.all(n.map((s=>u[s]||t(s)))).then((s=>(r(...s),o)))}}define(["./workbox-5ffe50d4"],(function(s){"use strict";self.skipWaiting(),s.clientsClaim(),s.precacheAndRoute([{url:"assets/AdminContents-Dgz7PfdF.js",revision:null},{url:"assets/AdminDashboard-BQjW9cL0.js",revision:null},{url:"assets/AdminEvents-BotjZivY.js",revision:null},{url:"assets/AdminEvents-qeKFb0yB.css",revision:null},{url:"assets/AdminJobListings-CADikh4o.js",revision:null},{url:"assets/assertThisInitialized-B9jnkVVz.js",revision:null},{url:"assets/Box-BC6t46yC.js",revision:null},{url:"assets/ButtonBase-Sg0HLTF_.js",revision:null},{url:"assets/DialogActions-BJABQdRi.js",revision:null},{url:"assets/findIndex-CuVz4xHe.js",revision:null},{url:"assets/index-BJ_srvRi.js",revision:null},{url:"assets/index-tBAsBbRr.css",revision:null},{url:"assets/workbox-window.prod.es5-B9K5rw8f.js",revision:null},{url:"index.html",revision:"05d656b4c345073f317883076d1dc360"},{url:"icons/android-chrome-192x192.png",revision:"b1ccbd980a16a29454c7a90a82f0204d"},{url:"icons/android-chrome-512x512.png",revision:"96b87479809833d5b68e04aa1cd69242"},{url:"manifest.webmanifest",revision:"a92f38e86df4323ff72d43916106cef2"}],{}),s.cleanupOutdatedCaches(),s.registerRoute(new s.NavigationRoute(s.createHandlerBoundToURL("index.html")))}));
+
+self.addEventListener('install', (e) => {
+  self.skipWaiting();
+});
+self.addEventListener('activate', (e) => {
+  self.registration.unregister()
+    .then(() => self.clients.matchAll())
+    .then((clients) => {
+      clients.forEach((client) => {
+        if (client instanceof WindowClient)
+          client.navigate(client.url);
+      });
+      return Promise.resolve();
+    })
+    .then(() => {
+      self.caches.keys().then((cacheNames) => {
+        Promise.all(
+          cacheNames.map((cacheName) => {
+            return self.caches.delete(cacheName);
+          }),
+        );
+      })
+    });
+});
+    

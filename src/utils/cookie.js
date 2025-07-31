@@ -17,8 +17,15 @@ export const getUserFromCookie = async () => {
 export const refreshToken = async () => {
   try {
     const response = await api.get("/api/refresh-token");
-    return response.data.accessToken;
+    const newToken = response.data.accessToken;
+    // Store new token in localStorage for Suitebite API compatibility
+    if (newToken) {
+      localStorage.setItem('token', newToken);
+    }
+    return newToken;
   } catch (error) {
+    // Clear token from localStorage if refresh fails
+    localStorage.removeItem('token');
     window.location.href = "/login";
     console.error("Failed to refresh token:", error);
     if (error.response && error.response.status === 401) {

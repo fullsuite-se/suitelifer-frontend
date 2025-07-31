@@ -1,13 +1,13 @@
-import React from "react";
+import PropTypes from "prop-types";
 
-const TeamPlayerIcon = ({ color, size }) => {
+const TeamPlayerIcon = ({ color, className }) => {
   return (
     <svg
-      version="1.2"
       xmlns="http://www.w3.org/2000/svg"
+      id="Layer_1"
+      data-name="Layer 1"
       viewBox="0 0 1080 1080"
-      width={size}
-      height={size}
+      className={className}
     >
       <title>Team Player Icon</title>
       <path
@@ -56,6 +56,11 @@ const TeamPlayerIcon = ({ color, size }) => {
       />
     </svg>
   );
+};
+
+TeamPlayerIcon.propTypes = {
+  color: PropTypes.string,
+  className: PropTypes.string,
 };
 
 export default TeamPlayerIcon;

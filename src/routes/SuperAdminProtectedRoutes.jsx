@@ -11,6 +11,8 @@ const SuperAdminProtectedRoutes = () => {
         const response = await api.get("/api/user-info");
         if (response?.data?.user?.role === "SUPER ADMIN") {
           setIsSuperAdmin(true);
+        } else {
+          setIsSuperAdmin(false);
         }
       } catch (error) {
         console.error(error);

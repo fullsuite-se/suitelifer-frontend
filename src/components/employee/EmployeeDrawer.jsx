@@ -1,38 +1,24 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import logoFull from "../../assets/logos/logo-fs-full.svg";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import { NavLink } from "react-router-dom";
 import {
   ChartBarIcon,
-  ChatBubbleBottomCenterTextIcon,
   NewspaperIcon,
   CalendarIcon,
-  Bars3BottomLeftIcon,
   ArrowRightCircleIcon,
-  BriefcaseIcon,
   Square2StackIcon,
   WrenchScrewdriverIcon,
   ClipboardIcon,
   UserIcon,
   ArrowPathRoundedSquareIcon,
-  ChevronDownIcon,
+  HeartIcon,
+  ShoppingBagIcon,
+  FaceSmileIcon,
 } from "@heroicons/react/20/solid";
-import {
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-} from "@headlessui/react";
-import { useStore } from "../../store/authStore";
 import { ModalLogout } from "../modals/ModalLogout";
 
-const iconMap = {
-  dashboard: { default: ChartBarIcon },
-  joblistings: { default: BriefcaseIcon },
-  blogs: { default: ChatBubbleBottomCenterTextIcon },
-  news: { default: NewspaperIcon },
-  events: { default: CalendarIcon },
-  contents: { default: Bars3BottomLeftIcon },
-};
+
 
 const regularServices = [
   { feature_name: "Blogs Feed", path: "blogs-feed", icon: NewspaperIcon },
@@ -43,12 +29,24 @@ const regularServices = [
     icon: ArrowPathRoundedSquareIcon,
   },
   { feature_name: "Events", path: "company-events", icon: CalendarIcon },
-  { feature_name: "Workshops", path: "workshops", icon: WrenchScrewdriverIcon },
+  { feature_name: "Courses", path: "courses", icon: WrenchScrewdriverIcon },
   {
     feature_name: "Personality Test",
     path: "personality-test",
     icon: UserIcon,
   },
+];
+
+// Suitebite features for mobile navigation (only Mood and Points Dashboard remain)
+const suitebiteFeaturesForMobile = [
+  { feature_name: "Mood", path: "mood", icon: FaceSmileIcon },
+  { feature_name: "Points Dashboard", path: "points-dashboard", icon: ChartBarIcon },
+  {
+    feature_name: "Cheer a Peer",
+    path: "cheer-a-peer",
+    icon: HeartIcon,
+  },
+  { feature_name: "The Gift Suite", path: "suitebite/shop", icon: ShoppingBagIcon },
 ];
 
 const EmployeeDrawer = ({ onClose }) => {
@@ -99,6 +97,27 @@ const EmployeeDrawer = ({ onClose }) => {
                 </li>
               );
             })}
+            
+            {/* Mood and Points Dashboard features */}
+            {suitebiteFeaturesForMobile.map((feature, index) => (
+              <li key={index}>
+                <NavLink
+                  to={`/app/${feature.path}`}
+                  className={({ isActive }) =>
+                    isActive
+                      ? "bg-primary text-white p-3 transition-none! rounded-lg flex items-center gap-3 no-underline!"
+                      : "bg-white text-primary p-3 transition-none! rounded-lg flex items-center gap-3 no-underline! hover:bg-blue-50"
+                  }
+                  onClick={handleClose}
+                >
+                  <feature.icon className="size-4" />
+                  <span className="no-underline! font-avenir-black">
+                    {feature.feature_name}
+                  </span>
+                </NavLink>
+              </li>
+            ))}
+            
             {/* TODO: Fix */}
             {/* {services.length !== 0 && (
               <Disclosure as="div" defaultOpen={true}>
