@@ -455,6 +455,8 @@ const PointsDashboard = () => {
                 if (transaction.type === 'moderation') return false;
                 if (transaction.type === 'given') return transaction.fromUserId === user.id;
                 if (transaction.type === 'received') return transaction.toUserId === user.id;
+                if (transaction.type === 'admin_grant') return transaction.toUserId === user.id;
+                if (transaction.type === 'admin_deduct') return transaction.toUserId === user.id;
                 return true; // keep all other types
               })
               .map((transaction, index) => {
@@ -489,7 +491,7 @@ const PointsDashboard = () => {
               
               // For admin grants, ensure proper description
               if (isAdminGrant && !displayDescription) {
-                displayDescription = `Received ${transaction.amount} points from Admin`;
+                displayDescription = `Received ${transaction.amount} heartbits from Admin`;
               }
               
               return (
