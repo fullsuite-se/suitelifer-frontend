@@ -1380,7 +1380,7 @@ const CheerPage = () => {
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center space-x-3">
                   <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" 
-                       style={{ background: 'linear-gradient(135deg, #bfd1a0 0%, #0097b2 100%)' }}>
+                       style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)' }}>
                     <TrophyIcon className="w-6 h-6 text-white" />
                   </div>
                   <div>

@@ -6,8 +6,12 @@ export const pointsSystemApi = {
     const res = await axios.get("/api/points/balance");
     return res.data;
   },
-  async getPointsHistory(limit = 10) {
-    const res = await axios.get(`/api/points/transactions?limit=${limit}`);
+  async getPointsHistory(limit = 20, offset = 0, type = null) {
+    let url = `/api/points/transactions?limit=${limit}&offset=${offset}`;
+    if (type) {
+      url += `&type=${type}`;
+    }
+    const res = await axios.get(url);
     return res.data;
   },
   async getCheerFeed(limit = 20, from = null, to = null, offset = 0) {
