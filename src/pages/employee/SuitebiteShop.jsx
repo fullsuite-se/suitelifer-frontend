@@ -40,7 +40,7 @@ const SuitebiteShop = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortOption, setSortOption] = useState('name-asc');
-  const [priceRange, setPriceRange] = useState({ min: 0, max: 5000 });
+  const [priceRange, setPriceRange] = useState({ min: 1, max: 10000 });
   const [variationOptions, setVariationOptions] = useState([]);
   const [variationTypes, setVariationTypes] = useState([]);
 
@@ -368,7 +368,7 @@ const SuitebiteShop = () => {
     setSearchTerm('');
     setSelectedCategory('all');
     setSortOption('name-asc');
-    setPriceRange({ min: 0, max: 5000 });
+    setPriceRange({ min: 1, max: 10000 });
   };
 
   // Filter and sort products
@@ -502,7 +502,7 @@ const SuitebiteShop = () => {
                   <div className="flex gap-2 items-center">
                     <input
                       type="number"
-                      min="0"
+                      min="1"
                       value={priceRange.min}
                       onChange={e => setPriceRange({ ...priceRange, min: Number(e.target.value) })}
                       className="w-1/2 px-2 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
@@ -511,7 +511,8 @@ const SuitebiteShop = () => {
                     <span className="text-gray-400">-</span>
                     <input
                       type="number"
-                      min="0"
+                      min="1"
+                      max="100000"
                       value={priceRange.max}
                       onChange={e => setPriceRange({ ...priceRange, max: Number(e.target.value) })}
                       className="w-1/2 px-2 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"

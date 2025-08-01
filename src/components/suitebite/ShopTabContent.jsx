@@ -52,7 +52,7 @@ const ShopTabContent = () => {
   const [searchTerm, setSearchTerm] = useState(''); // Product search query
   const [selectedCategory, setSelectedCategory] = useState('all'); // Selected product category
   const [sortBy, setSortBy] = useState('name'); // Product sorting method
-  const [priceRange, setPriceRange] = useState({ min: 0, max: 5000 }); // Price filter range
+  const [priceRange, setPriceRange] = useState({ min: 1, max: 10000 }); // Price filter range
 
   // Admin grant state
   const [adminGrantUserId, setAdminGrantUserId] = useState('');
@@ -237,16 +237,21 @@ const ShopTabContent = () => {
       // Category filter
       const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
       // Price range filter
-      const matchesPrice = product.price >= priceRange.min && product.price <= priceRange.max;
+      const productPrice = product.price_points || product.price || 0;
+      const matchesPrice = productPrice >= priceRange.min && productPrice <= priceRange.max;
       return matchesSearch && matchesCategory && matchesPrice;
     })
     .sort((a, b) => {
       // Sort products based on selected criteria
       switch (sortBy) {
         case 'price-low':
-          return a.price - b.price;
+          const priceA = a.price_points || a.price || 0;
+          const priceB = b.price_points || b.price || 0;
+          return priceA - priceB;
         case 'price-high':
-          return b.price - a.price;
+          const priceHighA = a.price_points || a.price || 0;
+          const priceHighB = b.price_points || b.price || 0;
+          return priceHighB - priceHighA;
         case 'name':
           return a.name.localeCompare(b.name);
         case 'category':
@@ -271,7 +276,7 @@ const ShopTabContent = () => {
     setSearchTerm('');
     setSelectedCategory('all');
     setSortBy('name');
-    setPriceRange({ min: 0, max: 5000 });
+    setPriceRange({ min: 1, max: 10000 });
     showNotification('info', 'Filters reset');
   };
 
@@ -479,6 +484,30 @@ const ShopTabContent = () => {
                   <option value="price-high">Price: High to Low</option>
                   <option value="category">Sort by Category</option>
                 </select>
+                
+                {/* Price Range Filter */}
+                <div className="flex items-center gap-2 flex-1 sm:flex-none">
+                  <input
+                    type="number"
+                    value={priceRange.min}
+                    onChange={(e) => setPriceRange({ ...priceRange, min: parseInt(e.target.value) || 1 })}
+                    className="w-20 px-2 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                    placeholder="Min"
+                    min="1"
+                    max="99999"
+                  />
+                  <span className="text-gray-500 text-sm">-</span>
+                  <input
+                    type="number"
+                    value={priceRange.max}
+                    onChange={(e) => setPriceRange({ ...priceRange, max: parseInt(e.target.value) || 10000 })}
+                    className="w-20 px-2 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                    placeholder="Max"
+                    min="1"
+                    max="100000"
+                  />
+                  <span className="text-xs text-gray-500 whitespace-nowrap">pts</span>
+                </div>
                 
                 {/* Reset Filters Button */}
                 <button

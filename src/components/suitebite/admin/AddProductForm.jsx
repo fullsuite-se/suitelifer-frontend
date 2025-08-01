@@ -259,6 +259,11 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
     if (formData.price_points && (isNaN(formData.price_points) || formData.price_points < 1)) {
       newErrors.price_points = 'Price must be a positive number';
     }
+    
+    // Maximum price validation
+    if (formData.price_points && formData.price_points > 100000) {
+      newErrors.price_points = 'Price cannot exceed 100,000 heartbits';
+    }
 
     // Variation validation
     if (hasVariations) {
@@ -1096,8 +1101,10 @@ const AddProductForm = ({ onProductAdded, onCancel, product = null, mode = 'add'
                 placeholder="Enter price in heartbits"
                 required
                 min="1"
+                max="100000"
               />
               {errors.price_points && <p className="text-red-500 text-sm mt-1">{errors.price_points}</p>}
+              <p className="text-xs text-gray-500 mt-1">Maximum: 100,000 heartbits</p>
             </div>
 
             {/* Product Images Management */}
