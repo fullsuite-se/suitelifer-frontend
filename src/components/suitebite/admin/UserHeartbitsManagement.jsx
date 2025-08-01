@@ -440,38 +440,12 @@ const UserHeartbitsManagement = () => {
             <CheckIcon className="w-4 h-4" />
             {selectedUsers.length === filteredUsers.length ? 'Deselect All' : 'Select All'}
           </button>
-          <span className="text-sm text-gray-600">Global Limit: {globalLimit}</span>
           <button
             onClick={() => setShowGlobalLimitModal(true)}
             className="px-2 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 text-sm font-medium flex items-center gap-2"
           >
             <CogIcon className="w-4 h-4" />
-            Edit Limit
-          </button>
-          <button
-            onClick={async () => {
-              if (window.confirm(`Trigger monthly reset and give all users their ${globalLimit} heartbits monthly allowance?`)) {
-                try {
-                  setLoading(true);
-                  const response = await suitebiteAPI.triggerMonthlyReset();
-                  if (response.success) {
-                    showNotification('success', `Monthly reset completed! ${response.results.users_processed} users received ${response.results.total_allowance_given} total heartbits.`);
-                    loadUsersWithHeartbits();
-                  } else {
-                    showNotification('error', 'Failed to trigger monthly reset. Please try again.');
-                  }
-                } catch (error) {
-                  console.error('Error triggering monthly reset:', error);
-                  showNotification('error', 'Failed to trigger monthly reset. Please check your connection and try again.');
-                } finally {
-                  setLoading(false);
-                }
-              }
-            }}
-            className="px-2 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 text-sm font-medium flex items-center gap-2"
-          >
-            <ArrowPathIcon className="w-4 h-4" />
-            Monthly Reset
+            Global Limit: {globalLimit}
           </button>
         </div>
       </div>
@@ -505,11 +479,11 @@ const UserHeartbitsManagement = () => {
         </div>
       </div>
 
-      {/* Users Table - only this is scrollable */}
+      {/* Users Grid - Responsive */}
       <div className="bg-white rounded-lg border border-gray-150 overflow-hidden">
-        <div className="users-table-container grid grid-cols-4 gap-3 p-4" style={{ overflowY: 'auto', background: 'linear-gradient(135deg, #B3D9FF 0%, #80BFFF 50%, #5B9BD5 100%)', borderRadius: '1rem' }}>
+        <div className="users-table-container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 p-3 sm:p-4" style={{ overflowY: 'auto', background: 'linear-gradient(135deg, #B3D9FF 0%, #80BFFF 50%, #5B9BD5 100%)', borderRadius: '1rem' }}>
           {sortedUsers.length === 0 ? (
-            <div className="col-span-4 text-center text-gray-500 py-12">
+            <div className="col-span-1 sm:col-span-2 lg:col-span-3 xl:col-span-4 text-center text-gray-500 py-12">
               <UserGroupIcon className="mx-auto h-12 w-12 text-gray-400 mb-4" />
               <p className="text-lg font-medium text-gray-900 mb-2">No users found</p>
               <p className="text-sm">
@@ -523,34 +497,42 @@ const UserHeartbitsManagement = () => {
               const isSelected = selectedUsers.includes(user.user_id);
               return (
                 <div
-                key={user.user_id}
-                className={`relative bg-white rounded-xl shadow-lg flex items-center p-4 transition-all duration-200 border-2 border-gray-200 hover:border-purple-300 cursor-pointer ${isSelected ? 'ring-2 ring-purple-500 border-purple-400 bg-purple-50' : 'hover:shadow-xl'}`}
-                style={{ minHeight: '120px' }}
-                onClick={() => toggleUserSelection(user.user_id)}
+                  key={user.user_id}
+                  className={`relative bg-white rounded-xl shadow-lg p-3 sm:p-4 transition-all duration-200 border-2 border-gray-200 hover:border-purple-300 cursor-pointer ${isSelected ? 'ring-2 ring-purple-500 border-purple-400 bg-purple-50' : 'hover:shadow-xl'}`}
+                  style={{ minHeight: '120px' }}
+                  onClick={() => toggleUserSelection(user.user_id)}
                 >
                   {/* Checkbox circle */}
-                  <div className="absolute top-3 right-3">
-                    <span className={`w-6 h-6 flex items-center justify-center rounded-full border-2 border-purple-400 bg-white ${isSelected ? 'bg-gradient-to-br from-purple-500 to-pink-400 border-purple-500' : ''}`}
+                  <div className="absolute top-2 sm:top-3 right-2 sm:right-3">
+                    <span className={`w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center rounded-full border-2 border-purple-400 bg-white ${isSelected ? 'bg-gradient-to-br from-purple-500 to-pink-400 border-purple-500' : ''}`}
                       style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.08)', transition: 'background 0.2s' }}
                     >
                       {isSelected && (
-                        <svg className="w-4 h-4 text-white drop-shadow-lg" fill="none" stroke="currentColor" strokeWidth="4" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                        <svg className="w-3 h-3 sm:w-4 sm:h-4 text-white drop-shadow-lg" fill="none" stroke="currentColor" strokeWidth="4" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                       )}
                     </span>
                   </div>
-                  {/* Avatar */}
-                  <img
-                    src={user.avatar || '/default-avatar.png'}
-                    alt={`${user.first_name || ''} ${user.last_name || ''}`.trim()}
-                    className="w-16 h-16 rounded-full object-cover mr-4"
-                  />
-                  {/* Name, Role & Heartbits */}
-                  <div className="flex-1">
-                    <div className="font-bold text-gray-900 text-lg mb-1">{`${user.first_name || ''} ${user.last_name || ''}`.trim()}</div>
-                    <div className="text-sm text-gray-600 mb-2">{getRoleLabel(user.user_type)}</div>
-                    <div className="flex items-center gap-2">
-                      <HeartIcon className="h-5 w-5 text-pink-400" />
-                      <span className="font-semibold text-[#0097b2] text-lg">{user.heartbits_balance || 0}</span>
+                  
+                  {/* User Content - Responsive Layout */}
+                  <div className="flex flex-col space-y-2">
+                    {/* Avatar and Name Row */}
+                    <div className="flex items-center space-x-3">
+                      <img
+                        src={user.avatar || '/default-avatar.png'}
+                        alt={`${user.first_name || ''} ${user.last_name || ''}`.trim()}
+                        className="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover flex-shrink-0"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="font-bold text-gray-900 text-sm sm:text-base truncate">{`${user.first_name || ''} ${user.last_name || ''}`.trim()}</div>
+                        <div className="text-xs sm:text-sm text-gray-600">{getRoleLabel(user.user_type)}</div>
+                      </div>
+                    </div>
+                    
+                    {/* Heartbits Row */}
+                    <div className="flex items-center justify-center sm:justify-start gap-2 pt-1">
+                      <HeartIcon className="h-4 w-4 sm:h-5 sm:w-5 text-pink-400 flex-shrink-0" />
+                      <span className="font-semibold text-[#0097b2] text-base sm:text-lg">{user.heartbits_balance || 0}</span>
+                      <span className="text-xs text-gray-500">heartbits</span>
                     </div>
                   </div>
                 </div>
@@ -581,6 +563,9 @@ const UserHeartbitsManagement = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Set Global Monthly Limit</h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Set the monthly heartbits allowance that all users will receive. This is the default limit applied to all users in the system.
+            </p>
             <div className="mb-4">
               <label htmlFor="global-limit-input" className="block text-sm font-medium text-gray-700 mb-2">
                 Monthly Limit (heartbits)

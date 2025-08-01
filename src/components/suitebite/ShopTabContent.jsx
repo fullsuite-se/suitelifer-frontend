@@ -406,11 +406,11 @@ const ShopTabContent = () => {
       )}
 
       {/* Header with Heartbits Display and Cart Button */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0 mb-3 sm:mb-6">
         {/* User's Heartbits Balance */}
-        <div className="heartbits-display bg-[#0097b2] text-white px-3 sm:px-4 py-2 rounded-lg w-full sm:w-auto">
+        <div className="heartbits-display bg-[#0097b2] text-white px-3 py-1.5 sm:py-2 rounded-lg w-full sm:w-auto">
           <div className="flex items-center justify-center sm:justify-start gap-2">
-            <span className="text-base sm:text-lg">❤️</span>
+            <span className="text-sm sm:text-lg">❤️</span>
             <span className="font-semibold text-sm sm:text-base">{userHeartbits}</span>
             <span className="text-xs sm:text-sm opacity-90">heartbits</span>
           </div>
@@ -418,7 +418,7 @@ const ShopTabContent = () => {
         
         {/* Cart Toggle Button */}
         <button 
-          className="cart-btn bg-[#0097b2] text-white px-3 sm:px-4 py-2 rounded-lg font-medium hover:bg-[#007a8e] transition-colors duration-200 flex items-center justify-center gap-2 w-full sm:w-auto"
+          className="cart-btn bg-[#0097b2] text-white px-3 py-1.5 sm:py-2 rounded-lg font-medium hover:bg-[#007a8e] transition-colors duration-200 flex items-center justify-center gap-2 w-full sm:w-auto"
           onClick={() => setCartVisible(!cartVisible)}
         >
           <ShoppingCartIcon className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -428,17 +428,26 @@ const ShopTabContent = () => {
 
       {/* Shopping Cart Sidebar */}
       {cartVisible && (
-        <div className="cart-sidebar-overlay">
-          <ShoppingCart 
-            cart={cart}
-            userHeartbits={userHeartbits}
-            onCheckout={handleCheckout}
-            onUpdateCart={loadShopData}
-            onAddToCart={handleAddToCart}
-            onClose={() => setCartVisible(false)}
-            isVisible={cartVisible}
+        <>
+          {/* Overlay backdrop for mobile */}
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden" 
+            onClick={() => setCartVisible(false)}
           />
-        </div>
+          
+          {/* Cart sidebar */}
+          <div className="cart-sidebar-overlay fixed top-0 right-0 h-full w-full max-w-sm sm:max-w-md lg:max-w-lg bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out overflow-y-auto">
+            <ShoppingCart 
+              cart={cart}
+              userHeartbits={userHeartbits}
+              onCheckout={handleCheckout}
+              onUpdateCart={loadShopData}
+              onAddToCart={handleAddToCart}
+              onClose={() => setCartVisible(false)}
+              isVisible={cartVisible}
+            />
+          </div>
+        </>
       )}
 
 
@@ -449,7 +458,7 @@ const ShopTabContent = () => {
         {activeTab === 'products' && (
           <div className="products-section flex-1">
             {/* Search and Filter Controls */}
-            <div className="flex flex-col gap-3 sm:gap-4 mb-4 sm:mb-6">
+            <div className="flex flex-col gap-2 mb-3 sm:mb-6">
               {/* Search Input */}
               <div className="flex gap-2 items-center w-full">
                 <MagnifyingGlassIcon className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 flex-shrink-0" />
@@ -458,69 +467,102 @@ const ShopTabContent = () => {
                   placeholder="Search products..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
                 />
               </div>
               
-              {/* Filter Controls */}
-              <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
-                {/* Category Filter */}
+              {/* Compact Filter Row for Mobile */}
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
+                {/* Category Filter - Compact */}
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="flex-1 sm:flex-none px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                  className="flex-shrink-0 px-2 py-1.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent text-xs bg-white min-w-[120px]"
                 >
                   {categories.map(renderCategoryOption)}
                 </select>
                 
-                {/* Sort Options */}
+                {/* Sort Options - Compact */}
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="flex-1 sm:flex-none px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                  className="flex-shrink-0 px-2 py-1.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent text-xs bg-white min-w-[100px]"
                 >
-                  <option value="name">Sort by Name</option>
-                  <option value="price-low">Price: Low to High</option>
-                  <option value="price-high">Price: High to Low</option>
-                  <option value="category">Sort by Category</option>
+                  <option value="name">Name</option>
+                  <option value="price-low">Price ↑</option>
+                  <option value="price-high">Price ↓</option>
+                  <option value="category">Category</option>
                 </select>
                 
-                {/* Price Range Filter */}
-                <div className="flex items-center gap-2 flex-1 sm:flex-none">
+                {/* Price Range - Ultra Compact */}
+                <div className="flex items-center gap-1 flex-shrink-0 bg-gray-50 px-2 py-1 rounded-md border">
                   <input
                     type="number"
                     value={priceRange.min}
                     onChange={(e) => setPriceRange({ ...priceRange, min: parseInt(e.target.value) || 1 })}
-                    className="w-20 px-2 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
-                    placeholder="Min"
+                    className="w-12 px-1 py-0.5 border-none bg-transparent text-xs focus:outline-none"
+                    placeholder="1"
                     min="1"
                     max="99999"
                   />
-                  <span className="text-gray-500 text-sm">-</span>
+                  <span className="text-gray-400 text-xs">-</span>
                   <input
                     type="number"
                     value={priceRange.max}
                     onChange={(e) => setPriceRange({ ...priceRange, max: parseInt(e.target.value) || 10000 })}
-                    className="w-20 px-2 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
-                    placeholder="Max"
+                    className="w-14 px-1 py-0.5 border-none bg-transparent text-xs focus:outline-none"
+                    placeholder="10k"
                     min="1"
                     max="100000"
                   />
-                  <span className="text-xs text-gray-500 whitespace-nowrap">pts</span>
                 </div>
                 
-                {/* Reset Filters Button */}
+                {/* Reset Button - Compact */}
                 <button
                   onClick={resetFilters}
-                  className="px-3 sm:px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 text-sm w-full sm:w-auto"
+                  className="flex-shrink-0 px-2 py-1.5 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200 transition-colors duration-200 text-xs"
                 >
                   Reset
                 </button>
               </div>
             </div>
 
-            {/* Color-Coded Category Pills */}
-            {renderCategoryPills()}
+            {/* Compact Category Pills for Mobile */}
+            <div className="mb-3 sm:mb-4">
+              <div className="flex gap-1.5 overflow-x-auto pb-2 scrollbar-hide">
+                <button
+                  onClick={() => setSelectedCategory('all')}
+                  className={`flex-shrink-0 px-2 py-1 rounded-full text-xs font-medium transition-colors duration-200 ${
+                    selectedCategory === 'all'
+                      ? 'bg-[#0097b2] text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  All
+                </button>
+                {allCategories.slice(0, 6).map(categoryObj => (
+                  <button
+                    key={categoryObj.name}
+                    onClick={() => setSelectedCategory(categoryObj.name)}
+                    className={`flex-shrink-0 px-2 py-1 rounded-full text-xs font-medium transition-colors duration-200 border ${
+                      selectedCategory === categoryObj.name
+                        ? 'text-white'
+                        : 'text-gray-700 hover:text-white'
+                    }`}
+                    style={{
+                      backgroundColor: selectedCategory === categoryObj.name ? categoryObj.color : 'transparent',
+                      borderColor: categoryObj.color,
+                      color: selectedCategory === categoryObj.name ? 'white' : categoryObj.color
+                    }}
+                  >
+                    {categoryObj.name}
+                  </button>
+                ))}
+                {allCategories.length > 6 && (
+                  <span className="flex-shrink-0 px-2 py-1 text-xs text-gray-500">+{allCategories.length - 6} more</span>
+                )}
+              </div>
+            </div>
 
             {/* Products Grid */}
             {loading ? (
@@ -535,7 +577,7 @@ const ShopTabContent = () => {
                 <p className="text-gray-600 text-sm sm:text-base">Try adjusting your search or filters</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-4 lg:gap-6">
                 {filteredAndSortedProducts.map(product => (
                   <ProductCard
                     key={product.product_id}

@@ -752,90 +752,90 @@ const OrderManagement = () => {
 
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-        <div className="bg-white rounded-lg shadow-sm border p-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-2 sm:gap-3 md:gap-4 mb-6">
+        <div className="bg-white rounded-lg shadow-sm border p-2 sm:p-3 md:p-4">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-base font-medium text-gray-600">Total Orders</p>
-              <p className="text-2xl font-bold text-gray-900">{orders.length}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs sm:text-sm md:text-base font-medium text-gray-600 truncate">Total Orders</p>
+              <p className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">{orders.length}</p>
             </div>
-            <div className="p-2 bg-gray-100 rounded-lg">
-              <ShoppingBagIcon className="h-6 w-6 text-gray-600" />
+            <div className="p-1 sm:p-2 bg-gray-100 rounded-lg flex-shrink-0 ml-1 sm:ml-2">
+              <ShoppingBagIcon className="h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 text-gray-600" />
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-sm border p-4">
+        <div className="bg-white rounded-lg shadow-sm border p-2 sm:p-3 md:p-4">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-base font-medium text-gray-600">Pending</p>
-              <p className="text-2xl font-bold text-yellow-600">{orders.filter(o => o.status === 'pending').length}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs sm:text-sm md:text-base font-medium text-gray-600 truncate">Pending</p>
+              <p className="text-lg sm:text-xl md:text-2xl font-bold text-yellow-600">{orders.filter(o => o.status === 'pending').length}</p>
             </div>
-            <div className="p-2 bg-yellow-100 rounded-lg">
-              <ClockIcon className="h-6 w-6 text-yellow-600" />
+            <div className="p-1 sm:p-2 bg-yellow-100 rounded-lg flex-shrink-0 ml-1 sm:ml-2">
+              <ClockIcon className="h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 text-yellow-600" />
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-sm border p-4">
+        <div className="bg-white rounded-lg shadow-sm border p-2 sm:p-3 md:p-4">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-base font-medium text-gray-600">Processing</p>
-              <p className="text-2xl font-bold text-blue-600">{orders.filter(o => o.status === 'processing').length}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs sm:text-sm md:text-base font-medium text-gray-600 truncate">Processing</p>
+              <p className="text-lg sm:text-xl md:text-2xl font-bold text-blue-600">{orders.filter(o => o.status === 'processing').length}</p>
             </div>
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <ArrowPathIcon className="h-6 w-6 text-blue-600" />
+            <div className="p-1 sm:p-2 bg-blue-100 rounded-lg flex-shrink-0 ml-1 sm:ml-2">
+              <ArrowPathIcon className="h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 text-blue-600" />
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-sm border p-4">
+        <div className="bg-white rounded-lg shadow-sm border p-2 sm:p-3 md:p-4">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-base font-medium text-gray-600">Completed</p>
-              <p className="text-2xl font-bold text-green-600">{orders.filter(o => o.status === 'completed').length}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs sm:text-sm md:text-base font-medium text-gray-600 truncate">Completed</p>
+              <p className="text-lg sm:text-xl md:text-2xl font-bold text-green-600">{orders.filter(o => o.status === 'completed').length}</p>
             </div>
-            <div className="p-2 bg-green-100 rounded-lg">
-              <CheckCircleIcon className="h-6 w-6 text-green-600" />
+            <div className="p-1 sm:p-2 bg-green-100 rounded-lg flex-shrink-0 ml-1 sm:ml-2">
+              <CheckCircleIcon className="h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 text-green-600" />
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-sm border p-4">
+        <div className="bg-white rounded-lg shadow-sm border p-2 sm:p-3 md:p-4">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-base font-medium text-gray-600">Cancelled</p>
-              <p className="text-2xl font-bold text-red-600">{orders.filter(o => o.status === 'cancelled').length}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs sm:text-sm md:text-base font-medium text-gray-600 truncate">Cancelled</p>
+              <p className="text-lg sm:text-xl md:text-2xl font-bold text-red-600">{orders.filter(o => o.status === 'cancelled').length}</p>
             </div>
-            <div className="p-2 bg-red-100 rounded-lg">
-              <XCircleIcon className="h-6 w-6 text-red-600" />
+            <div className="p-1 sm:p-2 bg-red-100 rounded-lg flex-shrink-0 ml-1 sm:ml-2">
+              <XCircleIcon className="h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 text-red-600" />
             </div>
           </div>
         </div>
       </div>
 
       {/* Filters and Export */}
-      <div className="flex flex-wrap md:flex-nowrap items-end gap-2 mb-6 bg-white rounded-lg shadow-sm border p-4">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-end gap-2 sm:gap-3 mb-6 bg-white rounded-lg shadow-sm border p-3 sm:p-4">
         {/* Filters */}
         <div className="flex flex-wrap gap-2 flex-1 min-w-0">
           {/* Search */}
-          <div className="flex-1 min-w-[200px]">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
+          <div className="flex-1 min-w-[180px] sm:min-w-[200px]">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Search</label>
             <div className="relative">
-              <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search orders..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
+                className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 border border-gray-300 rounded-lg text-xs sm:text-sm md:text-base focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
               />
             </div>
           </div>
 
           {/* Status Filter */}
-          <div className="min-w-[150px]">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+          <div className="min-w-[100px] sm:min-w-[120px] md:min-w-[140px]">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Status</label>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
+              className="w-full px-2 sm:px-3 py-1.5 sm:py-2 border border-gray-300 rounded-lg text-xs sm:text-sm md:text-base focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
             >
               <option value="all">All Status</option>
               <option value="pending">Pending</option>
@@ -846,12 +846,12 @@ const OrderManagement = () => {
           </div>
 
           {/* Sort By */}
-          <div className="min-w-[120px]">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
+          <div className="min-w-[90px] sm:min-w-[100px] md:min-w-[110px]">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Sort By</label>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
+              className="w-full px-2 sm:px-3 py-1.5 sm:py-2 border border-gray-300 rounded-lg text-xs sm:text-sm md:text-base focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
             >
               <option value="ordered_at">Date</option>
               <option value="order_id">Order ID</option>
@@ -862,12 +862,12 @@ const OrderManagement = () => {
           </div>
 
           {/* Sort Order */}
-          <div className="min-w-[100px]">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Order</label>
+          <div className="min-w-[80px] sm:min-w-[90px] md:min-w-[95px]">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Order</label>
             <select
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
+              className="w-full px-2 sm:px-3 py-1.5 sm:py-2 border border-gray-300 rounded-lg text-xs sm:text-sm md:text-base focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
             >
               <option value="desc">Newest</option>
               <option value="asc">Oldest</option>
@@ -878,7 +878,7 @@ const OrderManagement = () => {
           <div className="flex items-end">
             <button
               onClick={resetFilters}
-              className="px-3 py-2 text-gray-600 hover:text-gray-800 text-base font-medium"
+              className="px-2 sm:px-3 py-1.5 sm:py-2 text-gray-600 hover:text-gray-800 text-xs sm:text-sm md:text-base font-medium whitespace-nowrap"
             >
               Reset
             </button>
@@ -888,10 +888,11 @@ const OrderManagement = () => {
         {/* Export Button aligned with filters */}
         <div className="flex-shrink-0 self-stretch flex items-end">
           <button
-            className="h-full px-4 py-2 bg-[#0097b2] text-white rounded-lg hover:bg-[#007a8e] font-semibold shadow text-base"
+            className="w-full sm:w-auto h-full px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 bg-[#0097b2] text-white rounded-lg hover:bg-[#007a8e] font-semibold shadow text-xs sm:text-sm md:text-base whitespace-nowrap"
             onClick={() => setShowExportModal(true)}
           >
-            Print/Export Orders
+            <span className="hidden md:inline">Print/Export Orders</span>
+            <span className="md:hidden">Export</span>
           </button>
         </div>
       </div>
@@ -955,49 +956,49 @@ const OrderManagement = () => {
                   <div className="flex items-start justify-between">
                     {/* Order Info */}
                     <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-3">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-3">
                         {/* Selection Checkbox */}
                         {canDeleteOrder(order) && (
                           <input
                             type="checkbox"
                             checked={selectedOrders.has(order.order_id)}
                             onChange={() => handleSelectOrder(order.order_id)}
-                            className="h-4 w-4 text-[#0097b2] border-gray-300 rounded focus:ring-[#0097b2] mt-1"
+                            className="h-4 w-4 text-[#0097b2] border-gray-300 rounded focus:ring-[#0097b2] mt-1 flex-shrink-0"
                           />
                         )}
                         
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-shrink-0">
                           {getStatusIcon(order.status)}
                           <span className={getStatusBadge(order.status)}>
                             {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                           </span>
                         </div>
-                        <span className="text-base text-gray-500">
+                        <span className="text-sm sm:text-base text-gray-500 min-w-0">
                           Order #{order.order_id}
                         </span>
                       </div>
                       
-                      <p className="text-base text-gray-600 mb-2">
+                      <p className="text-sm sm:text-base text-gray-600 mb-2">
                         {getStatusDescription(order.status)}
                       </p>
                       
                       {/* Customer Info */}
-                      <div className="flex items-center gap-4 text-base text-gray-500 mb-3">
-                        <div className="flex items-center gap-1">
-                          <UserIcon className="h-4 w-4" />
-                          <span>{order.first_name} {order.last_name}</span>
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm sm:text-base text-gray-500 mb-3">
+                        <div className="flex items-center gap-1 flex-shrink-0">
+                          <UserIcon className="h-4 w-4 flex-shrink-0" />
+                          <span className="truncate">{order.first_name} {order.last_name}</span>
                         </div>
-                        <div className="flex items-center gap-1">
-                          <CalendarDaysIcon className="h-4 w-4" />
-                          <span>{formatDate(order.ordered_at)}</span>
+                        <div className="flex items-center gap-1 flex-shrink-0">
+                          <CalendarDaysIcon className="h-4 w-4 flex-shrink-0" />
+                          <span className="whitespace-nowrap">{formatDate(order.ordered_at)}</span>
                         </div>
-                        <div className="flex items-center gap-1">
-                          <HeartIcon className="h-4 w-4 text-red-500" />
-                          <span>{order.total_points} heartbits</span>
+                        <div className="flex items-center gap-1 flex-shrink-0">
+                          <HeartIcon className="h-4 w-4 text-red-500 flex-shrink-0" />
+                          <span className="whitespace-nowrap">{order.total_points} heartbits</span>
                         </div>
-                        <div className="flex items-center gap-1">
-                          <ShoppingBagIcon className="h-4 w-4" />
-                          <span>{order.item_count} item{order.item_count !== 1 ? 's' : ''}</span>
+                        <div className="flex items-center gap-1 flex-shrink-0">
+                          <ShoppingBagIcon className="h-4 w-4 flex-shrink-0" />
+                          <span className="whitespace-nowrap">{order.item_count} item{order.item_count !== 1 ? 's' : ''}</span>
                         </div>
                       </div>
 
