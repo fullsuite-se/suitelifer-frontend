@@ -1,9 +1,9 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { pointsSystemApi } from '../../api/pointsSystemApi';
 import { useStore } from '../../store/authStore';
 import { toast } from 'react-hot-toast';
+import useIsMobile from '../../utils/useIsMobile';
 import {
   HeartIcon,
   ChatBubbleLeftEllipsisIcon,
@@ -23,6 +23,7 @@ import { formatFullDateTime } from '../../utils/dateHelpers';
 const CheerPage = () => {
   const user = useStore((state) => state.user);
   const queryClient = useQueryClient();
+  const isMobile = useIsMobile();
   
   // Form state
   const [cheerText, setCheerText] = useState('');
@@ -53,9 +54,14 @@ const CheerPage = () => {
   // Add state for date filter
   const [selectedDate, setSelectedDate] = useState('');
   
-  // Reset cheers when date changes
+  // Add pagination state for cheer feed
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(30);
+  
+  // Reset cheers and pagination when date changes
   useEffect(() => {
     setAllCheers([]);
+    setCurrentPage(1);
   }, [selectedDate]);
 
   // Fetch cheer statistics
@@ -80,11 +86,12 @@ const CheerPage = () => {
 
   // Simplified cheer feed query - load all recent posts first
   const { data: cheerFeed, isLoading: feedLoading, refetch: refetchCheerFeed } = useQuery({
-    queryKey: ['cheer-feed', selectedDate],
+    queryKey: ['cheer-feed', selectedDate, currentPage, itemsPerPage],
     queryFn: async () => {
+      const offset = (currentPage - 1) * itemsPerPage;
+      
       if (selectedDate) {
         // Create date boundaries in UTC to avoid timezone issues
-        // Parse the selected date and create UTC boundaries for that day
         const [year, month, day] = selectedDate.split('-').map(Number);
         
         // Start of day in UTC (00:00:00.000)
@@ -93,16 +100,17 @@ const CheerPage = () => {
         // End of day in UTC (23:59:59.999)
         const to = new Date(Date.UTC(year, month - 1, day, 23, 59, 59, 999));
         
-        return pointsSystemApi.getCheerFeed(20, from.toISOString(), to.toISOString(), 0);
+        return pointsSystemApi.getCheerFeed(itemsPerPage, from.toISOString(), to.toISOString(), offset);
       } else {
-        return pointsSystemApi.getCheerFeed(20, null, null, 0);
+        // For all cheers, request a large amount to get comprehensive data
+        return pointsSystemApi.getCheerFeed(1000, null, null, 0);
       }
     },
     staleTime: 1 * 60 * 1000,
     enabled: !!user && Object.keys(user).length > 0,
     onSuccess: (data) => {
-      const cheers = data?.data?.cheers || data?.cheers || [];
-      setAllCheers(cheers);
+      const allCheers = data?.data?.cheers || data?.cheers || [];
+      setAllCheers(allCheers);
     },
     onError: (error) => {
       console.error('Cheer feed error:', error);
@@ -528,8 +536,42 @@ const CheerPage = () => {
 
   const availableHeartbits = (pointsData?.data?.monthlyCheerLimit || 100) - (pointsData?.data?.monthlyCheerUsed || 0);
 
-  // Use the accumulated cheers from pagination, with fallback to original data
-  const feed = allCheers.length > 0 ? allCheers : (cheerFeed?.data?.cheers || cheerFeed?.cheers || []);
+  // Get all data from API response and paginate client-side
+  const allData = cheerFeed?.data?.cheers || cheerFeed?.cheers || [];
+  const pageStartIndex = (currentPage - 1) * itemsPerPage;
+  const pageEndIndex = pageStartIndex + itemsPerPage;
+  const feed = allData.slice(pageStartIndex, pageEndIndex);
+  
+  // Get pagination data - handle different API response structures
+  const paginationData = cheerFeed?.pagination || cheerFeed?.data?.pagination;
+  const totalItems = allData.length || 0;
+  const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
+  
+  // Calculate display indices
+  const startIndex = totalItems > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0;
+  const endIndex = Math.min(currentPage * itemsPerPage, totalItems);
+  
+  // Handle page change with error handling
+  const handlePageChange = (page) => {
+    if (page < 1 || page > totalPages) {
+      console.warn('Invalid page number:', page);
+      return;
+    }
+    
+    setCurrentPage(page);
+    
+    // Scroll to top of feed section for better UX
+    const feedSection = document.querySelector('.cheer-feed-section');
+    if (feedSection) {
+      feedSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+  
+  // Handle items per page change (currently not used but kept for future flexibility)
+  const handleItemsPerPageChange = (newItemsPerPage) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1); // Reset to first page when changing items per page
+  };
   
 
 
@@ -539,41 +581,41 @@ const CheerPage = () => {
   return (
     <div className="w-full" style={{ backgroundColor: '#ffffff' }}>
       
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 py-4 sm:py-8">
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
           {/* Left Column - Create Cheer & Heartbits */}
-          <div className="lg:col-span-1 space-y-8">
+          <div className="lg:col-span-1 space-y-4 sm:space-y-8">
             {/* Create Cheer Form - Enhanced */}
-            <div className="rounded-2xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl overflow-hidden" 
+            <div className="rounded-2xl shadow-lg p-4 sm:p-6 transition-all duration-300 hover:shadow-xl overflow-hidden" 
                  style={{ 
                    background: 'linear-gradient(135deg, #e0f7fa 70%, #b3e0f2 100%)', 
                    border: '2px solid #b3e0f2',
                    boxShadow: '0 10px 25px rgba(0, 151, 178, 0.10)'
                  }}>
-              <div className="flex items-center space-x-3 mb-5">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" 
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-4 sm:mb-5">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" 
                      style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)' }}>
-                  <HeartIconSolid className="w-6 h-6 text-white" />
+                  <HeartIconSolid className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </div>
-                <h2 className="text-xl font-bold truncate" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                <h2 className="text-lg sm:text-xl font-bold truncate" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                   Send Heartbits
                 </h2>
               </div>
 
-              <form onSubmit={handleCheerSubmit} className="space-y-5">
+              <form onSubmit={handleCheerSubmit} className="space-y-4 sm:space-y-5">
                 {/* Enhanced Selected Users Display */}
                 {selectedUsers.length > 0 && (
-                  <div className="mb-4">
+                  <div className="mb-3 sm:mb-4">
                     <label className="block text-sm font-semibold mb-2" 
                            style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                       Selected Recipients ({selectedUsers.length}):
                     </label>
-                    <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
+                    <div className="flex flex-wrap gap-2 max-h-24 sm:max-h-32 overflow-y-auto">
                       {selectedUsers.map((user, index) => (
                         <div
                           key={user.user_id}
-                          className="flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 flex-shrink-0"
+                          className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-1 sm:py-2 rounded-lg transition-all duration-200 hover:scale-105 flex-shrink-0"
                           style={{ 
                             backgroundColor: '#f0f9ff', 
                             border: '1px solid #0097b2',
@@ -584,17 +626,17 @@ const CheerPage = () => {
                           <img
                             src={user.avatar || '/images/default-avatar.png'}
                             alt={user.name}
-                            className="w-6 h-6 rounded-full ring-1 ring-white flex-shrink-0"
+                            className="w-5 h-5 sm:w-6 sm:h-6 rounded-full ring-1 ring-white flex-shrink-0"
                           />
-                          <span className="text-xs font-semibold truncate max-w-20" 
+                          <span className="text-xs font-semibold truncate max-w-16 sm:max-w-20" 
                                 style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                             {user.name}
                           </span>
                           <button
                             type="button"
                             onClick={() => setSelectedUsers(prev => prev.filter((_, i) => i !== index))}
-                            className="w-4 h-4 rounded-full flex items-center justify-center text-white hover:scale-110 transition-all duration-200 flex-shrink-0"
-                            style={{ backgroundColor: '#ef4444', fontSize: '10px' }}
+                            className="w-3 h-3 sm:w-4 sm:h-4 rounded-full flex items-center justify-center text-white hover:scale-110 transition-all duration-200 flex-shrink-0"
+                            style={{ backgroundColor: '#ef4444', fontSize: '8px' }}
                             aria-label={`Remove ${user.name}`}
                           >
                             ×
@@ -616,7 +658,7 @@ const CheerPage = () => {
                     value={cheerText}
                     onChange={handleCheerTextChange}
                     placeholder="Type a name to search..."
-                    className="w-full px-4 py-3 rounded-xl transition-all duration-200 focus:ring-4"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-xl transition-all duration-200 focus:ring-4 text-sm sm:text-base"
                     style={{ 
                       border: '2px solid #e2e8f0',
                       backgroundColor: '#ffffff',
@@ -635,7 +677,7 @@ const CheerPage = () => {
                   
                   {/* Enhanced User Dropdown */}
                   {showUserDropdown && Array.isArray(searchResults) && searchResults.length > 0 && (
-                    <div className="absolute z-20 w-full mt-2 rounded-xl shadow-2xl max-h-64 overflow-y-auto" 
+                    <div className="absolute z-20 w-full mt-2 rounded-xl shadow-2xl max-h-48 sm:max-h-64 overflow-y-auto" 
                          style={{ 
                            backgroundColor: '#ffffff', 
                            border: '2px solid #e2e8f0',
@@ -648,7 +690,7 @@ const CheerPage = () => {
                           key={result.user_id}
                           type="button"
                           onClick={() => handleUserSelect(result)}
-                          className="w-full px-5 py-4 text-left flex items-center space-x-4 transition-all duration-200 hover:scale-[1.02]"
+                          className="w-full px-3 sm:px-5 py-3 sm:py-4 text-left flex items-center space-x-3 sm:space-x-4 transition-all duration-200 hover:scale-[1.02]"
                           style={{ 
                             borderBottom: '1px solid #f1f5f9',
                             color: '#1a0202',
@@ -660,13 +702,13 @@ const CheerPage = () => {
                           <img
                             src={result.avatar || '/images/default-avatar.png'}
                             alt={result.name}
-                            className="w-12 h-12 rounded-full ring-2 ring-gray-200"
+                            className="w-10 h-10 sm:w-12 sm:h-12 rounded-full ring-2 ring-gray-200"
                           />
-                          <div>
-                            <p className="font-semibold text-base" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                          <div className="min-w-0 flex-1">
+                            <p className="font-semibold text-sm sm:text-base truncate" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                               {result.name}
                             </p>
-                            <p className="text-sm" style={{ color: '#64748b', fontFamily: 'Avenir, sans-serif' }}>
+                            <p className="text-xs sm:text-sm truncate" style={{ color: '#64748b', fontFamily: 'Avenir, sans-serif' }}>
                               {result.email}
                             </p>
                           </div>
@@ -687,7 +729,7 @@ const CheerPage = () => {
                     value={messageText}
                     onChange={(e) => setMessageText(e.target.value)}
                     placeholder="Share why they deserve this cheer... 😊"
-                    className="w-full px-3 py-2 rounded-lg resize-none transition-all duration-200 focus:ring-4"
+                    className="w-full px-3 py-2 rounded-lg resize-none transition-all duration-200 focus:ring-4 text-sm sm:text-base"
                     style={{ 
                       border: '2px solid #e2e8f0',
                       backgroundColor: '#ffffff',
@@ -706,8 +748,8 @@ const CheerPage = () => {
                   />
                 </div>
 
-                {/* Enhanced Controls - Fixed Layout */}
-                <div className="flex flex-row items-center gap-x-3 pt-3">
+                {/* Enhanced Controls - Mobile Responsive Layout */}
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 pt-3">
                   <div className="flex items-center space-x-2 flex-shrink-0 w-full sm:w-auto">
                     <label className="text-sm font-semibold" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                       Heartbits:
@@ -719,7 +761,7 @@ const CheerPage = () => {
                         max={Math.min(100, availableHeartbits)}
                         value={cheerPoints}
                         onChange={(e) => setCheerPoints(Math.min(Math.max(1, parseInt(e.target.value) || 1), Math.min(100, availableHeartbits)))}
-                        className="w-16 px-2 py-2 text-center rounded-lg font-bold transition-all duration-200 focus:ring-4 text-sm h-10"
+                        className="w-14 sm:w-16 px-2 py-2 text-center rounded-lg font-bold transition-all duration-200 focus:ring-4 text-sm h-10"
                         style={{ 
                           border: '2px solid #e2e8f0',
                           fontFamily: 'Avenir, sans-serif',
@@ -735,7 +777,7 @@ const CheerPage = () => {
                           e.target.style.boxShadow = 'none';
                         }}
                       />
-                      <span className="text-[0.7rem] font-bold mt-1 text-center"
+                      <span className="text-[0.6rem] sm:text-[0.7rem] font-bold mt-1 text-center"
                             style={{
                               color: '#1a0202',
                               background: 'none',
@@ -759,7 +801,7 @@ const CheerPage = () => {
                       bulkCheerMutation.isLoading ||
                       cheerPoints > availableHeartbits
                     }
-                    className="text-white px-3 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed font-bold transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 w-auto text-xs h-10 ml-2"
+                    className="text-white px-4 sm:px-3 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed font-bold transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 w-full sm:w-auto text-xs sm:text-xs h-10 sm:ml-2"
                     style={{ 
                       background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)',
                       fontFamily: 'Avenir, sans-serif',
@@ -785,27 +827,27 @@ const CheerPage = () => {
             </div>
 
             {/* Enhanced Heartbits Widget */}
-            <div className="rounded-2xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl max-h-200 overflow-y-auto" 
+            <div className="rounded-2xl shadow-lg p-4 sm:p-6 transition-all duration-300 hover:shadow-xl max-h-200 overflow-y-auto" 
                  style={{ 
                    background: 'linear-gradient(135deg, #e0f7fa 70%, #b3e0f2 100%)', 
                    border: '2px solid #b3e0f2',
                    boxShadow: '0 10px 25px rgba(0, 151, 178, 0.10)'
                  }}>
-              <div className="flex items-center justify-start mb-5">
-                <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg" 
+              <div className="flex items-center justify-start mb-4 sm:mb-5">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center shadow-lg" 
                      style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)' }}>
-                  <HeartIconSolid className="w-6 h-6 text-white" />
+                  <HeartIconSolid className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </div>
-                <span className="ml-3 text-xl font-bold" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                <span className="ml-3 text-lg sm:text-xl font-bold" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                   Heartbits
                 </span>
               </div>
               
-              <div className="space-y-5">
+              <div className="space-y-4 sm:space-y-5">
                 <div className="text-center">
-                  <div className="flex justify-center items-center" style={{ minHeight: 70 }}>
-                    <div className="flex flex-col items-center" style={{ minWidth: 70 }}>
-                      <div className="text-4xl font-black mb-1" 
+                  <div className="flex justify-center items-center" style={{ minHeight: 60 }}>
+                    <div className="flex flex-col items-center" style={{ minWidth: 60 }}>
+                      <div className="text-3xl sm:text-4xl font-black mb-1" 
                            style={{ 
                              color: '#0097b2', 
                              fontFamily: 'Avenir, sans-serif',
@@ -813,21 +855,21 @@ const CheerPage = () => {
                            }}>
                         {availableHeartbits}
                       </div>
-                      <div className="text-base font-semibold" style={{ color: '#64748b', fontFamily: 'Avenir, sans-serif' }}>
+                      <div className="text-sm sm:text-base font-semibold" style={{ color: '#64748b', fontFamily: 'Avenir, sans-serif' }}>
                         Remaining
                       </div>
                     </div>
                     
                     <div style={{ 
-                      width: 5, 
-                      height: 55, 
+                      width: 4, 
+                      height: 45, 
                       background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)', 
-                      margin: '0 30px', 
+                      margin: '0 20px', 
                       borderRadius: 2 
                     }} />
                     
-                    <div className="flex flex-col items-center" style={{ minWidth: 70 }}>
-                      <div className="text-4xl font-black mb-1" 
+                    <div className="flex flex-col items-center" style={{ minWidth: 60 }}>
+                      <div className="text-3xl sm:text-4xl font-black mb-1" 
                            style={{ 
                              color: '#bfd1a0', 
                              fontFamily: 'Avenir, sans-serif',
@@ -835,20 +877,20 @@ const CheerPage = () => {
                            }}>
                         {pointsData?.data?.monthlyReceivedHeartbits || 0}
                       </div>
-                      <div className="text-base font-semibold" style={{ color: '#64748b', fontFamily: 'Avenir, sans-serif' }}>
+                      <div className="text-sm sm:text-base font-semibold" style={{ color: '#64748b', fontFamily: 'Avenir, sans-serif' }}>
                         Received
                       </div>
                     </div>
                   </div>
                 </div>
                 
-                <div className="pt-4 space-y-3" style={{ borderTop: '2px solid #f1f5f9' }}>
+                <div className="pt-3 sm:pt-4 space-y-3" style={{ borderTop: '2px solid #f1f5f9' }}>
                   <div className="flex justify-between items-center">
-                    <span className="text-lg font-bold" 
+                    <span className="text-base sm:text-lg font-bold" 
                           style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                       {pointsData?.data?.monthlyCheerUsed || 0} used
                     </span>
-                    <span className="text-xs px-3 py-1 rounded-full font-semibold" 
+                    <span className="text-xs px-2 sm:px-3 py-1 rounded-full font-semibold" 
                           style={{ 
                             color: '#64748b', 
                             backgroundColor: '#f1f5f9',
@@ -859,9 +901,9 @@ const CheerPage = () => {
                   </div>
                   
                   <div className="relative">
-                    <div className="w-full rounded-full h-3 shadow-inner" style={{ backgroundColor: '#f1f5f9' }}>
+                    <div className="w-full rounded-full h-2 sm:h-3 shadow-inner" style={{ backgroundColor: '#f1f5f9' }}>
                       <div 
-                        className="h-3 rounded-full transition-all duration-1000 shadow-lg"
+                        className="h-2 sm:h-3 rounded-full transition-all duration-1000 shadow-lg"
                         style={{ 
                           width: `${Math.min(((pointsData?.data?.monthlyCheerUsed || 0) / (pointsData?.data?.monthlyCheerLimit || 100)) * 100, 100)}%`,
                           background: 'linear-gradient(135deg, #0097b2 0%, #bfd1a0 100%)'
@@ -881,52 +923,51 @@ const CheerPage = () => {
           </div>
 
           {/* Right Column - Feed & Leaderboard */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-4 sm:space-y-8">
             {/* Enhanced Cheer Feed with Header */}
-            <div className="rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl" 
+            <div className="rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl cheer-feed-section" 
                  style={{ 
                    background: 'linear-gradient(135deg, #e0f7fa 70%, #b3e0f2 100%)', 
                    border: '2px solid #b3e0f2',
                    boxShadow: '0 10px 25px rgba(0, 151, 178, 0.10)'
                  }}>
               {/* Enhanced Feed Header with Date Filter */}
-              <div className="px-6 py-4 border-b-2" style={{ borderColor: '#b3e0f2' }}>
-                <div className="flex items-center justify-between">
+              <div className="px-4 sm:px-6 py-3 sm:py-4 border-b-2" style={{ borderColor: '#b3e0f2' }}>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
                   {/* Left side - Title and Icon */}
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" 
+                  <div className="flex items-center space-x-2 sm:space-x-3">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" 
                          style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)' }}>
-                      <FireIcon className="w-6 h-6 text-white" />
+                      <FireIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
-                                      <div>
-                    <h2 className="text-xl font-bold truncate" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
-                      Recent Cheers
-                    </h2>
-
-                  </div>
+                    <div>
+                      <h2 className="text-lg sm:text-xl font-bold truncate" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                        Recent Cheers
+                      </h2>
+                    </div>
                   </div>
 
                   {/* Right side - Enhanced Date Filter */}
-                  <div className="flex items-center space-x-3">
-                    <div className="flex items-center space-x-2">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+                    <div className="flex items-center space-x-2 w-full sm:w-auto">
                       <label htmlFor="cheer-date-picker" 
-                             className="text-sm font-semibold" 
+                             className="text-sm font-semibold whitespace-nowrap" 
                              style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                         Filter:
                       </label>
-                      <div className="relative">
+                      <div className="relative flex-1 sm:flex-none">
                         <div className="flex items-center">
-                          <div className="relative">
+                          <div className="relative w-full sm:w-auto">
                             <input
                               id="cheer-date-picker"
                               type="date"
-                              className="px-4 py-2.5 rounded-xl text-sm transition-all duration-300 focus:ring-4 focus:outline-none appearance-none"
+                              className="w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-sm transition-all duration-300 focus:ring-4 focus:outline-none appearance-none"
                               style={{ 
                                 border: '2px solid #e2e8f0',
                                 backgroundColor: '#ffffff',
                                 fontFamily: 'Avenir, sans-serif',
                                 color: '#1a0202',
-                                minWidth: '160px',
+                                minWidth: '140px',
                                 boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
                                 cursor: 'pointer'
                               }}
@@ -958,18 +999,17 @@ const CheerPage = () => {
                                 }
                               }}
                             />
-
                           </div>
                           
                           {selectedDate && (
                             <button
-                              className="ml-2 w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 shadow-lg"
+                              className="ml-2 w-7 h-7 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 shadow-lg"
                               style={{ 
                                 background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
                                 color: '#ffffff',
                                 fontFamily: 'Avenir, sans-serif',
                                 fontWeight: 'bold',
-                                fontSize: '14px',
+                                fontSize: '12px',
                                 boxShadow: '0 4px 8px rgba(239, 68, 68, 0.3)'
                               }}
                               onClick={() => setSelectedDate('')}
@@ -993,7 +1033,7 @@ const CheerPage = () => {
                     
                     {/* Filter Status Indicator */}
                     {selectedDate && (
-                      <div className="flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-semibold"
+                      <div className="flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-semibold w-fit"
                            style={{ 
                              backgroundColor: '#f0f9ff',
                              color: '#0097b2',
@@ -1012,16 +1052,16 @@ const CheerPage = () => {
                 </div>
               </div>
 
-              <div className="max-h-90 overflow-y-auto">
+              <div className="max-h-96 sm:max-h-90 overflow-y-auto">
                 {feedLoading ? (
-                  <div className="p-8 text-center">
+                  <div className="p-6 sm:p-8 text-center">
                     <div className="relative mb-4">
-                      <div className="animate-spin rounded-full h-10 w-10 border-4 border-transparent border-t-4 mx-auto" 
+                      <div className="animate-spin rounded-full h-8 w-8 sm:h-10 sm:w-10 border-4 border-transparent border-t-4 mx-auto" 
                            style={{ borderTopColor: '#0097b2' }}></div>
-                      <SparklesIcon className="w-5 h-5 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" 
+                      <SparklesIcon className="w-4 h-4 sm:w-5 sm:h-5 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" 
                                    style={{ color: '#0097b2' }} />
                     </div>
-                    <p className="text-base font-medium" style={{ color: '#64748b', fontFamily: 'Avenir, sans-serif' }}>
+                    <p className="text-sm sm:text-base font-medium" style={{ color: '#64748b', fontFamily: 'Avenir, sans-serif' }}>
                       Loading recent cheers...
                     </p>
                   </div>
@@ -1029,7 +1069,7 @@ const CheerPage = () => {
                   <div>
                     {feed.map((cheer, index) => (
                       <div key={cheer.cheer_id} 
-                           className={`relative p-6 transition-all duration-200 hover:bg-gray-50 ${index !== feed.length - 1 ? 'border-b border-gray-100' : ''}`}
+                           className={`relative p-4 sm:p-6 transition-all duration-200 hover:bg-gray-50 ${index !== feed.length - 1 ? 'border-b border-gray-100' : ''}`}
                            style={{ 
                              borderTopLeftRadius: 0,
                              borderBottomLeftRadius: '18px',
@@ -1041,54 +1081,54 @@ const CheerPage = () => {
                              overflow: 'hidden'
                            }}>
                         {/* Formatted Date - Top right */}
-                        <div className="absolute top-4 right-6 text-xs text-gray-500 font-medium z-10">
+                        <div className="absolute top-3 right-4 sm:top-4 sm:right-6 text-xs text-gray-500 font-medium z-10">
                           {formatFullDateTime(cheer.createdAt || cheer.posted_at)}
                         </div>
                         {/* Shiny green accent bar */}
                         <div
                           style={{
-                            width: '8px',
+                            width: '6px',
                             height: '80%',
                             position: 'absolute',
                             left: '2px',
                             top: '10%',
                             borderTopLeftRadius: 0,
                             borderBottomLeftRadius: 0,
-                            borderTopRightRadius: '10px',
-                            borderBottomRightRadius: '10px',
+                            borderTopRightRadius: '8px',
+                            borderBottomRightRadius: '8px',
                             background: 'linear-gradient(135deg, #34d399 0%, #60a5fa 100%)',
                           }}
                         />
-                        <div className="flex space-x-3" style={{ marginLeft: '10px' }}>
+                        <div className="flex space-x-2 sm:space-x-3" style={{ marginLeft: '8px' }}>
                           <img
                             src={cheer.fromUser?.avatar || '/images/default-avatar.png'}
                             alt={cheer.fromUser?.name}
-                            className="w-12 h-12 rounded-full ring-2 ring-gray-200 flex-shrink-0"
+                            className="w-10 h-10 sm:w-12 sm:h-12 rounded-full ring-2 ring-gray-200 flex-shrink-0"
                           />
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center space-x-2 mb-2 flex-wrap">
-                              <span className="font-bold text-base" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 mb-2 gap-1 sm:gap-0">
+                              <span className="font-bold text-sm sm:text-base" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                                 {cheer.fromUser?.name}
                               </span>
-                              <span className="text-gray-500 text-sm" style={{ fontFamily: 'Avenir, sans-serif' }}>
+                              <span className="text-gray-500 text-xs sm:text-sm" style={{ fontFamily: 'Avenir, sans-serif' }}>
                                 cheered
                               </span>
-                              <span className="font-bold text-base" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                              <span className="font-bold text-sm sm:text-base" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                                 {cheer.toUser?.name}
                               </span>
-                              <span className="font-bold px-2 py-1 rounded-full text-sm text-white shadow-lg flex items-center" style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)', fontFamily: 'Avenir, sans-serif' }}>
+                              <span className="font-bold px-2 py-1 rounded-full text-xs sm:text-sm text-white shadow-lg flex items-center w-fit" style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)', fontFamily: 'Avenir, sans-serif' }}>
                                 +{cheer.points}
-                                <HeartIconSolid className="w-4 h-4" style={{ color: '#ef4444', display: 'inline', marginLeft: '2px', marginRight: '0px' }} />bits
+                                <HeartIconSolid className="w-3 h-3 sm:w-4 sm:h-4" style={{ color: '#ef4444', display: 'inline', marginLeft: '2px', marginRight: '0px' }} />bits
                               </span>
                             </div>
                             
                             {cheer.message && (
-                              <p className="mb-3 text-base leading-relaxed" style={{ color: '#374151', fontFamily: 'Avenir, sans-serif', fontWeight: 500 }}>
+                              <p className="mb-3 text-sm sm:text-base leading-relaxed" style={{ color: '#374151', fontFamily: 'Avenir, sans-serif', fontWeight: 500 }}>
                                 {cheer.message}
                               </p>
                             )}
                             
-                            <div className="flex items-center space-x-4">
+                            <div className="flex items-center space-x-3 sm:space-x-4">
                               <button
                                 onClick={() => likeMutation.mutate(cheer.cheer_id)}
                                 className="flex items-center space-x-1 transition-all duration-200 hover:scale-110 active:scale-95"
@@ -1109,12 +1149,12 @@ const CheerPage = () => {
                                 disabled={likeMutation.isLoading}
                               >
                                 {likeMutation.isLoading ? (
-                                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-transparent border-t-2" 
+                                  <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-2 border-transparent border-t-2" 
                                        style={{ borderTopColor: likedCheers.has(cheer.cheer_id) ? '#ef4444' : '#64748b' }}></div>
                                 ) : likedCheers.has(cheer.cheer_id) ? (
-                                  <HeartIconSolid className="w-5 h-5" />
+                                  <HeartIconSolid className="w-4 h-4 sm:w-5 sm:h-5" />
                                 ) : (
-                                  <HeartIcon className="w-6 h-6" />
+                                  <HeartIcon className="w-5 h-5 sm:w-6 sm:h-6" />
                                 )}
                                 <span className="text-xs font-semibold">{cheer.heartCount || cheer.likeCount || 0}</span>
                               </button>
@@ -1124,7 +1164,7 @@ const CheerPage = () => {
                                 className="flex items-center space-x-1 transition-all duration-200 hover:scale-110 active:scale-95"
                                 style={{ color: '#64748b', fontFamily: 'Avenir, sans-serif' }}
                               >
-                                <ChatBubbleLeftEllipsisIcon className="w-6 h-6" style={{ color: '#22c55e' }} />
+                                <ChatBubbleLeftEllipsisIcon className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: '#22c55e' }} />
                                 <span className="text-xs font-semibold">{cheer.commentCount || 0}</span>
                               </button>
                               
@@ -1136,7 +1176,7 @@ const CheerPage = () => {
                             
                             {commentingCheer === cheer.cheer_id && (
                               <div className="mt-4 p-3 rounded-xl" style={{ backgroundColor: '#faf8ef' }}>
-                                <div className="flex space-x-2 mb-3">
+                                <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mb-3">
                                   <input
                                     type="text"
                                     value={commentText}
@@ -1175,7 +1215,7 @@ const CheerPage = () => {
                                       }
                                     }}
                                     disabled={!commentText.trim() || commentMutation.isLoading}
-                                    className="px-4 py-2 text-white rounded-lg text-xs font-bold disabled:opacity-50 transition-all duration-200 hover:scale-105 active:scale-95"
+                                    className="px-4 py-2 text-white rounded-lg text-xs font-bold disabled:opacity-50 transition-all duration-200 hover:scale-105 active:scale-95 w-full sm:w-auto"
                                     style={{ 
                                       background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)',
                                       fontFamily: 'Avenir, sans-serif'
@@ -1188,7 +1228,7 @@ const CheerPage = () => {
                                 <div className="space-y-2">
                                   {loadingComments ? (
                                     <div className="flex items-center justify-center py-4">
-                                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-transparent border-t-2" 
+                                      <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-2 border-transparent border-t-2" 
                                            style={{ borderTopColor: '#0097b2' }}></div>
                                       <span className="ml-2 text-xs font-medium" 
                                             style={{ color: '#64748b', fontFamily: 'Avenir, sans-serif' }}>
@@ -1220,12 +1260,12 @@ const CheerPage = () => {
                                                     <img
                                                       src={comment.fromUser.avatar}
                                                       alt={comment.fromUser.name || 'User'}
-                                                      className="w-12 h-12 rounded-full ring-1 ring-gray-200 flex-shrink-0"
+                                                      className="w-10 h-10 sm:w-12 sm:h-12 rounded-full ring-1 ring-gray-200 flex-shrink-0"
                                                     />
                                                   ) : (
-                                                    <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0" 
+                                                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center flex-shrink-0" 
                                                          style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)' }}>
-                                                      <span className="text-sm font-bold text-white" 
+                                                      <span className="text-xs sm:text-sm font-bold text-white" 
                                                             style={{ fontFamily: 'Avenir, sans-serif' }}>
                                                         {comment.fromUser?.name ? comment.fromUser.name.charAt(0) : '?'}
                                                       </span>
@@ -1233,7 +1273,7 @@ const CheerPage = () => {
                                                   )}
                                                   <div className="flex-1 min-w-0">
                                                     <div className="flex items-center space-x-1 mb-1">
-                                                      <span className="font-semibold text-sm" 
+                                                      <span className="font-semibold text-xs sm:text-sm" 
                                                             style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                                                         {comment.fromUser?.name || 'Anonymous'}
                                                       </span>
@@ -1243,66 +1283,70 @@ const CheerPage = () => {
                                                       </span>
                                                     </div>
                                                     {editingComment && editingComment.cheerId === cheer.cheer_id && editingComment.commentId === comment._id ? (
-                                                      <div className="flex items-center space-x-2">
+                                                      <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
                                                         <input
                                                           type="text"
                                                           value={editCommentText}
                                                           onChange={e => setEditCommentText(e.target.value)}
-                                                          className="flex-1 px-2 py-1 rounded border"
+                                                          className="flex-1 px-2 py-1 rounded border text-sm"
                                                           style={{ fontFamily: 'Avenir, sans-serif', color: '#1a0202' }}
                                                           disabled={editCommentMutation.isLoading}
                                                         />
-                                                        <button
-                                                          className="text-xs px-2 py-1 rounded bg-green-500 text-white font-bold"
-                                                          style={{ fontFamily: 'Avenir, sans-serif' }}
-                                                          disabled={editCommentMutation.isLoading || !editCommentText.trim()}
-                                                          onClick={() => editCommentMutation.mutate({ cheerId: cheer.cheer_id, commentId: comment._id, comment: editCommentText.trim() })}
-                                                        >
-                                                          Save
-                                                        </button>
-                                                        <button
-                                                          className="text-xs px-2 py-1 rounded bg-gray-300 text-gray-700 font-bold"
-                                                          style={{ fontFamily: 'Avenir, sans-serif' }}
-                                                          disabled={editCommentMutation.isLoading}
-                                                          onClick={() => { setEditingComment(null); setEditCommentText(''); }}
-                                                        >
-                                                          Cancel
-                                                        </button>
+                                                        <div className="flex space-x-2 w-full sm:w-auto">
+                                                          <button
+                                                            className="text-xs px-2 py-1 rounded bg-green-500 text-white font-bold w-full sm:w-auto"
+                                                            style={{ fontFamily: 'Avenir, sans-serif' }}
+                                                            disabled={editCommentMutation.isLoading || !editCommentText.trim()}
+                                                            onClick={() => editCommentMutation.mutate({ cheerId: cheer.cheer_id, commentId: comment._id, comment: editCommentText.trim() })}
+                                                          >
+                                                            Save
+                                                          </button>
+                                                          <button
+                                                            className="text-xs px-2 py-1 rounded bg-gray-300 text-gray-700 font-bold w-full sm:w-auto"
+                                                            style={{ fontFamily: 'Avenir, sans-serif' }}
+                                                            disabled={editCommentMutation.isLoading}
+                                                            onClick={() => { setEditingComment(null); setEditCommentText(''); }}
+                                                          >
+                                                            Cancel
+                                                          </button>
+                                                        </div>
                                                       </div>
                                                     ) : (
-                                                      <p className="text-base" style={{ color: '#374151', fontFamily: 'Avenir, sans-serif' }}>{comment.comment}</p>
+                                                      <p className="text-sm sm:text-base" style={{ color: '#374151', fontFamily: 'Avenir, sans-serif' }}>{comment.comment}</p>
                                                     )}
                                                   </div>
                                                 </div>
                                                 {comment.fromUser?._id === user.id && !editingComment && (
-                                                  <div className="flex space-x-1 mt-1">
+                                                  <div className="flex flex-col sm:flex-row space-y-1 sm:space-y-0 sm:space-x-1 mt-1">
                                                     {confirmingDelete && confirmingDelete.cheerId === cheer.cheer_id && confirmingDelete.commentId === comment._id ? (
-                                                      <div className="flex items-center space-x-2">
+                                                      <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
                                                         <span className="text-xs font-semibold" style={{ color: '#ef4444', fontFamily: 'Avenir, sans-serif' }}>Are you sure?</span>
-                                                        <button
-                                                          className="text-xs px-2 py-1 rounded bg-red-500 text-white font-bold hover:bg-red-600"
-                                                          style={{ fontFamily: 'Avenir, sans-serif' }}
-                                                          disabled={editCommentMutation.isLoading || deleteCommentMutation.isLoading}
-                                                          onClick={() => {
-                                                            deleteCommentMutation.mutate({ cheerId: cheer.cheer_id, commentId: comment._id });
-                                                            setConfirmingDelete(null);
-                                                          }}
-                                                        >
-                                                          Yes
-                                                        </button>
-                                                        <button
-                                                          className="text-xs px-2 py-1 rounded bg-gray-300 text-gray-700 font-bold"
-                                                          style={{ fontFamily: 'Avenir, sans-serif' }}
-                                                          disabled={editCommentMutation.isLoading || deleteCommentMutation.isLoading}
-                                                          onClick={() => setConfirmingDelete(null)}
-                                                        >
-                                                          No
-                                                        </button>
+                                                        <div className="flex space-x-2 w-full sm:w-auto">
+                                                          <button
+                                                            className="text-xs px-2 py-1 rounded bg-red-500 text-white font-bold hover:bg-red-600 w-full sm:w-auto"
+                                                            style={{ fontFamily: 'Avenir, sans-serif' }}
+                                                            disabled={editCommentMutation.isLoading || deleteCommentMutation.isLoading}
+                                                            onClick={() => {
+                                                              deleteCommentMutation.mutate({ cheerId: cheer.cheer_id, commentId: comment._id });
+                                                              setConfirmingDelete(null);
+                                                            }}
+                                                          >
+                                                            Yes
+                                                          </button>
+                                                          <button
+                                                            className="text-xs px-2 py-1 rounded bg-gray-300 text-gray-700 font-bold w-full sm:w-auto"
+                                                            style={{ fontFamily: 'Avenir, sans-serif' }}
+                                                            disabled={editCommentMutation.isLoading || deleteCommentMutation.isLoading}
+                                                            onClick={() => setConfirmingDelete(null)}
+                                                          >
+                                                            No
+                                                          </button>
+                                                        </div>
                                                       </div>
                                                     ) : (
                                                       <>
                                                         <button
-                                                          className="text-xs px-2 py-1 rounded bg-yellow-400 text-white font-bold hover:bg-yellow-500"
+                                                          className="text-xs px-2 py-1 rounded bg-yellow-400 text-white font-bold hover:bg-yellow-500 w-full sm:w-auto"
                                                           style={{ fontFamily: 'Avenir, sans-serif' }}
                                                           onClick={() => { setEditingComment({ cheerId: cheer.cheer_id, commentId: comment._id }); setEditCommentText(comment.comment); }}
                                                           disabled={editCommentMutation.isLoading || deleteCommentMutation.isLoading}
@@ -1310,7 +1354,7 @@ const CheerPage = () => {
                                                           Edit
                                                         </button>
                                                         <button
-                                                          className="text-xs px-2 py-1 rounded bg-red-500 text-white font-bold hover:bg-red-600"
+                                                          className="text-xs px-2 py-1 rounded bg-red-500 text-white font-bold hover:bg-red-600 w-full sm:w-auto"
                                                           style={{ fontFamily: 'Avenir, sans-serif' }}
                                                           onClick={() => setConfirmingDelete({ cheerId: cheer.cheer_id, commentId: comment._id })}
                                                           disabled={editCommentMutation.isLoading || deleteCommentMutation.isLoading}
@@ -1367,24 +1411,95 @@ const CheerPage = () => {
                   </div>
                 )}
               </div>
+              
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="px-4 sm:px-6 py-3 sm:py-4 border-t-2" style={{ borderColor: '#b3e0f2' }}>
+                  <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-2">
+                    {/* Previous button */}
+                    <button
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95 w-full sm:w-auto"
+                      style={{
+                        backgroundColor: currentPage === 1 ? '#f1f5f9' : '#0097b2',
+                        color: currentPage === 1 ? '#64748b' : '#ffffff',
+                        fontFamily: 'Avenir, sans-serif',
+                        border: currentPage === 1 ? '1px solid #e2e8f0' : 'none'
+                      }}
+                    >
+                      Previous
+                    </button>
+                    
+                    {/* Page numbers */}
+                    <div className="flex items-center space-x-1">
+                      {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                        let pageNum;
+                        if (totalPages <= 5) {
+                          pageNum = i + 1;
+                        } else if (currentPage <= 3) {
+                          pageNum = i + 1;
+                        } else if (currentPage >= totalPages - 2) {
+                          pageNum = totalPages - 4 + i;
+                        } else {
+                          pageNum = currentPage - 2 + i;
+                        }
+                        
+                        return (
+                          <button
+                            key={pageNum}
+                            onClick={() => handlePageChange(pageNum)}
+                            disabled={currentPage === pageNum}
+                            className={`w-8 h-8 rounded-lg text-sm font-semibold transition-all duration-200 hover:scale-105 active:scale-95 disabled:cursor-not-allowed ${
+                              currentPage === pageNum ? 'text-white' : 'text-gray-700'
+                            }`}
+                            style={{
+                              backgroundColor: currentPage === pageNum ? '#0097b2' : '#f1f5f9',
+                              fontFamily: 'Avenir, sans-serif',
+                              border: currentPage === pageNum ? 'none' : '1px solid #e2e8f0'
+                            }}
+                          >
+                            {pageNum}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  
+                    {/* Next button */}
+                    <button
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95 w-full sm:w-auto"
+                      style={{
+                        backgroundColor: currentPage === totalPages ? '#f1f5f9' : '#0097b2',
+                        color: currentPage === totalPages ? '#64748b' : '#ffffff',
+                        fontFamily: 'Avenir, sans-serif',
+                        border: currentPage === totalPages ? '1px solid #e2e8f0' : 'none'
+                      }}
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Enhanced Leaderboard with Header */}
-            <div className="rounded-2xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl" 
+            <div className="rounded-2xl shadow-lg p-4 sm:p-6 transition-all duration-300 hover:shadow-xl" 
                  style={{ 
                    background: 'linear-gradient(135deg, #e0f7fa 70%, #b3e0f2 100%)', 
                    border: '2px solid #b3e0f2',
                    boxShadow: '0 10px 25px rgba(0, 151, 178, 0.10)'
                  }}>
               {/* Leaderboard Header with Buttons */}
-              <div className="flex items-center justify-between mb-5">
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" 
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-5 gap-3 sm:gap-0">
+                <div className="flex items-center space-x-2 sm:space-x-3">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0" 
                        style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)' }}>
-                    <TrophyIcon className="w-6 h-6 text-white" />
+                    <TrophyIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold truncate" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                    <h2 className="text-lg sm:text-xl font-bold truncate" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                       Leaderboard
                     </h2>
                   </div>
@@ -1395,7 +1510,7 @@ const CheerPage = () => {
                     <button
                       key={period}
                       onClick={() => setActiveTab(period)}
-                      className={`px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200 hover:scale-105 active:scale-95`}
+                      className={`px-3 sm:px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200 hover:scale-105 active:scale-95`}
                       style={{
                         backgroundColor: activeTab === period ? '#0097b2' : '#f1f5f9',
                         color: activeTab === period ? '#ffffff' : '#64748b',
@@ -1413,13 +1528,13 @@ const CheerPage = () => {
               {user && currentUserLeaderboard && (
                 <div className="mb-4">
                   <div className="text-sm text-gray-500 mb-2">Your Current Position</div>
-                  <div className="flex items-center space-x-3 p-4 rounded-xl transition-all duration-200 hover:scale-[1.02]" 
+                  <div className="flex items-center space-x-2 sm:space-x-3 p-3 sm:p-4 rounded-xl transition-all duration-200 hover:scale-[1.02]" 
                        style={{ 
                          backgroundColor: '#fafafa',
                          border: '1px solid #e0e7ef',
                          boxShadow: '0 4px 16px 0 rgba(52, 211, 153, 0.10), 0 1.5px 4px 0 rgba(96, 165, 250, 0.10)'
                        }}>
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center font-bold text-base shadow-sm flex-shrink-0"
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center font-bold text-sm sm:text-base shadow-sm flex-shrink-0"
                          style={{
                            background: currentUserLeaderboard.rank === 1
                              ? 'linear-gradient(135deg, #FFD700 0%, #FFF8DC 25%, #FFD700 50%, #B8860B 75%, #FFD700 100%)'
@@ -1436,14 +1551,14 @@ const CheerPage = () => {
                     <img
                       src={currentUserLeaderboard.info?.avatar || '/images/default-avatar.png'}
                       alt={currentUserLeaderboard.info?.name}
-                      className="w-12 h-12 rounded-xl ring-1 ring-gray-200 flex-shrink-0"
+                      className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl ring-1 ring-gray-200 flex-shrink-0"
                     />
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-base truncate">
+                      <p className="font-medium text-sm sm:text-base truncate">
                         {currentUserLeaderboard.info?.name || user.first_name + ' ' + user.last_name}
                       </p>
                     </div>
-                    <span className="font-bold text-base">
+                    <span className="font-bold text-sm sm:text-base">
                       {currentUserLeaderboard.info?.totalPoints || currentUserLeaderboard.totalPoints || 0} received
                     </span>
                   </div>
@@ -1483,14 +1598,14 @@ const CheerPage = () => {
                       .map((entry) => (
                         <div
                           key={entry._id || entry.userId || entry.user_id}
-                          className="flex items-center space-x-3 p-4 rounded-xl transition-all duration-200 hover:scale-[1.02]"
+                          className="flex items-center space-x-2 sm:space-x-3 p-3 sm:p-4 rounded-xl transition-all duration-200 hover:scale-[1.02]"
                           style={{
                             backgroundColor: '#faf8ef',
                             border: '1px solid #f0e68c',
                           }}
                         >
                           <div 
-                            className="w-12 h-12 rounded-xl flex items-center justify-center font-bold text-base shadow-lg flex-shrink-0"
+                            className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center font-bold text-sm sm:text-base shadow-lg flex-shrink-0"
                             style={{
                               background: entry.rank === 1
                                 ? 'linear-gradient(135deg, #FFD700 0%, #FFF8DC 25%, #FFD700 50%, #B8860B 75%, #FFD700 100%)'
@@ -1509,15 +1624,15 @@ const CheerPage = () => {
                           <img
                             src={entry.avatar || '/images/default-avatar.png'}
                             alt={entry.name || entry.userName}
-                            className="w-12 h-12 rounded-xl ring-2 ring-gray-200 flex-shrink-0"
+                            className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl ring-2 ring-gray-200 flex-shrink-0"
                           />
                           <div className="flex-1 min-w-0">
-                            <p className="font-bold text-base truncate" 
+                            <p className="font-bold text-sm sm:text-base truncate" 
                               style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                               {entry.name || entry.userName}
                             </p>
                           </div>
-                          <span className="font-black text-lg px-3 py-1 rounded-lg flex-shrink-0" 
+                          <span className="font-black text-base sm:text-lg px-2 sm:px-3 py-1 rounded-lg flex-shrink-0" 
                             style={{ 
                               color: '#1a0202',
                               backgroundColor: 'transparent',

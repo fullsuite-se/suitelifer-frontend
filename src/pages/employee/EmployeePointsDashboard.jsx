@@ -26,7 +26,7 @@ const PointsDashboard = () => {
   const [cheerMessage, setCheerMessage] = useState('');
   const [moderationNotification, setModerationNotification] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(20);
+  const [itemsPerPage, setItemsPerPage] = useState(30);
 
   // Safe date formatting function
   const formatDateSafely = (dateValue) => {
@@ -89,6 +89,15 @@ const PointsDashboard = () => {
       
       if (isDismissed) {
         return; // Skip if already dismissed
+      }
+      
+      // Only show notification if it has a proper reason or is very recent (within last 24 hours)
+      const notificationDate = new Date(latestModeration.created_at || latestModeration.createdAt);
+      const isRecent = (Date.now() - notificationDate.getTime()) < 24 * 60 * 60 * 1000; // 24 hours
+      
+      // If no reason provided and not recent, don't show the notification
+      if (!metadata?.reason && !isRecent) {
+        return;
       }
       
       const action = metadata?.action || 'moderated';
@@ -664,37 +673,6 @@ const PointsDashboard = () => {
               <div className="flex items-center space-x-4">
                 <div className="text-sm" style={{ color: '#64748b', fontFamily: 'Avenir, sans-serif' }}>
                   Page {currentPage} of {totalPages}
-                </div>
-                
-                {/* Items per page selector */}
-                <div className="flex items-center space-x-2">
-                  <label className="text-sm font-semibold" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
-                    Show:
-                  </label>
-                  <select
-                    value={itemsPerPage}
-                    onChange={(e) => handleItemsPerPageChange(parseInt(e.target.value))}
-                    className="px-3 py-1 rounded-lg text-sm border-2 transition-all duration-200 focus:ring-4"
-                    style={{ 
-                      border: '2px solid #e2e8f0',
-                      backgroundColor: '#ffffff',
-                      fontFamily: 'Avenir, sans-serif',
-                      color: '#1a0202'
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = '#0097b2';
-                      e.target.style.boxShadow = '0 0 0 4px rgba(0, 151, 178, 0.1)';
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = '#e2e8f0';
-                      e.target.style.boxShadow = 'none';
-                    }}
-                  >
-                    <option value={10}>10</option>
-                    <option value={20}>20</option>
-                    <option value={50}>50</option>
-                    <option value={100}>100</option>
-                  </select>
                 </div>
               </div>
               
