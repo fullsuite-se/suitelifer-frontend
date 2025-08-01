@@ -495,24 +495,24 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
 
   return (
     <>
-      <div className="shopping-cart-container bg-white rounded-lg shadow-sm border p-3 sm:p-4 mb-4 sm:mb-6 pb-6 sm:pb-8">
-      {/* Cart Header */}
-      <div className="cart-header flex items-center justify-between mb-4 sm:mb-6">
-        <div className="flex items-center gap-2 sm:gap-3">
-          <ShoppingBagIcon className="h-5 w-5 sm:h-6 sm:w-6 text-[#0097b2]" />
-          <span className="font-bold text-lg sm:text-xl text-gray-900">Shopping Cart</span>
-          <span className="ml-1 sm:ml-2 text-sm sm:text-base font-medium text-gray-500">({itemCount} items)</span>
+      <div className="shopping-cart-container bg-white h-full flex flex-col">
+        {/* Cart Header */}
+        <div className="cart-header flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <ShoppingBagIcon className="h-5 w-5 sm:h-6 sm:w-6 text-[#0097b2]" />
+            <span className="font-bold text-lg sm:text-xl text-gray-900">Shopping Cart</span>
+            <span className="ml-1 sm:ml-2 text-sm sm:text-base font-medium text-gray-500">({itemCount} items)</span>
+          </div>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600 p-1 rounded-full focus:outline-none"
+          >
+            <XMarkIcon className="h-5 w-5 sm:h-6 sm:w-6" />
+          </button>
         </div>
-        <button
-          onClick={onClose}
-          className="text-gray-400 hover:text-gray-600 p-1 rounded-full focus:outline-none"
-        >
-          <XMarkIcon className="h-5 w-5 sm:h-6 sm:w-6" />
-        </button>
-      </div>
 
         {/* Cart Content */}
-        <div className="cart-content p-3 sm:p-4 max-h-[50vh] sm:max-h-[60vh] overflow-y-auto mb-3 sm:mb-4">
+        <div className="cart-content flex-1 overflow-y-auto p-3 sm:p-4 scrollbar-thin">
           {uniqueCart.length === 0 ? (
             <div className="text-center py-6 sm:py-8">
               <ShoppingBagIcon className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-3 sm:mb-4" />
@@ -544,8 +544,8 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
 
               {/* Cart Items */}
               {uniqueCart.map((item) => (
-                <div key={item.cart_item_id} className="cart-item bg-white border border-gray-200 rounded-lg p-3 sm:p-4 w-full overflow-hidden">
-                  <div className="flex items-start gap-2 sm:gap-3 w-full">
+                <div key={item.cart_item_id} className="cart-item bg-white border border-gray-200 rounded-lg p-3 mb-3 w-full overflow-hidden">
+                  <div className="flex items-start gap-3 w-full">
                     {/* Item Selection */}
                     <input
                       type="checkbox"
@@ -556,7 +556,7 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                     
                     {/* Item Image */}
                     <div className="flex-shrink-0">
-                      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
                         {(() => {
                           // Handle both new images array and legacy image_url with priority order
                           let imageUrl = null;
@@ -583,7 +583,7 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                               className="w-full h-full object-cover rounded-lg"
                             />
                           ) : (
-                            <ShoppingBagIcon className="h-8 w-8 text-gray-400" />
+                            <ShoppingBagIcon className="h-6 w-6 text-gray-400" />
                           );
                         })()}
                       </div>
@@ -591,12 +591,18 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
 
                     {/* Item Details */}
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-sm sm:text-base font-medium text-gray-900 truncate">
+                      <h3 className="text-sm font-medium text-gray-900 truncate mb-1">
                         {item.product_name}
                       </h3>
                       
+                      {/* Price and Quantity on same line for mobile */}
+                      <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+                        <span>{item.price_points || item.points_cost || item.price} pts each</span>
+                        <span className="font-medium">Qty: {item.quantity}</span>
+                      </div>
+                      
                       {/* Enhanced Variations Display with Inline Editing */}
-                      <div className="mt-1 sm:mt-2">
+                      <div className="mb-2">
                         {(() => {
                           const hasVariations = (item.variations && Array.isArray(item.variations) && item.variations.length > 0) || item.variation_details;
                           const isEditingThisItem = inlineEditingItem === item.cart_item_id;

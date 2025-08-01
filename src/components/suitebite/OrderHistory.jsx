@@ -485,11 +485,11 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate, onPointsUpdate }) => {
   return (
     <div className="order-history-container h-full flex flex-col">
       {/* Filters */}
-      <div className="filters mb-4 bg-white rounded-lg shadow-sm border p-2">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
+      <div className="filters mb-4 bg-white rounded-lg shadow-sm border p-3 sm:p-4">
+        <div className="space-y-3 sm:space-y-4">
           {/* Search */}
-          <div>
-            <label className="block text-base font-medium text-gray-700 mb-1">Search Orders</label>
+          <div className="w-full">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Search Orders</label>
             <div className="relative">
               <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <input
@@ -497,47 +497,50 @@ const OrderHistory = ({ onCartUpdate, onHeartbitsUpdate, onPointsUpdate }) => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search by order ID..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent text-sm"
               />
             </div>
           </div>
 
-          {/* Status Filter */}
-          <div>
-            <label className="block text-base font-medium text-gray-700 mb-1">Status</label>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
-            >
-              <option value="all">All Status</option>
-              <option value="pending">Pending</option>
-              <option value="processing">Processing</option>
-              <option value="completed">Completed</option>
-              <option value="cancelled">Cancelled</option>
-            </select>
-          </div>
+          {/* Row 2: Status and Sort controls */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+            {/* Status Filter */}
+            <div className="w-full">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent text-sm"
+              >
+                <option value="all">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="processing">Processing</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
 
-          {/* Sort By, Sort Order, Reset */}
-          <div className="flex gap-2 items-end justify-end">
-            <div>
-              <label className="block text-base font-medium text-gray-700 mb-1">Sort By</label>
+            {/* Sort By */}
+            <div className="w-full">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent text-sm"
               >
                 <option value="ordered_at">Order Date</option>
                 <option value="total_points">Total Points</option>
                 <option value="status">Status</option>
               </select>
             </div>
-            <div>
-              <label className="block text-base font-medium text-gray-700 mb-1">Sort Order</label>
+
+            {/* Sort Order */}
+            <div className="w-full">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Order</label>
               <select
                 value={sortOrder}
                 onChange={(e) => setSortOrder(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0097b2] focus:border-transparent text-sm"
               >
                 <option value="desc">Newest First</option>
                 <option value="asc">Oldest First</option>

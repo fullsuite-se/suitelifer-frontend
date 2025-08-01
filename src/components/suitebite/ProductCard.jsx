@@ -186,7 +186,7 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
   return (
       <div className="product-card bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:scale-105">
         {/* Product Image Section with overlayed category badge */}
-        <div className="relative">
+        <div className="relative overflow-hidden">
           <ProductImageCarousel 
             images={(() => {
               let imageData = [];
@@ -202,11 +202,11 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
             productName={product.name}
             className="product-image"
           />
-        {/* Category Badge */}
+          {/* Category Badge - Fixed positioning */}
           {product.category && (
             <span 
-            className={`absolute top-2 sm:top-3 left-2 sm:left-3 px-2 sm:px-3 py-1 rounded-full text-xs font-semibold shadow-sm`}
-            style={{ backgroundColor: categoryBgColor, color: categoryColor, zIndex: 2 }}
+              className="absolute top-2 left-2 px-2 py-1 rounded-full text-xs font-semibold shadow-sm max-w-[calc(100%-1rem)] truncate z-10"
+              style={{ backgroundColor: categoryBgColor, color: categoryColor }}
             >
               {product.category}
             </span>
@@ -214,63 +214,72 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
         </div>
         {/* Product Information Section */}
         <div className="product-info p-3 sm:p-4">
-          <h3 className="product-name text-base sm:text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+          <h3 className="product-name text-sm sm:text-lg font-semibold text-gray-900 mb-2 line-clamp-2 min-h-[2.5rem] sm:min-h-[3rem]">
             {product.name}
           </h3>
-          <p className="product-description text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4 line-clamp-2">
+          <p className="product-description text-xs sm:text-sm text-gray-600 mb-3 line-clamp-2 min-h-[2rem] sm:min-h-[2.5rem]">
             {product.description || 'Premium quality product curated for your needs.'}
           </p>
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-3 sm:mb-4">
-            <div className="heartbits-price flex items-center justify-center sm:justify-start gap-2">
-              <div className="flex flex-col">
-              <span className="text-xl sm:text-2xl font-bold text-[#0097b2] flex items-center gap-1">{product.price_points || product.price || 0}<HeartIcon className="h-4 w-4 sm:h-5 sm:w-5 text-red-500 ml-1" /></span>
+          
+          {/* Price and Quantity on same line */}
+          <div className="flex items-center justify-between mb-3">
+            <div className="heartbits-price flex items-center">
+              <span className="text-lg sm:text-xl font-bold text-[#0097b2] flex items-center gap-1">
+                {product.price_points || product.price || 0}
+                <HeartIcon className="h-4 w-4 text-red-500" />
+              </span>
             </div>
-          </div>
-            <div className="quantity-selector flex items-center justify-center sm:justify-end gap-2 sm:gap-3">
+            
+            <div className="quantity-selector flex items-center gap-2">
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="quantity-btn w-7 h-7 sm:w-8 sm:h-8 bg-gray-200 rounded-full flex items-center justify-center font-semibold hover:bg-gray-300 transition-colors duration-200 text-sm"
+                className="quantity-btn w-7 h-7 bg-gray-200 rounded-full flex items-center justify-center font-semibold hover:bg-gray-300 transition-colors duration-200 text-sm touch-manipulation"
               >
                 -
               </button>
-              <span className="quantity-display text-base sm:text-lg font-semibold text-gray-900 min-w-[1.5rem] sm:min-w-[2rem] text-center">
+              <span className="quantity-display text-sm font-semibold text-gray-900 min-w-[1.5rem] text-center">
                 {quantity}
               </span>
               <button
                 onClick={() => setQuantity(quantity + 1)}
-                className="quantity-btn w-7 h-7 sm:w-8 sm:h-8 bg-gray-200 rounded-full flex items-center justify-center font-semibold hover:bg-gray-300 transition-colors duration-200 text-sm"
+                className="quantity-btn w-7 h-7 bg-gray-200 rounded-full flex items-center justify-center font-semibold hover:bg-gray-300 transition-colors duration-200 text-sm touch-manipulation"
               >
                 +
               </button>
             </div>
           </div>
-          <div className="total-cost-display bg-gray-50 p-2 rounded-lg mb-3 sm:mb-2">
+          
+          {/* Total Cost Display */}
+          <div className="total-cost-display bg-gray-50 p-2 rounded-lg mb-3">
             <div className="flex items-center justify-between text-xs sm:text-sm">
               <span className="text-gray-600">Total for {quantity}:</span>
-            <span className="font-semibold text-gray-900 flex items-center gap-1">{(product.price_points || product.price || 0) * quantity}<HeartIcon className="h-3 w-3 sm:h-4 sm:w-4 text-red-500 ml-1" /></span>
+              <span className="font-semibold text-gray-900 flex items-center gap-1">
+                {(product.price_points || product.price || 0) * quantity}
+                <HeartIcon className="h-3 w-3 sm:h-4 sm:w-4 text-red-500" />
+              </span>
+            </div>
           </div>
-        </div>
           <div className="action-buttons space-y-2">
             <button
-            onClick={e => {
-              e.stopPropagation();
-              onBuyNow(product.product_id, quantity);
-            }}
-            disabled={!canAfford}
-            className="buy-now-btn w-full bg-[#0097b2] text-white py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-semibold hover:bg-[#007a8e] transition-colors duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+              onClick={e => {
+                e.stopPropagation();
+                onBuyNow(product.product_id, quantity);
+              }}
+              disabled={!canAfford}
+              className="buy-now-btn w-full bg-[#0097b2] text-white py-2.5 px-3 rounded-lg font-semibold hover:bg-[#007a8e] transition-colors duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm min-h-[2.5rem]"
             >
-                  <ShoppingBagIcon className="h-4 w-4" />
-                  <span className="truncate">{!canAfford ? `Need ${totalCost - userHeartbits} more` : 'Buy Now'}</span>
+              <ShoppingBagIcon className="h-4 w-4 flex-shrink-0" />
+              <span className="truncate">{!canAfford ? `Need ${totalCost - userHeartbits} more` : 'Buy Now'}</span>
             </button>
             <button
-            onClick={e => {
-              e.stopPropagation();
-              onAddToCart(product, quantity);
-            }}
-            className="add-to-cart-btn w-full bg-white text-[#0097b2] py-2 px-3 sm:px-4 rounded-lg font-medium border border-[#0097b2] hover:bg-[#0097b2] hover:text-white transition-colors duration-200 flex items-center justify-center gap-2 text-sm"
+              onClick={e => {
+                e.stopPropagation();
+                onAddToCart(product, quantity);
+              }}
+              className="add-to-cart-btn w-full bg-white text-[#0097b2] py-2.5 px-3 rounded-lg font-medium border border-[#0097b2] hover:bg-[#0097b2] hover:text-white transition-colors duration-200 flex items-center justify-center gap-2 text-sm min-h-[2.5rem]"
             >
-                  <ShoppingCartIcon className="h-4 w-4" />
-                  <span>Add to Cart</span>
+              <ShoppingCartIcon className="h-4 w-4 flex-shrink-0" />
+              <span>Add to Cart</span>
             </button>
           </div>
         </div>
