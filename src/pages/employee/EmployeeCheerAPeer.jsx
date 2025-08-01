@@ -591,7 +591,7 @@ const CheerPage = () => {
           {/* Left Column - Create Cheer & Heartbits */}
           <div className="lg:col-span-1 space-y-4 sm:space-y-8">
             {/* Create Cheer Form - Enhanced */}
-            <div className="rounded-2xl shadow-lg p-4 sm:p-6 transition-all duration-300 hover:shadow-xl overflow-hidden" 
+            <div className="rounded-2xl shadow-lg p-4 sm:p-6 transition-all duration-300 hover:shadow-xl overflow-hidden min-w-0" 
                  style={{ 
                    background: 'linear-gradient(135deg, #e0f7fa 70%, #b3e0f2 100%)', 
                    border: '2px solid #b3e0f2',
@@ -602,12 +602,12 @@ const CheerPage = () => {
                      style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)' }}>
                   <HeartIconSolid className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </div>
-                <h2 className="text-lg sm:text-xl font-bold truncate" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                <h2 className="text-xs sm:text-sm lg:text-base font-bold break-words" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif', minWidth: 0 }}>
                   Send Heartbits
                 </h2>
               </div>
 
-              <form onSubmit={handleCheerSubmit} className="space-y-4 sm:space-y-5">
+              <form onSubmit={handleCheerSubmit} className="space-y-4 sm:space-y-5 min-w-0">
                 {/* Enhanced Selected Users Display */}
                 {selectedUsers.length > 0 && (
                   <div className="mb-3 sm:mb-4">
@@ -754,46 +754,48 @@ const CheerPage = () => {
                 </div>
 
                 {/* Enhanced Controls - Mobile Responsive Layout */}
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 pt-3">
-                  <div className="flex items-center space-x-2 flex-shrink-0 w-full sm:w-auto">
-                    <label className="text-sm font-semibold" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
-                      Heartbits:
-                    </label>
-                    <div className="flex flex-col items-center">
-                      <input
-                        type="number"
-                        min="1"
-                        max={Math.min(100, availableHeartbits)}
-                        value={cheerPoints}
-                        onChange={(e) => setCheerPoints(Math.min(Math.max(1, parseInt(e.target.value) || 1), Math.min(100, availableHeartbits)))}
-                        className="w-14 sm:w-16 px-2 py-2 text-center rounded-lg font-bold transition-all duration-200 focus:ring-4 text-sm h-10"
-                        style={{ 
-                          border: '2px solid #e2e8f0',
-                          fontFamily: 'Avenir, sans-serif',
-                          color: '#1a0202',
-                          backgroundColor: '#f8fafc'
-                        }}
-                        onFocus={(e) => {
-                          e.target.style.borderColor = '#0097b2';
-                          e.target.style.boxShadow = '0 0 0 4px rgba(0, 151, 178, 0.1)';
-                        }}
-                        onBlur={(e) => {
-                          e.target.style.borderColor = '#e2e8f0';
-                          e.target.style.boxShadow = 'none';
-                        }}
-                      />
-                      <span className="text-[0.6rem] sm:text-[0.7rem] font-bold mt-1 text-center"
-                            style={{
-                              color: '#1a0202',
-                              background: 'none',
-                              fontFamily: 'Avenir, sans-serif',
-                              letterSpacing: '1px',
-                              fontWeight: 700,
-                              boxShadow: 'none',
-                              padding: 0
-                            }}>
-                        <span style={{fontWeight: 900}}>MAX</span> <span style={{fontWeight: 900}}>{Math.min(100, availableHeartbits)}</span>
-                      </span>
+                <div className="flex flex-col gap-3 pt-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center space-x-2">
+                      <label className="text-sm font-semibold whitespace-nowrap" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                        Heartbits:
+                      </label>
+                      <div className="flex flex-col items-center">
+                        <input
+                          type="number"
+                          min="1"
+                          max={Math.min(100, availableHeartbits)}
+                          value={cheerPoints}
+                          onChange={(e) => setCheerPoints(Math.min(Math.max(1, parseInt(e.target.value) || 1), Math.min(100, availableHeartbits)))}
+                          className="w-14 sm:w-16 px-2 py-2 text-center rounded-lg font-bold transition-all duration-200 focus:ring-4 text-sm h-10"
+                          style={{ 
+                            border: '2px solid #e2e8f0',
+                            fontFamily: 'Avenir, sans-serif',
+                            color: '#1a0202',
+                            backgroundColor: '#f8fafc'
+                          }}
+                          onFocus={(e) => {
+                            e.target.style.borderColor = '#0097b2';
+                            e.target.style.boxShadow = '0 0 0 4px rgba(0, 151, 178, 0.1)';
+                          }}
+                          onBlur={(e) => {
+                            e.target.style.borderColor = '#e2e8f0';
+                            e.target.style.boxShadow = 'none';
+                          }}
+                        />
+                        <span className="text-[0.6rem] sm:text-[0.7rem] font-bold mt-1 text-center"
+                              style={{
+                                color: '#1a0202',
+                                background: 'none',
+                                fontFamily: 'Avenir, sans-serif',
+                                letterSpacing: '1px',
+                                fontWeight: 700,
+                                boxShadow: 'none',
+                                padding: 0
+                              }}>
+                          <span style={{fontWeight: 900}}>MAX</span> <span style={{fontWeight: 900}}>{Math.min(100, availableHeartbits)}</span>
+                        </span>
+                      </div>
                     </div>
                   </div>
                   
@@ -807,13 +809,11 @@ const CheerPage = () => {
                       bulkCheerMutation.isLoading ||
                       cheerPoints > availableHeartbits
                     }
-                    className="text-white px-4 sm:px-3 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed font-bold transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 w-full sm:w-auto text-xs sm:text-xs h-10 sm:ml-2"
+                    className="text-white py-3 px-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed font-bold transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 w-full text-sm"
                     style={{ 
                       background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)',
                       fontFamily: 'Avenir, sans-serif',
-                      height: '40px',
-                      fontSize: '0.85rem',
-                      padding: '0 12px'
+                      minHeight: '44px'
                     }}
                   >
                     {bulkCheerMutation.isLoading ? (
@@ -844,7 +844,7 @@ const CheerPage = () => {
                      style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)' }}>
                   <HeartIconSolid className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </div>
-                <span className="ml-3 text-lg sm:text-xl font-bold" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                <span className="ml-3 text-xs sm:text-sm lg:text-base font-bold" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                   Heartbits
                 </span>
               </div>
@@ -947,9 +947,9 @@ const CheerPage = () => {
                       <FireIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
                     <div>
-                      <h2 className="text-lg sm:text-xl font-bold truncate" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
-                        Recent Cheers
-                      </h2>
+                                          <h2 className="text-xs sm:text-sm lg:text-base font-bold truncate" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                      Recent Cheers
+                    </h2>
                     </div>
                   </div>
 
@@ -1072,22 +1072,19 @@ const CheerPage = () => {
                     </p>
                   </div>
                 ) : feed.length > 0 ? (
-                  <div>
+                  <div className="space-y-4 p-4">
                     {feed.map((cheer, index) => (
                       <div key={cheer.cheer_id} 
-                           className={`relative p-4 sm:p-6 transition-all duration-200 hover:bg-gray-50 ${index !== feed.length - 1 ? 'border-b border-gray-100' : ''}`}
+                           className="relative transition-all duration-200 hover:bg-gray-50 rounded-xl"
                            style={{ 
-                             borderTopLeftRadius: 0,
-                             borderBottomLeftRadius: '18px',
-                             borderTopRightRadius: '18px',
-                             borderBottomRightRadius: '18px',
                              background: 'linear-gradient(135deg, #f8fafc 60%, #e0f7fa 100%)',
                              boxShadow: '0 4px 16px 0 rgba(52, 211, 153, 0.10), 0 1.5px 4px 0 rgba(96, 165, 250, 0.10)',
                              border: '1.5px solid #e0e7ef',
-                             overflow: 'hidden'
+                             overflow: 'hidden',
+                             marginBottom: '16px'
                            }}>
-                        {/* Formatted Date - Top right */}
-                        <div className="absolute top-3 right-4 sm:top-4 sm:right-6 text-xs text-gray-500 font-medium z-10">
+                        {/* Formatted Date - Bottom right */}
+                        <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-4 text-xs text-gray-500 font-medium z-10 bg-white/80 backdrop-blur-sm px-1.5 py-0.5 rounded-lg">
                           {formatFullDateTime(cheer.createdAt || cheer.posted_at)}
                         </div>
                         {/* Shiny green accent bar */}
@@ -1105,7 +1102,7 @@ const CheerPage = () => {
                             background: 'linear-gradient(135deg, #34d399 0%, #60a5fa 100%)',
                           }}
                         />
-                        <div className="flex space-x-2 sm:space-x-3" style={{ marginLeft: '8px' }}>
+                        <div className="flex space-x-2 sm:space-x-3 p-4 sm:p-6" style={{ marginLeft: '8px' }}>
                           <img
                             src={cheer.fromUser?.avatar || '/images/default-avatar.png'}
                             alt={cheer.fromUser?.name}
@@ -1113,18 +1110,18 @@ const CheerPage = () => {
                           />
                           <div className="flex-1 min-w-0">
                             <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 mb-2 gap-1 sm:gap-0">
-                              <span className="font-bold text-sm sm:text-base" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                              <span className="font-bold text-xs sm:text-sm lg:text-base truncate max-w-24 sm:max-w-32 lg:max-w-40" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                                 {cheer.fromUser?.name}
                               </span>
-                              <span className="text-gray-500 text-xs sm:text-sm" style={{ fontFamily: 'Avenir, sans-serif' }}>
+                              <span className="text-gray-500 text-xs flex-shrink-0" style={{ fontFamily: 'Avenir, sans-serif' }}>
                                 cheered
                               </span>
-                              <span className="font-bold text-sm sm:text-base" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                              <span className="font-bold text-xs sm:text-sm lg:text-base truncate max-w-24 sm:max-w-32 lg:max-w-40" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                                 {cheer.toUser?.name}
                               </span>
-                              <span className="font-bold px-2 py-1 rounded-full text-xs sm:text-sm text-white shadow-lg flex items-center w-fit" style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)', fontFamily: 'Avenir, sans-serif' }}>
+                              <span className="font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-xs text-white shadow-lg flex items-center w-fit flex-shrink-0" style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)', fontFamily: 'Avenir, sans-serif' }}>
                                 +{cheer.points}
-                                <HeartIconSolid className="w-3 h-3 sm:w-4 sm:h-4" style={{ color: '#ef4444', display: 'inline', marginLeft: '2px', marginRight: '0px' }} />bits
+                                <HeartIconSolid className="w-2.5 h-2.5 sm:w-3 sm:h-3" style={{ color: '#ef4444', display: 'inline', marginLeft: '1px', marginRight: '0px' }} />bits
                               </span>
                             </div>
                             
@@ -1505,7 +1502,7 @@ const CheerPage = () => {
                     <TrophyIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-lg sm:text-xl font-bold truncate" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
+                    <h2 className="text-xs sm:text-sm lg:text-base font-bold truncate" style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
                       Leaderboard
                     </h2>
                   </div>
