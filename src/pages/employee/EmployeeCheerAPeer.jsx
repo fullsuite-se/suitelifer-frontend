@@ -411,6 +411,10 @@ const CheerPage = () => {
       toast.error('Please select at least one recipient');
       return;
     }
+    if (!messageText.trim()) {
+      toast.error('Please enter a message for your cheer');
+      return;
+    }
     const totalHeartbitsNeeded = cheerPoints * selectedUsers.length;
     if (totalHeartbitsNeeded > availableHeartbits) {
       toast.error(`Not enough heartbits available. You need ${totalHeartbitsNeeded} heartbits to send ${cheerPoints} to ${selectedUsers.length} recipients, but you only have ${availableHeartbits} remaining.`);
@@ -722,7 +726,7 @@ const CheerPage = () => {
                 <div>
                   <label className="block text-sm font-semibold mb-2" 
                          style={{ color: '#1a0202', fontFamily: 'Avenir, sans-serif' }}>
-                    Your Message (Optional)
+                    Your Message <span className="text-red-500">*</span>
                   </label>
                   <textarea
                     ref={textareaRef}
@@ -745,6 +749,7 @@ const CheerPage = () => {
                       e.target.style.boxShadow = 'none';
                     }}
                     rows={3}
+                    required
                   />
                 </div>
 
@@ -798,6 +803,7 @@ const CheerPage = () => {
                       anyLoading ||
                       isSubmitting ||
                       selectedUsers.length === 0 ||
+                      !messageText.trim() ||
                       bulkCheerMutation.isLoading ||
                       cheerPoints > availableHeartbits
                     }
