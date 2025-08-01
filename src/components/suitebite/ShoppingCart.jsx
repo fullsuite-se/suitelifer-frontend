@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { suitebiteAPI } from '../../utils/suitebiteAPI';
 import { XMarkIcon, TrashIcon, CheckIcon, HeartIcon, ShoppingBagIcon, CurrencyDollarIcon, EyeIcon } from '@heroicons/react/24/outline';
+import useIsMobile from '../../utils/useIsMobile';
 import ProductDetailModal from './ProductDetailModal';
 
 /**
@@ -17,6 +18,9 @@ import ProductDetailModal from './ProductDetailModal';
  * - Integrated design for better UX
  */
 const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, onUpdateQuantity, onRemoveItem, onAddToCart, isVisible = false, variationOptions = [], variationTypes = [] }) => {
+  // Mobile detection
+  const isMobile = useIsMobile();
+
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [selectedItems, setSelectedItems] = useState(new Set());
@@ -491,34 +495,34 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
 
   return (
     <>
-      <div className="shopping-cart-container bg-white rounded-lg shadow-sm border p-4 mb-6 pb-8">
+      <div className="shopping-cart-container bg-white rounded-lg shadow-sm border p-3 sm:p-4 mb-4 sm:mb-6 pb-6 sm:pb-8">
       {/* Cart Header */}
-      <div className="cart-header flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <ShoppingBagIcon className="h-6 w-6 text-[#0097b2]" />
-          <span className="font-bold text-xl text-gray-900">Shopping Cart</span>
-          <span className="ml-2 text-base font-medium text-gray-500">({itemCount} items)</span>
+      <div className="cart-header flex items-center justify-between mb-4 sm:mb-6">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <ShoppingBagIcon className="h-5 w-5 sm:h-6 sm:w-6 text-[#0097b2]" />
+          <span className="font-bold text-lg sm:text-xl text-gray-900">Shopping Cart</span>
+          <span className="ml-1 sm:ml-2 text-sm sm:text-base font-medium text-gray-500">({itemCount} items)</span>
         </div>
         <button
           onClick={onClose}
           className="text-gray-400 hover:text-gray-600 p-1 rounded-full focus:outline-none"
         >
-          <XMarkIcon className="h-6 w-6" />
+          <XMarkIcon className="h-5 w-5 sm:h-6 sm:w-6" />
         </button>
       </div>
 
         {/* Cart Content */}
-        <div className="cart-content p-4 max-h-[60vh] overflow-y-auto mb-4">
+        <div className="cart-content p-3 sm:p-4 max-h-[50vh] sm:max-h-[60vh] overflow-y-auto mb-3 sm:mb-4">
           {uniqueCart.length === 0 ? (
-            <div className="text-center py-8">
-              <ShoppingBagIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-medium text-gray-900 mb-2">Your cart is empty</h3>
-              <p className="text-base text-gray-600">Add some items to get started!</p>
+            <div className="text-center py-6 sm:py-8">
+              <ShoppingBagIcon className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-3 sm:mb-4" />
+              <h3 className="text-lg sm:text-xl font-medium text-gray-900 mb-2">Your cart is empty</h3>
+              <p className="text-sm sm:text-base text-gray-600">Add some items to get started!</p>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {/* Selection Controls */}
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0 p-3 bg-gray-50 rounded-lg">
                 <div className="flex items-center gap-2">
                   <input
                     type="checkbox"
@@ -526,13 +530,13 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                     onChange={handleSelectAll}
                     className="rounded border-gray-300 text-[#0097b2] focus:ring-[#0097b2]"
                   />
-                  <span className="text-base font-medium text-gray-700">
+                  <span className="text-sm sm:text-base font-medium text-gray-700">
                     Select All ({uniqueCart.length})
                   </span>
                 </div>
                 <button
                   onClick={handleClearAll}
-                  className="text-base text-gray-500 hover:text-gray-700"
+                  className="text-sm sm:text-base text-gray-500 hover:text-gray-700 self-start sm:self-auto"
                 >
                   Clear All
                 </button>
@@ -540,8 +544,8 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
 
               {/* Cart Items */}
               {uniqueCart.map((item) => (
-                <div key={item.cart_item_id} className="cart-item bg-white border border-gray-200 rounded-lg p-4 w-full overflow-hidden">
-                  <div className="flex items-start gap-3 w-full">
+                <div key={item.cart_item_id} className="cart-item bg-white border border-gray-200 rounded-lg p-3 sm:p-4 w-full overflow-hidden">
+                  <div className="flex items-start gap-2 sm:gap-3 w-full">
                     {/* Item Selection */}
                     <input
                       type="checkbox"
@@ -552,7 +556,7 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                     
                     {/* Item Image */}
                     <div className="flex-shrink-0">
-                      <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
+                      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
                         {(() => {
                           // Handle both new images array and legacy image_url with priority order
                           let imageUrl = null;
@@ -587,12 +591,12 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
 
                     {/* Item Details */}
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-base font-medium text-gray-900 truncate">
+                      <h3 className="text-sm sm:text-base font-medium text-gray-900 truncate">
                         {item.product_name}
                       </h3>
                       
                       {/* Enhanced Variations Display with Inline Editing */}
-                      <div className="mt-2">
+                      <div className="mt-1 sm:mt-2">
                         {(() => {
                           const hasVariations = (item.variations && Array.isArray(item.variations) && item.variations.length > 0) || item.variation_details;
                           const isEditingThisItem = inlineEditingItem === item.cart_item_id;
@@ -743,30 +747,30 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
                       </div>
                       
                       {/* Price and Quantity */}
-                      <div className="flex items-center justify-between mt-2">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0 mt-2">
                         <div className="flex items-center gap-2">
-                          <HeartIcon className="h-4 w-4 text-red-500" />
-                          <span className="text-base font-medium text-[#0097b2]">
+                          <HeartIcon className="h-3 w-3 sm:h-4 sm:w-4 text-red-500" />
+                          <span className="text-sm sm:text-base font-medium text-[#0097b2]">
                             {(item.price_points || item.points_cost || item.price) * item.quantity} heartbits
                           </span>
                         </div>
                         
                         {/* Quantity Controls */}
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 self-start sm:self-auto">
                           <button
                             onClick={() => handleUpdateQuantity(item.cart_item_id, item.quantity - 1)}
                             disabled={itemLoadingStates[item.cart_item_id] === 'updating'}
-                            className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center text-base font-semibold hover:bg-gray-300 transition-colors disabled:opacity-50"
+                            className="w-5 h-5 sm:w-6 sm:h-6 bg-gray-200 rounded-full flex items-center justify-center text-sm sm:text-base font-semibold hover:bg-gray-300 transition-colors disabled:opacity-50"
                           >
                             -
                           </button>
-                          <span className="text-base font-medium min-w-[2rem] text-center">
+                          <span className="text-sm sm:text-base font-medium min-w-[1.5rem] sm:min-w-[2rem] text-center">
                             {item.quantity}
                           </span>
                           <button
                             onClick={() => handleUpdateQuantity(item.cart_item_id, item.quantity + 1)}
                             disabled={itemLoadingStates[item.cart_item_id] === 'updating'}
-                            className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center text-base font-semibold hover:bg-gray-300 transition-colors disabled:opacity-50"
+                            className="w-5 h-5 sm:w-6 sm:h-6 bg-gray-200 rounded-full flex items-center justify-center text-sm sm:text-base font-semibold hover:bg-gray-300 transition-colors disabled:opacity-50"
                           >
                             +
                           </button>
@@ -807,49 +811,49 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
 
         {/* Cart Footer */}
         {uniqueCart.length > 0 && (
-          <div className="cart-footer border-t border-gray-200 p-4 pb-8">
+          <div className="cart-footer border-t border-gray-200 p-3 sm:p-4 pb-6 sm:pb-8">
             {/* Selected Items Summary */}
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0 mb-3 sm:mb-4">
               <div className="flex items-center gap-2">
                 <CheckIcon className="h-4 w-4 text-green-500" />
-                <span className="text-base font-medium text-gray-700">
+                <span className="text-sm sm:text-base font-medium text-gray-700">
                   {selectedItemsCount} item{selectedItemsCount !== 1 ? 's' : ''} selected
                 </span>
               </div>
-              <span className="text-base text-gray-500">
+              <span className="text-sm sm:text-base text-gray-500">
                 Total: {selectedItemsTotal} heartbits
               </span>
             </div>
 
             {/* Heartbits Balance */}
-            <div className="flex items-center justify-between mb-4 p-3 bg-gray-50 rounded-lg">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0 mb-3 sm:mb-4 p-3 bg-gray-50 rounded-lg">
               <div className="flex items-center gap-2">
                 <HeartIcon className="h-4 w-4 text-red-500" />
-                <span className="text-base font-medium text-gray-700">Your Balance:</span>
+                <span className="text-sm sm:text-base font-medium text-gray-700">Your Balance:</span>
               </div>
-              <span className={`text-base font-semibold ${realTimeHeartbits >= selectedItemsTotal ? 'text-green-600' : 'text-red-600'}`}>
+              <span className={`text-sm sm:text-base font-semibold ${realTimeHeartbits >= selectedItemsTotal ? 'text-green-600' : 'text-red-600'}`}>
                 {realTimeHeartbits} heartbits
               </span>
             </div>
 
             {/* Affordability Indicator */}
             {realTimeHeartbits < selectedItemsTotal && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <div className="mb-3 sm:mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
                 <div className="flex items-center gap-2 text-red-700">
-                  <span className="text-base font-medium">Insufficient Balance</span>
+                  <span className="text-sm sm:text-base font-medium">Insufficient Balance</span>
                 </div>
-                <p className="text-sm text-red-600 mt-1">
+                <p className="text-xs sm:text-sm text-red-600 mt-1">
                   You need {selectedItemsTotal - realTimeHeartbits} more heartbits to complete this purchase.
                 </p>
               </div>
             )}
 
             {/* Action Buttons */}
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
               <button
                 onClick={handleClearCart}
                 disabled={isUpdating}
-                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+                className="w-full sm:flex-1 px-3 sm:px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 text-sm"
               >
                 {isUpdating ? 'Clearing...' : 'Clear Cart'}
               </button>
@@ -857,7 +861,7 @@ const ShoppingCart = ({ cart, userHeartbits, onCheckout, onClose, onUpdateCart, 
               <button
                 onClick={handleCheckout}
                 disabled={!canCheckout() || isCheckingOut}
-                className="flex-1 px-4 py-2 bg-[#0097b2] text-white rounded-lg hover:bg-[#007a8e] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full sm:flex-1 px-3 sm:px-4 py-2 bg-[#0097b2] text-white rounded-lg hover:bg-[#007a8e] transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
               >
                 {isCheckingOut ? (
                   <>

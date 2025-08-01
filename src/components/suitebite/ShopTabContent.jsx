@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSuitebiteStore } from '../../store/stores/suitebiteStore';
 import useCategoryStore from '../../store/stores/categoryStore';
 import { suitebiteAPI } from '../../utils/suitebiteAPI';
+import useIsMobile from '../../utils/useIsMobile';
 import ProductCard from './ProductCard';
 import ShoppingCart from './ShoppingCart';
 import OrderHistory from './OrderHistory';
@@ -36,6 +37,9 @@ const ShopTabContent = () => {
 
   // Category store for color-coded categories
   const { syncCategoriesFromProducts, getCategoriesForFilter, getAllCategories, getCategoryColor, getCategoryBgColor } = useCategoryStore();
+
+  // Mobile detection
+  const isMobile = useIsMobile();
 
   // Local component state
   const [activeTab, setActiveTab] = useState('products'); // Current tab: 'products' or 'orders'
@@ -298,10 +302,10 @@ const ShopTabContent = () => {
    */
   const renderCategoryPills = () => {
     return (
-      <div className="category-pills flex flex-wrap gap-2 mb-4">
+      <div className="category-pills flex flex-wrap gap-2 mb-3 sm:mb-4 overflow-x-auto pb-2 sm:pb-0">
         <button
           onClick={() => setSelectedCategory('all')}
-          className={`category-pill px-3 py-1 rounded-full text-sm font-medium transition-colors duration-200 ${
+          className={`category-pill px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium transition-colors duration-200 flex-shrink-0 ${
             selectedCategory === 'all'
               ? 'bg-[#0097b2] text-white'
               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -313,7 +317,7 @@ const ShopTabContent = () => {
           <button
             key={categoryObj.name}
             onClick={() => setSelectedCategory(categoryObj.name)}
-            className={`category-pill px-3 py-1 rounded-full text-sm font-medium transition-colors duration-200 border ${
+            className={`category-pill px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium transition-colors duration-200 border flex-shrink-0 ${
               selectedCategory === categoryObj.name
                 ? 'text-white'
                 : 'text-gray-700 hover:text-white'
@@ -347,22 +351,22 @@ const ShopTabContent = () => {
     <div className="suitebite-shop-tab bg-gray-50">
       {/* Admin heartbits/message grant UI */}
       {isAdmin && (
-        <div className="admin-grant-box bg-[#f7f7f7] border border-[#0097b2] rounded-xl p-4 mb-6">
-          <h3 className="font-bold text-[#0097b2] mb-2">Grant Heartbits/Message as Admin</h3>
+        <div className="admin-grant-box bg-[#f7f7f7] border border-[#0097b2] rounded-xl p-3 sm:p-4 mb-4 sm:mb-6">
+          <h3 className="font-bold text-[#0097b2] mb-2 text-sm sm:text-base">Grant Heartbits/Message as Admin</h3>
           <form onSubmit={handleAdminGrant} className="flex flex-col gap-2">
             <input
               type="text"
               placeholder="Recipient User ID"
               value={adminGrantUserId}
               onChange={e => setAdminGrantUserId(e.target.value)}
-              className="border px-3 py-2 rounded"
+              className="border px-3 py-2 rounded text-sm"
               required
             />
             <textarea
               placeholder="Message to recipient"
               value={adminGrantMessage}
               onChange={e => setAdminGrantMessage(e.target.value)}
-              className="border px-3 py-2 rounded"
+              className="border px-3 py-2 rounded text-sm"
               required
             />
             <input
@@ -370,13 +374,13 @@ const ShopTabContent = () => {
               min={1}
               value={adminGrantPoints}
               onChange={e => setAdminGrantPoints(Number(e.target.value))}
-              className="border px-3 py-2 rounded"
+              className="border px-3 py-2 rounded text-sm"
               required
             />
             <button
               type="submit"
               disabled={adminGrantLoading}
-              className="bg-[#0097b2] text-white px-4 py-2 rounded font-bold hover:bg-[#007a8e]"
+              className="bg-[#0097b2] text-white px-3 sm:px-4 py-2 rounded font-bold hover:bg-[#007a8e] text-sm"
             >
               {adminGrantLoading ? 'Sending...' : 'Send as Admin'}
             </button>
@@ -385,7 +389,7 @@ const ShopTabContent = () => {
       )}
       {/* Toast Notification System */}
       {notification.show && (
-        <div className={`notification-toast fixed top-20 right-4 z-50 p-4 rounded-lg shadow-lg text-sm font-medium max-w-sm ${
+        <div className={`notification-toast fixed top-16 sm:top-20 right-2 sm:right-4 z-50 p-3 sm:p-4 rounded-lg shadow-lg text-xs sm:text-sm font-medium max-w-xs sm:max-w-sm ${
           notification.type === 'success' 
             ? 'bg-green-50 text-green-800 border border-green-200' 
             : notification.type === 'error'
@@ -397,23 +401,23 @@ const ShopTabContent = () => {
       )}
 
       {/* Header with Heartbits Display and Cart Button */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
         {/* User's Heartbits Balance */}
-        <div className="heartbits-display bg-[#0097b2] text-white px-4 py-2 rounded-lg">
-          <div className="flex items-center gap-2">
-            <span className="text-lg">❤️</span>
-            <span className="font-semibold">{userHeartbits}</span>
-            <span className="text-sm opacity-90">heartbits</span>
+        <div className="heartbits-display bg-[#0097b2] text-white px-3 sm:px-4 py-2 rounded-lg w-full sm:w-auto">
+          <div className="flex items-center justify-center sm:justify-start gap-2">
+            <span className="text-base sm:text-lg">❤️</span>
+            <span className="font-semibold text-sm sm:text-base">{userHeartbits}</span>
+            <span className="text-xs sm:text-sm opacity-90">heartbits</span>
           </div>
         </div>
         
         {/* Cart Toggle Button */}
         <button 
-          className="cart-btn bg-[#0097b2] text-white px-4 py-2 rounded-lg font-medium hover:bg-[#007a8e] transition-colors duration-200 flex items-center gap-2"
+          className="cart-btn bg-[#0097b2] text-white px-3 sm:px-4 py-2 rounded-lg font-medium hover:bg-[#007a8e] transition-colors duration-200 flex items-center justify-center gap-2 w-full sm:w-auto"
           onClick={() => setCartVisible(!cartVisible)}
         >
-          <ShoppingCartIcon className="h-5 w-5" />
-          <span>Cart ({cartItemCount})</span>
+          <ShoppingCartIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+          <span className="text-sm sm:text-base">Cart ({cartItemCount})</span>
         </button>
       </div>
 
@@ -440,26 +444,26 @@ const ShopTabContent = () => {
         {activeTab === 'products' && (
           <div className="products-section flex-1">
             {/* Search and Filter Controls */}
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+            <div className="flex flex-col gap-3 sm:gap-4 mb-4 sm:mb-6">
               {/* Search Input */}
-              <div className="flex gap-2 items-center">
-                <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
+              <div className="flex gap-2 items-center w-full">
+                <MagnifyingGlassIcon className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 flex-shrink-0" />
                 <input
                   type="text"
                   placeholder="Search products..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                  className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
                 />
               </div>
               
               {/* Filter Controls */}
-              <div className="flex gap-2 items-center">
+              <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
                 {/* Category Filter */}
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                  className="flex-1 sm:flex-none px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
                 >
                   {categories.map(renderCategoryOption)}
                 </select>
@@ -468,7 +472,7 @@ const ShopTabContent = () => {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+                  className="flex-1 sm:flex-none px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
                 >
                   <option value="name">Sort by Name</option>
                   <option value="price-low">Price: Low to High</option>
@@ -479,7 +483,7 @@ const ShopTabContent = () => {
                 {/* Reset Filters Button */}
                 <button
                   onClick={resetFilters}
-                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 text-sm"
+                  className="px-3 sm:px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 text-sm w-full sm:w-auto"
                 >
                   Reset
                 </button>
@@ -491,18 +495,18 @@ const ShopTabContent = () => {
 
             {/* Products Grid */}
             {loading ? (
-              <div className="text-center py-8">
+              <div className="text-center py-6 sm:py-8">
                 <div className="spinner mx-auto"></div>
-                <p className="text-gray-600 mt-4">Loading products...</p>
+                <p className="text-gray-600 mt-4 text-sm sm:text-base">Loading products...</p>
               </div>
             ) : filteredAndSortedProducts.length === 0 ? (
-              <div className="text-center py-8">
-                <ShoppingBagIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
-                <p className="text-gray-600">Try adjusting your search or filters</p>
+              <div className="text-center py-6 sm:py-8">
+                <ShoppingBagIcon className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-3 sm:mb-4" />
+                <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">No products found</h3>
+                <p className="text-gray-600 text-sm sm:text-base">Try adjusting your search or filters</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                 {filteredAndSortedProducts.map(product => (
                   <ProductCard
                     key={product.product_id}
@@ -530,28 +534,30 @@ const ShopTabContent = () => {
         <div className="flex border-b border-gray-200">
           {/* Products Tab */}
           <button
-            className={`tab-btn px-6 py-3 text-sm font-medium border-b-2 transition-colors duration-200 ${
+            className={`tab-btn flex-1 sm:flex-none px-3 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-medium border-b-2 transition-colors duration-200 ${
               activeTab === 'products'
                 ? 'border-[#0097b2] text-[#0097b2]'
                 : 'border-transparent text-gray-500 hover:text-gray-700'
             }`}
             onClick={() => setActiveTab('products')}
           >
-            <ShoppingBagIcon className="h-5 w-5 inline mr-2" />
-            Products
+            <ShoppingBagIcon className="h-4 w-4 sm:h-5 sm:w-5 inline mr-1 sm:mr-2" />
+            <span className="hidden sm:inline">Products</span>
+            <span className="sm:hidden">Shop</span>
           </button>
           
           {/* Orders Tab */}
           <button
-            className={`tab-btn px-6 py-3 text-sm font-medium border-b-2 transition-colors duration-200 ${
+            className={`tab-btn flex-1 sm:flex-none px-3 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-medium border-b-2 transition-colors duration-200 ${
               activeTab === 'orders'
                 ? 'border-[#0097b2] text-[#0097b2]'
                 : 'border-transparent text-gray-500 hover:text-gray-700'
             }`}
             onClick={() => setActiveTab('orders')}
           >
-            <ClipboardDocumentListIcon className="h-5 w-5 inline mr-2" />
-            Order History
+            <ClipboardDocumentListIcon className="h-4 w-4 sm:h-5 sm:w-5 inline mr-1 sm:mr-2" />
+            <span className="hidden sm:inline">Order History</span>
+            <span className="sm:hidden">Orders</span>
           </button>
         </div>
       </div>

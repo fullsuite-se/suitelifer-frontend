@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { suitebiteAPI } from '../../utils/suitebiteAPI';
 import { HeartIcon, ShoppingBagIcon, ShoppingCartIcon, EyeIcon } from '@heroicons/react/24/outline';
 import useCategoryStore from '../../store/stores/categoryStore';
+import useIsMobile from '../../utils/useIsMobile';
 import ProductDetailModal from './ProductDetailModal';
 import ProductImageCarousel from './ProductImageCarousel';
 
@@ -24,6 +25,9 @@ import ProductImageCarousel from './ProductImageCarousel';
  * @param {number} userHeartbits - User's current heartbits balance
  */
 const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
+  // Mobile detection
+  const isMobile = useIsMobile();
+
   // Local state for cart interaction
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [isBuying, setIsBuying] = useState(false);
@@ -201,7 +205,7 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
         {/* Category Badge */}
           {product.category && (
             <span 
-            className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-semibold shadow-sm`}
+            className={`absolute top-2 sm:top-3 left-2 sm:left-3 px-2 sm:px-3 py-1 rounded-full text-xs font-semibold shadow-sm`}
             style={{ backgroundColor: categoryBgColor, color: categoryColor, zIndex: 2 }}
             >
               {product.category}
@@ -209,41 +213,41 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
           )}
         </div>
         {/* Product Information Section */}
-        <div className="product-info p-4">
-          <h3 className="product-name text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+        <div className="product-info p-3 sm:p-4">
+          <h3 className="product-name text-base sm:text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
             {product.name}
           </h3>
-          <p className="product-description text-sm text-gray-600 mb-4 line-clamp-2">
+          <p className="product-description text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4 line-clamp-2">
             {product.description || 'Premium quality product curated for your needs.'}
           </p>
-          <div className="flex items-center justify-between mb-4">
-            <div className="heartbits-price flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-3 sm:mb-4">
+            <div className="heartbits-price flex items-center justify-center sm:justify-start gap-2">
               <div className="flex flex-col">
-              <span className="text-2xl font-bold text-[#0097b2] flex items-center gap-1">{product.price_points || product.price || 0}<HeartIcon className="h-5 w-5 text-red-500 ml-1" /></span>
+              <span className="text-xl sm:text-2xl font-bold text-[#0097b2] flex items-center gap-1">{product.price_points || product.price || 0}<HeartIcon className="h-4 w-4 sm:h-5 sm:w-5 text-red-500 ml-1" /></span>
             </div>
           </div>
-            <div className="quantity-selector flex items-center gap-3">
+            <div className="quantity-selector flex items-center justify-center sm:justify-end gap-2 sm:gap-3">
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="quantity-btn w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center font-semibold hover:bg-gray-300 transition-colors duration-200"
+                className="quantity-btn w-7 h-7 sm:w-8 sm:h-8 bg-gray-200 rounded-full flex items-center justify-center font-semibold hover:bg-gray-300 transition-colors duration-200 text-sm"
               >
                 -
               </button>
-              <span className="quantity-display text-lg font-semibold text-gray-900 min-w-[2rem] text-center">
+              <span className="quantity-display text-base sm:text-lg font-semibold text-gray-900 min-w-[1.5rem] sm:min-w-[2rem] text-center">
                 {quantity}
               </span>
               <button
                 onClick={() => setQuantity(quantity + 1)}
-                className="quantity-btn w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center font-semibold hover:bg-gray-300 transition-colors duration-200"
+                className="quantity-btn w-7 h-7 sm:w-8 sm:h-8 bg-gray-200 rounded-full flex items-center justify-center font-semibold hover:bg-gray-300 transition-colors duration-200 text-sm"
               >
                 +
               </button>
             </div>
           </div>
-          <div className="total-cost-display bg-gray-50 p-2 rounded-lg mb-2">
-            <div className="flex items-center justify-between text-sm">
+          <div className="total-cost-display bg-gray-50 p-2 rounded-lg mb-3 sm:mb-2">
+            <div className="flex items-center justify-between text-xs sm:text-sm">
               <span className="text-gray-600">Total for {quantity}:</span>
-            <span className="font-semibold text-gray-900 flex items-center gap-1">{(product.price_points || product.price || 0) * quantity}<HeartIcon className="h-4 w-4 text-red-500 ml-1" /></span>
+            <span className="font-semibold text-gray-900 flex items-center gap-1">{(product.price_points || product.price || 0) * quantity}<HeartIcon className="h-3 w-3 sm:h-4 sm:w-4 text-red-500 ml-1" /></span>
           </div>
         </div>
           <div className="action-buttons space-y-2">
@@ -253,17 +257,17 @@ const ProductCard = ({ product, onAddToCart, onBuyNow, userHeartbits }) => {
               onBuyNow(product.product_id, quantity);
             }}
             disabled={!canAfford}
-            className="buy-now-btn w-full bg-[#0097b2] text-white py-3 px-4 rounded-lg font-semibold hover:bg-[#007a8e] transition-colors duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="buy-now-btn w-full bg-[#0097b2] text-white py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-semibold hover:bg-[#007a8e] transition-colors duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
             >
                   <ShoppingBagIcon className="h-4 w-4" />
-                  <span>{!canAfford ? `Need ${totalCost - userHeartbits} more heartbits` : 'Buy Now'}</span>
+                  <span className="truncate">{!canAfford ? `Need ${totalCost - userHeartbits} more` : 'Buy Now'}</span>
             </button>
             <button
             onClick={e => {
               e.stopPropagation();
               onAddToCart(product, quantity);
             }}
-            className="add-to-cart-btn w-full bg-white text-[#0097b2] py-2 px-4 rounded-lg font-medium border border-[#0097b2] hover:bg-[#0097b2] hover:text-white transition-colors duration-200 flex items-center justify-center gap-2"
+            className="add-to-cart-btn w-full bg-white text-[#0097b2] py-2 px-3 sm:px-4 rounded-lg font-medium border border-[#0097b2] hover:bg-[#0097b2] hover:text-white transition-colors duration-200 flex items-center justify-center gap-2 text-sm"
             >
                   <ShoppingCartIcon className="h-4 w-4" />
                   <span>Add to Cart</span>
