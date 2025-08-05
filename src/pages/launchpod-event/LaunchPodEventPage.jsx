@@ -195,7 +195,7 @@ const LaunchPodEventPage = () => {
         </MotionUp>
         <MotionUp delay={1.4}>
           <a
-            href="https://getfullsuite.com/"
+            href="https://www.suitelifer.com/"
             target="_blank"
             rel="noopener noreferrer"
           >
