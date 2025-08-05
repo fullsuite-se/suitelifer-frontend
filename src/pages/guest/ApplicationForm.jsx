@@ -506,7 +506,7 @@ const Form = () => {
         <div className="py-2"></div>
         <button
           type="submit"
-          disabled={!agree}
+          disabled={!agree || isLoading}
           className={`w-full font-avenir-black py-3 rounded-md transition ${
             agree
               ? "cursor-pointer bg-primary text-white hover:bg-primary/90"
