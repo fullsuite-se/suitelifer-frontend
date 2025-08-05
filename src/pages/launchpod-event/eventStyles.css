@@ -12,23 +12,31 @@
   font-weight: bold;
   font-style: normal;
 }
-
 .events-page {
-  height: 100%;
+  position: relative;
   min-height: 100vh;
-  width: 100vw;
   overflow-x: hidden;
+  font-family: "CoreSansRegular", Arial, sans-serif;
+  color: white;
+}
+
+.bg-image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
   background-image: url("../launchpod-event/img/bg.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  color: white;
-  text-align: center;
-  font-family: "CoreSansRegular", Arial, sans-serif;
+  z-index: -1; /* Push it behind the content */
+}
+
+.content {
   position: relative;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+  z-index: 1;
+  padding: 2rem; /* adjust as needed */
 }
 
 .events-page .social-icon {
