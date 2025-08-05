@@ -56,6 +56,7 @@ import { Toaster } from "react-hot-toast";
 import ScrollToTop from "./components/buttons/ScrollToTop";
 import VerifyAccount from "./pages/auth/VerifyAccount";
 import DevelopersPage from "./pages/guest/Developers";
+import LaunchPodEventPage from "./pages/launchpod-event/LaunchPodEventPage";
 
 function App() {
   return (
@@ -83,6 +84,7 @@ function App() {
           />
 
           <Route path="/developers" element={<DevelopersPage />} />
+          <Route path="/events" element={<LaunchPodEventPage />} />
           <Route path="/developer" element={<Navigate to="/developers"/>} />
           <Route path="/dev" element={<Navigate to="/developers"/>} />
           <Route path="/d" element={<Navigate to="/developers"/>} />
