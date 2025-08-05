@@ -108,15 +108,15 @@ const LaunchPodEventPage = () => {
       <h6>
         <div className="event-details">
           <div className="event-details-inline">
-            <MotionUp delay={0.4}>
+            <MotionUp delay={0.5}>
               <span className="event-detail-inline">Panel Discussion</span>
             </MotionUp>
             <span className="event-detail-inline">•</span>
-            <MotionUp delay={0.8}>
+            <MotionUp delay={1}>
               <span className="event-detail-inline">Small Bites</span>
             </MotionUp>
             <span className="event-detail-inline">•</span>
-            <MotionUp delay={1.2}>
+            <MotionUp delay={1.5}>
               <span className="event-detail-inline">Drinks and Wine</span>
             </MotionUp>
           </div>
