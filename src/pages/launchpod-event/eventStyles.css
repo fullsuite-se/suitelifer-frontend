@@ -55,6 +55,25 @@
   margin-top: 2vw;
 }
 
+
+.events-page .register-btn {
+  display: block;
+  margin: 6vw auto 0 auto; 
+  padding: 0.8em 2.5em;
+  font-size: 1.2vw;
+  font-family: 'CoreSansBold', Arial, sans-serif;
+  background: #01B7D7;
+  color: #fff;
+  border: none;
+  border-radius: 2em;
+  cursor: pointer;
+}
+
+.events-page .register-btn:hover {
+  background: #0097B2;
+}
+
+
 .events-page .social-row {
   display: flex;
   flex-direction: row;
