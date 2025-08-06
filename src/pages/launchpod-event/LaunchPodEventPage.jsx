@@ -36,14 +36,16 @@ const LaunchPodEventPage = () => {
         </MotionUp>
         <MotionUp delay={0.3}>
           <div className="flex justify-center select-none">
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              className="no-underline"
-              href="https://docs.google.com/forms/d/e/1FAIpQLScuLETRrlN3hZ0cadVheWW3X16cxDe34HGpLZNEVgxcIZsqHw/viewform"
-            >
-              <button className="register-btn">Register Now </button>
-            </a>
+            <div>
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                className="no-underline"
+                href="https://docs.google.com/forms/d/e/1FAIpQLScuLETRrlN3hZ0cadVheWW3X16cxDe34HGpLZNEVgxcIZsqHw/viewform"
+              >
+                <button className="register-btn">Register Now </button>
+              </a>
+            </div>
           </div>
         </MotionUp>
         <div className="py-1 sm:py-2"></div>
