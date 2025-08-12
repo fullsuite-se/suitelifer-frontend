@@ -55,14 +55,13 @@
   margin-top: 2vw;
 }
 
-
 .events-page .register-btn {
   display: block;
-  margin: 6vw auto 0 auto; 
+  margin: 6vw auto 0 auto;
   padding: 0.8em 2.5em;
   font-size: 1.2vw;
-  font-family: 'CoreSansBold', Arial, sans-serif;
-  background: #01B7D7;
+  font-family: "CoreSansBold", Arial, sans-serif;
+  background: #01b7d7;
   color: #fff;
   border: none;
   border-radius: 2em;
@@ -70,9 +69,8 @@
 }
 
 .events-page .register-btn:hover {
-  background: #0097B2;
+  background: #0097b2;
 }
-
 
 .events-page .social-row {
   display: flex;
@@ -189,7 +187,7 @@
   font-size: 3vw;
   color: white;
   text-align: left;
-  margin: -14em 0 0 58vw;
+  margin: -15em 0 0 58vw;
 }
 
 .events-page h4 {
@@ -201,12 +199,13 @@
 }
 
 .events-page h5 {
-  font-family: "CoreSansRegular";
+  font-family: "CoreSansBold";
   font-size: 1.1vw;
-  max-width: 22vw;
+  max-width: 24vw;
   color: #fff;
-  text-align: left;
+  text-align: justify;
   margin: 0.5em 0 0 58vw;
+  line-height: 1.8;
 }
 
 .events-page h6 {
