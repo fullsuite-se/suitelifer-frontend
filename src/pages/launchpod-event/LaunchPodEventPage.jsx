@@ -43,7 +43,7 @@ const LaunchPodEventPage = () => {
                 className="no-underline"
                 href="https://docs.google.com/forms/d/e/1FAIpQLScuLETRrlN3hZ0cadVheWW3X16cxDe34HGpLZNEVgxcIZsqHw/viewform"
               >
-                <button className="register-btn">Register Now </button>
+                <button className="register-btn">Click here to register</button>
               </a>
             </div>
           </div>
