@@ -166,13 +166,16 @@ i {
 @theme {
   --color-primary: #0097b2;
   --color-primary-hovered: #007a8e;
-  --color-secondary: #4a6e7e;
+  --color-secondary: #bfd1a0;
+  /* --color-secondary: #4a6e7e; */
   --color-secondarydark: #4fafab;
-  --color-tertiary: #bfd1a0;
+  --color-tertiary: #ecf1e3;
+  /* --color-tertiary: #bfd1a0; */
   --color-dark: #1a0202;
   --color-light: #ffffff;
   --color-accent-1: #eee3e3;
-  --color-accent-2: #4a6e7e;
+  --color-accent-2: #4a6e73;
+  /* --color-accent-2: #4a6e7e; */
   --color-success: #10b981;
   --color-warning: #f59e0b;
   --color-danger: #ef4444;
