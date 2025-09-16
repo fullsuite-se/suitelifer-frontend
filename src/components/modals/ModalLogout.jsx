@@ -15,6 +15,8 @@ export const ModalLogout = ({ isOpen, handleClose }) => {
       const response = await api.post("/api/logout");
 
       if (response.data.isLoggedOut) {
+        // Clear token from localStorage
+        localStorage.removeItem('token');
         window.location.href = "/";
       } else {
         console.log("Failed to log out");

@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // Guest Pages
 import Home from "./pages/guest/Home";
@@ -25,10 +26,29 @@ import EmployeeEvents from "./pages/employee/EmployeeEvents";
 import EmployeeWorkshops from "./pages/employee/EmployeeWorkshops";
 import EmployeePersonalityTest from "./pages/employee/EmployeePersonalityTest";
 import BlogCreate from "./components/blog/BlogCreate";
+// Employee Pages
+import EmployeeCheerAPeer from "./pages/employee/EmployeeCheerAPeer";
+import EmployeePointsDashboard from "./pages/employee/EmployeePointsDashboard";
+import MoodPage from "./pages/employee/MoodPage";
+
+// Points Shop Pages (optional - uncomment when needed)
+// import PointsShopDashboard from "./pages/employee/PointsShopDashboard";
+// import CheerAPeerPage from "./pages/employee/CheerAPeerPage";
+// import PointsPage from "./pages/employee/PointsPage";
+// import ShopPage from "./pages/employee/ShopPage";
+import SuitebiteHome from "./pages/employee/SuitebiteHome";
+import SuitebiteShop from "./pages/employee/SuitebiteShop";
+import SuitebiteLeaderboard from "./pages/employee/SuitebiteLeaderboard";
+
+// Admin Pages
+// import AdminPointsDashboard from "./pages/admin/AdminPointsDashboard";
+// import AdminPointsUsers from "./pages/admin/AdminPointsUsers";
+// import AdminPointsProducts from "./pages/admin/AdminPointsProducts";
+// import AdminPointsOrders from "./pages/admin/AdminPointsOrders";
 
 // Super/Admin Pages
-import AdminBlogs from "./pages/admin/AdminBlogs";
-import AdminNews from "./pages/admin/AdminNews";
+//import AdminBlogs from "./pages/admin/AdminBlogs";
+
 import AdminEvents from "./pages/admin/AdminEvents";
 import AdminContents from "./pages/admin/AdminContents";
 import AdminNewsCreate from "./pages/admin/AdminNewsCreate";
@@ -36,6 +56,8 @@ import SuperAdminAccountManagement from "./pages/superadmin/SuperAdminAccountMan
 import AuditLogs from "./pages/admin/AuditLogs";
 import AdmimJobCourse from "./components/admin/AdmimJobCourse";
 import AdminPersonalityTest from "./components/admin/AdminPersonalityTest";
+import AdminSuitebite from "./pages/admin/AdminSuitebite";
+import SuperAdminSuitebite from "./pages/admin/SuperAdminSuitebite";
 
 // Route Management
 import ProtectedRoutes from "./routes/ProtectedRoutes";
@@ -58,9 +80,14 @@ import VerifyAccount from "./pages/auth/VerifyAccount";
 import DevelopersPage from "./pages/guest/Developers";
 import LaunchPodEventPage from "./pages/launchpod-event/LaunchPodEventPage";
 
+
+
+
+const queryClient = new QueryClient();
+
 function App() {
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <ScrollToTop />
         <Toaster position="top-center" reverseOrder={false} />
@@ -108,6 +135,8 @@ function App() {
               <Route path="my-blogs" element={<EmployeeMyBlogs />} />
               <Route path="my-blogs/blog/:id/:slug" element={<BlogView />} />
               <Route path="my-blogs/new-blog" element={<BlogCreate />} />
+              <Route path="cheer" element={<EmployeeCheerAPeer />} />
+              <Route path="points" element={<EmployeePointsDashboard />} />
 
               <Route path="threads" element={<EmployeeThreads />} />
               <Route path="company-events" element={<EmployeeEvents />} />
@@ -116,16 +145,30 @@ function App() {
                 path="personality-test"
                 element={<EmployeePersonalityTest />}
               />
-              <Route />
+              
+              {/* Suitebite Employee Routes */}
+              <Route path="suitebite" element={<SuitebiteHome />} />
+              <Route path="suitebite/cheer" element={<SuitebiteHome />} />
+              <Route path="suitebite/leaderboard" element={<SuitebiteLeaderboard />} />
+
+              {/* Points Shop/Mood/Cheer/PointsDashboard Routes */}
+              <Route path="mood" element={<MoodPage />} />
+              {/* Remove old points and cheer routes, keep only the new ones */}
+              <Route path="cheer-a-peer" element={<EmployeeCheerAPeer />} />
+              <Route path="points-dashboard" element={<EmployeePointsDashboard />} />
+
+              {/* SuitebiteShop moved to bottom */}
+              <Route path="suitebite/shop" element={<SuitebiteShop />} />
 
               {/* Admin Protected Routes */}
               <Route path="admin-tools" element={<AdminProtectedRoutes />}>
                 <Route index element={<Navigate to="suitebite" replace />} />
-                <Route path="suitebite" element={<AdminNews />} />
+                <Route path="suitebite" element={<AdminSuitebite />} />
                 <Route
                   path="suitebite/new-suitebite"
                   element={<AdminNewsCreate />}
                 />
+                
                 <Route path="events" element={<AdminEvents />} />
                 <Route path="contents" element={<AdminContents />} />
                 <Route path="courses" element={<AdmimJobCourse />} />
@@ -141,13 +184,21 @@ function App() {
                     path="accounts-management"
                     element={<SuperAdminAccountManagement />}
                   />
+                  <Route
+                    path="suitebite"
+                    element={<SuperAdminSuitebite />}
+                  />
                 </Route>
               </Route>
             </Route>
           </Route>
+
+          {/* UI Demo Routes */}
+          {/* <Route path="/ui-demo/cheer" element={<CheerPage />} />
+          <Route path="/ui-demo/points" element={<PointsDashboard />} /> */}
         </Routes>
       </BrowserRouter>
-    </>
+    </QueryClientProvider>
   );
 }
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useStore } from "../../store/authStore";
 import { ModalLogout } from "../modals/ModalLogout";
@@ -10,7 +10,6 @@ import {
   Bars3BottomLeftIcon,
   ArrowRightCircleIcon,
   Square2StackIcon,
-  WrenchScrewdriverIcon,
   ClipboardIcon,
   ArrowPathRoundedSquareIcon,
   ChevronDownIcon,
@@ -19,7 +18,11 @@ import {
   UsersIcon,
   ArrowDownOnSquareIcon,
   TableCellsIcon,
+  ChartBarIcon,
+  HeartIcon,
+  ShoppingBagIcon,
 } from "@heroicons/react/20/solid";
+import TeamPlayerIcon from '../../assets/icons/TeamPlayerIcon.jsx';
 import {
   Disclosure,
   DisclosureButton,
@@ -41,14 +44,22 @@ const regularFeatures = [
   {
     feature_name: "Personality Test",
     path: "personality-test",
-    icon: FaceSmileIcon,
+    icon: (props) => <TeamPlayerIcon className={props.className} color="currentColor" />,
   },
+];
+
+// Suitebite features for employees (only Mood and Points Dashboard remain)
+const suitebiteFeaturesForEmployees = [
+  { feature_name: "The Suite Vibe", path: "mood", icon: FaceSmileIcon },
+  { feature_name: "Points Dashboard", path: "points-dashboard", icon: ChartBarIcon },
+  { feature_name: "Cheer a Peer", path: "cheer-a-peer", icon: HeartIcon },
+  { feature_name: "The Gift Suite", path: "suitebite/shop", icon: ShoppingBagIcon },
 ];
 
 const adminFeatures = [
   { feature_name: "Content", path: "contents", icon: Bars3BottomLeftIcon },
   { feature_name: "Events", path: "events", icon: CalendarIcon },
-  { feature_name: "Suitebite", path: "suitebite", icon: NewspaperIcon },
+  { feature_name: "The Gift Suite", path: "suitebite", icon: HeartIcon },
   { feature_name: "Courses", path: "courses", icon: BookOpenIcon },
   {
     feature_name: "Personality Test",
@@ -143,33 +154,93 @@ const CMSNavigation = () => {
   };
 
   const displayFeatures = (features, prefixPath) => {
-    return features.map((service, index) => (
-      <li key={index}>
-        <NavLink
-          to={`${prefixPath}/${service.path}`}
-          className={({ isActive }) =>
-            isActive
-              ? `bg-primary text-white transition-none p-3 rounded-lg flex items-center gap-3 no-underline ${
-                  !isCollapse ? "w-full" : "w-min"
-                }`
-              : `bg-white text-primary transition-none p-3 rounded-lg flex items-center gap-3 no-underline hover:bg-blue-50 ${
-                  !isCollapse ? "w-full" : "w-min"
-                }`
-          }
-        >
-          {service ? (
-            <service.icon className="size-4 group-hover:hidden" />
-          ) : (
-            <Square2StackIcon className="size-4 group-hover:hidden" />
-          )}
-          {!isCollapse && (
-            <span className="no-underline! truncate font-avenir-black">
-              {service.feature_name}
-            </span>
-          )}
-        </NavLink>
-      </li>
-    ));
+    return features.map((service, index) => {
+      // If the service has sub-features, render it as a nested disclosure
+      if (service.subFeatures) {
+        return (
+          <li key={index}>
+            <Disclosure as="div" defaultOpen={false}>
+              <DisclosureButton
+                className="group cursor-pointer flex w-full items-center justify-between p-3 rounded-lg hover:bg-blue-50"
+              >
+                <div className="flex items-center gap-3">
+                  {service ? (
+                    <service.icon className="size-4" />
+                  ) : (
+                    <Square2StackIcon className="size-4" />
+                  )}
+                  {!isCollapse && (
+                    <span className="no-underline! truncate font-avenir-black text-primary">
+                      {service.feature_name}
+                    </span>
+                  )}
+                </div>
+                {!isCollapse && (
+                  <ChevronDownIcon className="size-4 text-primary group-data-[open]:rotate-180" />
+                )}
+              </DisclosureButton>
+              <DisclosurePanel className={`${!isCollapse && "ml-6"} mt-1 flex flex-col space-y-1`}>
+                {service.subFeatures.map((subFeature, subIndex) => (
+                  <NavLink
+                    key={subIndex}
+                    to={`${prefixPath}/${subFeature.path}`}
+                    className={({ isActive }) =>
+                      isActive
+                        ? `bg-primary text-white transition-none p-2 rounded-lg flex items-center gap-3 no-underline ${
+                            !isCollapse ? "w-full" : "w-min"
+                          }`
+                        : `bg-white text-primary transition-none p-2 rounded-lg flex items-center gap-3 no-underline hover:bg-blue-50 ${
+                            !isCollapse ? "w-full" : "w-min"
+                          }`
+                    }
+                  >
+                    {subFeature ? (
+                      <subFeature.icon className="size-3 group-hover:hidden" />
+                    ) : (
+                      <Square2StackIcon className="size-3 group-hover:hidden" />
+                    )}
+                    {!isCollapse && (
+                      <span className="no-underline! truncate text-sm">
+                        {subFeature.feature_name}
+                      </span>
+                    )}
+                  </NavLink>
+                ))}
+              </DisclosurePanel>
+            </Disclosure>
+          </li>
+        );
+      }
+
+      // Regular feature without sub-features
+      return (
+        <li key={index}>
+          <NavLink
+            to={`${prefixPath}/${service.path}`}
+            className={({ isActive }) =>
+              isActive
+                ? `bg-primary text-white transition-none p-3 rounded-lg flex items-center gap-3 no-underline ${
+                    !isCollapse ? "w-full" : "w-min"
+                  }`
+                : `bg-white text-primary transition-none p-3 rounded-lg flex items-center gap-3 no-underline hover:bg-blue-50 ${
+                    !isCollapse ? "w-full" : "w-min"
+                  }`
+            }
+          >
+            {service ? (
+              <service.icon className="size-4 group-hover:hidden" />
+            ) : (
+              <Square2StackIcon className="size-4 group-hover:hidden" />
+            )}
+            {!isCollapse && (
+              <span className="no-underline! truncate font-avenir-black">
+                {service.feature_name}
+              </span>
+            )}
+          </NavLink>
+        </li>
+      );
+    });
   };
 
   if (isLoading) return null;
@@ -211,31 +282,14 @@ const CMSNavigation = () => {
               </p>
             </>
           )}
-        </section>
-        <section className=" flex-1 ">
+        </section>        <section className=" flex-1 ">
           <ul className="list-none!">
             {displayFeatures(regularFeatures, "/app")}
-            {user.role === "ADMIN" && (
-              <Disclosure as="div" defaultOpen={showTool}>
-                <DisclosureButton
-                  className="group cursor-pointer flex w-full items-center justify-between"
-                  onClick={handleDisclosureBtn}
-                >
-                  {!isCollapse && (
-                    <p className="font-avenir-black text-primary p-3">
-                      Admin Tools
-                    </p>
-                  )}
-                  <ChevronDownIcon className="size-5 text-primary  group-data-[open]:rotate-180" />
-                </DisclosureButton>
-                <DisclosurePanel
-                  className={`${!isCollapse && "ml-5"} mt-1 flex flex-col`}
-                >
-                  {displayFeatures(adminFeatures, "/app/admin-tools")}
-                </DisclosurePanel>
-              </Disclosure>
-            )}
-            {user.role === "SUPER ADMIN" && (
+            
+            {/* Mood and Points features */}
+            {displayFeatures(suitebiteFeaturesForEmployees, "/app")}
+
+            {(user.role === "ADMIN" || user.role === "SUPER ADMIN") && (
               <Disclosure as="div" defaultOpen={showTool}>
                 <DisclosureButton
                   className="group cursor-pointer flex w-full items-center justify-between"
@@ -252,7 +306,9 @@ const CMSNavigation = () => {
                   className={`${!isCollapse && "ml-5"} mt-1 flex flex-col`}
                 >
                   {displayFeatures(
-                    [...superAdminFeatures, ...adminFeatures],
+                    user.role === "SUPER ADMIN" 
+                      ? [...superAdminFeatures, ...adminFeatures]
+                      : adminFeatures,
                     "/app/admin-tools"
                   )}
                 </DisclosurePanel>
