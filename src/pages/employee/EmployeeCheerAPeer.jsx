@@ -1121,7 +1121,7 @@ const CheerPage = () => {
                               </span>
                               <span className="font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-xs text-white shadow-lg flex items-center w-fit flex-shrink-0" style={{ background: 'linear-gradient(135deg, #0097b2 0%, #4a6e7e 100%)', fontFamily: 'Avenir, sans-serif' }}>
                                 +{cheer.points}
-                                <HeartIconSolid className="w-2.5 h-2.5 sm:w-3 sm:h-3" style={{ color: '#ef4444', display: 'inline', marginLeft: '1px', marginRight: '0px' }} />bits
+                                <HeartIconSolid className="w-2.5 h-2.5 sm:w-3 sm:h-3" style={{ color: '#ef4444', display: 'inline', marginLeft: '1px', marginRight: '1px' }} />bits
                               </span>
                             </div>
                             
