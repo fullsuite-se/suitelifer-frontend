@@ -10,6 +10,7 @@ import EventCard from "../events/EventCard";
 import api from "../../utils/axios";
 import { format, parseISO, isValid } from "date-fns";
 import moment from "moment";
+import { useLocation } from 'react-router-dom'
 
 const EmployeeAside = () => {
   const [events, setEvents] = useState([]);
@@ -126,6 +127,9 @@ const EmployeeAside = () => {
     setShowUpcomingEvent(updatedShowUpcoming);
   };
 
+  const location = useLocation();
+  const hideCalendar = location.pathname.includes('company-events');
+
   if (loading) return null;
 
   return (
@@ -133,7 +137,10 @@ const EmployeeAside = () => {
       <section className="flex justify-between items-baseline">
         <h2 className="font-avenir-black">Events</h2>
       </section>
-      <Calendar eventDates={eventDates} />
+      
+      {!hideCalendar && (
+        <Calendar eventDates={eventDates} />
+      )}
       <section className="mt-5">
         <div className="w-full">
           <div className="">
