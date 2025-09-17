@@ -8,11 +8,23 @@ import moment from "moment";
 import EventCalendar from "../../components/admin/EventCalendar";
 import api from "../../utils/axios";
 // import ComingSoon from "./ComingSoon";
+// addded
+import { Modal, Box, Typography } from "@mui/material";
+//
 //
 const EmployeeEvents = () => {
   const [isComingSoon, setComingSoon] = useState(true); //Change this when the page is ready.
   //added
   const [events, setEvents] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [isEventDetailsModalOpen, setIsEventDetailsModalOpen] = useState(false);
+
+  const handleEventClick = (event) => {
+    setSelectedEvent(event);
+    setIsEventDetailsModalOpen(true);
+  };
+
+  //end
   const fetchEvents = async () => {
     try {
       const response = await api.get("/api/events");
@@ -33,9 +45,9 @@ const EmployeeEvents = () => {
   }, []);
   //
 
-  if (isComingSoon) {
-    // return <ComingSoon />;
-  }
+  // if (isComingSoon) {
+  // return <ComingSoon />;
+  // }
   return (
     // <section className="p-5 border border-primary rounded-2xl flex flex-col gap-4 mb-25">
     //   <div className="">
@@ -90,12 +102,87 @@ const EmployeeEvents = () => {
     //     </p>
     //   </div>
     // </section>
+
     <div>
+      {selectedEvent && (
+        <Modal
+          open={isEventDetailsModalOpen}
+          onClose={() => setIsEventDetailsModalOpen(false)}
+        >
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              p: 4,
+              bgcolor: "white",
+              borderRadius: 1,
+              boxShadow: 24,
+              width: "400px",
+            }}
+          >
+            <Typography variant="h6" className="font-bold text-primary mb-2">
+              {selectedEvent.title}
+            </Typography>
+            <Typography>
+              <strong>Start:</strong>{" "}
+              {moment(selectedEvent.start).format("MMMM D, YYYY h:mm A")}
+            </Typography>
+            <Typography>
+              <strong>End:</strong>{" "}
+              {moment(selectedEvent.end).format("MMMM D, YYYY h:mm A")}
+            </Typography>
+            <Typography>
+              <strong>Description:</strong>{" "}
+              {selectedEvent.description || "No description"}
+            </Typography>
+            <Typography>
+              <strong>Drive Link:</strong>{" "}
+              {selectedEvent.gdrive_link ? (
+                <a
+                  href={selectedEvent.gdrive_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {selectedEvent.gdrive_link}
+                </a>
+              ) : (
+                "No link provided"
+              )}
+            </Typography>
+            <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+              <button
+                onClick={() => setIsEventDetailsModalOpen(false)}
+                className="btn-light"
+              >
+                Close
+              </button>
+            </Box>
+          </Box>
+        </Modal>
+      )}
+
       <div className="bg-white p-4">
         <h2 className="text-xl font-bold mb-4">Events Calendar</h2>
         <div className="border border-gray-200 rounded-md p-4">
           <EventCalendar
             events={events}
+            // onSelectEvent={(event) => {
+            //   alert(`Event: ${event.title}`);
+            // }}
+            onSelectEvent={handleEventClick}
+            eventPropGetter={() => ({
+              className: "custom-event",
+            })}
+            // eventPropGetter={() => ({
+            //   style: {
+            //     backgroundColor: "#2563eb",
+            //     color: "white",
+            //     padding: "4px",
+            //     borderRadius: "4px",
+            //   },
+            // })}
             dayPropGetter={(date) => {
               const today = new Date();
               const isToday =

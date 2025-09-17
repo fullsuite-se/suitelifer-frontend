@@ -36,6 +36,8 @@ const AdminEvents = () => {
     start: new Date(),
     end: new Date(new Date().getTime() + 60 * 60 * 1000),
     description: "",
+    //Added for gdrive url
+    gdrive_link: "",
   };
 
   const [eventDetails, setEventDetails] = useState(defaultEventDetails);
@@ -95,6 +97,7 @@ const AdminEvents = () => {
 
   const handleAddEditEvent = async () => {
     try {
+      console.log(`onAdd:${eventDetails.gdrive_link}`);
       if (!eventDetails.eventId) {
         const response = await api.post("/api/events/", {
           ...eventDetails,
@@ -156,9 +159,13 @@ const AdminEvents = () => {
               start: new Date(),
               end: new Date(new Date().getTime() + 60 * 60 * 1000),
               description: "",
+              //Added for gdrive url link
+              gdrive_link: "",
             });
+
             setIsEditing(false);
             setIsAddModalOpen(true);
+            console.log(eventDetails);
           }}
         />
       </div>
@@ -259,6 +266,14 @@ const AdminEvents = () => {
             onChange={(e) => handleEventChange(e, false)}
             margin="normal"
           />
+          <TextField
+            fullWidth
+            label="Drive URL"
+            value={eventDetails.gdrive_link}
+            name="gdrive_link"
+            onChange={(e) => handleEventChange(e, false)}
+            margin="normal"
+          />
           <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1 }}>
             <button
               onClick={() => {
@@ -312,6 +327,22 @@ const AdminEvents = () => {
                   <strong>Description:</strong>{" "}
                   {selectedEvent.description || "No description"}
                 </Typography>
+                {/* Added Modal Description */}
+                <Typography>
+                  <strong>Link:</strong>{" "}
+                  {selectedEvent.gdrive_link ? (
+                    <a
+                      href={selectedEvent.gdrive_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {selectedEvent.gdrive_link}
+                    </a>
+                  ) : (
+                    "No link provided"
+                  )}
+                </Typography>
+                {/* end of Added Modal Description */}
               </div>
               <Box
                 sx={{
