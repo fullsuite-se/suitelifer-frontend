@@ -1,13 +1,15 @@
 import React from "react";
 import { ListBulletIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { format } from "date-fns";
-
-const EventCard = ({ event }) => {
+//added yung onClick
+const EventCard = ({ event, onClick }) => {
   const dayAbbreviation = format(new Date(event.start), "EEE");
   const dayOfMonth = format(new Date(event.start), "d");
 
   return (
     <section
+      //added to have click function
+      onClick={onClick}
       className={
         "border border-gray-200 p-4 rounded-lg flex gap-4 items-center"
       }

@@ -45,9 +45,9 @@ const EmployeeEvents = () => {
   }, []);
   //
 
-  // if (isComingSoon) {
-  // return <ComingSoon />;
-  // }
+  if (isComingSoon) {
+    // return <ComingSoon />;
+  }
   return (
     // <section className="p-5 border border-primary rounded-2xl flex flex-col gap-4 mb-25">
     //   <div className="">
